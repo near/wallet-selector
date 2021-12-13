@@ -1,0 +1,23 @@
+{
+  "name": "near-walletselector",
+  "version": "1.0.0",
+  "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/near-projects/wallet-selector.git"
+  },
+  "keywords": [
+    "near",
+    "walletselector"
+  ],
+  "author": "near",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/near-projects/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near-projects/wallet-selector#readme"
+}
