@@ -1,6 +1,6 @@
 import React from "react";
-import providers from "../../providers";
-import "./Modal.css";
+import { wallets } from "../../providers/wallets";
+import styles from "./Modal.styles";
 
 function Modal(props: any): JSX.Element {
   function handleCloseModal(event: any) {
@@ -25,28 +25,37 @@ function Modal(props: any): JSX.Element {
   }
 
   return (
-    <div
-      className={`Modal ${getThemeClass(props.options.theme)}`}
-      onClick={handleCloseModal}
-    >
-      <div className="Modal-content">
-        <div className="Modal-body">
-          <ul className="Modal-option-list">
-            {props.options.providers.map((provider: string) => (
-              <li
-                key={providers.getProvider(provider).getName()}
-                onClick={providers.getProvider(provider).connect}
-              >
-                <div title={providers.getProvider(provider).getDescription()}>
-                  <img
-                    src={providers.getProvider(provider).getIcon()}
-                    alt={providers.getProvider(provider).getName()}
-                  />
-                  <span>{providers.getProvider(provider).getName()}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+    <div>
+      <style>{styles}</style>
+      <div
+        className={`Modal ${getThemeClass(props.options.theme)}`}
+        onClick={handleCloseModal}
+      >
+        <div className="Modal-content">
+          <div className="Modal-body">
+            <ul className="Modal-option-list">
+              {props.options.providers.map((provider: string) => {
+                if (!wallets.getWallet(provider)) return null;
+                return (
+                  <li
+                    key={wallets.getWallet(provider).getName()}
+                    onClick={() => {
+                      wallets.getWallet(provider).connect();
+                      props.onClose();
+                    }}
+                  >
+                    <div title={wallets.getWallet(provider).getDescription()}>
+                      <img
+                        src={wallets.getWallet(provider).getIcon()}
+                        alt={wallets.getWallet(provider).getName()}
+                      />
+                      <span>{wallets.getWallet(provider).getName()}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

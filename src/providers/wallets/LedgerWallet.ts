@@ -9,5 +9,7 @@ export default class LedgerWallet extends BaseWallet {
     );
   }
 
-  connect() {}
+  connect() {
+    alert("Ledger Wallet is not supported yet.");
+  }
 }

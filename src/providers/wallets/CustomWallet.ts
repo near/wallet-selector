@@ -11,6 +11,10 @@ export default class CustomWallet extends BaseWallet {
   ) {
     super(name, description, icon);
 
+    this.setOnConnectFunction(onConnectFunction);
+  }
+
+  setOnConnectFunction(onConnectFunction: Function) {
     this.onConnectFunction = onConnectFunction;
   }
 

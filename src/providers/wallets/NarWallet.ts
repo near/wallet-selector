@@ -9,5 +9,7 @@ export default class NarWallet extends BaseWallet {
     );
   }
 
-  connect() {}
+  connect() {
+    alert("Nar Wallet is not supported yet.");
+  }
 }

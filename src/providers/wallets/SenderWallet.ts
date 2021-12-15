@@ -9,5 +9,7 @@ export default class SenderWallet extends BaseWallet {
     );
   }
 
-  connect() {}
+  connect() {
+    alert("Sender Wallet is not supported yet.");
+  }
 }

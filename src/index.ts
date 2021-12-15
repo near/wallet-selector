@@ -1,5 +1,5 @@
 import Modal from "./components/Modal/Modal";
 
-export * from "./providers";
+import * as providers from "./providers";
 
-export default Modal;
+export default { Modal, providers };
