@@ -80,6 +80,11 @@ export default `
   transition: background-color 0.2s ease-in-out;
 }
 
+.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img{
+  filter: invert(1);
+}
+
+
 .Modal-dark-theme .Modal-content .Modal-option-list li:hover {
   background-color: #313131;
 }
