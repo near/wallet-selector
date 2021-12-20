@@ -25,7 +25,6 @@ export default class SenderWallet extends BaseWallet {
         .then((response: any) => {
           if (response.accessKey) {
             localStorage.setItem("token", response.accessKey.secretKey);
-            console.log("response: ", response);
           }
         });
     });
