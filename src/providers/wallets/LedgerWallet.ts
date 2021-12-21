@@ -79,6 +79,13 @@ export default class LedgerWallet extends BaseWallet {
     });
   }
 
+  disconnect(): void {
+    throw new Error("Method not implemented.");
+  }
+  isConnected(): boolean {
+    throw new Error("Method not implemented.");
+  }
+
   async getPublicKey() {
     if (!this.transport) return;
 

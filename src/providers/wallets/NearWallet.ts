@@ -12,4 +12,11 @@ export default class NearWallet extends BaseWallet {
   connect() {
     alert("Near Wallet is not supported yet.");
   }
+
+  disconnect(): void {
+    throw new Error("Method not implemented.");
+  }
+  isConnected(): boolean {
+    throw new Error("Method not implemented.");
+  }
 }

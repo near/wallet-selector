@@ -12,4 +12,11 @@ export default class NarWallet extends BaseWallet {
   connect() {
     alert("Nar Wallet is not supported yet.");
   }
+
+  disconnect(): void {
+    throw new Error("Method not implemented.");
+  }
+  isConnected(): boolean {
+    throw new Error("Method not implemented.");
+  }
 }

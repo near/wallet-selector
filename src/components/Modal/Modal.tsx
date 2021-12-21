@@ -1,11 +1,13 @@
 import React from "react";
 import { wallets } from "../../providers/wallets";
 import styles from "./Modal.styles";
+import { isUserLoggedIn } from "../../providers";
 
 function Modal(props: any): JSX.Element {
   function handleCloseModal(event: any) {
     event.preventDefault();
     if (event.target === event.currentTarget) props.onClose();
+    props.loggedIn(isUserLoggedIn);
   }
 
   function getThemeClass(theme: string) {
@@ -42,7 +44,6 @@ function Modal(props: any): JSX.Element {
                     key={wallets.getWallet(provider).getName()}
                     onClick={() => {
                       wallets.getWallet(provider).connect();
-                      props.onClose();
                     }}
                   >
                     <div title={wallets.getWallet(provider).getDescription()}>
