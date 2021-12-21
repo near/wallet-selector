@@ -33,6 +33,7 @@ function Modal(props: any): JSX.Element {
       >
         <div className="Modal-content">
           <div className="Modal-body">
+            <p>Please select a wallet to connect to this dapp:</p>
             <ul className="Modal-option-list">
               {props.options.providers.map((provider: string) => {
                 if (!wallets.getWallet(provider)) return null;
