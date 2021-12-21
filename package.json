@@ -26,12 +26,15 @@
   },
   "homepage": "https://github.com/near-projects/wallet-selector#readme",
   "devDependencies": {
+    "@types/bn.js": "^5.1.0",
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11"
+    "@types/react-dom": "^17.0.11",
+    "near-api-js": "^0.44.1",
+    "process": "^0.11.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
