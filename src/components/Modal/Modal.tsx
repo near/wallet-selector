@@ -1,13 +1,10 @@
 import React from "react";
-import { wallets } from "../../providers/wallets";
 import styles from "./Modal.styles";
-import { isUserLoggedIn } from "../../providers";
 
 function Modal(props: any): JSX.Element {
   function handleCloseModal(event: any) {
     event.preventDefault();
     if (event.target === event.currentTarget) props.onClose();
-    props.loggedIn(isUserLoggedIn);
   }
 
   function getThemeClass(theme: string) {
@@ -37,21 +34,23 @@ function Modal(props: any): JSX.Element {
           <div className="Modal-body">
             <p>Please select a wallet to connect to this dapp:</p>
             <ul className="Modal-option-list">
-              {props.options.providers.map((provider: string) => {
-                if (!wallets.getWallet(provider)) return null;
+              {props.options.wallets.map((wallet: string) => {
+                if (!props.wallets.getWallet(wallet)) return null;
                 return (
                   <li
-                    key={wallets.getWallet(provider).getName()}
+                    key={props.wallets.getWallet(wallet).getName()}
                     onClick={() => {
-                      wallets.getWallet(provider).connect();
+                      props.wallets.getWallet(wallet).connect();
                     }}
                   >
-                    <div title={wallets.getWallet(provider).getDescription()}>
+                    <div
+                      title={props.wallets.getWallet(wallet).getDescription()}
+                    >
                       <img
-                        src={wallets.getWallet(provider).getIcon()}
-                        alt={wallets.getWallet(provider).getName()}
+                        src={props.wallets.getWallet(wallet).getIcon()}
+                        alt={props.wallets.getWallet(wallet).getName()}
                       />
-                      <span>{wallets.getWallet(provider).getName()}</span>
+                      <span>{props.wallets.getWallet(wallet).getName()}</span>
                     </div>
                   </li>
                 );

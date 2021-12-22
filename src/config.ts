@@ -1,4 +1,4 @@
-function getConfig(env: any, contractName: any) {
+function getConfig(env: string, contractName: string) {
   switch (env) {
     case "production":
     case "mainnet":

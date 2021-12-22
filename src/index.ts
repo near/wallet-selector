@@ -1,5 +1,3 @@
-import Modal from "./components/Modal/Modal";
+import Core from "./core/Core";
 
-import * as providers from "./providers";
-
-export default { Modal, providers };
+export default Core;

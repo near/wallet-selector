@@ -1,4 +1,4 @@
-type Options = {
+type CustomWalletOptions = {
   name: string;
   description: string;
   icon: string;
@@ -7,4 +7,4 @@ type Options = {
   isConnectedFunction: Function;
 };
 
-export default Options;
+export default CustomWalletOptions;

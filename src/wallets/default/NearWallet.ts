@@ -1,4 +1,4 @@
-import BaseWallet from "./BaseWallet";
+import BaseWallet from "../BaseWallet";
 
 export default class NearWallet extends BaseWallet {
   constructor() {
@@ -16,7 +16,8 @@ export default class NearWallet extends BaseWallet {
   disconnect(): void {
     throw new Error("Method not implemented.");
   }
+
   isConnected(): boolean {
-    throw new Error("Method not implemented.");
+    return false;
   }
 }

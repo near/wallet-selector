@@ -1,4 +1,4 @@
-import BaseWallet from "./BaseWallet";
+import BaseWallet from "../BaseWallet";
 
 export default class NarWallet extends BaseWallet {
   constructor() {
@@ -17,6 +17,6 @@ export default class NarWallet extends BaseWallet {
     throw new Error("Method not implemented.");
   }
   isConnected(): boolean {
-    throw new Error("Method not implemented.");
+    return false;
   }
 }

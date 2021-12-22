@@ -1,4 +1,4 @@
-import BaseWallet from "./BaseWallet";
+import BaseWallet from "../BaseWallet";
 import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import LedgerTransportWebUsb from "@ledgerhq/hw-transport-webusb";
 import Transport from "@ledgerhq/hw-transport";
@@ -56,12 +56,12 @@ export default class LedgerWallet extends BaseWallet {
   }
 
   async connect() {
-    this.transport = await LedgerTransportWebUsb.create().catch((err) => {
+    this.transport = await LedgerTransportWebHid.create().catch((err) => {
       console.log(err);
     });
 
     if (!this.transport) {
-      this.transport = await LedgerTransportWebHid.create().catch((err) => {
+      this.transport = await LedgerTransportWebUsb.create().catch((err) => {
         console.log(err);
       });
     }
@@ -76,14 +76,19 @@ export default class LedgerWallet extends BaseWallet {
 
     this.transport.on("disconnect", (res) => {
       console.log(res);
+      if (this.callbackFunctions["disconnect"])
+        this.callbackFunctions["disconnect"](this);
     });
+
+    if (this.callbackFunctions["connect"])
+      this.callbackFunctions["connect"](this);
   }
 
   disconnect(): void {
     throw new Error("Method not implemented.");
   }
   isConnected(): boolean {
-    throw new Error("Method not implemented.");
+    return false;
   }
 
   async getPublicKey() {
