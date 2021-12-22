@@ -32,6 +32,10 @@ export default class CustomWallet extends BaseWallet {
     this.isConnectedFunction = isConnectedFunction;
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   connect() {
     this.onConnectFunction();
   }

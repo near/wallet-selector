@@ -4,6 +4,7 @@ import LedgerTransportWebUsb from "@ledgerhq/hw-transport-webusb";
 import Transport from "@ledgerhq/hw-transport";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
+import modalHelper from "../../modal-helper";
 
 export default class LedgerWallet extends BaseWallet {
   private readonly CLA = 0x80;
@@ -55,6 +56,11 @@ export default class LedgerWallet extends BaseWallet {
     );
   }
 
+  walletSelected(): void {
+    modalHelper.openLedgerDerivationPathModal();
+    modalHelper.hideSelectWalletOptionModal();
+  }
+
   async connect() {
     this.transport = await LedgerTransportWebHid.create().catch((err) => {
       console.log(err);
@@ -69,8 +75,6 @@ export default class LedgerWallet extends BaseWallet {
     if (!this.transport) {
       throw new Error("Could not connect to Ledger device");
     }
-
-    if (!this.transport) return;
 
     this.transport.setScrambleKey("NEAR");
 

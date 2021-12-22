@@ -9,6 +9,10 @@ export default class NarWallet extends BaseWallet {
     );
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   connect() {
     alert("Nar Wallet is not supported yet.");
   }

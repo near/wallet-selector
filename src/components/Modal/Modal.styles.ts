@@ -70,6 +70,58 @@ export default `
   max-width: 50px;
 }
 
+.derivation-paths {
+}
+.derivation-paths-list {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.derivation-paths-list button, input {
+    background: inherit;
+    font-size: 0.889em;
+    font-family: inherit;
+    border-width: 1px;
+    border-style: solid;
+    border-color: inherit;
+    border-radius: 40px;
+    margin-top: 0.5rem;
+    padding: 0.55em 1.4em;
+    text-align: center;
+    color: inherit;
+    font-family: inherit;
+    transition: background 150ms ease-in-out;
+    line-height: 1.15;
+    cursor: pointer;
+ }
+ 
+ .derivation-paths--actions {
+    display: flex;
+    justify-content: space-between;
+ }
+ .derivation-paths--actions button {
+    padding: 8px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+ }
+ 
+.derivation-paths--actions .connect{
+    color: white;
+    border: 1px solid rgb(64, 153, 255);
+    background: rgb(64, 153, 255);
+ }
+    
+.derivation-paths--actions .dismiss {
+    border: 0.5px solid black;
+}
+
+.path-option-highlighted {
+  border-color: rgb(64, 153, 255) !important;
+}
+
 .Modal-dark-theme .Modal-content {
   background-color: #414141;
   color: white;

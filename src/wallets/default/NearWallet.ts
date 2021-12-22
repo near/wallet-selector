@@ -9,6 +9,10 @@ export default class NearWallet extends BaseWallet {
     );
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   connect() {
     alert("Near Wallet is not supported yet.");
   }

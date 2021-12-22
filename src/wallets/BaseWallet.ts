@@ -27,6 +27,7 @@ export default abstract class BaseWallet implements IWallet {
     return this.icon;
   }
 
+  abstract walletSelected(): void;
   abstract connect(): void;
   abstract disconnect(): void;
   abstract isConnected(): boolean;

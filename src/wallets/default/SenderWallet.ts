@@ -5,6 +5,10 @@ export default class SenderWallet extends BaseWallet {
     super("Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png");
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   async connect() {
     const senderWallet = window["wallet"];
 
