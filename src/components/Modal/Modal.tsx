@@ -1,13 +1,22 @@
-import React from "react";
-import { wallets } from "../../providers/wallets";
+import React, { useState } from "react";
 import styles from "./Modal.styles";
-import { isUserLoggedIn } from "../../providers";
+import modalHelper from "../../modal-helper";
 
 function Modal(props: any): JSX.Element {
+  const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
+  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
+    useState("44'/397'/0'/0'/0'");
+  const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
+
   function handleCloseModal(event: any) {
     event.preventDefault();
-    if (event.target === event.currentTarget) props.onClose();
-    props.loggedIn(isUserLoggedIn);
+    if (event.target === event.currentTarget) onCloseModalHandler();
+  }
+
+  function onCloseModalHandler() {
+    modalHelper.hideModal();
+    setUseCustomDerivationPath(false);
+    setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
   }
 
   function getThemeClass(theme: string) {
@@ -26,6 +35,18 @@ function Modal(props: any): JSX.Element {
     return themeClass;
   }
 
+  function onUseCustomPathHandler() {
+    setUseCustomDerivationPath(true);
+  }
+
+  function onUseDefaultDerivationPathHandler() {
+    setUseCustomDerivationPath(false);
+  }
+
+  function onCustomDerivationPathChangeHandler(event: any) {
+    setLedgerCustomDerivationPath(event.target.value);
+  }
+
   return (
     <div>
       <style>{styles}</style>
@@ -34,29 +55,84 @@ function Modal(props: any): JSX.Element {
         onClick={handleCloseModal}
       >
         <div className="Modal-content">
-          <div className="Modal-body">
+          <div className="Modal-body Modal-select-wallet-option">
             <p>Please select a wallet to connect to this dapp:</p>
             <ul className="Modal-option-list">
-              {props.options.providers.map((provider: string) => {
-                if (!wallets.getWallet(provider)) return null;
+              {props.options.wallets.map((wallet: string) => {
+                if (!props.wallets.getWallet(wallet)) return null;
                 return (
                   <li
-                    key={wallets.getWallet(provider).getName()}
+                    key={props.wallets.getWallet(wallet).getName()}
                     onClick={() => {
-                      wallets.getWallet(provider).connect();
+                      props.wallets.getWallet(wallet).walletSelected();
                     }}
                   >
-                    <div title={wallets.getWallet(provider).getDescription()}>
+                    <div
+                      title={props.wallets.getWallet(wallet).getDescription()}
+                    >
                       <img
-                        src={wallets.getWallet(provider).getIcon()}
-                        alt={wallets.getWallet(provider).getName()}
+                        src={props.wallets.getWallet(wallet).getIcon()}
+                        alt={props.wallets.getWallet(wallet).getName()}
                       />
-                      <span>{wallets.getWallet(provider).getName()}</span>
+                      <span>{props.wallets.getWallet(wallet).getName()}</span>
                     </div>
                   </li>
                 );
               })}
             </ul>
+          </div>
+          <div className="Modal-body Modal-choose-ledger-derivation-path">
+            <p>
+              Make sure your Ledger is plugged in, then select a derivation path
+              to connect your accounts:
+            </p>
+            <div className="derivation-paths-list">
+              <button
+                className={
+                  !useCustomDerivationPath ? "path-option-highlighted" : ""
+                }
+                onClick={onUseDefaultDerivationPathHandler}
+              >
+                NEAR - 44'/397'/0'/0'/0'
+              </button>
+              <button
+                className={
+                  useCustomDerivationPath ? "path-option-highlighted" : ""
+                }
+                onClick={onUseCustomPathHandler}
+              >
+                Custom Path
+              </button>
+              {useCustomDerivationPath && (
+                <input
+                  type="text"
+                  placeholder="custom derivation path"
+                  value={ledgerCustomDerivationPath}
+                  onChange={onCustomDerivationPathChangeHandler}
+                />
+              )}
+            </div>
+            <div className="derivation-paths--actions">
+              <button className="dismiss" onClick={onCloseModalHandler}>
+                Dismiss
+              </button>
+              <button
+                className="connect"
+                onClick={() => {
+                  let derivationPath = ledgerDerivationPath;
+                  if (useCustomDerivationPath) {
+                    derivationPath = ledgerCustomDerivationPath;
+                  }
+
+                  props.wallets
+                    .getWallet("ledgerwallet")
+                    .setDerivationPath(derivationPath);
+                  props.wallets.getWallet("ledgerwallet").connect();
+                }}
+              >
+                Connect
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,12 +1,16 @@
-import BaseWallet from "./BaseWallet";
+import BaseWallet from "../BaseWallet";
 
 export default class SenderWallet extends BaseWallet {
   constructor() {
     super("Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png");
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   async connect() {
-    const senderWallet = (window as any).wallet;
+    const senderWallet = window["wallet"];
 
     senderWallet.onAccountChanged((newAccountId: string) => {
       console.log("newAccountId: ", newAccountId);
@@ -21,17 +25,19 @@ export default class SenderWallet extends BaseWallet {
         .then((response: any) => {
           if (response.accessKey) {
             localStorage.setItem("token", response.accessKey.secretKey);
+            if (this.callbackFunctions["connect"])
+              this.callbackFunctions["connect"](this);
           }
         });
     });
   }
 
-  isLoggedIn() {
-    return window["wallet"].isSignedIn();
+  isConnected(): boolean {
+    return localStorage.getItem("token") !== null;
   }
 
-  logout() {
-    const senderWallet = (window as any).wallet;
+  disconnect() {
+    const senderWallet = window["wallet"];
 
     localStorage.removeItem("token");
     return senderWallet.signOut();

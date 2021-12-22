@@ -26,14 +26,21 @@
   },
   "homepage": "https://github.com/near-projects/wallet-selector#readme",
   "devDependencies": {
+    "@ledgerhq/logs": "^6.10.0",
     "@types/bn.js": "^5.1.0",
+    "@types/bs58": "^4.0.1",
+    "@types/node": "^16.11.13",
+    "@types/w3c-web-hid": "^1.0.2",
+    "@types/w3c-web-usb": "^1.0.5",
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "@ledgerhq/hw-transport-webhid": "^6.20.0",
+    "@ledgerhq/hw-transport-webusb": "^6.20.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "bs58": "^4.0.1",
     "near-api-js": "^0.44.1",
-    "process": "^0.11.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }

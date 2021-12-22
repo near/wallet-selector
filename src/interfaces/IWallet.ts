@@ -3,5 +3,8 @@ export default interface IWallet {
   getDescription(): string;
   getIcon(): string;
 
+  walletSelected(): void;
   connect(): void;
+  disconnect(): void;
+  isConnected(): boolean;
 }

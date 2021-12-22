@@ -5,6 +5,10 @@ export default abstract class BaseWallet implements IWallet {
   protected description = "A near wallet";
   protected icon = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
 
+  protected callbackFunctions: {
+    [event: string]: (self: IWallet) => void;
+  } = {};
+
   constructor(name: string, description: string, icon: string) {
     this.name = name;
     this.description = description;
@@ -23,5 +27,12 @@ export default abstract class BaseWallet implements IWallet {
     return this.icon;
   }
 
+  abstract walletSelected(): void;
   abstract connect(): void;
+  abstract disconnect(): void;
+  abstract isConnected(): boolean;
+
+  on(event: string, callback: (self: IWallet) => void) {
+    this.callbackFunctions[event] = callback;
+  }
 }

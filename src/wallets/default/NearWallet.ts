@@ -1,4 +1,4 @@
-import BaseWallet from "./BaseWallet";
+import BaseWallet from "../BaseWallet";
 
 export default class NearWallet extends BaseWallet {
   constructor() {
@@ -9,7 +9,19 @@ export default class NearWallet extends BaseWallet {
     );
   }
 
+  walletSelected(): void {
+    this.connect();
+  }
+
   connect() {
     alert("Near Wallet is not supported yet.");
+  }
+
+  disconnect(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  isConnected(): boolean {
+    return false;
   }
 }
