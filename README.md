@@ -1,4 +1,4 @@
-# near-walletsender
+# near-walletselector
 
 # How to import package locally
 
