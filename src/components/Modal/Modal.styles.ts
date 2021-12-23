@@ -108,7 +108,7 @@ export default `
     cursor: pointer;
  }
  
-.derivation-paths--actions .connect{
+.derivation-paths--actions .connect {
     color: white;
     border: 1px solid rgb(64, 153, 255);
     background: rgb(64, 153, 255);
@@ -120,6 +120,18 @@ export default `
 
 .path-option-highlighted {
   border-color: rgb(64, 153, 255) !important;
+}
+
+.error {
+    font-size: 0.889em;
+    font-family: inherit;
+    color: inherit;
+    margin-top: 0.5rem;
+    color: #e2504a;
+}
+
+.input-error {
+    border-color: #e2504a;
 }
 
 .Modal-dark-theme .Modal-content {
