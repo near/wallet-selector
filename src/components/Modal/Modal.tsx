@@ -6,6 +6,7 @@ function Modal(props: any): JSX.Element {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
   const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
     useState("44'/397'/0'/0'/0'");
+  const [ledgerWalletError, setLedgerWalletError] = useState("");
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
 
   function handleCloseModal(event: any) {
@@ -17,6 +18,7 @@ function Modal(props: any): JSX.Element {
     modalHelper.hideModal();
     setUseCustomDerivationPath(false);
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
+    setLedgerWalletError("");
   }
 
   function getThemeClass(theme: string) {
@@ -41,6 +43,7 @@ function Modal(props: any): JSX.Element {
 
   function onUseDefaultDerivationPathHandler() {
     setUseCustomDerivationPath(false);
+    setLedgerWalletError("");
   }
 
   function onCustomDerivationPathChangeHandler(event: any) {
@@ -95,21 +98,27 @@ function Modal(props: any): JSX.Element {
               >
                 NEAR - 44'/397'/0'/0'/0'
               </button>
-              <button
-                className={
-                  useCustomDerivationPath ? "path-option-highlighted" : ""
-                }
-                onClick={onUseCustomPathHandler}
-              >
-                Custom Path
-              </button>
+              {!useCustomDerivationPath && (
+                <button
+                  className={
+                    useCustomDerivationPath ? "path-option-highlighted" : ""
+                  }
+                  onClick={onUseCustomPathHandler}
+                >
+                  Custom Path
+                </button>
+              )}
               {useCustomDerivationPath && (
                 <input
+                  className={ledgerWalletError ? "input-error" : ""}
                   type="text"
                   placeholder="custom derivation path"
                   value={ledgerCustomDerivationPath}
                   onChange={onCustomDerivationPathChangeHandler}
                 />
+              )}
+              {ledgerWalletError && (
+                <p className="error">{ledgerWalletError}</p>
               )}
             </div>
             <div className="derivation-paths--actions">
@@ -118,16 +127,20 @@ function Modal(props: any): JSX.Element {
               </button>
               <button
                 className="connect"
-                onClick={() => {
+                onClick={async () => {
                   let derivationPath = ledgerDerivationPath;
                   if (useCustomDerivationPath) {
                     derivationPath = ledgerCustomDerivationPath;
                   }
 
-                  props.wallets
-                    .getWallet("ledgerwallet")
-                    .setDerivationPath(derivationPath);
-                  props.wallets.getWallet("ledgerwallet").connect();
+                  try {
+                    props.wallets
+                      .getWallet("ledgerwallet")
+                      .setDerivationPath(derivationPath);
+                    await props.wallets.getWallet("ledgerwallet").connect();
+                  } catch (e) {
+                    setLedgerWalletError(`Error: ${e.message}`);
+                  }
                 }}
               >
                 Connect
