@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styles from "./Modal.styles";
-import modalHelper from "../../modal-helper";
+import modalHelper from "../../ModalHelper";
+import State from "../../../state/State";
+import ILedgerWallet from "../../../interfaces/ILedgerWallet";
 
-function Modal(props: any): JSX.Element {
+function Modal(): JSX.Element {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
-    useState("44'/397'/0'/0'/0'");
+  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] = useState("44'/397'/0'/0'/0'");
   const [ledgerWalletError, setLedgerWalletError] = useState("");
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
 
@@ -21,7 +22,7 @@ function Modal(props: any): JSX.Element {
     setLedgerWalletError("");
   }
 
-  function getThemeClass(theme: string) {
+  function getThemeClass(theme: string | null) {
     let themeClass = "";
     switch (theme) {
       case "dark":
@@ -53,31 +54,26 @@ function Modal(props: any): JSX.Element {
   return (
     <div>
       <style>{styles}</style>
-      <div
-        className={`Modal ${getThemeClass(props.options.theme)}`}
-        onClick={handleCloseModal}
-      >
+      <div className={`Modal ${getThemeClass(State.options.theme)}`} onClick={handleCloseModal}>
         <div className="Modal-content">
           <div className="Modal-body Modal-select-wallet-option">
             <p>Please select a wallet to connect to this dapp:</p>
             <ul className="Modal-option-list">
-              {props.options.wallets.map((wallet: string) => {
-                if (!props.wallets.getWallet(wallet)) return null;
+              {State.options.wallets.map((wallet: string) => {
+                if (!State.walletProviders[wallet]) return null;
                 return (
                   <li
-                    key={props.wallets.getWallet(wallet).getName()}
+                    key={State.walletProviders[wallet].getName()}
                     onClick={() => {
-                      props.wallets.getWallet(wallet).walletSelected();
+                      State.walletProviders[wallet].walletSelected();
                     }}
                   >
-                    <div
-                      title={props.wallets.getWallet(wallet).getDescription()}
-                    >
+                    <div title={State.walletProviders[wallet].getDescription()}>
                       <img
-                        src={props.wallets.getWallet(wallet).getIcon()}
-                        alt={props.wallets.getWallet(wallet).getName()}
+                        src={State.walletProviders[wallet].getIcon()}
+                        alt={State.walletProviders[wallet].getName()}
                       />
-                      <span>{props.wallets.getWallet(wallet).getName()}</span>
+                      <span>{State.walletProviders[wallet].getName()}</span>
                     </div>
                   </li>
                 );
@@ -85,24 +81,17 @@ function Modal(props: any): JSX.Element {
             </ul>
           </div>
           <div className="Modal-body Modal-choose-ledger-derivation-path">
-            <p>
-              Make sure your Ledger is plugged in, then select a derivation path
-              to connect your accounts:
-            </p>
+            <p>Make sure your Ledger is plugged in, then select a derivation path to connect your accounts:</p>
             <div className="derivation-paths-list">
               <button
-                className={
-                  !useCustomDerivationPath ? "path-option-highlighted" : ""
-                }
+                className={!useCustomDerivationPath ? "path-option-highlighted" : ""}
                 onClick={onUseDefaultDerivationPathHandler}
               >
                 NEAR - 44'/397'/0'/0'/0'
               </button>
               {!useCustomDerivationPath && (
                 <button
-                  className={
-                    useCustomDerivationPath ? "path-option-highlighted" : ""
-                  }
+                  className={useCustomDerivationPath ? "path-option-highlighted" : ""}
                   onClick={onUseCustomPathHandler}
                 >
                   Custom Path
@@ -117,9 +106,7 @@ function Modal(props: any): JSX.Element {
                   onChange={onCustomDerivationPathChangeHandler}
                 />
               )}
-              {ledgerWalletError && (
-                <p className="error">{ledgerWalletError}</p>
-              )}
+              {ledgerWalletError && <p className="error">{ledgerWalletError}</p>}
             </div>
             <div className="derivation-paths--actions">
               <button className="dismiss" onClick={onCloseModalHandler}>
@@ -134,10 +121,9 @@ function Modal(props: any): JSX.Element {
                   }
 
                   try {
-                    props.wallets
-                      .getWallet("ledgerwallet")
-                      .setDerivationPath(derivationPath);
-                    await props.wallets.getWallet("ledgerwallet").connect();
+                    const ledgerWalletProvider = State.walletProviders["ledgerwallet"] as ILedgerWallet;
+                    ledgerWalletProvider.setDerivationPath(derivationPath);
+                    await ledgerWalletProvider.connect();
                   } catch (e) {
                     setLedgerWalletError(`Error: ${e.message}`);
                   }

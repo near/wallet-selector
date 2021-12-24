@@ -1,3 +1,3 @@
-import Core from "./core/Core";
+import NearWalletSelector from "./core/NearWalletSelector";
 
-export default Core;
+export default NearWalletSelector;

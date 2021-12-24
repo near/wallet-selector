@@ -1,5 +1,6 @@
 import IWallet from "../interfaces/IWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import State from "../state/State";
 
 export default abstract class BaseWallet implements IWallet {
   protected id = "wallet";
@@ -18,6 +19,10 @@ export default abstract class BaseWallet implements IWallet {
     this.icon = icon;
   }
 
+  getId(): string {
+    return this.id;
+  }
+
   getName(): string {
     return this.name;
   }
@@ -32,6 +37,8 @@ export default abstract class BaseWallet implements IWallet {
 
   setWalletAsSignedIn() {
     localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, this.id);
+    State.isSignedIn = true;
+    State.signedInWalletId = this.id;
   }
 
   abstract walletSelected(): void;

@@ -1,7 +1,8 @@
-import BaseWallet from "../BaseWallet";
+import BrowserWallet from "../types/BrowserWallet";
 import { keyStores, connect, WalletConnection } from "near-api-js";
+import INearWallet from "../../interfaces/INearWallet";
 
-export default class NearWallet extends BaseWallet {
+export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
   constructor() {

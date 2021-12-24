@@ -1,13 +1,9 @@
-import BaseWallet from "../BaseWallet";
+import ISenderWallet from "../../interfaces/ISenderWallet";
+import InjectedWallet from "../types/InjectedWallet";
 
-export default class SenderWallet extends BaseWallet {
+export default class SenderWallet extends InjectedWallet implements ISenderWallet {
   constructor() {
-    super(
-      "senderwallet",
-      "Sender Wallet",
-      "Sender Wallet",
-      "https://senderwallet.io/logo.png"
-    );
+    super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
   }
 
   walletSelected(): void {
@@ -16,11 +12,6 @@ export default class SenderWallet extends BaseWallet {
 
   async connect() {
     const senderWallet = window["wallet"];
-
-    senderWallet.onAccountChanged((newAccountId: string) => {
-      console.log("newAccountId: ", newAccountId);
-      location.reload();
-    });
 
     senderWallet.init({ contractId: "" }).then(() => {
       senderWallet
@@ -31,15 +22,15 @@ export default class SenderWallet extends BaseWallet {
           if (response.accessKey) {
             localStorage.setItem("token", response.accessKey.secretKey);
             this.setWalletAsSignedIn();
-            if (this.callbackFunctions["connect"])
-              this.callbackFunctions["connect"](this);
+            if (this.callbackFunctions["connect"]) this.callbackFunctions["connect"](this);
           }
         });
     });
   }
 
-  init() {
-    this.connect();
+  async init() {
+    const res = await super.init();
+    if (res) this.connect();
   }
 
   isConnected(): boolean {
@@ -49,7 +40,6 @@ export default class SenderWallet extends BaseWallet {
   disconnect() {
     const senderWallet = window["wallet"];
 
-    localStorage.removeItem("token");
     return senderWallet.signOut();
   }
 }

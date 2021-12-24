@@ -1,5 +1,6 @@
 import BaseWallet from "./BaseWallet";
 
+// TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
 export default class CustomWallet extends BaseWallet {
   private onConnectFunction: Function;
   private onDisconnectFunction: Function;

@@ -1,19 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Modal from "./components/Modal/Modal";
-import { MODAL_ELEMENT_ID } from "./constants";
-import Options from "./types/Options";
+import Modal from "./component/Modal/Modal";
+import { MODAL_ELEMENT_ID } from "../constants";
 
 const modalHelper = {
-  createModal(options: Options, wallets: any) {
+  createModal() {
     const el = document.createElement("div");
     el.id = MODAL_ELEMENT_ID;
     document.body.appendChild(el);
 
-    ReactDOM.render(
-      <Modal options={options} wallets={wallets} />,
-      document.getElementById(MODAL_ELEMENT_ID)
-    );
+    ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
 
     this.hideModal();
   },
