@@ -6,6 +6,7 @@ export default class CustomWallet extends BaseWallet {
   private isConnectedFunction: Function;
 
   constructor(
+    id: string,
     name: string,
     description: string,
     icon: string,
@@ -13,7 +14,7 @@ export default class CustomWallet extends BaseWallet {
     onDisconnectFunction: Function,
     isConnectedFunction: Function
   ) {
-    super(name, description, icon);
+    super(id, name, description, icon);
 
     this.setOnConnectFunction(onConnectFunction);
     this.setOnDisconnectFunction(onDisconnectFunction);
@@ -33,6 +34,10 @@ export default class CustomWallet extends BaseWallet {
   }
 
   walletSelected(): void {
+    this.connect();
+  }
+
+  init() {
     this.connect();
   }
 

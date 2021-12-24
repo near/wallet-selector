@@ -2,7 +2,12 @@ import BaseWallet from "../BaseWallet";
 
 export default class SenderWallet extends BaseWallet {
   constructor() {
-    super("Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png");
+    super(
+      "senderwallet",
+      "Sender Wallet",
+      "Sender Wallet",
+      "https://senderwallet.io/logo.png"
+    );
   }
 
   walletSelected(): void {
@@ -25,11 +30,16 @@ export default class SenderWallet extends BaseWallet {
         .then((response: any) => {
           if (response.accessKey) {
             localStorage.setItem("token", response.accessKey.secretKey);
+            this.setWalletAsSignedIn();
             if (this.callbackFunctions["connect"])
               this.callbackFunctions["connect"](this);
           }
         });
     });
+  }
+
+  init() {
+    this.connect();
   }
 
   isConnected(): boolean {

@@ -5,6 +5,7 @@ import NarWallet from "./default/NarWallet";
 import NearWallet from "./default/NearWallet";
 import SenderWallet from "./default/SenderWallet";
 import NewCustomWalletOptions from "../types/CustomWalletOptions";
+import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
 class Wallets {
   private wallets: {
@@ -16,6 +17,12 @@ class Wallets {
     customWallets: { [name: string]: NewCustomWalletOptions }
   ) {
     this.generateWallets(wallets, customWallets);
+
+    const signedInWalletId = this.getSignedInWalletId();
+
+    if (signedInWalletId !== null) {
+      this.wallets[signedInWalletId].init();
+    }
   }
 
   private generateWallets(
@@ -43,6 +50,7 @@ class Wallets {
 
     for (const name in customWallets) {
       this.wallets[name] = new CustomWallet(
+        name,
         customWallets[name].name,
         customWallets[name].description,
         customWallets[name].icon,
@@ -53,24 +61,34 @@ class Wallets {
     }
   }
 
+  private getSignedInWalletId() {
+    return localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+  }
+
   public getWallet(name: string): IWallet {
     return this.wallets[name];
   }
 
   public isSignedIn() {
-    for (const wallet in this.wallets) {
-      if (this.wallets[wallet].isConnected()) return true;
-    }
-    return false;
+    // for (const wallet in this.wallets) {
+    //   if (this.wallets[wallet].isConnected()) return true;
+    // }
+    // return false;
+    return this.getSignedInWalletId() !== null;
   }
 
   public signOut() {
-    for (const wallet in this.wallets) {
-      if (this.wallets[wallet].isConnected()) {
-        this.wallets[wallet].disconnect();
-        break;
-      }
+    // for (const wallet in this.wallets) {
+    //   if (this.wallets[wallet].isConnected()) {
+    //     this.wallets[wallet].disconnect();
+    //     break;
+    //   }
+    // }
+    const signedInWalletId = this.getSignedInWalletId();
+    if (signedInWalletId !== null) {
+      this.wallets[signedInWalletId].disconnect();
     }
+    localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
   }
 }
 

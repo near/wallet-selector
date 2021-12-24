@@ -1,6 +1,8 @@
 import IWallet from "../interfaces/IWallet";
+import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
 export default abstract class BaseWallet implements IWallet {
+  protected id = "wallet";
   protected name = "Wallet";
   protected description = "A near wallet";
   protected icon = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
@@ -9,7 +11,8 @@ export default abstract class BaseWallet implements IWallet {
     [event: string]: (self: IWallet) => void;
   } = {};
 
-  constructor(name: string, description: string, icon: string) {
+  constructor(id: string, name: string, description: string, icon: string) {
+    this.id = id;
     this.name = name;
     this.description = description;
     this.icon = icon;
@@ -27,7 +30,12 @@ export default abstract class BaseWallet implements IWallet {
     return this.icon;
   }
 
+  setWalletAsSignedIn() {
+    localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, this.id);
+  }
+
   abstract walletSelected(): void;
+  abstract init(): void;
   abstract connect(): void;
   abstract disconnect(): void;
   abstract isConnected(): boolean;
