@@ -1,1 +1,1 @@
-# near-walletsender
+# near-walletselector
