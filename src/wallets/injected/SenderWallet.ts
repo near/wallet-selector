@@ -1,45 +1,46 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
+import EventHandler from "../../utils/EventHandler";
 
 export default class SenderWallet extends InjectedWallet implements ISenderWallet {
+  private readonly LOCALSTORAGE_SECRET_KEY_ID = "senderwallet-secretkey";
+
   constructor() {
     super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
   }
 
-  walletSelected(): void {
-    this.connect();
+  async walletSelected() {
+    await this.connect();
+    this.signIn();
   }
 
   async connect() {
-    const senderWallet = window["wallet"];
+    // window[this.injectedGlobal].init({ contractId: "" });
+    EventHandler.callEventHandler("connect");
+  }
 
-    senderWallet.init({ contractId: "" }).then(() => {
-      senderWallet
-        .requestSignIn({
-          contractId: "",
-        })
-        .then((response: any) => {
-          if (response.accessKey) {
-            localStorage.setItem("token", response.accessKey.secretKey);
-            this.setWalletAsSignedIn();
-            if (this.callbackFunctions["connect"]) this.callbackFunctions["connect"](this);
-          }
-        });
+  async signIn() {
+    const response = await window[this.injectedGlobal].requestSignIn({
+      contractId: "",
     });
+    if (response.accessKey) {
+      localStorage.setItem(this.LOCALSTORAGE_SECRET_KEY_ID, response.accessKey.secretKey);
+      this.setWalletAsSignedIn();
+      EventHandler.callEventHandler("signIn");
+    }
   }
 
   async init() {
-    const res = await super.init();
-    if (res) this.connect();
+    await super.init();
+    this.connect();
   }
 
-  isConnected(): boolean {
-    return localStorage.getItem("token") !== null;
+  async isConnected(): Promise<boolean> {
+    return localStorage.getItem(this.LOCALSTORAGE_SECRET_KEY_ID) !== null;
   }
 
   disconnect() {
-    const senderWallet = window["wallet"];
-
-    return senderWallet.signOut();
+    EventHandler.callEventHandler("disconnect");
+    return window[this.injectedGlobal].signOut();
   }
 }

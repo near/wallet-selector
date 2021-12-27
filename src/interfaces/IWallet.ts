@@ -5,10 +5,10 @@ export default interface IWallet {
   getIcon(): string;
 
   walletSelected(): void;
-  init(): void;
+  init(): Promise<void>;
   connect(): void;
   disconnect(): void;
-  isConnected(): boolean;
-  setWalletAsSignedIn(): void;
-  on(event: string, callback: (self: IWallet) => void): void;
+  isConnected(): Promise<boolean>;
+  setWalletAsSignedIn(): Promise<void>;
+  signIn(): Promise<void>;
 }

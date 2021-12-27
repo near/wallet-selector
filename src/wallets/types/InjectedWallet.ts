@@ -9,11 +9,9 @@ export default abstract class InjectedWallet extends BaseWallet {
     this.injectedGlobal = injectedGlobal;
   }
 
-  async init() {
+  async init(): Promise<void> {
     return new Promise((resolve) => {
-      window.onload = () => {
-        resolve(true);
-      };
+      (window.onload as any) = resolve;
     });
   }
 }

@@ -4,6 +4,7 @@ import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
+import EventHandler from "../../utils/EventHandler";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -47,7 +48,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     );
   }
 
-  walletSelected(): void {
+  async walletSelected() {
     modalHelper.openLedgerDerivationPathModal();
     modalHelper.hideSelectWalletOptionModal();
   }
@@ -64,8 +65,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       const isLastChunk = offset + CHUNK_SIZE >= allData.length;
       const response = await this.transport.send(this.CLA, this.SIGN_INS, isLastChunk ? 0x80 : 0, 0x0, chunk);
       if (isLastChunk) {
-        console.log(chunk);
-        console.log(bs58.encode(Buffer.from(response.subarray(0, -2))));
         return Buffer.from(response.subarray(0, -2));
       }
     }
@@ -84,23 +83,28 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     this.transport.setScrambleKey("NEAR");
 
-    this.transport.on("disconnect", (res) => {
+    this.transport.on("disconnect", (res: any) => {
       console.log(res);
-      if (this.callbackFunctions["disconnect"]) this.callbackFunctions["disconnect"](this);
+      EventHandler.callEventHandler("disconnect");
     });
 
     this.setWalletAsSignedIn();
 
-    if (this.callbackFunctions["connect"]) this.callbackFunctions["connect"](this);
+    EventHandler.callEventHandler("connect");
   }
 
-  init() {}
+  async init() {}
 
-  disconnect(): void {
+  async disconnect() {
     console.log("disconnect");
   }
-  isConnected(): boolean {
+
+  async isConnected(): Promise<boolean> {
     return false;
+  }
+
+  async signIn() {
+    EventHandler.callEventHandler("signIn");
   }
 
   async getPublicKey() {

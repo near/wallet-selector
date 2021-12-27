@@ -3,5 +3,5 @@ export default interface INearWalletSelector {
   hideModal(): void;
   isSignedIn(): boolean;
   signOut(): void;
-  init(): void;
+  on(event: string, callback: () => void): void;
 }

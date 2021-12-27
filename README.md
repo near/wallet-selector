@@ -25,7 +25,7 @@ const near = new NearWalletSelector({
  });
 ```
 
-Adding your custom wallet provider:
+Adding your custom wallet provider: (Work in progress)
 
 ```
 const near = new NearWalletSelector({
@@ -65,28 +65,19 @@ near.hideModal();
 Is signed in:
 
 ```
-near.wallets.isSignedIn();
+near.isSignedIn();
 ```
 
 Sign out:
 
 ```
-near.wallets.signOut();
+near.signOut();
 ```
 
-Get wallet information:
+Add event listeners (connect, disconnect, signIn)
 
 ```
-const wallet = near.wallets.getWallet("senderwallet");
-wallet.getName();
-wallet.getDescription();
-wallet.getIcon();
-```
-
-Add event listeners to specific wallets:
-
-```
-near.wallets.getWallet("senderwallet").on("connect", (walletObj) => {
+near.on("connect", (walletObj) => {
    // your code
 });
 ```

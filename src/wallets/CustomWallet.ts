@@ -34,23 +34,25 @@ export default class CustomWallet extends BaseWallet {
     this.isConnectedFunction = isConnectedFunction;
   }
 
-  walletSelected(): void {
+  async walletSelected() {
     this.connect();
   }
 
-  init() {
+  async init() {
     this.connect();
   }
 
-  connect() {
+  async connect() {
     this.onConnectFunction();
   }
 
-  disconnect(): void {
+  async disconnect() {
     this.onDisconnectFunction();
   }
 
-  isConnected(): boolean {
+  async isConnected(): Promise<boolean> {
     return this.isConnectedFunction();
   }
+
+  async signIn() {}
 }

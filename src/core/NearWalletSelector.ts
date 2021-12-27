@@ -3,6 +3,7 @@ import WalletController from "../controllers/WalletController";
 import modalHelper from "../modal/ModalHelper";
 import State from "../state/State";
 import INearWalletSelector from "../interfaces/INearWalletSelector";
+import EventList from "../types/EventList";
 
 export default class NearWalletSelector implements INearWalletSelector {
   private walletController: WalletController;
@@ -18,6 +19,10 @@ export default class NearWalletSelector implements INearWalletSelector {
     this.walletController = new WalletController();
 
     modalHelper.createModal();
+
+    if (State.signedInWalletId !== null) {
+      State.walletProviders[State.signedInWalletId].init();
+    }
   }
 
   public showModal() {
@@ -36,7 +41,7 @@ export default class NearWalletSelector implements INearWalletSelector {
     this.walletController.signOut();
   }
 
-  public async init() {
-    return this.walletController.init();
+  public on(event: EventList, callback: () => void) {
+    this.walletController.on(event, callback);
   }
 }

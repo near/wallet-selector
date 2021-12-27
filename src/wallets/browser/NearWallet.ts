@@ -1,23 +1,18 @@
 import BrowserWallet from "../types/BrowserWallet";
 import { keyStores, connect, WalletConnection } from "near-api-js";
 import INearWallet from "../../interfaces/INearWallet";
+import EventHandler from "../../utils/EventHandler";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
   constructor() {
-    super(
-      "nearwallet",
-      "Near Wallet",
-      "Near Wallet",
-      "https://cryptologos.cc/logos/near-protocol-near-logo.png"
-    );
+    super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
   }
 
-  walletSelected(): void {
-    this.connect().then(() => {
-      this.signIn();
-    });
+  async walletSelected() {
+    await this.connect();
+    this.signIn();
   }
 
   async connect() {
@@ -37,31 +32,31 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
 
     this.wallet = new WalletConnection(near, "NEAR APP");
 
-    if (this.callbackFunctions["connect"])
-      this.callbackFunctions["connect"](this);
+    EventHandler.callEventHandler("connect");
   }
 
-  init() {
+  async init() {
     this.connect();
   }
 
-  signIn() {
+  async signIn() {
     this.wallet
       .requestSignIn(
         "amirsaran.testnet" // contract requesting access
       )
       .then(() => {
         this.setWalletAsSignedIn();
+        EventHandler.callEventHandler("signIn");
       });
   }
 
-  disconnect(): void {
+  async disconnect() {
     if (!this.wallet) return;
     this.wallet.signOut();
+    EventHandler.callEventHandler("disconnect");
   }
 
-  isConnected(): boolean {
-    console.log(this.wallet);
+  async isConnected(): Promise<boolean> {
     if (!this.wallet) return false;
     return this.wallet.isSignedIn();
   }

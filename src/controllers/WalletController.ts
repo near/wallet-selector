@@ -5,6 +5,8 @@ import modalHelper from "../modal/ModalHelper";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
+import EventHandler from "../utils/EventHandler";
+import EventList from "../types/EventList";
 
 class WalletController {
   constructor() {
@@ -65,10 +67,8 @@ class WalletController {
     State.signedInWalletId = null;
   }
 
-  public async init() {
-    if (State.signedInWalletId !== null) {
-      State.walletProviders[State.signedInWalletId].init();
-    }
+  on(event: EventList, callback: () => void) {
+    EventHandler.addEventHandler(event, callback);
   }
 }
 
