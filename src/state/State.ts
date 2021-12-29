@@ -7,6 +7,10 @@ const State: State = {
     networkId: "testnet",
     wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
     customWallets: {},
+    walletSelectorUI: {
+      description: "",
+      explanation: "",
+    },
   },
   walletProviders: {},
   isSignedIn: localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY) !== null,
