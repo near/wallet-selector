@@ -102,9 +102,8 @@ export default `
     justify-content: space-between;
  }
  .derivation-paths--actions button {
-    padding: 8px;
-    font-weight: 600;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 16px;
     cursor: pointer;
  }
  
@@ -115,7 +114,15 @@ export default `
  }
     
 .derivation-paths--actions .dismiss {
-    border: 0.5px solid black;
+    border: 0.5px solid #bfbfbf;
+}
+
+.derivation-paths--actions .connect:hover {
+    background-color: rgb(89 166 255);
+ }
+ 
+.derivation-paths--actions .dismiss:hover {
+    background-color: #ebebeb;
 }
 
 .path-option-highlighted {
@@ -128,6 +135,27 @@ export default `
     color: inherit;
     margin-top: 0.5rem;
     color: #e2504a;
+}
+.info {
+    margin-top: 20px;
+}
+
+.info span {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 200ms ease-out;
+}
+
+
+.info .info-description {
+  max-height: 0px;
+  transition: all 300ms ease-out;
+  overflow: hidden;
+}
+
+.info .info-description p {
+    font-size: 14px;
 }
 
 .input-error {
@@ -151,6 +179,32 @@ export default `
 
 .Modal-dark-theme .Modal-content .Modal-option-list li:hover {
   background-color: #313131;
+}
+
+.Modal-dark-theme .Modal-content .info span:hover {
+    color: #a2a2a2;
+    transition: all 200ms ease-in;
+}
+
+@keyframes inAnimation {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes outAnimation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
