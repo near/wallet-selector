@@ -7,6 +7,10 @@ type Options = {
     [name: string]: CustomWalletOptions;
   };
   theme: "dark" | "light" | null;
+  walletSelectorUI: {
+    description: string;
+    explanation: string;
+  };
 };
 
 export default Options;

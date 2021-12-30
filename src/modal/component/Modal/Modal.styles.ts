@@ -11,6 +11,10 @@ export default `
   align-items: center;
 }
 
+.Modal * {
+box-sizing: content-box;
+}
+
 .Modal .Modal-content {
   max-width: 700px;
   max-height: 70vh;
@@ -20,6 +24,11 @@ export default `
   border-radius: 16px;
   padding: 1.5em;
   overflow-y: auto;
+}
+
+.Modal-option-list li span,
+.Modal .Modal-content p {
+    font-size: 16px;
 }
 
 .Modal-header {
