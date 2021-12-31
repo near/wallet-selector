@@ -10,6 +10,7 @@ function Modal(): JSX.Element {
   const [ledgerWalletError, setLedgerWalletError] = useState("");
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
+  const defaultDescription = "Please select a wallet to connect to this dapp:";
 
   const mountedStyle = {
     animation: "inAnimation 350ms ease-in",
@@ -68,7 +69,7 @@ function Modal(): JSX.Element {
       <div className={`Modal ${getThemeClass(State.options.theme)}`} onClick={handleCloseModal}>
         <div className="Modal-content">
           <div className="Modal-body Modal-select-wallet-option">
-            <p>Please select a wallet to connect to this dapp:</p>
+            <p>{State.options.walletSelectorUI.description || defaultDescription}</p>
             <ul className="Modal-option-list">
               {State.options.wallets.map((wallet: string) => {
                 if (!State.walletProviders[wallet] || !State.walletProviders[wallet].getShowWallet()) return null;
@@ -144,22 +145,20 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          <div className="info">
-            <span
-              onClick={() => {
-                setWalletInfoVisible(!walletInfoVisible);
-              }}
-            >
-              What is a Wallet?
-            </span>
-            <div className="info-description" style={walletInfoVisible ? mountedStyle : unmountedStyle}>
-              <p>
-                Wallets are used to send, receive, and store digital assets. There are different types of wallets. They
-                can be an extension added to your browser, a hardware device plugged into your computer, web-based, or
-                as an app on your phone.
-              </p>
+          {State.options.walletSelectorUI.explanation && (
+            <div className="info">
+              <span
+                onClick={() => {
+                  setWalletInfoVisible(!walletInfoVisible);
+                }}
+              >
+                What is a Wallet?
+              </span>
+              <div className="info-description" style={walletInfoVisible ? mountedStyle : unmountedStyle}>
+                <p>{State.options.walletSelectorUI.explanation}</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
