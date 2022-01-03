@@ -29,10 +29,20 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       EventHandler.callEventHandler("signIn");
     }
   }
-
   async init() {
     await super.init();
     this.connect();
+  }
+
+  async getWallet(): Promise<any> {
+      return true
+  }
+  async getContract(): Promise<any> {
+      return true   
+  }
+  // @ts-ignore
+  async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
+      return true
   }
 
   async isConnected(): Promise<boolean> {

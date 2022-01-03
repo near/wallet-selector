@@ -5,6 +5,9 @@ export default interface IWallet {
   getIcon(): string;
 
   walletSelected(): void;
+  getWallet(): Promise<any>
+  getContract(): Promise<void>
+  setContract(viewMethods: any, changeMethods: any): Promise<boolean>
   init(): Promise<void>;
   connect(): void;
   disconnect(): void;

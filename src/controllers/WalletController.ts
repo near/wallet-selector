@@ -1,12 +1,12 @@
 import CustomWallet from "../wallets/CustomWallet";
 import State from "../state/State";
-import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import modalHelper from "../modal/ModalHelper";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import EventHandler from "../utils/EventHandler";
 import EventList from "../types/EventList";
+
 
 class WalletController {
   constructor() {
@@ -62,7 +62,7 @@ class WalletController {
     if (State.signedInWalletId !== null) {
       State.walletProviders[State.signedInWalletId].disconnect();
     }
-    localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+    localStorage.clear()
     State.isSignedIn = false;
     State.signedInWalletId = null;
   }
