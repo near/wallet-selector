@@ -112,6 +112,18 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return false;
   }
 
+  async getWallet(): Promise<any>{
+    return true;
+  }
+
+  async getContract(): Promise<any> {
+      return true   
+  }
+  // @ts-ignore
+  async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
+      return true
+  }
+
   async signIn() {
     EventHandler.callEventHandler("signIn");
   }

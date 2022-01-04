@@ -48,6 +48,9 @@ export default abstract class BaseWallet implements IWallet {
   }
 
   abstract walletSelected(): Promise<void>;
+  abstract getWallet(): Promise<any>;
+  abstract getContract(): Promise<any>;
+  abstract setContract(viewMethods: any, changeMethods: any): Promise<boolean>;
   abstract init(): Promise<void>;
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;

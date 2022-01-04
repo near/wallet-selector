@@ -1,4 +1,4 @@
-import { providers, transactions, utils, connect, keyStores } from "near-api-js";
+import { Contract, providers, transactions, utils, connect, keyStores } from "near-api-js";
 import State from "../state/State";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import BN from "bn.js";
@@ -17,7 +17,7 @@ async function createFullAccessKey(accountId: string, publicKey: string) {
   return res;
 }
 
-export default async function LedgerContract(
+async function LedgerContract(
   sender: string,
   contractAddress: string,
   contractMethod: string,
@@ -90,3 +90,12 @@ export default async function LedgerContract(
 
   return res;
 }
+
+const NearContract = (account: any, contractId: any, views: any, changes: any) => {
+  return new Contract(account, contractId, {
+    viewMethods: views,
+    changeMethods: changes,
+  });
+};
+
+export default NearContract;

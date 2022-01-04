@@ -29,6 +29,29 @@ export default class NearWalletSelector implements INearWalletSelector {
     this.walletController.showModal();
   }
 
+
+  public async getContract(){
+    if (State.signedInWalletId !== null) {
+      return await State.walletProviders[State.signedInWalletId].getContract();
+    }
+    return null
+  }
+  public async setContract(viewMethods: any, changeMethods: any){
+    
+    if (State.signedInWalletId !== null) {
+      await State.walletProviders[State.signedInWalletId].setContract(viewMethods, changeMethods);
+      return true
+    }
+    return false
+  }
+
+  public async getWallet(){
+    if (State.signedInWalletId !== null)
+      return  State.walletProviders[State.signedInWalletId].getWallet()
+    return null
+  }
+  
+
   public hideModal() {
     this.walletController.hideModal();
   }
@@ -40,6 +63,12 @@ export default class NearWalletSelector implements INearWalletSelector {
   public signOut() {
     this.walletController.signOut();
   }
+  
+  public connected() {
+    if (State.signedInWalletId !== null)
+      window["walletConnection"] = State.walletProviders[State.signedInWalletId].getWallet()
+  }
+
 
   public on(event: EventList, callback: () => void) {
     this.walletController.on(event, callback);
