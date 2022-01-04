@@ -49,7 +49,10 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
       });
   }
   async getWallet(): Promise<any> {
-      return this.wallet
+      return {
+        wallet: this.wallet,
+        id: this.id
+      }
   }
   async getContract(): Promise<any> {
       return this.contract      
@@ -67,7 +70,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     return true
   }
   async connected() {
-    if (!this.wallet) return;
+    if(!this.wallet) return;
     EventHandler.callEventHandler("connected");
   }
   async disconnect() {

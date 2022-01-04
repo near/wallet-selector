@@ -13,15 +13,13 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     await this.connect();
     this.signIn();
   }
-
   async connect() {
-    // window[this.injectedGlobal].init({ contractId: "" });
+    window[this.injectedGlobal].init({ contractId: "gent.testnet" });
     EventHandler.callEventHandler("connect");
   }
-
   async signIn() {
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: "",
+      contractId: "gent.testnet",
     });
     if (response.accessKey) {
       localStorage.setItem(this.LOCALSTORAGE_SECRET_KEY_ID, response.accessKey.secretKey);
@@ -33,9 +31,11 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     await super.init();
     this.connect();
   }
-
   async getWallet(): Promise<any> {
-      return true
+      return {
+            wallet: window[this.injectedGlobal],
+            id: this.id
+      }
   }
   async getContract(): Promise<any> {
       return true   
