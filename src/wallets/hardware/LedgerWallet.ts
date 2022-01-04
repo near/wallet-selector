@@ -5,6 +5,7 @@ import bs58 from "bs58";
 import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
+import LedgerContract from "../../contracts/SmartContract";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -13,6 +14,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
   private debugMode = false;
   private derivationPath = "44'/397'/0'/0'/0'";
+  private publicKey: Uint8Array;
 
   constructor() {
     super(
@@ -27,6 +29,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
         console.log(log);
       }
     });
+  }
+
+  getPublicKey() {
+    return this.publicKey;
   }
 
   setDerivationPath(path: string) {
@@ -53,7 +59,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     modalHelper.hideSelectWalletOptionModal();
   }
 
-  async sign(transactionData: string) {
+  async sign(transactionData: any) {
     if (!this.transport) return;
     const txData = Buffer.from(transactionData);
     // 128 - 5 service bytes
@@ -89,7 +95,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     });
 
     this.setWalletAsSignedIn();
-
+    const pk = await this.generatePublicKey();
+    this.publicKey = pk;
+    const res = await LedgerContract("amirsaran.testnet", "gent.testnet", "getMessages", []);
+    console.log(res);
     EventHandler.callEventHandler("connect");
   }
 
@@ -107,7 +116,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     EventHandler.callEventHandler("signIn");
   }
 
-  async getPublicKey() {
+  async generatePublicKey() {
     if (!this.transport) return;
 
     const response = await this.transport.send(
@@ -118,6 +127,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       this.bip32PathToBytes(this.derivationPath)
     );
 
-    return bs58.encode(Buffer.from(response.subarray(0, -2)));
+    return response.subarray(0, -2);
+  }
+
+  encodePublicKey(publicKey: Uint8Array) {
+    return bs58.encode(Buffer.from(publicKey));
   }
 }
