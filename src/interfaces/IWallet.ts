@@ -3,6 +3,7 @@ export default interface IWallet {
   getName(): string;
   getDescription(): string;
   getIcon(): string;
+  getShowWallet(): boolean;
 
   walletSelected(): void;
   getWallet(): Promise<any>
