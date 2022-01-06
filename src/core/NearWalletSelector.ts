@@ -4,6 +4,7 @@ import modalHelper from "../modal/ModalHelper";
 import State from "../state/State";
 import INearWalletSelector from "../interfaces/INearWalletSelector";
 import EventList from "../types/EventList";
+import SmartContract from "../contracts/SmartContract";
 
 export default class NearWalletSelector implements INearWalletSelector {
   private walletController: WalletController;
@@ -29,28 +30,24 @@ export default class NearWalletSelector implements INearWalletSelector {
     this.walletController.showModal();
   }
 
-
-  public async getContract(){
+  public async getContract() {
     if (State.signedInWalletId !== null) {
       return await State.walletProviders[State.signedInWalletId].getContract();
     }
-    return null
+    return null;
   }
-  public async setContract(viewMethods: any, changeMethods: any){
-    
+  public async setContract(viewMethods: any, changeMethods: any) {
     if (State.signedInWalletId !== null) {
       await State.walletProviders[State.signedInWalletId].setContract(viewMethods, changeMethods);
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 
-  public async getWallet(){
-    if (State.signedInWalletId !== null)
-      return  State.walletProviders[State.signedInWalletId].getWallet()
-    return null
+  public async getWallet() {
+    if (State.signedInWalletId !== null) return State.walletProviders[State.signedInWalletId].getWallet();
+    return null;
   }
-  
 
   public hideModal() {
     this.walletController.hideModal();
@@ -63,14 +60,26 @@ export default class NearWalletSelector implements INearWalletSelector {
   public signOut() {
     this.walletController.signOut();
   }
-  
+
   public connected() {
     if (State.signedInWalletId !== null)
-      window["walletConnection"] = State.walletProviders[State.signedInWalletId].getWallet()
+      window["walletConnection"] = State.walletProviders[State.signedInWalletId].getWallet();
   }
-
 
   public on(event: EventList, callback: () => void) {
     this.walletController.on(event, callback);
+  }
+
+  public async createContract(
+    contractAddress: string,
+    viewMethods: string[],
+    changeMethods: string[]
+  ): Promise<any | null> {
+    const smartContract = new SmartContract(contractAddress, viewMethods, changeMethods);
+    State.contract = smartContract;
+    if (State.signedInWalletId) {
+      return State.walletProviders[State.signedInWalletId].createContract(contractAddress, viewMethods, changeMethods);
+    }
+    return smartContract;
   }
 }

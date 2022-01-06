@@ -1,13 +1,12 @@
 import BrowserWallet from "../types/BrowserWallet";
 import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
-import NearContract from "../../contracts/SmartContract";
 import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
-  private contract: Contract
+  private contract: Contract;
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
   }
@@ -18,17 +17,16 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async connect() {
+    // get network configuration values from config.js
+    // based on the network ID we pass to getConfig()
+    const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
 
-  // get network configuration values from config.js
-  // based on the network ID we pass to getConfig()
-  const nearConfig = getConfig(process.env.NODE_ENV || 'testnet');
+    // create a keyStore for signing transactions using the user's key
+    // which is located in the browser local storage after user logs in
+    const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
-  // create a keyStore for signing transactions using the user's key
-  // which is located in the browser local storage after user logs in
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-
-  // Initializing connection to the NEAR testnet
-  const near = await connect({ keyStore, ...nearConfig });
+    // Initializing connection to the NEAR testnet
+    const near = await connect({ keyStore, ...nearConfig, headers: {} });
     this.wallet = new WalletConnection(near, "near_app");
 
     EventHandler.callEventHandler("connect");
@@ -49,22 +47,16 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
       });
   }
   async getWallet(): Promise<any> {
-      return this.wallet
+    return this.wallet;
   }
   async getContract(): Promise<any> {
-      return this.contract      
+    return this.contract;
   }
   async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
+    console.log(viewMethods, changeMethods);
+    // this.contract = NearContract(this.wallet.account(), "gent.testnet", viewMethods, changeMethods);
 
-    this.contract = NearContract(
-      this.wallet.account(),
-      'gent.testnet',
-      viewMethods,
-      changeMethods
-    );
-
-
-    return true
+    return true;
   }
   async connected() {
     if (!this.wallet) return;
@@ -79,5 +71,17 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   async isConnected(): Promise<boolean> {
     if (!this.wallet) return false;
     return this.wallet.isSignedIn();
+  }
+
+  async createContract(contractAddress: string, viewMethods: string[], changeMethods: string[]): Promise<void> {
+    this.contract = new Contract(this.wallet.account(), contractAddress, {
+      viewMethods,
+      changeMethods,
+    });
+  }
+
+  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+    console.log(this.contract, method, args, gas, deposit);
+    return this.contract[method](args);
   }
 }

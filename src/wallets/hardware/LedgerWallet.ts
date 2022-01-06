@@ -5,7 +5,9 @@ import bs58 from "bs58";
 import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
-import LedgerContract from "../../contracts/SmartContract";
+import State from "../../state/State";
+import { providers, transactions, utils, connect, keyStores } from "near-api-js";
+import BN from "bn.js";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -15,6 +17,13 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   private debugMode = false;
   private derivationPath = "44'/397'/0'/0'/0'";
   private publicKey: Uint8Array;
+
+  // @ts-ignore
+  private contractAddress: string;
+  // @ts-ignore
+  private viewMethods: string[] = [];
+  // @ts-ignore
+  private changeMethods: string[] = [];
 
   constructor() {
     super(
@@ -59,7 +68,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     modalHelper.hideSelectWalletOptionModal();
   }
 
-  async sign(transactionData: any) {
+  private async sign(transactionData: any) {
     if (!this.transport) return;
     const txData = Buffer.from(transactionData);
     // 128 - 5 service bytes
@@ -97,8 +106,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     this.setWalletAsSignedIn();
     const pk = await this.generatePublicKey();
     this.publicKey = pk;
-    const res = await LedgerContract("amirsaran.testnet", "gent.testnet", "getMessages", []);
-    console.log(res);
     EventHandler.callEventHandler("connect");
   }
 
@@ -112,16 +119,16 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return false;
   }
 
-  async getWallet(): Promise<any>{
+  async getWallet(): Promise<any> {
     return true;
   }
 
   async getContract(): Promise<any> {
-      return true   
+    return true;
   }
   // @ts-ignore
   async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-      return true
+    return true;
   }
 
   async signIn() {
@@ -144,5 +151,98 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
   encodePublicKey(publicKey: Uint8Array) {
     return bs58.encode(Buffer.from(publicKey));
+  }
+
+  private async createFullAccessKey(accountId: string, publicKey: string) {
+    const config = {
+      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+      networkId: "testnet",
+      nodeUrl: "https://rpc.testnet.near.org",
+      headers: {},
+    };
+
+    const near = await connect(config);
+    const account = await near.account(accountId);
+    const res = await account.addKey(publicKey);
+    return res;
+  }
+
+  async createContract(contractAddress: string, viewMethods: string[], changeMethods: string[]): Promise<void> {
+    this.contractAddress = contractAddress;
+    this.viewMethods = viewMethods;
+    this.changeMethods = changeMethods;
+  }
+
+  async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
+    if (!State.signedInWalletId) return;
+
+    const publicKey = this.getPublicKey();
+
+    const bnGas = new BN(gas.toString());
+    const bnDeposit = new BN(deposit.toString());
+
+    const publicKeyString = "ed25519:" + this.encodePublicKey(publicKey);
+
+    const provider = new providers.JsonRpcProvider(`https://rpc.${State.options.networkId}.near.org`);
+
+    // Tries to create a full access key for the account, if it fails, it means the account already has a full access key
+    await this.createFullAccessKey("amirsaran.testnet", publicKeyString).catch((err) => {
+      console.log(err);
+    });
+
+    const response: any = await provider
+      .query({
+        request_type: "view_access_key",
+        finality: "optimistic",
+        account_id: "amirsaran.testnet",
+        public_key: publicKeyString,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    if (!response) return;
+
+    const blockHash = response.block_hash;
+    const recentBlockHash = utils.serialize.base_decode(blockHash);
+    const nonce = response.nonce + 1;
+
+    const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
+
+    const pk = keyPair.getPublicKey();
+    pk.data = publicKey;
+
+    const actions = [transactions.functionCall(method, args, bnGas, bnDeposit)];
+
+    const transaction = transactions.createTransaction(
+      "amirsaran.testnet",
+      pk,
+      this.contractAddress,
+      nonce,
+      actions,
+      recentBlockHash
+    );
+
+    const serializedTx = utils.serialize.serialize(transactions.SCHEMA, transaction);
+
+    const signature = await this.sign(serializedTx);
+
+    const signedTransaction = new transactions.SignedTransaction({
+      transaction,
+      signature: new transactions.Signature({
+        keyType: transaction.publicKey.keyType,
+        data: signature,
+      }),
+    });
+
+    const signedSerializedTx = signedTransaction.encode();
+
+    const base64Response: any = await provider.sendJsonRpc("broadcast_tx_commit", [
+      Buffer.from(signedSerializedTx).toString("base64"),
+    ]);
+
+    const res = JSON.parse(Buffer.from(base64Response.status.SuccessValue, "base64").toString());
+
+    return res;
   }
 }

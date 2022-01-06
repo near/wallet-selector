@@ -1,9 +1,10 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
+import { Contract } from "near-api-js";
 
 export default class SenderWallet extends InjectedWallet implements ISenderWallet {
-  private readonly LOCALSTORAGE_SECRET_KEY_ID = "senderwallet-secretkey";
+  private contract: any;
 
   constructor() {
     super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
@@ -11,11 +12,18 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
 
   async walletSelected() {
     await this.connect();
-    this.signIn();
+    await this.signIn();
   }
 
   async connect() {
-    // window[this.injectedGlobal].init({ contractId: "" });
+    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
+      console.log("newAccountId: ", newAccountId);
+
+      location.reload();
+    });
+    window[this.injectedGlobal].init({ contractId: "gent.testnet" }).then((res: any) => {
+      console.log(res);
+    });
     EventHandler.callEventHandler("connect");
   }
 
@@ -23,8 +31,9 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     const response = await window[this.injectedGlobal].requestSignIn({
       contractId: "",
     });
+    console.log(response);
     if (response.accessKey) {
-      localStorage.setItem(this.LOCALSTORAGE_SECRET_KEY_ID, response.accessKey.secretKey);
+      // localStorage.setItem(this.LOCALSTORAGE_SECRET_KEY_ID, response.accessKey.secretKey);
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     }
@@ -35,22 +44,36 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
   }
 
   async getWallet(): Promise<any> {
-      return true
+    return true;
   }
   async getContract(): Promise<any> {
-      return true   
+    return true;
   }
   // @ts-ignore
   async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-      return true
+    return true;
   }
 
   async isConnected(): Promise<boolean> {
-    return localStorage.getItem(this.LOCALSTORAGE_SECRET_KEY_ID) !== null;
+    return window[this.injectedGlobal].isSignedIn();
   }
 
   disconnect() {
     EventHandler.callEventHandler("disconnect");
     return window[this.injectedGlobal].signOut();
+  }
+
+  async createContract(contractAddress: string, viewMethods: string[], changeMethods: string[]): Promise<void> {
+    console.log(window[this.injectedGlobal]);
+    this.contract = new Contract(window[this.injectedGlobal].getAccountId(), contractAddress, {
+      viewMethods,
+      changeMethods,
+    });
+    console.log(this.contract);
+  }
+
+  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+    console.log(this.contract, method, args, gas, deposit);
+    return this.contract[method](args);
   }
 }

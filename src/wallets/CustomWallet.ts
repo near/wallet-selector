@@ -51,14 +51,14 @@ export default class CustomWallet extends BaseWallet {
   }
 
   async getWallet(): Promise<any> {
-      return null
+    return null;
   }
   async getContract(): Promise<any> {
-      return true   
+    return true;
   }
   // @ts-ignore
   async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-      return true
+    return true;
   }
 
   async isConnected(): Promise<boolean> {
@@ -66,4 +66,16 @@ export default class CustomWallet extends BaseWallet {
   }
 
   async signIn() {}
+
+  async createContract(contractAddress: string, viewMethods: string[], changeMethods: string[]): Promise<any> {
+    console.log(contractAddress, viewMethods, changeMethods);
+    // return new Contract(account, contractId, {
+    //       viewMethods: views,
+    //       changeMethods: changes,
+    //     });
+  }
+
+  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+    console.log(method, args, gas, deposit);
+  }
 }
