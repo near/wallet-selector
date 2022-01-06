@@ -1,6 +1,6 @@
 import BrowserWallet from "../types/BrowserWallet";
 import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
-import NearContract from "../../contracts/SmartContract";
+import SmartContract from "../../contracts/SmartContract";
 import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
@@ -8,6 +8,7 @@ import EventHandler from "../../utils/EventHandler";
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
   private contract: Contract
+  
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
   }
@@ -55,11 +56,14 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
       }
   }
   async getContract(): Promise<any> {
-      return this.contract      
+      return {
+        contract: this.contract,
+        account: this.wallet.account()
+      }      
   }
   async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
 
-    this.contract = NearContract(
+    this.contract = SmartContract.NearContract(
       this.wallet.account(),
       'gent.testnet',
       viewMethods,

@@ -3,6 +3,7 @@ import State from "../state/State";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import BN from "bn.js";
 
+// @ts-ignore
 async function createFullAccessKey(accountId: string, publicKey: string) {
   const config = {
     keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -17,6 +18,7 @@ async function createFullAccessKey(accountId: string, publicKey: string) {
   return res;
 }
 
+// @ts-ignore
 async function LedgerContract(
   sender: string,
   contractAddress: string,
@@ -26,6 +28,7 @@ async function LedgerContract(
   deposit: string = "0"
 ) {
   if (!State.signedInWalletId) return;
+  
   const walletProvider = State.walletProviders[State.signedInWalletId] as LedgerWallet;
 
   const publicKey = walletProvider.getPublicKey();
@@ -98,4 +101,4 @@ const NearContract = (account: any, contractId: any, views: any, changes: any) =
   });
 };
 
-export default NearContract;
+export default {NearContract, LedgerContract};

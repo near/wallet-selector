@@ -5,7 +5,7 @@ import bs58 from "bs58";
 import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
-import LedgerContract from "../../contracts/SmartContract";
+import SmartContract from "../../contracts/SmartContract";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -97,7 +97,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     this.setWalletAsSignedIn();
     const pk = await this.generatePublicKey();
     this.publicKey = pk;
-    const res = await LedgerContract("amirsaran.testnet", "gent.testnet", "getMessages", []);
+    const res = await SmartContract.LedgerContract("amirsaran.testnet", "gent.testnet", "getMessages", []);
     console.log(res);
     EventHandler.callEventHandler("connect");
   }
@@ -113,7 +113,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async getWallet(): Promise<any>{
-    return true;
+    return {
+       wallet: true,
+       id: this.id
+    }
   }
 
   async getContract(): Promise<any> {
