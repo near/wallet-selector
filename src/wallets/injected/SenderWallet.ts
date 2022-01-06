@@ -34,6 +34,7 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     }
+    location.reload();
   }
   async init() {
     await super.init();
