@@ -1,15 +1,30 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
+import modalHelper from "../../modal/ModalHelper";
 
-export default class SenderWallet extends InjectedWallet implements ISenderWallet {
+export default class SenderWallet
+  extends InjectedWallet
+  implements ISenderWallet
+{
   private readonly LOCALSTORAGE_SECRET_KEY_ID = "senderwallet-secretkey";
 
   constructor() {
-    super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
+    super(
+      "senderwallet",
+      "Sender Wallet",
+      "Sender Wallet",
+      "https://senderwallet.io/logo.png",
+      "wallet"
+    );
   }
 
   async walletSelected() {
+    if (!window[this.injectedGlobal]) {
+      modalHelper.hideSelectWalletOptionModal();
+      modalHelper.openSenderWalletNotInstalledMessage();
+      return;
+    }
     await this.connect();
     this.signIn();
   }
@@ -24,7 +39,10 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       contractId: "",
     });
     if (response.accessKey) {
-      localStorage.setItem(this.LOCALSTORAGE_SECRET_KEY_ID, response.accessKey.secretKey);
+      localStorage.setItem(
+        this.LOCALSTORAGE_SECRET_KEY_ID,
+        response.accessKey.secretKey
+      );
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     }

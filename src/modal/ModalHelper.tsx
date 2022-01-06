@@ -15,6 +15,7 @@ const modalHelper = {
   },
   showModal() {
     this.hideLedgerDerivationPathModal();
+    this.hideSenderWalletNotInstalledMessage();
     this.openSelectWalletOptionModal();
     const modal = document.getElementById(MODAL_ELEMENT_ID);
     if (modal) modal.style.display = "block";
@@ -58,6 +59,26 @@ const modalHelper = {
       ".Modal-select-wallet-option"
     );
     if (selectWalletOptionModal) selectWalletOptionModal.style.display = "none";
+  },
+
+  openSenderWalletNotInstalledMessage() {
+    const modal = document.getElementById(MODAL_ELEMENT_ID);
+    if (!modal) return;
+    const senderWalletNotInstalled: HTMLElement | null = modal.querySelector(
+      ".Modal-wallet-not-installed"
+    );
+    if (senderWalletNotInstalled)
+      senderWalletNotInstalled.style.display = "block";
+  },
+
+  hideSenderWalletNotInstalledMessage() {
+    const modal = document.getElementById(MODAL_ELEMENT_ID);
+    if (!modal) return;
+    const senderWalletNotInstalled: HTMLElement | null = modal.querySelector(
+      ".Modal-wallet-not-installed"
+    );
+    if (senderWalletNotInstalled)
+      senderWalletNotInstalled.style.display = "none";
   },
 };
 
