@@ -88,7 +88,7 @@ box-sizing: content-box;
     align-items: center;
     margin-bottom: 1rem;
 }
- button, input {
+.Modal-body button, .Modal-body input {
     background: inherit;
     font-size: 0.889em;
     font-family: inherit;
