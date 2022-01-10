@@ -8,6 +8,8 @@ export default abstract class BaseWallet implements IWallet {
   protected description = "A near wallet";
   protected icon = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
 
+  protected showWallet = true;
+
   constructor(id: string, name: string, description: string, icon: string) {
     this.id = id;
     this.name = name;
@@ -31,6 +33,14 @@ export default abstract class BaseWallet implements IWallet {
     return this.icon;
   }
 
+  getShowWallet(): boolean {
+    return this.showWallet;
+  }
+
+  setShowWallet(showWallet: boolean) {
+    this.showWallet = showWallet;
+  }
+
   async setWalletAsSignedIn() {
     localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, this.id);
     State.isSignedIn = true;
@@ -38,6 +48,9 @@ export default abstract class BaseWallet implements IWallet {
   }
 
   abstract walletSelected(): Promise<void>;
+  abstract getWallet(): Promise<any>;
+  abstract getContract(): Promise<any>;
+  abstract setContract(viewMethods: any, changeMethods: any): Promise<boolean>;
   abstract init(): Promise<void>;
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
