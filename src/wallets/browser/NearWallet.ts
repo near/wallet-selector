@@ -3,16 +3,19 @@ import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
 import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
+import State from "../../state/State";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
   private contract: Contract;
+
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
+
+    this.connect();
   }
 
   async walletSelected() {
-    await this.connect();
     this.signIn();
   }
 
@@ -46,22 +49,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
         EventHandler.callEventHandler("signIn");
       });
   }
-  async getWallet(): Promise<any> {
-    return this.wallet;
-  }
-  async getContract(): Promise<any> {
-    return this.contract;
-  }
-  async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-    console.log(viewMethods, changeMethods);
-    // this.contract = NearContract(this.wallet.account(), "gent.testnet", viewMethods, changeMethods);
 
-    return true;
-  }
-  async connected() {
-    if (!this.wallet) return;
-    EventHandler.callEventHandler("connected");
-  }
   async disconnect() {
     if (!this.wallet) return;
     this.wallet.signOut();
@@ -73,14 +61,13 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     return this.wallet.isSignedIn();
   }
 
-  async createContract(contractAddress: string, viewMethods: string[], changeMethods: string[]): Promise<void> {
-    this.contract = new Contract(this.wallet.account(), contractAddress, {
-      viewMethods,
-      changeMethods,
-    });
-  }
-
   async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+    if (!this.contract) {
+      this.contract = new Contract(this.wallet.account(), State.options.contract.address, {
+        viewMethods: State.options.contract.viewMethods,
+        changeMethods: State.options.contract.changeMethods,
+      });
+    }
     console.log(this.contract, method, args, gas, deposit);
     return this.contract[method](args);
   }

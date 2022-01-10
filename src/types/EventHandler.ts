@@ -5,7 +5,6 @@ type EventHandler = {
     connect: () => void;
     disconnect: () => void;
     signIn: () => void;
-    connected: () => void;
   };
   addEventHandler(event: EventList, callback: () => void): void;
   callEventHandler(event: EventList): void;

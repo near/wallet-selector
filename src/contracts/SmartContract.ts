@@ -24,8 +24,9 @@ export default class SmartContract {
   }
 
   async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
-    console.log("callContract", method, args);
-    if (!State.signedInWalletId) return;
+    if (!State.signedInWalletId) {
+      return State.walletProviders["nearwallet"].callContract(method, args, gas, deposit);
+    }
     return State.walletProviders[State.signedInWalletId].callContract(method, args, gas, deposit);
   }
 }

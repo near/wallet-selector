@@ -6,7 +6,6 @@ const Event: EventHandler = {
     connect: () => {},
     disconnect: () => {},
     signIn: () => {},
-    connected: () => {}
   },
   addEventHandler(event: EventList, callback: () => void) {
     this.eventHandlers[event] = callback;
