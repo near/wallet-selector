@@ -145,6 +145,45 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
+          <div className="Modal-body Modal-wallet-not-installed">
+            <div className="icon-display">
+              <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
+              <p>SenderWallet</p>
+            </div>
+            <p>
+              You'll need to install SenderWallet to continue. After installing
+              <span
+                className="refresh-link"
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                &nbsp;refresh the page.
+              </span>
+            </p>
+            <div className="action-buttons">
+              <button
+                className="back"
+                onClick={() => {
+                  modalHelper.hideSenderWalletNotInstalledMessage();
+                  modalHelper.openSelectWalletOptionModal();
+                }}
+              >
+                Back
+              </button>
+              <button
+                className="download"
+                onClick={() => {
+                  window.open(
+                    "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+                    "_blank"
+                  );
+                }}
+              >
+                Open SenderWallet
+              </button>
+            </div>
+          </div>
           {State.options.walletSelectorUI.explanation && (
             <div className="info">
               <span
