@@ -4,6 +4,7 @@ import EventHandler from "../../utils/EventHandler";
 import { keyStores, connect } from "near-api-js";
 import State from "../../state/State";
 import getConfig from "../../config";
+import modalHelper from "../../modal/ModalHelper";
 
 export default class SenderWallet extends InjectedWallet implements ISenderWallet {
   private contract: any;
@@ -13,10 +14,14 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
   }
 
   async walletSelected() {
+    if (!window[this.injectedGlobal]) {
+      modalHelper.hideSelectWalletOptionModal();
+      modalHelper.openSenderWalletNotInstalledMessage();
+      return;
+    }
     await this.connect();
     await this.signIn();
   }
-
   async connect() {
     window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
       console.log("newAccountId: ", newAccountId);
@@ -28,16 +33,16 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     });
     EventHandler.callEventHandler("connect");
   }
-
   async signIn() {
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: "",
+      contractId: "gent.testnet",
     });
     console.log(response);
     if (response.accessKey) {
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     }
+    location.reload();
   }
   async init() {
     await super.init();

@@ -88,7 +88,7 @@ box-sizing: content-box;
     align-items: center;
     margin-bottom: 1rem;
 }
-.derivation-paths-list button, input {
+.Modal-body button, .Modal-body input {
     background: inherit;
     font-size: 0.889em;
     font-family: inherit;
@@ -171,6 +171,47 @@ box-sizing: content-box;
     border-color: #e2504a;
 }
 
+.Modal-wallet-not-installed .icon-display {
+    display: flex;
+    align-items: center;
+}
+
+.Modal-wallet-not-installed .icon-display img {
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.Modal-wallet-not-installed .refresh-link {
+    color: rgb(64, 153, 255);
+    cursor: pointer;
+}
+
+.Modal-wallet-not-installed .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Modal-wallet-not-installed .action-buttons .back {
+    border: 0.5px solid #bfbfbf;
+}
+.Modal-wallet-not-installed .action-buttons .back:hover {
+    background-color: #ebebeb;
+}
+
+.Modal-wallet-not-installed .action-buttons .download {
+    color: white;
+    background-color: rgb(64, 153, 255);
+    border: 1px solid rgb(64, 153, 255);
+}
+
+.Modal-wallet-not-installed .action-buttons .download:hover {
+    background-color: rgb(89 166 255);
+}
+
+
 .Modal-dark-theme .Modal-content {
   background-color: #414141;
   color: white;
@@ -193,6 +234,11 @@ box-sizing: content-box;
 .Modal-dark-theme .Modal-content .info span:hover {
     color: #a2a2a2;
     transition: all 200ms ease-in;
+}
+
+.Modal-dark-theme .Modal-wallet-not-installed .action-buttons .back:hover,
+.Modal-dark-theme .derivation-paths--actions .dismiss:hover {
+    background-color: #313131;
 }
 
 @keyframes inAnimation {
