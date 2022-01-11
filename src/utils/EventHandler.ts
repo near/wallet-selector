@@ -3,7 +3,7 @@ import EventList from "../types/EventList";
 
 const Event: EventHandler = {
   eventHandlers: {
-    connect: () => {},
+    init: () => {},
     disconnect: () => {},
     signIn: () => {},
   },

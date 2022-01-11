@@ -6,7 +6,7 @@ import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import EventHandler from "../utils/EventHandler";
 import EventList from "../types/EventList";
-
+import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
 class WalletController {
   constructor() {
@@ -62,7 +62,7 @@ class WalletController {
     if (State.signedInWalletId !== null) {
       State.walletProviders[State.signedInWalletId].disconnect();
     }
-    localStorage.clear()
+    window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
     State.isSignedIn = false;
     State.signedInWalletId = null;
   }

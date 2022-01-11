@@ -35,14 +35,10 @@ export default class CustomWallet extends BaseWallet {
   }
 
   async walletSelected() {
-    this.connect();
+    this.init();
   }
 
   async init() {
-    this.connect();
-  }
-
-  async connect() {
     this.onConnectFunction();
   }
 

@@ -20,7 +20,6 @@ const State: State = {
   walletProviders: {},
   isSignedIn: localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY) !== null,
   signedInWalletId: localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY),
-  contract: null,
 };
 
 export default State;

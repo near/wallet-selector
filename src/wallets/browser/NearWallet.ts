@@ -12,31 +12,22 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
 
-    this.connect();
+    this.init();
   }
 
   async walletSelected() {
     this.signIn();
   }
 
-  async connect() {
-    // get network configuration values from config.js
-    // based on the network ID we pass to getConfig()
+  async init() {
     const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
 
-    // create a keyStore for signing transactions using the user's key
-    // which is located in the browser local storage after user logs in
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
-    // Initializing connection to the NEAR testnet
     const near = await connect({ keyStore, ...nearConfig, headers: {} });
     this.wallet = new WalletConnection(near, "near_app");
 
-    EventHandler.callEventHandler("connect");
-  }
-
-  async init() {
-    this.connect();
+    EventHandler.callEventHandler("init");
   }
 
   async signIn() {

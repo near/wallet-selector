@@ -7,7 +7,6 @@ export default interface IWallet {
 
   walletSelected(): void;
   init(): Promise<void>;
-  connect(): void;
   disconnect(): void;
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;

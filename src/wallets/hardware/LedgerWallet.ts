@@ -14,7 +14,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   private readonly GET_ADDRESS_INS = 0x04;
   private readonly SIGN_INS = 0x02;
 
-  private readonly LEDGER_LOCALSTORAGE_PUBLIC_KEY: string;
+  private readonly LEDGER_LOCALSTORAGE_PUBLIC_KEY = "ledgerPublicKey";
 
   private debugMode = false;
   private derivationPath = "44'/397'/0'/0'/0'";
@@ -88,7 +88,9 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return Buffer.from([]);
   }
 
-  async connect() {
+  async init() {
+    if (this.transport) return;
+
     this.transport = await LedgerTransportWebHid.create().catch((err) => {
       console.log(err);
     });
@@ -104,11 +106,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       EventHandler.callEventHandler("disconnect");
     });
 
-    EventHandler.callEventHandler("connect");
-  }
-
-  async init() {
-    await this.connect();
+    EventHandler.callEventHandler("init");
   }
 
   async disconnect() {
@@ -120,13 +118,14 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async signIn() {
-    await this.connect();
+    await this.init();
     if (!this.publicKey) {
       const pk = await this.generatePublicKey();
       this.publicKey = pk;
       window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, this.encodePublicKey(pk));
     }
     this.setWalletAsSignedIn();
+    modalHelper.hideModal();
     EventHandler.callEventHandler("signIn");
   }
 

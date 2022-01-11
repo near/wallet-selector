@@ -19,25 +19,16 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       modalHelper.openSenderWalletNotInstalledMessage();
       return;
     }
-    await this.connect();
+
+    // await this.init();
     await this.signIn();
   }
-  async connect() {
-    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
-      console.log("newAccountId: ", newAccountId);
 
-      location.reload();
-    });
-    window[this.injectedGlobal].init({ contractId: State.options.contract.address }).then((res: any) => {
-      console.log(res);
-    });
-    EventHandler.callEventHandler("connect");
-  }
   async signIn() {
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: "gent.testnet",
+      contractId: State.options.contract.address,
     });
-    console.log(response);
+
     if (response.accessKey) {
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
@@ -46,7 +37,14 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
   }
   async init() {
     await super.init();
-    this.connect();
+    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
+      console.log("newAccountId: ", newAccountId);
+      location.reload();
+    });
+    window[this.injectedGlobal].init({ contractId: State.options.contract.address }).then((res: any) => {
+      console.log(res);
+    });
+    EventHandler.callEventHandler("init");
   }
 
   async isConnected(): Promise<boolean> {
