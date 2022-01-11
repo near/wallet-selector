@@ -16,6 +16,7 @@ const modalHelper = {
   showModal() {
     this.hideLedgerDerivationPathModal();
     this.hideSenderWalletNotInstalledMessage();
+    this.hideSwitchNetworkMessage();
     this.openSelectWalletOptionModal();
     const modal = document.getElementById(MODAL_ELEMENT_ID);
     if (modal) modal.style.display = "block";
@@ -79,6 +80,24 @@ const modalHelper = {
     );
     if (senderWalletNotInstalled)
       senderWalletNotInstalled.style.display = "none";
+  },
+
+  openSwitchNetworkMessage() {
+    const modal = document.getElementById(MODAL_ELEMENT_ID);
+    if (!modal) return;
+    const switchNetworkMessage: HTMLElement | null = modal.querySelector(
+      ".Modal-switch-network-message"
+    );
+    if (switchNetworkMessage) switchNetworkMessage.style.display = "block";
+  },
+
+  hideSwitchNetworkMessage() {
+    const modal = document.getElementById(MODAL_ELEMENT_ID);
+    if (!modal) return;
+    const switchNetworkMessage: HTMLElement | null = modal.querySelector(
+      ".Modal-switch-network-message"
+    );
+    if (switchNetworkMessage) switchNetworkMessage.style.display = "none";
   },
 };
 

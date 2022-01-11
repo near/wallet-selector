@@ -110,27 +110,22 @@ box-sizing: content-box;
     display: flex;
     justify-content: space-between;
  }
- .derivation-paths--actions button {
-    padding: 8px 12px;
-    border-radius: 16px;
-    cursor: pointer;
- }
  
-.derivation-paths--actions .connect {
+.derivation-paths--actions .right-button {
     color: white;
     border: 1px solid rgb(64, 153, 255);
     background: rgb(64, 153, 255);
  }
     
-.derivation-paths--actions .dismiss {
+.derivation-paths--actions .left-button {
     border: 0.5px solid #bfbfbf;
 }
 
-.derivation-paths--actions .connect:hover {
+.derivation-paths--actions .right-button:hover {
     background-color: rgb(89 166 255);
  }
  
-.derivation-paths--actions .dismiss:hover {
+.derivation-paths--actions .left-button:hover {
     background-color: #ebebeb;
 }
 
@@ -194,23 +189,36 @@ box-sizing: content-box;
     align-items: center;
 }
 
-.Modal-wallet-not-installed .action-buttons .back {
+.Modal-wallet-not-installed .action-buttons .left-button,
+.Modal-switch-network-message .actions .left-button {
     border: 0.5px solid #bfbfbf;
 }
-.Modal-wallet-not-installed .action-buttons .back:hover {
+.Modal-wallet-not-installed .action-buttons .left-button:hover,
+.Modal-switch-network-message .actions .left-button:hover {
     background-color: #ebebeb;
 }
 
-.Modal-wallet-not-installed .action-buttons .download {
+.Modal-wallet-not-installed .action-buttons .right-button,
+.Modal-switch-network-message .actions .right-button {
     color: white;
     background-color: rgb(64, 153, 255);
     border: 1px solid rgb(64, 153, 255);
 }
 
-.Modal-wallet-not-installed .action-buttons .download:hover {
+.Modal-wallet-not-installed .action-buttons .right-button:hover,
+.Modal-switch-network-message .actions .right-button:hover {
     background-color: rgb(89 166 255);
 }
 
+.Modal-switch-network-message .content p {
+    font-size: 0.89rem;
+}
+
+.Modal-switch-network-message .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .Modal-dark-theme .Modal-content {
   background-color: #414141;
@@ -236,8 +244,9 @@ box-sizing: content-box;
     transition: all 200ms ease-in;
 }
 
-.Modal-dark-theme .Modal-wallet-not-installed .action-buttons .back:hover,
-.Modal-dark-theme .derivation-paths--actions .dismiss:hover {
+.Modal-dark-theme .Modal-wallet-not-installed .action-buttons .left-button:hover,
+.Modal-dark-theme .derivation-paths--actions .left-button:hover,
+.Modal-dark-theme .Modal-switch-network-message .left-button:hover {
     background-color: #313131;
 }
 
