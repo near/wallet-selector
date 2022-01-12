@@ -5,6 +5,7 @@ import modalHelper from "../../modal/ModalHelper";
 import SmartContract from "../../contracts/SmartContract";
 import { keyStores, KeyPair, Contract, Account, connect } from "near-api-js";
 import getConfig from "../../config";
+import State from "../../state/State";
 
 const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
 
@@ -32,6 +33,14 @@ export default class SenderWallet
       modalHelper.openSenderWalletNotInstalledMessage();
       return;
     }
+    const rpcResponse = await window[this.injectedGlobal].getRpc();
+
+    if (State.options.networkId !== rpcResponse.rpc.networkId) {
+      modalHelper.openSwitchNetworkMessage();
+      modalHelper.hideSelectWalletOptionModal();
+      return;
+    }
+
     await this.connect();
     this.signIn();
   }

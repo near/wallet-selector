@@ -212,7 +212,7 @@ function Modal(): JSX.Element {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network for
-                this dapp
+                this Dapp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -220,7 +220,9 @@ function Modal(): JSX.Element {
               </p>
             </div>
             <div className="actions">
-              <button className="left-button">Dismiss</button>
+              <button className="left-button" onClick={onCloseModalHandler}>
+                Dismiss
+              </button>
               <button
                 className="right-button"
                 onClick={() => {
