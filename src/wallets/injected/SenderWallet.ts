@@ -1,21 +1,16 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
-import modalHelper from "../../modal/ModalHelper";
-import SmartContract from "../../contracts/SmartContract";
-import { keyStores, KeyPair, Contract, Account, connect } from "near-api-js";
-import getConfig from "../../config";
+import { keyStores, connect } from "near-api-js";
 import State from "../../state/State";
-
-const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
+import getConfig from "../../config";
+import modalHelper from "../../modal/ModalHelper";
 
 export default class SenderWallet
   extends InjectedWallet
   implements ISenderWallet
 {
-  private readonly LOCALSTORAGE_SECRET_KEY_ID = "senderwallet-secretkey";
-  private contract: Contract;
-  private account: Account;
+  private contract: any;
 
   constructor() {
     super(
@@ -33,6 +28,7 @@ export default class SenderWallet
       modalHelper.openSenderWalletNotInstalledMessage();
       return;
     }
+
     const rpcResponse = await window[this.injectedGlobal].getRpc();
 
     if (State.options.networkId !== rpcResponse.rpc.networkId) {
@@ -41,22 +37,16 @@ export default class SenderWallet
       return;
     }
 
-    await this.connect();
-    this.signIn();
+    // await this.init();
+    await this.signIn();
   }
-  async connect() {
-    window[this.injectedGlobal].init({ contractId: "gent.testnet" });
-    EventHandler.callEventHandler("connect");
-  }
+
   async signIn() {
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: "gent.testnet",
+      contractId: State.options.contract.address,
     });
+
     if (response.accessKey) {
-      localStorage.setItem(
-        this.LOCALSTORAGE_SECRET_KEY_ID,
-        response.accessKey.secretKey
-      );
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     }
@@ -64,48 +54,47 @@ export default class SenderWallet
   }
   async init() {
     await super.init();
-    this.connect();
-  }
-  async getWallet(): Promise<any> {
-    return {
-      wallet: window[this.injectedGlobal],
-      id: this.id,
-    };
-  }
-  async getContract(): Promise<any> {
-    return {
-      contract: this.contract,
-      account: this.account,
-    };
-  }
-  // @ts-ignore
-  async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-    let accountId = "gent.testnet";
-    const keyStore = new keyStores.InMemoryKeyStore();
-    // @ts-ignore
-    let keyPair = KeyPair.fromString(
-      localStorage.getItem(this.LOCALSTORAGE_SECRET_KEY_ID)
-    );
-    await keyStore.setKey("testnet", accountId, keyPair);
-    const near = await connect(
-      Object.assign({ deps: { keyStore } }, nearConfig)
-    );
-    this.account = await near.account(accountId);
-
-    this.contract = SmartContract.NearContract(
-      this.account,
-      "gent.testnet",
-      viewMethods,
-      changeMethods
-    );
+    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
+      console.log("newAccountId: ", newAccountId);
+      location.reload();
+    });
+    window[this.injectedGlobal]
+      .init({ contractId: State.options.contract.address })
+      .then((res: any) => {
+        console.log(res);
+      });
+    EventHandler.callEventHandler("init");
   }
 
   async isConnected(): Promise<boolean> {
-    return localStorage.getItem(this.LOCALSTORAGE_SECRET_KEY_ID) !== null;
+    return window[this.injectedGlobal].isSignedIn();
   }
 
   disconnect() {
     EventHandler.callEventHandler("disconnect");
     return window[this.injectedGlobal].signOut();
+  }
+
+  async callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any> {
+    if (!this.contract) {
+      const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
+      const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+      const near = await connect(
+        Object.assign({ deps: { keyStore }, headers: {} }, nearConfig)
+      );
+
+      this.contract = await near.loadContract(State.options.contract.address, {
+        viewMethods: State.options.contract.viewMethods,
+        changeMethods: State.options.contract.changeMethods,
+        sender: window[this.injectedGlobal].getAccountId(),
+      });
+    }
+    console.log(this.contract, method, args, gas, deposit);
+    return this.contract[method](args);
   }
 }

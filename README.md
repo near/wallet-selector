@@ -20,34 +20,15 @@ Create near wallet instance:
 
 ```
 const near = new NearWalletSelector({
-    wallets: ["nearwallet", "senderwallet", "ledgerwallet"], // default wallets
-    theme: "light" // light or dark
- });
-```
-
-Adding your custom wallet provider: (Work in progress)
-
-```
-const near = new NearWalletSelector({
-  wallets: ["nearwallet", "senderwallet", "ledgerwallet", "mywallet"], // <- add custom wallet name
+  wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
+  networkId: "testnet",
   theme: "light",
-  customWallets: {
-    mywallet: {
-      name: "My Wallet",
-      icon: "https://via.placeholder.com/100x100",
-      description: "My Wallet",
-      onConnectFunction: () => {
-        console.log("Connected to my wallet");
-      },
-      onDisconnectFunction: () => {
-        console.log("Disconnected from my wallet");
-      },
-      isConnectedFunction: () => {
-        return false;
-      },
-    },
+  contract: {
+    address: "gent.testnet",
+    viewMethods: ["getMessages"],
+    changeMethods: [],
   },
-});
+ });
 ```
 
 Show modal:
@@ -74,10 +55,18 @@ Sign out:
 near.signOut();
 ```
 
-Add event listeners (connect, disconnect, signIn)
+Add event listeners (init, disconnect, signIn):
 
 ```
-near.on("connect", (walletObj) => {
+near.on("init", () => {
    // your code
+});
+```
+
+Interact with smart contract:
+
+```
+near.getContract().callContract("getMessages", []).then(messages => {
+  console.log(messages);
 });
 ```

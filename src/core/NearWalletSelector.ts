@@ -4,9 +4,11 @@ import modalHelper from "../modal/ModalHelper";
 import State from "../state/State";
 import INearWalletSelector from "../interfaces/INearWalletSelector";
 import EventList from "../types/EventList";
+import SmartContract from "../contracts/SmartContract";
 
 export default class NearWalletSelector implements INearWalletSelector {
   private walletController: WalletController;
+  private contract: SmartContract;
 
   constructor(options?: Options) {
     if (options) {
@@ -17,6 +19,11 @@ export default class NearWalletSelector implements INearWalletSelector {
     }
 
     this.walletController = new WalletController();
+    this.contract = new SmartContract(
+      State.options.contract.address,
+      State.options.contract.viewMethods,
+      State.options.contract.changeMethods
+    );
 
     modalHelper.createModal();
 
@@ -25,32 +32,13 @@ export default class NearWalletSelector implements INearWalletSelector {
     }
   }
 
+  public getContract() {
+    return this.contract;
+  }
+
   public showModal() {
     this.walletController.showModal();
   }
-
-
-  public async getContract(){
-    if (State.signedInWalletId !== null) {
-      return await State.walletProviders[State.signedInWalletId].getContract();
-    }
-    return null
-  }
-  public async setContract(viewMethods: any, changeMethods: any){
-    
-    if (State.signedInWalletId !== null) {
-      await State.walletProviders[State.signedInWalletId].setContract(viewMethods, changeMethods);
-      return true
-    }
-    return false
-  }
-
-  public async getWallet(){
-    if (State.signedInWalletId !== null)
-      return  State.walletProviders[State.signedInWalletId].getWallet()
-    return null
-  }
-  
 
   public hideModal() {
     this.walletController.hideModal();
@@ -63,12 +51,6 @@ export default class NearWalletSelector implements INearWalletSelector {
   public signOut() {
     this.walletController.signOut();
   }
-  
-  public connected() {
-    if (State.signedInWalletId !== null)
-      window["walletConnection"] = State.walletProviders[State.signedInWalletId].getWallet()
-  }
-
 
   public on(event: EventList, callback: () => void) {
     this.walletController.on(event, callback);

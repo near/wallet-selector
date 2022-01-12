@@ -11,6 +11,11 @@ const State: State = {
       description: "",
       explanation: "",
     },
+    contract: {
+      address: "",
+      viewMethods: [],
+      changeMethods: [],
+    },
   },
   walletProviders: {},
   isSignedIn: localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY) !== null,

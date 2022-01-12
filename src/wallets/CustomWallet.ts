@@ -35,14 +35,10 @@ export default class CustomWallet extends BaseWallet {
   }
 
   async walletSelected() {
-    this.connect();
+    this.init();
   }
 
   async init() {
-    this.connect();
-  }
-
-  async connect() {
     this.onConnectFunction();
   }
 
@@ -50,20 +46,13 @@ export default class CustomWallet extends BaseWallet {
     this.onDisconnectFunction();
   }
 
-  async getWallet(): Promise<any> {
-      return null
-  }
-  async getContract(): Promise<any> {
-      return true   
-  }
-  // @ts-ignore
-  async setContract(viewMethods: any, changeMethods: any): Promise<boolean> {
-      return true
-  }
-
   async isConnected(): Promise<boolean> {
     return this.isConnectedFunction();
   }
 
   async signIn() {}
+
+  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+    console.log(method, args, gas, deposit);
+  }
 }

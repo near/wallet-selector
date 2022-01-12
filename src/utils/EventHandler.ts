@@ -3,10 +3,9 @@ import EventList from "../types/EventList";
 
 const Event: EventHandler = {
   eventHandlers: {
-    connect: () => {},
+    init: () => {},
     disconnect: () => {},
     signIn: () => {},
-    connected: () => {}
   },
   addEventHandler(event: EventList, callback: () => void) {
     this.eventHandlers[event] = callback;

@@ -156,7 +156,7 @@ function Modal(): JSX.Element {
                       "ledgerwallet"
                     ] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
-                    await ledgerWalletProvider.connect();
+                    await ledgerWalletProvider.signIn();
                   } catch (e) {
                     setLedgerWalletError(`Error: ${e.message}`);
                   }
