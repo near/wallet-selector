@@ -6,7 +6,8 @@ import ILedgerWallet from "../../../interfaces/ILedgerWallet";
 
 function Modal(): JSX.Element {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] = useState("44'/397'/0'/0'/0'");
+  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
+    useState("44'/397'/0'/0'/0'");
   const [ledgerWalletError, setLedgerWalletError] = useState("");
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
@@ -66,13 +67,22 @@ function Modal(): JSX.Element {
   return (
     <div>
       <style>{styles}</style>
-      <div className={`Modal ${getThemeClass(State.options.theme)}`} onClick={handleCloseModal}>
+      <div
+        className={`Modal ${getThemeClass(State.options.theme)}`}
+        onClick={handleCloseModal}
+      >
         <div className="Modal-content">
           <div className="Modal-body Modal-select-wallet-option">
-            <p>{State.options.walletSelectorUI.description || defaultDescription}</p>
+            <p>
+              {State.options.walletSelectorUI.description || defaultDescription}
+            </p>
             <ul className="Modal-option-list">
               {State.options.wallets.map((wallet: string) => {
-                if (!State.walletProviders[wallet] || !State.walletProviders[wallet].getShowWallet()) return null;
+                if (
+                  !State.walletProviders[wallet] ||
+                  !State.walletProviders[wallet].getShowWallet()
+                )
+                  return null;
                 return (
                   <li
                     key={State.walletProviders[wallet].getName()}
@@ -93,17 +103,24 @@ function Modal(): JSX.Element {
             </ul>
           </div>
           <div className="Modal-body Modal-choose-ledger-derivation-path">
-            <p>Make sure your Ledger is plugged in, then select a derivation path to connect your accounts:</p>
+            <p>
+              Make sure your Ledger is plugged in, then select a derivation path
+              to connect your accounts:
+            </p>
             <div className="derivation-paths-list">
               <button
-                className={!useCustomDerivationPath ? "path-option-highlighted" : ""}
+                className={
+                  !useCustomDerivationPath ? "path-option-highlighted" : ""
+                }
                 onClick={onUseDefaultDerivationPathHandler}
               >
                 NEAR - 44'/397'/0'/0'/0'
               </button>
               {!useCustomDerivationPath && (
                 <button
-                  className={useCustomDerivationPath ? "path-option-highlighted" : ""}
+                  className={
+                    useCustomDerivationPath ? "path-option-highlighted" : ""
+                  }
                   onClick={onUseCustomPathHandler}
                 >
                   Custom Path
@@ -118,14 +135,16 @@ function Modal(): JSX.Element {
                   onChange={onCustomDerivationPathChangeHandler}
                 />
               )}
-              {ledgerWalletError && <p className="error">{ledgerWalletError}</p>}
+              {ledgerWalletError && (
+                <p className="error">{ledgerWalletError}</p>
+              )}
             </div>
             <div className="derivation-paths--actions">
-              <button className="dismiss" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={onCloseModalHandler}>
                 Dismiss
               </button>
               <button
-                className="connect"
+                className="right-button"
                 onClick={async () => {
                   let derivationPath = ledgerDerivationPath;
                   if (useCustomDerivationPath) {
@@ -133,7 +152,9 @@ function Modal(): JSX.Element {
                   }
 
                   try {
-                    const ledgerWalletProvider = State.walletProviders["ledgerwallet"] as ILedgerWallet;
+                    const ledgerWalletProvider = State.walletProviders[
+                      "ledgerwallet"
+                    ] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
                     await ledgerWalletProvider.signIn();
                   } catch (e) {
@@ -163,7 +184,7 @@ function Modal(): JSX.Element {
             </p>
             <div className="action-buttons">
               <button
-                className="back"
+                className="left-button"
                 onClick={() => {
                   modalHelper.hideSenderWalletNotInstalledMessage();
                   modalHelper.openSelectWalletOptionModal();
@@ -172,7 +193,7 @@ function Modal(): JSX.Element {
                 Back
               </button>
               <button
-                className="download"
+                className="right-button"
                 onClick={() => {
                   window.open(
                     "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
@@ -181,6 +202,35 @@ function Modal(): JSX.Element {
                 }}
               >
                 Open SenderWallet
+              </button>
+            </div>
+          </div>
+          <div className="Modal-body Modal-switch-network-message">
+            <div className="header">
+              <h2>You Must Change Networks</h2>
+            </div>
+            <div className="content">
+              <p>
+                We've detected that you need to change your wallet's network for
+                this Dapp.
+              </p>
+              <p>
+                Some wallets may not support changing networks. If you can not
+                change networks you may consider switching to another wallet.
+              </p>
+            </div>
+            <div className="actions">
+              <button className="left-button" onClick={onCloseModalHandler}>
+                Dismiss
+              </button>
+              <button
+                className="right-button"
+                onClick={() => {
+                  modalHelper.openSelectWalletOptionModal();
+                  modalHelper.hideSwitchNetworkMessage();
+                }}
+              >
+                Switch Wallet
               </button>
             </div>
           </div>
@@ -193,7 +243,10 @@ function Modal(): JSX.Element {
               >
                 What is a Wallet?
               </span>
-              <div className="info-description" style={walletInfoVisible ? mountedStyle : unmountedStyle}>
+              <div
+                className="info-description"
+                style={walletInfoVisible ? mountedStyle : unmountedStyle}
+              >
                 <p>{State.options.walletSelectorUI.explanation}</p>
               </div>
             </div>

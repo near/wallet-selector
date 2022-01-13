@@ -6,17 +6,34 @@ import State from "../../state/State";
 import getConfig from "../../config";
 import modalHelper from "../../modal/ModalHelper";
 
-export default class SenderWallet extends InjectedWallet implements ISenderWallet {
+export default class SenderWallet
+  extends InjectedWallet
+  implements ISenderWallet
+{
   private contract: any;
 
   constructor() {
-    super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
+    super(
+      "senderwallet",
+      "Sender Wallet",
+      "Sender Wallet",
+      "https://senderwallet.io/logo.png",
+      "wallet"
+    );
   }
 
   async walletSelected() {
     if (!window[this.injectedGlobal]) {
       modalHelper.hideSelectWalletOptionModal();
       modalHelper.openSenderWalletNotInstalledMessage();
+      return;
+    }
+
+    const rpcResponse = await window[this.injectedGlobal].getRpc();
+
+    if (State.options.networkId !== rpcResponse.rpc.networkId) {
+      modalHelper.openSwitchNetworkMessage();
+      modalHelper.hideSelectWalletOptionModal();
       return;
     }
 
@@ -41,9 +58,11 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       console.log("newAccountId: ", newAccountId);
       location.reload();
     });
-    window[this.injectedGlobal].init({ contractId: State.options.contract.address }).then((res: any) => {
-      console.log(res);
-    });
+    window[this.injectedGlobal]
+      .init({ contractId: State.options.contract.address })
+      .then((res: any) => {
+        console.log(res);
+      });
     EventHandler.callEventHandler("init");
   }
 
@@ -56,11 +75,18 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     return window[this.injectedGlobal].signOut();
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+  async callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any> {
     if (!this.contract) {
       const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
       const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-      const near = await connect(Object.assign({ deps: { keyStore }, headers: {} }, nearConfig));
+      const near = await connect(
+        Object.assign({ deps: { keyStore }, headers: {} }, nearConfig)
+      );
 
       this.contract = await near.loadContract(State.options.contract.address, {
         viewMethods: State.options.contract.viewMethods,
