@@ -80,6 +80,13 @@ function Modal(): JSX.Element {
                 if (!State.walletProviders[wallet] || !State.walletProviders[wallet].getShowWallet()) return null;
                 return (
                   <li
+                    className={
+                      State.signedInWalletId ===
+                      State.walletProviders[wallet].getId()
+                        ? "selected-wallet"
+                        : ""
+                    }
+                    id={State.walletProviders[wallet].getId()}
                     key={State.walletProviders[wallet].getName()}
                     onClick={() => {
                       State.walletProviders[wallet].walletSelected();
@@ -90,7 +97,15 @@ function Modal(): JSX.Element {
                         src={State.walletProviders[wallet].getIcon()}
                         alt={State.walletProviders[wallet].getName()}
                       />
-                      <span>{State.walletProviders[wallet].getName()}</span>
+                      <div>
+                        <span>{State.walletProviders[wallet].getName()}</span>
+                      </div>
+                      {State.signedInWalletId ===
+                        State.walletProviders[wallet].getId() && (
+                        <div className="selected-wallet-text">
+                          <span>selected</span>
+                        </div>
+                      )}
                     </div>
                   </li>
                 );

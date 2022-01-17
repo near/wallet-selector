@@ -63,6 +63,7 @@ class WalletController {
     if (State.signedInWalletId !== null) {
       State.walletProviders[State.signedInWalletId].disconnect();
     }
+    modalHelper.removeSelectedItemClass(State.signedInWalletId);
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
     State.isSignedIn = false;
     State.signedInWalletId = null;
