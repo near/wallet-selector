@@ -6,7 +6,7 @@ import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
 import State from "../../state/State";
-import { providers, transactions, utils, connect, keyStores } from "near-api-js";
+import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
@@ -15,6 +15,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   private readonly SIGN_INS = 0x02;
 
   private readonly LEDGER_LOCALSTORAGE_PUBLIC_KEY = "ledgerPublicKey";
+  private readonly LEDGER_LOCALSTORAGE_DERIVATION_PATH = "ledgerDerivationPath";
 
   private debugMode = false;
   private derivationPath = "44'/397'/0'/0'/0'";
@@ -31,7 +32,13 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const ledgerLocalStoragePublicKey = window.localStorage.getItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY);
 
     if (ledgerLocalStoragePublicKey !== null) {
-      this.publicKey = bs58.decode(ledgerLocalStoragePublicKey);
+      this.publicKey = this.arrayToBuffer(bs58.decode(ledgerLocalStoragePublicKey).toJSON().data);
+    }
+
+    const ledgerLocalStorageDerivationPath = window.localStorage.getItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH);
+
+    if (ledgerLocalStorageDerivationPath !== null) {
+      this.derivationPath = ledgerLocalStorageDerivationPath;
     }
 
     listen((log) => {
@@ -39,6 +46,14 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
         console.log(log);
       }
     });
+  }
+
+  arrayToBuffer(arr: number[]): Uint8Array {
+    const ret = new Uint8Array(arr.length);
+    for (let i = 0; i < arr.length; i++) {
+      ret[i] = arr[i];
+    }
+    return ret;
   }
 
   getPublicKey() {
@@ -69,7 +84,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     modalHelper.hideSelectWalletOptionModal();
   }
 
-  private async sign(transactionData: any) {
+  private async sign(transactionData: Uint8Array) {
     if (!this.transport) return;
     const txData = Buffer.from(transactionData);
     // 128 - 5 service bytes
@@ -79,7 +94,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     for (let offset = 0; offset < allData.length; offset += CHUNK_SIZE) {
       const chunk = Buffer.from(allData.subarray(offset, offset + CHUNK_SIZE));
       const isLastChunk = offset + CHUNK_SIZE >= allData.length;
-      const response = await this.transport.send(this.CLA, this.SIGN_INS, isLastChunk ? 0x80 : 0, 0x0, chunk);
+      const response = await this.transport.send(this.CLA, this.SIGN_INS, isLastChunk ? 0x80 : 0x0, 0x0, chunk);
       if (isLastChunk) {
         return Buffer.from(response.subarray(0, -2));
       }
@@ -110,7 +125,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async disconnect() {
-    console.log("disconnect");
+    EventHandler.callEventHandler("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
@@ -124,6 +139,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       this.publicKey = pk;
       window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, this.encodePublicKey(pk));
     }
+    window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
     this.setWalletAsSignedIn();
     modalHelper.hideModal();
     EventHandler.callEventHandler("signIn");
@@ -143,26 +159,30 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return response.subarray(0, -2);
   }
 
+  async getAccount() {
+    return {
+      accountId: "amirsaran.testnet",
+      balance: "99967523358427624000000000",
+    };
+  }
+
   encodePublicKey(publicKey: Uint8Array) {
     return bs58.encode(Buffer.from(publicKey));
   }
 
   private async createFullAccessKey(accountId: string, publicKey: string) {
-    const config = {
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-      networkId: "testnet",
-      nodeUrl: "https://rpc.testnet.near.org",
-      headers: {},
-    };
-
-    const near = await connect(config);
-    const account = await near.account(accountId);
+    if (!State.nearConnection) return;
+    const account = await State.nearConnection.account(accountId);
     const res = await account.addKey(publicKey);
     return res;
   }
 
   async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
     if (!State.signedInWalletId) return;
+
+    if (State.options.contract.viewMethods.includes(method)) {
+      return await State.walletProviders.nearwallet.callContract(method, args);
+    }
 
     if (!args) args = [];
 
@@ -201,6 +221,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     const pk = keyPair.getPublicKey();
     pk.data = publicKey;
+    console.log(pk);
 
     const actions = [transactions.functionCall(method, args, bnGas, bnDeposit)];
 
@@ -214,6 +235,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     );
 
     const serializedTx = utils.serialize.serialize(transactions.SCHEMA, transaction);
+    console.log(serializedTx, transaction);
 
     const signature = await this.sign(serializedTx);
 
@@ -230,6 +252,12 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const base64Response: any = await provider.sendJsonRpc("broadcast_tx_commit", [
       Buffer.from(signedSerializedTx).toString("base64"),
     ]);
+
+    console.log(base64Response);
+
+    if (base64Response.status.SuccessValue === "") {
+      return true;
+    }
 
     const res = JSON.parse(Buffer.from(base64Response.status.SuccessValue, "base64").toString());
 

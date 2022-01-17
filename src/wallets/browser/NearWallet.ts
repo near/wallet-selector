@@ -1,9 +1,8 @@
 import BrowserWallet from "../types/BrowserWallet";
-import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
-import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import State from "../../state/State";
+import { WalletConnection, Contract } from "near-api-js";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -20,25 +19,16 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async init() {
-    const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
-
-    const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-
-    const near = await connect({ keyStore, ...nearConfig, headers: {} });
-    this.wallet = new WalletConnection(near, "near_app");
-
+    if (!State.nearConnection) return;
+    this.wallet = new WalletConnection(State.nearConnection, "near_app");
     EventHandler.callEventHandler("init");
   }
 
   async signIn() {
-    this.wallet
-      .requestSignIn(
-        "gent.testnet" // contract requesting access
-      )
-      .then(() => {
-        this.setWalletAsSignedIn();
-        EventHandler.callEventHandler("signIn");
-      });
+    this.wallet.requestSignIn(State.options.contract.address).then(() => {
+      this.setWalletAsSignedIn();
+      EventHandler.callEventHandler("signIn");
+    });
   }
   async disconnect() {
     if (!this.wallet) return;
@@ -49,6 +39,14 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   async isConnected(): Promise<boolean> {
     if (!this.wallet) return false;
     return this.wallet.isSignedIn();
+  }
+
+  async getAccount(): Promise<any> {
+    if (!this.isConnected()) return null;
+    return {
+      accountId: this.wallet.getAccountId(),
+      balance: (await this.wallet.account().state()).amount,
+    };
   }
 
   async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {

@@ -59,12 +59,20 @@ class WalletController {
   }
 
   public signOut() {
+    EventHandler.callEventHandler("disconnect");
     if (State.signedInWalletId !== null) {
       State.walletProviders[State.signedInWalletId].disconnect();
     }
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
     State.isSignedIn = false;
     State.signedInWalletId = null;
+  }
+
+  public async getAccount() {
+    if (State.signedInWalletId !== null) {
+      return State.walletProviders[State.signedInWalletId].getAccount();
+    }
+    return null;
   }
 
   on(event: EventList, callback: () => void) {

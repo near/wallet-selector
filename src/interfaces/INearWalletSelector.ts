@@ -4,4 +4,5 @@ export default interface INearWalletSelector {
   isSignedIn(): boolean;
   signOut(): void;
   on(event: string, callback: () => void): void;
+  getAccount(): Promise<any>;
 }
