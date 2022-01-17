@@ -79,6 +79,18 @@ box-sizing: content-box;
   max-width: 50px;
 }
 
+.Modal-option-list li.selected-wallet {
+    background: #ededed;
+}
+.Modal-option-list li .selected-wallet-text {
+    text-align: center;
+}
+
+.Modal-option-list li .selected-wallet-text span{
+    font-size: 14px;
+    font-weight: 500;
+}
+
 .derivation-paths {
 }
 .derivation-paths-list {
@@ -234,8 +246,8 @@ box-sizing: content-box;
   filter: invert(1);
 }
 
-
-.Modal-dark-theme .Modal-content .Modal-option-list li:hover {
+.Modal-dark-theme .Modal-content .Modal-option-list li:hover,
+.Modal-dark-theme .Modal-content .Modal-option-list li.selected-wallet {
   background-color: #313131;
 }
 
