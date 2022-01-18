@@ -3,14 +3,19 @@ import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
 import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
-import State from "../../state/State";
+import { getState } from "../../state/State";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
   private contract: Contract;
 
   constructor() {
-    super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
+    super(
+      "nearwallet",
+      "Near Wallet",
+      "Near Wallet",
+      "https://cryptologos.cc/logos/near-protocol-near-logo.png"
+    );
 
     this.init();
   }
@@ -51,12 +56,22 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     return this.wallet.isSignedIn();
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+  async callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any> {
+    const state = getState();
     if (!this.contract) {
-      this.contract = new Contract(this.wallet.account(), State.options.contract.address, {
-        viewMethods: State.options.contract.viewMethods,
-        changeMethods: State.options.contract.changeMethods,
-      });
+      this.contract = new Contract(
+        this.wallet.account(),
+        state.options.contract.address,
+        {
+          viewMethods: state.options.contract.viewMethods,
+          changeMethods: state.options.contract.changeMethods,
+        }
+      );
     }
     console.log(this.contract, method, args, gas, deposit);
     return this.contract[method](args);

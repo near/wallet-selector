@@ -1,6 +1,6 @@
 import IWallet from "../interfaces/IWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
-import State from "../state/State";
+import { getState } from "../state/State";
 
 export default abstract class BaseWallet implements IWallet {
   protected id = "wallet";
@@ -42,9 +42,10 @@ export default abstract class BaseWallet implements IWallet {
   }
 
   async setWalletAsSignedIn() {
+    const state = getState();
     localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, this.id);
-    State.isSignedIn = true;
-    State.signedInWalletId = this.id;
+    state.isSignedIn = true;
+    state.signedInWalletId = this.id;
   }
 
   abstract walletSelected(): Promise<void>;
@@ -52,5 +53,10 @@ export default abstract class BaseWallet implements IWallet {
   abstract disconnect(): Promise<void>;
   abstract isConnected(): Promise<boolean>;
   abstract signIn(): Promise<void>;
-  abstract callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any>;
+  abstract callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any>;
 }
