@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import modalHelper from "../../ModalHelper";
-import { getState, updateState } from "../../../state/State";
+import { getState } from "../../../state/State";
 import ILedgerWallet from "../../../interfaces/ILedgerWallet";
 import State from "../../../types/State";
 
@@ -110,10 +110,6 @@ function Modal(): JSX.Element {
                     key={state.walletProviders[wallet].getName()}
                     onClick={async () => {
                       await state.walletProviders[wallet].walletSelected();
-                      updateState((prevState) => ({
-                        ...prevState,
-                        signedInWalletId: state.walletProviders[wallet].getId(),
-                      }));
                     }}
                   >
                     <div title={state.walletProviders[wallet].getDescription()}>
