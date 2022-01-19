@@ -2,7 +2,7 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { keyStores, connect } from "near-api-js";
-import State from "../../state/State";
+import { getState } from "../../state/State";
 import getConfig from "../../config";
 import modalHelper from "../../modal/ModalHelper";
 
@@ -30,8 +30,9 @@ export default class SenderWallet
     }
 
     const rpcResponse = await window[this.injectedGlobal].getRpc();
+    const state = getState();
 
-    if (State.options.networkId !== rpcResponse.rpc.networkId) {
+    if (state.options.networkId !== rpcResponse.rpc.networkId) {
       modalHelper.openSwitchNetworkMessage();
       modalHelper.hideSelectWalletOptionModal();
       return;
@@ -42,8 +43,9 @@ export default class SenderWallet
   }
 
   async signIn() {
+    const state = getState();
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: State.options.contract.address,
+      contractId: state.options.contract.address,
     });
 
     if (response.accessKey) {
@@ -58,11 +60,16 @@ export default class SenderWallet
       console.log("newAccountId: ", newAccountId);
       location.reload();
     });
-    window[this.injectedGlobal]
-      .init({ contractId: State.options.contract.address })
-      .then((res: any) => {
-        console.log(res);
-      });
+
+    // Delay initialization so the extension does not open a new window, if signed in.
+    setTimeout(() => {
+      const state = getState();
+      window[this.injectedGlobal]
+        .init({ contractId: state.options.contract.address })
+        .then((res: any) => {
+          console.log(res);
+        });
+    }, 200);
     EventHandler.callEventHandler("init");
   }
 
@@ -82,15 +89,16 @@ export default class SenderWallet
     deposit?: string
   ): Promise<any> {
     if (!this.contract) {
+      const state = getState();
       const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
       const keyStore = new keyStores.BrowserLocalStorageKeyStore();
       const near = await connect(
         Object.assign({ deps: { keyStore }, headers: {} }, nearConfig)
       );
 
-      this.contract = await near.loadContract(State.options.contract.address, {
-        viewMethods: State.options.contract.viewMethods,
-        changeMethods: State.options.contract.changeMethods,
+      this.contract = await near.loadContract(state.options.contract.address, {
+        viewMethods: state.options.contract.viewMethods,
+        changeMethods: state.options.contract.changeMethods,
         sender: window[this.injectedGlobal].getAccountId(),
       });
     }

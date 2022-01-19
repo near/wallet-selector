@@ -1,7 +1,7 @@
 import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
 import modalHelper from "../modal/ModalHelper";
-import State from "../state/State";
+import { getState, updateState } from "../state/State";
 import INearWalletSelector from "../interfaces/INearWalletSelector";
 import EventList from "../types/EventList";
 import SmartContract from "../contracts/SmartContract";
@@ -12,23 +12,24 @@ export default class NearWalletSelector implements INearWalletSelector {
 
   constructor(options?: Options) {
     if (options) {
-      State.options = {
-        ...State.options,
-        ...options,
-      };
+      updateState((prevState) => ({
+        ...prevState,
+        options,
+      }));
     }
 
     this.walletController = new WalletController();
+    const state = getState();
     this.contract = new SmartContract(
-      State.options.contract.address,
-      State.options.contract.viewMethods,
-      State.options.contract.changeMethods
+      state.options.contract.address,
+      state.options.contract.viewMethods,
+      state.options.contract.changeMethods
     );
 
     modalHelper.createModal();
 
-    if (State.signedInWalletId !== null) {
-      State.walletProviders[State.signedInWalletId].init();
+    if (state.signedInWalletId !== null) {
+      state.walletProviders[state.signedInWalletId].init();
     }
   }
 

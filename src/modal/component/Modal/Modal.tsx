@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import modalHelper from "../../ModalHelper";
-import State from "../../../state/State";
+import { getState } from "../../../state/State";
 import ILedgerWallet from "../../../interfaces/ILedgerWallet";
+import State from "../../../types/State";
+
+declare global {
+  // tslint:disable-next-line
+  interface Window {
+    updateWalletSelector: (state: State) => void;
+  }
+}
 
 function Modal(): JSX.Element {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
@@ -12,6 +20,13 @@ function Modal(): JSX.Element {
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const defaultDescription = "Please select a wallet to connect to this dapp:";
+  const [state, setState] = useState(getState());
+
+  useEffect(() => {
+    window.updateWalletSelector = (state) => {
+      setState(state);
+    };
+  }, []);
 
   const mountedStyle = {
     animation: "inAnimation 350ms ease-in",
@@ -68,34 +83,49 @@ function Modal(): JSX.Element {
     <div>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(State.options.theme)}`}
+        className={`Modal ${getThemeClass(state.options.theme)}`}
         onClick={handleCloseModal}
       >
         <div className="Modal-content">
           <div className="Modal-body Modal-select-wallet-option">
             <p>
-              {State.options.walletSelectorUI.description || defaultDescription}
+              {state.options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">
-              {State.options.wallets.map((wallet: string) => {
+              {state.options.wallets.map((wallet: string) => {
                 if (
-                  !State.walletProviders[wallet] ||
-                  !State.walletProviders[wallet].getShowWallet()
+                  !state.walletProviders[wallet] ||
+                  !state.walletProviders[wallet].getShowWallet()
                 )
                   return null;
                 return (
                   <li
-                    key={State.walletProviders[wallet].getName()}
-                    onClick={() => {
-                      State.walletProviders[wallet].walletSelected();
+                    className={
+                      state.signedInWalletId ===
+                      state.walletProviders[wallet].getId()
+                        ? "selected-wallet"
+                        : ""
+                    }
+                    id={state.walletProviders[wallet].getId()}
+                    key={state.walletProviders[wallet].getName()}
+                    onClick={async () => {
+                      await state.walletProviders[wallet].walletSelected();
                     }}
                   >
-                    <div title={State.walletProviders[wallet].getDescription()}>
+                    <div title={state.walletProviders[wallet].getDescription()}>
                       <img
-                        src={State.walletProviders[wallet].getIcon()}
-                        alt={State.walletProviders[wallet].getName()}
+                        src={state.walletProviders[wallet].getIcon()}
+                        alt={state.walletProviders[wallet].getName()}
                       />
-                      <span>{State.walletProviders[wallet].getName()}</span>
+                      <div>
+                        <span>{state.walletProviders[wallet].getName()}</span>
+                      </div>
+                      {state.signedInWalletId ===
+                        state.walletProviders[wallet].getId() && (
+                        <div className="selected-wallet-text">
+                          <span>selected</span>
+                        </div>
+                      )}
                     </div>
                   </li>
                 );
@@ -152,7 +182,7 @@ function Modal(): JSX.Element {
                   }
 
                   try {
-                    const ledgerWalletProvider = State.walletProviders[
+                    const ledgerWalletProvider = state.walletProviders[
                       "ledgerwallet"
                     ] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
@@ -234,7 +264,7 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          {State.options.walletSelectorUI.explanation && (
+          {state.options.walletSelectorUI.explanation && (
             <div className="info">
               <span
                 onClick={() => {
@@ -247,7 +277,7 @@ function Modal(): JSX.Element {
                 className="info-description"
                 style={walletInfoVisible ? mountedStyle : unmountedStyle}
               >
-                <p>{State.options.walletSelectorUI.explanation}</p>
+                <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
             </div>
           )}
