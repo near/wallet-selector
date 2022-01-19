@@ -134,12 +134,12 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
   async signIn() {
     await this.init();
-    if (!this.publicKey) {
-      const pk = await this.generatePublicKey();
-      this.publicKey = pk;
-      window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, this.encodePublicKey(pk));
-    }
-    window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
+    // if (!this.publicKey) {
+    // const pk = await this.generatePublicKey();
+    // this.publicKey = pk;
+    //   window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, this.encodePublicKey(pk));
+    // }
+    // window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
     this.setWalletAsSignedIn();
     modalHelper.hideModal();
     EventHandler.callEventHandler("signIn");
@@ -170,10 +170,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return bs58.encode(Buffer.from(publicKey));
   }
 
-  private async createFullAccessKey(accountId: string, publicKey: string) {
+  private async createFunctionCallKey(accountId: string, publicKey: string, method: string, gas: string, deposit: BN) {
     if (!State.nearConnection) return;
     const account = await State.nearConnection.account(accountId);
-    const res = await account.addKey(publicKey);
+    const res = await account.addKey(publicKey, method, gas, deposit);
     return res;
   }
 
@@ -186,7 +186,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     if (!args) args = [];
 
-    const publicKey = this.getPublicKey();
+    const publicKey = await this.generatePublicKey();
 
     const bnGas = new BN(gas.toString());
     const bnDeposit = new BN(deposit.toString());
@@ -196,7 +196,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const provider = new providers.JsonRpcProvider(`https://rpc.${State.options.networkId}.near.org`);
 
     // Tries to create a full access key for the account, if it fails, it means the account already has a full access key
-    await this.createFullAccessKey("amirsaran.testnet", publicKeyString).catch((err) => {
+    await this.createFunctionCallKey("amirsaran.testnet", publicKeyString, method, gas, bnDeposit).catch((err) => {
       console.log(err);
     });
 
@@ -221,7 +221,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     const pk = keyPair.getPublicKey();
     pk.data = publicKey;
-    console.log(pk);
 
     const actions = [transactions.functionCall(method, args, bnGas, bnDeposit)];
 
@@ -235,7 +234,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     );
 
     const serializedTx = utils.serialize.serialize(transactions.SCHEMA, transaction);
-    console.log(serializedTx, transaction);
 
     const signature = await this.sign(serializedTx);
 
@@ -252,8 +250,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const base64Response: any = await provider.sendJsonRpc("broadcast_tx_commit", [
       Buffer.from(signedSerializedTx).toString("base64"),
     ]);
-
-    console.log(base64Response);
 
     if (base64Response.status.SuccessValue === "") {
       return true;

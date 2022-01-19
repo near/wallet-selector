@@ -25,9 +25,11 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
       modalHelper.hideSelectWalletOptionModal();
       return;
     }
-
-    // await this.init();
+    console.log("1");
+    await this.init();
+    console.log("2");
     await this.signIn();
+    console.log("3");
   }
 
   async signIn() {
@@ -43,8 +45,12 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     }
   }
 
-  async init() {
-    await super.init();
+  async timeout(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async init(): Promise<void> {
+    await this.timeout(300);
     window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
       console.log("newAccountId: ", newAccountId);
     });
