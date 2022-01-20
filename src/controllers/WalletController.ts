@@ -1,5 +1,5 @@
 import CustomWallet from "../wallets/CustomWallet";
-import State from "../state/State";
+import { getState, updateState } from "../state/State";
 import modalHelper from "../modal/ModalHelper";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
@@ -15,16 +15,35 @@ class WalletController {
   }
 
   private generateDefaultWallets() {
-    State.options.wallets.forEach((wallet) => {
+    const state = getState();
+    state.options.wallets.forEach((wallet) => {
       switch (wallet) {
         case "nearwallet":
-          State.walletProviders.nearwallet = new NearWallet();
+          updateState((prevState) => ({
+            ...prevState,
+            walletProviders: {
+              ...prevState.walletProviders,
+              nearwallet: new NearWallet(),
+            },
+          }));
           break;
         case "senderwallet":
-          State.walletProviders.senderwallet = new SenderWallet();
+          updateState((prevState) => ({
+            ...prevState,
+            walletProviders: {
+              ...prevState.walletProviders,
+              senderwallet: new SenderWallet(),
+            },
+          }));
           break;
         case "ledgerwallet":
-          State.walletProviders.ledgerwallet = new LedgerWallet();
+          updateState((prevState) => ({
+            ...prevState,
+            walletProviders: {
+              ...prevState.walletProviders,
+              ledgerwallet: new LedgerWallet(),
+            },
+          }));
           break;
         default:
           break;
@@ -33,15 +52,16 @@ class WalletController {
   }
 
   private generateCustomWallets() {
-    for (const name in State.options.customWallets) {
-      State.walletProviders[name] = new CustomWallet(
+    const state = getState();
+    for (const name in state.options.customWallets) {
+      state.walletProviders[name] = new CustomWallet(
         name,
-        State.options.customWallets[name].name,
-        State.options.customWallets[name].description,
-        State.options.customWallets[name].icon,
-        State.options.customWallets[name].onConnectFunction,
-        State.options.customWallets[name].onDisconnectFunction,
-        State.options.customWallets[name].isConnectedFunction
+        state.options.customWallets[name].name,
+        state.options.customWallets[name].description,
+        state.options.customWallets[name].icon,
+        state.options.customWallets[name].onConnectFunction,
+        state.options.customWallets[name].onDisconnectFunction,
+        state.options.customWallets[name].isConnectedFunction
       );
     }
   }
@@ -55,23 +75,28 @@ class WalletController {
   }
 
   public isSignedIn() {
-    return State.isSignedIn;
+    const state = getState();
+    return state.isSignedIn;
   }
 
-  public signOut() {
+  public async signOut() {
     EventHandler.callEventHandler("disconnect");
-    if (State.signedInWalletId !== null) {
-      State.walletProviders[State.signedInWalletId].disconnect();
+    const state = getState();
+    if (state.signedInWalletId !== null) {
+      state.walletProviders[state.signedInWalletId].disconnect();
     }
-    modalHelper.removeSelectedItemClass(State.signedInWalletId);
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
-    State.isSignedIn = false;
-    State.signedInWalletId = null;
+    updateState((prevState) => ({
+      ...prevState,
+      signedInWalletId: null,
+      isSignedIn: false,
+    }));
   }
 
   public async getAccount() {
-    if (State.signedInWalletId !== null) {
-      return State.walletProviders[State.signedInWalletId].getAccount();
+    const state = getState();
+    if (state.signedInWalletId !== null) {
+      return state.walletProviders[state.signedInWalletId].getAccount();
     }
     return null;
   }

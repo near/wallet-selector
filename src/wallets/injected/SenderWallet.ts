@@ -1,14 +1,23 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
-import State from "../../state/State";
+import { getState } from "../../state/State";
 import modalHelper from "../../modal/ModalHelper";
 
-export default class SenderWallet extends InjectedWallet implements ISenderWallet {
+export default class SenderWallet
+  extends InjectedWallet
+  implements ISenderWallet
+{
   private contract: any;
 
   constructor() {
-    super("senderwallet", "Sender Wallet", "Sender Wallet", "https://senderwallet.io/logo.png", "wallet");
+    super(
+      "senderwallet",
+      "Sender Wallet",
+      "Sender Wallet",
+      "https://senderwallet.io/logo.png",
+      "wallet"
+    );
   }
 
   async walletSelected() {
@@ -19,22 +28,21 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
     }
 
     const rpcResponse = await window[this.injectedGlobal].getRpc();
+    const state = getState();
 
-    if (State.options.networkId !== rpcResponse.rpc.networkId) {
+    if (state.options.networkId !== rpcResponse.rpc.networkId) {
       modalHelper.openSwitchNetworkMessage();
       modalHelper.hideSelectWalletOptionModal();
       return;
     }
-    console.log("1");
     await this.init();
-    console.log("2");
     await this.signIn();
-    console.log("3");
   }
 
   async signIn() {
+    const state = getState();
     const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: State.options.contract.address,
+      contractId: state.options.contract.address,
     });
     console.log(response);
 
@@ -50,13 +58,16 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
   }
 
   async init(): Promise<void> {
-    await this.timeout(300);
+    await this.timeout(200);
+    const state = getState();
     window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
       console.log("newAccountId: ", newAccountId);
     });
-    window[this.injectedGlobal].init({ contractId: State.options.contract.address }).then((res: any) => {
-      console.log(res);
-    });
+    window[this.injectedGlobal]
+      .init({ contractId: state.options.contract.address })
+      .then((res: any) => {
+        console.log(res);
+      });
     EventHandler.callEventHandler("init");
   }
 
@@ -70,20 +81,30 @@ export default class SenderWallet extends InjectedWallet implements ISenderWalle
   }
 
   async getAccount() {
+    await this.timeout(300);
     return {
       accountId: window[this.injectedGlobal].getAccountId(),
       balance: "99967523358427624000000000",
     };
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+  async callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any> {
     if (!this.contract) {
-      if (!State.nearConnection) return;
-      this.contract = await State.nearConnection.loadContract(State.options.contract.address, {
-        viewMethods: State.options.contract.viewMethods,
-        changeMethods: State.options.contract.changeMethods,
-        sender: window[this.injectedGlobal].getAccountId(),
-      });
+      const state = getState();
+      if (!state.nearConnection) return;
+      this.contract = await state.nearConnection.loadContract(
+        state.options.contract.address,
+        {
+          viewMethods: state.options.contract.viewMethods,
+          changeMethods: state.options.contract.changeMethods,
+          sender: window[this.injectedGlobal].getAccountId(),
+        }
+      );
     }
     console.log(this.contract, method, args, gas, deposit);
     return this.contract[method](args);
