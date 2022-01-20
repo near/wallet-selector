@@ -22,6 +22,7 @@ let state: { current: State } = {
     isSignedIn:
       localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY) !== null,
     signedInWalletId: localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY),
+    nearConnection: null,
   },
 };
 

@@ -1,5 +1,6 @@
 import Options from "./Options";
 import IWallet from "../interfaces/IWallet";
+import { Near } from "near-api-js";
 
 type State = {
   options: Options;
@@ -8,6 +9,7 @@ type State = {
   };
   isSignedIn: boolean;
   signedInWalletId: string | null;
+  nearConnection: Near | null;
 };
 
 export default State;

@@ -6,13 +6,7 @@ import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState } from "../../state/State";
-import {
-  providers,
-  transactions,
-  utils,
-  connect,
-  keyStores,
-} from "near-api-js";
+import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
 export default class LedgerWallet
@@ -24,6 +18,7 @@ export default class LedgerWallet
   private readonly SIGN_INS = 0x02;
 
   private readonly LEDGER_LOCALSTORAGE_PUBLIC_KEY = "ledgerPublicKey";
+  private readonly LEDGER_LOCALSTORAGE_DERIVATION_PATH = "ledgerDerivationPath";
 
   private debugMode = false;
   private derivationPath = "44'/397'/0'/0'/0'";
@@ -42,7 +37,17 @@ export default class LedgerWallet
     );
 
     if (ledgerLocalStoragePublicKey !== null) {
-      this.publicKey = bs58.decode(ledgerLocalStoragePublicKey);
+      this.publicKey = this.arrayToBuffer(
+        bs58.decode(ledgerLocalStoragePublicKey).toJSON().data
+      );
+    }
+
+    const ledgerLocalStorageDerivationPath = window.localStorage.getItem(
+      this.LEDGER_LOCALSTORAGE_DERIVATION_PATH
+    );
+
+    if (ledgerLocalStorageDerivationPath !== null) {
+      this.derivationPath = ledgerLocalStorageDerivationPath;
     }
 
     listen((log) => {
@@ -50,6 +55,14 @@ export default class LedgerWallet
         console.log(log);
       }
     });
+  }
+
+  arrayToBuffer(arr: number[]): Uint8Array {
+    const ret = new Uint8Array(arr.length);
+    for (let i = 0; i < arr.length; i++) {
+      ret[i] = arr[i];
+    }
+    return ret;
   }
 
   getPublicKey() {
@@ -89,7 +102,7 @@ export default class LedgerWallet
     modalHelper.hideSelectWalletOptionModal();
   }
 
-  private async sign(transactionData: any) {
+  private async sign(transactionData: Uint8Array) {
     if (!this.transport) return;
     const txData = Buffer.from(transactionData);
     // 128 - 5 service bytes
@@ -105,7 +118,7 @@ export default class LedgerWallet
       const response = await this.transport.send(
         this.CLA,
         this.SIGN_INS,
-        isLastChunk ? 0x80 : 0,
+        isLastChunk ? 0x80 : 0x0,
         0x0,
         chunk
       );
@@ -139,7 +152,7 @@ export default class LedgerWallet
   }
 
   async disconnect() {
-    console.log("disconnect");
+    EventHandler.callEventHandler("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
@@ -148,14 +161,12 @@ export default class LedgerWallet
 
   async signIn() {
     await this.init();
-    if (!this.publicKey) {
-      const pk = await this.generatePublicKey();
-      this.publicKey = pk;
-      window.localStorage.setItem(
-        this.LEDGER_LOCALSTORAGE_PUBLIC_KEY,
-        this.encodePublicKey(pk)
-      );
-    }
+    // if (!this.publicKey) {
+    // const pk = await this.generatePublicKey();
+    // this.publicKey = pk;
+    //   window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, this.encodePublicKey(pk));
+    // }
+    // window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
     this.setWalletAsSignedIn();
     modalHelper.hideModal();
     EventHandler.callEventHandler("signIn");
@@ -175,21 +186,28 @@ export default class LedgerWallet
     return response.subarray(0, -2);
   }
 
+  async getAccount() {
+    return {
+      accountId: "amirsaran.testnet",
+      balance: "99967523358427624000000000",
+    };
+  }
+
   encodePublicKey(publicKey: Uint8Array) {
     return bs58.encode(Buffer.from(publicKey));
   }
 
-  private async createFullAccessKey(accountId: string, publicKey: string) {
-    const config = {
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-      networkId: "testnet",
-      nodeUrl: "https://rpc.testnet.near.org",
-      headers: {},
-    };
-
-    const near = await connect(config);
-    const account = await near.account(accountId);
-    const res = await account.addKey(publicKey);
+  private async createFunctionCallKey(
+    accountId: string,
+    publicKey: string,
+    method: string,
+    gas: string,
+    deposit: BN
+  ) {
+    const state = getState();
+    if (!state.nearConnection) return;
+    const account = await state.nearConnection.account(accountId);
+    const res = await account.addKey(publicKey, method, gas, deposit);
     return res;
   }
 
@@ -202,9 +220,13 @@ export default class LedgerWallet
     const state = getState();
     if (!state.signedInWalletId) return;
 
+    if (state.options.contract.viewMethods.includes(method)) {
+      return await state.walletProviders.nearwallet.callContract(method, args);
+    }
+
     if (!args) args = [];
 
-    const publicKey = this.getPublicKey();
+    const publicKey = await this.generatePublicKey();
 
     const bnGas = new BN(gas.toString());
     const bnDeposit = new BN(deposit.toString());
@@ -216,11 +238,15 @@ export default class LedgerWallet
     );
 
     // Tries to create a full access key for the account, if it fails, it means the account already has a full access key
-    await this.createFullAccessKey("amirsaran.testnet", publicKeyString).catch(
-      (err) => {
-        console.log(err);
-      }
-    );
+    await this.createFunctionCallKey(
+      "amirsaran.testnet",
+      publicKeyString,
+      method,
+      gas,
+      bnDeposit
+    ).catch((err) => {
+      console.log(err);
+    });
 
     const response: any = await provider
       .query({
@@ -276,6 +302,10 @@ export default class LedgerWallet
       "broadcast_tx_commit",
       [Buffer.from(signedSerializedTx).toString("base64")]
     );
+
+    if (base64Response.status.SuccessValue === "") {
+      return true;
+    }
 
     const res = JSON.parse(
       Buffer.from(base64Response.status.SuccessValue, "base64").toString()

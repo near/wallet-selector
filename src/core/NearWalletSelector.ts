@@ -14,7 +14,10 @@ export default class NearWalletSelector implements INearWalletSelector {
     if (options) {
       updateState((prevState) => ({
         ...prevState,
-        options,
+        options: {
+          ...prevState.options,
+          ...options,
+        },
       }));
     }
 
@@ -26,11 +29,10 @@ export default class NearWalletSelector implements INearWalletSelector {
       state.options.contract.changeMethods
     );
 
-    modalHelper.createModal();
-
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].init();
     }
+    modalHelper.createModal();
   }
 
   public getContract() {
@@ -51,6 +53,10 @@ export default class NearWalletSelector implements INearWalletSelector {
 
   public signOut() {
     this.walletController.signOut();
+  }
+
+  public getAccount() {
+    return this.walletController.getAccount();
   }
 
   public on(event: EventList, callback: () => void) {

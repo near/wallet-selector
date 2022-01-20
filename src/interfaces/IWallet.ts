@@ -11,5 +11,6 @@ export default interface IWallet {
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
+  getAccount(): Promise<any>;
   callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any>;
 }

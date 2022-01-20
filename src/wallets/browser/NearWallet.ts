@@ -1,8 +1,7 @@
 import BrowserWallet from "../types/BrowserWallet";
-import { keyStores, connect, WalletConnection, Contract } from "near-api-js";
-import getConfig from "../../config";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
+import { WalletConnection, Contract } from "near-api-js";
 import { getState } from "../../state/State";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
@@ -25,25 +24,18 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async init() {
-    const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
-
-    const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-
-    const near = await connect({ keyStore, ...nearConfig, headers: {} });
-    this.wallet = new WalletConnection(near, "near_app");
-
+    const state = getState();
+    if (!state.nearConnection) return;
+    this.wallet = new WalletConnection(state.nearConnection, "near_app");
     EventHandler.callEventHandler("init");
   }
 
   async signIn() {
-    this.wallet
-      .requestSignIn(
-        "gent.testnet" // contract requesting access
-      )
-      .then(() => {
-        this.setWalletAsSignedIn();
-        EventHandler.callEventHandler("signIn");
-      });
+    const state = getState();
+    this.wallet.requestSignIn(state.options.contract.address).then(() => {
+      this.setWalletAsSignedIn();
+      EventHandler.callEventHandler("signIn");
+    });
   }
   async disconnect() {
     if (!this.wallet) return;
@@ -54,6 +46,14 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   async isConnected(): Promise<boolean> {
     if (!this.wallet) return false;
     return this.wallet.isSignedIn();
+  }
+
+  async getAccount(): Promise<any> {
+    if (!this.isConnected()) return null;
+    return {
+      accountId: this.wallet.getAccountId(),
+      balance: (await this.wallet.account().state()).amount,
+    };
   }
 
   async callContract(

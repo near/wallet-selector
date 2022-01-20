@@ -1,9 +1,7 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
-import { keyStores, connect } from "near-api-js";
 import { getState } from "../../state/State";
-import getConfig from "../../config";
 import modalHelper from "../../modal/ModalHelper";
 
 export default class SenderWallet
@@ -37,8 +35,7 @@ export default class SenderWallet
       modalHelper.hideSelectWalletOptionModal();
       return;
     }
-
-    // await this.init();
+    await this.init();
     await this.signIn();
   }
 
@@ -47,29 +44,30 @@ export default class SenderWallet
     const response = await window[this.injectedGlobal].requestSignIn({
       contractId: state.options.contract.address,
     });
+    console.log(response);
 
     if (response.accessKey) {
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
+      modalHelper.hideModal();
     }
-    location.reload();
   }
-  async init() {
-    await super.init();
+
+  async timeout(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async init(): Promise<void> {
+    await this.timeout(200);
+    const state = getState();
     window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
       console.log("newAccountId: ", newAccountId);
-      location.reload();
     });
-
-    // Delay initialization so the extension does not open a new window, if signed in.
-    setTimeout(() => {
-      const state = getState();
-      window[this.injectedGlobal]
-        .init({ contractId: state.options.contract.address })
-        .then((res: any) => {
-          console.log(res);
-        });
-    }, 200);
+    window[this.injectedGlobal]
+      .init({ contractId: state.options.contract.address })
+      .then((res: any) => {
+        console.log(res);
+      });
     EventHandler.callEventHandler("init");
   }
 
@@ -82,6 +80,14 @@ export default class SenderWallet
     return window[this.injectedGlobal].signOut();
   }
 
+  async getAccount() {
+    await this.timeout(300);
+    return {
+      accountId: window[this.injectedGlobal].getAccountId(),
+      balance: "99967523358427624000000000",
+    };
+  }
+
   async callContract(
     method: string,
     args?: any,
@@ -90,17 +96,15 @@ export default class SenderWallet
   ): Promise<any> {
     if (!this.contract) {
       const state = getState();
-      const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
-      const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-      const near = await connect(
-        Object.assign({ deps: { keyStore }, headers: {} }, nearConfig)
+      if (!state.nearConnection) return;
+      this.contract = await state.nearConnection.loadContract(
+        state.options.contract.address,
+        {
+          viewMethods: state.options.contract.viewMethods,
+          changeMethods: state.options.contract.changeMethods,
+          sender: window[this.injectedGlobal].getAccountId(),
+        }
       );
-
-      this.contract = await near.loadContract(state.options.contract.address, {
-        viewMethods: state.options.contract.viewMethods,
-        changeMethods: state.options.contract.changeMethods,
-        sender: window[this.injectedGlobal].getAccountId(),
-      });
     }
     console.log(this.contract, method, args, gas, deposit);
     return this.contract[method](args);

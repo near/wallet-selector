@@ -80,6 +80,7 @@ class WalletController {
   }
 
   public async signOut() {
+    EventHandler.callEventHandler("disconnect");
     const state = getState();
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].disconnect();
@@ -90,6 +91,14 @@ class WalletController {
       signedInWalletId: null,
       isSignedIn: false,
     }));
+  }
+
+  public async getAccount() {
+    const state = getState();
+    if (state.signedInWalletId !== null) {
+      return state.walletProviders[state.signedInWalletId].getAccount();
+    }
+    return null;
   }
 
   on(event: EventList, callback: () => void) {
