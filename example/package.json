@@ -1,5 +1,5 @@
 {
-  "name": "guest-book",
+  "name": "wallet-selector-example",
   "version": "0.1.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
@@ -7,7 +7,9 @@
     "build:contract": "asb",
     "build:contract:debug": "asb --target debug",
     "build:web": "parcel build src/index.html --public-url ./",
-    "deploy": "npm run build && near deploy && gh-pages -d dist",
+    "deploy": "npm run build && npm run deploy:contract && npm run deploy:web",
+    "deploy:contract": "near dev-deploy",
+    "deploy:web": "gh-pages -d dist",
     "dev": "npm run build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec npm run dev:start",
     "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
     "start": "npm run deploy && parcel src/index.html",
