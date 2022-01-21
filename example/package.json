@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "build": "yarn build:contract && yarn build:web",
+    "build": "npm run build:contract && npm run build:web",
     "build:contract": "asb",
     "build:contract:debug": "asb --target debug",
     "build:web": "parcel build src/index.html --public-url ./",
-    "deploy": "yarn build && near deploy",
-    "dev": "yarn build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec yarn dev:start",
+    "deploy": "npm run build && near deploy && gh-pages -d dist",
+    "dev": "npm run build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec npm run dev:start",
     "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
-    "start": "yarn deploy && parcel src/index.html",
+    "start": "npm run deploy && parcel src/index.html",
     "dev:start": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
-    "test": "yarn build:contract:debug && asp && jest"
+    "test": "npm run build:contract:debug && asp && jest"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -37,6 +37,7 @@
     "big.js": "^6.1.1",
     "env-cmd": "^10.1.0",
     "near-api-js": "^0.44.0",
+    "near-walletselector": "file:../",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -1,6 +1,6 @@
-node_modules
+/node_modules
 /lib
 
 # IDEs and editors
-.idea
-.vscode
+/.idea
+/.vscode

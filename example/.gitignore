@@ -11,6 +11,3 @@ neardev/shared-test/*
 # ignore any default network private keys and dev-account
 neardev/default/*
 neardev/dev-account*
-
-# misc
-yarn-error.log
