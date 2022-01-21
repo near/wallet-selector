@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 12
+os:
+  - linux
+  - osx
+  - windows
+env:
+  - NEAR_ENV=ci YARN_GPG=no
+  - NEAR_ENV=ci-betanet YARN_GPG=no
+cache: yarn
+script:
+  - yarn lint && yarn test
