@@ -266,11 +266,9 @@ function Modal(): JSX.Element {
                 What is a Wallet?
               </span>
               <div
-                className={
-                  walletInfoVisible
-                    ? `info-description show-explanation`
-                    : `info-description hide-explanation`
-                }
+                className={`info-description ${
+                  walletInfoVisible ? "show" : "hide"
+                }-explanation`}
               >
                 <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
