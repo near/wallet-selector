@@ -1,24 +1,18 @@
 # near-walletselector
 
-# How to import package locally
+## Installation and Usage
 
-- `npm install`
-- `npm run build`
-- `npm link`
-- Go to folder where you want to import near-walletselector and type: `npm link near-walletselector`
-- You can now import near-walletselector in your project for example like this: `import NearWalletSelector from "near-walletselector";`
+The easiest way to use `near-walletselector` is to install it from NPM:
 
-# How to use
+```
+npm install near-walletselector
+```
 
-Import like this:
+Then use it in your dApp:
 
 ```
 import NearWalletSelector from "near-walletselector";
-```
 
-Create near wallet instance:
-
-```
 const near = new NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
   networkId: "testnet",
@@ -36,6 +30,8 @@ const near = new NearWalletSelector({
   }
 });
 ```
+
+## API Reference
 
 Show modal:
 
@@ -76,3 +72,9 @@ near.getContract().callContract("getMessages", []).then(messages => {
   console.log(messages);
 });
 ```
+
+## Example Integration
+
+A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
+
+Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs.
