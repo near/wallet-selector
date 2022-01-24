@@ -1,4 +1,10 @@
-# near-walletselector
+# NEAR Wallet Selector
+
+The NEAR Wallet Selector is a package you can use to integrate various types of wallets into your dApp. Users are presented with a modal that allows them to switch between supported wallets such as:
+
+- [NEAR Wallet](https://wallet.near.org/) - Web wallet.
+- [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
+- [Ledger](https://www.ledger.com/) - Hardware wallet.
 
 ## Installation and Usage
 
