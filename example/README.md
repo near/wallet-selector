@@ -15,18 +15,18 @@ Quick Start
 
 To run this project locally:
 
-1. Prerequisites: Make sure you have Node.js ≥ 12 installed (https://nodejs.org), then use it to install [yarn]: `npm install --global yarn` (or just `npm i -g yarn`)
-2. Run the local development server: `yarn && yarn dev` (see `package.json` for a
-   full list of `scripts` you can run with `yarn`)
+1. Prerequisites: Make sure you have Node.js ≥ 12 installed (https://nodejs.org).
+2. Run the local development server: `npm install && npm run watch` (see `package.json` for a
+   full list of `scripts` you can run with `npm run <script>`)
 
-Now you'll have a local development environment backed by the NEAR TestNet! Running `yarn dev` will tell you the URL you can visit in your browser to see the app.
+Now you'll have a local development environment backed by the NEAR TestNet! Running `npm run watch` will tell you the URL you can visit in your browser to see the app.
 
 
 Exploring The Code
 ==================
 
 1. The backend code lives in the `/assembly` folder. This code gets deployed to
-   the NEAR blockchain when you run `yarn deploy:contract`. This sort of
+   the NEAR blockchain when you run `npm run deploy:contract`. This sort of
    code-that-runs-on-a-blockchain is called a "smart contract" – [learn more
    about NEAR smart contracts][smart contract docs].
 2. The frontend code lives in the `/src` folder.
@@ -36,7 +36,7 @@ Exploring The Code
 3. Tests: there are different kinds of tests for the frontend and backend. The
    backend code gets tested with the [asp] command for running the backend
    AssemblyScript tests, and [jest] for running frontend tests. You can run
-   both of these at once with `yarn test`.
+   both of these at once with `npm run test`.
 
 Both contract and client-side code will auto-reload as you change source files.
 
@@ -44,7 +44,7 @@ Both contract and client-side code will auto-reload as you change source files.
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run `yarn dev`, your smart contracts get deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run `npm run watch`, your smart contracts get deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
 
 
 Step 0: Install near-cli
@@ -52,7 +52,7 @@ Step 0: Install near-cli
 
 You need near-cli installed globally. Here's how:
 
-    npm install --global near-cli
+    npm install -g near-cli
 
 This will give you the `near` [CLI] tool. Ensure that it's installed with:
 
@@ -93,7 +93,7 @@ Step 4: deploy!
 
 One command:
 
-    yarn deploy
+    npm run deploy
 
 As you can see in `package.json`, this does two things:
 
@@ -103,7 +103,6 @@ As you can see in `package.json`, this does two things:
 
 
   [NEAR]: https://near.org/
-  [yarn]: https://yarnpkg.com/
   [AssemblyScript]: https://www.assemblyscript.org/introduction.html
   [React]: https://reactjs.org
   [smart contract docs]: https://docs.near.org/docs/develop/contracts/overview
