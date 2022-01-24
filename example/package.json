@@ -5,16 +5,17 @@
   "scripts": {
     "build": "npm run build:contract && npm run build:web",
     "build:contract": "asb",
-    "build:contract:debug": "asb --target debug",
+    "build:contract:dev": "asb --target debug",
     "build:web": "parcel build src/index.html --public-url ./",
     "deploy": "npm run build && npm run deploy:contract && npm run deploy:web",
-    "deploy:contract": "near dev-deploy",
+    "deploy:contract": "near deploy",
+    "deploy:contract:dev": "near dev-deploy",
     "deploy:web": "gh-pages -d dist",
-    "dev": "npm run build:contract:debug && near dev-deploy && nodemon --watch assembly -e ts --exec npm run dev:start",
-    "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
     "start": "npm run deploy && parcel src/index.html",
-    "dev:start": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
-    "test": "npm run build:contract:debug && asp && jest"
+    "start:dev": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
+    "watch": "npm run build:contract:dev && npm run deploy:contract:dev && nodemon --watch assembly -e ts --exec npm run dev:start",
+    "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
+    "test": "npm run build:contract:dev && asp && jest"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
