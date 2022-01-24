@@ -1,25 +1,25 @@
-# near-walletselector
+# NEAR Wallet Selector
 
-# How to import package locally
+The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
-- `npm install`
-- `npm run build`
-- `npm link`
-- Go to folder where you want to import near-walletselector and type: `npm link near-walletselector`
-- You can now import near-walletselector in your project for example like this: `import NearWalletSelector from "near-walletselector";`
+- [NEAR Wallet](https://wallet.near.org/) - Web wallet.
+- [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
+- [Ledger](https://www.ledger.com/) - Hardware wallet.
 
-# How to use
+## Installation and Usage
 
-Import like this:
+The easiest way to use `near-walletselector` is to install it from NPM:
 
+```bash
+npm install near-walletselector
 ```
+
+Then use it in your dApp:
+
+```ts
 import NearWalletSelector from "near-walletselector";
-```
 
-Create near wallet instance:
-
-```
-const near = new NearWalletSelector({
+const near = await NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
   networkId: "testnet",
   theme: "light",
@@ -37,33 +37,35 @@ const near = new NearWalletSelector({
 });
 ```
 
+## API Reference
+
 Show modal:
 
-```
+```ts
 near.showModal();
 ```
 
 Hide modal:
 
-```
+```ts
 near.hideModal();
 ```
 
 Is signed in:
 
-```
+```ts
 near.isSignedIn();
 ```
 
 Sign out:
 
-```
+```ts
 near.signOut();
 ```
 
 Add event listeners (init, disconnect, signIn):
 
-```
+```ts
 near.on("init", () => {
    // your code
 });
@@ -71,8 +73,14 @@ near.on("init", () => {
 
 Interact with smart contract:
 
-```
+```ts
 near.getContract().callContract("getMessages", []).then(messages => {
   console.log(messages);
 });
 ```
+
+## Example Integration
+
+A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
+
+Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs.

@@ -5,7 +5,7 @@ import { updateState } from "./state/State";
 import Options from "./types/Options";
 
 export default async function init(options?: Options) {
-  const nearConfig = getConfig(process.env.NODE_ENV || "testnet");
+  const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
   const nearConnection = await connect({

@@ -28,15 +28,6 @@ function Modal(): JSX.Element {
     };
   }, []);
 
-  const mountedStyle = {
-    animation: "inAnimation 350ms ease-in",
-    maxHeight: "300px",
-  };
-  const unmountedStyle = {
-    animation: "outAnimation 200ms ease-out",
-    animationFillMode: "forwards",
-  };
-
   function handleCloseModal(event: any) {
     event.preventDefault();
     if (event.target === event.currentTarget) onCloseModalHandler();
@@ -148,6 +139,7 @@ function Modal(): JSX.Element {
               )}
               {useCustomDerivationPath && (
                 <input
+                  autoFocus
                   className={ledgerWalletError ? "input-error" : ""}
                   type="text"
                   placeholder="custom derivation path"
@@ -258,7 +250,11 @@ function Modal(): JSX.Element {
               >
                 What is a Wallet?
               </span>
-              <div className="info-description" style={walletInfoVisible ? mountedStyle : unmountedStyle}>
+              <div
+                className={`info-description ${
+                  walletInfoVisible ? "show" : "hide"
+                }-explanation`}
+              >
                 <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
             </div>
