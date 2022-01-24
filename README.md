@@ -19,7 +19,7 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-walletselector";
 
-const near = new NearWalletSelector({
+const near = await NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
   networkId: "testnet",
   theme: "light",
