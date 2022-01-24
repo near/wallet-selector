@@ -10,13 +10,13 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 The easiest way to use `near-walletselector` is to install it from NPM:
 
-```
+```bash
 npm install near-walletselector
 ```
 
 Then use it in your dApp:
 
-```
+```ts
 import NearWalletSelector from "near-walletselector";
 
 const near = new NearWalletSelector({
@@ -41,31 +41,31 @@ const near = new NearWalletSelector({
 
 Show modal:
 
-```
+```ts
 near.showModal();
 ```
 
 Hide modal:
 
-```
+```ts
 near.hideModal();
 ```
 
 Is signed in:
 
-```
+```ts
 near.isSignedIn();
 ```
 
 Sign out:
 
-```
+```ts
 near.signOut();
 ```
 
 Add event listeners (init, disconnect, signIn):
 
-```
+```ts
 near.on("init", () => {
    // your code
 });
@@ -73,7 +73,7 @@ near.on("init", () => {
 
 Interact with smart contract:
 
-```
+```ts
 near.getContract().callContract("getMessages", []).then(messages => {
   console.log(messages);
 });
