@@ -13,7 +13,7 @@
     "deploy:web": "gh-pages -d dist",
     "start": "npm run deploy && parcel src/index.html",
     "start:dev": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
-    "watch": "npm run build:contract:dev && npm run deploy:contract:dev && nodemon --watch assembly -e ts --exec npm run dev:start",
+    "watch": "npm run build:contract:dev && npm run deploy:contract:dev && nodemon --watch assembly -e ts --exec npm run start:dev",
     "lint": "eslint \"./**/*.js\" \"./**/*.jsx\"",
     "test": "npm run build:contract:dev && asp && jest"
   },
