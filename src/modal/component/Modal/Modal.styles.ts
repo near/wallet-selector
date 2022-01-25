@@ -12,23 +12,27 @@ export default `
 }
 
 .Modal * {
-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+.Modal.Modal-light-theme {
+  color: #000;
 }
 
 .Modal .Modal-content {
   max-width: 700px;
   max-height: 70vh;
   width: 400px;
-  background-color: white;
+  background-color: #fff;
   margin: 10px;
   border-radius: 16px;
-  padding: 1.5em;
+  padding: 24px;
   overflow-y: auto;
 }
 
 .Modal-option-list li span,
 .Modal .Modal-content p {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .Modal-header {
@@ -80,65 +84,68 @@ box-sizing: content-box;
 }
 
 .Modal-option-list li.selected-wallet {
-    background: #ededed;
+  background: #ededed;
 }
 .Modal-option-list li .selected-wallet-text {
-    text-align: center;
+  text-align: center;
 }
 
-.Modal-option-list li .selected-wallet-text span{
-    font-size: 14px;
-    font-weight: 500;
+.Modal-option-list li .selected-wallet-text span  {
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.derivation-paths {
-}
 .derivation-paths-list {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
 }
+
 .Modal-body button, .Modal-body input {
-    background: inherit;
-    font-size: 0.889em;
-    font-family: inherit;
-    border-width: 1px;
-    border-style: solid;
-    border-color: inherit;
-    border-radius: 40px;
-    margin-top: 0.5rem;
-    padding: 0.55em 1.4em;
-    text-align: center;
-    color: inherit;
-    font-family: inherit;
-    transition: background 150ms ease-in-out;
-    line-height: 1.15;
-    cursor: pointer;
- }
+  background: inherit;
+  font-size: 14.2px;
+  font-family: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-color: inherit;
+  border-radius: 40px;
+  margin-top: 8px;
+  padding: 0.55em 1.4em;
+  text-align: center;
+  color: inherit;
+  font-family: inherit;
+  transition: background 150ms ease-in-out;
+  line-height: 1.15;
+  cursor: pointer;
+}
+
+.Modal-body input:focus {
+   border: 2px solid rgb(64, 153, 255);
+}
  
- .derivation-paths--actions {
-    display: flex;
-    justify-content: space-between;
- }
+.derivation-paths--actions {
+  display: flex;
+  justify-content: space-between;
+}
  
 .derivation-paths--actions .right-button {
-    color: white;
-    border: 1px solid rgb(64, 153, 255);
-    background: rgb(64, 153, 255);
- }
+  color: white;
+  border: 1px solid rgb(64, 153, 255);
+  background: rgb(64, 153, 255);
+}
     
 .derivation-paths--actions .left-button {
-    border: 0.5px solid #bfbfbf;
+  border: 0.5px solid #bfbfbf;
 }
 
 .derivation-paths--actions .right-button:hover {
-    background-color: rgb(89 166 255);
- }
+  background-color: rgb(89 166 255);
+}
  
 .derivation-paths--actions .left-button:hover {
-    background-color: #ebebeb;
+  background-color: #ebebeb;
 }
 
 .path-option-highlighted {
@@ -146,23 +153,20 @@ box-sizing: content-box;
 }
 
 .error {
-    font-size: 0.889em;
-    font-family: inherit;
-    color: inherit;
-    margin-top: 0.5rem;
-    color: #e2504a;
+  font-family: inherit;
+  color: inherit;
+  color: #e2504a;
 }
 .info {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .info span {
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 200ms ease-out;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease-out;
 }
-
 
 .info .info-description {
   max-height: 0px;
@@ -174,75 +178,88 @@ box-sizing: content-box;
     font-size: 14px;
 }
 
+.info-description.show-explanation {
+  animation: inAnimation 350ms ease-in;
+  max-height: 300px;
+}
+.info-description.hide-explanation {
+  animation: outAnimation 200ms ease-out;
+  animation-fill-mode: forwards;
+}
+
 .input-error {
-    border-color: #e2504a;
+  border-color: #e2504a;
 }
 
 .Modal-wallet-not-installed .icon-display {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .Modal-wallet-not-installed .icon-display img {
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
+  margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
 }
 
 .Modal-wallet-not-installed .refresh-link {
-    color: rgb(64, 153, 255);
-    cursor: pointer;
+  color: rgb(64, 153, 255);
+  cursor: pointer;
 }
 
 .Modal-wallet-not-installed .action-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .Modal-wallet-not-installed .action-buttons .left-button,
 .Modal-switch-network-message .actions .left-button {
-    border: 0.5px solid #bfbfbf;
+  border: 0.5px solid #bfbfbf;
 }
 .Modal-wallet-not-installed .action-buttons .left-button:hover,
 .Modal-switch-network-message .actions .left-button:hover {
-    background-color: #ebebeb;
+  background-color: #ebebeb;
 }
 
 .Modal-wallet-not-installed .action-buttons .right-button,
 .Modal-switch-network-message .actions .right-button {
-    color: white;
-    background-color: rgb(64, 153, 255);
-    border: 1px solid rgb(64, 153, 255);
+  color: white;
+  background-color: rgb(64, 153, 255);
+  border: 1px solid rgb(64, 153, 255);
 }
 
 .Modal-wallet-not-installed .action-buttons .right-button:hover,
 .Modal-switch-network-message .actions .right-button:hover {
-    background-color: rgb(89 166 255);
+  background-color: rgb(89 166 255);
+}
+
+.Modal-switch-network-message .header h2 {
+  font-size: 24px;
 }
 
 .Modal-switch-network-message .content p {
-    font-size: 0.89rem;
+  font-size: 14.25px;
 }
 
 .Modal-switch-network-message .actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .Modal-dark-theme .Modal-content {
   background-color: #414141;
   color: white;
 }
-
+  
 .Modal-dark-theme .Modal-content .Modal-option-list li {
   border-color: #393939;
   transition: background-color 0.2s ease-in-out;
 }
 
-.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img{
+.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img  {
   filter: invert(1);
 }
 
@@ -252,8 +269,8 @@ box-sizing: content-box;
 }
 
 .Modal-dark-theme .Modal-content .info span:hover {
-    color: #a2a2a2;
-    transition: all 200ms ease-in;
+  color: #a2a2a2;
+  transition: all 200ms ease-in;
 }
 
 .Modal-dark-theme .Modal-wallet-not-installed .action-buttons .left-button:hover,
@@ -262,14 +279,35 @@ box-sizing: content-box;
     background-color: #313131;
 }
 
-@keyframes inAnimation {
-  0% {
-    opacity: 0;
-    visibility: hidden;
+@media (prefers-color-scheme: dark) {
+  .Modal .Modal-content {
+    background-color: #414141;
+    color: white;
   }
-  100% {
-    opacity: 1;
-    visibility: visible;
+    
+  .Modal-content .Modal-option-list li {
+    border-color: #393939;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .Modal-content .Modal-option-list li:first-child img  {
+    filter: invert(1);
+  }
+
+  .Modal-content .Modal-option-list li:hover,
+  .Modal-content .Modal-option-list li.selected-wallet {
+    background-color: #313131;
+  }
+
+  .Modal-content .info span:hover {
+    color: #a2a2a2;
+    transition: all 200ms ease-in;
+  }
+
+  .Modal-wallet-not-installed .action-buttons .left-button:hover,
+  .derivation-paths--actions .left-button:hover,
+  .Modal-switch-network-message .left-button:hover {
+      background-color: #313131;
   }
 }
 
@@ -280,21 +318,6 @@ box-sizing: content-box;
   100% {
     opacity: 0;
     visibility: hidden;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .Modal:not(.Modal-light-theme) .Modal-content {
-    background-color: #26292a !important;
-    color: white;
-  }
-
-  .Modal:not(.Modal-light-theme) .Modal-content .Modal-option-list li {
-    border-color: black;
-  }
-
-  .Modal:not(.Modal-light-theme) .Modal-content .Modal-option-list li:hover {
-    border-color: white;
   }
 }
 
