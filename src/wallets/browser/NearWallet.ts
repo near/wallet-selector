@@ -2,7 +2,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { WalletConnection, Contract } from "near-api-js";
-import { getState, updateState } from "../../state/State";
+import { getState } from "../../state/State";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -28,18 +28,17 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     if (!state.nearConnection) return;
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
     EventHandler.callEventHandler("init");
-    if (!this.wallet.isSignedIn()) {
-      updateState((prevState) => ({
-        ...prevState,
-        signedInWalletId: null,
-        isSignedIn: false,
-      }));
+    if (this.wallet.isSignedIn()) {
+      this.setWalletAsSignedIn();
     }
   }
 
   async signIn() {
     const state = getState();
     this.wallet.requestSignIn(state.options.contract.address).then(() => {
+      if (!this.wallet.isSignedIn()) {
+        return;
+      }
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     });
@@ -56,7 +55,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async getAccount(): Promise<any> {
-    if (!(await this.isConnected())) return null;
+    if (!this.isConnected()) return null;
     return {
       accountId: this.wallet.getAccountId(),
       balance: (await this.wallet.account().state()).amount,
