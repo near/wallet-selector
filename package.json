@@ -28,6 +28,8 @@
   "homepage": "https://github.com/near-projects/wallet-selector#readme",
   "devDependencies": {
     "@ledgerhq/logs": "^6.10.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
     "@types/big.js": "^6.1.2",
     "@types/bn.js": "^5.1.0",
     "@types/bs58": "^4.0.1",
