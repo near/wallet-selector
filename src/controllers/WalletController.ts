@@ -7,6 +7,7 @@ import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import EventHandler from "../utils/EventHandler";
 import EventList from "../types/EventList";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import State from "../types/State";
 
 class WalletController {
   constructor() {
@@ -16,39 +17,33 @@ class WalletController {
 
   private generateDefaultWallets() {
     const state = getState();
-    state.options.wallets.forEach((wallet) => {
+
+    const walletProviders = state.options.wallets.reduce<
+      State["walletProviders"]
+    >((result, wallet) => {
       switch (wallet) {
         case "nearwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              nearwallet: new NearWallet(),
-            },
-          }));
+          result.nearwallet = new NearWallet();
           break;
         case "senderwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              senderwallet: new SenderWallet(),
-            },
-          }));
+          result.senderwallet = new SenderWallet();
           break;
         case "ledgerwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              ledgerwallet: new LedgerWallet(),
-            },
-          }));
+          result.ledgerwallet = new LedgerWallet();
           break;
         default:
           break;
       }
-    });
+      return result;
+    }, {});
+
+    updateState((prevState) => ({
+      ...prevState,
+      walletProviders: {
+        ...prevState.walletProviders,
+        ...walletProviders,
+      },
+    }));
   }
 
   private generateCustomWallets() {

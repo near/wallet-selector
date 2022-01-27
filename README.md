@@ -86,4 +86,13 @@ near
 
 A variation of the [guest-book](https://github.com/near-examples/guest-book/) example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
 
+<<<<<<< HEAD
 Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs.
+=======
+Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs. Below is a common workflow you can use:
+
+- Navigate to the `example` directory.
+- Execute `npm link ../` to create a symlink locally.
+- Execute `npm install`.
+- Execute `npm run watch` to watch both `src` directories and automatically recompile.
+>>>>>>> e40d3bb8b6239affe1085b74914a374ba0a1937b
