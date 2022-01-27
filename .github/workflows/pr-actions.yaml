@@ -7,7 +7,8 @@ on:
       - dev
 
 jobs:
-  test:
+  run-testing-suite:
+    name: Run Testing Suite
     runs-on: ubuntu-latest
 
     steps:
@@ -18,4 +19,5 @@ jobs:
           node-version: "16.x"
       - name: Install NPM Dependencies
         run: npm install
-      - run: npm test
+      - name: Run Unit & Integration Tests
+        run: npm test
