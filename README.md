@@ -84,3 +84,10 @@ near.getContract().callContract("getMessages", []).then(messages => {
 A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
 
 Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs.
+
+A common workflow for contributes:
+
+- Navigate to the `example` directory.
+- Execute `npm link ../` to create a symlink locally.
+- Execute `npm install`.
+- Execute `npm run watch` to watch both `src` directories and automatically recompile.
