@@ -18,6 +18,6 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install Dependencies
-        run: npm install
+      - run: npm install
       - name: Run Unit & Integration Tests
       - run: npm test
