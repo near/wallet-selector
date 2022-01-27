@@ -1,12 +1,10 @@
-Guest Book - Gitpod version
-===========================
+# Guest Book - Gitpod version
 
 Sign in with [NEAR] and add a message to the guest book! A starter app built with an [AssemblyScript] backend and a [React] frontend.
 
 This README is specific to Gitpod and this example. For local development, please see [README.md](README.md).
 
-Exploring The Code
-==================
+# Exploring The Code
 
 1. The backend code lives in the `/assembly` folder. This code gets deployed to
    the NEAR blockchain when you run `yarn deploy:contract`. This sort of
@@ -23,15 +21,11 @@ Exploring The Code
 
 Both contract and client-side code will auto-reload as you change source files.
 
-
-Using
-======
+# Using
 
 Gitpod has taken care of installing all the necessary tools and dependencies. At the bottom of Gitpod is a terminal which will display a link to follow:
 
-
     Server running at http://localhost:1234
-
 
 A small dialog appears showing options similar to this:
 
@@ -47,13 +41,13 @@ The "Save" button sends the text input to the blockchain, storing it as a string
 
 The "Save & Donate" button demonstrates attaching NEAR and a gas price when calling the smart contract's method `addMessage`. When the web app refreshes with "paid" messages, the user interface highlights them.
 
-Data collection
-===============
+# Data collection
+
 By using Gitpod in this project, you agree to opt-in to basic, anonymous analytics. No personal information is transmitted. Instead, these usage statistics aid in discovering potential bugs and user flow information.
 
-  [smart contract docs]: https://docs.near.org/docs/develop/contracts/overview
-  [asp]: https://www.npmjs.com/package/@as-pect/cli
-  [jest]: https://jestjs.io/
-  [NEAR]: https://near.org/
-  [AssemblyScript]: https://www.assemblyscript.org/introduction.html
-  [React]: https://reactjs.org
+[smart contract docs]: https://docs.near.org/docs/develop/contracts/overview
+[asp]: https://www.npmjs.com/package/@as-pect/cli
+[jest]: https://jestjs.io/
+[near]: https://near.org/
+[assemblyscript]: https://www.assemblyscript.org/introduction.html
+[react]: https://reactjs.org

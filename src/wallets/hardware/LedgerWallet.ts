@@ -82,7 +82,7 @@ export default class LedgerWallet
     return Buffer.concat(
       parts
         .map((part) =>
-          part.endsWith(`'`)
+          part.endsWith("'")
             ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000
             : Math.abs(parseInt(part))
         )
@@ -214,8 +214,8 @@ export default class LedgerWallet
   async callContract(
     method: string,
     args?: any,
-    gas: string = "10000000000000",
-    deposit: string = "0"
+    gas = "10000000000000",
+    deposit = "0"
   ) {
     const state = getState();
     if (!state.signedInWalletId) return;

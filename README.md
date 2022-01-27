@@ -33,7 +33,7 @@ const near = await NearWalletSelector({
     explanation: `Wallets are used to send, receive, and store digital assets. There are different types of wallets. 
                   They can be an extension added to your browser, a hardware device plugged into your computer, 
                   web-based, or as an app on your phone.`,
-  }
+  },
 });
 ```
 
@@ -67,20 +67,23 @@ Add event listeners (init, disconnect, signIn):
 
 ```ts
 near.on("init", () => {
-   // your code
+  // your code
 });
 ```
 
 Interact with smart contract:
 
 ```ts
-near.getContract().callContract("getMessages", []).then(messages => {
-  console.log(messages);
-});
+near
+  .getContract()
+  .callContract("getMessages", [])
+  .then((messages) => {
+    console.log(messages);
+  });
 ```
 
 ## Example Integration
 
-A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
+A variation of the [guest-book](https://github.com/near-examples/guest-book/) example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
 
 Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs.

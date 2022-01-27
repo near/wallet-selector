@@ -35,7 +35,7 @@ export default class SmartContract {
   ): Promise<any> {
     const state = getState();
     if (!state.signedInWalletId) {
-      return state.walletProviders["nearwallet"].callContract(
+      return state.walletProviders.nearwallet.callContract(
         method,
         args,
         gas,

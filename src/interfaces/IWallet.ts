@@ -1,4 +1,4 @@
-export default interface IWallet {
+type IWallet = {
   getId(): string;
   getName(): string;
   getDescription(): string;
@@ -12,5 +12,11 @@ export default interface IWallet {
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
   getAccount(): Promise<any>;
-  callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any>;
-}
+  callContract(
+    method: string,
+    args?: any,
+    gas?: string,
+    deposit?: string
+  ): Promise<any>;
+};
+export default IWallet;

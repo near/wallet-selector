@@ -10,7 +10,12 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"./**/*.ts\" --fix",
     "prepare": "npm run build"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": "@ntnyq/prettier"
   },
   "repository": {
     "type": "git",
@@ -28,12 +33,23 @@
   "homepage": "https://github.com/near-projects/wallet-selector#readme",
   "devDependencies": {
     "@ledgerhq/logs": "^6.10.0",
+    "@ntnyq/eslint-config-prettier": "^0.3.3",
     "@types/big.js": "^6.1.2",
     "@types/bn.js": "^5.1.0",
     "@types/bs58": "^4.0.1",
     "@types/node": "^16.11.13",
     "@types/w3c-web-hid": "^1.0.2",
     "@types/w3c-web-usb": "^1.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-react": "^7.28.0",
+    "prettier": "2.5.1",
     "typescript": "^4.5.3"
   },
   "dependencies": {

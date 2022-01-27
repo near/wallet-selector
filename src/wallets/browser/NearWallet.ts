@@ -37,6 +37,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
       EventHandler.callEventHandler("signIn");
     });
   }
+
   async disconnect() {
     if (!this.wallet) return;
     this.wallet.signOut();

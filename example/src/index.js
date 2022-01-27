@@ -35,7 +35,7 @@ async function initContract() {
   near.on("init", async () => {
     console.log("init");
   });
-  let currentUser = await near.getAccount();
+  const currentUser = await near.getAccount();
   console.log(currentUser);
   return { near, contract, currentUser, nearConfig };
 }

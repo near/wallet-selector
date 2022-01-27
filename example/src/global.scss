@@ -4,18 +4,19 @@
 
 html {
   --bg: #fff;
-  --fg: #25282A;
+  --fg: #25282a;
   --gray: #888;
-  --royal: #0072CE;
-  --blue: #6AD1E3;
-  --primary: #D1CCBD;
+  --royal: #0072ce;
+  --blue: #6ad1e3;
+  --primary: #d1ccbd;
   --secondary: var(--royal);
-  --tertiary: #FF585D;
+  --tertiary: #ff585d;
 
   background-color: var(--bg);
   color: var(--fg);
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  font-size: calc(.65em + 0.7vw);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif;
+  font-size: calc(0.65em + 0.7vw);
   line-height: 1.3;
 
   ::selection {
@@ -24,7 +25,7 @@ html {
   }
 
   @media (prefers-color-scheme: dark) {
-    --bg: #25282A;
+    --bg: #25282a;
     --fg: #fff;
     --secondary: var(--blue);
 
@@ -64,13 +65,16 @@ label {
   color: var(--gray);
 }
 
-button, .highlight {
+button,
+.highlight {
   border-radius: 5px;
   border-color: var(--primary);
   border: 0.1em solid var(--primary);
   padding: 0.5em 1em;
 
-  &:hover, &:focus, &:focus-within {
+  &:hover,
+  &:focus,
+  &:focus-within {
     border-color: var(--secondary);
   }
 }
@@ -79,7 +83,7 @@ input {
   border: none;
   flex: 1;
   &:read-only {
-    color: var(--primary)
+    color: var(--primary);
   }
 }
 
@@ -89,12 +93,14 @@ input[type="number"] {
   margin: 0 1em;
   width: 4em;
   padding-left: 0.5em;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     border-color: var(--secondary);
   }
 }
 
-button, input {
+button,
+input {
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -105,7 +111,8 @@ button, input {
 button {
   position: relative;
   transition: top 50ms;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     top: -1px;
   }
   &:active {
