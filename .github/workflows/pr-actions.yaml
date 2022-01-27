@@ -1,7 +1,6 @@
 name: PR Actions
 
 on:
-  push:
   pull_request:
     branches:
       - main
@@ -17,5 +16,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-      - run: npm install
+      - name: Install NPM Dependencies
+        run: npm install
       - run: npm test
