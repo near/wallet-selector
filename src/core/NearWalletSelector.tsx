@@ -36,7 +36,7 @@ export default class NearWalletSelector {
       state.walletProviders[state.signedInWalletId].init();
     }
 
-    this.renderModal()
+    this.renderModal();
   }
 
   renderModal() {
@@ -44,7 +44,6 @@ export default class NearWalletSelector {
     el.id = MODAL_ELEMENT_ID;
     document.body.appendChild(el);
 
-    console.log("render!");
     ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
   }
 
