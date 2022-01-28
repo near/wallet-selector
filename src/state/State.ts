@@ -6,6 +6,7 @@ let state: { current: State } = {
     showModal: false,
     showWalletOptions: true,
     showLedgerDerivationPath: false,
+    showSenderWalletNotInstalled: false,
     options: {
       theme: null,
       networkId: "testnet",

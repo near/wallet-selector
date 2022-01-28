@@ -197,7 +197,9 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          <div className="Modal-body Modal-wallet-not-installed">
+          <div
+            style={{ display: state.showSenderWalletNotInstalled ? "block" : "none" }}
+            className="Modal-body Modal-wallet-not-installed">
             <div className="icon-display">
               <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
               <p>SenderWallet</p>
@@ -217,10 +219,10 @@ function Modal(): JSX.Element {
               <button
                 className="left-button"
                 onClick={() => {
-                  modalHelper.hideSenderWalletNotInstalledMessage();
                   updateState((prevState) => ({
                     ...prevState,
-                    showWalletOptions: true
+                    showWalletOptions: true,
+                    showSenderWalletNotInstalled: false,
                   }));
                 }}
               >

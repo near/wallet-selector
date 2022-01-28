@@ -1,20 +1,6 @@
 import { MODAL_ELEMENT_ID } from "../constants";
 
 const modalHelper = {
-  openSenderWalletNotInstalledMessage() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const senderWalletNotInstalled: HTMLElement | null = modal.querySelector(".Modal-wallet-not-installed");
-    if (senderWalletNotInstalled) senderWalletNotInstalled.style.display = "block";
-  },
-
-  hideSenderWalletNotInstalledMessage() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const senderWalletNotInstalled: HTMLElement | null = modal.querySelector(".Modal-wallet-not-installed");
-    if (senderWalletNotInstalled) senderWalletNotInstalled.style.display = "none";
-  },
-
   openSwitchNetworkMessage() {
     const modal = document.getElementById(MODAL_ELEMENT_ID);
     if (!modal) return;

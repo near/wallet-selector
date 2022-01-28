@@ -25,8 +25,8 @@ export default class SenderWallet
       updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
+        showSenderWalletNotInstalled: true,
       }));
-      modalHelper.openSenderWalletNotInstalledMessage();
       return;
     }
 

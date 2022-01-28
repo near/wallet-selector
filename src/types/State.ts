@@ -6,6 +6,7 @@ type State = {
   showModal: boolean;
   showWalletOptions: boolean;
   showLedgerDerivationPath: boolean;
+  showSenderWalletNotInstalled: boolean;
   options: Options;
   walletProviders: {
     [name: string]: IWallet;
