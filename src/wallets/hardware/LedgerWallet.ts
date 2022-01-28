@@ -5,7 +5,7 @@ import bs58 from "bs58";
 import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
-import { getState } from "../../state/State";
+import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
@@ -168,7 +168,10 @@ export default class LedgerWallet
     // }
     // window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
     this.setWalletAsSignedIn();
-    modalHelper.hideModal();
+    updateState((prevState) => ({
+      ...prevState,
+      visible: false
+    }))
     EventHandler.callEventHandler("signIn");
   }
 

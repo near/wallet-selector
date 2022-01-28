@@ -1,7 +1,7 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
-import { getState } from "../../state/State";
+import { getState, updateState } from "../../state/State";
 import modalHelper from "../../modal/ModalHelper";
 
 export default class SenderWallet
@@ -49,7 +49,10 @@ export default class SenderWallet
     if (response.accessKey) {
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
-      modalHelper.hideModal();
+      updateState((prevState) => ({
+        ...prevState,
+        visible: false
+      }))
     }
   }
 
