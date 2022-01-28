@@ -173,7 +173,6 @@ function Modal(): JSX.Element {
                     const ledgerWalletProvider = state.walletProviders["ledgerwallet"] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
                     ledgerWalletProvider.setAccountId(accountId);
-                    console.log(accountId);
                     await ledgerWalletProvider.signIn();
                   } catch (e) {
                     setLedgerWalletError(`Error: ${e.message}`);

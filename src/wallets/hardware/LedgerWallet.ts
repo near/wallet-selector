@@ -74,20 +74,20 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const state = getState();
     const provider = new providers.JsonRpcProvider(`https://rpc.${state.options.networkId}.near.org`);
 
-    const publicKeyString = publicKey;
-
     const response: any = await provider
       .query({
         request_type: "view_access_key",
         finality: "final",
         account_id: accountId,
-        public_key: publicKeyString,
+        public_key: publicKey,
       })
       .catch((err) => {
         console.log(err);
       });
 
-    this.nonce = response.nonce;
+    if (response) {
+      this.nonce = response.nonce;
+    }
 
     return !!response;
   }
