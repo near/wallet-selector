@@ -274,6 +274,10 @@ export default `
   background-color: rgba(var(--black-rgb), 0.8);
 }
 
+.Modal-dark-theme .Modal-switch-network-message .header h2 {
+  color: var(--white);
+}
+
 .Modal-dark-theme .Modal-content .info span:hover {
   color: var(--light-gray);
   transition: all 200ms ease-in;
@@ -301,6 +305,10 @@ export default `
   .Modal-content .Modal-option-list li:hover,
   .Modal-content .Modal-option-list li.selected-wallet {
     background-color: rgba(var(--black-rgb), 0.8);
+  }
+  
+  .Modal-switch-network-message .header h2 {
+    color: var(--white);
   }
 
   .Modal-content .info span:hover {
