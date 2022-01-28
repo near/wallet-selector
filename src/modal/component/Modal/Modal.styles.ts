@@ -1,4 +1,6 @@
 export default `
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
+
 .Modal {
   position: fixed;
   top: 0;
@@ -9,6 +11,7 @@ export default `
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Manrope, sans-serif;
 }
 
 .Modal * {
