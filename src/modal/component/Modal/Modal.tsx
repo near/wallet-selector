@@ -79,7 +79,7 @@ function Modal(): JSX.Element {
       >
         <div className="Modal-content">
           <div className="Modal-body Modal-select-wallet-option">
-            <p>
+            <p className="Modal-description">
               {state.options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">

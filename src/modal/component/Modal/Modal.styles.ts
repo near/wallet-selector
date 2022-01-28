@@ -8,6 +8,7 @@ export default `
   --dark-gray: #3F4246;
   --dark-gray-op-30: #A7A7A730;
   --light-gray: #A7A7A7;
+  --text-color: #676767;
   --white: #FFFFFF;
   --blue: #5F8AFA;
   --red: #DB5555;
@@ -24,6 +25,7 @@ export default `
   justify-content: center;
   align-items: center;
   font-family: Manrope, sans-serif;
+  font-weight: 500;
 }
 
 .Modal * {
@@ -31,23 +33,32 @@ export default `
 }
 
 .Modal.Modal-light-theme {
-  color: var(--black);
+  color: var(--text-color);
 }
 
 .Modal .Modal-content {
   max-width: 700px;
   max-height: 70vh;
   width: 400px;
-  background-color: #fff;
+  background-color: var(--white);
   margin: 10px;
   border-radius: 16px;
-  padding: 24px;
+  padding: 32px;
   overflow-y: auto;
 }
 
-.Modal-option-list li span,
+.Modal-option-list li span {
+  font-size: 14px;
+}
+
 .Modal .Modal-content p {
   font-size: 16px;
+  line-height: 1.6;
+}
+
+.Modal-description {
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .Modal-header {
@@ -80,7 +91,7 @@ export default `
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
-  border: 1px solid #f4f4f4;
+  border: 1px solid var(--dark-gray-op-30);
   display: flex;
 }
 
@@ -144,24 +155,6 @@ export default `
   display: flex;
   justify-content: space-between;
 }
- 
-.derivation-paths--actions .right-button {
-  color: var(--white);
-  border: 1px solid var(--blue);
-  background: var(--blue);
-}
-    
-.derivation-paths--actions .left-button {
-  border: 0.5px solid var(--light-gray);
-}
-
-.derivation-paths--actions .right-button:hover {
-  background-color: rgb(89 166 255);
-}
- 
-.derivation-paths--actions .left-button:hover {
-  background-color: var(--dark-gray-op-30);
-}
 
 .path-option-highlighted {
   border-color: var(--blue)!important;
@@ -177,7 +170,7 @@ export default `
 
 .info span {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 200ms ease-out;
 }
@@ -190,6 +183,7 @@ export default `
 
 .info .info-description p {
     font-size: 14px;
+    margin-bottom: 0px;
 }
 
 .info-description.show-explanation {
@@ -228,29 +222,27 @@ export default `
   align-items: center;
 }
 
-.Modal-wallet-not-installed .action-buttons .left-button,
-.Modal-switch-network-message .actions .left-button {
+.Modal .Modal-content .left-button {
   border: 0.5px solid var(--light-gray);
 }
-.Modal-wallet-not-installed .action-buttons .left-button:hover,
-.Modal-switch-network-message .actions .left-button:hover {
+.Modal .Modal-content .left-button:hover {
   background-color: var(--dark-gray-op-30);
 }
 
-.Modal-wallet-not-installed .action-buttons .right-button,
-.Modal-switch-network-message .actions .right-button {
+.Modal .Modal-content .right-button {
   color: var(--white);
   background-color: var(--blue);
   border: 1px solid var(--blue);
 }
 
-.Modal-wallet-not-installed .action-buttons .right-button:hover,
-.Modal-switch-network-message .actions .right-button:hover {
+.Modal .Modal-content .right-button:hover {
   background-color: rgb(89 166 255);
 }
 
 .Modal-switch-network-message .header h2 {
   font-size: 24px;
+  margin-top: 0px;
+  color: var(--black);
 }
 
 .Modal-switch-network-message .content p {
@@ -287,9 +279,7 @@ export default `
   transition: all 200ms ease-in;
 }
 
-.Modal-dark-theme .Modal-wallet-not-installed .action-buttons .left-button:hover,
-.Modal-dark-theme .derivation-paths--actions .left-button:hover,
-.Modal-dark-theme .Modal-switch-network-message .left-button:hover {
+.Modal-dark-theme .Modal-content .left-button:hover {
     background-color: rgba(var(--black-rgb), 0.8);
 }
 
@@ -318,9 +308,7 @@ export default `
     transition: all 200ms ease-in;
   }
 
-  .Modal-wallet-not-installed .action-buttons .left-button:hover,
-  .derivation-paths--actions .left-button:hover,
-  .Modal-switch-network-message .left-button:hover {
+  .Modal .Modal-content .left-button:hover {
       background-color: rgba(var(--black-rgb), 0.8);
       border-color: var(--black);
   }
