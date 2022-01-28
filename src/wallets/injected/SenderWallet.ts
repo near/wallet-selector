@@ -51,7 +51,7 @@ export default class SenderWallet
       EventHandler.callEventHandler("signIn");
       updateState((prevState) => ({
         ...prevState,
-        visible: false
+        showModal: false
       }))
     }
   }

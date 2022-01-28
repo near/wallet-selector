@@ -63,14 +63,14 @@ class WalletController {
   showModal() {
     updateState((prevState) => ({
       ...prevState,
-      visible: true
+      showModal: true
     }));
   }
 
   hideModal() {
     updateState((prevState) => ({
       ...prevState,
-      visible: false
+      showModal: false
     }));
   }
 

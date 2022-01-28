@@ -170,7 +170,7 @@ export default class LedgerWallet
     this.setWalletAsSignedIn();
     updateState((prevState) => ({
       ...prevState,
-      visible: false
+      showModal: false
     }))
     EventHandler.callEventHandler("signIn");
   }

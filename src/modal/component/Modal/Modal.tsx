@@ -38,7 +38,7 @@ function Modal(): JSX.Element {
   function onCloseModalHandler() {
     updateState((prevState) => ({
       ...prevState,
-      visible: false
+      showModal: false
     }));
     setUseCustomDerivationPath(false);
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
@@ -76,7 +76,7 @@ function Modal(): JSX.Element {
   }
 
   return (
-    <div style={{ display: state.visible ? "block" : "none"}}>
+    <div style={{ display: state.showModal ? "block" : "none"}}>
       <style>{styles}</style>
       <div
         className={`Modal ${getThemeClass(state.options.theme)}`}

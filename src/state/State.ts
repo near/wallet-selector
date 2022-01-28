@@ -3,7 +3,7 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
 let state: { current: State } = {
   current: {
-    visible: false,
+    showModal: false,
     options: {
       theme: null,
       networkId: "testnet",
