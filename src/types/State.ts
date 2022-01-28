@@ -3,6 +3,7 @@ import IWallet from "../interfaces/IWallet";
 import { Near } from "near-api-js";
 
 type State = {
+  visible: boolean;
   options: Options;
   walletProviders: {
     [name: string]: IWallet;

@@ -1,6 +1,5 @@
 import CustomWallet from "../wallets/CustomWallet";
 import { getState, updateState } from "../state/State";
-import modalHelper from "../modal/ModalHelper";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
@@ -61,20 +60,26 @@ class WalletController {
     }
   }
 
-  public showModal() {
-    modalHelper.showModal();
+  showModal() {
+    updateState((prevState) => ({
+      ...prevState,
+      visible: true
+    }));
   }
 
-  public hideModal() {
-    modalHelper.hideModal();
+  hideModal() {
+    updateState((prevState) => ({
+      ...prevState,
+      visible: false
+    }));
   }
 
-  public isSignedIn() {
+  isSignedIn() {
     const state = getState();
     return state.isSignedIn;
   }
 
-  public async signOut() {
+  async signOut() {
     EventHandler.callEventHandler("disconnect");
     const state = getState();
     if (state.signedInWalletId !== null) {
@@ -88,7 +93,7 @@ class WalletController {
     }));
   }
 
-  public async getAccount() {
+  async getAccount() {
     const state = getState();
     if (state.signedInWalletId !== null) {
       return state.walletProviders[state.signedInWalletId].getAccount();

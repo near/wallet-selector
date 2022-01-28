@@ -3,6 +3,7 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
 let state: { current: State } = {
   current: {
+    visible: false,
     options: {
       theme: null,
       networkId: "testnet",
@@ -32,6 +33,8 @@ export const updateState = (func: (prevState: State) => State) => {
   if (window.updateWalletSelector) {
     window.updateWalletSelector(nextState);
   }
+
+  console.log("outside state:", state.current);
 };
 
 export const getState = () => {

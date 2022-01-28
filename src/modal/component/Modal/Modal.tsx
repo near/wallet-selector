@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import modalHelper from "../../ModalHelper";
-import { getState } from "../../../state/State";
+import { getState, updateState } from "../../../state/State";
 import ILedgerWallet from "../../../interfaces/ILedgerWallet";
 import State from "../../../types/State";
 
@@ -22,6 +22,8 @@ function Modal(): JSX.Element {
   const defaultDescription = "Please select a wallet to connect to this dapp:";
   const [state, setState] = useState(getState());
 
+  console.log("inside state:", state);
+
   useEffect(() => {
     window.updateWalletSelector = (state) => {
       setState(state);
@@ -34,7 +36,10 @@ function Modal(): JSX.Element {
   }
 
   function onCloseModalHandler() {
-    modalHelper.hideModal();
+    updateState((prevState) => ({
+      ...prevState,
+      visible: false
+    }));
     setUseCustomDerivationPath(false);
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
     setLedgerWalletError("");
@@ -71,7 +76,7 @@ function Modal(): JSX.Element {
   }
 
   return (
-    <div>
+    <div style={{ display: state.visible ? "block" : "none"}}>
       <style>{styles}</style>
       <div
         className={`Modal ${getThemeClass(state.options.theme)}`}
