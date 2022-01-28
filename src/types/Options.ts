@@ -1,6 +1,6 @@
 import CustomWalletOptions from "./CustomWalletOptions";
 
-type Options = {
+interface Options {
   wallets: string[];
   networkId: string;
   customWallets: {
@@ -16,6 +16,6 @@ type Options = {
     description: string;
     explanation: string;
   };
-};
+}
 
 export default Options;

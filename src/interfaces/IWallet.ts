@@ -1,4 +1,4 @@
-type IWallet = {
+interface IWallet {
   getId(): string;
   getName(): string;
   getDescription(): string;
@@ -18,5 +18,5 @@ type IWallet = {
     gas?: string,
     deposit?: string
   ): Promise<any>;
-};
+}
 export default IWallet;

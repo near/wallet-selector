@@ -1,6 +1,6 @@
 import EventList from "../types/EventList";
 
-type EventHandler = {
+interface EventHandler {
   eventHandlers: {
     init: () => void;
     disconnect: () => void;
@@ -8,6 +8,6 @@ type EventHandler = {
   };
   addEventHandler(event: EventList, callback: () => void): void;
   callEventHandler(event: EventList): void;
-};
+}
 
 export default EventHandler;
