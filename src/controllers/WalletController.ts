@@ -67,6 +67,7 @@ class WalletController {
       showWalletOptions: true,
       showLedgerDerivationPath: false,
       showSenderWalletNotInstalled: false,
+      showSwitchNetwork: false,
     }));
   }
 

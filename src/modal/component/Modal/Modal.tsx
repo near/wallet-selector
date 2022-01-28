@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import modalHelper from "../../ModalHelper";
 import { getState, updateState } from "../../../state/State";
 import ILedgerWallet from "../../../interfaces/ILedgerWallet";
 import State from "../../../types/State";
@@ -241,7 +240,9 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          <div className="Modal-body Modal-switch-network-message">
+          <div
+            style={{ display: state.showSwitchNetwork ? "block" : "none" }}
+            className="Modal-body Modal-switch-network-message">
             <div className="header">
               <h2>You Must Change Networks</h2>
             </div>
@@ -264,9 +265,9 @@ function Modal(): JSX.Element {
                 onClick={() => {
                   updateState((prevState) => ({
                     ...prevState,
-                    showWalletOptions: true
+                    showWalletOptions: true,
+                    showSwitchNetwork: false,
                   }));
-                  modalHelper.hideSwitchNetworkMessage();
                 }}
               >
                 Switch Wallet

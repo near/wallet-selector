@@ -2,7 +2,6 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
-import modalHelper from "../../modal/ModalHelper";
 
 export default class SenderWallet
   extends InjectedWallet
@@ -34,10 +33,10 @@ export default class SenderWallet
     const state = getState();
 
     if (state.options.networkId !== rpcResponse.rpc.networkId) {
-      modalHelper.openSwitchNetworkMessage();
       updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
+        showSwitchNetwork: true,
       }));
       return;
     }
