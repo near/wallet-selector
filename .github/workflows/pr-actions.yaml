@@ -6,6 +6,9 @@ on:
       - main
       - dev
 
+env:
+  CI: true
+
 jobs:
   test:
     name: Test Suite
