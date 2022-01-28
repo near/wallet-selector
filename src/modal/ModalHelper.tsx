@@ -1,19 +1,6 @@
 import { MODAL_ELEMENT_ID } from "../constants";
 
 const modalHelper = {
-  openLedgerDerivationPathModal() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const ledgerDerivationPathModal: HTMLElement | null = modal.querySelector(".Modal-choose-ledger-derivation-path");
-    if (ledgerDerivationPathModal) ledgerDerivationPathModal.style.display = "block";
-  },
-  hideLedgerDerivationPathModal() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const ledgerDerivationPathModal: HTMLElement | null = modal.querySelector(".Modal-choose-ledger-derivation-path");
-
-    if (ledgerDerivationPathModal) ledgerDerivationPathModal.style.display = "none";
-  },
   openSelectWalletOptionModal() {
     const modal = document.getElementById(MODAL_ELEMENT_ID);
     if (!modal) return;

@@ -76,7 +76,7 @@ function Modal(): JSX.Element {
   }
 
   return (
-    <div style={{ display: state.showModal ? "block" : "none"}}>
+    <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
         className={`Modal ${getThemeClass(state.options.theme)}`}
@@ -128,7 +128,9 @@ function Modal(): JSX.Element {
               })}
             </ul>
           </div>
-          <div className="Modal-body Modal-choose-ledger-derivation-path">
+          <div
+            style={{ display: state.showLedgerDerivationPath ? "block" : "none" }}
+            className="Modal-body Modal-choose-ledger-derivation-path">
             <p>
               Make sure your Ledger is plugged in, then select a derivation path
               to connect your accounts:

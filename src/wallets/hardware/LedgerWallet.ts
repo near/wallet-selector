@@ -98,7 +98,10 @@ export default class LedgerWallet
   }
 
   async walletSelected() {
-    modalHelper.openLedgerDerivationPathModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showLedgerDerivationPath: true
+    }));
     modalHelper.hideSelectWalletOptionModal();
   }
 
