@@ -1,8 +1,7 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
-import { getState } from "../../state/State";
-import modalHelper from "../../modal/ModalHelper";
+import { getState, updateState } from "../../state/State";
 
 export default class SenderWallet
   extends InjectedWallet
@@ -22,8 +21,11 @@ export default class SenderWallet
 
   async walletSelected() {
     if (!window[this.injectedGlobal]) {
-      modalHelper.hideSelectWalletOptionModal();
-      modalHelper.openSenderWalletNotInstalledMessage();
+      updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+        showSenderWalletNotInstalled: true,
+      }));
       return;
     }
 
@@ -31,8 +33,11 @@ export default class SenderWallet
     const state = getState();
 
     if (state.options.networkId !== rpcResponse.rpc.networkId) {
-      modalHelper.openSwitchNetworkMessage();
-      modalHelper.hideSelectWalletOptionModal();
+      updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+        showSwitchNetwork: true,
+      }));
       return;
     }
     await this.init();
@@ -49,7 +54,10 @@ export default class SenderWallet
     if (response.accessKey) {
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
-      modalHelper.hideModal();
+      updateState((prevState) => ({
+        ...prevState,
+        showModal: false
+      }))
     }
   }
 
