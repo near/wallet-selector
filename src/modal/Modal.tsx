@@ -21,8 +21,6 @@ function Modal(): JSX.Element {
   const defaultDescription = "Please select a wallet to connect to this dapp:";
   const [state, setState] = useState(getState());
 
-  console.log("inside state:", state);
-
   useEffect(() => {
     window.updateWalletSelector = (state) => {
       setState(state);
