@@ -9,7 +9,8 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
-    "lint": "eslint \"./**/*.ts\"  \"./**/*.tsx\" --fix",
+    "lint": "eslint \"./**/*.ts\"  \"./**/*.tsx\"",
+    "lint:fix": "eslint \"./**/*.ts\"  \"./**/*.tsx\" --fix",
     "test": "jest",
     "prepare": "npm run build"
   },
