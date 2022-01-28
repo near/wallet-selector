@@ -6,6 +6,7 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
+    "test:e2e": "playwright test",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
@@ -30,6 +31,7 @@
   "homepage": "https://github.com/near-projects/wallet-selector#readme",
   "devDependencies": {
     "@ledgerhq/logs": "^6.10.0",
+    "@playwright/test": "^1.18.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@types/big.js": "^6.1.2",
@@ -46,7 +48,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "install": "^0.13.0",
     "jest": "^27.4.7",
-    "prettier": "^2.5.1",
+    "playwright": "^1.18.0",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.3"
