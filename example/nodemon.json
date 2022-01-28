@@ -1,0 +1,6 @@
+{
+  "watch": ["../src/", "./src/"],
+  "ext": "tsx,ts,js",
+  "ignore": ["dist", "lib"],
+  "exec": "npm run build:wallet-selector && npm run start:dev"
+}
