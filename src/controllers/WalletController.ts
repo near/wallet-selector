@@ -63,7 +63,9 @@ class WalletController {
   showModal() {
     updateState((prevState) => ({
       ...prevState,
-      showModal: true
+      showModal: true,
+      showWalletOptions: true,
+      showLedgerDerivationPath: false,
     }));
   }
 

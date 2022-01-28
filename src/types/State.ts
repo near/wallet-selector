@@ -4,6 +4,7 @@ import { Near } from "near-api-js";
 
 type State = {
   showModal: boolean;
+  showWalletOptions: boolean;
   showLedgerDerivationPath: boolean;
   options: Options;
   walletProviders: {

@@ -4,6 +4,7 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 let state: { current: State } = {
   current: {
     showModal: false,
+    showWalletOptions: true,
     showLedgerDerivationPath: false,
     options: {
       theme: null,

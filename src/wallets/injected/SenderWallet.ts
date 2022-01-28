@@ -22,7 +22,10 @@ export default class SenderWallet
 
   async walletSelected() {
     if (!window[this.injectedGlobal]) {
-      modalHelper.hideSelectWalletOptionModal();
+      updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+      }));
       modalHelper.openSenderWalletNotInstalledMessage();
       return;
     }
@@ -32,7 +35,10 @@ export default class SenderWallet
 
     if (state.options.networkId !== rpcResponse.rpc.networkId) {
       modalHelper.openSwitchNetworkMessage();
-      modalHelper.hideSelectWalletOptionModal();
+      updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+      }));
       return;
     }
     await this.init();

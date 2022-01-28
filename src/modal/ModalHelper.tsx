@@ -1,19 +1,6 @@
 import { MODAL_ELEMENT_ID } from "../constants";
 
 const modalHelper = {
-  openSelectWalletOptionModal() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const selectWalletOptionModal: HTMLElement | null = modal.querySelector(".Modal-select-wallet-option");
-    if (selectWalletOptionModal) selectWalletOptionModal.style.display = "block";
-  },
-  hideSelectWalletOptionModal() {
-    const modal = document.getElementById(MODAL_ELEMENT_ID);
-    if (!modal) return;
-    const selectWalletOptionModal: HTMLElement | null = modal.querySelector(".Modal-select-wallet-option");
-    if (selectWalletOptionModal) selectWalletOptionModal.style.display = "none";
-  },
-
   openSenderWalletNotInstalledMessage() {
     const modal = document.getElementById(MODAL_ELEMENT_ID);
     if (!modal) return;

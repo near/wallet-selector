@@ -83,7 +83,9 @@ function Modal(): JSX.Element {
         onClick={handleCloseModal}
       >
         <div className="Modal-content">
-          <div className="Modal-body Modal-select-wallet-option">
+          <div
+            style={{ display: state.showWalletOptions ? "block" : "none" }}
+            className="Modal-body Modal-select-wallet-option">
             <p>
               {state.options.walletSelectorUI.description || defaultDescription}
             </p>
@@ -216,7 +218,10 @@ function Modal(): JSX.Element {
                 className="left-button"
                 onClick={() => {
                   modalHelper.hideSenderWalletNotInstalledMessage();
-                  modalHelper.openSelectWalletOptionModal();
+                  updateState((prevState) => ({
+                    ...prevState,
+                    showWalletOptions: true
+                  }));
                 }}
               >
                 Back
@@ -255,7 +260,10 @@ function Modal(): JSX.Element {
               <button
                 className="right-button"
                 onClick={() => {
-                  modalHelper.openSelectWalletOptionModal();
+                  updateState((prevState) => ({
+                    ...prevState,
+                    showWalletOptions: true
+                  }));
                   modalHelper.hideSwitchNetworkMessage();
                 }}
               >

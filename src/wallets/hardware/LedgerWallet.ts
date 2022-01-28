@@ -2,7 +2,6 @@ import HardwareWallet from "../types/HardwareWallet";
 import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
-import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
@@ -100,9 +99,9 @@ export default class LedgerWallet
   async walletSelected() {
     updateState((prevState) => ({
       ...prevState,
+      showWalletOptions: false,
       showLedgerDerivationPath: true
     }));
-    modalHelper.hideSelectWalletOptionModal();
   }
 
   private async sign(transactionData: Uint8Array) {
