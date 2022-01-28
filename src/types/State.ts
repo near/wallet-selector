@@ -3,6 +3,11 @@ import IWallet from "../interfaces/IWallet";
 import { Near } from "near-api-js";
 
 type State = {
+  showModal: boolean;
+  showWalletOptions: boolean;
+  showLedgerDerivationPath: boolean;
+  showSenderWalletNotInstalled: boolean;
+  showSwitchNetwork: boolean;
   options: Options;
   walletProviders: {
     [name: string]: IWallet;
