@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Modal from "./component/Modal/Modal";
+import Modal from "./Modal";
 import { MODAL_ELEMENT_ID } from "../constants";
 
 const modalHelper = {

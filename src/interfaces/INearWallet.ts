@@ -1,4 +1,4 @@
 import IWallet from "./IWallet";
 
-type INearWallet = Record<string, unknown> & IWallet;
+type INearWallet = {} & IWallet;
 export default INearWallet;
