@@ -73,22 +73,22 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const state = getState();
     const provider = new providers.JsonRpcProvider(`https://rpc.${state.options.networkId}.near.org`);
 
-    const response: any = await provider
+    return provider
       .query({
         request_type: "view_access_key",
         finality: "final",
         account_id: accountId,
         public_key: publicKey,
       })
+      .then((res: any) => {
+        this.nonce = res.nonce;
+        return true;
+      })
       .catch((err) => {
         console.log(err);
+
+        return false;
       });
-
-    if (response) {
-      this.nonce = response.nonce;
-    }
-
-    return !!response;
   }
 
   setDebugMode(debugMode: boolean) {
@@ -110,7 +110,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     updateState((prevState) => ({
       ...prevState,
       showWalletOptions: false,
-      showLedgerDerivationPath: true
+      showLedgerDerivationPath: true,
     }));
   }
 
@@ -184,8 +184,8 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     this.setWalletAsSignedIn();
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
-    }))
+      showModal: false,
+    }));
     EventHandler.callEventHandler("signIn");
   }
 
