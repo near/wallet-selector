@@ -1,31 +1,33 @@
 import { EventEmitter, } from "events";
 
-type EventMap = Record<string, any>;
+type EventList = "init" | "disconnect" | "signIn";
 
-type EventKey<T extends EventMap> = string & keyof T;
+type EventMap = Record<EventList, unknown>;
+
+type EventKey = keyof EventMap;
 
 export interface Emitter<T extends EventMap = EventMap> {
-  on<K extends EventKey<T>>
+  on<K extends EventKey>
     (eventName: K, callback: () => {}): void;
 
-  off<K extends EventKey<T>>
+  off<K extends EventKey>
     (eventName: K, callback: () => {}): void;
 
-  emit<K extends EventKey<T>>
+  emit<K extends EventKey>
     (eventName: K, params?: T[K]): void;
 }
 
 export class EventHandler<T extends EventMap> implements Emitter<T> {
   private emitter = new EventEmitter();
-  on<K extends EventKey<T>>(eventName: K, callback: () => {}) {
+  on<K extends EventKey>(eventName: K, callback: () => {}) {
     this.emitter.on(eventName, callback);
   }
 
-  off<K extends EventKey<T>>(eventName: K, callback: () => {}) {
+  off<K extends EventKey>(eventName: K, callback: () => {}) {
     this.emitter.off(eventName, callback);
   }
 
-  emit<K extends EventKey<T>>(eventName: K, params: T[K]) {
+  emit<K extends EventKey>(eventName: K, params: T[K]) {
     this.emitter.emit(eventName, params);
   }
 }
