@@ -1,12 +1,12 @@
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
-import { WalletConnection, Contract } from "near-api-js";
+import { WalletConnection, transactions } from "near-api-js";
 import { getState } from "../../state/State";
+import BN from "bn.js";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
-  private contract: Contract;
 
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
@@ -57,26 +57,29 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+  async callContract(method: string, args: any = {}, gas?: string, deposit?: string): Promise<any> {
     const state = getState();
-
-    if (!this.contract) {
-      this.contract = new Contract(this.wallet.account(), state.options.contract.address, {
-        viewMethods: state.options.contract.viewMethods,
-        changeMethods: state.options.contract.changeMethods,
-      });
-    }
-
-    if (!args) args = {};
+    const account = this.wallet.account();
+    const contractId = state.options.contract.address
 
     if (state.options.contract.viewMethods.includes(method)) {
-      return this.contract[method](args);
+      return account.viewFunction(contractId, method, args);
     }
 
     if (state.options.contract.changeMethods.includes(method)) {
-      return this.contract[method](args, gas, deposit);
+      if (!gas || !deposit) {
+        throw new Error("Change methods require deposit and gas");
+      }
+
+      // @ts-ignore
+      return account.signAndSendTransaction({
+        receiverId: contractId,
+        actions: [
+          transactions.functionCall(method, args, new BN(gas), new BN(deposit))
+        ]
+      });
     }
 
-    return null;
+    throw new Error("Invalid method name");
   }
 }
