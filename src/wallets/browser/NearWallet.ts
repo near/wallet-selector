@@ -1,8 +1,10 @@
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
-import EventHandler from "../../utils/EventHandler";
+import EventHandler from "../../interfaces/EventsHandler";
 import { WalletConnection, Contract } from "near-api-js";
 import { getState } from "../../state/State";
+
+const event = new EventHandler()
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -27,7 +29,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     const state = getState();
     if (!state.nearConnection) return;
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
-    EventHandler.callEventHandler("init");
+    event.emit("init", {});
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }
@@ -40,13 +42,13 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
         return;
       }
       this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
+      event.emit("signIn", {});
     });
   }
   async disconnect() {
     if (!this.wallet) return;
     this.wallet.signOut();
-    EventHandler.callEventHandler("disconnect");
+    event.emit("disconnect", {});
   }
 
   async isConnected(): Promise<boolean> {

@@ -3,10 +3,12 @@ import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import EventHandler from "../../utils/EventHandler";
+import EventHandler from "../../interfaces/EventsHandler";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
+
+const event = new EventHandler()
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -147,14 +149,14 @@ export default class LedgerWallet
 
     this.transport.on("disconnect", (res: any) => {
       console.log(res);
-      EventHandler.callEventHandler("disconnect");
+      event.emit("disconnect", {});
     });
 
-    EventHandler.callEventHandler("init");
+    event.emit("init", {});
   }
 
   async disconnect() {
-    EventHandler.callEventHandler("disconnect");
+    event.emit("disconnect", {});
   }
 
   async isConnected(): Promise<boolean> {
@@ -174,7 +176,7 @@ export default class LedgerWallet
       ...prevState,
       showModal: false
     }))
-    EventHandler.callEventHandler("signIn");
+    event.emit("signIn", {});
   }
 
   async generatePublicKey() {
