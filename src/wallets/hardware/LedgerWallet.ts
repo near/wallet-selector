@@ -8,16 +8,12 @@ import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
-<<<<<<< HEAD
 const event = new EventHandler()
 
 export default class LedgerWallet
   extends HardwareWallet
   implements ILedgerWallet
 {
-=======
-export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
->>>>>>> 0a061554116aa71adc4d1c213570f5428a5d044c
   private readonly CLA = 0x80;
   private readonly GET_ADDRESS_INS = 0x04;
   private readonly SIGN_INS = 0x02;
