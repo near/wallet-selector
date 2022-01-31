@@ -4,7 +4,7 @@ type EventMap = Record<string, any>;
 
 type EventKey<T extends EventMap> = string & keyof T;
 
-interface Emitter<T extends EventMap> {
+export interface Emitter<T extends EventMap = EventMap> {
   on<K extends EventKey<T>>
     (eventName: K, callback: () => {}): void;
 
@@ -12,7 +12,7 @@ interface Emitter<T extends EventMap> {
     (eventName: K, callback: () => {}): void;
 
   emit<K extends EventKey<T>>
-    (eventName: K, params: T[K]): void;
+    (eventName: K, params?: T[K]): void;
 }
 
 export class EventHandler<T extends EventMap> implements Emitter<T> {

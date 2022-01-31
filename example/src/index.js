@@ -15,7 +15,7 @@ async function initContract() {
     networkId: "testnet",
     theme: "light",
     contract: {
-      address: nearConfig.contractName,
+      address: "dev-1642553348141-79187154356666",
       viewMethods: ["getMessages"],
       changeMethods: ["addMessage"],
     },
@@ -32,6 +32,7 @@ async function initContract() {
 
   // Load in user's account data
   const contract = near.getContract();
+  console.log("subscribe")
   near.on("init", async () => {
     console.log("init");
   });

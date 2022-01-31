@@ -1,9 +1,8 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
-import EventHandler from "../../interfaces/EventsHandler";
 import { getState, updateState } from "../../state/State";
+import { Emitter } from "../../interfaces/EventsHandler";
 
-const event = new EventHandler()
 
 export default class SenderWallet
   extends InjectedWallet
@@ -11,8 +10,9 @@ export default class SenderWallet
 {
   private contract: any;
 
-  constructor() {
+  constructor(emitter: Emitter) {
     super(
+      emitter,
       "senderwallet",
       "Sender Wallet",
       "Sender Wallet",
@@ -55,7 +55,7 @@ export default class SenderWallet
 
     if (response.accessKey) {
       this.setWalletAsSignedIn();
-      event.emit("signIn", {});
+      this.emitter.emit("signIn");
       updateState((prevState) => ({
         ...prevState,
         showModal: false
@@ -78,7 +78,7 @@ export default class SenderWallet
       .then((res: any) => {
         console.log(res);
       });
-    event.emit("init", {});
+    this.emitter.emit("init");
   }
 
   async isConnected(): Promise<boolean> {
@@ -86,7 +86,7 @@ export default class SenderWallet
   }
 
   disconnect() {
-    event.emit("disconnect", {});
+    this.emitter.emit("disconnect", {});
     return window[this.injectedGlobal].signOut();
   }
 

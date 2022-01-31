@@ -3,14 +3,17 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import EventHandler from "../interfaces/EventsHandler";
+import { Emitter } from "../interfaces/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import State from "../types/State";
 
-const events = new EventHandler()
 
 class WalletController {
-  constructor() {
+  
+  private emitter: Emitter
+
+  constructor(emitter: Emitter) {
+    this.emitter = emitter 
     this.generateDefaultWallets();
     this.generateCustomWallets();
   }
@@ -23,13 +26,13 @@ class WalletController {
     >((result, wallet) => {
       switch (wallet) {
         case "nearwallet":
-          result.nearwallet = new NearWallet();
+          result.nearwallet = new NearWallet(this.emitter);
           break;
         case "senderwallet":
-          result.senderwallet = new SenderWallet();
+          result.senderwallet = new SenderWallet(this.emitter);
           break;
         case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet();
+          result.ledgerwallet = new LedgerWallet(this.emitter);
           break;
         default:
           break;
@@ -50,6 +53,7 @@ class WalletController {
     const state = getState();
     for (const name in state.options.customWallets) {
       state.walletProviders[name] = new CustomWallet(
+        this.emitter,
         name,
         state.options.customWallets[name].name,
         state.options.customWallets[name].description,
@@ -85,7 +89,7 @@ class WalletController {
   }
 
   async signOut() {
-    events.emit("disconnect", {});
+    this.emitter.emit("disconnect");
     const state = getState();
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].disconnect();
@@ -107,7 +111,7 @@ class WalletController {
   }
 
   on(event: any, callback: () => {}) {
-    events.on(event, callback)
+    this.emitter.on(event, callback)
   }
 }
 
