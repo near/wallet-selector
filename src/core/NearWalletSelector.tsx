@@ -1,12 +1,15 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
 import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
-import modalHelper from "../modal/ModalHelper";
 import { getState, updateState } from "../state/State";
-import INearWalletSelector from "../interfaces/INearWalletSelector";
 import EventList from "../types/EventList";
 import SmartContract from "../contracts/SmartContract";
+import { MODAL_ELEMENT_ID } from "../constants";
+import Modal from "../modal/Modal";
 
-export default class NearWalletSelector implements INearWalletSelector {
+export default class NearWalletSelector {
   private walletController: WalletController;
   private contract: SmartContract;
 
@@ -32,34 +35,43 @@ export default class NearWalletSelector implements INearWalletSelector {
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].init();
     }
-    modalHelper.createModal();
+
+    this.renderModal();
   }
 
-  public getContract() {
+  renderModal() {
+    const el = document.createElement("div");
+    el.id = MODAL_ELEMENT_ID;
+    document.body.appendChild(el);
+
+    ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
+  }
+
+  getContract() {
     return this.contract;
   }
 
-  public showModal() {
+  showModal() {
     this.walletController.showModal();
   }
 
-  public hideModal() {
+  hideModal() {
     this.walletController.hideModal();
   }
 
-  public isSignedIn() {
+  isSignedIn() {
     return this.walletController.isSignedIn();
   }
 
-  public signOut() {
+  signOut() {
     this.walletController.signOut();
   }
 
-  public getAccount() {
+  getAccount() {
     return this.walletController.getAccount();
   }
 
-  public on(event: EventList, callback: () => void) {
+  on(event: EventList, callback: () => void) {
     this.walletController.on(event, callback);
   }
 }

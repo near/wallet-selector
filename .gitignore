@@ -1,5 +1,7 @@
 /node_modules
 /lib
+/.jest
 
 # IDEs and editors
 /.idea
+/.vscode

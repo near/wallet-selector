@@ -2,10 +2,9 @@ import HardwareWallet from "../types/HardwareWallet";
 import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
-import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
-import { getState } from "../../state/State";
+import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
@@ -108,8 +107,11 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async walletSelected() {
-    modalHelper.openLedgerDerivationPathModal();
-    modalHelper.hideSelectWalletOptionModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showWalletOptions: false,
+      showLedgerDerivationPath: true
+    }));
   }
 
   private async sign(transactionData: Uint8Array) {
@@ -180,7 +182,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     }
 
     this.setWalletAsSignedIn();
-    modalHelper.hideModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false
+    }))
     EventHandler.callEventHandler("signIn");
   }
 

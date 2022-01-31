@@ -1,12 +1,12 @@
 import CustomWallet from "../wallets/CustomWallet";
 import { getState, updateState } from "../state/State";
-import modalHelper from "../modal/ModalHelper";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import EventHandler from "../utils/EventHandler";
 import EventList from "../types/EventList";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import State from "../types/State";
 
 class WalletController {
   constructor() {
@@ -16,39 +16,33 @@ class WalletController {
 
   private generateDefaultWallets() {
     const state = getState();
-    state.options.wallets.forEach((wallet) => {
+
+    const walletProviders = state.options.wallets.reduce<
+      State["walletProviders"]
+    >((result, wallet) => {
       switch (wallet) {
         case "nearwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              nearwallet: new NearWallet(),
-            },
-          }));
+          result.nearwallet = new NearWallet();
           break;
         case "senderwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              senderwallet: new SenderWallet(),
-            },
-          }));
+          result.senderwallet = new SenderWallet();
           break;
         case "ledgerwallet":
-          updateState((prevState) => ({
-            ...prevState,
-            walletProviders: {
-              ...prevState.walletProviders,
-              ledgerwallet: new LedgerWallet(),
-            },
-          }));
+          result.ledgerwallet = new LedgerWallet();
           break;
         default:
           break;
       }
-    });
+      return result;
+    }, {});
+
+    updateState((prevState) => ({
+      ...prevState,
+      walletProviders: {
+        ...prevState.walletProviders,
+        ...walletProviders,
+      },
+    }));
   }
 
   private generateCustomWallets() {
@@ -66,20 +60,30 @@ class WalletController {
     }
   }
 
-  public showModal() {
-    modalHelper.showModal();
+  showModal() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: true,
+      showWalletOptions: true,
+      showLedgerDerivationPath: false,
+      showSenderWalletNotInstalled: false,
+      showSwitchNetwork: false,
+    }));
   }
 
-  public hideModal() {
-    modalHelper.hideModal();
+  hideModal() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false
+    }));
   }
 
-  public isSignedIn() {
+  isSignedIn() {
     const state = getState();
     return state.isSignedIn;
   }
 
-  public async signOut() {
+  async signOut() {
     EventHandler.callEventHandler("disconnect");
     const state = getState();
     if (state.signedInWalletId !== null) {
@@ -93,7 +97,7 @@ class WalletController {
     }));
   }
 
-  public async getAccount() {
+  async getAccount() {
     const state = getState();
     if (state.signedInWalletId !== null) {
       return state.walletProviders[state.signedInWalletId].getAccount();
