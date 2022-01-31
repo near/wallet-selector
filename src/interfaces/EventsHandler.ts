@@ -1,7 +1,4 @@
-import EventList from "../types/EventList";
 import { EventEmitter, } from "events";
-
-
 
 type EventMap = Record<string, any>;
 
@@ -18,7 +15,7 @@ interface Emitter<T extends EventMap> {
     (eventName: K, params: T[K]): void;
 }
 
-export class EventHandler<T extends typeof EventList> implements Emitter<T> {
+export class EventHandler<T extends EventMap> implements Emitter<T> {
   private emitter = new EventEmitter();
   on<K extends EventKey<T>>(eventName: K, callback: () => {}) {
     this.emitter.on(eventName, callback);

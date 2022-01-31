@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
 import { getState, updateState } from "../state/State";
-import EventList from "../types/EventList";
 import SmartContract from "../contracts/SmartContract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
@@ -71,7 +70,7 @@ export default class NearWalletSelector {
     return this.walletController.getAccount();
   }
 
-  on(event: EventList, callback: () => void) {
+  on(event: any, callback: () => {}) {
     this.walletController.on(event, callback);
   }
 }

@@ -3,10 +3,11 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import EventHandler from "../utils/EventHandler";
-import EventList from "../types/EventList";
+import EventHandler from "../interfaces/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import State from "../types/State";
+
+const events = new EventHandler()
 
 class WalletController {
   constructor() {
@@ -84,7 +85,7 @@ class WalletController {
   }
 
   async signOut() {
-    EventHandler.callEventHandler("disconnect");
+    events.emit("disconnect", {});
     const state = getState();
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].disconnect();
@@ -105,8 +106,8 @@ class WalletController {
     return null;
   }
 
-  on(event: EventList, callback: () => void) {
-    EventHandler.addEventHandler(event, callback);
+  on(event: any, callback: () => {}) {
+    events.on(event, callback)
   }
 }
 
