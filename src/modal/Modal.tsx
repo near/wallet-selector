@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import modalHelper from "../../ModalHelper";
-import { getState } from "../../../state/State";
-import ILedgerWallet from "../../../interfaces/ILedgerWallet";
-import State from "../../../types/State";
+import { getState, updateState } from "../state/State";
+import ILedgerWallet from "../interfaces/ILedgerWallet";
+import State from "../types/State";
 
 declare global {
   // tslint:disable-next-line
@@ -34,7 +33,10 @@ function Modal(): JSX.Element {
   }
 
   function onCloseModalHandler() {
-    modalHelper.hideModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
     setUseCustomDerivationPath(false);
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
     setLedgerWalletError("");
@@ -75,11 +77,14 @@ function Modal(): JSX.Element {
   }
 
   return (
-    <div>
+    <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div className={`Modal ${getThemeClass(state.options.theme)}`} onClick={handleCloseModal}>
         <div className="Modal-content">
-          <div className="Modal-body Modal-select-wallet-option">
+          <div
+            style={{ display: state.showWalletOptions ? "block" : "none" }}
+            className="Modal-body Modal-select-wallet-option"
+          >
             <p>{state.options.walletSelectorUI.description || defaultDescription}</p>
             <ul className="Modal-option-list">
               {state.options.wallets.map((wallet: string) => {
@@ -114,7 +119,10 @@ function Modal(): JSX.Element {
               })}
             </ul>
           </div>
-          <div className="Modal-body Modal-choose-ledger-derivation-path">
+          <div
+            style={{ display: state.showLedgerDerivationPath ? "block" : "none" }}
+            className="Modal-body Modal-choose-ledger-derivation-path"
+          >
             <p>
               Make sure your Ledger is plugged in, then select an account id and derivation path to connect your
               accounts:
@@ -165,7 +173,6 @@ function Modal(): JSX.Element {
                     const ledgerWalletProvider = state.walletProviders["ledgerwallet"] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
                     ledgerWalletProvider.setAccountId(accountId);
-                    console.log(accountId);
                     await ledgerWalletProvider.signIn();
                   } catch (e) {
                     setLedgerWalletError(`Error: ${e.message}`);
@@ -176,7 +183,10 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          <div className="Modal-body Modal-wallet-not-installed">
+          <div
+            style={{ display: state.showSenderWalletNotInstalled ? "block" : "none" }}
+            className="Modal-body Modal-wallet-not-installed"
+          >
             <div className="icon-display">
               <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
               <p>SenderWallet</p>
@@ -196,8 +206,11 @@ function Modal(): JSX.Element {
               <button
                 className="left-button"
                 onClick={() => {
-                  modalHelper.hideSenderWalletNotInstalledMessage();
-                  modalHelper.openSelectWalletOptionModal();
+                  updateState((prevState) => ({
+                    ...prevState,
+                    showWalletOptions: true,
+                    showSenderWalletNotInstalled: false,
+                  }));
                 }}
               >
                 Back
@@ -215,7 +228,10 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          <div className="Modal-body Modal-switch-network-message">
+          <div
+            style={{ display: state.showSwitchNetwork ? "block" : "none" }}
+            className="Modal-body Modal-switch-network-message"
+          >
             <div className="header">
               <h2>You Must Change Networks</h2>
             </div>
@@ -233,8 +249,11 @@ function Modal(): JSX.Element {
               <button
                 className="right-button"
                 onClick={() => {
-                  modalHelper.openSelectWalletOptionModal();
-                  modalHelper.hideSwitchNetworkMessage();
+                  updateState((prevState) => ({
+                    ...prevState,
+                    showWalletOptions: true,
+                    showSwitchNetwork: false,
+                  }));
                 }}
               >
                 Switch Wallet
@@ -250,11 +269,7 @@ function Modal(): JSX.Element {
               >
                 What is a Wallet?
               </span>
-              <div
-                className={`info-description ${
-                  walletInfoVisible ? "show" : "hide"
-                }-explanation`}
-              >
+              <div className={`info-description ${walletInfoVisible ? "show" : "hide"}-explanation`}>
                 <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
             </div>

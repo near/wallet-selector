@@ -15,7 +15,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async walletSelected() {
-    this.signIn();
+    await this.signIn();
   }
 
   async init() {
@@ -23,11 +23,17 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     if (!state.nearConnection) return;
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
     EventHandler.callEventHandler("init");
+    if (this.wallet.isSignedIn()) {
+      this.setWalletAsSignedIn();
+    }
   }
 
   async signIn() {
     const state = getState();
     this.wallet.requestSignIn(state.options.contract.address).then(() => {
+      if (!this.wallet.isSignedIn()) {
+        return;
+      }
       this.setWalletAsSignedIn();
       EventHandler.callEventHandler("signIn");
     });

@@ -2,10 +2,9 @@ import HardwareWallet from "../types/HardwareWallet";
 import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
-import modalHelper from "../../modal/ModalHelper";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import EventHandler from "../../utils/EventHandler";
-import { getState } from "../../state/State";
+import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
@@ -74,22 +73,22 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const state = getState();
     const provider = new providers.JsonRpcProvider(`https://rpc.${state.options.networkId}.near.org`);
 
-    const publicKeyString = publicKey;
-
-    const response: any = await provider
+    return provider
       .query({
         request_type: "view_access_key",
         finality: "final",
         account_id: accountId,
-        public_key: publicKeyString,
+        public_key: publicKey,
+      })
+      .then((res: any) => {
+        this.nonce = res.nonce;
+        return true;
       })
       .catch((err) => {
         console.log(err);
+
+        return false;
       });
-
-    this.nonce = response.nonce;
-
-    return !!response;
   }
 
   setDebugMode(debugMode: boolean) {
@@ -108,8 +107,11 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async walletSelected() {
-    modalHelper.openLedgerDerivationPathModal();
-    modalHelper.hideSelectWalletOptionModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showWalletOptions: false,
+      showLedgerDerivationPath: true,
+    }));
   }
 
   private async sign(transactionData: Uint8Array) {
@@ -180,7 +182,10 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     }
 
     this.setWalletAsSignedIn();
-    modalHelper.hideModal();
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
     EventHandler.callEventHandler("signIn");
   }
 
