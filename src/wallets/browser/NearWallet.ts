@@ -1,26 +1,15 @@
+import { WalletConnection, transactions } from "near-api-js";
+import BN from "bn.js";
+
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
-import { WalletConnection, Contract } from "near-api-js";
-import { Action } from "near-api-js/lib/transaction";
 import { getState } from "../../state/State";
-
-interface SignParams {
-  receiverId: string;
-  actions: Array<Action>;
-}
-
-interface ViewParams {
-  contractId: string;
-  methodName: string;
-  args?: object;
-}
-
-type CallParams = SignParams;
+import { CallV1Params, ViewParams } from "../../interfaces/IWallet";
+import { SerializableAction } from "../../interfaces/transactions";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
-  private contract: Contract;
 
   constructor() {
     super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
@@ -71,48 +60,50 @@ class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  sign({ receiverId, actions }: SignParams) {
+  transformSerializedActions(actions: Array<SerializableAction>) {
+    return actions.map((action) => {
+      switch (action.type) {
+        case "functionCall":
+          return transactions.functionCall(
+            action.payload.methodName,
+            action.payload.args,
+            new BN(action.payload.gas),
+            new BN(action.payload.deposit)
+          );
+        case "transfer":
+          return transactions.transfer(
+            new BN(action.payload.deposit)
+          );
+      }
+    });
+  }
+
+  sign({ receiverId, actions }: CallV1Params) {
     const account = this.wallet.account();
+    const transformedActions = this.transformSerializedActions(actions);
+
+    console.log("NearWallet:sign", { actions, transformedActions });
 
     // @ts-ignore
-    return account.signTransaction(receiverId, actions);
+    return account.signTransaction(receiverId, transformedActions);
   }
 
   view({ contractId, methodName, args = {} }: ViewParams) {
     const account = this.wallet.account();
 
+    console.log("NearWallet:view", { contractId, methodName, args });
+
     return account.viewFunction(contractId, methodName, args);
   }
 
-  async call({ receiverId, actions }: CallParams) {
+  async callV1({ receiverId, actions }: CallV1Params) {
+    console.log("NearWallet:callV1", { receiverId, actions });
+
     const state = getState();
     const [, signed] = await this.sign({ receiverId, actions });
 
     // TODO: Move nearConnection out state.
     return state.nearConnection!.connection.provider.sendTransaction(signed);
-  }
-
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
-    const state = getState();
-
-    if (!this.contract) {
-      this.contract = new Contract(this.wallet.account(), state.options.contract.address, {
-        viewMethods: state.options.contract.viewMethods,
-        changeMethods: state.options.contract.changeMethods,
-      });
-    }
-
-    if (!args) args = {};
-
-    if (state.options.contract.viewMethods.includes(method)) {
-      return this.contract[method](args);
-    }
-
-    if (state.options.contract.changeMethods.includes(method)) {
-      return this.contract[method](args, gas, deposit);
-    }
-
-    return null;
   }
 }
 

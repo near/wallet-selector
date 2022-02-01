@@ -214,12 +214,26 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return bs58.encode(Buffer.from(publicKey));
   }
 
+  // TODO: Implement.
+  async view() {
+    throw new Error("Not implemented!");
+  }
+
+  // TODO: Implement.
+  async callV1() {
+    throw new Error("Not implemented!");
+  }
+
   async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
     const state = getState();
     if (!state.signedInWalletId) return;
 
     if (state.options.contract.viewMethods.includes(method)) {
-      return await state.walletProviders.nearwallet.callContract(method, args);
+      return await state.walletProviders.nearwallet.view({
+        contractId: state.options.contract.address,
+        methodName: method,
+        args
+      });
     }
 
     if (!args) args = [];

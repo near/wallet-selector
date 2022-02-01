@@ -2,13 +2,10 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
+import { CallV1Params, ViewParams } from "../../interfaces/IWallet";
+import { SerializableAction } from "../../interfaces/transactions";
 
-export default class SenderWallet
-  extends InjectedWallet
-  implements ISenderWallet
-{
-  private contract: any;
-
+class SenderWallet extends InjectedWallet implements ISenderWallet {
   constructor() {
     super(
       "senderwallet",
@@ -96,25 +93,46 @@ export default class SenderWallet
     };
   }
 
-  async callContract(
-    method: string,
-    args?: any,
-    gas?: string,
-    deposit?: string
-  ): Promise<any> {
-    if (!this.contract) {
-      const state = getState();
-      if (!state.nearConnection) return;
-      this.contract = await state.nearConnection.loadContract(
-        state.options.contract.address,
-        {
-          viewMethods: state.options.contract.viewMethods,
-          changeMethods: state.options.contract.changeMethods,
-          sender: window[this.injectedGlobal].getAccountId(),
-        }
-      );
-    }
-    console.log(this.contract, method, args, gas, deposit);
-    return this.contract[method](args);
+  transformSerializedActions(actions: Array<SerializableAction>) {
+    return actions.map((action) => {
+      switch (action.type) {
+        case "functionCall":
+          return action.payload;
+        default:
+          throw new Error(`Action type '${action.type}' is not supported`);
+      }
+    });
+  }
+
+  view({ contractId, methodName, args = {} }: ViewParams) {
+    const state = getState();
+
+    console.log("SenderWallet:view", { contractId, methodName, args });
+
+    // Using NEAR connection as unable to get the RPC connection from SenderWallet.
+    return state.nearConnection!.connection.provider.query({
+      request_type: "call_function",
+      account_id: contractId,
+      method_name: methodName,
+      args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
+      finality: "optimistic"
+    })
+      // TODO: Assign real interface.
+      .then((res: any) => {
+        return res.result && res.result.length > 0 && JSON.parse(Buffer.from(res.result).toString());
+      });
+  }
+
+  async callV1({ receiverId, actions }: CallV1Params) {
+    const transformedActions = this.transformSerializedActions(actions);
+
+    console.log("SenderWallet:callV1", { receiverId, actions, transformedActions });
+
+    return window[this.injectedGlobal].signAndSendTransaction({
+      receiverId,
+      actions: transformedActions,
+    });
   }
 }
+
+export default SenderWallet;

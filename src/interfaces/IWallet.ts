@@ -1,3 +1,16 @@
+import { SerializableAction } from "./transactions";
+
+export interface ViewParams {
+  contractId: string;
+  methodName: string;
+  args?: object;
+}
+
+export interface CallV1Params {
+  receiverId: string;
+  actions: Array<SerializableAction>;
+}
+
 export default interface IWallet {
   getId(): string;
   getName(): string;
@@ -12,5 +25,6 @@ export default interface IWallet {
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
   getAccount(): Promise<any>;
-  callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any>;
+  view(params: ViewParams): Promise<any>;
+  callV1(params: CallV1Params): Promise<any>;
 }
