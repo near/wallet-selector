@@ -2,9 +2,23 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { WalletConnection, Contract } from "near-api-js";
+import { Action } from "near-api-js/lib/transaction";
 import { getState } from "../../state/State";
 
-export default class NearWallet extends BrowserWallet implements INearWallet {
+interface SignParams {
+  receiverId: string;
+  actions: Array<Action>;
+}
+
+interface ViewParams {
+  contractId: string;
+  methodName: string;
+  args?: object;
+}
+
+type CallParams = SignParams;
+
+class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
   private contract: Contract;
 
@@ -57,6 +71,31 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
+  sign({ receiverId, actions }: SignParams) {
+    const account = this.wallet.account();
+
+    // @ts-ignore
+    return account.signTransaction(receiverId, actions);
+  }
+
+  view({ contractId, methodName, args = {} }: ViewParams) {
+    const account = this.wallet.account();
+
+    return account.functionCall({
+      contractId,
+      methodName,
+      args
+    });
+  }
+
+  async call({ receiverId, actions }: CallParams) {
+    const state = getState();
+    const [, signed] = await this.sign({ receiverId, actions });
+
+    // TODO: Move nearConnection out state.
+    return state.nearConnection!.connection.provider.sendTransaction(signed);
+  }
+
   async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
     const state = getState();
 
@@ -80,3 +119,5 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     return null;
   }
 }
+
+export default NearWallet;
