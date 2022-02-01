@@ -9,12 +9,7 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
   private contract: Contract;
 
   constructor() {
-    super(
-      "nearwallet",
-      "Near Wallet",
-      "Near Wallet",
-      "https://cryptologos.cc/logos/near-protocol-near-logo.png"
-    );
+    super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
 
     this.init();
   }
@@ -62,24 +57,26 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  async callContract(
-    method: string,
-    args?: any,
-    gas?: string,
-    deposit?: string
-  ): Promise<any> {
+  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
     const state = getState();
+
     if (!this.contract) {
-      this.contract = new Contract(
-        this.wallet.account(),
-        state.options.contract.address,
-        {
-          viewMethods: state.options.contract.viewMethods,
-          changeMethods: state.options.contract.changeMethods,
-        }
-      );
+      this.contract = new Contract(this.wallet.account(), state.options.contract.address, {
+        viewMethods: state.options.contract.viewMethods,
+        changeMethods: state.options.contract.changeMethods,
+      });
     }
-    console.log(this.contract, method, args, gas, deposit);
-    return this.contract[method](args);
+
+    if (!args) args = {};
+
+    if (state.options.contract.viewMethods.includes(method)) {
+      return this.contract[method](args);
+    }
+
+    if (state.options.contract.changeMethods.includes(method)) {
+      return this.contract[method](args, gas, deposit);
+    }
+
+    return null;
   }
 }

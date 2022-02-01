@@ -1,5 +1,7 @@
 import { PlaywrightTestConfig, devices } from "@playwright/test";
 
+const runningInCI = !!process.env.CI;
+
 const config: PlaywrightTestConfig = {
   testDir: "./e2e",
   testMatch: /.*\.e2e\.ts/,
@@ -7,12 +9,12 @@ const config: PlaywrightTestConfig = {
   expect: {
     timeout: 5000
   },
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: runningInCI,
+  retries: runningInCI ? 2 : 0,
+  workers: runningInCI ? 1 : undefined,
   reporter: "list",
   use: {
-    headless: !process.env.CI,
+    headless: runningInCI,
     actionTimeout: 0,
     trace: "on-first-retry",
   },
