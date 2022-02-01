@@ -51,7 +51,7 @@ export default `
   font-size: 14px;
 }
 
-.Modal .Modal-content p {
+.Modal .Modal-content {
   font-size: 16px;
   line-height: 1.6;
 }
@@ -63,19 +63,35 @@ export default `
 
 .Modal-header {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(214, 214, 214);
-  padding-bottom: 0.5em;
 }
 
 .Modal-header button {
   border: 0;
   cursor: pointer;
+  height: 24px;
+  padding: 4px;
 }
 
-.Modal-header h3 {
-  margin: 0;
+.Modal-header button:active {
+  background: transparent;
+}
+
+.Modal-header button svg {
+  pointer-events: none;
+}
+
+.Modal-header button:hover svg {
+  fill: var(--black);
+  transition: all 0.2s ease-in;
+}
+
+.Modal-header h2 {
+  color: var(--black);
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .Modal-option-list {
@@ -240,7 +256,7 @@ export default `
 }
 
 .Modal-switch-network-message .header h2 {
-  font-size: 24px;
+  font-size: 18px;
   margin-top: 0px;
   color: var(--black);
 }
@@ -258,6 +274,14 @@ export default `
 .Modal-dark-theme .Modal-content {
   background-color: var(--dark-gray);
   color: var(--white);
+}
+
+.Modal-dark-theme .Modal-content .Modal-header h2 {
+  color: var(--white);
+}
+
+.Modal-dark-theme .Modal-header button:hover svg {
+  fill: var(--light-gray);
 }
   
 .Modal-dark-theme .Modal-content .Modal-option-list li {
@@ -285,12 +309,21 @@ export default `
 
 .Modal-dark-theme .Modal-content .left-button:hover {
     background-color: rgba(var(--black-rgb), 0.8);
+    border-color: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {
   .Modal .Modal-content {
     background-color: var(--dark-gray);
     color: var(--white);
+  }
+  
+  .Modal-content .Modal-header h2 {
+    color: var(--white);
+  }
+  
+  .Modal-header button:hover svg {
+    fill: var(--light-gray);
   }
     
   .Modal-content .Modal-option-list li {

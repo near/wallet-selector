@@ -35,7 +35,7 @@ function Modal(): JSX.Element {
   function onCloseModalHandler() {
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
+      showModal: false,
     }));
     setUseCustomDerivationPath(false);
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
@@ -80,9 +80,25 @@ function Modal(): JSX.Element {
         onClick={handleCloseModal}
       >
         <div className="Modal-content">
+          <div className="Modal-header">
+            <h2>Connect Wallet</h2>
+            <button onClick={handleCloseModal}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+                fill="#A7A7A7"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
+            </button>
+          </div>
           <div
             style={{ display: state.showWalletOptions ? "block" : "none" }}
-            className="Modal-body Modal-select-wallet-option">
+            className="Modal-body Modal-select-wallet-option"
+          >
             <p className="Modal-description">
               {state.options.walletSelectorUI.description || defaultDescription}
             </p>
@@ -128,8 +144,11 @@ function Modal(): JSX.Element {
             </ul>
           </div>
           <div
-            style={{ display: state.showLedgerDerivationPath ? "block" : "none" }}
-            className="Modal-body Modal-choose-ledger-derivation-path">
+            style={{
+              display: state.showLedgerDerivationPath ? "block" : "none",
+            }}
+            className="Modal-body Modal-choose-ledger-derivation-path"
+          >
             <p>
               Make sure your Ledger is plugged in, then select a derivation path
               to connect your accounts:
@@ -195,8 +214,11 @@ function Modal(): JSX.Element {
             </div>
           </div>
           <div
-            style={{ display: state.showSenderWalletNotInstalled ? "block" : "none" }}
-            className="Modal-body Modal-wallet-not-installed">
+            style={{
+              display: state.showSenderWalletNotInstalled ? "block" : "none",
+            }}
+            className="Modal-body Modal-wallet-not-installed"
+          >
             <div className="icon-display">
               <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
               <p>SenderWallet</p>
@@ -240,7 +262,8 @@ function Modal(): JSX.Element {
           </div>
           <div
             style={{ display: state.showSwitchNetwork ? "block" : "none" }}
-            className="Modal-body Modal-switch-network-message">
+            className="Modal-body Modal-switch-network-message"
+          >
             <div className="header">
               <h2>You Must Change Networks</h2>
             </div>
