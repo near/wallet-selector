@@ -81,11 +81,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
   view({ contractId, methodName, args = {} }: ViewParams) {
     const account = this.wallet.account();
 
-    return account.functionCall({
-      contractId,
-      methodName,
-      args
-    });
+    return account.viewFunction(contractId, methodName, args);
   }
 
   async call({ receiverId, actions }: CallParams) {
