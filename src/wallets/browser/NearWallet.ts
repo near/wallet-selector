@@ -77,6 +77,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     console.log("NearWallet:sign", { actions, transformedActions });
 
     // @ts-ignore
+    // near-api-js marks this method as protected.
     return account.signTransaction(receiverId, transformedActions);
   }
 
