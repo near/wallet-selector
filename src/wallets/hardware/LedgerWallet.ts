@@ -7,6 +7,7 @@ import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
+import { CallParams, ViewParams } from "../../interfaces/IWallet";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -214,13 +215,22 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return bs58.encode(Buffer.from(publicKey));
   }
 
-  // TODO: Implement.
-  async view() {
-    throw new Error("Not implemented!");
+  async view({ contractId, methodName, args }: ViewParams) {
+    const state = getState();
+
+    console.log("LedgerWallet:view", { contractId, methodName, args });
+
+    return await state.walletProviders.nearwallet.view({
+      contractId,
+      methodName,
+      args
+    });
   }
 
-  // TODO: Implement.
-  async call() {
+  // TODO: Implement based on callContract.
+  async call({ receiverId, actions }: CallParams) {
+    console.log("LedgerWallet:call", { receiverId, actions });
+
     throw new Error("Not implemented!");
   }
 
