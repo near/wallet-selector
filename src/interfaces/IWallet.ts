@@ -1,4 +1,9 @@
-import { SerializableAction } from "./transactions";
+export interface FunctionCallAction {
+  methodName: string;
+  args: object;
+  gas: string;
+  deposit: string;
+}
 
 export interface ViewParams {
   contractId: string;
@@ -8,7 +13,7 @@ export interface ViewParams {
 
 export interface CallParams {
   receiverId: string;
-  actions: Array<SerializableAction>;
+  actions: Array<FunctionCallAction>;
 }
 
 export type SignParams = CallParams;
