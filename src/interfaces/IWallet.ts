@@ -22,7 +22,7 @@ export default interface IWallet {
 
   walletSelected(): void;
   init(): Promise<void>;
-  disconnect(): void;
+  disconnect(): Promise<void>;
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;

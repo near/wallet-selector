@@ -3,8 +3,17 @@ import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
 import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
+
+declare global {
+  interface Window {
+    wallet: InjectedSenderWallet | undefined;
+  }
+}
 
 class SenderWallet extends InjectedWallet implements ISenderWallet {
+  wallet: InjectedSenderWallet;
+
   constructor() {
     super(
       "senderwallet",
@@ -13,10 +22,12 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       "https://senderwallet.io/logo.png",
       "wallet"
     );
+
+    this.wallet = window.wallet!;
   }
 
   async walletSelected() {
-    if (!window[this.injectedGlobal]) {
+    if (!this.wallet) {
       updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
@@ -25,7 +36,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       return;
     }
 
-    const rpcResponse = await window[this.injectedGlobal].getRpc();
+    const rpcResponse = await this.wallet.getRpc();
     const state = getState();
 
     if (state.options.networkId !== rpcResponse.rpc.networkId) {
@@ -42,19 +53,22 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async signIn() {
     const state = getState();
-    const response = await window[this.injectedGlobal].requestSignIn({
+    const { accessKey } = await this.wallet.requestSignIn({
       contractId: state.options.contract.address,
     });
-    console.log(response);
 
-    if (response.accessKey) {
-      this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
-      updateState((prevState) => ({
-        ...prevState,
-        showModal: false
-      }))
+    if (!accessKey) {
+      return;
     }
+
+    await this.setWalletAsSignedIn();
+
+    EventHandler.callEventHandler("signIn");
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false
+    }));
   }
 
   async timeout(ms: number) {
@@ -63,31 +77,43 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async init(): Promise<void> {
     await this.timeout(200);
+
     const state = getState();
-    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
+
+    this.wallet.onAccountChanged((newAccountId) => {
       console.log("newAccountId: ", newAccountId);
     });
-    window[this.injectedGlobal]
+
+    return this.wallet
       .init({ contractId: state.options.contract.address })
-      .then((res: any) => {
+      .then((res) => {
         console.log(res);
+        EventHandler.callEventHandler("init");
       });
-    EventHandler.callEventHandler("init");
   }
 
-  async isConnected(): Promise<boolean> {
-    return window[this.injectedGlobal].isSignedIn();
+  async isConnected() {
+    return this.wallet.isSignedIn();
   }
 
   disconnect() {
-    EventHandler.callEventHandler("disconnect");
-    return window[this.injectedGlobal].signOut();
+    return this.wallet.signOut()
+      .then((res) => {
+        if (res.result !== "success") {
+          throw new Error("Failed to sign out");
+        }
+
+        EventHandler.callEventHandler("disconnect");
+
+        return;
+      });
   }
 
+  // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
   async getAccount() {
     await this.timeout(300);
     return {
-      accountId: window[this.injectedGlobal].getAccountId(),
+      accountId: this.wallet.getAccountId(),
       balance: "99967523358427624000000000",
     };
   }
@@ -114,10 +140,14 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   async call({ receiverId, actions }: CallParams) {
     console.log("SenderWallet:call", { receiverId, actions });
 
-    return window[this.injectedGlobal].signAndSendTransaction({
-      receiverId,
-      actions,
-    });
+    return this.wallet.signAndSendTransaction({ receiverId, actions })
+      .then((res) => {
+        if (res.error) {
+          throw new Error(res.error);
+        }
+
+        return res;
+      });
   }
 }
 
