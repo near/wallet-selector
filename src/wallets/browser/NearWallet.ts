@@ -59,7 +59,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  transformSerializedActions(actions: Array<FunctionCallAction>) {
+  transformActions(actions: Array<FunctionCallAction>) {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
@@ -72,9 +72,9 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   sign({ receiverId, actions }: SignParams) {
     const account = this.wallet.account();
-    const transformedActions = this.transformSerializedActions(actions);
+    const transformedActions = this.transformActions(actions);
 
-    console.log("NearWallet:sign", { actions, transformedActions });
+    console.log("NearWallet:sign", { receiverId, actions, transformedActions });
 
     // @ts-ignore
     // near-api-js marks this method as protected.
@@ -90,14 +90,21 @@ class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async call({ receiverId, actions }: CallParams) {
-    const state = getState();
+    const account = this.wallet.account();
 
     console.log("NearWallet:call", { receiverId, actions });
 
-    const [, signed] = await this.sign({ receiverId, actions });
+    // TODO: Doesn't work for actions with deposits.
+    //       Code is almost exactly the same as signAndSendTransaction.
+    // const [, signedTx] = await this.sign({ receiverId, actions });
+    // return account.connection.provider.sendTransaction(signedTx);
 
-    // TODO: Move nearConnection out of state.
-    return state.nearConnection!.connection.provider.sendTransaction(signed);
+    // @ts-ignore
+    // near-api-js marks this method as protected.
+    return account.signAndSendTransaction({
+      receiverId,
+      actions: this.transformActions(actions)
+    })
   }
 }
 
