@@ -15,7 +15,7 @@ async function initContract() {
     networkId: "testnet",
     theme: "light",
     contract: {
-      address: "dev-1642553348141-79187154356666",
+      address: nearConfig.contractName,
       viewMethods: ["getMessages"],
       changeMethods: ["addMessage"],
     },

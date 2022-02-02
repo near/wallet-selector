@@ -5,6 +5,3 @@
 # IDEs and editors
 /.idea
 /.vscode
-
-/example/src/config.js
-/example/src/index.js
