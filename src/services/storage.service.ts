@@ -2,9 +2,16 @@ import { Promisify } from "../utils/types";
 import { defer } from "../utils/HelperFunctions";
 
 export class StorageService implements Promisify<Storage> {
+  static instances = new Map<string, StorageService>();
+
   private readonly map = new Map<string, string>();
 
   constructor(private readonly prefix: string) {
+    if(StorageService.instances.has(prefix)) {
+      return StorageService.instances.get(prefix)!;
+    }
+
+    StorageService.instances.set(prefix, this);
     this.init();
   }
 
