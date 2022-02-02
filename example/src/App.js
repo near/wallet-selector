@@ -53,14 +53,32 @@ const App = ({ near, contract, currentUser2 }) => {
         }
       ]
       })
+      .catch((err) => {
+        alert("Failed to add message");
+        console.log("Failed to add message");
+
+        throw err;
+      })
       .then(() => {
-        contract.view({ methodName: "getMessages" }).then((messages) => {
-          setMessages(messages);
-          message.value = "";
-          donation.value = SUGGESTED_DONATION;
-          fieldset.disabled = false;
-          message.focus();
-        });
+        return contract.view({ methodName: "getMessages" })
+          .then((messages) => {
+            setMessages(messages);
+            message.value = "";
+            donation.value = SUGGESTED_DONATION;
+            fieldset.disabled = false;
+            message.focus();
+          })
+          .catch((err) => {
+            alert("Failed to refresh messages");
+            console.log("Failed to refresh messages");
+
+            throw err;
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        fieldset.disabled = false;
       });
   };
 
