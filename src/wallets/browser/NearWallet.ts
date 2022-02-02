@@ -5,8 +5,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState } from "../../state/State";
-import { CallParams, SignParams, ViewParams } from "../../interfaces/IWallet";
-import { SerializableAction } from "../../interfaces/transactions";
+import { CallParams, SignParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -60,7 +59,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  transformSerializedActions(actions: Array<SerializableAction>) {
+  transformSerializedActions(actions: Array<FunctionCallAction>) {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
