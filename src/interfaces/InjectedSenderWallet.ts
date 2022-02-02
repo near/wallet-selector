@@ -76,7 +76,7 @@ export interface SignAndSendTransactionResponse {
   error?: string;
   method: "signAndSendTransaction";
   notificationId: number;
-  // Heavily nested objects. We can define the types if we need them.
+  // TODO: Heavily nested objects. Define if needed.
   res?: Array<object>;
   type: "sender-wallet-result";
   url: string;
