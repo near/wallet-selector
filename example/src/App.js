@@ -41,14 +41,12 @@ const App = ({ near, contract, currentUser2 }) => {
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
     contract.call({
-      actions: [
-        {
+      actions: [{
           methodName: "addMessage",
           args: { text: message.value },
           gas: BOATLOAD_OF_GAS,
           deposit: parseNearAmount(donation.value || "0")
-        }
-      ]
+        }]
       })
       .catch((err) => {
         alert("Failed to add message");
