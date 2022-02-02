@@ -2,8 +2,7 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
-import { CallV1Params, ViewParams } from "../../interfaces/IWallet";
-import { SerializableAction } from "../../interfaces/transactions";
+import { CallParams, ViewParams } from "../../interfaces/IWallet";
 
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   constructor() {
@@ -93,10 +92,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     };
   }
 
-  transformSerializedActions(actions: Array<SerializableAction>) {
-    return actions;
-  }
-
   view({ contractId, methodName, args = {} }: ViewParams) {
     const state = getState();
 
@@ -116,14 +111,12 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       });
   }
 
-  async call({ receiverId, actions }: CallV1Params) {
-    const transformedActions = this.transformSerializedActions(actions);
-
-    console.log("SenderWallet:call", { receiverId, actions, transformedActions });
+  async call({ receiverId, actions }: CallParams) {
+    console.log("SenderWallet:call", { receiverId, actions });
 
     return window[this.injectedGlobal].signAndSendTransaction({
       receiverId,
-      actions: transformedActions,
+      actions,
     });
   }
 }

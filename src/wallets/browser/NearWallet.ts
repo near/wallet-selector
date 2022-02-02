@@ -5,7 +5,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState } from "../../state/State";
-import { CallV1Params, ViewParams } from "../../interfaces/IWallet";
+import { CallParams, SignParams, ViewParams } from "../../interfaces/IWallet";
 import { SerializableAction } from "../../interfaces/transactions";
 
 class NearWallet extends BrowserWallet implements INearWallet {
@@ -71,7 +71,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     });
   }
 
-  sign({ receiverId, actions }: CallV1Params) {
+  sign({ receiverId, actions }: SignParams) {
     const account = this.wallet.account();
     const transformedActions = this.transformSerializedActions(actions);
 
@@ -89,13 +89,14 @@ class NearWallet extends BrowserWallet implements INearWallet {
     return account.viewFunction(contractId, methodName, args);
   }
 
-  async call({ receiverId, actions }: CallV1Params) {
+  async call({ receiverId, actions }: CallParams) {
+    const state = getState();
+
     console.log("NearWallet:call", { receiverId, actions });
 
-    const state = getState();
     const [, signed] = await this.sign({ receiverId, actions });
 
-    // TODO: Move nearConnection out state.
+    // TODO: Move nearConnection out of state.
     return state.nearConnection!.connection.provider.sendTransaction(signed);
   }
 }

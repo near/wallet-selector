@@ -6,10 +6,12 @@ export interface ViewParams {
   args?: object;
 }
 
-export interface CallV1Params {
+export interface CallParams {
   receiverId: string;
   actions: Array<SerializableAction>;
 }
+
+export type SignParams = CallParams;
 
 export default interface IWallet {
   getId(): string;
@@ -26,5 +28,5 @@ export default interface IWallet {
   signIn(): Promise<void>;
   getAccount(): Promise<any>;
   view(params: ViewParams): Promise<any>;
-  call(params: CallV1Params): Promise<any>;
+  call(params: CallParams): Promise<any>;
 }
