@@ -62,19 +62,12 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   transformSerializedActions(actions: Array<SerializableAction>) {
     return actions.map((action) => {
-      switch (action.type) {
-        case "functionCall":
-          return transactions.functionCall(
-            action.payload.methodName,
-            action.payload.args,
-            new BN(action.payload.gas),
-            new BN(action.payload.deposit)
-          );
-        case "transfer":
-          return transactions.transfer(
-            new BN(action.payload.deposit)
-          );
-      }
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
     });
   }
 
@@ -96,8 +89,8 @@ class NearWallet extends BrowserWallet implements INearWallet {
     return account.viewFunction(contractId, methodName, args);
   }
 
-  async callV1({ receiverId, actions }: CallV1Params) {
-    console.log("NearWallet:callV1", { receiverId, actions });
+  async call({ receiverId, actions }: CallV1Params) {
+    console.log("NearWallet:call", { receiverId, actions });
 
     const state = getState();
     const [, signed] = await this.sign({ receiverId, actions });

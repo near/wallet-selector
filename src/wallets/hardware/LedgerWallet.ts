@@ -220,7 +220,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   // TODO: Implement.
-  async callV1() {
+  async call() {
     throw new Error("Not implemented!");
   }
 

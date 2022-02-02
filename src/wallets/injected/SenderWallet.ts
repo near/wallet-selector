@@ -94,14 +94,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   transformSerializedActions(actions: Array<SerializableAction>) {
-    return actions.map((action) => {
-      switch (action.type) {
-        case "functionCall":
-          return action.payload;
-        default:
-          throw new Error(`Action type '${action.type}' is not supported`);
-      }
-    });
+    return actions;
   }
 
   view({ contractId, methodName, args = {} }: ViewParams) {
@@ -123,10 +116,10 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       });
   }
 
-  async callV1({ receiverId, actions }: CallV1Params) {
+  async call({ receiverId, actions }: CallV1Params) {
     const transformedActions = this.transformSerializedActions(actions);
 
-    console.log("SenderWallet:callV1", { receiverId, actions, transformedActions });
+    console.log("SenderWallet:call", { receiverId, actions, transformedActions });
 
     return window[this.injectedGlobal].signAndSendTransaction({
       receiverId,

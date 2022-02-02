@@ -26,5 +26,5 @@ export default interface IWallet {
   signIn(): Promise<void>;
   getAccount(): Promise<any>;
   view(params: ViewParams): Promise<any>;
-  callV1(params: CallV1Params): Promise<any>;
+  call(params: CallV1Params): Promise<any>;
 }

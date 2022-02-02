@@ -57,5 +57,5 @@ export default abstract class BaseWallet implements IWallet {
   abstract signIn(): Promise<void>;
   abstract getAccount(): Promise<any>;
   abstract view(params: ViewParams): Promise<any>;
-  abstract callV1(params: CallV1Params): Promise<any>;
+  abstract call(params: CallV1Params): Promise<any>;
 }

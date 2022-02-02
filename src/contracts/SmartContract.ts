@@ -48,7 +48,7 @@ export default class SmartContract {
       throw new Error("Wallet not selected!");
     }
 
-    return state.walletProviders[walletId].callV1({
+    return state.walletProviders[walletId].call({
       receiverId: this.contractAddress,
       actions,
     });

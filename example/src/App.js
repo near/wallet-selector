@@ -43,13 +43,10 @@ const App = ({ near, contract, currentUser2 }) => {
     contract.call({
       actions: [
         {
-          type: "functionCall",
-          payload: {
-            methodName: "addMessage",
-            args: { text: message.value },
-            gas: BOATLOAD_OF_GAS,
-            deposit: parseNearAmount(donation.value || "0")
-          }
+          methodName: "addMessage",
+          args: { text: message.value },
+          gas: BOATLOAD_OF_GAS,
+          deposit: parseNearAmount(donation.value || "0")
         }
       ]
       })
