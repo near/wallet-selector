@@ -227,11 +227,23 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     });
   }
 
-  // TODO: Implement based on callContract.
+  // TODO: Refactor callContract into this new method.
   async call({ receiverId, actions }: CallParams) {
     console.log("LedgerWallet:call", { receiverId, actions });
 
-    throw new Error("Not implemented!");
+    // To keep the alias simple, lets just support a single action.
+    if (actions.length !== 1) {
+      throw new Error("Ledger Wallet implementation currently supports just one action");
+    }
+
+    const action = actions[0];
+
+    return this.callContract(
+      action.methodName,
+      action.args,
+      action.gas,
+      action.deposit
+    );
   }
 
   async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
