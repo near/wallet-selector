@@ -11,7 +11,7 @@ export default async function init(options?: Options) {
   const nearConnection = await connect({
     keyStore,
     ...nearConfig,
-    header: {},
+    headers: {},
   });
   updateState((prevState) => ({
     ...prevState,
