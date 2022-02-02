@@ -16,8 +16,6 @@ export interface CallParams {
   actions: Array<FunctionCallAction>;
 }
 
-export type SignParams = CallParams;
-
 export default interface IWallet {
   getId(): string;
   getName(): string;

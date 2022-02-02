@@ -5,7 +5,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState } from "../../state/State";
-import { CallParams, SignParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
+import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -70,17 +70,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
     });
   }
 
-  sign({ receiverId, actions }: SignParams) {
-    const account = this.wallet.account();
-    const transformedActions = this.transformActions(actions);
-
-    console.log("NearWallet:sign", { receiverId, actions, transformedActions });
-
-    // @ts-ignore
-    // near-api-js marks this method as protected.
-    return account.signTransaction(receiverId, transformedActions);
-  }
-
   view({ contractId, methodName, args = {} }: ViewParams) {
     const account = this.wallet.account();
 
@@ -93,11 +82,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
     const account = this.wallet.account();
 
     console.log("NearWallet:call", { receiverId, actions });
-
-    // TODO: Doesn't work for actions with deposits.
-    //       Code is almost exactly the same as signAndSendTransaction.
-    // const [, signedTx] = await this.sign({ receiverId, actions });
-    // return account.connection.provider.sendTransaction(signedTx);
 
     // @ts-ignore
     // near-api-js marks this method as protected.
