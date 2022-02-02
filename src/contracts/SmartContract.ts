@@ -1,5 +1,5 @@
 import { getState } from "../state/State";
-import { CallV1Params, ViewParams } from "../interfaces/IWallet";
+import { CallParams, ViewParams } from "../interfaces/IWallet";
 
 export default class SmartContract {
   private contractAddress: string;
@@ -40,7 +40,7 @@ export default class SmartContract {
     });
   }
 
-  call({ actions }: Omit<CallV1Params, "receiverId">) {
+  call({ actions }: Omit<CallParams, "receiverId">) {
     const state = getState();
     const walletId = state.signedInWalletId;
 
