@@ -1,6 +1,6 @@
 import BaseWallet from "../BaseWallet";
 import HelperFunctions from "../../utils/HelperFunctions";
-import { Emitter } from "../../interfaces/EventsHandler";
+import { Emitter } from "../../utils/EventsHandler";
 
 export default abstract class InjectedWallet extends BaseWallet {
   protected injectedGlobal: string;

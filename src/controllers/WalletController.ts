@@ -3,7 +3,7 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import { Emitter } from "../interfaces/EventsHandler";
+import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import State from "../types/State";
 

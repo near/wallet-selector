@@ -6,7 +6,7 @@ import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
-import { Emitter } from "../../interfaces/EventsHandler";
+import { Emitter } from "../../utils/EventsHandler";
 
 export default class LedgerWallet
   extends HardwareWallet

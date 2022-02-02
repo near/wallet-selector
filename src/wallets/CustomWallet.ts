@@ -1,4 +1,4 @@
-import { Emitter } from "../interfaces/EventsHandler";
+import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed

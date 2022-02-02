@@ -1,7 +1,7 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import { getState, updateState } from "../../state/State";
-import { Emitter } from "../../interfaces/EventsHandler";
+import { Emitter } from "../../utils/EventsHandler";
 
 
 export default class SenderWallet

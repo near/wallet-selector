@@ -2,7 +2,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import { WalletConnection, Contract } from "near-api-js";
 import { getState } from "../../state/State";
-import { Emitter } from "../../interfaces/EventsHandler";
+import { Emitter } from "../../utils/EventsHandler";
 
 export default class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;

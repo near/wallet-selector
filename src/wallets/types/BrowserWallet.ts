@@ -1,4 +1,4 @@
-import { Emitter } from "../../interfaces/EventsHandler";
+import { Emitter } from "../../utils/EventsHandler";
 import BaseWallet from "../BaseWallet";
 
 export default abstract class BrowserWallet extends BaseWallet {

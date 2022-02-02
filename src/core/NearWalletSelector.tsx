@@ -7,7 +7,7 @@ import { getState, updateState } from "../state/State";
 import SmartContract from "../contracts/SmartContract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter } from "../interfaces/EventsHandler";
+import EventHandler, { Emitter } from "../utils/EventsHandler"
 
 export default class NearWalletSelector {
   private walletController: WalletController;
