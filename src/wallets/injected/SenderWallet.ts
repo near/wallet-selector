@@ -1,13 +1,10 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import { getState, updateState } from "../../state/State";
-<<<<<<< HEAD
 import { Emitter } from "../../utils/EventsHandler";
 
-=======
 import { CallParams, ViewParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
->>>>>>> 88933653e8377e23c87fe454fc901f24e83ac77c
 
 declare global {
   interface Window {
@@ -92,12 +89,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       .init({ contractId: state.options.contract.address })
       .then((res) => {
         console.log(res);
-        EventHandler.callEventHandler("init");
       });
-<<<<<<< HEAD
-    this.emitter.emit("init");
-=======
->>>>>>> 88933653e8377e23c87fe454fc901f24e83ac77c
   }
 
   async isConnected() {
@@ -105,21 +97,8 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   disconnect() {
-<<<<<<< HEAD
     this.emitter.emit("disconnect", {});
     return window[this.injectedGlobal].signOut();
-=======
-    return this.wallet.signOut()
-      .then((res) => {
-        if (res.result !== "success") {
-          throw new Error("Failed to sign out");
-        }
-
-        EventHandler.callEventHandler("disconnect");
-
-        return;
-      });
->>>>>>> 88933653e8377e23c87fe454fc901f24e83ac77c
   }
 
   // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.

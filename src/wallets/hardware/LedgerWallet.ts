@@ -6,11 +6,8 @@ import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
-<<<<<<< HEAD
 import { Emitter } from "../../utils/EventsHandler";
-=======
 import { CallParams, ViewParams } from "../../interfaces/IWallet";
->>>>>>> 88933653e8377e23c87fe454fc901f24e83ac77c
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -159,7 +156,6 @@ export default class LedgerWallet
       this.emitter.emit("disconnect", {});
     });
 
-    this.emitter.emit("init", {});
   }
 
   async disconnect() {

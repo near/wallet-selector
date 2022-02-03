@@ -3,6 +3,7 @@ import BN from "bn.js";
 
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
+import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
 import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
 
