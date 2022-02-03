@@ -178,8 +178,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const hasPersmission = await this.checkAccountId(this.accountId, "ed25519:" + publicKeyString);
 
     if (!hasPersmission) {
-      console.log("You do not have permission to sign transactions for this account");
-      return;
+      throw new Error("You do not have permission to sign transactions for this account");
     }
 
     this.setWalletAsSignedIn();
@@ -271,7 +270,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     if (!response) return;
 
     const recentBlockHash = utils.serialize.base_decode(response.header.hash);
-    const nonce = this.nonce + 1;
+    const nonce = ++this.nonce;
 
     const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
 
