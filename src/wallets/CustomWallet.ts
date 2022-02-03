@@ -56,7 +56,7 @@ export default class CustomWallet extends BaseWallet {
 
   async getAccount() {}
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
-    console.log(method, args, gas, deposit);
-  }
+  async view() {}
+
+  async call() {}
 }

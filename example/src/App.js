@@ -1,15 +1,14 @@
 import "regenerator-runtime/runtime";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Big from "big.js";
 import Form from "./components/Form";
 import SignIn from "./components/SignIn";
 import Messages from "./components/Messages";
+import { utils } from "near-api-js";
+
+const { parseNearAmount } = utils.format;
 
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = Big(3)
-  .times(10 ** 13)
-  .toFixed();
+const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 
 const App = ({ near, contract, currentUser2 }) => {
   const [currentUser, setCurrentUser] = useState(currentUser2);
@@ -17,7 +16,7 @@ const App = ({ near, contract, currentUser2 }) => {
 
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    contract.callContract("getMessages").then(setMessages);
+    contract.view({ methodName: "getMessages" }).then(setMessages);
 
     near.on("signIn", async () => {
       console.log(currentUser);
@@ -41,23 +40,40 @@ const App = ({ near, contract, currentUser2 }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    contract
-      .callContract(
-        "addMessage",
-        { text: message.value },
-        BOATLOAD_OF_GAS,
-        Big(donation.value || "0")
-          .times(10 ** 24)
-          .toFixed()
-      )
+    contract.call({
+        actions: [{
+          methodName: "addMessage",
+          args: { text: message.value },
+          gas: BOATLOAD_OF_GAS,
+          deposit: parseNearAmount(donation.value || "0")
+        }]
+      })
+      .catch((err) => {
+        alert("Failed to add message");
+        console.log("Failed to add message");
+
+        throw err;
+      })
       .then(() => {
-        contract.callContract("getMessages").then((messages) => {
-          setMessages(messages);
-          message.value = "";
-          donation.value = SUGGESTED_DONATION;
-          fieldset.disabled = false;
-          message.focus();
-        });
+        return contract.view({ methodName: "getMessages" })
+          .then((messages) => {
+            setMessages(messages);
+            message.value = "";
+            donation.value = SUGGESTED_DONATION;
+            fieldset.disabled = false;
+            message.focus();
+          })
+          .catch((err) => {
+            alert("Failed to refresh messages");
+            console.log("Failed to refresh messages");
+
+            throw err;
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        fieldset.disabled = false;
       });
   };
 

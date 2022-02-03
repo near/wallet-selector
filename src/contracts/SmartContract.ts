@@ -1,4 +1,5 @@
 import { getState } from "../state/State";
+import { CallParams, ViewParams } from "../interfaces/IWallet";
 
 export default class SmartContract {
   private contractAddress: string;
@@ -27,26 +28,29 @@ export default class SmartContract {
     return this.changeMethods;
   }
 
-  async callContract(
-    method: string,
-    args?: any,
-    gas?: string,
-    deposit?: string
-  ): Promise<any> {
+  view({ methodName, args }: Omit<ViewParams, "contractId">) {
     const state = getState();
-    if (!state.signedInWalletId) {
-      return state.walletProviders["nearwallet"].callContract(
-        method,
-        args,
-        gas,
-        deposit
-      );
+    const walletId = state.signedInWalletId || "nearwallet";
+
+    // TODO: Use main NEAR Connection and move away from wallets handling view methods.
+    return state.walletProviders[walletId].view({
+      contractId: this.contractAddress,
+      methodName,
+      args
+    });
+  }
+
+  call({ actions }: Omit<CallParams, "receiverId">) {
+    const state = getState();
+    const walletId = state.signedInWalletId;
+
+    if (!walletId) {
+      throw new Error("Wallet not selected!");
     }
-    return state.walletProviders[state.signedInWalletId].callContract(
-      method,
-      args,
-      gas,
-      deposit
-    );
+
+    return state.walletProviders[walletId].call({
+      receiverId: this.contractAddress,
+      actions,
+    });
   }
 }

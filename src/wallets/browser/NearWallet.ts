@@ -1,12 +1,13 @@
+import { WalletConnection, transactions } from "near-api-js";
+import BN from "bn.js";
+
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
-import { WalletConnection, Contract } from "near-api-js";
 import { getState } from "../../state/State";
-import { Emitter } from "../../utils/EventsHandler";
+import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
 
-export default class NearWallet extends BrowserWallet implements INearWallet {
+class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
-  private contract: Contract;
 
   constructor(emitter: Emitter) {
     super(emitter, "nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
@@ -58,26 +59,37 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
-    const state = getState();
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
 
-    if (!this.contract) {
-      this.contract = new Contract(this.wallet.account(), state.options.contract.address, {
-        viewMethods: state.options.contract.viewMethods,
-        changeMethods: state.options.contract.changeMethods,
-      });
-    }
+  view({ contractId, methodName, args = {} }: ViewParams) {
+    const account = this.wallet.account();
 
-    if (!args) args = {};
+    console.log("NearWallet:view", { contractId, methodName, args });
 
-    if (state.options.contract.viewMethods.includes(method)) {
-      return this.contract[method](args);
-    }
+    return account.viewFunction(contractId, methodName, args);
+  }
 
-    if (state.options.contract.changeMethods.includes(method)) {
-      return this.contract[method](args, gas, deposit);
-    }
+  async call({ receiverId, actions }: CallParams) {
+    const account = this.wallet.account();
 
-    return null;
+    console.log("NearWallet:call", { receiverId, actions });
+
+    // @ts-ignore
+    // near-api-js marks this method as protected.
+    return account.signAndSendTransaction({
+      receiverId,
+      actions: this.transformActions(actions)
+    })
   }
 }
+
+export default NearWallet;
