@@ -74,8 +74,19 @@ near.on("init", () => {
 Interact with smart contract:
 
 ```ts
-near.getContract().callContract("getMessages", []).then(messages => {
-  console.log(messages);
+const contract = near.getContract();
+
+// Retrieve messages via RPC endpoint (view method).
+const messages = await contract.view({ methodName: "getMessages" });
+
+// Send a message, modifying the blockchain (change method).
+await contract.call({
+  actions: [{
+    methodName: "addMessage",
+    args: { text: message.value },
+    gas: "30000000000000",
+    deposit: "10000000000000000000000"
+  }]
 });
 ```
 

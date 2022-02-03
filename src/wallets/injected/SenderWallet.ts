@@ -2,12 +2,17 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
+import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
 
-export default class SenderWallet
-  extends InjectedWallet
-  implements ISenderWallet
-{
-  private contract: any;
+declare global {
+  interface Window {
+    wallet: InjectedSenderWallet | undefined;
+  }
+}
+
+class SenderWallet extends InjectedWallet implements ISenderWallet {
+  wallet: InjectedSenderWallet;
 
   constructor() {
     super(
@@ -17,10 +22,12 @@ export default class SenderWallet
       "https://senderwallet.io/logo.png",
       "wallet"
     );
+
+    this.wallet = window.wallet!;
   }
 
   async walletSelected() {
-    if (!window[this.injectedGlobal]) {
+    if (!this.wallet) {
       updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
@@ -29,7 +36,7 @@ export default class SenderWallet
       return;
     }
 
-    const rpcResponse = await window[this.injectedGlobal].getRpc();
+    const rpcResponse = await this.wallet.getRpc();
     const state = getState();
 
     if (state.options.networkId !== rpcResponse.rpc.networkId) {
@@ -46,19 +53,22 @@ export default class SenderWallet
 
   async signIn() {
     const state = getState();
-    const response = await window[this.injectedGlobal].requestSignIn({
+    const { accessKey } = await this.wallet.requestSignIn({
       contractId: state.options.contract.address,
     });
-    console.log(response);
 
-    if (response.accessKey) {
-      this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
-      updateState((prevState) => ({
-        ...prevState,
-        showModal: false
-      }))
+    if (!accessKey) {
+      return;
     }
+
+    await this.setWalletAsSignedIn();
+
+    EventHandler.callEventHandler("signIn");
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false
+    }));
   }
 
   async timeout(ms: number) {
@@ -67,54 +77,78 @@ export default class SenderWallet
 
   async init(): Promise<void> {
     await this.timeout(200);
+
     const state = getState();
-    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
+
+    this.wallet.onAccountChanged((newAccountId) => {
       console.log("newAccountId: ", newAccountId);
     });
-    window[this.injectedGlobal]
+
+    return this.wallet
       .init({ contractId: state.options.contract.address })
-      .then((res: any) => {
+      .then((res) => {
         console.log(res);
+        EventHandler.callEventHandler("init");
       });
-    EventHandler.callEventHandler("init");
   }
 
-  async isConnected(): Promise<boolean> {
-    return window[this.injectedGlobal].isSignedIn();
+  async isConnected() {
+    return this.wallet.isSignedIn();
   }
 
   disconnect() {
-    EventHandler.callEventHandler("disconnect");
-    return window[this.injectedGlobal].signOut();
+    return this.wallet.signOut()
+      .then((res) => {
+        if (res.result !== "success") {
+          throw new Error("Failed to sign out");
+        }
+
+        EventHandler.callEventHandler("disconnect");
+
+        return;
+      });
   }
 
+  // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
   async getAccount() {
     await this.timeout(300);
     return {
-      accountId: window[this.injectedGlobal].getAccountId(),
+      accountId: this.wallet.getAccountId(),
       balance: "99967523358427624000000000",
     };
   }
 
-  async callContract(
-    method: string,
-    args?: any,
-    gas?: string,
-    deposit?: string
-  ): Promise<any> {
-    if (!this.contract) {
-      const state = getState();
-      if (!state.nearConnection) return;
-      this.contract = await state.nearConnection.loadContract(
-        state.options.contract.address,
-        {
-          viewMethods: state.options.contract.viewMethods,
-          changeMethods: state.options.contract.changeMethods,
-          sender: window[this.injectedGlobal].getAccountId(),
+  view({ contractId, methodName, args = {} }: ViewParams) {
+    const state = getState();
+
+    console.log("SenderWallet:view", { contractId, methodName, args });
+
+    // Using NEAR connection as unable to get the RPC connection from SenderWallet.
+    return state.nearConnection!.connection.provider.query({
+      request_type: "call_function",
+      account_id: contractId,
+      method_name: methodName,
+      args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
+      finality: "optimistic"
+    })
+      // TODO: Assign real interface.
+      .then((res: any) => {
+        return res.result && res.result.length > 0 && JSON.parse(Buffer.from(res.result).toString());
+      });
+  }
+
+  async call({ receiverId, actions }: CallParams) {
+    console.log("SenderWallet:call", { receiverId, actions });
+
+    return this.wallet.signAndSendTransaction({ receiverId, actions })
+      .then((res) => {
+        if (res.error) {
+          throw new Error(res.error);
         }
-      );
-    }
-    console.log(this.contract, method, args, gas, deposit);
-    return this.contract[method](args);
+
+        return res;
+      });
   }
 }
+
+export default SenderWallet;
