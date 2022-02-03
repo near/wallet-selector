@@ -1,4 +1,4 @@
-import { PersistentStorage } from "./storage.service";
+import { PersistentStorage } from "./persistent-storage.service";
 import { mock, mockReset } from "jest-mock-extended";
 import { defer } from "../utils/HelperFunctions";
 
