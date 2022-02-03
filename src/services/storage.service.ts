@@ -2,16 +2,19 @@ import { Promisify } from "../utils/types";
 import { defer } from "../utils/HelperFunctions";
 
 export class PersistentStorage implements Promisify<Storage> {
-  static instances = new Map<string, PersistentStorage>();
+  private static instances = new Map<string, PersistentStorage>();
 
   private readonly map = new Map<string, string>();
 
-  constructor(private readonly prefix: string, private readonly storage: Storage = window?.localStorage) {
-    if(!storage) {
+  constructor(
+    private readonly prefix: string,
+    private readonly storage: Storage = window?.localStorage
+  ) {
+    if (!storage) {
       throw new Error("No storage available");
     }
 
-    if(PersistentStorage.instances.has(prefix)) {
+    if (PersistentStorage.instances.has(prefix)) {
       return PersistentStorage.instances.get(prefix)!;
     }
     PersistentStorage.instances.set(prefix, this);
@@ -19,11 +22,15 @@ export class PersistentStorage implements Promisify<Storage> {
   }
 
   private init() {
-    Object.keys(this.storage).forEach((key) => {
-      if (key.startsWith(this.prefix)) {
+    Array(this.storage.length)
+      .fill(null)
+      .map((_, index) => {
+        return this.storage.key(index)!;
+      })
+      .filter((key) => key?.startsWith(this.prefix))
+      .forEach((key) => {
         this.map.set(key.slice(this.prefix.length), this.storage.getItem(key)!);
-      }
-    });
+      });
   }
 
   async clear(): Promise<void> {

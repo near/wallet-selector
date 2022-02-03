@@ -11,7 +11,7 @@
       "plugin:@typescript-eslint/recommended",
       "prettier"
     ],
-  
+
     "plugins": ["@typescript-eslint", "prettier"],
     "rules": {
       "@typescript-eslint/no-unused-vars": "error",
@@ -24,7 +24,8 @@
         2,
         {
           "selector": "variableLike",
-          "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+          "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+          "leadingUnderscore": "allow"
         }
       ],
       "@typescript-eslint/no-explicit-any": ["off"],
@@ -68,7 +69,7 @@
       "react/prop-types": 0,
       "react/display-name": 0
     },
-  
+
     "env": {
       "browser": true,
       "es2021": true
