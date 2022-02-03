@@ -54,7 +54,5 @@ export default class CustomWallet extends BaseWallet {
 
   async getAccount() {}
 
-  async view() {}
-
   async call() {}
 }

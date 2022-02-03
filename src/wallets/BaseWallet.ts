@@ -1,4 +1,4 @@
-import IWallet, { CallParams, ViewParams } from "../interfaces/IWallet";
+import IWallet, { CallParams } from "../interfaces/IWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import { updateState } from "../state/State";
 
@@ -56,6 +56,5 @@ export default abstract class BaseWallet implements IWallet {
   abstract isConnected(): Promise<boolean>;
   abstract signIn(): Promise<void>;
   abstract getAccount(): Promise<any>;
-  abstract view(params: ViewParams): Promise<any>;
   abstract call(params: CallParams): Promise<any>;
 }

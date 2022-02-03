@@ -12,15 +12,11 @@ let state: { current: State } = {
       theme: null,
       networkId: "testnet",
       wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
+      accountId: "",
       customWallets: {},
       walletSelectorUI: {
         description: "",
         explanation: "",
-      },
-      contract: {
-        address: "",
-        viewMethods: [],
-        changeMethods: [],
       },
     },
     walletProviders: {},

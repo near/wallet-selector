@@ -2,7 +2,7 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
-import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import { CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
 
 declare global {
@@ -54,7 +54,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   async signIn() {
     const state = getState();
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: state.options.contract.address,
+      contractId: state.options.accountId,
     });
 
     if (!accessKey) {
@@ -85,7 +85,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     });
 
     return this.wallet
-      .init({ contractId: state.options.contract.address })
+      .init({ contractId: state.options.accountId })
       .then((res) => {
         console.log(res);
         EventHandler.callEventHandler("init");
@@ -116,25 +116,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       accountId: this.wallet.getAccountId(),
       balance: "99967523358427624000000000",
     };
-  }
-
-  view({ contractId, methodName, args = {} }: ViewParams) {
-    const state = getState();
-
-    console.log("SenderWallet:view", { contractId, methodName, args });
-
-    // Using NEAR connection as unable to get the RPC connection from SenderWallet.
-    return state.nearConnection!.connection.provider.query({
-      request_type: "call_function",
-      account_id: contractId,
-      method_name: methodName,
-      args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
-      finality: "optimistic"
-    })
-      // TODO: Assign real interface.
-      .then((res: any) => {
-        return res.result && res.result.length > 0 && JSON.parse(Buffer.from(res.result).toString());
-      });
   }
 
   async call({ receiverId, actions }: CallParams) {

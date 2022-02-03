@@ -7,7 +7,7 @@ import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
-import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import { CallParams } from "../../interfaces/IWallet";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private readonly CLA = 0x80;
@@ -214,18 +214,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return bs58.encode(Buffer.from(publicKey));
   }
 
-  async view({ contractId, methodName, args }: ViewParams) {
-    const state = getState();
-
-    console.log("LedgerWallet:view", { contractId, methodName, args });
-
-    return await state.walletProviders.nearwallet.view({
-      contractId,
-      methodName,
-      args
-    });
-  }
-
   // TODO: Refactor callContract into this new method.
   async call({ receiverId, actions }: CallParams) {
     console.log("LedgerWallet:call", { receiverId, actions });
@@ -248,14 +236,6 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
     const state = getState();
     if (!state.signedInWalletId) return;
-
-    if (state.options.contract.viewMethods.includes(method)) {
-      return await state.walletProviders.nearwallet.view({
-        contractId: state.options.contract.address,
-        methodName: method,
-        args
-      });
-    }
 
     if (!args) args = [];
 
@@ -282,7 +262,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const transaction = transactions.createTransaction(
       this.accountId,
       pk,
-      state.options.contract.address,
+      state.options.accountId,
       nonce,
       actions,
       recentBlockHash

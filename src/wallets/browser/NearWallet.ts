@@ -5,7 +5,7 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import EventHandler from "../../utils/EventHandler";
 import { getState } from "../../state/State";
-import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
+import { CallParams, FunctionCallAction } from "../../interfaces/IWallet";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -32,7 +32,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   async signIn() {
     const state = getState();
-    this.wallet.requestSignIn(state.options.contract.address).then(() => {
+    this.wallet.requestSignIn(state.options.accountId).then(() => {
       if (!this.wallet.isSignedIn()) {
         return;
       }
@@ -68,14 +68,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
         new BN(action.deposit)
       );
     });
-  }
-
-  view({ contractId, methodName, args = {} }: ViewParams) {
-    const account = this.wallet.account();
-
-    console.log("NearWallet:view", { contractId, methodName, args });
-
-    return account.viewFunction(contractId, methodName, args);
   }
 
   async call({ receiverId, actions }: CallParams) {
