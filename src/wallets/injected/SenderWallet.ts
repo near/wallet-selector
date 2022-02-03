@@ -97,10 +97,17 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   disconnect() {
-    this.emitter.emit("disconnect", {});
-    return window[this.injectedGlobal].signOut();
-  }
+    return this.wallet.signOut()
+      .then((res) => {
+        if (res.result !== "success") {
+          throw new Error("Failed to sign out");
+        }
 
+        this.emitter.emit("disconnect")
+
+        return;
+      });
+  }
   // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
   async getAccount() {
     await this.timeout(300);
