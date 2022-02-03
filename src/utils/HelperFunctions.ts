@@ -11,17 +11,3 @@ const HelperFunctions = {
 };
 
 export default HelperFunctions;
-
-export function delay(fn: Function, wait: number, args?: any[]) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(undefined);
-      // eslint-disable-next-line prefer-spread
-      return fn.apply(null, args);
-    }, wait);
-  });
-}
-
-export function defer(fn: Function, args?: any[]) {
-  return delay(fn, 0, args);
-}
