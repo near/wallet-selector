@@ -19,10 +19,13 @@ export class PersistentStorage {
   }
 
   private init() {
-    for(let i = 0; i++; i < this.storage.length) {
-      const key = this.storage.key(i)!;
-      if (key.startsWith(this.prefix)) {
-        this.map.set(key.slice(this.prefix.length + 1), this.storage.getItem(key)!);
+    for (let i = 0; i < this.storage.length; i++) {
+      const key = this.storage.key(i);
+      if (key?.startsWith(`${this.prefix}-`)) {
+        const value = this.storage.getItem(key);
+        if (value) {
+          this.map.set(key.replace(`${this.prefix}-`, ""), value);
+        }
       }
     }
   }
