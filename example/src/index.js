@@ -32,7 +32,6 @@ async function initContract() {
 
   // Load in user's account data
   const contract = near.getContract();
-  console.log("subscribe")
   near.on("init", async () => {
     console.log("init");
   });

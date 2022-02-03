@@ -7,7 +7,7 @@ describe("emit", () => {
     const event = "test";
     const handler = jest.fn();
     emitter.on(event, handler);
-    emitter.emit(event,{});
+    emitter.emit(event);
     expect(handler).toHaveBeenCalledTimes(1);
   });
   it("calls the subscribed handlers with data for the event", () => {
@@ -34,18 +34,17 @@ describe("emit", () => {
     expect(secondHandler).toHaveBeenCalledTimes(1);
     expect(secondHandler).toHaveBeenCalledWith(data);
   })
-  it("subscribe and desubscribe", () => {
+});
+describe("off", () => {
+  it("doesn't call the handler after unsubscribing", () => {
     const emitter = new EventHandler();
     const event = "test";
-    const data = { value: "test" };
     const handler = jest.fn();
     emitter.on(event, handler);
-    emitter.emit(event, data)
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler).toHaveBeenCalledWith(data);
-    emitter.off(event, handler)
-    emitter.emit(event, data)
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler).toHaveBeenCalledWith(data);
+    emitter.off(event, handler);
+    emitter.emit(event);
+    expect(handler).not.toHaveBeenCalled();
   });
 });
+
+

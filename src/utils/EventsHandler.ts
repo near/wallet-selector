@@ -27,7 +27,7 @@ export class EventHandler<T extends EventMap> implements Emitter<T> {
     this.emitter.off(eventName, callback);
   }
 
-  emit<K extends EventKey>(eventName: K, params: T[K]) {
+  emit<K extends EventKey>(eventName: K, params?: T[K]) {
     this.emitter.emit(eventName, params);
   }
 }
