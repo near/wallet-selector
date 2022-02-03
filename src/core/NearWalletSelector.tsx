@@ -8,6 +8,7 @@ import SmartContract from "../contracts/SmartContract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter } from "../utils/EventsHandler"
+import EventList from "../types/EventList";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
@@ -72,7 +73,7 @@ export default class NearWalletSelector {
     return this.walletController.getAccount();
   }
 
-  on(event: any, callback: () => {}) {
+  on(event: EventList, callback: () => {}) {
     this.emitter.on(event, callback);
   }
 }

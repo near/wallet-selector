@@ -5,6 +5,7 @@ import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import EventList  from "../types/EventList"
 import State from "../types/State";
 
 
@@ -110,7 +111,7 @@ class WalletController {
     return null;
   }
 
-  on(event: any, callback: () => {}) {
+  on(event: EventList, callback: () => {}) {
     this.emitter.on(event, callback)
   }
 }

@@ -1,6 +1,5 @@
 import { EventEmitter, } from "events";
-
-type EventList = "init" | "disconnect" | "signIn" | "test" ;
+import  EventList  from '../types/EventList'
 
 type EventMap = Record<EventList, unknown>;
 

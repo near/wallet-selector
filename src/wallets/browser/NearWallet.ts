@@ -24,8 +24,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
     const state = getState();
     if (!state.nearConnection) return;
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
-    console.log("emit")
-    this.emitter.emit("init");
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }

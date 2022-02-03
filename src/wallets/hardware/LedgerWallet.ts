@@ -153,13 +153,13 @@ export default class LedgerWallet
 
     this.transport.on("disconnect", (res: any) => {
       console.log(res);
-      this.emitter.emit("disconnect", {});
+      this.emitter.emit("disconnect");
     });
 
   }
 
   async disconnect() {
-    this.emitter.emit("disconnect", {});
+    this.emitter.emit("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
