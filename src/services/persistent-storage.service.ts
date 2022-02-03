@@ -1,13 +1,10 @@
-import { Promisify } from "../utils/types";
-import { defer } from "../utils/HelperFunctions";
-
-export class PersistentStorage implements Promisify<Storage> {
+export class PersistentStorage {
   private static instances = new Map<string, PersistentStorage>();
 
   private readonly map = new Map<string, string>();
 
   constructor(
-    private readonly prefix: string,
+    public readonly prefix: string,
     private readonly storage: Storage = window?.localStorage
   ) {
     if (!storage) {
@@ -29,36 +26,28 @@ export class PersistentStorage implements Promisify<Storage> {
       })
       .filter((key) => key?.startsWith(this.prefix))
       .forEach((key) => {
-        this.map.set(key.slice(this.prefix.length), this.storage.getItem(key)!);
+        this.map.set(key.slice(this.prefix.length + 1), this.storage.getItem(key)!);
       });
   }
 
-  async clear(): Promise<void> {
+  clear(): void {
     this.map.clear();
-    defer(() => {
-      this.storage.clear();
-    });
   }
-  async getItem(key: string): Promise<string | null> {
+  getItem(key: string): string | null {
     return this.map.get(key) || null;
   }
 
-  async key(index: number): Promise<string | null> {
+  key(index: number): string | null {
     return Object.keys(Object.fromEntries(this.map))[index] || null;
   }
 
-  async setItem(key: string, value: string): Promise<void> {
+  setItem(key: string, value: string): void {
     this.map.set(key, value);
-    defer(() => {
-      this.storage.setItem(`${this.prefix}${key}`, value);
-    });
+    this.storage.setItem(`${this.prefix}-${key}`, value);
   }
 
-  async removeItem(key: string): Promise<void> {
+  removeItem(key: string): void {
     this.map.delete(key);
-    defer(() => {
-      this.storage.removeItem(`${this.prefix}${key}`);
-    });
   }
 
   get length(): number {
