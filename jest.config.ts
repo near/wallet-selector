@@ -4,7 +4,7 @@ const config: Config.InitialOptions = {
   verbose: true,
   cacheDirectory: ".jest/cache",
   moduleFileExtensions: ["js", "ts", "tsx"],
-  testMatch: ["**/__tests__/**/*.(unit)\\.(ts|tsx)", "**/*.(spec)\\.(ts|tsx)"],
+  testMatch: ["**/*.(spec)\\.(ts|tsx)"],
   testPathIgnorePatterns: ["/node_modules/", "/example/"],
   testEnvironment: "jest-environment-jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.init.ts"],
