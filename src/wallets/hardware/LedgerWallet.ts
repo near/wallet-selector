@@ -189,7 +189,7 @@ export default class LedgerWallet
       ...prevState,
       showModal: false
     }))
-    this.emitter.emit("signIn", {});
+    this.emitter.emit("signIn");
   }
 
   async generatePublicKey() {
