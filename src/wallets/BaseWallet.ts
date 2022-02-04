@@ -1,16 +1,19 @@
 import IWallet, { CallParams } from "../interfaces/IWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import { updateState } from "../state/State";
+import { Emitter } from "../utils/EventsHandler";
 
 export default abstract class BaseWallet implements IWallet {
   protected id = "wallet";
   protected name = "Wallet";
   protected description = "A near wallet";
   protected icon = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
+  protected emitter: Emitter
 
   protected showWallet = true;
 
-  constructor(id: string, name: string, description: string, icon: string) {
+  constructor(emitter: Emitter, id: string, name: string, description: string, icon: string) {
+    this.emitter = emitter
     this.id = id;
     this.name = name;
     this.description = description;

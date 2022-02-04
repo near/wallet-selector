@@ -3,10 +3,10 @@ import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
 import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
+import { Emitter } from "../../utils/EventsHandler";
 import { CallParams } from "../../interfaces/IWallet";
 
 export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
@@ -23,8 +23,9 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   private accountId: string;
   private nonce: number;
 
-  constructor() {
+  constructor(emitter: Emitter) {
     super(
+      emitter,
       "ledgerwallet",
       "Ledger Wallet",
       "Ledger Wallet",
@@ -149,14 +150,12 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     this.transport.on("disconnect", (res: any) => {
       console.log(res);
-      EventHandler.callEventHandler("disconnect");
+      this.emitter.emit("disconnect");
     });
-
-    EventHandler.callEventHandler("init");
   }
 
   async disconnect() {
-    EventHandler.callEventHandler("disconnect");
+    this.emitter.emit("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
@@ -184,9 +183,9 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     this.setWalletAsSignedIn();
     updateState((prevState) => ({
       ...prevState,
-      showModal: false,
-    }));
-    EventHandler.callEventHandler("signIn");
+      showModal: false
+    }))
+    this.emitter.emit("signIn");
   }
 
   async generatePublicKey() {

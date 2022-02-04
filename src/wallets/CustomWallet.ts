@@ -1,3 +1,4 @@
+import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
@@ -7,6 +8,7 @@ export default class CustomWallet extends BaseWallet {
   private isConnectedFunction: Function;
 
   constructor(
+    emitter: Emitter,
     id: string,
     name: string,
     description: string,
@@ -15,7 +17,7 @@ export default class CustomWallet extends BaseWallet {
     onDisconnectFunction: Function,
     isConnectedFunction: Function
   ) {
-    super(id, name, description, icon);
+    super(emitter, id, name, description, icon);
 
     this.setOnConnectFunction(onConnectFunction);
     this.setOnDisconnectFunction(onDisconnectFunction);
