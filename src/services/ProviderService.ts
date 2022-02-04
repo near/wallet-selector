@@ -4,7 +4,9 @@ import {
   CodeResult,
   AccessKeyView,
   AccountView,
+  BlockReference,
 } from "near-api-js/lib/providers/provider";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 interface CallFunctionParams {
   accountId: string;
@@ -72,6 +74,13 @@ class ProviderService {
       account_id: accountId,
     });
   }
-}
 
+  block(reference: BlockReference) {
+    return this.provider.block(reference);
+  }
+
+  sendTransaction(signedTransaction: SignedTransaction) {
+    return this.provider.sendTransaction(signedTransaction);
+  }
+}
 export default ProviderService;

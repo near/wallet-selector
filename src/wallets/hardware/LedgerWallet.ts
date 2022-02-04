@@ -4,7 +4,7 @@ import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import { getState, updateState } from "../../state/State";
-import { providers, transactions, utils } from "near-api-js";
+import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { CallParams } from "../../interfaces/IWallet";
@@ -268,7 +268,7 @@ export default class LedgerWallet
 
   async callContract(
     method: string,
-    args?: any,
+    args?: object,
     gas = "10000000000000",
     deposit = "0"
   ) {
@@ -279,13 +279,8 @@ export default class LedgerWallet
 
     const bnGas = new BN(gas.toString());
     const bnDeposit = new BN(deposit.toString());
-    const provider = new providers.JsonRpcProvider(
-      `https://rpc.${state.options.networkId}.near.org`
-    );
 
-    const response = await state.nearConnection!.connection.provider.block({
-      finality: "final",
-    });
+    const response = await this.provider.block({ finality: "final" });
 
     if (!response) return;
 
@@ -323,21 +318,18 @@ export default class LedgerWallet
       }),
     });
 
-    const signedSerializedTx = signedTransaction.encode();
+    const res = await this.provider.sendTransaction(signedTransaction);
 
-    const base64Response: any = await provider.sendJsonRpc(
-      "broadcast_tx_commit",
-      [Buffer.from(signedSerializedTx).toString("base64")]
-    );
+    if (typeof res.status !== "string") {
+      const successValue = res.status.SuccessValue || "";
 
-    if (base64Response.status.SuccessValue === "") {
-      return true;
+      if (successValue === "") {
+        return null;
+      }
+
+      return JSON.parse(Buffer.from(successValue, "base64").toString());
     }
 
-    const res = JSON.parse(
-      Buffer.from(base64Response.status.SuccessValue, "base64").toString()
-    );
-
-    return res;
+    return null;
   }
 }
