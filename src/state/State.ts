@@ -1,7 +1,7 @@
 import State from "../types/State";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 
-let state: { current: State } = {
+const state: { current: State } = {
   current: {
     showModal: false,
     showWalletOptions: true,

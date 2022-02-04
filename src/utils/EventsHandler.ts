@@ -1,19 +1,16 @@
-import { EventEmitter, } from "events";
-import  EventList  from '../types/EventList'
+import { EventEmitter } from "events";
+import EventList from "../types/EventList";
 
 type EventMap = Record<EventList, unknown>;
 
 type EventKey = keyof EventMap;
 
 export interface Emitter<T extends EventMap = EventMap> {
-  on<K extends EventKey>
-    (eventName: K, callback: () => {}): void;
+  on<K extends EventKey>(eventName: K, callback: () => {}): void;
 
-  off<K extends EventKey>
-    (eventName: K, callback: () => {}): void;
+  off<K extends EventKey>(eventName: K, callback: () => {}): void;
 
-  emit<K extends EventKey>
-    (eventName: K, params?: T[K]): void;
+  emit<K extends EventKey>(eventName: K, params?: T[K]): void;
 }
 
 export class EventHandler<T extends EventMap> implements Emitter<T> {
