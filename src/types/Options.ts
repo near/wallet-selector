@@ -5,7 +5,7 @@ export type NetworkId =
   | "testnet"
   | "betanet"
   | "ci-testnet"
-  | "ci-betanet"
+  | "ci-betanet";
 
 type Options = {
   wallets: string[];

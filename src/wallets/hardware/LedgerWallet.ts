@@ -9,7 +9,10 @@ import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { CallParams } from "../../interfaces/IWallet";
 
-export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
+export default class LedgerWallet
+  extends HardwareWallet
+  implements ILedgerWallet
+{
   private readonly CLA = 0x80;
   private readonly GET_ADDRESS_INS = 0x04;
   private readonly SIGN_INS = 0x02;

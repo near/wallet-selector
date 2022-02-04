@@ -6,7 +6,6 @@ class Contract {
   private readonly accountId: string;
   private readonly provider: ProviderService;
 
-
   constructor(accountId: string, providerUrl: string) {
     this.accountId = accountId;
     this.provider = new ProviderService(providerUrl);
@@ -20,7 +19,7 @@ class Contract {
     return this.provider.callFunction({
       accountId: this.accountId,
       methodName,
-      args
+      args,
     });
   }
 

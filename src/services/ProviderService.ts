@@ -37,11 +37,16 @@ class ProviderService {
   }
 
   query<Response>(params: RpcQueryRequest) {
-    return this.provider.query<CodeResult>(params)
+    return this.provider
+      .query<CodeResult>(params)
       .then((res) => this.parseResponse<Response>(res));
   }
 
-  callFunction<Response>({ accountId, methodName, args = {} }: CallFunctionParams) {
+  callFunction<Response>({
+    accountId,
+    methodName,
+    args = {},
+  }: CallFunctionParams) {
     return this.query<Response>({
       request_type: "call_function",
       finality: "final",
