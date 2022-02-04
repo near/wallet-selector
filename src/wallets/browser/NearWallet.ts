@@ -5,13 +5,23 @@ import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
-import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
+import {
+  CallParams,
+  ViewParams,
+  FunctionCallAction,
+} from "../../interfaces/IWallet";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
   constructor(emitter: Emitter) {
-    super(emitter, "nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
+    super(
+      emitter,
+      "nearwallet",
+      "Near Wallet",
+      "Near Wallet",
+      "https://cryptologos.cc/logos/near-protocol-near-logo.png"
+    );
 
     this.init();
   }
@@ -86,8 +96,8 @@ class NearWallet extends BrowserWallet implements INearWallet {
     // near-api-js marks this method as protected.
     return account.signAndSendTransaction({
       receiverId,
-      actions: this.transformActions(actions)
-    })
+      actions: this.transformActions(actions),
+    });
   }
 }
 

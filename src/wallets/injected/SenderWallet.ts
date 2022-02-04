@@ -65,10 +65,9 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     await this.setWalletAsSignedIn();
 
-
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
+      showModal: false,
     }));
   }
 
@@ -97,16 +96,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   disconnect() {
-    return this.wallet.signOut()
-      .then((res) => {
-        if (res.result !== "success") {
-          throw new Error("Failed to sign out");
-        }
+    return this.wallet.signOut().then((res) => {
+      if (res.result !== "success") {
+        throw new Error("Failed to sign out");
+      }
 
-        this.emitter.emit("disconnect")
+      this.emitter.emit("disconnect");
 
-        return;
-      });
+      return;
+    });
   }
   // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
   async getAccount() {
@@ -123,23 +121,31 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     console.log("SenderWallet:view", { contractId, methodName, args });
 
     // Using NEAR connection as unable to get the RPC connection from SenderWallet.
-    return state.nearConnection!.connection.provider.query({
-      request_type: "call_function",
-      account_id: contractId,
-      method_name: methodName,
-      args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
-      finality: "optimistic"
-    })
-      // TODO: Assign real interface.
-      .then((res: any) => {
-        return res.result && res.result.length > 0 && JSON.parse(Buffer.from(res.result).toString());
-      });
+    return (
+      state
+        .nearConnection!.connection.provider.query({
+          request_type: "call_function",
+          account_id: contractId,
+          method_name: methodName,
+          args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
+          finality: "optimistic",
+        })
+        // TODO: Assign real interface.
+        .then((res: any) => {
+          return (
+            res.result &&
+            res.result.length > 0 &&
+            JSON.parse(Buffer.from(res.result).toString())
+          );
+        })
+    );
   }
 
   async call({ receiverId, actions }: CallParams) {
     console.log("SenderWallet:call", { receiverId, actions });
 
-    return this.wallet.signAndSendTransaction({ receiverId, actions })
+    return this.wallet
+      .signAndSendTransaction({ receiverId, actions })
       .then((res) => {
         if (res.error) {
           throw new Error(res.error);

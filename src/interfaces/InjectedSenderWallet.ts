@@ -6,13 +6,15 @@ export interface InitParams {
 
 // Empty string if we haven't signed in before.
 export interface InitResponse {
-  accessKey: "" | {
-    publicKey: {
-      data: Uint8Array;
-      keyType: number;
-    };
-    secretKey: string;
-  };
+  accessKey:
+    | ""
+    | {
+        publicKey: {
+          data: Uint8Array;
+          keyType: number;
+        };
+        secretKey: string;
+      };
 }
 
 export interface RpcInfo {
@@ -102,9 +104,13 @@ interface InjectedSenderWallet {
   onRpcChanged: (callback: RpcChangedCallback) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
-  signAndSendTransaction : (params: SignAndSendTransactionParams) => Promise<SignAndSendTransactionResponse>;
+  signAndSendTransaction: (
+    params: SignAndSendTransactionParams
+  ) => Promise<SignAndSendTransactionResponse>;
   // TODO: Determine return type.
-  requestSignTransactions : (params: RequestSignTransactionsParams) => Promise<unknown>;
+  requestSignTransactions: (
+    params: RequestSignTransactionsParams
+  ) => Promise<unknown>;
 }
 
 export default InjectedSenderWallet;

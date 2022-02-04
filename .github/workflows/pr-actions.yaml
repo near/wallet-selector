@@ -23,9 +23,13 @@ jobs:
           node-version: "16.x"
       - name: Install NPM Dependencies
         run: npm install
+      - name: Run Build
+        run: npm run build
+      - name: Run Linting
+        run: npm run lint
       - name: Run Unit & Integration Tests
         run: npm test
-      - name: Install Playwright Dependencies
-        run: sudo npx playwright install-deps
-      - name: Run End-to-End Tests
-        run: npm run test:e2e
+      # - name: Install Playwright Dependencies
+      #   run: sudo npx playwright install-deps
+      # - name: Run End-to-End Tests
+      #   run: npm run test:e2e

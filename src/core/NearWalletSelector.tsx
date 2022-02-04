@@ -7,13 +7,13 @@ import { getState, updateState } from "../state/State";
 import SmartContract from "../contracts/SmartContract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter } from "../utils/EventsHandler"
+import EventHandler, { Emitter } from "../utils/EventsHandler";
 import EventList from "../types/EventList";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
   private contract: SmartContract;
-  private emitter: Emitter
+  private emitter: Emitter;
 
   constructor(options?: Options) {
     if (options) {
@@ -25,7 +25,7 @@ export default class NearWalletSelector {
         },
       }));
     }
-    this.emitter = new EventHandler()
+    this.emitter = new EventHandler();
     this.walletController = new WalletController(this.emitter);
     const state = getState();
     this.contract = new SmartContract(
@@ -73,7 +73,7 @@ export default class NearWalletSelector {
     return this.walletController.getAccount();
   }
 
-  on(event: EventList, callback: () => {}) {
+  on(event: EventList, callback: () => void) {
     this.emitter.on(event, callback);
   }
 }
