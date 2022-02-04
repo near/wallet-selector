@@ -7,7 +7,7 @@ const config: PlaywrightTestConfig = {
   testMatch: /.*\.e2e\.ts/,
   timeout: 30 * 1000,
   expect: {
-    timeout: 5000
+    timeout: 5000,
   },
   forbidOnly: runningInCI,
   retries: runningInCI ? 2 : 0,

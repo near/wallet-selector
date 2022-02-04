@@ -8,12 +8,18 @@ export default abstract class BaseWallet implements IWallet {
   protected name = "Wallet";
   protected description = "A near wallet";
   protected icon = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
-  protected emitter: Emitter
+  protected emitter: Emitter;
 
   protected showWallet = true;
 
-  constructor(emitter: Emitter, id: string, name: string, description: string, icon: string) {
-    this.emitter = emitter
+  constructor(
+    emitter: Emitter,
+    id: string,
+    name: string,
+    description: string,
+    icon: string
+  ) {
+    this.emitter = emitter;
     this.id = id;
     this.name = name;
     this.description = description;

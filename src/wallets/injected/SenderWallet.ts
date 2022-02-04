@@ -68,7 +68,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
+      showModal: false,
     }));
   }
 
@@ -97,16 +97,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   disconnect() {
-    return this.wallet.signOut()
-      .then((res) => {
-        if (res.result !== "success") {
-          throw new Error("Failed to sign out");
-        }
+    return this.wallet.signOut().then((res) => {
+      if (res.result !== "success") {
+        throw new Error("Failed to sign out");
+      }
 
-        this.emitter.emit("disconnect")
+      this.emitter.emit("disconnect");
 
-        return;
-      });
+      return;
+    });
   }
 
   // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
@@ -121,7 +120,8 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   async call({ receiverId, actions }: CallParams) {
     console.log("SenderWallet:call", { receiverId, actions });
 
-    return this.wallet.signAndSendTransaction({ receiverId, actions })
+    return this.wallet
+      .signAndSendTransaction({ receiverId, actions })
       .then((res) => {
         if (res.error) {
           throw new Error(res.error);

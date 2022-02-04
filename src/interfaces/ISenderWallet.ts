@@ -1,3 +1,5 @@
 import IWallet from "./IWallet";
 
-export default interface ISenderWallet extends IWallet {}
+type ISenderWallet = IWallet;
+
+export default ISenderWallet;

@@ -7,7 +7,7 @@ const HelperFunctions = {
   },
   isMobile() {
     return mobile();
-  }
+  },
 };
 
 export default HelperFunctions;

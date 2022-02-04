@@ -7,14 +7,14 @@ import { getState, updateState } from "../state/State";
 import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter } from "../utils/EventsHandler"
+import EventHandler, { Emitter } from "../utils/EventsHandler";
 import EventList from "../types/EventList";
 import getConfig from "../config";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
+  private emitter: Emitter;
   contract: Contract;
-  private emitter: Emitter
 
   constructor(options: Options) {
     if (options) {
@@ -30,7 +30,7 @@ export default class NearWalletSelector {
     const state = getState();
     const config = getConfig(options.networkId);
 
-    this.emitter = new EventHandler()
+    this.emitter = new EventHandler();
     this.walletController = new WalletController(this.emitter);
     this.contract = new Contract(options.accountId, config.nodeUrl);
 
@@ -69,7 +69,7 @@ export default class NearWalletSelector {
     return this.walletController.getAccount();
   }
 
-  on(event: EventList, callback: () => {}) {
+  on(event: EventList, callback: () => void) {
     this.emitter.on(event, callback);
   }
 }
