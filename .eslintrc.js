@@ -1,14 +1,7 @@
 module.exports = {
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "prettier",
-    "prettier/@typescript-eslint",
-    "prettier/react"
-  ],
   env: {
     commonjs: true,
+    browser: true,
     es6: true,
     node: true,
     jest: true,
@@ -28,6 +21,12 @@ module.exports = {
     "prettier",
     "react",
     "react-hooks"
+  ],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "prettier",
   ],
   rules: {
     "prettier/prettier": ["error", require("./prettier.config")],
