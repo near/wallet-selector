@@ -23,7 +23,7 @@ class Contract {
     });
   }
 
-  call({ actions }: Omit<CallParams, "receiverId">) {
+  async call({ actions }: Omit<CallParams, "receiverId">) {
     const state = getState();
     const walletId = state.signedInWalletId;
 
