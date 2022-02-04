@@ -23,7 +23,7 @@ jobs:
           node-version: "16.x"
       - name: Install NPM Dependencies
         run: npm install
-      - name: Run TypeScript Build
+      - name: Run Build
         run: npm run build
       - name: Run Linting
         run: npm run lint
