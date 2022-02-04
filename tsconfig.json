@@ -17,6 +17,17 @@
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "lib"]
+  "include": [
+    "__tests__",
+    "e2e",
+    "src",
+    "jest.config.ts",
+    "jest.init.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "example"
+  ]
 }

@@ -36,7 +36,7 @@ export default class SmartContract {
     return state.walletProviders[walletId].view({
       contractId: this.contractAddress,
       methodName,
-      args
+      args,
     });
   }
 

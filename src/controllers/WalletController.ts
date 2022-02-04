@@ -5,16 +5,14 @@ import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
-import EventList  from "../types/EventList"
+import EventList from "../types/EventList";
 import State from "../types/State";
 
-
 class WalletController {
-  
-  private emitter: Emitter
+  private emitter: Emitter;
 
   constructor(emitter: Emitter) {
-    this.emitter = emitter 
+    this.emitter = emitter;
     this.generateDefaultWallets();
     this.generateCustomWallets();
   }
@@ -80,7 +78,7 @@ class WalletController {
   hideModal() {
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
+      showModal: false,
     }));
   }
 
@@ -111,8 +109,8 @@ class WalletController {
     return null;
   }
 
-  on(event: EventList, callback: () => {}) {
-    this.emitter.on(event, callback)
+  on(event: EventList, callback: () => void) {
+    this.emitter.on(event, callback);
   }
 }
 

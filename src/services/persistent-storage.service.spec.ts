@@ -28,7 +28,7 @@ describe("PersistentStorage Unit Tests", () => {
     expect(persistentStorage).toBe(persistentStorage2);
   });
 
-  it('should init properly', () => {
+  it("should init properly", () => {
     const initPrefix = "init";
     const initKey = "testKey";
     const initValue = "testValue";
@@ -38,13 +38,17 @@ describe("PersistentStorage Unit Tests", () => {
       key: jest.fn().mockImplementation(() => `${initPrefix}-${initKey}`),
     });
 
-    const initPersistantStorage = new PersistentStorage(initPrefix, initStorage);
+    const initPersistantStorage = new PersistentStorage(
+      initPrefix,
+      initStorage
+    );
 
     const found = initPersistantStorage.getItem(initKey);
     expect(found).toBe(initValue);
-    expect(initStorage.getItem).toHaveBeenCalledWith(`${initPrefix}-${initKey}`);
+    expect(initStorage.getItem).toHaveBeenCalledWith(
+      `${initPrefix}-${initKey}`
+    );
     expect(initPersistantStorage.length).toBe(1);
-
   });
 
   it("should set and get a value and sync to localstorage", () => {
@@ -83,12 +87,12 @@ describe("PersistentStorage Unit Tests", () => {
     expect(persistentStorage.getItem(key)).toBe(value);
   });
 
-  it('should set a prefix on storage', () => {
+  it("should set a prefix on storage", () => {
     persistentStorage.setItem(key, value);
     expect(storage.setItem).toBeCalledWith(`${prefix}-${key}`, value);
   });
 
-  it('should get a key', () => {
+  it("should get a key", () => {
     persistentStorage.setItem(key, value);
     const existing = persistentStorage.key(0);
     expect(existing).toEqual(key);
