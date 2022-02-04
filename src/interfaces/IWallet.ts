@@ -5,12 +5,6 @@ export interface FunctionCallAction {
   deposit: string;
 }
 
-export interface ViewParams {
-  contractId: string;
-  methodName: string;
-  args?: object;
-}
-
 export interface CallParams {
   receiverId: string;
   actions: Array<FunctionCallAction>;
