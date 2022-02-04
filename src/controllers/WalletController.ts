@@ -57,6 +57,7 @@ class WalletController {
     for (const name in state.options.customWallets) {
       state.walletProviders[name] = new CustomWallet(
         this.emitter,
+        this.provider,
         name,
         state.options.customWallets[name].name,
         state.options.customWallets[name].description,
