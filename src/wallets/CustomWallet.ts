@@ -3,9 +3,9 @@ import BaseWallet from "./BaseWallet";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
 export default class CustomWallet extends BaseWallet {
-  private onConnectFunction: Function;
-  private onDisconnectFunction: Function;
-  private isConnectedFunction: Function;
+  private onConnectFunction: () => void;
+  private onDisconnectFunction: () => void;
+  private isConnectedFunction: () => boolean;
 
   constructor(
     emitter: Emitter,
@@ -13,9 +13,9 @@ export default class CustomWallet extends BaseWallet {
     name: string,
     description: string,
     icon: string,
-    onConnectFunction: Function,
-    onDisconnectFunction: Function,
-    isConnectedFunction: Function
+    onConnectFunction: () => void,
+    onDisconnectFunction: () => void,
+    isConnectedFunction: () => boolean
   ) {
     super(emitter, id, name, description, icon);
 
@@ -24,15 +24,15 @@ export default class CustomWallet extends BaseWallet {
     this.setIsConnectedFunction(isConnectedFunction);
   }
 
-  setOnConnectFunction(onConnectFunction: Function) {
+  setOnConnectFunction(onConnectFunction: () => void) {
     this.onConnectFunction = onConnectFunction;
   }
 
-  setOnDisconnectFunction(onDisconnectFunction: Function) {
+  setOnDisconnectFunction(onDisconnectFunction: () => void) {
     this.onDisconnectFunction = onDisconnectFunction;
   }
 
-  setIsConnectedFunction(isConnectedFunction: Function) {
+  setIsConnectedFunction(isConnectedFunction: () => boolean) {
     this.isConnectedFunction = isConnectedFunction;
   }
 
@@ -52,11 +52,19 @@ export default class CustomWallet extends BaseWallet {
     return this.isConnectedFunction();
   }
 
-  async signIn() {}
+  async signIn() {
+    throw new Error("Not implemented");
+  }
 
-  async getAccount() {}
+  async getAccount() {
+    throw new Error("Not implemented");
+  }
 
-  async view() {}
+  async view() {
+    throw new Error("Not implemented");
+  }
 
-  async call() {}
+  async call() {
+    throw new Error("Not implemented");
+  }
 }

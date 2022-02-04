@@ -109,7 +109,7 @@ class WalletController {
     return null;
   }
 
-  on(event: EventList, callback: () => {}) {
+  on(event: EventList, callback: () => void) {
     this.emitter.on(event, callback);
   }
 }

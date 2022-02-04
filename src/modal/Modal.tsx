@@ -23,15 +23,10 @@ function Modal(): JSX.Element {
   const [state, setState] = useState(getState());
 
   useEffect(() => {
-    window.updateWalletSelector = (state) => {
-      setState(state);
+    window.updateWalletSelector = (nextState) => {
+      setState(nextState);
     };
   }, []);
-
-  function handleCloseModal(event: any) {
-    event.preventDefault();
-    if (event.target === event.currentTarget) onCloseModalHandler();
-  }
 
   function onCloseModalHandler() {
     updateState((prevState) => ({
@@ -42,6 +37,11 @@ function Modal(): JSX.Element {
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
     setLedgerWalletError("");
     setWalletInfoVisible(false);
+  }
+
+  function handleCloseModal(event: any) {
+    event.preventDefault();
+    if (event.target === event.currentTarget) onCloseModalHandler();
   }
 
   function getThemeClass(theme: string | null) {
