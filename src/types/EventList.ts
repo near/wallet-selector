@@ -1,3 +1,3 @@
-type EventList = "init" | "disconnect" | "signIn";
+type EventList =  "disconnect" | "signIn" | "test" ;
 
-export default EventList;
+export default EventList

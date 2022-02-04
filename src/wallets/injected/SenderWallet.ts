@@ -1,7 +1,8 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
-import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
+import { Emitter } from "../../utils/EventsHandler";
+
 import { CallParams, ViewParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
 
@@ -14,8 +15,9 @@ declare global {
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
-  constructor() {
+  constructor(emitter: Emitter) {
     super(
+      emitter,
       "senderwallet",
       "Sender Wallet",
       "Sender Wallet",
@@ -63,7 +65,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     await this.setWalletAsSignedIn();
 
-    EventHandler.callEventHandler("signIn");
 
     updateState((prevState) => ({
       ...prevState,
@@ -88,7 +89,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       .init({ contractId: state.options.contract.address })
       .then((res) => {
         console.log(res);
-        EventHandler.callEventHandler("init");
       });
   }
 
@@ -103,12 +103,11 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
           throw new Error("Failed to sign out");
         }
 
-        EventHandler.callEventHandler("disconnect");
+        this.emitter.emit("disconnect")
 
         return;
       });
   }
-
   // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
   async getAccount() {
     await this.timeout(300);

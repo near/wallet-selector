@@ -3,15 +3,15 @@ import BN from "bn.js";
 
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
-import EventHandler from "../../utils/EventHandler";
+import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
 import { CallParams, ViewParams, FunctionCallAction } from "../../interfaces/IWallet";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
-  constructor() {
-    super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
+  constructor(emitter: Emitter) {
+    super(emitter, "nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
 
     this.init();
   }
@@ -24,7 +24,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
     const state = getState();
     if (!state.nearConnection) return;
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
-    EventHandler.callEventHandler("init");
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }
@@ -37,13 +36,13 @@ class NearWallet extends BrowserWallet implements INearWallet {
         return;
       }
       this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
+      this.emitter.emit("signIn");
     });
   }
   async disconnect() {
     if (!this.wallet) return;
     this.wallet.signOut();
-    EventHandler.callEventHandler("disconnect");
+    this.emitter.emit("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
