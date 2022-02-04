@@ -11,9 +11,9 @@ class Contract {
   private readonly accountId: string;
   private readonly provider: ProviderService;
 
-  constructor(accountId: string, providerUrl: string) {
+  constructor(accountId: string, provider: ProviderService) {
     this.accountId = accountId;
-    this.provider = new ProviderService(providerUrl);
+    this.provider = provider;
   }
 
   getAccountId() {

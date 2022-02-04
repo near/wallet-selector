@@ -6,13 +6,15 @@ import INearWallet from "../../interfaces/INearWallet";
 import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
 import { CallParams, FunctionCallAction } from "../../interfaces/IWallet";
+import ProviderService from "../../services/ProviderService";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "nearwallet",
       "Near Wallet",
       "Near Wallet",

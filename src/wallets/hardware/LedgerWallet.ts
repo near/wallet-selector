@@ -8,6 +8,7 @@ import { providers, transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { CallParams } from "../../interfaces/IWallet";
+import ProviderService from "../../services/ProviderService";
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -26,9 +27,10 @@ export default class LedgerWallet
   private accountId: string;
   private nonce: number;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "ledgerwallet",
       "Ledger Wallet",
       "Ledger Wallet",

@@ -4,6 +4,7 @@ import { getState, updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
 import { CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
+import ProviderService from "../../services/ProviderService";
 
 declare global {
   interface Window {
@@ -14,14 +15,14 @@ declare global {
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "senderwallet",
       "Sender Wallet",
       "Sender Wallet",
-      "https://senderwallet.io/logo.png",
-      "wallet"
+      "https://senderwallet.io/logo.png"
     );
 
     this.wallet = window.wallet!;

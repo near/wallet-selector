@@ -10,10 +10,13 @@ import Modal from "../modal/Modal";
 import EventHandler, { Emitter } from "../utils/EventsHandler";
 import EventList from "../types/EventList";
 import getConfig from "../config";
+import ProviderService from "../services/ProviderService";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
   private emitter: Emitter;
+  private provider: ProviderService;
+
   contract: Contract;
 
   constructor(options: Options) {
@@ -31,8 +34,10 @@ export default class NearWalletSelector {
     const config = getConfig(options.networkId);
 
     this.emitter = new EventHandler();
-    this.walletController = new WalletController(this.emitter);
-    this.contract = new Contract(options.accountId, config.nodeUrl);
+    this.provider = new ProviderService(config.nodeUrl)
+
+    this.walletController = new WalletController(this.emitter, this.provider);
+    this.contract = new Contract(options.accountId, this.provider);
 
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].init();
