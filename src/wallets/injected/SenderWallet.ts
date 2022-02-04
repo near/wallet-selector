@@ -2,7 +2,7 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import { getState, updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
-import { CallParams } from "../../interfaces/IWallet";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/ProviderService";
 
@@ -109,12 +109,19 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     });
   }
 
-  // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
-  async getAccount() {
-    await this.timeout(300);
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.wallet.getAccountId();
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: this.wallet.getAccountId(),
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
   }
 

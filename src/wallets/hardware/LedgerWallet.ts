@@ -7,7 +7,7 @@ import { getState, updateState } from "../../state/State";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
-import { CallParams } from "../../interfaces/IWallet";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import ProviderService from "../../services/ProviderService";
 
 export default class LedgerWallet
@@ -234,10 +234,19 @@ export default class LedgerWallet
     return response.subarray(0, -2);
   }
 
-  async getAccount() {
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.accountId;
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: this.accountId,
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
   }
 

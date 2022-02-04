@@ -10,6 +10,11 @@ export interface CallParams {
   actions: Array<FunctionCallAction>;
 }
 
+export interface AccountInfo {
+  accountId: string;
+  balance: string;
+}
+
 export default interface IWallet {
   getId(): string;
   getName(): string;
@@ -23,6 +28,6 @@ export default interface IWallet {
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
-  getAccount(): Promise<any>;
+  getAccount(): Promise<AccountInfo | null>;
   call(params: CallParams): Promise<any>;
 }
