@@ -83,19 +83,9 @@ export default class LedgerWallet
   }
 
   async checkAccountId(accountId: string, publicKey: string) {
-    const state = getState();
-    const provider = new providers.JsonRpcProvider(
-      `https://rpc.${state.options.networkId}.near.org`
-    );
-
-    return provider
-      .query({
-        request_type: "view_access_key",
-        finality: "final",
-        account_id: accountId,
-        public_key: publicKey,
-      })
-      .then((res: any) => {
+    return this.provider
+      .viewAccessKey({ accountId, publicKey })
+      .then((res) => {
         this.nonce = res.nonce;
         return true;
       })
