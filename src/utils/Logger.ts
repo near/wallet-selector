@@ -1,7 +1,6 @@
 import { LogInterface } from "../interfaces/LogInterface";
 
 export class Logger implements LogInterface {
-
   public debug(msg: string, ...supportingData: any[]): void {
     this.emitLogMessage("debug", msg, supportingData);
   }
