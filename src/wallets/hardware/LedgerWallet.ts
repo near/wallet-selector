@@ -236,12 +236,12 @@ export default class LedgerWallet
 
   async getAccount(): Promise<AccountInfo | null> {
     const connected = await this.isConnected();
+    const accountId = this.accountId;
 
-    if (!connected) {
+    if (!connected || !accountId) {
       return null;
     }
 
-    const accountId = this.accountId;
     const account = await this.provider.viewAccount({ accountId });
 
     return {

@@ -34,9 +34,9 @@ export default class NearWalletSelector {
     const config = getConfig(options.networkId);
 
     this.emitter = new EventHandler();
-    this.provider = new ProviderService(config.nodeUrl)
-
+    this.provider = new ProviderService(config.nodeUrl);
     this.walletController = new WalletController(this.emitter, this.provider);
+
     this.contract = new Contract(options.accountId, this.provider);
 
     if (state.signedInWalletId !== null) {
