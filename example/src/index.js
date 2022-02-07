@@ -20,7 +20,7 @@ async function initContract() {
       changeMethods: ["addMessage"],
     },
     walletSelectorUI: {
-      description: "Please select a wallet to connect to this dapp:",
+      description: "Please select a wallet to connect to this dApp:",
       explanation: [
         "Wallets are used to send, receive, and store digital assets.",
         "There are different types of wallets. They can be an extension",

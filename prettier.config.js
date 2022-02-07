@@ -12,5 +12,6 @@ module.exports = {
   proseWrap: "preserve",
   insertPragma: false,
   requirePragma: false,
-  bracketSameLine: false
+  bracketSameLine: false,
+  endOfLine: "auto",
 };
