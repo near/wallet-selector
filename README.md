@@ -106,21 +106,6 @@ Contributors to this package may also find this integration useful as it provide
 
 ## Editor Setup
 
-### Linting
-
 This project uses [ESLint](https://eslint.org/) (with [Prettier](https://prettier.io/)) to enforce a consistent coding style. It's important that you configure your editor correctly to avoid issues when you're ready to open a Pull Request.
 
 Although this project uses Prettier, it's simply an "internal" dependency to our ESLint configuration. This is because we want Prettier to handle code styling while avoiding conflicts with ESLint which specifically focuses on potentially problematic code. As a result, **it's important that you switch off Prettier in your editor and ensure only ESLint is enabled**.
-
-### Line Endings
-
-If you're using Windows, it's likely your default setting for line endings is CRLF. To ensure this is consistent throughout the project, run the following (be sure to save/backup your work first):
-
-```bash
-# More info here: https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreautocrlf
-git config --global core.autocrlf true
-# More info here: https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreeol
-git config --global core.eol lf
-# More info here: https://git-scm.com/docs/git-checkout-index
-git checkout-index --force --all
-```
