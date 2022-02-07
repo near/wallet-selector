@@ -7,7 +7,7 @@ import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import EventList from "../types/EventList";
 import State from "../types/State";
-import ProviderService from "../services/ProviderService";
+import ProviderService from "../services/provider/ProviderService";
 
 class WalletController {
   private emitter: Emitter;

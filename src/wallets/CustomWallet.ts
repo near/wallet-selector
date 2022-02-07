@@ -1,6 +1,6 @@
 import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
-import ProviderService from "../services/ProviderService";
+import ProviderService from "../services/provider/ProviderService";
 import { AccountInfo } from "../interfaces/IWallet";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed

@@ -4,7 +4,7 @@ import { getState, updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
-import ProviderService from "../../services/ProviderService";
+import ProviderService from "../../services/provider/ProviderService";
 
 declare global {
   interface Window {

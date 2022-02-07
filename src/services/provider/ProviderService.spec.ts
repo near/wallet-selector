@@ -7,39 +7,16 @@ import ProviderService, {
 import { mock } from "jest-mock-extended";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { providers } from "near-api-js";
-import { QueryResponseKind } from "near-api-js/lib/providers/provider";
+import {
+  createQueryResponseMock,
+  createFunctionCallResponseMock,
+  createViewAccessKeyResponseMock,
+  createViewAccountResponseMock,
+} from "./providerServiceMocks";
 
 const defaults = {
   url: "https://rpc.testnet.near.org",
 };
-
-const createQueryResponseMock = (): QueryResponseKind => ({
-  block_height: 0,
-  block_hash: "",
-});
-
-const createFunctionCallResponseMock = (data: unknown) => ({
-  ...createQueryResponseMock(),
-  result: JSON.stringify(data)
-    .split("")
-    .map((x) => x.charCodeAt(0)),
-  logs: [],
-});
-
-const createViewAccessKeyResponseMock = () => ({
-  ...createQueryResponseMock(),
-  nonce: 0,
-  permission: "FullAccess",
-});
-
-const createViewAccountResponseMock = () => ({
-  ...createQueryResponseMock(),
-  amount: "0",
-  code_hash: "11111111111111111111111111111111",
-  locked: "0",
-  storage_paid_at: 0,
-  storage_usage: 0,
-});
 
 const setup = (url: string) => {
   const provider = mock<JsonRpcProvider>();

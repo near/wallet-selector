@@ -10,7 +10,7 @@ import Modal from "../modal/Modal";
 import EventHandler, { Emitter } from "../utils/EventsHandler";
 import EventList from "../types/EventList";
 import getConfig from "../config";
-import ProviderService from "../services/ProviderService";
+import ProviderService from "../services/provider/ProviderService";
 
 export default class NearWalletSelector {
   private walletController: WalletController;

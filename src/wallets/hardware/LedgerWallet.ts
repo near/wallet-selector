@@ -8,7 +8,7 @@ import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
-import ProviderService from "../../services/ProviderService";
+import ProviderService from "../../services/provider/ProviderService";
 
 export default class LedgerWallet
   extends HardwareWallet

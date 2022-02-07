@@ -1,6 +1,6 @@
 import { getState } from "../state/State";
 import { CallParams } from "../interfaces/IWallet";
-import ProviderService from "../services/ProviderService";
+import ProviderService from "../services/provider/ProviderService";
 
 interface ViewParams {
   methodName: string;

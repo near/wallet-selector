@@ -10,7 +10,7 @@ import {
   CallParams,
   FunctionCallAction,
 } from "../../interfaces/IWallet";
-import ProviderService from "../../services/ProviderService";
+import ProviderService from "../../services/provider/ProviderService";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;

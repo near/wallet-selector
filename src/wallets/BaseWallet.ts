@@ -2,7 +2,7 @@ import IWallet, { AccountInfo, CallParams } from "../interfaces/IWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import { updateState } from "../state/State";
 import { Emitter } from "../utils/EventsHandler";
-import ProviderService from "../services/ProviderService";
+import ProviderService from "../services/provider/ProviderService";
 
 export default abstract class BaseWallet implements IWallet {
   protected id = "wallet";

@@ -1,7 +1,7 @@
 import BaseWallet from "../BaseWallet";
 import HelperFunctions from "../../utils/HelperFunctions";
 import { Emitter } from "../../utils/EventsHandler";
-import ProviderService from "../../services/ProviderService";
+import ProviderService from "../../services/provider/ProviderService";
 
 export default abstract class InjectedWallet extends BaseWallet {
   constructor(
