@@ -7,7 +7,7 @@ describe("Some logging behavior", () => {
   const error = console.error;
   const info = console.info;
   const logger = new Logger();
-  const message = "something"
+  const message = "something";
   logger.doActive = true;
 
   beforeEach(() => {
