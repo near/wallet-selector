@@ -7,8 +7,8 @@ describe("Some logging behavior", () => {
   const error = console.error;
   const info = console.info;
   const logger = new Logger();
-  logger.doActive = true
-  
+  logger.doActive = true;
+
   beforeEach(() => {
     console.log = jest.fn(); // create a new mock function for each test
     console.warn = jest.fn();
@@ -25,10 +25,10 @@ describe("Some logging behavior", () => {
   });
   it("no log in production", () => {
     // TODO: test something that should not log
-    logger.doActive = false
-    logger.log("production log")
+    logger.doActive = false;
+    logger.log("production log");
     expect(console.log).not.toHaveBeenCalled();
-    logger.doActive = true
+    logger.doActive = true;
   });
   it("some log", () => {
     // TODO: test something that should log

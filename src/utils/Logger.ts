@@ -1,9 +1,8 @@
 import { LogInterface } from "../interfaces/LogInterface";
-import  MessageType  from "../types/MessageType"
+import MessageType from "../types/MessageType";
 
 export class Logger implements LogInterface {
-
-  public doActive: boolean
+  public doActive: boolean;
 
   debug(msg: string, supportingData?: any[]) {
     this.emitLogMessage("debug", msg, supportingData);
@@ -24,13 +23,13 @@ export class Logger implements LogInterface {
     msgType: MessageType,
     msg: string,
     supportingData?: any[]
-  ){
-    if(this.doActive){
-      if(supportingData)
-        console[msgType](msg, ...supportingData);
-      else 
-        console[msgType](msg)
-    }else
-        console[msg] = () => {}
+  ) {
+    if (this.doActive) {
+      if (supportingData) console[msgType](msg, ...supportingData);
+      else console[msgType](msg);
+    } else
+      console[msg] = () => {
+        return true;
+      };
   }
 }
