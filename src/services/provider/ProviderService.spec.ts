@@ -29,6 +29,10 @@ const setup = (url: string) => {
   };
 };
 
+afterEach(() => {
+  jest.resetAllMocks();
+});
+
 describe("query", () => {
   it("forwards params to the near-api-js JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
