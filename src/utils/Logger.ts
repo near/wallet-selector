@@ -30,6 +30,7 @@ export class Logger implements LogInterface {
         console[msgType](msg, ...supportingData);
       else 
         console[msgType](msg)
-      }
-    }
+    }else
+        console[msg] = () => {}
+  }
 }

@@ -1,6 +1,6 @@
 export interface LogInterface {
-  debug(primaryMesasge: string, ...supportingData: any[]): void;
-  warn(primaryMesasge: string, ...supportingData: any[]): void;
-  error(primaryMesasge: string, ...supportingData: any[]): void;
-  info(primaryMesasge: string, ...supportingData: any[]): void;
+  debug(msg: string, supportingData?: any[]): void;
+  warn(msg: string, supportingData?: any[]): void;
+  error(msg: string, supportingData?: any[]): void;
+  info(msg: string, supportingData?: any[]): void;
 }
