@@ -3,10 +3,10 @@ import {
   CodeResult,
   AccessKeyView,
   AccountView,
-  BlockReference as NABlockReference,
+  BlockReference,
   QueryResponseKind,
 } from "near-api-js/lib/providers/provider";
-import { SignedTransaction as NASignedTransaction } from "near-api-js/lib/transaction";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 export type QueryParams = { [key in string]: unknown };
 
@@ -24,10 +24,6 @@ export interface ViewAccessKeyParams {
 export interface ViewAccountParams {
   accountId: string;
 }
-
-export type BlockReference = NABlockReference;
-
-export type SignedTransaction = NASignedTransaction;
 
 class ProviderService {
   private provider: providers.JsonRpcProvider;

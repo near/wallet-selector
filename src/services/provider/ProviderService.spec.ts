@@ -5,7 +5,10 @@ import ProviderService, {
   ViewAccountParams,
 } from "./ProviderService";
 import { mock } from "jest-mock-extended";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
+import {
+  FinalExecutionOutcome,
+  JsonRpcProvider,
+} from "near-api-js/lib/providers";
 import { providers } from "near-api-js";
 import {
   createQueryResponseMock,
@@ -13,6 +16,11 @@ import {
   createViewAccessKeyResponseMock,
   createViewAccountResponseMock,
 } from "./providerServiceMocks";
+import { SignedTransaction } from "near-api-js/lib/transaction";
+import {
+  BlockReference,
+  BlockResult,
+} from "near-api-js/lib/providers/provider";
 
 const defaults = {
   url: "https://rpc.testnet.near.org",
@@ -175,12 +183,10 @@ describe("viewAccount", () => {
 describe("block", () => {
   it("forwards params to the near-api-js JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
-    const reference = {};
+    const reference = {} as BlockReference;
 
-    // @ts-ignore
-    provider.block.mockResolvedValue({});
+    provider.block.mockResolvedValue({} as BlockResult);
 
-    // @ts-ignore
     await service.block(reference);
 
     expect(provider.block).toHaveBeenCalledWith(reference);
@@ -188,13 +194,11 @@ describe("block", () => {
 
   it("correctly parses the response", async () => {
     const { service, provider } = setup(defaults.url);
-    const reference = {};
-    const data = {};
+    const reference = {} as BlockReference;
+    const data = {} as BlockResult;
 
-    // @ts-ignore
     provider.block.mockResolvedValue(data);
 
-    // @ts-ignore
     const response = await service.block(reference);
 
     expect(response).toEqual(data);
@@ -204,12 +208,10 @@ describe("block", () => {
 describe("sendTransaction", () => {
   it("forwards params to the near-api-js JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
-    const signedTransaction = {};
+    const signedTransaction = {} as SignedTransaction;
 
-    // @ts-ignore
-    provider.sendTransaction.mockResolvedValue({});
+    provider.sendTransaction.mockResolvedValue({} as FinalExecutionOutcome);
 
-    // @ts-ignore
     await service.sendTransaction(signedTransaction);
 
     expect(provider.sendTransaction).toHaveBeenCalledWith(signedTransaction);
@@ -217,13 +219,11 @@ describe("sendTransaction", () => {
 
   it("correctly parses the response", async () => {
     const { service, provider } = setup(defaults.url);
-    const signedTransaction = {};
-    const data = {};
+    const signedTransaction = {} as SignedTransaction;
+    const data = {} as FinalExecutionOutcome;
 
-    // @ts-ignore
     provider.sendTransaction.mockResolvedValue(data);
 
-    // @ts-ignore
     const response = await service.sendTransaction(signedTransaction);
 
     expect(response).toEqual(data);
