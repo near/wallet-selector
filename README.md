@@ -118,7 +118,7 @@ If you're using Windows, it's likely your default setting for line endings is CR
 
 ```bash
 # More info here: https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreautocrlf
-git config --global core.autocrlf false
+git config --global core.autocrlf true
 # More info here: https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreeol
 git config --global core.eol lf
 # More info here: https://git-scm.com/docs/git-checkout-index
