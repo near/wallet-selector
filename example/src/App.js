@@ -10,23 +10,31 @@ const { parseNearAmount } = utils.format;
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 
-const App = ({ near, contract, currentUser2 }) => {
-  const [currentUser, setCurrentUser] = useState(currentUser2);
+const App = ({ near, initialAccount }) => {
+  const [account, setAccount] = useState(initialAccount);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    contract.view({ methodName: "getMessages" }).then(setMessages);
+    near.contract.view({ methodName: "getMessages" }).then(setMessages);
 
-    near.on("signIn", async () => {
-      console.log(currentUser);
-      setCurrentUser(await near.getAccount());
-      console.log(currentUser);
+    near.on("signIn", () => {
+      console.log("'signIn' event triggered!");
+
+      near.getAccount()
+        .then((data) => {
+          console.log("account info", data);
+          setAccount(data);
+        })
+        .catch((err) => {
+          console.log("Failed to retrieve account info");
+          console.error(err);
+        });
     });
-    near.on("disconnect", async () => {
-      console.log(currentUser);
-      setCurrentUser(await near.getAccount());
-      console.log(currentUser);
+
+    near.on("disconnected", async () => {
+      console.log("'disconnect' event triggered!");
+      setAccount(null);
     });
   }, []);
 
@@ -40,7 +48,7 @@ const App = ({ near, contract, currentUser2 }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    contract.call({
+    near.contract.call({
         actions: [{
           methodName: "addMessage",
           args: { text: message.value },
@@ -55,7 +63,7 @@ const App = ({ near, contract, currentUser2 }) => {
         throw err;
       })
       .then(() => {
-        return contract.view({ methodName: "getMessages" })
+        return near.contract.view({ methodName: "getMessages" })
           .then((messages) => {
             setMessages(messages);
             message.value = "";
@@ -94,7 +102,7 @@ const App = ({ near, contract, currentUser2 }) => {
     <main>
       <header>
         <h1>NEAR Guest Book</h1>
-        {currentUser ? (
+        {account ? (
           <div>
             <button onClick={signOut}>Log out</button>
             <button onClick={switchProviderHandler}>Switch Provider</button>
@@ -103,12 +111,12 @@ const App = ({ near, contract, currentUser2 }) => {
           <button onClick={signIn}>Log in</button>
         )}
       </header>
-      {currentUser ? (
-        <Form near={near} onSubmit={onSubmit} currentUser={currentUser} />
+      {account ? (
+        <Form near={near} onSubmit={onSubmit} currentUser={account} />
       ) : (
         <SignIn />
       )}
-      {!!currentUser && !!messages.length && <Messages messages={messages} />}
+      {!!account && !!messages.length && <Messages messages={messages} />}
     </main>
   );
 };

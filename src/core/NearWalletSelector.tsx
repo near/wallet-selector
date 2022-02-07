@@ -30,7 +30,6 @@ export default class NearWalletSelector {
       }));
     }
 
-    const state = getState();
     const config = getConfig(options.networkId);
 
     this.emitter = new EventHandler();
@@ -38,9 +37,13 @@ export default class NearWalletSelector {
     this.walletController = new WalletController(this.emitter, this.provider);
 
     this.contract = new Contract(options.accountId, this.provider);
+  }
 
-    if (state.signedInWalletId !== null) {
-      state.walletProviders[state.signedInWalletId].init();
+  async init() {
+    const state = getState();
+
+    if (state.signedInWalletId) {
+      await state.walletProviders[state.signedInWalletId].init();
     }
 
     this.renderModal();
