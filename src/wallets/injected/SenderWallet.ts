@@ -4,7 +4,10 @@ import { getState, updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
 
 import { CallParams, ViewParams } from "../../interfaces/IWallet";
-import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
+import InjectedSenderWallet, {
+  GetRpcResponse,
+  RpcChangedResponse,
+} from "../../interfaces/InjectedSenderWallet";
 
 declare global {
   interface Window {
@@ -39,16 +42,11 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     }
 
     const rpcResponse = await this.wallet.getRpc();
-    const state = getState();
 
-    if (state.options.networkId !== rpcResponse.rpc.networkId) {
-      updateState((prevState) => ({
-        ...prevState,
-        showWalletOptions: false,
-        showSwitchNetwork: true,
-      }));
+    if (!this.networkMatches(rpcResponse)) {
       return;
     }
+
     await this.init();
     await this.signIn();
   }
@@ -64,6 +62,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     }
 
     await this.setWalletAsSignedIn();
+    this.emitter.emit("signIn");
 
     updateState((prevState) => ({
       ...prevState,
@@ -84,11 +83,33 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       console.log("newAccountId: ", newAccountId);
     });
 
+    this.onNetworkChanged();
+
     return this.wallet
       .init({ contractId: state.options.contract.address })
       .then((res) => {
         console.log(res);
       });
+  }
+
+  onNetworkChanged() {
+    this.wallet.onRpcChanged((response) => {
+      this.networkMatches(response);
+    });
+  }
+
+  networkMatches(response: RpcChangedResponse | GetRpcResponse) {
+    const state = getState();
+    if (state.options.networkId !== response.rpc.networkId) {
+      updateState((prevState) => ({
+        ...prevState,
+        showModal: true,
+        showWalletOptions: false,
+        showSwitchNetwork: true,
+      }));
+      return false;
+    }
+    return true;
   }
 
   async isConnected() {

@@ -267,8 +267,8 @@ function Modal(): JSX.Element {
             </div>
             <div className="content">
               <p>
-                We've detected that you need to change your wallet's network for
-                this Dapp.
+                We've detected that you need to change your wallet's network to
+                <strong>{` ${state.options.networkId}`}</strong> for this Dapp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
