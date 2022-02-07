@@ -2,6 +2,7 @@ import ProviderService, {
   QueryParams,
   CallFunctionParams,
   ViewAccessKeyParams,
+  ViewAccountParams,
 } from "./ProviderService";
 import { mock } from "jest-mock-extended";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
@@ -26,6 +27,12 @@ const createFunctionCallResponseMock = (data: unknown) => ({
 });
 
 const createViewAccessKeyResponseMock = () => ({
+  ...createQueryResponseMock(),
+  nonce: 0,
+  permission: "FullAccess",
+});
+
+const createViewAccountResponseMock = () => ({
   ...createQueryResponseMock(),
   amount: "0",
   code_hash: "11111111111111111111111111111111",
@@ -148,6 +155,38 @@ describe("viewAccessKey", () => {
     const response = await service.viewAccessKey({
       accountId: "accountId",
       publicKey: "publicKey",
+    });
+
+    expect(response).toEqual(data);
+  });
+});
+
+describe("viewAccount", () => {
+  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+    const { service, provider } = setup(defaults.url);
+    const params: ViewAccountParams = {
+      accountId: "accountId",
+    };
+
+    provider.query.mockResolvedValue(createViewAccountResponseMock());
+
+    await service.viewAccount(params);
+
+    expect(provider.query).toHaveBeenCalledWith({
+      request_type: "view_account",
+      finality: "final",
+      account_id: params.accountId,
+    });
+  });
+
+  it("correctly parses the response", async () => {
+    const { service, provider } = setup(defaults.url);
+    const data = createViewAccountResponseMock();
+
+    provider.query.mockResolvedValue(data);
+
+    const response = await service.viewAccount({
+      accountId: "accountId",
     });
 
     expect(response).toEqual(data);
