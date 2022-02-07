@@ -5,15 +5,14 @@ export interface FunctionCallAction {
   deposit: string;
 }
 
-export interface ViewParams {
-  contractId: string;
-  methodName: string;
-  args?: object;
-}
-
 export interface CallParams {
   receiverId: string;
   actions: Array<FunctionCallAction>;
+}
+
+export interface AccountInfo {
+  accountId: string;
+  balance: string;
 }
 
 export default interface IWallet {
@@ -29,7 +28,6 @@ export default interface IWallet {
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
-  getAccount(): Promise<any>;
-  view(params: ViewParams): Promise<any>;
+  getAccount(): Promise<AccountInfo | null>;
   call(params: CallParams): Promise<any>;
 }

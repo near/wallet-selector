@@ -4,10 +4,11 @@ import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import { getState, updateState } from "../../state/State";
-import { providers, transactions, utils } from "near-api-js";
+import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
-import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
+import ProviderService from "../../services/provider/ProviderService";
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -26,9 +27,10 @@ export default class LedgerWallet
   private accountId: string;
   private nonce: number;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "ledgerwallet",
       "Ledger Wallet",
       "Ledger Wallet",
@@ -81,19 +83,9 @@ export default class LedgerWallet
   }
 
   async checkAccountId(accountId: string, publicKey: string) {
-    const state = getState();
-    const provider = new providers.JsonRpcProvider(
-      `https://rpc.${state.options.networkId}.near.org`
-    );
-
-    return provider
-      .query({
-        request_type: "view_access_key",
-        finality: "final",
-        account_id: accountId,
-        public_key: publicKey,
-      })
-      .then((res: any) => {
+    return this.provider
+      .viewAccessKey({ accountId, publicKey })
+      .then((res) => {
         this.nonce = res.nonce;
         return true;
       })
@@ -242,27 +234,24 @@ export default class LedgerWallet
     return response.subarray(0, -2);
   }
 
-  async getAccount() {
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+    const accountId = this.accountId;
+
+    if (!connected || !accountId) {
+      return null;
+    }
+
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: this.accountId,
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
   }
 
   encodePublicKey(publicKey: Uint8Array) {
     return bs58.encode(Buffer.from(publicKey));
-  }
-
-  async view({ contractId, methodName, args }: ViewParams) {
-    const state = getState();
-
-    console.log("LedgerWallet:view", { contractId, methodName, args });
-
-    return await state.walletProviders.nearwallet.view({
-      contractId,
-      methodName,
-      args,
-    });
   }
 
   // TODO: Refactor callContract into this new method.
@@ -288,32 +277,19 @@ export default class LedgerWallet
 
   async callContract(
     method: string,
-    args?: any,
+    args?: object,
     gas = "10000000000000",
     deposit = "0"
   ) {
     const state = getState();
     if (!state.signedInWalletId) return;
 
-    if (state.options.contract.viewMethods.includes(method)) {
-      return await state.walletProviders.nearwallet.view({
-        contractId: state.options.contract.address,
-        methodName: method,
-        args,
-      });
-    }
-
     if (!args) args = [];
 
     const bnGas = new BN(gas.toString());
     const bnDeposit = new BN(deposit.toString());
-    const provider = new providers.JsonRpcProvider(
-      `https://rpc.${state.options.networkId}.near.org`
-    );
 
-    const response = await state.nearConnection!.connection.provider.block({
-      finality: "final",
-    });
+    const response = await this.provider.block({ finality: "final" });
 
     if (!response) return;
 
@@ -330,7 +306,7 @@ export default class LedgerWallet
     const transaction = transactions.createTransaction(
       this.accountId,
       pk,
-      state.options.contract.address,
+      state.options.accountId,
       nonce,
       actions,
       recentBlockHash
@@ -351,21 +327,18 @@ export default class LedgerWallet
       }),
     });
 
-    const signedSerializedTx = signedTransaction.encode();
+    const res = await this.provider.sendTransaction(signedTransaction);
 
-    const base64Response: any = await provider.sendJsonRpc(
-      "broadcast_tx_commit",
-      [Buffer.from(signedSerializedTx).toString("base64")]
-    );
+    if (typeof res.status !== "string") {
+      const successValue = res.status.SuccessValue || "";
 
-    if (base64Response.status.SuccessValue === "") {
-      return true;
+      if (successValue === "") {
+        return null;
+      }
+
+      return JSON.parse(Buffer.from(successValue, "base64").toString());
     }
 
-    const res = JSON.parse(
-      Buffer.from(base64Response.status.SuccessValue, "base64").toString()
-    );
-
-    return res;
+    return null;
   }
 }

@@ -8,8 +8,8 @@
   "scripts": {
     "test:e2e": "playwright test",
     "build": "npm run build:esm && npm run build:cjs",
-    "lint": "eslint \"./**/*.ts\"  \"./**/*.tsx\"",
-    "lint:fix": "eslint \"./**/*.ts\"  \"./**/*.tsx\" --fix",
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "lint:fix": "npm run lint -- --fix",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "jest",

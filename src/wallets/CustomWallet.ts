@@ -1,5 +1,7 @@
 import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
+import ProviderService from "../services/provider/ProviderService";
+import { AccountInfo } from "../interfaces/IWallet";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
 export default class CustomWallet extends BaseWallet {
@@ -9,6 +11,7 @@ export default class CustomWallet extends BaseWallet {
 
   constructor(
     emitter: Emitter,
+    provider: ProviderService,
     id: string,
     name: string,
     description: string,
@@ -17,7 +20,7 @@ export default class CustomWallet extends BaseWallet {
     onDisconnectFunction: () => void,
     isConnectedFunction: () => boolean
   ) {
-    super(emitter, id, name, description, icon);
+    super(emitter, provider, id, name, description, icon);
 
     this.setOnConnectFunction(onConnectFunction);
     this.setOnDisconnectFunction(onDisconnectFunction);
@@ -56,11 +59,7 @@ export default class CustomWallet extends BaseWallet {
     throw new Error("Not implemented");
   }
 
-  async getAccount() {
-    throw new Error("Not implemented");
-  }
-
-  async view() {
+  async getAccount(): Promise<AccountInfo | null> {
     throw new Error("Not implemented");
   }
 

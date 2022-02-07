@@ -6,17 +6,19 @@ import INearWallet from "../../interfaces/INearWallet";
 import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
 import {
+  AccountInfo,
   CallParams,
-  ViewParams,
   FunctionCallAction,
 } from "../../interfaces/IWallet";
+import ProviderService from "../../services/provider/ProviderService";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "nearwallet",
       "Near Wallet",
       "Near Wallet",
@@ -32,8 +34,13 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   async init() {
     const state = getState();
-    if (!state.nearConnection) return;
+
+    if (!state.nearConnection) {
+      return;
+    }
+
     this.wallet = new WalletConnection(state.nearConnection, "near_app");
+
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }
@@ -41,30 +48,46 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   async signIn() {
     const state = getState();
-    this.wallet.requestSignIn(state.options.contract.address).then(() => {
+
+    this.wallet.requestSignIn(state.options.accountId).then(() => {
       if (!this.wallet.isSignedIn()) {
         return;
       }
+
       this.setWalletAsSignedIn();
       this.emitter.emit("signIn");
     });
   }
   async disconnect() {
-    if (!this.wallet) return;
+    if (!this.wallet) {
+      return;
+    }
+
     this.wallet.signOut();
     this.emitter.emit("disconnect");
   }
 
-  async isConnected(): Promise<boolean> {
-    if (!this.wallet) return false;
+  async isConnected() {
+    if (!this.wallet) {
+      return false;
+    }
+
     return this.wallet.isSignedIn();
   }
 
-  async getAccount(): Promise<any> {
-    if (!this.isConnected()) return null;
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.wallet.getAccountId();
+    const state = await this.wallet.account().state();
+
     return {
-      accountId: this.wallet.getAccountId(),
-      balance: (await this.wallet.account().state()).amount,
+      accountId,
+      balance: state.amount,
     };
   }
 
@@ -77,14 +100,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
         new BN(action.deposit)
       );
     });
-  }
-
-  view({ contractId, methodName, args = {} }: ViewParams) {
-    const account = this.wallet.account();
-
-    console.log("NearWallet:view", { contractId, methodName, args });
-
-    return account.viewFunction(contractId, methodName, args);
   }
 
   async call({ receiverId, actions }: CallParams) {

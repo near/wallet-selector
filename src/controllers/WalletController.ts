@@ -7,12 +7,16 @@ import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import EventList from "../types/EventList";
 import State from "../types/State";
+import ProviderService from "../services/provider/ProviderService";
 
 class WalletController {
   private emitter: Emitter;
+  private provider: ProviderService;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     this.emitter = emitter;
+    this.provider = provider;
+
     this.generateDefaultWallets();
     this.generateCustomWallets();
   }
@@ -25,13 +29,13 @@ class WalletController {
     >((result, wallet) => {
       switch (wallet) {
         case "nearwallet":
-          result.nearwallet = new NearWallet(this.emitter);
+          result.nearwallet = new NearWallet(this.emitter, this.provider);
           break;
         case "senderwallet":
-          result.senderwallet = new SenderWallet(this.emitter);
+          result.senderwallet = new SenderWallet(this.emitter, this.provider);
           break;
         case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet(this.emitter);
+          result.ledgerwallet = new LedgerWallet(this.emitter, this.provider);
           break;
         default:
           break;
@@ -53,6 +57,7 @@ class WalletController {
     for (const name in state.options.customWallets) {
       state.walletProviders[name] = new CustomWallet(
         this.emitter,
+        this.provider,
         name,
         state.options.customWallets[name].name,
         state.options.customWallets[name].description,

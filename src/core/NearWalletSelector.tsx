@@ -4,18 +4,22 @@ import ReactDOM from "react-dom";
 import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
 import { getState, updateState } from "../state/State";
-import SmartContract from "../contracts/SmartContract";
+import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter } from "../utils/EventsHandler";
 import EventList from "../types/EventList";
+import getConfig from "../config";
+import ProviderService from "../services/provider/ProviderService";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
-  private contract: SmartContract;
   private emitter: Emitter;
+  private provider: ProviderService;
 
-  constructor(options?: Options) {
+  contract: Contract;
+
+  constructor(options: Options) {
     if (options) {
       updateState((prevState) => ({
         ...prevState,
@@ -25,14 +29,15 @@ export default class NearWalletSelector {
         },
       }));
     }
-    this.emitter = new EventHandler();
-    this.walletController = new WalletController(this.emitter);
+
     const state = getState();
-    this.contract = new SmartContract(
-      state.options.contract.address,
-      state.options.contract.viewMethods,
-      state.options.contract.changeMethods
-    );
+    const config = getConfig(options.networkId);
+
+    this.emitter = new EventHandler();
+    this.provider = new ProviderService(config.nodeUrl);
+    this.walletController = new WalletController(this.emitter, this.provider);
+
+    this.contract = new Contract(options.accountId, this.provider);
 
     if (state.signedInWalletId !== null) {
       state.walletProviders[state.signedInWalletId].init();
@@ -49,10 +54,6 @@ export default class NearWalletSelector {
     ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
   }
 
-  getContract() {
-    return this.contract;
-  }
-
   showModal() {
     this.walletController.showModal();
   }
@@ -66,7 +67,7 @@ export default class NearWalletSelector {
   }
 
   signOut() {
-    this.walletController.signOut();
+    return this.walletController.signOut();
   }
 
   getAccount() {

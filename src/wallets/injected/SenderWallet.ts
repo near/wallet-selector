@@ -2,12 +2,12 @@ import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import { getState, updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
-
-import { CallParams, ViewParams } from "../../interfaces/IWallet";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet, {
   GetRpcResponse,
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
+import ProviderService from "../../services/provider/ProviderService";
 
 declare global {
   interface Window {
@@ -18,14 +18,14 @@ declare global {
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
-  constructor(emitter: Emitter) {
+  constructor(emitter: Emitter, provider: ProviderService) {
     super(
       emitter,
+      provider,
       "senderwallet",
       "Sender Wallet",
       "Sender Wallet",
-      "https://senderwallet.io/logo.png",
-      "wallet"
+      "https://senderwallet.io/logo.png"
     );
 
     this.wallet = window.wallet!;
@@ -54,7 +54,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   async signIn() {
     const state = getState();
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: state.options.contract.address,
+      contractId: state.options.accountId,
     });
 
     if (!accessKey) {
@@ -62,6 +62,8 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     }
 
     await this.setWalletAsSignedIn();
+    this.emitter.emit("signIn");
+
     this.emitter.emit("signIn");
 
     updateState((prevState) => ({
@@ -86,7 +88,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     this.onNetworkChanged();
 
     return this.wallet
-      .init({ contractId: state.options.contract.address })
+      .init({ contractId: state.options.accountId })
       .then((res) => {
         console.log(res);
       });
@@ -127,39 +129,21 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       return;
     });
   }
-  // TODO: Use https://docs.near.org/docs/api/rpc/contracts#view-account.
-  async getAccount() {
-    await this.timeout(300);
+
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.wallet.getAccountId();
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: this.wallet.getAccountId(),
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
-  }
-
-  view({ contractId, methodName, args = {} }: ViewParams) {
-    const state = getState();
-
-    console.log("SenderWallet:view", { contractId, methodName, args });
-
-    // Using NEAR connection as unable to get the RPC connection from SenderWallet.
-    return (
-      state
-        .nearConnection!.connection.provider.query({
-          request_type: "call_function",
-          account_id: contractId,
-          method_name: methodName,
-          args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
-          finality: "optimistic",
-        })
-        // TODO: Assign real interface.
-        .then((res: any) => {
-          return (
-            res.result &&
-            res.result.length > 0 &&
-            JSON.parse(Buffer.from(res.result).toString())
-          );
-        })
-    );
   }
 
   async call({ receiverId, actions }: CallParams) {

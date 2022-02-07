@@ -1,21 +1,19 @@
 import BaseWallet from "../BaseWallet";
 import HelperFunctions from "../../utils/HelperFunctions";
 import { Emitter } from "../../utils/EventsHandler";
+import ProviderService from "../../services/provider/ProviderService";
 
 export default abstract class InjectedWallet extends BaseWallet {
-  protected injectedGlobal: string;
-
   constructor(
     emitter: Emitter,
+    provider: ProviderService,
     id: string,
     name: string,
     description: string,
-    icon: string,
-    injectedGlobal: string
+    icon: string
   ) {
-    super(emitter, id, name, description, icon);
+    super(emitter, provider, id, name, description, icon);
 
-    this.injectedGlobal = injectedGlobal;
     this.setShowWallet(!HelperFunctions.isMobile());
   }
 }
