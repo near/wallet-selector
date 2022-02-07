@@ -4,6 +4,7 @@ import {
   AccessKeyView,
   AccountView,
   BlockReference as NABlockReference,
+  QueryResponseKind,
 } from "near-api-js/lib/providers/provider";
 import { SignedTransaction as NASignedTransaction } from "near-api-js/lib/transaction";
 
@@ -35,7 +36,7 @@ class ProviderService {
     this.provider = new providers.JsonRpcProvider(url);
   }
 
-  private parseResponse<Response>(res: CodeResult): Response {
+  private parseCodeResult<Response>(res: CodeResult): Response {
     return JSON.parse(Buffer.from(res.result).toString());
   }
 
@@ -43,10 +44,8 @@ class ProviderService {
     return Buffer.from(JSON.stringify(args)).toString("base64");
   }
 
-  query<Response>(params: QueryParams) {
-    return this.provider
-      .query<CodeResult>(params)
-      .then((res) => this.parseResponse<Response>(res));
+  query<Response extends QueryResponseKind>(params: QueryParams) {
+    return this.provider.query<Response>(params);
   }
 
   callFunction<Response>({
@@ -54,13 +53,13 @@ class ProviderService {
     methodName,
     args = {},
   }: CallFunctionParams) {
-    return this.query<Response>({
+    return this.query<CodeResult>({
       request_type: "call_function",
       finality: "final",
       account_id: accountId,
       method_name: methodName,
       args_base64: this.encodeArgs(args),
-    });
+    }).then((res) => this.parseCodeResult<Response>(res));
   }
 
   viewAccessKey({ accountId, publicKey }: ViewAccessKeyParams) {
