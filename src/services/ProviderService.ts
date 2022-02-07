@@ -1,27 +1,32 @@
 import { providers } from "near-api-js";
 import {
-  RpcQueryRequest,
   CodeResult,
   AccessKeyView,
   AccountView,
-  BlockReference,
+  BlockReference as NABlockReference,
 } from "near-api-js/lib/providers/provider";
-import { SignedTransaction } from "near-api-js/lib/transaction";
+import { SignedTransaction as NASignedTransaction } from "near-api-js/lib/transaction";
 
-interface CallFunctionParams {
+export type QueryParams = { [key in string]: unknown };
+
+export interface CallFunctionParams {
   accountId: string;
   methodName: string;
   args?: object;
 }
 
-interface ViewAccessKeyParams {
+export interface ViewAccessKeyParams {
   accountId: string;
   publicKey: string;
 }
 
-interface ViewAccountParams {
+export interface ViewAccountParams {
   accountId: string;
 }
+
+export type BlockReference = NABlockReference;
+
+export type SignedTransaction = NASignedTransaction;
 
 class ProviderService {
   private provider: providers.JsonRpcProvider;
@@ -38,7 +43,7 @@ class ProviderService {
     return Buffer.from(JSON.stringify(args)).toString("base64");
   }
 
-  query<Response>(params: RpcQueryRequest) {
+  query<Response>(params: QueryParams) {
     return this.provider
       .query<CodeResult>(params)
       .then((res) => this.parseResponse<Response>(res));
