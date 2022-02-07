@@ -24,15 +24,18 @@ const near = await NearWalletSelector({
   networkId: "testnet",
   theme: "light",
   contract: {
-    address: "gent.testnet",
+    address: "guest-book.testnet",
     viewMethods: ["getMessages"],
-    changeMethods: [],
+    changeMethods: ["addMessage"],
   },
   walletSelectorUI: {
-    description: "Please select a wallet to connect to this dapp:",
-    explanation: `Wallets are used to send, receive, and store digital assets. There are different types of wallets.
-                  They can be an extension added to your browser, a hardware device plugged into your computer,
-                  web-based, or as an app on your phone.`,
+    description: "Please select a wallet to connect to this dApp:",
+    explanation: [
+      "Wallets are used to send, receive, and store digital assets.",
+      "There are different types of wallets. They can be an extension",
+      "added to your browser, a hardware device plugged into your",
+      "computer, web-based, or as an app on your phone.",
+    ].join(" "),
   }
 });
 ```
