@@ -1,5 +1,5 @@
 import { LogInterface } from "../interfaces/LogInterface";
-import { MessageType } from "../types/MessageType"
+import  MessageType  from "../types/MessageType"
 
 export class Logger implements LogInterface {
 

@@ -33,26 +33,26 @@ describe("Some logging behavior", () => {
   it("some log", () => {
     // TODO: test something that should log
     logger.log("something");
-    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith("something");
   });
   it("some debug", () => {
     // TODO: test something that should log
     logger.debug("something");
-    expect(console.debug).toHaveBeenCalled();
+    expect(console.debug).toHaveBeenCalledWith("something");
   });
   it("some warn", () => {
     // TODO: test something that should log
     logger.warn("something");
-    expect(console.warn).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalledWith("something");
   });
   it("some error", () => {
     // TODO: test something that should log
     logger.error("something");
-    expect(console.error).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith("something");
   });
   it("some info", () => {
     // TODO: test something that should log
     logger.info("something");
-    expect(console.info).toHaveBeenCalled();
+    expect(console.info).toHaveBeenCalledWith("something");
   });
 });
