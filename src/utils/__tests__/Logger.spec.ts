@@ -7,6 +7,7 @@ describe("Some logging behavior", () => {
   const error = console.error;
   const info = console.info;
   const logger = new Logger();
+  const message = "something"
   logger.doActive = true;
 
   beforeEach(() => {
@@ -32,27 +33,27 @@ describe("Some logging behavior", () => {
   });
   it("some log", () => {
     // TODO: test something that should log
-    logger.log("something");
-    expect(console.log).toHaveBeenCalledWith("something");
+    logger.log(message);
+    expect(console.log).toHaveBeenCalledWith(message);
   });
   it("some debug", () => {
     // TODO: test something that should log
-    logger.debug("something");
-    expect(console.debug).toHaveBeenCalledWith("something");
+    logger.debug(message);
+    expect(console.debug).toHaveBeenCalledWith(message);
   });
   it("some warn", () => {
     // TODO: test something that should log
-    logger.warn("something");
-    expect(console.warn).toHaveBeenCalledWith("something");
+    logger.warn(message);
+    expect(console.warn).toHaveBeenCalledWith(message);
   });
   it("some error", () => {
     // TODO: test something that should log
-    logger.error("something");
-    expect(console.error).toHaveBeenCalledWith("something");
+    logger.error(message);
+    expect(console.error).toHaveBeenCalledWith(message);
   });
   it("some info", () => {
     // TODO: test something that should log
-    logger.info("something");
-    expect(console.info).toHaveBeenCalledWith("something");
+    logger.info(message);
+    expect(console.info).toHaveBeenCalledWith(message);
   });
 });
