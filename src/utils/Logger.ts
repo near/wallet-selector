@@ -1,4 +1,5 @@
 import { LogInterface } from "../interfaces/LogInterface";
+import { MessageType } from "../types/MessageType"
 
 export class Logger implements LogInterface {
 
@@ -20,7 +21,7 @@ export class Logger implements LogInterface {
     this.emitLogMessage("log", msg, supportingData);
   }
   private emitLogMessage(
-    msgType: "debug" | "info" | "warn" | "error" | "log",
+    msgType: MessageType,
     msg: string,
     supportingData?: any[]
   ){
