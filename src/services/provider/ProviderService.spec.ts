@@ -162,9 +162,65 @@ describe("viewAccount", () => {
 
     provider.query.mockResolvedValue(data);
 
-    const response = await service.viewAccount({
-      accountId: "accountId",
-    });
+    const response = await service.viewAccount({ accountId: "accountId" });
+
+    expect(response).toEqual(data);
+  });
+});
+
+describe("block", () => {
+  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+    const { service, provider } = setup(defaults.url);
+    const reference = {};
+
+    // @ts-ignore
+    provider.block.mockResolvedValue({});
+
+    // @ts-ignore
+    await service.block(reference);
+
+    expect(provider.block).toHaveBeenCalledWith(reference);
+  });
+
+  it("correctly parses the response", async () => {
+    const { service, provider } = setup(defaults.url);
+    const reference = {};
+    const data = {};
+
+    // @ts-ignore
+    provider.block.mockResolvedValue(data);
+
+    // @ts-ignore
+    const response = await service.block(reference);
+
+    expect(response).toEqual(data);
+  });
+});
+
+describe("sendTransaction", () => {
+  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+    const { service, provider } = setup(defaults.url);
+    const signedTransaction = {};
+
+    // @ts-ignore
+    provider.sendTransaction.mockResolvedValue({});
+
+    // @ts-ignore
+    await service.sendTransaction(signedTransaction);
+
+    expect(provider.sendTransaction).toHaveBeenCalledWith(signedTransaction);
+  });
+
+  it("correctly parses the response", async () => {
+    const { service, provider } = setup(defaults.url);
+    const signedTransaction = {};
+    const data = {};
+
+    // @ts-ignore
+    provider.sendTransaction.mockResolvedValue(data);
+
+    // @ts-ignore
+    const response = await service.sendTransaction(signedTransaction);
 
     expect(response).toEqual(data);
   });
