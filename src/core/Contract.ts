@@ -1,12 +1,9 @@
 import { getState } from "../state/State";
 import { CallParams } from "../interfaces/IWallet";
-import ProviderService from "../services/provider/ProviderService";
+import ProviderService, {
+  CallFunctionParams,
+} from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
-
-interface ViewParams {
-  methodName: string;
-  args?: object;
-}
 
 class Contract {
   private readonly accountId: string;
@@ -27,11 +24,12 @@ class Contract {
     return this.accountId;
   }
 
-  view({ methodName, args }: ViewParams) {
+  view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
     return this.provider.callFunction({
       accountId: this.accountId,
       methodName,
       args,
+      finality,
     });
   }
 
