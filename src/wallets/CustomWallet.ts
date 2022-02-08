@@ -1,4 +1,3 @@
-import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
 import ProviderService from "../services/provider/ProviderService";
 import { AccountInfo, WalletInfo } from "../interfaces/IWallet";
@@ -13,12 +12,11 @@ export default class CustomWallet extends BaseWallet {
   private isConnectedFunction: () => boolean;
 
   constructor(
-    emitter: Emitter,
     provider: ProviderService,
     options: Options,
     customOptions: CustomWalletOptions
   ) {
-    super(emitter, provider, options);
+    super(provider, options);
 
     this.info = customOptions.info;
 
@@ -40,7 +38,7 @@ export default class CustomWallet extends BaseWallet {
   }
 
   async walletSelected() {
-    this.init();
+    return this.init();
   }
 
   async init() {

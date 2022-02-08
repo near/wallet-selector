@@ -15,9 +15,10 @@ declare global {
 interface ModalProps {
   options: Options;
   wallets: Array<IWallet>;
+  signIn: (walletId: string) => Promise<void>;
 }
 
-const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
+const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
   const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
     useState("44'/397'/0'/0'/0'");
@@ -109,7 +110,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                       id={id}
                       className={selected ? "selected-wallet" : ""}
                       onClick={() => {
-                        wallet.walletSelected().catch((err) => {
+                        signIn(id).catch((err) => {
                           console.log(`Failed to select ${name}`);
                           console.error(err);
                         });

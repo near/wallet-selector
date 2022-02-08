@@ -6,7 +6,6 @@ import ILedgerWallet from "../../interfaces/ILedgerWallet";
 import { getState, updateState } from "../../state/State";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
-import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
 import { Options } from "../../core/NearWalletSelector";
@@ -28,8 +27,8 @@ export default class LedgerWallet
   private accountId: string;
   private nonce: number;
 
-  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
-    super(emitter, provider, options);
+  constructor(provider: ProviderService, options: Options) {
+    super(provider, options);
 
     const ledgerLocalStoragePublicKey = window.localStorage.getItem(
       this.LEDGER_LOCALSTORAGE_PUBLIC_KEY
@@ -124,14 +123,6 @@ export default class LedgerWallet
     );
   }
 
-  async walletSelected() {
-    updateState((prevState) => ({
-      ...prevState,
-      showWalletOptions: false,
-      showLedgerDerivationPath: true,
-    }));
-  }
-
   private async sign(transactionData: Uint8Array) {
     if (!this.transport) return;
     const txData = Buffer.from(transactionData);
@@ -175,12 +166,11 @@ export default class LedgerWallet
 
     this.transport.on("disconnect", (res: any) => {
       console.log(res);
-      this.emitter.emit("disconnect");
     });
   }
 
   async disconnect() {
-    this.emitter.emit("disconnect");
+    throw new Error("No implemented");
   }
 
   async isConnected(): Promise<boolean> {
@@ -189,6 +179,13 @@ export default class LedgerWallet
 
   async signIn() {
     await this.init();
+
+    updateState((prevState) => ({
+      ...prevState,
+      showWalletOptions: false,
+      showLedgerDerivationPath: true,
+    }));
+
     let publicKeyString;
     if (!this.publicKey) {
       const pk = await this.generatePublicKey();
@@ -215,13 +212,6 @@ export default class LedgerWallet
         "You do not have permission to sign transactions for this account"
       );
     }
-
-    this.setWalletAsSignedIn();
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
-    this.emitter.emit("signIn");
   }
 
   async generatePublicKey() {

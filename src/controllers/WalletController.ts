@@ -3,7 +3,6 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import { Emitter, EventList } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import ProviderService from "../services/provider/ProviderService";
 import IWallet from "../interfaces/IWallet";
@@ -11,28 +10,26 @@ import { Options } from "../core/NearWalletSelector";
 
 class WalletController {
   private options: Options;
-  private emitter: Emitter;
   private provider: ProviderService;
 
   private instances: Array<IWallet>;
 
-  constructor(options: Options, emitter: Emitter, provider: ProviderService) {
+  constructor(options: Options, provider: ProviderService) {
     this.options = options;
-    this.emitter = emitter;
     this.provider = provider;
 
-    this.instances = [...this.getBuiltInWallets(), ...this.getCustomWallets()];
+    this.instances = [];
   }
 
   private getBuiltInWallets() {
     return this.options.wallets.map((walletId) => {
       switch (walletId) {
         case "nearwallet":
-          return new NearWallet(this.emitter, this.provider, this.options);
+          return new NearWallet(this.provider, this.options);
         case "senderwallet":
-          return new SenderWallet(this.emitter, this.provider, this.options);
+          return new SenderWallet(this.provider, this.options);
         case "ledgerwallet":
-          return new LedgerWallet(this.emitter, this.provider, this.options);
+          return new LedgerWallet(this.provider, this.options);
         default:
           throw new Error(`Invalid wallet id '${walletId}'`);
       }
@@ -45,7 +42,6 @@ class WalletController {
     for (const id in this.options.customWallets) {
       wallets.push(
         new CustomWallet(
-          this.emitter,
           this.provider,
           this.options,
           this.options.customWallets[id]
@@ -54,6 +50,19 @@ class WalletController {
     }
 
     return wallets;
+  }
+
+  async init() {
+    this.instances = [...this.getBuiltInWallets(), ...this.getCustomWallets()];
+
+    const state = getState();
+    const walletId = state.signedInWalletId;
+
+    if (walletId) {
+      const instance = this.getInstance(walletId)!;
+
+      await instance.init();
+    }
   }
 
   getInstance(walletId: string) {
@@ -92,16 +101,35 @@ class WalletController {
     return state.isSignedIn;
   }
 
+  async signIn(walletId: string) {
+    const instance = this.getInstance(walletId);
+
+    if (!instance) {
+      throw new Error(`Invalid walletId '${walletId}'`);
+    }
+
+    await instance.signIn();
+
+    localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, walletId);
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+      isSignedIn: true,
+      signedInWalletId: walletId,
+    }));
+  }
+
   async signOut() {
     const state = getState();
 
-    if (state.signedInWalletId) {
-      const instance = this.getInstance(state.signedInWalletId);
-
-      if (instance) {
-        await instance.disconnect();
-      }
+    if (!state.signedInWalletId) {
+      return;
     }
+
+    const instance = this.getInstance(state.signedInWalletId)!;
+
+    await instance.disconnect();
 
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
 
@@ -110,26 +138,18 @@ class WalletController {
       signedInWalletId: null,
       isSignedIn: false,
     }));
-
-    this.emitter.emit("disconnect");
   }
 
   async getAccount() {
     const state = getState();
 
-    if (state.signedInWalletId) {
-      const instance = this.getInstance(state.signedInWalletId);
-
-      if (instance) {
-        return instance.getAccount();
-      }
+    if (!state.signedInWalletId) {
+      return;
     }
 
-    return null;
-  }
+    const instance = this.getInstance(state.signedInWalletId)!;
 
-  on(event: EventList, callback: () => void) {
-    this.emitter.on(event, callback);
+    return instance.getAccount();
   }
 }
 

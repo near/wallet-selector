@@ -25,12 +25,10 @@ export interface AccountInfo {
 export default interface IWallet {
   getShowWallet(): boolean;
 
-  walletSelected(): Promise<void>;
   init(): Promise<void>;
   getInfo(): WalletInfo;
   disconnect(): Promise<void>;
   isConnected(): Promise<boolean>;
-  setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
   getAccount(): Promise<AccountInfo | null>;
   call(params: CallParams): Promise<any>;

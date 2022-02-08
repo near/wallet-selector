@@ -1,7 +1,6 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
 import { updateState } from "../../state/State";
-import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet, {
   GetRpcResponse,
@@ -19,20 +18,22 @@ declare global {
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
-  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
-    super(emitter, provider, options);
-
-    this.wallet = window.wallet!;
+  constructor(provider: ProviderService, options: Options) {
+    super(provider, options);
   }
 
-  async init(): Promise<void> {
+  async init() {
     await this.timeout(200);
+
+    this.wallet = window.wallet!;
 
     this.wallet.onAccountChanged((newAccountId) => {
       console.log("SenderWallet:onAccountChange", newAccountId);
     });
 
-    this.onNetworkChanged();
+    this.wallet.onRpcChanged((response) => {
+      this.networkMatches(response);
+    });
 
     return this.wallet
       .init({ contractId: this.options.accountId })
@@ -48,14 +49,21 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     };
   }
 
-  async walletSelected() {
-    if (!this.wallet) {
-      updateState((prevState) => ({
+  isInstalled() {
+    return !!window.wallet;
+  }
+
+  async signIn() {
+    if (!this.isInstalled()) {
+      return updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
         showSenderWalletNotInstalled: true,
       }));
-      return;
+    }
+
+    if (!this.wallet) {
+      await this.init();
     }
 
     const rpcResponse = await this.wallet.getRpc();
@@ -64,37 +72,17 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       return;
     }
 
-    await this.init();
-    await this.signIn();
-  }
-
-  async signIn() {
     const { accessKey } = await this.wallet.requestSignIn({
       contractId: this.options.accountId,
     });
 
     if (!accessKey) {
-      return;
+      throw new Error("Failed to sign in");
     }
-
-    await this.setWalletAsSignedIn();
-
-    this.emitter.emit("signIn");
-
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
   }
 
   async timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  onNetworkChanged() {
-    this.wallet.onRpcChanged((response) => {
-      this.networkMatches(response);
-    });
   }
 
   networkMatches(response: RpcChangedResponse | GetRpcResponse) {
@@ -119,8 +107,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       if (res.result !== "success") {
         throw new Error("Failed to sign out");
       }
-
-      this.emitter.emit("disconnect");
 
       return;
     });

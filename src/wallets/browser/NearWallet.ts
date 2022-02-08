@@ -8,7 +8,6 @@ import BN from "bn.js";
 
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
-import { Emitter } from "../../utils/EventsHandler";
 import {
   AccountInfo,
   CallParams,
@@ -21,12 +20,8 @@ import { Options } from "../../core/NearWalletSelector";
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
-  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
-    super(emitter, provider, options);
-  }
-
-  async walletSelected() {
-    await this.signIn();
+  constructor(provider: ProviderService, options: Options) {
+    super(provider, options);
   }
 
   async init() {
@@ -37,10 +32,6 @@ class NearWallet extends BrowserWallet implements INearWallet {
     });
 
     this.wallet = new WalletConnection(near, "near_app");
-
-    if (this.wallet.isSignedIn()) {
-      this.setWalletAsSignedIn();
-    }
   }
 
   getInfo() {
@@ -53,22 +44,19 @@ class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async signIn() {
-    this.wallet.requestSignIn(this.options.accountId).then(() => {
-      if (!this.wallet.isSignedIn()) {
-        return;
-      }
+    if (!this.wallet) {
+      await this.init();
+    }
 
-      this.setWalletAsSignedIn();
-      this.emitter.emit("signIn");
-    });
+    return this.wallet.requestSignIn(this.options.accountId);
   }
+
   async disconnect() {
     if (!this.wallet) {
       return;
     }
 
     this.wallet.signOut();
-    this.emitter.emit("disconnect");
   }
 
   async isConnected() {

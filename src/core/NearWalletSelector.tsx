@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import WalletController from "../controllers/WalletController";
-import { getState } from "../state/State";
 import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
@@ -55,11 +54,7 @@ export default class NearWalletSelector {
 
     this.emitter = new EventHandler();
     this.provider = new ProviderService(config.nodeUrl);
-    this.controller = new WalletController(
-      options,
-      this.emitter,
-      this.provider
-    );
+    this.controller = new WalletController(options, this.provider);
 
     this.contract = new Contract(
       options.accountId,
@@ -68,28 +63,25 @@ export default class NearWalletSelector {
     );
   }
 
-  async init() {
-    const state = getState();
-    const walletId = state.signedInWalletId;
-
-    if (walletId) {
-      const instance = this.controller.getInstance(walletId)!;
-
-      await instance.init();
-    }
-
-    this.renderModal();
-  }
-
-  renderModal() {
+  private renderModal() {
     const el = document.createElement("div");
     el.id = MODAL_ELEMENT_ID;
     document.body.appendChild(el);
 
     ReactDOM.render(
-      <Modal options={this.options} wallets={this.controller.getInstances()} />,
+      <Modal
+        options={this.options}
+        wallets={this.controller.getInstances()}
+        signIn={this.signIn.bind(this)}
+      />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
+  }
+
+  async init() {
+    await this.controller.init();
+
+    this.renderModal();
   }
 
   showModal() {
@@ -104,8 +96,16 @@ export default class NearWalletSelector {
     return this.controller.isSignedIn();
   }
 
+  signIn(walletId: string) {
+    return this.controller
+      .signIn(walletId)
+      .then(() => this.emitter.emit("signIn"));
+  }
+
   signOut() {
-    return this.controller.signOut();
+    return this.controller
+      .signOut()
+      .then(() => this.emitter.emit("disconnect"));
   }
 
   getAccount() {
