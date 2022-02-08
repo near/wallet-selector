@@ -1,3 +1,3 @@
-type EventList = "disconnect" | "signIn" | "test";
+type EventList = "disconnect" | "signIn";
 
 export default EventList;
