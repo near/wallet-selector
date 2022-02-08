@@ -72,6 +72,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     });
 
     if (!accessKey) {
+      if (this.wallet.isSignedIn()) await this.disconnect();
       return;
     }
 
