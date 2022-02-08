@@ -64,6 +64,10 @@ class WalletController {
     });
   }
 
+  getInstances() {
+    return this.instances;
+  }
+
   showModal() {
     updateState((prevState) => ({
       ...prevState,

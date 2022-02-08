@@ -40,14 +40,18 @@ export interface Options {
 }
 
 export default class NearWalletSelector {
-  private walletController: WalletController;
+  private options: Options;
+
   private emitter: Emitter;
   private provider: ProviderService;
+  private walletController: WalletController;
 
   contract: Contract;
 
   constructor(options: Options) {
     const config = getConfig(options.networkId);
+
+    this.options = options;
 
     this.emitter = new EventHandler();
     this.provider = new ProviderService(config.nodeUrl);
@@ -75,7 +79,13 @@ export default class NearWalletSelector {
     el.id = MODAL_ELEMENT_ID;
     document.body.appendChild(el);
 
-    ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
+    ReactDOM.render(
+      <Modal
+        options={this.options}
+        wallets={this.walletController.getInstances()}
+      />,
+      document.getElementById(MODAL_ELEMENT_ID)
+    );
   }
 
   showModal() {
