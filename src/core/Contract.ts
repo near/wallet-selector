@@ -1,6 +1,7 @@
 import { getState } from "../state/State";
 import { CallParams } from "../interfaces/IWallet";
 import ProviderService from "../services/provider/ProviderService";
+import WalletController from "../controllers/WalletController";
 
 interface ViewParams {
   methodName: string;
@@ -10,10 +11,16 @@ interface ViewParams {
 class Contract {
   private readonly accountId: string;
   private readonly provider: ProviderService;
+  private readonly controller: WalletController;
 
-  constructor(accountId: string, provider: ProviderService) {
+  constructor(
+    accountId: string,
+    provider: ProviderService,
+    controller: WalletController
+  ) {
     this.accountId = accountId;
     this.provider = provider;
+    this.controller = controller;
   }
 
   getAccountId() {
@@ -36,7 +43,9 @@ class Contract {
       throw new Error("Wallet not selected!");
     }
 
-    return state.walletProviders[walletId].call({
+    const instance = this.controller.getInstance(walletId)!;
+
+    return instance.call({
       receiverId: this.accountId,
       actions,
     });

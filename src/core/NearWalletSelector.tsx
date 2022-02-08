@@ -44,7 +44,7 @@ export default class NearWalletSelector {
 
   private emitter: Emitter;
   private provider: ProviderService;
-  private walletController: WalletController;
+  private controller: WalletController;
 
   contract: Contract;
 
@@ -55,20 +55,27 @@ export default class NearWalletSelector {
 
     this.emitter = new EventHandler();
     this.provider = new ProviderService(config.nodeUrl);
-    this.walletController = new WalletController(
+    this.controller = new WalletController(
       options,
       this.emitter,
       this.provider
     );
 
-    this.contract = new Contract(options.accountId, this.provider);
+    this.contract = new Contract(
+      options.accountId,
+      this.provider,
+      this.controller
+    );
   }
 
   async init() {
     const state = getState();
+    const walletId = state.signedInWalletId;
 
-    if (state.signedInWalletId) {
-      await state.walletProviders[state.signedInWalletId].init();
+    if (walletId) {
+      const instance = this.controller.getInstance(walletId)!;
+
+      await instance.init();
     }
 
     this.renderModal();
@@ -80,32 +87,29 @@ export default class NearWalletSelector {
     document.body.appendChild(el);
 
     ReactDOM.render(
-      <Modal
-        options={this.options}
-        wallets={this.walletController.getInstances()}
-      />,
+      <Modal options={this.options} wallets={this.controller.getInstances()} />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
   }
 
   showModal() {
-    this.walletController.showModal();
+    this.controller.showModal();
   }
 
   hideModal() {
-    this.walletController.hideModal();
+    this.controller.hideModal();
   }
 
   isSignedIn() {
-    return this.walletController.isSignedIn();
+    return this.controller.isSignedIn();
   }
 
   signOut() {
-    return this.walletController.signOut();
+    return this.controller.signOut();
   }
 
   getAccount() {
-    return this.walletController.getAccount();
+    return this.controller.getAccount();
   }
 
   on(event: EventList, callback: () => void) {

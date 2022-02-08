@@ -56,7 +56,7 @@ class WalletController {
     return wallets;
   }
 
-  private getInstance(walletId: string) {
+  getInstance(walletId: string) {
     return this.instances.find((wallet) => {
       const { id } = wallet.getInfo();
 
