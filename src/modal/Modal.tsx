@@ -93,44 +93,39 @@ function Modal(): JSX.Element {
               {state.options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">
-              {state.options.wallets.map((wallet: string) => {
-                if (
-                  !state.walletProviders[wallet] ||
-                  !state.walletProviders[wallet].getShowWallet()
-                )
-                  return null;
-                return (
-                  <li
-                    className={
-                      state.signedInWalletId ===
-                      state.walletProviders[wallet].getId()
-                        ? "selected-wallet"
-                        : ""
-                    }
-                    id={state.walletProviders[wallet].getId()}
-                    key={state.walletProviders[wallet].getName()}
-                    onClick={async () => {
-                      await state.walletProviders[wallet].walletSelected();
-                    }}
-                  >
-                    <div title={state.walletProviders[wallet].getDescription()}>
-                      <img
-                        src={state.walletProviders[wallet].getIcon()}
-                        alt={state.walletProviders[wallet].getName()}
-                      />
-                      <div>
-                        <span>{state.walletProviders[wallet].getName()}</span>
-                      </div>
-                      {state.signedInWalletId ===
-                        state.walletProviders[wallet].getId() && (
-                        <div className="selected-wallet-text">
-                          <span>selected</span>
+              {state.options.wallets
+                .map((walletId) => state.walletProviders[walletId])
+                .filter((wallet) => wallet.getShowWallet())
+                .map((wallet) => {
+                  const { id, name, description, iconUrl } = wallet.getInfo();
+                  const selected = state.signedInWalletId === id;
+
+                  return (
+                    <li
+                      key={id}
+                      id={id}
+                      className={selected ? "selected-wallet" : ""}
+                      onClick={() => {
+                        wallet.walletSelected().catch((err) => {
+                          console.log(`Failed to select ${name}`);
+                          console.error(err);
+                        });
+                      }}
+                    >
+                      <div title={description}>
+                        <img src={iconUrl} alt={name} />
+                        <div>
+                          <span>{name}</span>
                         </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+                        {selected && (
+                          <div className="selected-wallet-text">
+                            <span>selected</span>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
           <div
