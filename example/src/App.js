@@ -32,7 +32,7 @@ const App = ({ near, initialAccount }) => {
         });
     });
 
-    near.on("disconnected", async () => {
+    near.on("disconnected", () => {
       console.log("'disconnect' event triggered!");
       setAccount(null);
     });
@@ -85,13 +85,19 @@ const App = ({ near, initialAccount }) => {
       });
   };
 
-  const signIn = async () => {
+  const signIn = () => {
     near.showModal();
   };
 
-  const signOut = async () => {
-    near.signOut();
-    window.location.replace(window.location.origin + window.location.pathname);
+  const signOut = () => {
+    near.signOut()
+      .then(() => {
+        window.location.replace(window.location.origin + window.location.pathname);
+      })
+      .catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
   };
 
   function switchProviderHandler() {
