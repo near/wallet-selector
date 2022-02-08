@@ -36,9 +36,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     const state = getState();
 
-    this.wallet.onAccountChanged((newAccountId) => {
-      console.log("SenderWallet:onAccountChange", newAccountId);
-    });
+    this.onAccountChanged();
 
     this.onNetworkChanged();
 
@@ -78,7 +76,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     }
 
     await this.setWalletAsSignedIn();
-    this.emitter.emit("signIn");
 
     this.emitter.emit("signIn");
 
@@ -110,6 +107,26 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       return false;
     }
     return true;
+  }
+
+  onAccountChanged() {
+    this.wallet.onAccountChanged((newAccountId) => {
+      console.log("SenderWallet:onAccountChange", newAccountId);
+
+      const state = getState();
+
+      this.wallet
+        .init({
+          contractId: state.options.accountId,
+        })
+        .then((response) => {
+          if (response.accessKey) {
+            this.emitter.emit("signIn");
+          } else {
+            this.signIn().then();
+          }
+        });
+    });
   }
 
   async isConnected() {
