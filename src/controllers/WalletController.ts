@@ -108,6 +108,7 @@ class WalletController {
 
   async getAccount() {
     const state = getState();
+
     if (state.signedInWalletId !== null) {
       return state.walletProviders[state.signedInWalletId].getAccount();
     }

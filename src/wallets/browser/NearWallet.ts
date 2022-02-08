@@ -1,4 +1,9 @@
-import { WalletConnection, transactions } from "near-api-js";
+import {
+  WalletConnection,
+  transactions,
+  connect,
+  keyStores,
+} from "near-api-js";
 import BN from "bn.js";
 
 import BrowserWallet from "../types/BrowserWallet";
@@ -11,6 +16,7 @@ import {
   FunctionCallAction,
 } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import getConfig from "../../config";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -34,12 +40,13 @@ class NearWallet extends BrowserWallet implements INearWallet {
 
   async init() {
     const state = getState();
+    const near = await connect({
+      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+      ...getConfig(state.options.networkId),
+      headers: {},
+    });
 
-    if (!state.nearConnection) {
-      return;
-    }
-
-    this.wallet = new WalletConnection(state.nearConnection, "near_app");
+    this.wallet = new WalletConnection(near, "near_app");
 
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();

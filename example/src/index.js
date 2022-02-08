@@ -10,7 +10,7 @@ async function initContract() {
   // based on the network ID we pass to getConfig()
   const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
 
-  const near = await NearWalletSelector({
+  const near = new NearWalletSelector({
     wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
     networkId: "testnet",
     theme: "light",
@@ -26,29 +26,24 @@ async function initContract() {
     },
   });
 
-  // Load in user's account data
-  near.on("init", async () => {
-    console.log("init");
-  });
-
-  let currentUser = await near.getAccount();
-  console.log(currentUser);
+  await near.init();
 
   return {
     near,
-    contract: near.contract,
-    currentUser,
-    nearConfig
+    initialAccount: await near.getAccount(),
   };
 }
 
 window.onload = () => {
-  window.nearInitPromise = initContract().then(
-    ({ near, contract, currentUser }) => {
+  initContract()
+    .then(({ near, initialAccount }) => {
       ReactDOM.render(
-        <App near={near} contract={contract} currentUser2={currentUser} />,
+        <App near={near} initialAccount={initialAccount} />,
         document.getElementById("root")
       );
-    }
-  );
+    })
+    .catch((err) => {
+      console.log("Failed to initialise at root");
+      console.error(err);
+    });
 };

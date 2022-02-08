@@ -3,7 +3,7 @@
 The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
 - [NEAR Wallet](https://wallet.near.org/) - Web wallet.
-- [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
+- [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
 - [Ledger](https://www.ledger.com/) - Hardware wallet.
 
 ## Installation and Usage
@@ -19,7 +19,7 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-walletselector";
 
-const near = await NearWalletSelector({
+const near = new NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
   networkId: "testnet",
   theme: "light",
@@ -42,6 +42,12 @@ const near = await NearWalletSelector({
 
 ## API Reference
 
+Init:
+
+```ts
+await near.init();
+```
+
 Show modal:
 
 ```ts
@@ -63,13 +69,13 @@ near.isSignedIn();
 Sign out:
 
 ```ts
-near.signOut();
+await near.signOut();
 ```
 
-Add event listeners (init, disconnect, signIn):
+Add event listeners (disconnect, signIn):
 
 ```ts
-near.on("init", () => {
+near.on("signIn", () => {
    // your code
 });
 ```
@@ -77,13 +83,12 @@ near.on("init", () => {
 Interact with smart contract:
 
 ```ts
-const contract = near.getContract();
 
 // Retrieve messages via RPC endpoint (view method).
-const messages = await contract.view({ methodName: "getMessages" });
+const messages = await near.contract.view({ methodName: "getMessages" });
 
 // Send a message, modifying the blockchain (change method).
-await contract.call({
+await near.contract.call({
   actions: [{
     methodName: "addMessage",
     args: { text: message.value },

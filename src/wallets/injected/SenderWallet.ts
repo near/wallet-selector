@@ -31,6 +31,22 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     this.wallet = window.wallet!;
   }
 
+  async init(): Promise<void> {
+    await this.timeout(200);
+
+    const state = getState();
+
+    this.wallet.onAccountChanged((newAccountId) => {
+      console.log("SenderWallet:onAccountChange", newAccountId);
+    });
+
+    this.onNetworkChanged();
+
+    return this.wallet
+      .init({ contractId: state.options.accountId })
+      .then((res) => console.log("SenderWallet:init", res));
+  }
+
   async walletSelected() {
     if (!this.wallet) {
       updateState((prevState) => ({
@@ -74,24 +90,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  async init(): Promise<void> {
-    await this.timeout(200);
-
-    const state = getState();
-
-    this.wallet.onAccountChanged((newAccountId) => {
-      console.log("newAccountId: ", newAccountId);
-    });
-
-    this.onNetworkChanged();
-
-    return this.wallet
-      .init({ contractId: state.options.accountId })
-      .then((res) => {
-        console.log(res);
-      });
   }
 
   onNetworkChanged() {
