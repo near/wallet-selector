@@ -19,14 +19,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
   constructor(emitter: Emitter, provider: ProviderService) {
-    super(
-      emitter,
-      provider,
-      "senderwallet",
-      "Sender Wallet",
-      "Sender Wallet",
-      "https://senderwallet.io/logo.png"
-    );
+    super(emitter, provider);
 
     this.wallet = window.wallet!;
   }
@@ -43,6 +36,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     return this.wallet
       .init({ contractId: state.options.accountId })
       .then((res) => console.log("SenderWallet:init", res));
+  }
+
+  getInfo() {
+    return {
+      id: "senderwallet",
+      name: "Sender Wallet",
+      description: "Sender Wallet",
+      iconUrl: "https://senderwallet.io/logo.png",
+    };
   }
 
   async walletSelected() {
