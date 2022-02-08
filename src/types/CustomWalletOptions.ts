@@ -1,7 +1,7 @@
+import { WalletInfo } from "../interfaces/IWallet";
+
 type CustomWalletOptions = {
-  name: string;
-  description: string;
-  icon: string;
+  info: WalletInfo;
   onConnectFunction: () => void;
   onDisconnectFunction: () => void;
   isConnectedFunction: () => boolean;

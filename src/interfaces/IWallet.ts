@@ -25,7 +25,7 @@ export interface AccountInfo {
 export default interface IWallet {
   getShowWallet(): boolean;
 
-  walletSelected(): void;
+  walletSelected(): Promise<void>;
   init(): Promise<void>;
   getInfo(): WalletInfo;
   disconnect(): Promise<void>;

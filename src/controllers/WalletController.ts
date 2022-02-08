@@ -54,17 +54,20 @@ class WalletController {
 
   private generateCustomWallets() {
     const state = getState();
-    for (const name in state.options.customWallets) {
-      state.walletProviders[name] = new CustomWallet(
+
+    for (const id in state.options.customWallets) {
+      if (state.walletProviders[id]) {
+        throw new Error(
+          `Failed to add custom wallet. A wallet with the id '${id}' already exists`
+        );
+      }
+
+      const options = state.options.customWallets[id];
+
+      state.walletProviders[id] = new CustomWallet(
         this.emitter,
         this.provider,
-        name,
-        state.options.customWallets[name].name,
-        state.options.customWallets[name].description,
-        state.options.customWallets[name].icon,
-        state.options.customWallets[name].onConnectFunction,
-        state.options.customWallets[name].onDisconnectFunction,
-        state.options.customWallets[name].isConnectedFunction
+        options
       );
     }
   }
@@ -93,17 +96,21 @@ class WalletController {
   }
 
   async signOut() {
-    this.emitter.emit("disconnect");
     const state = getState();
-    if (state.signedInWalletId !== null) {
-      state.walletProviders[state.signedInWalletId].disconnect();
+
+    if (state.signedInWalletId) {
+      await state.walletProviders[state.signedInWalletId].disconnect();
     }
+
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+
     updateState((prevState) => ({
       ...prevState,
       signedInWalletId: null,
       isSignedIn: false,
     }));
+
+    this.emitter.emit("disconnect");
   }
 
   async getAccount() {
