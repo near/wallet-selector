@@ -64,8 +64,8 @@ const App = ({ near, initialAccount }) => {
       })
       .then(() => {
         return near.contract.view({ methodName: "getMessages" })
-          .then((messages) => {
-            setMessages(messages);
+          .then((nextMessages) => {
+            setMessages(nextMessages);
             message.value = "";
             donation.value = SUGGESTED_DONATION;
             fieldset.disabled = false;
