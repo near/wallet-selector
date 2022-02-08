@@ -6,15 +6,8 @@ import ProviderService from "../../services/provider/ProviderService";
 export default abstract class HardwareWallet extends BaseWallet {
   protected transport: any | void;
 
-  constructor(
-    emitter: Emitter,
-    provider: ProviderService,
-    id: string,
-    name: string,
-    description: string,
-    icon: string
-  ) {
-    super(emitter, provider, id, name, description, icon);
+  constructor(emitter: Emitter, provider: ProviderService) {
+    super(emitter, provider);
 
     this.setShowWallet(!HelperFunctions.isMobile());
   }

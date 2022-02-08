@@ -22,14 +22,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
   constructor(emitter: Emitter, provider: ProviderService) {
-    super(
-      emitter,
-      provider,
-      "nearwallet",
-      "Near Wallet",
-      "Near Wallet",
-      "https://cryptologos.cc/logos/near-protocol-near-logo.png"
-    );
+    super(emitter, provider);
 
     this.init();
   }
@@ -51,6 +44,15 @@ class NearWallet extends BrowserWallet implements INearWallet {
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }
+  }
+
+  getInfo() {
+    return {
+      id: "nearwallet",
+      name: "Near Wallet",
+      description: "Near Wallet",
+      iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png",
+    };
   }
 
   async signIn() {
