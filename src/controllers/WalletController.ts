@@ -3,73 +3,65 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import { Emitter } from "../utils/EventsHandler";
+import { Emitter, EventList } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
-import EventList from "../types/EventList";
-import State from "../types/State";
 import ProviderService from "../services/provider/ProviderService";
+import IWallet from "../interfaces/IWallet";
+import { Options } from "../core/NearWalletSelector";
 
 class WalletController {
+  private options: Options;
   private emitter: Emitter;
   private provider: ProviderService;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
+  private instances: Array<IWallet>;
+
+  constructor(options: Options, emitter: Emitter, provider: ProviderService) {
+    this.options = options;
     this.emitter = emitter;
     this.provider = provider;
 
-    this.generateDefaultWallets();
-    this.generateCustomWallets();
+    this.instances = [...this.getBuiltInWallets(), ...this.getCustomWallets()];
   }
 
-  private generateDefaultWallets() {
-    const state = getState();
-
-    const walletProviders = state.options.wallets.reduce<
-      State["walletProviders"]
-    >((result, wallet) => {
-      switch (wallet) {
+  private getBuiltInWallets() {
+    return this.options.wallets.map((walletId) => {
+      switch (walletId) {
         case "nearwallet":
-          result.nearwallet = new NearWallet(this.emitter, this.provider);
-          break;
+          return new NearWallet(this.emitter, this.provider, this.options);
         case "senderwallet":
-          result.senderwallet = new SenderWallet(this.emitter, this.provider);
-          break;
+          return new SenderWallet(this.emitter, this.provider, this.options);
         case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet(this.emitter, this.provider);
-          break;
+          return new LedgerWallet(this.emitter, this.provider, this.options);
         default:
-          break;
+          throw new Error(`Invalid wallet id '${walletId}'`);
       }
-      return result;
-    }, {});
-
-    updateState((prevState) => ({
-      ...prevState,
-      walletProviders: {
-        ...prevState.walletProviders,
-        ...walletProviders,
-      },
-    }));
+    });
   }
 
-  private generateCustomWallets() {
-    const state = getState();
+  private getCustomWallets() {
+    const wallets = [];
 
-    for (const id in state.options.customWallets) {
-      if (state.walletProviders[id]) {
-        throw new Error(
-          `Failed to add custom wallet. A wallet with the id '${id}' already exists`
-        );
-      }
-
-      const options = state.options.customWallets[id];
-
-      state.walletProviders[id] = new CustomWallet(
-        this.emitter,
-        this.provider,
-        options
+    for (const id in this.options.customWallets) {
+      wallets.push(
+        new CustomWallet(
+          this.emitter,
+          this.provider,
+          this.options,
+          this.options.customWallets[id]
+        )
       );
     }
+
+    return wallets;
+  }
+
+  private getInstance(walletId: string) {
+    return this.instances.find((wallet) => {
+      const { id } = wallet.getInfo();
+
+      return id === walletId;
+    });
   }
 
   showModal() {
@@ -92,6 +84,7 @@ class WalletController {
 
   isSignedIn() {
     const state = getState();
+
     return state.isSignedIn;
   }
 
@@ -99,7 +92,11 @@ class WalletController {
     const state = getState();
 
     if (state.signedInWalletId) {
-      await state.walletProviders[state.signedInWalletId].disconnect();
+      const instance = this.getInstance(state.signedInWalletId);
+
+      if (instance) {
+        await instance.disconnect();
+      }
     }
 
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
@@ -116,9 +113,14 @@ class WalletController {
   async getAccount() {
     const state = getState();
 
-    if (state.signedInWalletId !== null) {
-      return state.walletProviders[state.signedInWalletId].getAccount();
+    if (state.signedInWalletId) {
+      const instance = this.getInstance(state.signedInWalletId);
+
+      if (instance) {
+        return instance.getAccount();
+      }
     }
+
     return null;
   }
 

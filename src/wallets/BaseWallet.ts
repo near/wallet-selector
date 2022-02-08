@@ -7,16 +7,19 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import { updateState } from "../state/State";
 import { Emitter } from "../utils/EventsHandler";
 import ProviderService from "../services/provider/ProviderService";
+import { Options } from "../core/NearWalletSelector";
 
 export default abstract class BaseWallet implements IWallet {
   protected emitter: Emitter;
   protected provider: ProviderService;
+  protected options: Options;
 
   protected showWallet = true;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
+  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
     this.emitter = emitter;
     this.provider = provider;
+    this.options = options;
   }
 
   getShowWallet(): boolean {

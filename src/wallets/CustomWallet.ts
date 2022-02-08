@@ -2,7 +2,7 @@ import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
 import ProviderService from "../services/provider/ProviderService";
 import { AccountInfo, WalletInfo } from "../interfaces/IWallet";
-import CustomWalletOptions from "../types/CustomWalletOptions";
+import { CustomWalletOptions, Options } from "../core/NearWalletSelector";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
 export default class CustomWallet extends BaseWallet {
@@ -15,15 +15,16 @@ export default class CustomWallet extends BaseWallet {
   constructor(
     emitter: Emitter,
     provider: ProviderService,
-    options: CustomWalletOptions
+    options: Options,
+    customOptions: CustomWalletOptions
   ) {
-    super(emitter, provider);
+    super(emitter, provider, options);
 
-    this.info = options.info;
+    this.info = customOptions.info;
 
-    this.setOnConnectFunction(options.onConnectFunction);
-    this.setOnDisconnectFunction(options.onDisconnectFunction);
-    this.setIsConnectedFunction(options.isConnectedFunction);
+    this.setOnConnectFunction(customOptions.onConnectFunction);
+    this.setOnDisconnectFunction(customOptions.onDisconnectFunction);
+    this.setIsConnectedFunction(customOptions.isConnectedFunction);
   }
 
   setOnConnectFunction(onConnectFunction: () => void) {

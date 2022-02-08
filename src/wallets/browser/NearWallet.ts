@@ -9,7 +9,6 @@ import BN from "bn.js";
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
 import { Emitter } from "../../utils/EventsHandler";
-import { getState } from "../../state/State";
 import {
   AccountInfo,
   CallParams,
@@ -17,14 +16,13 @@ import {
 } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
 import getConfig from "../../config";
+import { Options } from "../../core/NearWalletSelector";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    super(emitter, provider);
-
-    this.init();
+  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
+    super(emitter, provider, options);
   }
 
   async walletSelected() {
@@ -32,10 +30,9 @@ class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async init() {
-    const state = getState();
     const near = await connect({
       keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-      ...getConfig(state.options.networkId),
+      ...getConfig(this.options.networkId),
       headers: {},
     });
 
@@ -56,9 +53,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
   }
 
   async signIn() {
-    const state = getState();
-
-    this.wallet.requestSignIn(state.options.accountId).then(() => {
+    this.wallet.requestSignIn(this.options.accountId).then(() => {
       if (!this.wallet.isSignedIn()) {
         return;
       }

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import { getState, updateState } from "../state/State";
+import { getState, updateState, State } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
-import State from "../types/State";
 
 declare global {
   // tslint:disable-next-line

@@ -1,5 +1,18 @@
-import State from "../types/State";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import IWallet from "../interfaces/IWallet";
+
+export interface State {
+  showModal: boolean;
+  showWalletOptions: boolean;
+  showLedgerDerivationPath: boolean;
+  showSenderWalletNotInstalled: boolean;
+  showSwitchNetwork: boolean;
+  walletProviders: {
+    [name: string]: IWallet;
+  };
+  isSignedIn: boolean;
+  signedInWalletId: string | null;
+}
 
 const state: { current: State } = {
   current: {
@@ -8,17 +21,6 @@ const state: { current: State } = {
     showLedgerDerivationPath: false,
     showSenderWalletNotInstalled: false,
     showSwitchNetwork: false,
-    options: {
-      theme: null,
-      networkId: "testnet",
-      wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
-      accountId: "",
-      customWallets: {},
-      walletSelectorUI: {
-        description: "",
-        explanation: "",
-      },
-    },
     walletProviders: {},
     isSignedIn:
       localStorage.getItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY) !== null,

@@ -9,6 +9,7 @@ import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import { Options } from "../../core/NearWalletSelector";
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -27,8 +28,8 @@ export default class LedgerWallet
   private accountId: string;
   private nonce: number;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    super(emitter, provider);
+  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
+    super(emitter, provider, options);
 
     const ledgerLocalStoragePublicKey = window.localStorage.getItem(
       this.LEDGER_LOCALSTORAGE_PUBLIC_KEY
@@ -309,7 +310,7 @@ export default class LedgerWallet
     const transaction = transactions.createTransaction(
       this.accountId,
       pk,
-      state.options.accountId,
+      this.options.accountId,
       nonce,
       actions,
       recentBlockHash

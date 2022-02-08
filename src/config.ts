@@ -1,4 +1,4 @@
-import { NetworkId } from "./types/Options";
+import { NetworkId } from "./core/NearWalletSelector";
 
 function getConfig(env: NetworkId) {
   switch (env) {

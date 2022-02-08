@@ -1,6 +1,6 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
-import { getState, updateState } from "../../state/State";
+import { updateState } from "../../state/State";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet, {
@@ -8,6 +8,7 @@ import InjectedSenderWallet, {
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import { Options } from "../../core/NearWalletSelector";
 
 declare global {
   interface Window {
@@ -18,16 +19,14 @@ declare global {
 class SenderWallet extends InjectedWallet implements ISenderWallet {
   wallet: InjectedSenderWallet;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    super(emitter, provider);
+  constructor(emitter: Emitter, provider: ProviderService, options: Options) {
+    super(emitter, provider, options);
 
     this.wallet = window.wallet!;
   }
 
   async init(): Promise<void> {
     await this.timeout(200);
-
-    const state = getState();
 
     this.wallet.onAccountChanged((newAccountId) => {
       console.log("SenderWallet:onAccountChange", newAccountId);
@@ -36,7 +35,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     this.onNetworkChanged();
 
     return this.wallet
-      .init({ contractId: state.options.accountId })
+      .init({ contractId: this.options.accountId })
       .then((res) => console.log("SenderWallet:init", res));
   }
 
@@ -70,9 +69,8 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   async signIn() {
-    const state = getState();
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: state.options.accountId,
+      contractId: this.options.accountId,
     });
 
     if (!accessKey) {
@@ -80,7 +78,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     }
 
     await this.setWalletAsSignedIn();
-    this.emitter.emit("signIn");
 
     this.emitter.emit("signIn");
 
@@ -101,8 +98,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   networkMatches(response: RpcChangedResponse | GetRpcResponse) {
-    const state = getState();
-    if (state.options.networkId !== response.rpc.networkId) {
+    if (this.options.networkId !== response.rpc.networkId) {
       updateState((prevState) => ({
         ...prevState,
         showModal: true,

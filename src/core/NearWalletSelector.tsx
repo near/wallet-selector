@@ -1,16 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
-import { getState, updateState } from "../state/State";
+import { getState } from "../state/State";
 import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter } from "../utils/EventsHandler";
-import EventList from "../types/EventList";
+import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
 import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
+import { WalletInfo } from "../interfaces/IWallet";
+
+export type NetworkId =
+  | "mainnet"
+  | "testnet"
+  | "betanet"
+  | "ci-testnet"
+  | "ci-betanet";
+
+export interface CustomWalletOptions {
+  info: WalletInfo;
+  onConnectFunction: () => void;
+  onDisconnectFunction: () => void;
+  isConnectedFunction: () => boolean;
+}
+
+export interface Options {
+  wallets: Array<string>;
+  networkId: NetworkId;
+  customWallets: {
+    [name: string]: CustomWalletOptions;
+  };
+  theme: "dark" | "light" | null;
+  accountId: string;
+  walletSelectorUI: {
+    description: string;
+    explanation: string;
+  };
+}
 
 export default class NearWalletSelector {
   private walletController: WalletController;
@@ -20,21 +47,15 @@ export default class NearWalletSelector {
   contract: Contract;
 
   constructor(options: Options) {
-    if (options) {
-      updateState((prevState) => ({
-        ...prevState,
-        options: {
-          ...prevState.options,
-          ...options,
-        },
-      }));
-    }
-
     const config = getConfig(options.networkId);
 
     this.emitter = new EventHandler();
     this.provider = new ProviderService(config.nodeUrl);
-    this.walletController = new WalletController(this.emitter, this.provider);
+    this.walletController = new WalletController(
+      options,
+      this.emitter,
+      this.provider
+    );
 
     this.contract = new Contract(options.accountId, this.provider);
   }
