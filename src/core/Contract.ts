@@ -4,29 +4,30 @@ import ProviderService, {
   CallFunctionParams,
 } from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
+import { Options } from "./NearWalletSelector";
 
 class Contract {
-  private readonly accountId: string;
+  private readonly options: Options;
   private readonly provider: ProviderService;
   private readonly controller: WalletController;
 
   constructor(
-    accountId: string,
+    options: Options,
     provider: ProviderService,
     controller: WalletController
   ) {
-    this.accountId = accountId;
+    this.options = options;
     this.provider = provider;
     this.controller = controller;
   }
 
   getAccountId() {
-    return this.accountId;
+    return this.options.accountId;
   }
 
   view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
     return this.provider.callFunction({
-      accountId: this.accountId,
+      accountId: this.options.accountId,
       methodName,
       args,
       finality,
@@ -44,7 +45,7 @@ class Contract {
     const instance = this.controller.getInstance(walletId)!;
 
     return instance.call({
-      receiverId: this.accountId,
+      receiverId: this.options.accountId,
       actions,
     });
   }

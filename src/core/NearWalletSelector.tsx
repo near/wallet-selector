@@ -56,11 +56,7 @@ export default class NearWalletSelector {
     this.provider = new ProviderService(config.nodeUrl);
     this.controller = new WalletController(options, this.provider);
 
-    this.contract = new Contract(
-      options.accountId,
-      this.provider,
-      this.controller
-    );
+    this.contract = new Contract(options, this.provider, this.controller);
   }
 
   private renderModal() {
