@@ -170,7 +170,7 @@ export default class LedgerWallet
   }
 
   async disconnect() {
-    throw new Error("No implemented");
+    throw new Error("Not implemented");
   }
 
   async isConnected(): Promise<boolean> {
