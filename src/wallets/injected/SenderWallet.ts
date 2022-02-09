@@ -74,8 +74,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     });
 
     if (response.error) {
-      if (this.wallet.isSignedIn()) await this.disconnect();
-      return;
+      throw new Error(`Failed to sign in: ${response.error}`);
     }
 
     await this.setWalletAsSignedIn();
@@ -113,10 +112,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   onAccountChanged() {
-    this.wallet.onAccountChanged((newAccountId) => {
+    this.wallet.onAccountChanged(async (newAccountId) => {
       console.log("SenderWallet:onAccountChange", newAccountId);
+      try {
+        await this.disconnect();
 
-      this.signIn();
+        await this.signIn();
+      } catch (e) {
+        console.log(`Failed to change account ${e.message}`);
+      }
     });
   }
 
