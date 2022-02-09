@@ -3,7 +3,7 @@ import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import { getState, updateState } from "../../state/State";
+import { updateState } from "../../state/State";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
@@ -275,9 +275,6 @@ export default class LedgerWallet
     gas = "10000000000000",
     deposit = "0"
   ) {
-    const state = getState();
-    if (!state.signedInWalletId) return;
-
     if (!args) args = [];
 
     const bnGas = new BN(gas.toString());
