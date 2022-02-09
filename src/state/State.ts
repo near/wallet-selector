@@ -29,8 +29,6 @@ export const updateState = (func: (prevState: State) => State) => {
   if (window.updateWalletSelector) {
     window.updateWalletSelector(nextState);
   }
-
-  console.log(state.current);
 };
 
 export const getState = () => {
