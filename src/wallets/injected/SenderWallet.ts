@@ -116,19 +116,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     this.wallet.onAccountChanged((newAccountId) => {
       console.log("SenderWallet:onAccountChange", newAccountId);
 
-      const state = getState();
-
-      this.wallet
-        .init({
-          contractId: state.options.accountId,
-        })
-        .then((response) => {
-          if (response.accessKey) {
-            this.emitter.emit("signIn");
-          } else {
-            this.signIn().then();
-          }
-        });
+      this.signIn();
     });
   }
 
