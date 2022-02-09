@@ -25,6 +25,10 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   async init() {
     await this.timeout(200);
 
+    if (!this.isInstalled()) {
+      throw new Error("Wallet not installed");
+    }
+
     this.wallet = window.wallet!;
 
     this.wallet.onAccountChanged((newAccountId) => {
