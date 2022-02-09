@@ -11,7 +11,7 @@ describe("LoggingService Unit Tests", () => {
   });
 
   afterEach(() => {
-    Logger.hidden = false;
+    Logger.debug = true;
     // Reset the mock after the JS stack has cleared
     mockReset(internal);
   });
@@ -26,7 +26,7 @@ describe("LoggingService Unit Tests", () => {
   });
 
   it("should hide logs if hidden", () => {
-    Logger.hidden = true;
+    Logger.debug = true;
     logger.log("test");
     expect(internal.log).not.toHaveBeenCalled();
   });

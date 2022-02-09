@@ -3,10 +3,10 @@ export class Logger
 {
   private static instance: Logger;
   private static _hidden = false;
-  static get hidden(): boolean {
+  static get debug(): boolean {
     return Logger._hidden;
   }
-  static set hidden(value: boolean) {
+  static set debug(value: boolean) {
     Logger._hidden = value;
   }
   constructor(private readonly logger: Console = window?.console) {
@@ -34,7 +34,7 @@ export class Logger
   }
 
   private trigger(method: keyof Console, ...args: unknown[]) {
-    if (Logger.hidden) return;
+    if (Logger.debug) return;
     this.logger[method].apply(console, args);
   }
 }
