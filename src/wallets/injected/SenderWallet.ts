@@ -31,9 +31,8 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     const state = getState();
 
-    this.wallet.onAccountChanged((newAccountId) => {
-      logger.log("SenderWallet:onAccountChange", newAccountId);
-    });
+
+    this.onAccountChanged();
 
     this.onNetworkChanged();
 
@@ -73,16 +72,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async signIn() {
     const state = getState();
-    const { accessKey } = await this.wallet.requestSignIn({
+    const response = await this.wallet.requestSignIn({
       contractId: state.options.accountId,
     });
 
-    if (!accessKey) {
-      return;
+    if (response.error) {
+      throw new Error(`Failed to sign in: ${response.error}`);
     }
 
     await this.setWalletAsSignedIn();
-    this.emitter.emit("signIn");
 
     this.emitter.emit("signIn");
 
@@ -114,6 +112,19 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       return false;
     }
     return true;
+  }
+
+  onAccountChanged() {
+    this.wallet.onAccountChanged(async (newAccountId) => {
+      console.log("SenderWallet:onAccountChange", newAccountId);
+      try {
+        await this.disconnect();
+
+        await this.signIn();
+      } catch (e) {
+        console.log(`Failed to change account ${e.message}`);
+      }
+    });
   }
 
   async isConnected() {
