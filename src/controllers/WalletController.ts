@@ -144,7 +144,7 @@ class WalletController {
     const state = getState();
 
     if (!state.signedInWalletId) {
-      return;
+      return null;
     }
 
     const instance = this.getInstance(state.signedInWalletId)!;
