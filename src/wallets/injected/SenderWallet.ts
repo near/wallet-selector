@@ -8,7 +8,9 @@ import InjectedSenderWallet, {
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import { Logger } from "../../services/logging.service";
 
+const logger = new Logger();
 declare global {
   interface Window {
     wallet: InjectedSenderWallet | undefined;
@@ -30,14 +32,14 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     const state = getState();
 
     this.wallet.onAccountChanged((newAccountId) => {
-      console.log("SenderWallet:onAccountChange", newAccountId);
+      logger.log("SenderWallet:onAccountChange", newAccountId);
     });
 
     this.onNetworkChanged();
 
     return this.wallet
       .init({ contractId: state.options.accountId })
-      .then((res) => console.log("SenderWallet:init", res));
+      .then((res) => logger.log("SenderWallet:init", res));
   }
 
   getInfo() {
@@ -118,16 +120,13 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     return this.wallet.isSignedIn();
   }
 
-  disconnect() {
-    return this.wallet.signOut().then((res) => {
-      if (res.result !== "success") {
-        throw new Error("Failed to sign out");
-      }
-
-      this.emitter.emit("disconnect");
-
-      return;
-    });
+  async disconnect() {
+    const res = await this.wallet.signOut();
+    if (res.result !== "success") {
+      throw new Error("Failed to sign out");
+    }
+    this.emitter.emit("disconnect");
+    return;
   }
 
   async getAccount(): Promise<AccountInfo | null> {
@@ -147,7 +146,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   async call({ receiverId, actions }: CallParams) {
-    console.log("SenderWallet:call", { receiverId, actions });
+    logger.log("SenderWallet:call", { receiverId, actions });
 
     return this.wallet
       .signAndSendTransaction({ receiverId, actions })

@@ -17,6 +17,9 @@ import {
 } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
 import getConfig from "../../config";
+import { Logger } from "../../services/logging.service";
+
+const logger = new Logger();
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
@@ -114,7 +117,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
   async call({ receiverId, actions }: CallParams) {
     const account = this.wallet.account();
 
-    console.log("NearWallet:call", { receiverId, actions });
+    logger.log("NearWallet:call", { receiverId, actions });
 
     // @ts-ignore
     // near-api-js marks this method as protected.
