@@ -69,11 +69,11 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async signIn() {
     const state = getState();
-    const { accessKey } = await this.wallet.requestSignIn({
+    const response = await this.wallet.requestSignIn({
       contractId: state.options.accountId,
     });
 
-    if (!accessKey) {
+    if (response.error) {
       if (this.wallet.isSignedIn()) await this.disconnect();
       return;
     }
