@@ -138,7 +138,7 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
 
     const block = await this.provider.block({ finality: "final" });
 
-    const signedTx = await this.client.sign({
+    const signedTx = await this.client.signTransaction({
       accountId: this.accountId,
       publicKey: PublicKey.from(this.publicKey),
       receiverId,

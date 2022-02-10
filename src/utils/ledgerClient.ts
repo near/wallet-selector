@@ -78,7 +78,7 @@ const createLedgerClient = (transport: Transport) => {
 
       return PublicKey.from(base_encode(response.subarray(0, -2)));
     },
-    async sign({
+    async signTransaction({
       accountId,
       publicKey,
       receiverId,
