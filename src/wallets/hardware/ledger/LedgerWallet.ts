@@ -19,7 +19,7 @@ import { base_decode } from "near-api-js/lib/utils/serialize";
 const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
 const LOCAL_STORAGE_PUBLIC_KEY = "ledgerPublicKey";
-const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
+export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 interface ValidateParams {
   accountId: string;
@@ -31,7 +31,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private subscriptions: Record<string, Subscription> = {};
 
   private accountId: string | null;
-  private derivationPath = DEFAULT_DERIVATION_PATH;
+  private derivationPath: string | null;
   private publicKey: string | null;
 
   private debugMode = false;
@@ -52,6 +52,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
   async init() {
     this.client = new LedgerClient();
+    await this.client.init();
     this.client.setScrambleKey("NEAR");
 
     this.subscriptions.disconnect = this.client.on("disconnect", (data) => {
@@ -66,30 +67,29 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       });
     }
 
-    this.accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
-    this.publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-
+    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
+    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
     const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
 
-    if (derivationPath) {
-      this.derivationPath = derivationPath;
+    if (!this.accountId) {
+      this.accountId = accountId;
+    }
+
+    if (!this.publicKey) {
+      this.publicKey = publicKey;
+    }
+
+    if (!this.derivationPath) {
+      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
     }
   }
 
-  getPublicKey() {
-    return this.publicKey;
+  setDerivationPath(derivationPath: string) {
+    this.derivationPath = derivationPath;
   }
 
-  setDerivationPath(path: string) {
-    this.derivationPath = path;
-  }
-
-  async setAccountId(accountId: string) {
+  setAccountId(accountId: string) {
     this.accountId = accountId;
-  }
-
-  setDebugMode(debugMode: boolean) {
-    this.debugMode = debugMode;
   }
 
   async walletSelected() {
@@ -155,16 +155,24 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   }
 
   async signIn() {
-    await this.init();
+    if (!this.client) {
+      await this.init();
+    }
 
-    const accountId = this.accountId!;
+    if (!this.accountId) {
+      throw new Error("No account id found");
+    }
+
+    if (!this.derivationPath) {
+      throw new Error("No derivation path found");
+    }
 
     const { publicKey } = await this.validate({
-      accountId,
+      accountId: this.accountId,
       derivationPath: this.derivationPath,
     });
 
-    localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, accountId);
+    localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
     localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
     localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
 
@@ -210,6 +218,10 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
     if (!this.accountId) {
       throw new Error("No account id found");
+    }
+
+    if (!this.derivationPath) {
+      throw new Error("No derivation path found");
     }
 
     if (!this.publicKey) {
