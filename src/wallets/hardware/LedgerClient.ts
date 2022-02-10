@@ -23,19 +23,19 @@ function parseDerivationPath(derivationPath: string) {
 
   return Buffer.concat(
     parts
-      .map((part) =>
-        part.endsWith(`'`)
+      .map((part) => {
+        return part.endsWith(`'`)
           ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000
-          : Math.abs(parseInt(part))
-      )
-      .map((i32) =>
-        Buffer.from([
+          : Math.abs(parseInt(part));
+      })
+      .map((i32) => {
+        return Buffer.from([
           (i32 >> 24) & 0xff,
           (i32 >> 16) & 0xff,
           (i32 >> 8) & 0xff,
           i32 & 0xff,
-        ])
-      )
+        ]);
+      })
   );
 }
 
