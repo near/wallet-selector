@@ -1,4 +1,7 @@
-import IWallet, { CallParams } from "../../interfaces/IWallet";
+import IWallet, {
+  CallParams,
+  FunctionCallAction,
+} from "../../interfaces/IWallet";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import createLedgerClient from "../../utils/ledgerClient";
 import { Emitter } from "../../utils/EventsHandler";
@@ -6,12 +9,18 @@ import ProviderService from "../../services/provider/ProviderService";
 import BaseWallet from "../BaseWallet";
 import { getState } from "../../state/State";
 import { TypedError } from "near-api-js/lib/utils/errors";
+import { transactions } from "near-api-js";
+import BN from "bn.js";
+import { PublicKey } from "near-api-js/lib/utils";
+
+const LOCAL_STORAGE_PUBLIC_KEY_PATH = "ledgerPublicKey";
 
 class LedgerWalletV2 extends BaseWallet implements IWallet {
   client: ReturnType<typeof createLedgerClient>;
 
   private accountId = "lewis-sqa.testnet";
   private derivationPath = "44'/397'/0'/0'/1'";
+  private publicKey: string;
 
   constructor(emitter: Emitter, provider: ProviderService) {
     super(emitter, provider);
@@ -32,6 +41,7 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
     const transport = await TransportWebHID.create();
 
     this.client = createLedgerClient(transport);
+    this.publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY_PATH)!;
   }
 
   async signIn() {
@@ -50,16 +60,20 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
     console.log("LedgerWalletV2:validate", { accountId, derivationPath });
 
     const publicKey = await this.client.getPublicKey(derivationPath);
+    const publicKeyString = publicKey.toString();
 
-    console.log("LedgerWalletV2:validate:publicKey", publicKey.toString());
+    console.log("LedgerWalletV2:validate:publicKey", publicKeyString);
 
     try {
       const accessKey = await this.provider.viewAccessKey({
         accountId,
-        publicKey: publicKey.toString(),
+        publicKey: publicKeyString,
       });
 
       console.log("LedgerWalletV2:validate:key", accessKey);
+
+      localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY_PATH, publicKeyString);
+      this.publicKey = publicKeyString;
     } catch (err) {
       if (err instanceof TypedError) {
         if (err.type === "AccessKeyDoesNotExist") {
@@ -103,8 +117,44 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
     };
   }
 
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
+
   async call({ receiverId, actions }: CallParams) {
     console.log("LedgerWalletV2:call", { receiverId, actions });
+
+    const { nonce } = await this.provider.viewAccessKey({
+      accountId: this.accountId,
+      publicKey: this.publicKey,
+    });
+
+    console.log("nonce:", nonce);
+
+    const block = await this.provider.block({ finality: "final" });
+
+    console.log("block:", block);
+
+    const signature = await this.client.sign({
+      accountId: this.accountId,
+      publicKey: PublicKey.from(this.publicKey),
+      receiverId,
+      nonce: nonce + 1,
+      actions: this.transformActions(actions),
+      blockHash: block.header.hash,
+      derivationPath: this.derivationPath,
+    });
+
+    console.log("signature:", signature);
+
+    // this.client.sign(data, this.derivationPath)
   }
 }
 
