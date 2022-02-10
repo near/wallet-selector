@@ -6,6 +6,15 @@ import { base_encode } from "near-api-js/lib/utils/serialize";
 // - https://gist.github.com/Wollac/49f0c4e318e42f463b8306298dfb4f4a
 // - https://github.com/LedgerHQ/app-near/blob/master/workdir/app-near/src/constants.h
 
+const CLA = 0x80; // CLASS?
+const INS_SIGN = 0x02; // Sign Instruction
+const INS_GET_PUBLIC_KEY = 0x04; // Get Public Key Instruction
+const INS_GET_APP_CONFIGURATION = 0x06; // Get App Version
+const P1_LAST = 0x80; // Parameter 1 = End of Bytes to Sign (finalize)
+const P1_MORE = 0x00; // Parameter 1 = More bytes coming
+const P1_IGNORE = 0x00;
+const P2_IGNORE = 0x00;
+
 function bip32PathToBytes(path: string) {
   const parts = path.split("/");
   return Buffer.concat(
@@ -32,15 +41,22 @@ const createLedgerClient = (transport: Transport) => {
   return {
     transport,
     async getVersion() {
-      const response = await this.transport.send(0x80, 6, 0, 0);
+      const response = await this.transport.send(
+        CLA,
+        INS_GET_APP_CONFIGURATION,
+        P1_IGNORE,
+        P2_IGNORE
+      );
+
       const [major, minor, patch] = Array.from(response);
+
       return `${major}.${minor}.${patch}`;
     },
     async getPublicKey(path: string) {
       const response = await this.transport.send(
-        0x80,
-        4,
-        0,
+        CLA,
+        INS_GET_PUBLIC_KEY,
+        P2_IGNORE,
         networkId,
         bip32PathToBytes(path)
       );
@@ -48,7 +64,7 @@ const createLedgerClient = (transport: Transport) => {
       return PublicKey.from(base_encode(response.subarray(0, -2)));
     },
     async sign(data: string, path: string) {
-      // NOTE: getVersion call allows to reset state to avoid starting from partially filled buffer
+      // NOTE: getVersion call resets state to avoid starting from partially filled buffer
       const version = await this.getVersion();
       console.info("Ledger app version:", version);
       // TODO: Assert compatible versions
@@ -64,10 +80,10 @@ const createLedgerClient = (transport: Transport) => {
         );
         const isLastChunk = offset + CHUNK_SIZE >= allData.length;
         const response = await this.transport.send(
-          0x80,
-          2,
-          isLastChunk ? 0x80 : 0,
-          networkId,
+          CLA,
+          INS_SIGN,
+          isLastChunk ? P1_LAST : P1_MORE,
+          P2_IGNORE,
           chunk
         );
 
