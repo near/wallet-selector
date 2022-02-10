@@ -2,9 +2,9 @@ import Transport from "@ledgerhq/hw-transport";
 import { PublicKey } from "near-api-js/lib/utils";
 import { base_encode } from "near-api-js/lib/utils/serialize";
 
-// Further reading regarding send params:
-// - https://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit
-// - https://cardwerk.com/smart-card-standard-iso7816-4-section-6-basic-interindustry-commands/
+// Further reading regarding APDU Ledger API:
+// - https://gist.github.com/Wollac/49f0c4e318e42f463b8306298dfb4f4a
+// - https://github.com/LedgerHQ/app-near/blob/master/workdir/app-near/src/constants.h
 
 function bip32PathToBytes(path: string) {
   const parts = path.split("/");
