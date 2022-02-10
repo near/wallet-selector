@@ -2,12 +2,13 @@ import CustomWallet from "../wallets/CustomWallet";
 import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
-import LedgerWallet from "../wallets/hardware/LedgerWallet";
+// import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import EventList from "../types/EventList";
 import State from "../types/State";
 import ProviderService from "../services/provider/ProviderService";
+import LedgerWalletV2 from "../wallets/hardware/LedgerWalletV2";
 
 class WalletController {
   private emitter: Emitter;
@@ -35,7 +36,7 @@ class WalletController {
           result.senderwallet = new SenderWallet(this.emitter, this.provider);
           break;
         case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet(this.emitter, this.provider);
+          result.ledgerwallet = new LedgerWalletV2(this.emitter, this.provider);
           break;
         default:
           break;
