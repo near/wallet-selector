@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import getConfig from "./config.js";
-import NearWalletSelector from "near-walletselector";
+import NearWalletSelector from "near-wallet-selector";
 
 // Initializing contract
 async function initContract() {
