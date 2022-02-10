@@ -1,33 +1,40 @@
 import "regenerator-runtime/runtime";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Big from "big.js";
 import Form from "./components/Form";
 import SignIn from "./components/SignIn";
 import Messages from "./components/Messages";
+import { utils } from "near-api-js";
+
+const { parseNearAmount } = utils.format;
 
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = Big(3)
-  .times(10 ** 13)
-  .toFixed();
+const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 
-const App = ({ near, contract, currentUser2 }) => {
-  const [currentUser, setCurrentUser] = useState(currentUser2);
+const App = ({ near, initialAccount }) => {
+  const [account, setAccount] = useState(initialAccount);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    contract.callContract("getMessages").then(setMessages);
+    near.contract.view({ methodName: "getMessages" }).then(setMessages);
 
-    near.on("signIn", async () => {
-      console.log(currentUser);
-      setCurrentUser(await near.getAccount());
-      console.log(currentUser);
+    near.on("signIn", () => {
+      console.log("'signIn' event triggered!");
+
+      near.getAccount()
+        .then((data) => {
+          console.log("account info", data);
+          setAccount(data);
+        })
+        .catch((err) => {
+          console.log("Failed to retrieve account info");
+          console.error(err);
+        });
     });
-    near.on("disconnect", async () => {
-      console.log(currentUser);
-      setCurrentUser(await near.getAccount());
-      console.log(currentUser);
+
+    near.on("disconnect", () => {
+      console.log("'disconnect' event triggered!");
+      setAccount(null);
     });
   }, []);
 
@@ -41,33 +48,56 @@ const App = ({ near, contract, currentUser2 }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    contract
-      .callContract(
-        "addMessage",
-        { text: message.value },
-        BOATLOAD_OF_GAS,
-        Big(donation.value || "0")
-          .times(10 ** 24)
-          .toFixed()
-      )
+    near.contract.call({
+        actions: [{
+          methodName: "addMessage",
+          args: { text: message.value },
+          gas: BOATLOAD_OF_GAS,
+          deposit: parseNearAmount(donation.value || "0")
+        }]
+      })
+      .catch((err) => {
+        alert("Failed to add message");
+        console.log("Failed to add message");
+
+        throw err;
+      })
       .then(() => {
-        contract.callContract("getMessages").then((messages) => {
-          setMessages(messages);
-          message.value = "";
-          donation.value = SUGGESTED_DONATION;
-          fieldset.disabled = false;
-          message.focus();
-        });
+        return near.contract.view({ methodName: "getMessages" })
+          .then((messages) => {
+            setMessages(messages);
+            message.value = "";
+            donation.value = SUGGESTED_DONATION;
+            fieldset.disabled = false;
+            message.focus();
+          })
+          .catch((err) => {
+            alert("Failed to refresh messages");
+            console.log("Failed to refresh messages");
+
+            throw err;
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        fieldset.disabled = false;
       });
   };
 
-  const signIn = async () => {
+  const signIn = () => {
     near.showModal();
   };
 
-  const signOut = async () => {
-    near.signOut();
-    window.location.replace(window.location.origin + window.location.pathname);
+  const signOut = () => {
+    near.signOut()
+      .then(() => {
+        window.location.replace(window.location.origin + window.location.pathname);
+      })
+      .catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
   };
 
   function switchProviderHandler() {
@@ -78,7 +108,7 @@ const App = ({ near, contract, currentUser2 }) => {
     <main>
       <header>
         <h1>NEAR Guest Book</h1>
-        {currentUser ? (
+        {account ? (
           <div>
             <button onClick={signOut}>Log out</button>
             <button onClick={switchProviderHandler}>Switch Provider</button>
@@ -87,12 +117,12 @@ const App = ({ near, contract, currentUser2 }) => {
           <button onClick={signIn}>Log in</button>
         )}
       </header>
-      {currentUser ? (
-        <Form near={near} onSubmit={onSubmit} currentUser={currentUser} />
+      {account ? (
+        <Form near={near} onSubmit={onSubmit} currentUser={account} />
       ) : (
         <SignIn />
       )}
-      {!!currentUser && !!messages.length && <Messages messages={messages} />}
+      {!!account && !!messages.length && <Messages messages={messages} />}
     </main>
   );
 };

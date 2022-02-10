@@ -40,8 +40,8 @@
   "dependencies": {
     "big.js": "^6.1.1",
     "env-cmd": "^10.1.0",
-    "near-api-js": "^0.44.0",
-    "near-walletselector": "file:../",
+    "near-api-js": "0.44.2",
+    "near-wallet-selector": "file:../",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

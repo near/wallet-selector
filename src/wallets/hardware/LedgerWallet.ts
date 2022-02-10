@@ -3,12 +3,18 @@ import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
-import { providers, transactions, utils } from "near-api-js";
+import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
+import { Emitter } from "../../utils/EventsHandler";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
+import ProviderService from "../../services/provider/ProviderService";
+import { logger } from "../../services/logging.service";
 
-export default class LedgerWallet extends HardwareWallet implements ILedgerWallet {
+export default class LedgerWallet
+  extends HardwareWallet
+  implements ILedgerWallet
+{
   private readonly CLA = 0x80;
   private readonly GET_ADDRESS_INS = 0x04;
   private readonly SIGN_INS = 0x02;
@@ -22,21 +28,22 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   private accountId: string;
   private nonce: number;
 
-  constructor() {
-    super(
-      "ledgerwallet",
-      "Ledger Wallet",
-      "Ledger Wallet",
-      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAYFBMVEX///8zN0aZm6Jwc305PUtiZXGvsbbi4uSmp67n5+m+v8Q1OUdFSVb6+vr19fY+QlDt7e56fYbT1NdTVmPHyMyGiJFqbXdbXmlWWWWgoah7foeSlJx1eIJLT1yztbrw8fKmGsZBAAACeklEQVR4nO3d2XKCMBhAYSIUAUEQt9b1/d+yetPaGshMlp+0nnMN0k8lUGZMkoSIiIiIiIiIiIiIXr6mK+cP6Ta5zp0ruyYkostXa/WjTLfZTPnonBbat8m9ard4OlpAyL19vvTPWOuOFBiiVF34/Y6VO/1xgkOUeu89Oqp24CgCELX48Ob4GDyIBESpg6ev13H4EDIQlXqRDH8eYhB18uCoxg4gBVEzZ0c5dJ7LQtTGFTIw7opDzo6XxtEvliREHd0g2uv5JJCsc3EYPhBJiNv5Pn6GyEJqh4tJ93y/Ox3EZeDKTa8tCtnaQ1ZRQdb2EMOYJQxR1peSxvjSshDr/0yukUEqW0gZGeRiC5lHBsmBAAECBAgQIEBukMxU+zcglgEBAgQIECBAgAABAgQIECBAAkOuM2N/A/J/HgcBAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIC8GKRLTWl/MH8x7maZ80/BiYiIiIiIiCiuyjdTO91uuXE37exlW+Nu1hO8BHsclOp2ewv3OAgIECBAgAAB8p8gweags4RYz0HXRQaxvmkMNk+jJcR+Bvk6Loj9jL9pVJDa2pEUUUFW9hDj+CsKsR60bu0jgrQu85SbZi6WhDjMW3wbgA3jliBk4bY+jOF0F4QcnBxJ8x4JpC3dIEk/OlG5HMT9R/ljq3bIQXys2zE2VbkUZO9j9aRm5EZFCLJ2WlfhW3KaGLL347j/aUNnvAjk5HFVrs15MkjrdxKR5TGbBLI4uF4/nuqOmtuVwJBsG2Tdumaz/b3YQkhIvbr4X7Luq2Vf5cVDum36wpT2KUL1sEFe9d5GKiIiIiIiIiIiIqKX6xNYBUsKTAn7+wAAAABJRU5ErkJggg=="
+  constructor(emitter: Emitter, provider: ProviderService) {
+    super(emitter, provider);
+
+    const ledgerLocalStoragePublicKey = window.localStorage.getItem(
+      this.LEDGER_LOCALSTORAGE_PUBLIC_KEY
     );
 
-    const ledgerLocalStoragePublicKey = window.localStorage.getItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY);
-
     if (ledgerLocalStoragePublicKey !== null) {
-      this.publicKey = this.arrayToBuffer(bs58.decode(ledgerLocalStoragePublicKey).toJSON().data);
+      this.publicKey = this.arrayToBuffer(
+        bs58.decode(ledgerLocalStoragePublicKey).toJSON().data
+      );
     }
 
-    const ledgerLocalStorageDerivationPath = window.localStorage.getItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH);
+    const ledgerLocalStorageDerivationPath = window.localStorage.getItem(
+      this.LEDGER_LOCALSTORAGE_DERIVATION_PATH
+    );
 
     if (ledgerLocalStorageDerivationPath !== null) {
       this.derivationPath = ledgerLocalStorageDerivationPath;
@@ -44,9 +51,19 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
 
     listen((log) => {
       if (this.debugMode) {
-        console.log(log);
+        logger.log(log);
       }
     });
+  }
+
+  getInfo() {
+    return {
+      id: "ledgerwallet",
+      name: "Ledger Wallet",
+      description: "Ledger Wallet",
+      iconUrl:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAYFBMVEX///8zN0aZm6Jwc305PUtiZXGvsbbi4uSmp67n5+m+v8Q1OUdFSVb6+vr19fY+QlDt7e56fYbT1NdTVmPHyMyGiJFqbXdbXmlWWWWgoah7foeSlJx1eIJLT1yztbrw8fKmGsZBAAACeklEQVR4nO3d2XKCMBhAYSIUAUEQt9b1/d+yetPaGshMlp+0nnMN0k8lUGZMkoSIiIiIiIiIiIiIXr6mK+cP6Ta5zp0ruyYkostXa/WjTLfZTPnonBbat8m9ard4OlpAyL19vvTPWOuOFBiiVF34/Y6VO/1xgkOUeu89Oqp24CgCELX48Ob4GDyIBESpg6ev13H4EDIQlXqRDH8eYhB18uCoxg4gBVEzZ0c5dJ7LQtTGFTIw7opDzo6XxtEvliREHd0g2uv5JJCsc3EYPhBJiNv5Pn6GyEJqh4tJ93y/Ox3EZeDKTa8tCtnaQ1ZRQdb2EMOYJQxR1peSxvjSshDr/0yukUEqW0gZGeRiC5lHBsmBAAECBAgQIEBukMxU+zcglgEBAgQIECBAgAABAgQIECBAAkOuM2N/A/J/HgcBAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIC8GKRLTWl/MH8x7maZ80/BiYiIiIiIiCiuyjdTO91uuXE37exlW+Nu1hO8BHsclOp2ewv3OAgIECBAgAAB8p8gweags4RYz0HXRQaxvmkMNk+jJcR+Bvk6Loj9jL9pVJDa2pEUUUFW9hDj+CsKsR60bu0jgrQu85SbZi6WhDjMW3wbgA3jliBk4bY+jOF0F4QcnBxJ8x4JpC3dIEk/OlG5HMT9R/ljq3bIQXys2zE2VbkUZO9j9aRm5EZFCLJ2WlfhW3KaGLL347j/aUNnvAjk5HFVrs15MkjrdxKR5TGbBLI4uF4/nuqOmtuVwJBsG2Tdumaz/b3YQkhIvbr4X7Luq2Vf5cVDum36wpT2KUL1sEFe9d5GKiIiIiIiIiIiIqKX6xNYBUsKTAn7+wAAAABJRU5ErkJggg==",
+    };
   }
 
   arrayToBuffer(arr: number[]): Uint8Array {
@@ -70,22 +87,14 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
   }
 
   async checkAccountId(accountId: string, publicKey: string) {
-    const state = getState();
-    const provider = new providers.JsonRpcProvider(`https://rpc.${state.options.networkId}.near.org`);
-
-    return provider
-      .query({
-        request_type: "view_access_key",
-        finality: "final",
-        account_id: accountId,
-        public_key: publicKey,
-      })
-      .then((res: any) => {
+    return this.provider
+      .viewAccessKey({ accountId, publicKey })
+      .then((res) => {
         this.nonce = res.nonce;
         return true;
       })
       .catch((err) => {
-        console.log(err);
+        logger.log(err);
 
         return false;
       });
@@ -100,9 +109,18 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return Buffer.concat(
       parts
         .map((part) =>
-          part.endsWith(`'`) ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000 : Math.abs(parseInt(part))
+          part.endsWith(`'`)
+            ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000
+            : Math.abs(parseInt(part))
         )
-        .map((i32) => Buffer.from([(i32 >> 24) & 0xff, (i32 >> 16) & 0xff, (i32 >> 8) & 0xff, i32 & 0xff]))
+        .map((i32) =>
+          Buffer.from([
+            (i32 >> 24) & 0xff,
+            (i32 >> 16) & 0xff,
+            (i32 >> 8) & 0xff,
+            i32 & 0xff,
+          ])
+        )
     );
   }
 
@@ -119,12 +137,21 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const txData = Buffer.from(transactionData);
     // 128 - 5 service bytes
     const CHUNK_SIZE = 123;
-    const allData = Buffer.concat([this.bip32PathToBytes(this.derivationPath), txData]);
+    const allData = Buffer.concat([
+      this.bip32PathToBytes(this.derivationPath),
+      txData,
+    ]);
 
     for (let offset = 0; offset < allData.length; offset += CHUNK_SIZE) {
       const chunk = Buffer.from(allData.subarray(offset, offset + CHUNK_SIZE));
       const isLastChunk = offset + CHUNK_SIZE >= allData.length;
-      const response = await this.transport.send(this.CLA, this.SIGN_INS, isLastChunk ? 0x80 : 0x0, 0x0, chunk);
+      const response = await this.transport.send(
+        this.CLA,
+        this.SIGN_INS,
+        isLastChunk ? 0x80 : 0x0,
+        0x0,
+        chunk
+      );
       if (isLastChunk) {
         return Buffer.from(response.subarray(0, -2));
       }
@@ -137,7 +164,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     if (this.transport) return;
 
     this.transport = await LedgerTransportWebHid.create().catch((err) => {
-      console.log(err);
+      logger.log(err);
     });
 
     if (!this.transport) {
@@ -147,15 +174,13 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     this.transport.setScrambleKey("NEAR");
 
     this.transport.on("disconnect", (res: any) => {
-      console.log(res);
-      EventHandler.callEventHandler("disconnect");
+      logger.log(res);
+      this.emitter.emit("disconnect");
     });
-
-    EventHandler.callEventHandler("init");
   }
 
   async disconnect() {
-    EventHandler.callEventHandler("disconnect");
+    this.emitter.emit("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
@@ -169,16 +194,26 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       const pk = await this.generatePublicKey();
       this.publicKey = pk;
       publicKeyString = this.encodePublicKey(pk);
-      window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_PUBLIC_KEY, publicKeyString);
+      window.localStorage.setItem(
+        this.LEDGER_LOCALSTORAGE_PUBLIC_KEY,
+        publicKeyString
+      );
     } else {
       publicKeyString = this.encodePublicKey(this.publicKey);
     }
-    window.localStorage.setItem(this.LEDGER_LOCALSTORAGE_DERIVATION_PATH, this.derivationPath);
-    const hasPersmission = await this.checkAccountId(this.accountId, "ed25519:" + publicKeyString);
+    window.localStorage.setItem(
+      this.LEDGER_LOCALSTORAGE_DERIVATION_PATH,
+      this.derivationPath
+    );
+    const hasPersmission = await this.checkAccountId(
+      this.accountId,
+      "ed25519:" + publicKeyString
+    );
 
     if (!hasPersmission) {
-      console.log("You do not have permission to sign transactions for this account");
-      return;
+      throw new Error(
+        "You do not have permission to sign transactions for this account"
+      );
     }
 
     this.setWalletAsSignedIn();
@@ -186,7 +221,7 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       ...prevState,
       showModal: false,
     }));
-    EventHandler.callEventHandler("signIn");
+    this.emitter.emit("signIn");
   }
 
   async generatePublicKey() {
@@ -203,10 +238,19 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return response.subarray(0, -2);
   }
 
-  async getAccount() {
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+    const accountId = this.accountId;
+
+    if (!connected || !accountId) {
+      return null;
+    }
+
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: this.accountId,
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
   }
 
@@ -214,28 +258,47 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     return bs58.encode(Buffer.from(publicKey));
   }
 
-  async callContract(method: string, args?: any, gas: string = "10000000000000", deposit: string = "0") {
+  // TODO: Refactor callContract into this new method.
+  async call({ receiverId, actions }: CallParams) {
+    logger.log("LedgerWallet:call", { receiverId, actions });
+
+    // To keep the alias simple, lets just support a single action.
+    if (actions.length !== 1) {
+      throw new Error(
+        "Ledger Wallet implementation currently supports just one action"
+      );
+    }
+
+    const action = actions[0];
+
+    return this.callContract(
+      action.methodName,
+      action.args,
+      action.gas,
+      action.deposit
+    );
+  }
+
+  async callContract(
+    method: string,
+    args?: object,
+    gas = "10000000000000",
+    deposit = "0"
+  ) {
     const state = getState();
     if (!state.signedInWalletId) return;
-
-    if (state.options.contract.viewMethods.includes(method)) {
-      return await state.walletProviders.nearwallet.callContract(method, args);
-    }
 
     if (!args) args = [];
 
     const bnGas = new BN(gas.toString());
     const bnDeposit = new BN(deposit.toString());
-    const provider = new providers.JsonRpcProvider(`https://rpc.${state.options.networkId}.near.org`);
 
-    const response = await state.nearConnection!.connection.provider.block({
-      finality: "final",
-    });
+    const response = await this.provider.block({ finality: "final" });
 
     if (!response) return;
 
     const recentBlockHash = utils.serialize.base_decode(response.header.hash);
-    const nonce = this.nonce + 1;
+    const nonce = ++this.nonce;
 
     const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
 
@@ -247,13 +310,16 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
     const transaction = transactions.createTransaction(
       this.accountId,
       pk,
-      state.options.contract.address,
+      state.options.accountId,
       nonce,
       actions,
       recentBlockHash
     );
 
-    const serializedTx = utils.serialize.serialize(transactions.SCHEMA, transaction);
+    const serializedTx = utils.serialize.serialize(
+      transactions.SCHEMA,
+      transaction
+    );
 
     const signature = await this.sign(serializedTx);
 
@@ -265,18 +331,18 @@ export default class LedgerWallet extends HardwareWallet implements ILedgerWalle
       }),
     });
 
-    const signedSerializedTx = signedTransaction.encode();
+    const res = await this.provider.sendTransaction(signedTransaction);
 
-    const base64Response: any = await provider.sendJsonRpc("broadcast_tx_commit", [
-      Buffer.from(signedSerializedTx).toString("base64"),
-    ]);
+    if (typeof res.status !== "string") {
+      const successValue = res.status.SuccessValue || "";
 
-    if (base64Response.status.SuccessValue === "") {
-      return true;
+      if (successValue === "") {
+        return null;
+      }
+
+      return JSON.parse(Buffer.from(successValue, "base64").toString());
     }
 
-    const res = JSON.parse(Buffer.from(base64Response.status.SuccessValue, "base64").toString());
-
-    return res;
+    return null;
   }
 }

@@ -1,36 +1,40 @@
+import { Emitter } from "../utils/EventsHandler";
 import BaseWallet from "./BaseWallet";
+import ProviderService from "../services/provider/ProviderService";
+import { AccountInfo, WalletInfo } from "../interfaces/IWallet";
+import CustomWalletOptions from "../types/CustomWalletOptions";
 
 // TODO: Needs to have CustomWallet for every wallet type, also when developer is adding new wallet a type is needed
 export default class CustomWallet extends BaseWallet {
-  private onConnectFunction: Function;
-  private onDisconnectFunction: Function;
-  private isConnectedFunction: Function;
+  private info: WalletInfo;
+
+  private onConnectFunction: () => void;
+  private onDisconnectFunction: () => void;
+  private isConnectedFunction: () => boolean;
 
   constructor(
-    id: string,
-    name: string,
-    description: string,
-    icon: string,
-    onConnectFunction: Function,
-    onDisconnectFunction: Function,
-    isConnectedFunction: Function
+    emitter: Emitter,
+    provider: ProviderService,
+    options: CustomWalletOptions
   ) {
-    super(id, name, description, icon);
+    super(emitter, provider);
 
-    this.setOnConnectFunction(onConnectFunction);
-    this.setOnDisconnectFunction(onDisconnectFunction);
-    this.setIsConnectedFunction(isConnectedFunction);
+    this.info = options.info;
+
+    this.setOnConnectFunction(options.onConnectFunction);
+    this.setOnDisconnectFunction(options.onDisconnectFunction);
+    this.setIsConnectedFunction(options.isConnectedFunction);
   }
 
-  setOnConnectFunction(onConnectFunction: Function) {
+  setOnConnectFunction(onConnectFunction: () => void) {
     this.onConnectFunction = onConnectFunction;
   }
 
-  setOnDisconnectFunction(onDisconnectFunction: Function) {
+  setOnDisconnectFunction(onDisconnectFunction: () => void) {
     this.onDisconnectFunction = onDisconnectFunction;
   }
 
-  setIsConnectedFunction(isConnectedFunction: Function) {
+  setIsConnectedFunction(isConnectedFunction: () => boolean) {
     this.isConnectedFunction = isConnectedFunction;
   }
 
@@ -42,6 +46,10 @@ export default class CustomWallet extends BaseWallet {
     this.onConnectFunction();
   }
 
+  getInfo() {
+    return this.info;
+  }
+
   async disconnect() {
     this.onDisconnectFunction();
   }
@@ -50,11 +58,15 @@ export default class CustomWallet extends BaseWallet {
     return this.isConnectedFunction();
   }
 
-  async signIn() {}
+  async signIn() {
+    throw new Error("Not implemented");
+  }
 
-  async getAccount() {}
+  async getAccount(): Promise<AccountInfo | null> {
+    throw new Error("Not implemented");
+  }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
-    console.log(method, args, gas, deposit);
+  async call() {
+    throw new Error("Not implemented");
   }
 }

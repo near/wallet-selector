@@ -1,16 +1,37 @@
+export interface FunctionCallAction {
+  methodName: string;
+  args: object;
+  gas: string;
+  deposit: string;
+}
+
+export interface WalletInfo {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string;
+}
+
+export interface CallParams {
+  receiverId: string;
+  actions: Array<FunctionCallAction>;
+}
+
+export interface AccountInfo {
+  accountId: string;
+  balance: string;
+}
+
 export default interface IWallet {
-  getId(): string;
-  getName(): string;
-  getDescription(): string;
-  getIcon(): string;
   getShowWallet(): boolean;
 
-  walletSelected(): void;
+  walletSelected(): Promise<void>;
   init(): Promise<void>;
-  disconnect(): void;
+  getInfo(): WalletInfo;
+  disconnect(): Promise<void>;
   isConnected(): Promise<boolean>;
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
-  getAccount(): Promise<any>;
-  callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any>;
+  getAccount(): Promise<AccountInfo | null>;
+  call(params: CallParams): Promise<any>;
 }

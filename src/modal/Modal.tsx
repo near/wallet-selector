@@ -3,6 +3,7 @@ import styles from "./Modal.styles";
 import { getState, updateState } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
 import State from "../types/State";
+import { logger } from "../services/logging.service";
 
 declare global {
   // tslint:disable-next-line
@@ -13,7 +14,8 @@ declare global {
 
 function Modal(): JSX.Element {
   const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] = useState("44'/397'/0'/0'/0'");
+  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
+    useState("44'/397'/0'/0'/0'");
   const [ledgerWalletError, setLedgerWalletError] = useState("");
   const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
@@ -22,15 +24,10 @@ function Modal(): JSX.Element {
   const [state, setState] = useState(getState());
 
   useEffect(() => {
-    window.updateWalletSelector = (state) => {
-      setState(state);
+    window.updateWalletSelector = (nextState) => {
+      setState(nextState);
     };
   }, []);
-
-  function handleCloseModal(event: any) {
-    event.preventDefault();
-    if (event.target === event.currentTarget) onCloseModalHandler();
-  }
 
   function onCloseModalHandler() {
     updateState((prevState) => ({
@@ -41,6 +38,11 @@ function Modal(): JSX.Element {
     setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
     setLedgerWalletError("");
     setWalletInfoVisible(false);
+  }
+
+  function handleCloseModal(event: any) {
+    event.preventDefault();
+    if (event.target === event.currentTarget) onCloseModalHandler();
   }
 
   function getThemeClass(theme: string | null) {
@@ -79,7 +81,10 @@ function Modal(): JSX.Element {
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
-      <div className={`Modal ${getThemeClass(state.options.theme)}`} onClick={handleCloseModal}>
+      <div
+        className={`Modal ${getThemeClass(state.options.theme)}`}
+        onClick={handleCloseModal}
+      >
         <div className="Modal-content">
           <div className="Modal-header">
             <h2>Connect Wallet</h2>
@@ -104,36 +109,39 @@ function Modal(): JSX.Element {
               {state.options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">
-              {state.options.wallets.map((wallet: string) => {
-                if (!state.walletProviders[wallet] || !state.walletProviders[wallet].getShowWallet()) return null;
-                return (
-                  <li
-                    className={
-                      state.signedInWalletId === state.walletProviders[wallet].getId() ? "selected-wallet" : ""
-                    }
-                    id={state.walletProviders[wallet].getId()}
-                    key={state.walletProviders[wallet].getName()}
-                    onClick={async () => {
-                      await state.walletProviders[wallet].walletSelected();
-                    }}
-                  >
-                    <div title={state.walletProviders[wallet].getDescription()}>
-                      <img
-                        src={state.walletProviders[wallet].getIcon()}
-                        alt={state.walletProviders[wallet].getName()}
-                      />
-                      <div>
-                        <span>{state.walletProviders[wallet].getName()}</span>
-                      </div>
-                      {state.signedInWalletId === state.walletProviders[wallet].getId() && (
-                        <div className="selected-wallet-text">
-                          <span>selected</span>
+              {state.options.wallets
+                .map((walletId) => state.walletProviders[walletId])
+                .filter((wallet) => wallet.getShowWallet())
+                .map((wallet) => {
+                  const { id, name, description, iconUrl } = wallet.getInfo();
+                  const selected = state.signedInWalletId === id;
+
+                  return (
+                    <li
+                      key={id}
+                      id={id}
+                      className={selected ? "selected-wallet" : ""}
+                      onClick={() => {
+                        wallet.walletSelected().catch((err) => {
+                          logger.log(`Failed to select ${name}`);
+                          logger.error(err);
+                        });
+                      }}
+                    >
+                      <div title={description}>
+                        <img src={iconUrl} alt={name} />
+                        <div>
+                          <span>{name}</span>
                         </div>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
+                        {selected && (
+                          <div className="selected-wallet-text">
+                            <span>selected</span>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
           <div
@@ -143,22 +151,30 @@ function Modal(): JSX.Element {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then select an account id and derivation path to connect your
-              accounts:
+              Make sure your Ledger is plugged in, then select an account id and
+              derivation path to connect your accounts:
             </p>
             <div className="derivation-paths-list">
               <div className="account-id">
-                <input type="text" onChange={onAccountIdChangeHandler} placeholder="Account Id" />
+                <input
+                  type="text"
+                  onChange={onAccountIdChangeHandler}
+                  placeholder="Account Id"
+                />
               </div>
               <button
-                className={!useCustomDerivationPath ? "path-option-highlighted" : ""}
+                className={
+                  !useCustomDerivationPath ? "path-option-highlighted" : ""
+                }
                 onClick={onUseDefaultDerivationPathHandler}
               >
                 NEAR - 44'/397'/0'/0'/0'
               </button>
               {!useCustomDerivationPath && (
                 <button
-                  className={useCustomDerivationPath ? "path-option-highlighted" : ""}
+                  className={
+                    useCustomDerivationPath ? "path-option-highlighted" : ""
+                  }
                   onClick={onUseCustomPathHandler}
                 >
                   Custom Path
@@ -174,7 +190,9 @@ function Modal(): JSX.Element {
                   onChange={onCustomDerivationPathChangeHandler}
                 />
               )}
-              {ledgerWalletError && <p className="error">{ledgerWalletError}</p>}
+              {ledgerWalletError && (
+                <p className="error">{ledgerWalletError}</p>
+              )}
             </div>
             <div className="derivation-paths--actions">
               <button className="left-button" onClick={onCloseModalHandler}>
@@ -189,7 +207,9 @@ function Modal(): JSX.Element {
                   }
 
                   try {
-                    const ledgerWalletProvider = state.walletProviders["ledgerwallet"] as ILedgerWallet;
+                    const ledgerWalletProvider = state.walletProviders[
+                      "ledgerwallet"
+                    ] as ILedgerWallet;
                     ledgerWalletProvider.setDerivationPath(derivationPath);
                     ledgerWalletProvider.setAccountId(accountId);
                     await ledgerWalletProvider.signIn();
@@ -257,10 +277,13 @@ function Modal(): JSX.Element {
               <h2>You Must Change Networks</h2>
             </div>
             <div className="content">
-              <p>We've detected that you need to change your wallet's network for this Dapp.</p>
               <p>
-                Some wallets may not support changing networks. If you can not change networks you may consider
-                switching to another wallet.
+                We've detected that you need to change your wallet's network to
+                <strong>{` ${state.options.networkId}`}</strong> for this Dapp.
+              </p>
+              <p>
+                Some wallets may not support changing networks. If you can not
+                change networks you may consider switching to another wallet.
               </p>
             </div>
             <div className="actions">
@@ -290,7 +313,11 @@ function Modal(): JSX.Element {
               >
                 What is a Wallet?
               </span>
-              <div className={`info-description ${walletInfoVisible ? "show" : "hide"}-explanation`}>
+              <div
+                className={`info-description ${
+                  walletInfoVisible ? "show" : "hide"
+                }-explanation`}
+              >
                 <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
             </div>

@@ -3,13 +3,20 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import EventHandler from "../utils/EventHandler";
-import EventList from "../types/EventList";
+import { Emitter } from "../utils/EventsHandler";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
+import EventList from "../types/EventList";
 import State from "../types/State";
+import ProviderService from "../services/provider/ProviderService";
 
 class WalletController {
-  constructor() {
+  private emitter: Emitter;
+  private provider: ProviderService;
+
+  constructor(emitter: Emitter, provider: ProviderService) {
+    this.emitter = emitter;
+    this.provider = provider;
+
     this.generateDefaultWallets();
     this.generateCustomWallets();
   }
@@ -22,13 +29,13 @@ class WalletController {
     >((result, wallet) => {
       switch (wallet) {
         case "nearwallet":
-          result.nearwallet = new NearWallet();
+          result.nearwallet = new NearWallet(this.emitter, this.provider);
           break;
         case "senderwallet":
-          result.senderwallet = new SenderWallet();
+          result.senderwallet = new SenderWallet(this.emitter, this.provider);
           break;
         case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet();
+          result.ledgerwallet = new LedgerWallet(this.emitter, this.provider);
           break;
         default:
           break;
@@ -47,15 +54,20 @@ class WalletController {
 
   private generateCustomWallets() {
     const state = getState();
-    for (const name in state.options.customWallets) {
-      state.walletProviders[name] = new CustomWallet(
-        name,
-        state.options.customWallets[name].name,
-        state.options.customWallets[name].description,
-        state.options.customWallets[name].icon,
-        state.options.customWallets[name].onConnectFunction,
-        state.options.customWallets[name].onDisconnectFunction,
-        state.options.customWallets[name].isConnectedFunction
+
+    for (const id in state.options.customWallets) {
+      if (state.walletProviders[id]) {
+        throw new Error(
+          `Failed to add custom wallet. A wallet with the id '${id}' already exists`
+        );
+      }
+
+      const options = state.options.customWallets[id];
+
+      state.walletProviders[id] = new CustomWallet(
+        this.emitter,
+        this.provider,
+        options
       );
     }
   }
@@ -74,7 +86,7 @@ class WalletController {
   hideModal() {
     updateState((prevState) => ({
       ...prevState,
-      showModal: false
+      showModal: false,
     }));
   }
 
@@ -84,21 +96,26 @@ class WalletController {
   }
 
   async signOut() {
-    EventHandler.callEventHandler("disconnect");
     const state = getState();
-    if (state.signedInWalletId !== null) {
-      state.walletProviders[state.signedInWalletId].disconnect();
+
+    if (state.signedInWalletId) {
+      await state.walletProviders[state.signedInWalletId].disconnect();
     }
+
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+
     updateState((prevState) => ({
       ...prevState,
       signedInWalletId: null,
       isSignedIn: false,
     }));
+
+    this.emitter.emit("disconnect");
   }
 
   async getAccount() {
     const state = getState();
+
     if (state.signedInWalletId !== null) {
       return state.walletProviders[state.signedInWalletId].getAccount();
     }
@@ -106,7 +123,7 @@ class WalletController {
   }
 
   on(event: EventList, callback: () => void) {
-    EventHandler.addEventHandler(event, callback);
+    this.emitter.on(event, callback);
   }
 }
 

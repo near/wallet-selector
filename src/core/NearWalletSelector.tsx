@@ -4,16 +4,22 @@ import ReactDOM from "react-dom";
 import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
 import { getState, updateState } from "../state/State";
-import EventList from "../types/EventList";
-import SmartContract from "../contracts/SmartContract";
+import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
+import EventHandler, { Emitter } from "../utils/EventsHandler";
+import EventList from "../types/EventList";
+import getConfig from "../config";
+import ProviderService from "../services/provider/ProviderService";
 
 export default class NearWalletSelector {
   private walletController: WalletController;
-  private contract: SmartContract;
+  private emitter: Emitter;
+  private provider: ProviderService;
 
-  constructor(options?: Options) {
+  contract: Contract;
+
+  constructor(options: Options) {
     if (options) {
       updateState((prevState) => ({
         ...prevState,
@@ -24,16 +30,20 @@ export default class NearWalletSelector {
       }));
     }
 
-    this.walletController = new WalletController();
-    const state = getState();
-    this.contract = new SmartContract(
-      state.options.contract.address,
-      state.options.contract.viewMethods,
-      state.options.contract.changeMethods
-    );
+    const config = getConfig(options.networkId);
 
-    if (state.signedInWalletId !== null) {
-      state.walletProviders[state.signedInWalletId].init();
+    this.emitter = new EventHandler();
+    this.provider = new ProviderService(config.nodeUrl);
+    this.walletController = new WalletController(this.emitter, this.provider);
+
+    this.contract = new Contract(options.accountId, this.provider);
+  }
+
+  async init() {
+    const state = getState();
+
+    if (state.signedInWalletId) {
+      await state.walletProviders[state.signedInWalletId].init();
     }
 
     this.renderModal();
@@ -45,10 +55,6 @@ export default class NearWalletSelector {
     document.body.appendChild(el);
 
     ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
-  }
-
-  getContract() {
-    return this.contract;
   }
 
   showModal() {
@@ -64,7 +70,7 @@ export default class NearWalletSelector {
   }
 
   signOut() {
-    this.walletController.signOut();
+    return this.walletController.signOut();
   }
 
   getAccount() {
@@ -72,6 +78,6 @@ export default class NearWalletSelector {
   }
 
   on(event: EventList, callback: () => void) {
-    this.walletController.on(event, callback);
+    this.emitter.on(event, callback);
   }
 }

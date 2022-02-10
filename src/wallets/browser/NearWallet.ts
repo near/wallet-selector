@@ -1,15 +1,29 @@
+import {
+  WalletConnection,
+  transactions,
+  connect,
+  keyStores,
+} from "near-api-js";
+import BN from "bn.js";
+
 import BrowserWallet from "../types/BrowserWallet";
 import INearWallet from "../../interfaces/INearWallet";
-import EventHandler from "../../utils/EventHandler";
-import { WalletConnection, Contract } from "near-api-js";
+import { Emitter } from "../../utils/EventsHandler";
 import { getState } from "../../state/State";
+import {
+  AccountInfo,
+  CallParams,
+  FunctionCallAction,
+} from "../../interfaces/IWallet";
+import ProviderService from "../../services/provider/ProviderService";
+import getConfig from "../../config";
+import { logger } from "../../services/logging.service";
 
-export default class NearWallet extends BrowserWallet implements INearWallet {
+class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;
-  private contract: Contract;
 
-  constructor() {
-    super("nearwallet", "Near Wallet", "Near Wallet", "https://cryptologos.cc/logos/near-protocol-near-logo.png");
+  constructor(emitter: Emitter, provider: ProviderService) {
+    super(emitter, provider);
 
     this.init();
   }
@@ -20,63 +34,96 @@ export default class NearWallet extends BrowserWallet implements INearWallet {
 
   async init() {
     const state = getState();
-    if (!state.nearConnection) return;
-    this.wallet = new WalletConnection(state.nearConnection, "near_app");
-    EventHandler.callEventHandler("init");
+    const near = await connect({
+      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+      ...getConfig(state.options.networkId),
+      headers: {},
+    });
+
+    this.wallet = new WalletConnection(near, "near_app");
+
     if (this.wallet.isSignedIn()) {
       this.setWalletAsSignedIn();
     }
   }
 
-  async signIn() {
-    const state = getState();
-    this.wallet.requestSignIn(state.options.contract.address).then(() => {
-      if (!this.wallet.isSignedIn()) {
-        return;
-      }
-      this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
-    });
-  }
-  async disconnect() {
-    if (!this.wallet) return;
-    this.wallet.signOut();
-    EventHandler.callEventHandler("disconnect");
-  }
-
-  async isConnected(): Promise<boolean> {
-    if (!this.wallet) return false;
-    return this.wallet.isSignedIn();
-  }
-
-  async getAccount(): Promise<any> {
-    if (!this.isConnected()) return null;
+  getInfo() {
     return {
-      accountId: this.wallet.getAccountId(),
-      balance: (await this.wallet.account().state()).amount,
+      id: "nearwallet",
+      name: "Near Wallet",
+      description: "Near Wallet",
+      iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png",
     };
   }
 
-  async callContract(method: string, args?: any, gas?: string, deposit?: string): Promise<any> {
+  async signIn() {
     const state = getState();
 
-    if (!this.contract) {
-      this.contract = new Contract(this.wallet.account(), state.options.contract.address, {
-        viewMethods: state.options.contract.viewMethods,
-        changeMethods: state.options.contract.changeMethods,
-      });
+    this.wallet.requestSignIn(state.options.accountId).then(() => {
+      if (!this.wallet.isSignedIn()) {
+        return;
+      }
+
+      this.setWalletAsSignedIn();
+      this.emitter.emit("signIn");
+    });
+  }
+  async disconnect() {
+    if (!this.wallet) {
+      return;
     }
 
-    if (!args) args = {};
+    this.wallet.signOut();
+    this.emitter.emit("disconnect");
+  }
 
-    if (state.options.contract.viewMethods.includes(method)) {
-      return this.contract[method](args);
+  async isConnected() {
+    if (!this.wallet) {
+      return false;
     }
 
-    if (state.options.contract.changeMethods.includes(method)) {
-      return this.contract[method](args, gas, deposit);
+    return this.wallet.isSignedIn();
+  }
+
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
     }
 
-    return null;
+    const accountId = this.wallet.getAccountId();
+    const state = await this.wallet.account().state();
+
+    return {
+      accountId,
+      balance: state.amount,
+    };
+  }
+
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
+
+  async call({ receiverId, actions }: CallParams) {
+    const account = this.wallet.account();
+
+    logger.log("NearWallet:call", { receiverId, actions });
+
+    // @ts-ignore
+    // near-api-js marks this method as protected.
+    return account.signAndSendTransaction({
+      receiverId,
+      actions: this.transformActions(actions),
+    });
   }
 }
+
+export default NearWallet;

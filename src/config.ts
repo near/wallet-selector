@@ -1,6 +1,7 @@
-function getConfig(env: string) {
+import { NetworkId } from "./types/Options";
+
+function getConfig(env: NetworkId) {
   switch (env) {
-    case "production":
     case "mainnet":
       return {
         networkId: "mainnet",
@@ -8,7 +9,6 @@ function getConfig(env: string) {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
       };
-    case "development":
     case "testnet":
       return {
         networkId: "testnet",
@@ -23,8 +23,7 @@ function getConfig(env: string) {
         walletUrl: "https://wallet.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
       };
-    case "test":
-    case "ci":
+    case "ci-testnet":
       return {
         networkId: "shared-test",
         nodeUrl: "https://rpc.ci-testnet.near.org",
@@ -37,9 +36,7 @@ function getConfig(env: string) {
         masterAccount: "test.near",
       };
     default:
-      throw Error(
-        `Unconfigured environment '${env}'. Can be configured in src/config.js.`
-      );
+      throw Error(`Failed to find config for networkId: '${env}'`);
   }
 }
 

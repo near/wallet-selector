@@ -1,26 +1,55 @@
 import ISenderWallet from "../../interfaces/ISenderWallet";
 import InjectedWallet from "../types/InjectedWallet";
-import EventHandler from "../../utils/EventHandler";
 import { getState, updateState } from "../../state/State";
+import { Emitter } from "../../utils/EventsHandler";
+import { AccountInfo, CallParams } from "../../interfaces/IWallet";
+import InjectedSenderWallet, {
+  GetRpcResponse,
+  RpcChangedResponse,
+} from "../../interfaces/InjectedSenderWallet";
+import ProviderService from "../../services/provider/ProviderService";
+import { logger } from "../../services/logging.service";
 
-export default class SenderWallet
-  extends InjectedWallet
-  implements ISenderWallet
-{
-  private contract: any;
+declare global {
+  interface Window {
+    wallet: InjectedSenderWallet | undefined;
+  }
+}
 
-  constructor() {
-    super(
-      "senderwallet",
-      "Sender Wallet",
-      "Sender Wallet",
-      "https://senderwallet.io/logo.png",
-      "wallet"
-    );
+class SenderWallet extends InjectedWallet implements ISenderWallet {
+  wallet: InjectedSenderWallet;
+
+  constructor(emitter: Emitter, provider: ProviderService) {
+    super(emitter, provider);
+
+    this.wallet = window.wallet!;
+  }
+
+  async init(): Promise<void> {
+    await this.timeout(200);
+
+    const state = getState();
+
+    this.onAccountChanged();
+
+    this.onNetworkChanged();
+
+    return this.wallet
+      .init({ contractId: state.options.accountId })
+      .then((res) => logger.log("SenderWallet:init", res));
+  }
+
+  getInfo() {
+    return {
+      id: "senderwallet",
+      name: "Sender Wallet",
+      description: "Sender Wallet",
+      iconUrl: "https://senderwallet.io/logo.png",
+    };
   }
 
   async walletSelected() {
-    if (!window[this.injectedGlobal]) {
+    if (!this.wallet) {
       updateState((prevState) => ({
         ...prevState,
         showWalletOptions: false,
@@ -29,92 +58,115 @@ export default class SenderWallet
       return;
     }
 
-    const rpcResponse = await window[this.injectedGlobal].getRpc();
-    const state = getState();
+    const rpcResponse = await this.wallet.getRpc();
 
-    if (state.options.networkId !== rpcResponse.rpc.networkId) {
-      updateState((prevState) => ({
-        ...prevState,
-        showWalletOptions: false,
-        showSwitchNetwork: true,
-      }));
+    if (!this.networkMatches(rpcResponse)) {
       return;
     }
+
     await this.init();
     await this.signIn();
   }
 
   async signIn() {
     const state = getState();
-    const response = await window[this.injectedGlobal].requestSignIn({
-      contractId: state.options.contract.address,
+    const response = await this.wallet.requestSignIn({
+      contractId: state.options.accountId,
     });
-    console.log(response);
 
-    if (response.accessKey) {
-      this.setWalletAsSignedIn();
-      EventHandler.callEventHandler("signIn");
-      updateState((prevState) => ({
-        ...prevState,
-        showModal: false
-      }))
+    if (response.error) {
+      throw new Error(`Failed to sign in: ${response.error}`);
     }
+
+    await this.setWalletAsSignedIn();
+
+    this.emitter.emit("signIn");
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
   }
 
   async timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async init(): Promise<void> {
-    await this.timeout(200);
-    const state = getState();
-    window[this.injectedGlobal].onAccountChanged((newAccountId: string) => {
-      console.log("newAccountId: ", newAccountId);
+  onNetworkChanged() {
+    this.wallet.onRpcChanged((response) => {
+      this.networkMatches(response);
     });
-    window[this.injectedGlobal]
-      .init({ contractId: state.options.contract.address })
-      .then((res: any) => {
-        console.log(res);
-      });
-    EventHandler.callEventHandler("init");
   }
 
-  async isConnected(): Promise<boolean> {
-    return window[this.injectedGlobal].isSignedIn();
+  networkMatches(response: RpcChangedResponse | GetRpcResponse) {
+    const state = getState();
+    if (state.options.networkId !== response.rpc.networkId) {
+      updateState((prevState) => ({
+        ...prevState,
+        showModal: true,
+        showWalletOptions: false,
+        showSwitchNetwork: true,
+      }));
+      return false;
+    }
+    return true;
   }
 
-  disconnect() {
-    EventHandler.callEventHandler("disconnect");
-    return window[this.injectedGlobal].signOut();
+  onAccountChanged() {
+    this.wallet.onAccountChanged(async (newAccountId) => {
+      logger.log("SenderWallet:onAccountChange", newAccountId);
+      try {
+        await this.disconnect();
+
+        await this.signIn();
+      } catch (e) {
+        logger.log(`Failed to change account ${e.message}`);
+      }
+    });
   }
 
-  async getAccount() {
-    await this.timeout(300);
+  async isConnected() {
+    return this.wallet.isSignedIn();
+  }
+
+  async disconnect() {
+    const res = await this.wallet.signOut();
+    if (res.result !== "success") {
+      throw new Error("Failed to sign out");
+    }
+    this.emitter.emit("disconnect");
+    return;
+  }
+
+  async getAccount(): Promise<AccountInfo | null> {
+    const connected = await this.isConnected();
+
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.wallet.getAccountId();
+    const account = await this.provider.viewAccount({ accountId });
+
     return {
-      accountId: window[this.injectedGlobal].getAccountId(),
-      balance: "99967523358427624000000000",
+      accountId,
+      balance: account.amount,
     };
   }
 
-  async callContract(
-    method: string,
-    args?: any,
-    gas?: string,
-    deposit?: string
-  ): Promise<any> {
-    if (!this.contract) {
-      const state = getState();
-      if (!state.nearConnection) return;
-      this.contract = await state.nearConnection.loadContract(
-        state.options.contract.address,
-        {
-          viewMethods: state.options.contract.viewMethods,
-          changeMethods: state.options.contract.changeMethods,
-          sender: window[this.injectedGlobal].getAccountId(),
+  async call({ receiverId, actions }: CallParams) {
+    logger.log("SenderWallet:call", { receiverId, actions });
+
+    return this.wallet
+      .signAndSendTransaction({ receiverId, actions })
+      .then((res) => {
+        if (res.error) {
+          throw new Error(res.error);
         }
-      );
-    }
-    console.log(this.contract, method, args, gas, deposit);
-    return this.contract[method](args);
+
+        return res;
+      });
   }
 }
+
+export default SenderWallet;
