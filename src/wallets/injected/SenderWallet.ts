@@ -8,6 +8,7 @@ import InjectedSenderWallet, {
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import { logger } from "../../services/logging.service";
 
 declare global {
   interface Window {
@@ -29,15 +30,13 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     const state = getState();
 
-    this.wallet.onAccountChanged((newAccountId) => {
-      console.log("SenderWallet:onAccountChange", newAccountId);
-    });
+    this.onAccountChanged();
 
     this.onNetworkChanged();
 
     return this.wallet
       .init({ contractId: state.options.accountId })
-      .then((res) => console.log("SenderWallet:init", res));
+      .then((res) => logger.log("SenderWallet:init", res));
   }
 
   getInfo() {
@@ -71,16 +70,15 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   async signIn() {
     const state = getState();
-    const { accessKey } = await this.wallet.requestSignIn({
+    const response = await this.wallet.requestSignIn({
       contractId: state.options.accountId,
     });
 
-    if (!accessKey) {
-      return;
+    if (response.error) {
+      throw new Error(`Failed to sign in: ${response.error}`);
     }
 
     await this.setWalletAsSignedIn();
-    this.emitter.emit("signIn");
 
     this.emitter.emit("signIn");
 
@@ -114,20 +112,30 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     return true;
   }
 
+  onAccountChanged() {
+    this.wallet.onAccountChanged(async (newAccountId) => {
+      logger.log("SenderWallet:onAccountChange", newAccountId);
+      try {
+        await this.disconnect();
+
+        await this.signIn();
+      } catch (e) {
+        logger.log(`Failed to change account ${e.message}`);
+      }
+    });
+  }
+
   async isConnected() {
     return this.wallet.isSignedIn();
   }
 
-  disconnect() {
-    return this.wallet.signOut().then((res) => {
-      if (res.result !== "success") {
-        throw new Error("Failed to sign out");
-      }
-
-      this.emitter.emit("disconnect");
-
-      return;
-    });
+  async disconnect() {
+    const res = await this.wallet.signOut();
+    if (res.result !== "success") {
+      throw new Error("Failed to sign out");
+    }
+    this.emitter.emit("disconnect");
+    return;
   }
 
   async getAccount(): Promise<AccountInfo | null> {
@@ -147,7 +155,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   async call({ receiverId, actions }: CallParams) {
-    console.log("SenderWallet:call", { receiverId, actions });
+    logger.log("SenderWallet:call", { receiverId, actions });
 
     return this.wallet
       .signAndSendTransaction({ receiverId, actions })

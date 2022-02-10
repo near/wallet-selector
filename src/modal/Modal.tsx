@@ -3,6 +3,7 @@ import styles from "./Modal.styles";
 import { getState, updateState } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
 import State from "../types/State";
+import { logger } from "../services/logging.service";
 
 declare global {
   // tslint:disable-next-line
@@ -107,8 +108,8 @@ function Modal(): JSX.Element {
                       className={selected ? "selected-wallet" : ""}
                       onClick={() => {
                         wallet.walletSelected().catch((err) => {
-                          console.log(`Failed to select ${name}`);
-                          console.error(err);
+                          logger.log(`Failed to select ${name}`);
+                          logger.error(err);
                         });
                       }}
                     >

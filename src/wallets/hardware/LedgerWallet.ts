@@ -9,6 +9,7 @@ import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
+import { logger } from "../../services/logging.service";
 
 export default class LedgerWallet
   extends HardwareWallet
@@ -50,7 +51,7 @@ export default class LedgerWallet
 
     listen((log) => {
       if (this.debugMode) {
-        console.log(log);
+        logger.log(log);
       }
     });
   }
@@ -93,7 +94,7 @@ export default class LedgerWallet
         return true;
       })
       .catch((err) => {
-        console.log(err);
+        logger.log(err);
 
         return false;
       });
@@ -163,7 +164,7 @@ export default class LedgerWallet
     if (this.transport) return;
 
     this.transport = await LedgerTransportWebHid.create().catch((err) => {
-      console.log(err);
+      logger.log(err);
     });
 
     if (!this.transport) {
@@ -173,7 +174,7 @@ export default class LedgerWallet
     this.transport.setScrambleKey("NEAR");
 
     this.transport.on("disconnect", (res: any) => {
-      console.log(res);
+      logger.log(res);
       this.emitter.emit("disconnect");
     });
   }
@@ -259,7 +260,7 @@ export default class LedgerWallet
 
   // TODO: Refactor callContract into this new method.
   async call({ receiverId, actions }: CallParams) {
-    console.log("LedgerWallet:call", { receiverId, actions });
+    logger.log("LedgerWallet:call", { receiverId, actions });
 
     // To keep the alias simple, lets just support a single action.
     if (actions.length !== 1) {
