@@ -33,5 +33,6 @@ export default interface IWallet {
   setWalletAsSignedIn(): Promise<void>;
   signIn(): Promise<void>;
   getAccount(): Promise<AccountInfo | null>;
+  // TODO: Determine standardised response.
   call(params: CallParams): Promise<unknown>;
 }
