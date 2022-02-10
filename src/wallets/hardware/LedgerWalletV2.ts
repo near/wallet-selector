@@ -1,4 +1,4 @@
-import IWallet from "../../interfaces/IWallet";
+import IWallet, { CallParams } from "../../interfaces/IWallet";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import createLedgerClient from "../../utils/ledgerClient";
 import { Emitter } from "../../utils/EventsHandler";
@@ -10,13 +10,16 @@ import { TypedError } from "near-api-js/lib/utils/errors";
 class LedgerWalletV2 extends BaseWallet implements IWallet {
   client: ReturnType<typeof createLedgerClient>;
 
+  private accountId = "lewis-sqa.testnet";
+  private derivationPath = "44'/397'/0'/0'/1'";
+
   constructor(emitter: Emitter, provider: ProviderService) {
     super(emitter, provider);
   }
 
   getInfo() {
     return {
-      id: "ledger-wallet",
+      id: "ledgerwallet",
       name: "Ledger Wallet",
       description: "Ledger Wallet",
       iconUrl:
@@ -40,8 +43,6 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
   }
 
   async isConnected() {
-    throw new Error("Not implemented");
-
     return true;
   }
 
@@ -82,26 +83,28 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
 
   async walletSelected() {
     await this.init();
-    await this.validate("lewis-sqa.testnet", "44'/397'/0'/0'/1'");
+    await this.validate(this.accountId, this.derivationPath);
     await this.setWalletAsSignedIn();
   }
 
   async getAccount() {
-    throw new Error("Not implemented");
+    const connected = await this.isConnected();
 
-    return null;
+    if (!connected) {
+      return null;
+    }
+
+    const accountId = this.accountId;
+    const account = await this.provider.viewAccount({ accountId });
+
+    return {
+      accountId,
+      balance: account.amount,
+    };
   }
 
-  async setWalletAsSignedIn() {
-    throw new Error("Not implemented");
-  }
-
-  getShowWallet() {
-    return true;
-  }
-
-  async call() {
-    throw new Error("Not implemented");
+  async call({ receiverId, actions }: CallParams) {
+    console.log("LedgerWalletV2:call", { receiverId, actions });
   }
 }
 
