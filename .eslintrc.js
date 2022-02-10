@@ -51,7 +51,7 @@ module.exports = {
     "default-case": "off",
     "no-caller": "error",
     "no-case-declarations": "off",
-    "no-console": ["error", { allow: ["error", "info", "warn"] }],
+    "no-console": "error",
     "no-debugger": "error",
     "no-eval": "error",
     "no-fallthrough": "error",
