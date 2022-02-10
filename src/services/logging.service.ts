@@ -1,7 +1,7 @@
 export class Logger
   implements Pick<Console, "log" | "info" | "warn" | "error">
 {
-  private static _hidden = false;
+  private static _hidden = true;
   static get debug(): boolean {
     return Logger._hidden;
   }
