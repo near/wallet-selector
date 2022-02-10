@@ -75,21 +75,12 @@ const Modal: React.FC = () => {
   };
 
   const handleConnectClick = useCallback(async () => {
-    try {
-      const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
+    const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
 
-      console.log("handleConnectClick", {
-        ledgerDerivationPath,
-        ledgerAccountId,
-      });
+    wallet.setDerivationPath(ledgerDerivationPath);
+    wallet.setAccountId(ledgerAccountId);
 
-      wallet.setDerivationPath(ledgerDerivationPath);
-      wallet.setAccountId(ledgerAccountId);
-
-      await wallet.signIn();
-    } catch (err) {
-      setLedgerError(`Error: ${err.message}`);
-    }
+    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
   }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
