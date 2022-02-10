@@ -116,13 +116,13 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
   onAccountChanged() {
     this.wallet.onAccountChanged(async (newAccountId) => {
-      console.log("SenderWallet:onAccountChange", newAccountId);
+      logger.log("SenderWallet:onAccountChange", newAccountId);
       try {
         await this.disconnect();
 
         await this.signIn();
       } catch (e) {
-        console.log(`Failed to change account ${e.message}`);
+        logger.log(`Failed to change account ${e.message}`);
       }
     });
   }
