@@ -127,7 +127,13 @@ const createLedgerClient = (transport: Transport) => {
         );
 
         if (isLastChunk) {
-          return Buffer.from(response.subarray(0, -2));
+          return new transactions.SignedTransaction({
+            transaction,
+            signature: new transactions.Signature({
+              keyType: transaction.publicKey.keyType,
+              data: Buffer.from(response.subarray(0, -2)),
+            }),
+          });
         }
       }
 

@@ -136,13 +136,9 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
       publicKey: this.publicKey,
     });
 
-    console.log("nonce:", nonce);
-
     const block = await this.provider.block({ finality: "final" });
 
-    console.log("block:", block);
-
-    const signature = await this.client.sign({
+    const signedTx = await this.client.sign({
       accountId: this.accountId,
       publicKey: PublicKey.from(this.publicKey),
       receiverId,
@@ -152,9 +148,16 @@ class LedgerWalletV2 extends BaseWallet implements IWallet {
       derivationPath: this.derivationPath,
     });
 
-    console.log("signature:", signature);
+    return this.provider.sendTransaction(signedTx!).then((res) => {
+      const successValue =
+        (typeof res.status !== "string" && res.status.SuccessValue) || "";
 
-    // this.client.sign(data, this.derivationPath)
+      if (successValue === "") {
+        return null;
+      }
+
+      return JSON.parse(Buffer.from(successValue, "base64").toString());
+    });
   }
 }
 
