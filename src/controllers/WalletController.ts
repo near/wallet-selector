@@ -8,7 +8,7 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import EventList from "../types/EventList";
 import State from "../types/State";
 import ProviderService from "../services/provider/ProviderService";
-import LedgerWalletV2 from "../wallets/hardware/LedgerWalletV2";
+import LedgerWalletV2 from "../wallets/hardware/ledger/LedgerWalletV2";
 
 class WalletController {
   private emitter: Emitter;

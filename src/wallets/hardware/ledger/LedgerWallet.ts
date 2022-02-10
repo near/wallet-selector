@@ -1,15 +1,15 @@
-import HardwareWallet from "../types/HardwareWallet";
+import HardwareWallet from "../../types/HardwareWallet";
 import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
 import { listen } from "@ledgerhq/logs";
 import bs58 from "bs58";
-import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import { getState, updateState } from "../../state/State";
+import ILedgerWallet from "../../../interfaces/ILedgerWallet";
+import { getState, updateState } from "../../../state/State";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
-import { Emitter } from "../../utils/EventsHandler";
-import { AccountInfo, CallParams } from "../../interfaces/IWallet";
-import ProviderService from "../../services/provider/ProviderService";
-import { logger } from "../../services/logging.service";
+import { Emitter } from "../../../utils/EventsHandler";
+import { AccountInfo, CallParams } from "../../../interfaces/IWallet";
+import ProviderService from "../../../services/provider/ProviderService";
+import { logger } from "../../../services/logging.service";
 
 export default class LedgerWallet
   extends HardwareWallet

@@ -1,13 +1,13 @@
 import IWallet, {
   CallParams,
   FunctionCallAction,
-} from "../../interfaces/IWallet";
+} from "../../../interfaces/IWallet";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import createLedgerClient from "../../utils/ledgerClient";
-import { Emitter } from "../../utils/EventsHandler";
-import ProviderService from "../../services/provider/ProviderService";
-import BaseWallet from "../BaseWallet";
-import { getState } from "../../state/State";
+import createLedgerClient from "../../../utils/ledgerClient";
+import { Emitter } from "../../../utils/EventsHandler";
+import ProviderService from "../../../services/provider/ProviderService";
+import BaseWallet from "../../BaseWallet";
+import { getState } from "../../../state/State";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import { transactions } from "near-api-js";
 import BN from "bn.js";
