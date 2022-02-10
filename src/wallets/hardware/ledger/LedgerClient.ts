@@ -38,6 +38,7 @@ function parseDerivationPath(derivationPath: string) {
   );
 }
 
+// TODO: Understand what this is exactly. What's so special about 87?
 const networkId = "W".charCodeAt(0);
 
 interface GetPublicKeyParams {
