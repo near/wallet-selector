@@ -4,14 +4,21 @@ import { getState, updateState } from "../../../state/State";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 import { Emitter } from "../../../utils/EventsHandler";
-import { AccountInfo, CallParams } from "../../../interfaces/IWallet";
+import {
+  AccountInfo,
+  CallParams,
+  FunctionCallAction,
+} from "../../../interfaces/IWallet";
 import ProviderService from "../../../services/provider/ProviderService";
 import { logger } from "../../../services/logging.service";
 import LedgerClient, { Subscription } from "./LedgerClient";
 import { TypedError } from "near-api-js/lib/utils/errors";
+import { PublicKey } from "near-api-js/lib/utils";
+import { base_decode } from "near-api-js/lib/utils/serialize";
 
-const LOCAL_STORAGE_PUBLIC_KEY = "ledgerPublicKey";
+const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
+const LOCAL_STORAGE_PUBLIC_KEY = "ledgerPublicKey";
 const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 interface ValidateParams {
@@ -23,8 +30,8 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private client: LedgerClient;
   private subscriptions: Record<string, Subscription> = {};
 
-  private accountId: string;
-  private derivationPath: string;
+  private accountId: string | null;
+  private derivationPath = DEFAULT_DERIVATION_PATH;
   private publicKey: string | null;
 
   private debugMode = false;
@@ -45,7 +52,6 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
   async init() {
     this.client = new LedgerClient();
-
     this.client.setScrambleKey("NEAR");
 
     this.subscriptions.disconnect = this.client.on("disconnect", (data) => {
@@ -60,10 +66,14 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       });
     }
 
+    this.accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
     this.publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-    this.derivationPath =
-      localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH) ||
-      DEFAULT_DERIVATION_PATH;
+
+    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
+
+    if (derivationPath) {
+      this.derivationPath = derivationPath;
+    }
   }
 
   getPublicKey() {
@@ -147,13 +157,16 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   async signIn() {
     await this.init();
 
+    const accountId = this.accountId!;
+
     const { publicKey } = await this.validate({
-      accountId: this.accountId,
+      accountId,
       derivationPath: this.derivationPath,
     });
 
-    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
+    localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, accountId);
     localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
+    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
 
     await this.setWalletAsSignedIn();
 
@@ -181,62 +194,46 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     };
   }
 
-  // TODO: Refactor callContract into this new method.
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
+
   async call({ receiverId, actions }: CallParams) {
     logger.log("LedgerWallet:call", { receiverId, actions });
 
-    // To keep the alias simple, lets just support a single action.
-    if (actions.length !== 1) {
-      throw new Error(
-        "Ledger Wallet implementation currently supports just one action"
-      );
+    if (!this.accountId) {
+      throw new Error("No account id found");
     }
 
-    const action = actions[0];
+    if (!this.publicKey) {
+      throw new Error("No public key found");
+    }
 
-    return this.callContract(
-      action.methodName,
-      action.args,
-      action.gas,
-      action.deposit
-    );
-  }
+    const [block, accessKey] = await Promise.all([
+      this.provider.block({ finality: "final" }),
+      this.provider.viewAccessKey({
+        accountId: this.accountId,
+        publicKey: this.publicKey,
+      }),
+    ]);
 
-  async callContract(
-    method: string,
-    args?: object,
-    gas = "10000000000000",
-    deposit = "0"
-  ) {
-    const state = getState();
-    if (!state.signedInWalletId) return;
-
-    if (!args) args = [];
-
-    const bnGas = new BN(gas.toString());
-    const bnDeposit = new BN(deposit.toString());
-
-    const response = await this.provider.block({ finality: "final" });
-
-    if (!response) return;
-
-    const recentBlockHash = utils.serialize.base_decode(response.header.hash);
-    const nonce = ++this.nonce;
-
-    const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
-
-    const pk = keyPair.getPublicKey();
-    pk.data = this.publicKey;
-
-    const actions = [transactions.functionCall(method, args, bnGas, bnDeposit)];
+    logger.log("LedgerWallet:call:block", block);
+    logger.log("LedgerWallet:call:accessKey", accessKey);
 
     const transaction = transactions.createTransaction(
       this.accountId,
-      pk,
-      state.options.accountId,
-      nonce,
-      actions,
-      recentBlockHash
+      PublicKey.from(this.publicKey),
+      receiverId,
+      accessKey.nonce + 1,
+      this.transformActions(actions),
+      base_decode(block.header.hash)
     );
 
     const serializedTx = utils.serialize.serialize(
@@ -244,9 +241,12 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       transaction
     );
 
-    const signature = await this.sign(serializedTx);
+    const signature = await this.client.sign({
+      data: serializedTx,
+      derivationPath: this.derivationPath,
+    });
 
-    const signedTransaction = new transactions.SignedTransaction({
+    const signedTx = new transactions.SignedTransaction({
       transaction,
       signature: new transactions.Signature({
         keyType: transaction.publicKey.keyType,
@@ -254,19 +254,16 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       }),
     });
 
-    const res = await this.provider.sendTransaction(signedTransaction);
-
-    if (typeof res.status !== "string") {
-      const successValue = res.status.SuccessValue || "";
+    return this.provider.sendTransaction(signedTx!).then((res) => {
+      const successValue =
+        (typeof res.status !== "string" && res.status.SuccessValue) || "";
 
       if (successValue === "") {
         return null;
       }
 
       return JSON.parse(Buffer.from(successValue, "base64").toString());
-    }
-
-    return null;
+    });
   }
 }
 
