@@ -9,9 +9,7 @@ import BN from "bn.js";
 import { Emitter } from "../../utils/EventsHandler";
 import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
-import { Logger } from "../../services/logging.service";
-
-const logger = new Logger();
+import { logger } from "../../services/logging.service";
 
 export default class LedgerWallet
   extends HardwareWallet

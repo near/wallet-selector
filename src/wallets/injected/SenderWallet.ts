@@ -8,9 +8,8 @@ import InjectedSenderWallet, {
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/provider/ProviderService";
-import { Logger } from "../../services/logging.service";
+import { logger } from "../../services/logging.service";
 
-const logger = new Logger();
 declare global {
   interface Window {
     wallet: InjectedSenderWallet | undefined;
@@ -30,7 +29,6 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     await this.timeout(200);
 
     const state = getState();
-
 
     this.onAccountChanged();
 

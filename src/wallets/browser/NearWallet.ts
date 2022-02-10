@@ -17,9 +17,7 @@ import {
 } from "../../interfaces/IWallet";
 import ProviderService from "../../services/provider/ProviderService";
 import getConfig from "../../config";
-import { Logger } from "../../services/logging.service";
-
-const logger = new Logger();
+import { logger } from "../../services/logging.service";
 
 class NearWallet extends BrowserWallet implements INearWallet {
   private wallet: WalletConnection;

@@ -1,4 +1,4 @@
-import { Logger } from "./logging.service";
+import { Logger, logger as defaultLogger } from "./logging.service";
 import { mock, mockReset } from "jest-mock-extended";
 
 describe("LoggingService Unit Tests", () => {
@@ -10,8 +10,11 @@ describe("LoggingService Unit Tests", () => {
     logger = new Logger(internal);
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     Logger.debug = true;
+  });
+
+  afterEach(() => {
     // Reset the mock after the JS stack has cleared
     mockReset(internal);
   });
@@ -50,5 +53,9 @@ describe("LoggingService Unit Tests", () => {
   it("should error", () => {
     logger.error("test");
     expect(internal.error).toHaveBeenCalledWith("test");
+  });
+
+  it("should export a default instance", () => {
+    expect(defaultLogger).toBeInstanceOf(Logger);
   });
 });

@@ -1,7 +1,6 @@
 export class Logger
   implements Pick<Console, "log" | "info" | "warn" | "error">
 {
-  private static instance: Logger;
   private static _hidden = false;
   static get debug(): boolean {
     return Logger._hidden;
@@ -9,13 +8,7 @@ export class Logger
   static set debug(value: boolean) {
     Logger._hidden = value;
   }
-  constructor(private readonly logger: Console = window?.console) {
-    if (!Logger.instance) {
-      Logger.instance = this;
-    }
-
-    return Logger.instance;
-  }
+  constructor(private readonly logger: Console = window?.console) {}
 
   log(...params: unknown[]): void {
     this.trigger("log", ...params);
@@ -38,3 +31,5 @@ export class Logger
     this.logger[method].apply(console, args);
   }
 }
+
+export const logger = new Logger();
