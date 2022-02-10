@@ -10,7 +10,7 @@ import { getState, updateState } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
 import State from "../types/State";
 import { logger } from "../services/logging.service";
-import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/ledger/LedgerWallet";
+import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 
 declare global {
   // tslint:disable-next-line

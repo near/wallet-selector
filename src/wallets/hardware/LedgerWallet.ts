@@ -5,14 +5,14 @@ import {
   AccountInfo,
   CallParams,
   FunctionCallAction,
-} from "../../../interfaces/IWallet";
-import HardwareWallet from "../../types/HardwareWallet";
-import ILedgerWallet from "../../../interfaces/ILedgerWallet";
-import { Emitter } from "../../../utils/EventsHandler";
-import { getState, updateState } from "../../../state/State";
-import ProviderService from "../../../services/provider/ProviderService";
+} from "../../interfaces/IWallet";
+import HardwareWallet from "../types/HardwareWallet";
+import ILedgerWallet from "../../interfaces/ILedgerWallet";
+import { Emitter } from "../../utils/EventsHandler";
+import { getState, updateState } from "../../state/State";
+import ProviderService from "../../services/provider/ProviderService";
 import LedgerClient, { Subscription } from "./LedgerClient";
-import { logger } from "../../../services/logging.service";
+import { logger } from "../../services/logging.service";
 
 const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
