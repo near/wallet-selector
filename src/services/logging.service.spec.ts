@@ -16,10 +16,6 @@ describe("LoggingService Unit Tests", () => {
     mockReset(internal);
   });
 
-  it("should be defined", () => {
-    expect(Logger).toBeDefined();
-  });
-
   it("should be a singleton", () => {
     const logger2 = new Logger(internal);
     expect(logger).toEqual(logger2);
