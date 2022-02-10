@@ -50,11 +50,23 @@ interface SignParams {
   derivationPath: string;
 }
 
+type EventName = "disconnect";
+
 class LedgerClient {
   private transport: Transport;
 
   async init() {
     this.transport = await TransportWebHID.create();
+  }
+
+  setScrambleKey(key: string) {
+    this.transport.setScrambleKey(key);
+  }
+
+  on(eventName: EventName, callback: () => void) {
+    this.transport.on(eventName, callback);
+
+    return () => this.transport.off(eventName, callback);
   }
 
   async getVersion() {
