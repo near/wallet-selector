@@ -25,7 +25,7 @@ describe("LoggingService Unit Tests", () => {
   });
 
   it("should hide logs if hidden", () => {
-    Logger.debug = true;
+    Logger.debug = false;
     logger.log("test");
     expect(internal.log).not.toHaveBeenCalled();
   });
