@@ -1,5 +1,5 @@
 {
-  "name": "near-walletselector",
+  "name": "near-wallet-selector",
   "version": "1.0.0",
   "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
   "main": "./lib/cjs/index.js",
