@@ -1,6 +1,7 @@
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import Transport from "@ledgerhq/hw-transport";
 import { utils } from "near-api-js";
+import { listen, Log } from "@ledgerhq/logs";
 
 // Further reading regarding APDU Ledger API:
 // - https://gist.github.com/Wollac/49f0c4e318e42f463b8306298dfb4f4a
@@ -50,7 +51,14 @@ interface SignParams {
   derivationPath: string;
 }
 
-type EventName = "disconnect";
+interface EventMap {
+  // TODO: Determine event data.
+  disconnect: unknown;
+}
+
+export interface Subscription {
+  remove: () => void;
+}
 
 class LedgerClient {
   private transport: Transport;
@@ -59,14 +67,31 @@ class LedgerClient {
     this.transport = await TransportWebHID.create();
   }
 
+  listen(callback: (data: Log) => void) {
+    const unsubscribe = listen(callback);
+
+    return {
+      remove: () => unsubscribe(),
+    };
+  }
+
   setScrambleKey(key: string) {
     this.transport.setScrambleKey(key);
   }
 
-  on(eventName: EventName, callback: () => void) {
-    this.transport.on(eventName, callback);
+  on<Event extends keyof EventMap>(
+    event: Event,
+    callback: (data: EventMap[Event]) => void
+  ): Subscription {
+    this.transport.on(event, callback);
 
-    return () => this.transport.off(eventName, callback);
+    return {
+      remove: () => this.transport.off(event, callback),
+    };
+  }
+
+  off(event: keyof EventMap, callback: () => void) {
+    this.transport.off(event, callback);
   }
 
   async getVersion() {
