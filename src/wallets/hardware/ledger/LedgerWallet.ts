@@ -1,20 +1,18 @@
-import HardwareWallet from "../../types/HardwareWallet";
-import ILedgerWallet from "../../../interfaces/ILedgerWallet";
-import { getState, updateState } from "../../../state/State";
 import { transactions, utils } from "near-api-js";
+import { TypedError } from "near-api-js/lib/utils/errors";
 import BN from "bn.js";
-import { Emitter } from "../../../utils/EventsHandler";
 import {
   AccountInfo,
   CallParams,
   FunctionCallAction,
 } from "../../../interfaces/IWallet";
+import HardwareWallet from "../../types/HardwareWallet";
+import ILedgerWallet from "../../../interfaces/ILedgerWallet";
+import { Emitter } from "../../../utils/EventsHandler";
+import { getState, updateState } from "../../../state/State";
 import ProviderService from "../../../services/provider/ProviderService";
-import { logger } from "../../../services/logging.service";
 import LedgerClient, { Subscription } from "./LedgerClient";
-import { TypedError } from "near-api-js/lib/utils/errors";
-import { PublicKey } from "near-api-js/lib/utils";
-import { base_decode } from "near-api-js/lib/utils/serialize";
+import { logger } from "../../../services/logging.service";
 
 const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
@@ -241,11 +239,11 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
     const transaction = transactions.createTransaction(
       this.accountId,
-      PublicKey.from(this.publicKey),
+      utils.PublicKey.from(this.publicKey),
       receiverId,
       accessKey.nonce + 1,
       this.transformActions(actions),
-      base_decode(block.header.hash)
+      utils.serialize.base_decode(block.header.hash)
     );
 
     const serializedTx = utils.serialize.serialize(
