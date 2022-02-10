@@ -17,8 +17,11 @@ const P1_MORE = 0x00; // Parameter 1 = More bytes coming
 const P1_IGNORE = 0x00;
 const P2_IGNORE = 0x00;
 
-function bip32PathToBytes(path: string) {
-  const parts = path.split("/");
+// Converts BIP32-compliant derivation path to a Buffer.
+// More info here: https://github.com/LedgerHQ/ledger-live-common/blob/master/docs/derivation.md
+function parseDerivationPath(derivationPath: string) {
+  const parts = derivationPath.split("/");
+
   return Buffer.concat(
     parts
       .map((part) =>
@@ -70,7 +73,7 @@ const createLedgerClient = (transport: Transport) => {
         INS_GET_PUBLIC_KEY,
         P2_IGNORE,
         networkId,
-        bip32PathToBytes(derivationPath)
+        parseDerivationPath(derivationPath)
       );
 
       return PublicKey.from(base_encode(response.subarray(0, -2)));
@@ -109,7 +112,7 @@ const createLedgerClient = (transport: Transport) => {
       // 128 - 5 service bytes
       const CHUNK_SIZE = 123;
       const allData = Buffer.concat([
-        bip32PathToBytes(derivationPath),
+        parseDerivationPath(derivationPath),
         dataBuffer,
       ]);
 
