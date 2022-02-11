@@ -54,18 +54,19 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   }
 
   async init() {
-    this.client = new LedgerClient();
-    await this.client.init();
-    this.client.setScrambleKey("NEAR");
+    const client = new LedgerClient();
+    await client.init();
+    client.setScrambleKey("NEAR");
 
-    this.subscriptions.disconnect = this.client.on("disconnect", (data) => {
-      logger.log(data);
+    // TODO: Need to update state via WalletController.
+    this.subscriptions.disconnect = client.on("disconnect", (err) => {
+      logger.error(err);
 
-      this.emitter.emit("disconnect");
+      this.disconnect();
     });
 
     if (this.debugMode) {
-      this.subscriptions.logs = this.client.listen((data) => {
+      this.subscriptions.logs = client.listen((data) => {
         logger.log("LedgerWallet:init:logs", data);
       });
     }
@@ -85,6 +86,8 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     if (!this.derivationPath) {
       this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
     }
+
+    this.client = client;
   }
 
   setDerivationPath(derivationPath: string) {
@@ -107,6 +110,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     return !!this.accountId;
   }
 
+  // TODO: Need to update state via WalletController.
   async disconnect() {
     for (const key in this.subscriptions) {
       this.subscriptions[key].remove();
@@ -150,9 +154,16 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
           if (ok) {
             const state = getState();
 
-            // TODO: Need access to config's walletUrl.
-            // TODO: Need to use location.href for redirects.
-            window.location.href = `https://wallet.${state.options.networkId}.near.org/login/?success_url=http%3A%2F%2Flocalhost%3A1234%2F&failure_url=http%3A%2F%2Flocalhost%3A1234%2F&contract_id=${state.options.accountId}&public_key=${publicKey}`;
+            // TODO: Need access to real config.walletUrl.
+            const newUrl = new URL(
+              `https://wallet.${state.options.networkId}.near.org/login/`
+            );
+            newUrl.searchParams.set("success_url", window.location.href);
+            newUrl.searchParams.set("failure_url", window.location.href);
+            newUrl.searchParams.set("contract_id", state.options.accountId);
+            newUrl.searchParams.set("public_key", publicKey);
+
+            window.location.assign(newUrl.toString());
           }
         }
       }

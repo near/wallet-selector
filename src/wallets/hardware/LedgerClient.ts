@@ -52,8 +52,7 @@ interface SignParams {
 }
 
 interface EventMap {
-  // TODO: Determine event data.
-  disconnect: unknown;
+  disconnect: Error;
 }
 
 export interface Subscription {
