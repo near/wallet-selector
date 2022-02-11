@@ -59,11 +59,16 @@ export interface Subscription {
   remove: () => void;
 }
 
+// TODO: Needs a method to assert whether we're connected.
 class LedgerClient {
   private transport: Transport;
 
   async init() {
     this.transport = await TransportWebHID.create();
+  }
+
+  close() {
+    return this.transport.close();
   }
 
   listen(callback: (data: Log) => void) {

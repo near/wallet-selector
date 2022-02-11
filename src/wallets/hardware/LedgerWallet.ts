@@ -125,6 +125,11 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       this.subscriptions[key].remove();
     }
 
+    // Only close if we've already connected.
+    if (this.client) {
+      await this.client.close();
+    }
+
     this.emitter.emit("disconnect");
   }
 
