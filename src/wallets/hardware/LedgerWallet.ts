@@ -156,27 +156,11 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
         accessKey,
       };
     } catch (err) {
-      if (err instanceof TypedError) {
-        if (err.type === "AccessKeyDoesNotExist") {
-          const ok = confirm(
-            "This public key is not registered with your NEAR account. Would you like to add it?"
-          );
-
-          if (ok) {
-            const state = getState();
-
-            // TODO: Need access to real config.walletUrl.
-            const newUrl = new URL(
-              `https://wallet.${state.options.networkId}.near.org/login/`
-            );
-            newUrl.searchParams.set("success_url", window.location.href);
-            newUrl.searchParams.set("failure_url", window.location.href);
-            newUrl.searchParams.set("contract_id", state.options.accountId);
-            newUrl.searchParams.set("public_key", publicKey);
-
-            window.location.assign(newUrl.toString());
-          }
-        }
+      if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
+        return {
+          publicKey,
+          accessKey: null,
+        };
       }
 
       throw err;
@@ -193,10 +177,36 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     }
 
     // TODO: Need to store the access key permission in storage.
-    const { publicKey } = await this.validate({
+    const { publicKey, accessKey } = await this.validate({
       accountId: this.accountId,
       derivationPath: this.derivationPath,
     });
+
+    if (!accessKey) {
+      const ok = confirm(
+        `Your public key is not registered with the account '${this.accountId}'. Would you like to add it?`
+      );
+
+      if (ok) {
+        const state = getState();
+
+        // TODO: Need access to the real config.walletUrl.
+        const newUrl = new URL(
+          `https://wallet.${state.options.networkId}.near.org/login/`
+        );
+        newUrl.searchParams.set("success_url", window.location.href);
+        newUrl.searchParams.set("failure_url", window.location.href);
+        newUrl.searchParams.set("contract_id", state.options.accountId);
+        newUrl.searchParams.set("public_key", publicKey);
+
+        window.location.assign(newUrl.toString());
+        return;
+      }
+
+      throw new Error(
+        `Public key is not registered with the account '${this.accountId}'.`
+      );
+    }
 
     localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
     localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
