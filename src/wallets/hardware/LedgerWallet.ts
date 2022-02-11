@@ -78,7 +78,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
     const client = new LedgerClient();
 
-    await client.init();
+    await client.connect();
     client.setScrambleKey("NEAR");
 
     // TODO: Need to update state via WalletController.
@@ -127,7 +127,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
     // Only close if we've already connected.
     if (this.client) {
-      await this.client.close();
+      await this.client.disconnect();
     }
 
     this.emitter.emit("disconnect");

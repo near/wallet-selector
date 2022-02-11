@@ -63,11 +63,11 @@ export interface Subscription {
 class LedgerClient {
   private transport: Transport;
 
-  async init() {
+  async connect() {
     this.transport = await TransportWebHID.create();
   }
 
-  close() {
+  disconnect() {
     return this.transport.close();
   }
 
