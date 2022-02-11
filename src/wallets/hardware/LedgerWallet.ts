@@ -54,7 +54,30 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   }
 
   async init() {
+    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
+    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
+    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
+
+    if (!this.accountId) {
+      this.accountId = accountId;
+    }
+
+    if (!this.publicKey) {
+      this.publicKey = publicKey;
+    }
+
+    if (!this.derivationPath) {
+      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
+    }
+  }
+
+  async getClient() {
+    if (this.client) {
+      return this.client;
+    }
+
     const client = new LedgerClient();
+
     await client.init();
     client.setScrambleKey("NEAR");
 
@@ -71,23 +94,9 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       });
     }
 
-    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
-    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
-
-    if (!this.accountId) {
-      this.accountId = accountId;
-    }
-
-    if (!this.publicKey) {
-      this.publicKey = publicKey;
-    }
-
-    if (!this.derivationPath) {
-      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
-    }
-
     this.client = client;
+
+    return client;
   }
 
   setDerivationPath(derivationPath: string) {
@@ -126,7 +135,9 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   async validate({ accountId, derivationPath }: ValidateParams) {
     logger.log("LedgerWallet:validate", { accountId, derivationPath });
 
-    const publicKey = await this.client.getPublicKey({
+    const client = await this.getClient();
+
+    const publicKey = await client.getPublicKey({
       derivationPath: derivationPath,
     });
 
@@ -173,10 +184,6 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   }
 
   async signIn() {
-    if (!this.client) {
-      await this.init();
-    }
-
     if (!this.accountId) {
       throw new Error("No account id found");
     }
@@ -237,6 +244,8 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       throw new Error("No public key found");
     }
 
+    const client = await this.getClient();
+
     const [block, accessKey] = await Promise.all([
       this.provider.block({ finality: "final" }),
       this.provider.viewAccessKey({
@@ -262,7 +271,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       transaction
     );
 
-    const signature = await this.client.sign({
+    const signature = await client.sign({
       data: serializedTx,
       derivationPath: this.derivationPath,
     });
