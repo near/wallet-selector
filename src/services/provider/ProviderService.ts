@@ -21,10 +21,6 @@ export interface ViewAccessKeyParams {
   publicKey: string;
 }
 
-export interface ViewAllAccessKeysParams {
-  accountId: string;
-}
-
 export interface ViewAccountParams {
   accountId: string;
 }
@@ -68,14 +64,6 @@ class ProviderService {
       finality: "final",
       account_id: accountId,
       public_key: publicKey,
-    });
-  }
-
-  viewAllAccessKeys({ accountId }: ViewAllAccessKeysParams) {
-    return this.query<AccessKeyView>({
-      request_type: "view_access_key_list",
-      finality: "final",
-      account_id: accountId,
     });
   }
 
