@@ -264,7 +264,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       }),
     });
 
-    return this.provider.sendTransaction(signedTx!).then((res) => {
+    return this.provider.sendTransaction(signedTx).then((res) => {
       const successValue =
         (typeof res.status !== "string" && res.status.SuccessValue) || "";
 
