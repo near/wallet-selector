@@ -24,6 +24,11 @@ interface ValidateParams {
   derivationPath: string;
 }
 
+interface SignAndSendTransactionParams {
+  receiverId: string;
+  actions: Array<transactions.Action>;
+}
+
 class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   private client: LedgerClient;
   private subscriptions: Record<string, Subscription> = {};
@@ -98,6 +103,10 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     }));
   }
 
+  isSignedIn() {
+    return !!this.accountId;
+  }
+
   async disconnect() {
     for (const key in this.subscriptions) {
       this.subscriptions[key].remove();
@@ -107,7 +116,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
   }
 
   async isConnected(): Promise<boolean> {
-    return true;
+    return this.isSignedIn();
   }
 
   async validate({ accountId, derivationPath }: ValidateParams) {
@@ -165,6 +174,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       throw new Error("No derivation path found");
     }
 
+    // TODO: Need to store the access key permission in storage.
     const { publicKey } = await this.validate({
       accountId: this.accountId,
       derivationPath: this.derivationPath,
@@ -200,20 +210,10 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     };
   }
 
-  transformActions(actions: Array<FunctionCallAction>) {
-    return actions.map((action) => {
-      return transactions.functionCall(
-        action.methodName,
-        action.args,
-        new BN(action.gas),
-        new BN(action.deposit)
-      );
-    });
-  }
-
-  async call({ receiverId, actions }: CallParams) {
-    logger.log("LedgerWallet:call", { receiverId, actions });
-
+  async signAndSendTransaction({
+    receiverId,
+    actions,
+  }: SignAndSendTransactionParams) {
     if (!this.accountId) {
       throw new Error("No account id found");
     }
@@ -242,7 +242,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       utils.PublicKey.from(this.publicKey),
       receiverId,
       accessKey.nonce + 1,
-      this.transformActions(actions),
+      actions,
       utils.serialize.base_decode(block.header.hash)
     );
 
@@ -273,6 +273,26 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       }
 
       return JSON.parse(Buffer.from(successValue, "base64").toString());
+    });
+  }
+
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
+
+  async call({ receiverId, actions }: CallParams) {
+    logger.log("LedgerWallet:call", { receiverId, actions });
+
+    return this.signAndSendTransaction({
+      receiverId,
+      actions: this.transformActions(actions),
     });
   }
 }
