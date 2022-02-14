@@ -12,6 +12,7 @@ import { logger } from "../../services/logging.service";
 import {
   AccountInfo,
   BrowserWallet,
+  BrowserWalletType,
   FunctionCallAction,
   SignAndSendTransactionParams,
   WalletOptions,
@@ -21,11 +22,11 @@ class NearWallet implements BrowserWallet {
   private options: Options;
   private wallet: WalletConnection;
 
-  id: "near-wallet";
-  type: "browser";
-  name: "NEAR Wallet";
-  description: null;
-  iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png";
+  id = "near-wallet";
+  type: BrowserWalletType = "browser";
+  name = "NEAR Wallet";
+  description = null;
+  iconUrl = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
 
   constructor({ options }: WalletOptions) {
     this.options = options;

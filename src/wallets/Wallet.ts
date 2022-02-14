@@ -23,7 +23,13 @@ export interface AccountInfo {
   balance: string;
 }
 
-export type WalletType = "browser" | "injected" | "hardware";
+export type BrowserWalletType = "browser";
+export type InjectedWalletType = "injected";
+export type HardwareWalletType = "hardware";
+export type WalletType =
+  | BrowserWalletType
+  | InjectedWalletType
+  | HardwareWalletType;
 
 interface BaseWallet {
   id: string;

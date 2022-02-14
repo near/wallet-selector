@@ -10,6 +10,7 @@ import { logger } from "../../services/logging.service";
 import {
   AccountInfo,
   InjectedWallet,
+  InjectedWalletType,
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
@@ -25,11 +26,11 @@ class SenderWallet implements InjectedWallet {
   private provider: ProviderService;
   private options: Options;
 
-  id: "sender-wallet";
-  type: "injected";
-  name: "Sender Wallet";
-  description: null;
-  iconUrl: "https://senderwallet.io/logo.png";
+  id = "sender-wallet";
+  type: InjectedWalletType = "injected";
+  name = "Sender Wallet";
+  description = null;
+  iconUrl = "https://senderwallet.io/logo.png";
 
   constructor({ options, provider }: WalletOptions) {
     this.options = options;
