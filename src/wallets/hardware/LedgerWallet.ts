@@ -13,6 +13,7 @@ import {
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
+import getConfig from "../../config";
 
 const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
@@ -134,10 +135,8 @@ class LedgerWallet implements HardwareWallet {
       );
 
       if (ok) {
-        // TODO: Need access to the real config.walletUrl.
-        const newUrl = new URL(
-          `https://wallet.${this.options.networkId}.near.org/login/`
-        );
+        const config = getConfig(this.options.networkId);
+        const newUrl = new URL(`${config.walletUrl}/login/`);
         newUrl.searchParams.set("success_url", window.location.href);
         newUrl.searchParams.set("failure_url", window.location.href);
         newUrl.searchParams.set("contract_id", this.options.contractId);

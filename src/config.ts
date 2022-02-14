@@ -23,18 +23,6 @@ function getConfig(env: NetworkId) {
         walletUrl: "https://wallet.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
       };
-    case "ci-testnet":
-      return {
-        networkId: "shared-test",
-        nodeUrl: "https://rpc.ci-testnet.near.org",
-        masterAccount: "test.near",
-      };
-    case "ci-betanet":
-      return {
-        networkId: "shared-test-staging",
-        nodeUrl: "https://rpc.ci-betanet.near.org",
-        masterAccount: "test.near",
-      };
     default:
       throw Error(`Failed to find config for networkId: '${env}'`);
   }
