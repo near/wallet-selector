@@ -18,8 +18,8 @@ const App = ({ near, initialAccount }) => {
     // TODO: don't just fetch once; subscribe!
     near.contract.view({ methodName: "getMessages" }).then(setMessages);
 
-    near.on("signIn", () => {
-      console.log("'signIn' event triggered!");
+    near.on("connect", () => {
+      console.log("'connect' event triggered!");
 
       near.getAccount()
         .then((data) => {

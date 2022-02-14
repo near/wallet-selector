@@ -38,7 +38,6 @@ export default class NearWalletSelector {
   private options: Options;
 
   private emitter: Emitter;
-  private provider: ProviderService;
   private controller: WalletController;
 
   contract: Contract;
@@ -46,13 +45,15 @@ export default class NearWalletSelector {
   constructor(options: Options) {
     const config = getConfig(options.networkId);
 
+    const emitter = new EventHandler();
+    const provider = new ProviderService(config.nodeUrl);
+    const controller = new WalletController(options, provider, emitter);
+    const contract = new Contract(options, provider, controller);
+
     this.options = options;
-
-    this.emitter = new EventHandler();
-    this.provider = new ProviderService(config.nodeUrl);
-    this.controller = new WalletController(options, this.provider);
-
-    this.contract = new Contract(options, this.provider, this.controller);
+    this.emitter = emitter;
+    this.controller = controller;
+    this.contract = contract;
   }
 
   private renderModal() {
@@ -61,11 +62,7 @@ export default class NearWalletSelector {
     document.body.appendChild(el);
 
     ReactDOM.render(
-      <Modal
-        options={this.options}
-        wallets={this.controller.getWallets()}
-        // signIn={this.signIn.bind(this)}
-      />,
+      <Modal options={this.options} wallets={this.controller.getWallets()} />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
   }
@@ -98,20 +95,12 @@ export default class NearWalletSelector {
     return this.controller.isSignedIn();
   }
 
-  connect(walletId: string) {
-    return this.controller
-      .connect(walletId)
-      .then(() => this.emitter.emit("connect"));
-  }
-
-  disconnect() {
-    return this.controller
-      .disconnect()
-      .then(() => this.emitter.emit("disconnect"));
-  }
-
   getAccount() {
     return this.controller.getAccount();
+  }
+
+  signOut() {
+    return this.controller.disconnect();
   }
 
   on(event: EventList, callback: () => void) {

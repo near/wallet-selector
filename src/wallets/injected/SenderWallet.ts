@@ -37,7 +37,7 @@ class SenderWallet implements InjectedWallet {
     this.provider = provider;
   }
 
-  isAvailable() {
+  isAvailable = () => {
     if (!this.isInstalled()) {
       return false;
     }
@@ -47,13 +47,13 @@ class SenderWallet implements InjectedWallet {
     }
 
     return true;
-  }
+  };
 
-  private isInstalled() {
+  private isInstalled = () => {
     return !!window.wallet;
-  }
+  };
 
-  private async init() {
+  init = async () => {
     await this.timeout(200);
 
     if (!this.isInstalled()) {
@@ -71,9 +71,9 @@ class SenderWallet implements InjectedWallet {
     return this.wallet
       .init({ contractId: this.options.contract.accountId })
       .then((res) => logger.log("SenderWallet:init", res));
-  }
+  };
 
-  async connect() {
+  connect = async () => {
     if (!this.isInstalled()) {
       return updateState((prevState) => ({
         ...prevState,
@@ -99,13 +99,13 @@ class SenderWallet implements InjectedWallet {
     if (!accessKey) {
       throw new Error("Failed to sign in");
     }
-  }
+  };
 
-  async timeout(ms: number) {
+  private timeout = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  };
 
-  networkMatches(response: RpcChangedResponse | GetRpcResponse) {
+  private networkMatches = (response: RpcChangedResponse | GetRpcResponse) => {
     if (this.options.networkId !== response.rpc.networkId) {
       updateState((prevState) => ({
         ...prevState,
@@ -116,9 +116,9 @@ class SenderWallet implements InjectedWallet {
       return false;
     }
     return true;
-  }
+  };
 
-  onAccountChanged() {
+  private onAccountChanged = () => {
     this.wallet.onAccountChanged(async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
 
@@ -129,21 +129,21 @@ class SenderWallet implements InjectedWallet {
         logger.log(`Failed to change account ${e.message}`);
       }
     });
-  }
+  };
 
-  async isConnected() {
+  isConnected = async () => {
     return this.wallet.isSignedIn();
-  }
+  };
 
-  async disconnect() {
+  disconnect = async () => {
     const res = await this.wallet.signOut();
 
     if (res.result !== "success") {
       throw new Error("Failed to sign out");
     }
-  }
+  };
 
-  async getAccount(): Promise<AccountInfo | null> {
+  getAccount = async (): Promise<AccountInfo | null> => {
     const connected = await this.isConnected();
 
     if (!connected) {
@@ -157,12 +157,12 @@ class SenderWallet implements InjectedWallet {
       accountId,
       balance: account.amount,
     };
-  }
+  };
 
-  async signAndSendTransaction({
+  signAndSendTransaction = async ({
     receiverId,
     actions,
-  }: SignAndSendTransactionParams) {
+  }: SignAndSendTransactionParams) => {
     logger.log("SenderWallet:signAndSendTransaction", { receiverId, actions });
 
     return this.wallet
@@ -174,7 +174,7 @@ class SenderWallet implements InjectedWallet {
 
         return res;
       });
-  }
+  };
 }
 
 export default SenderWallet;

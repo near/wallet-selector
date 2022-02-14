@@ -4,7 +4,7 @@ import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
 import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 import { Options } from "../core/NearWalletSelector";
-import { Wallet } from "../wallets/Wallet";
+import { HardwareWallet, Wallet } from "../wallets/Wallet";
 
 declare global {
   // tslint:disable-next-line
@@ -88,14 +88,17 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     });
   };
 
-  // const handleConnectClick = useCallback(async () => {
-  //   const wallet = state.walletProviders["ledgerwallet"] as HardwareWallet;
-  //
-  //   wallet.setDerivationPath(ledgerDerivationPath);
-  //   wallet.setAccountId(ledgerAccountId);
-  //
-  //   wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
-  // }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
+  const handleConnectClick = () => {
+    // TODO: Can't assume "ledger-wallet" once we implement more hardware wallets.
+    const wallet = wallets.find(
+      (x) => x.id === "ledger-wallet"
+    ) as HardwareWallet;
+
+    wallet.setDerivationPath(ledgerDerivationPath);
+    wallet.setAccountId(ledgerAccountId);
+
+    wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
+  };
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
@@ -173,12 +176,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
-              <button
-                className="right-button"
-                onClick={() => {
-                  /* TODO */
-                }}
-              >
+              <button className="right-button" onClick={handleConnectClick}>
                 Connect
               </button>
             </div>

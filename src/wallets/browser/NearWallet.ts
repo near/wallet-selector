@@ -32,11 +32,11 @@ class NearWallet implements BrowserWallet {
     this.options = options;
   }
 
-  isAvailable() {
+  isAvailable = () => {
     return true;
-  }
+  };
 
-  private async init() {
+  init = async () => {
     const near = await connect({
       keyStore: new keyStores.BrowserLocalStorageKeyStore(),
       ...getConfig(this.options.networkId),
@@ -44,33 +44,33 @@ class NearWallet implements BrowserWallet {
     });
 
     this.wallet = new WalletConnection(near, "near_app");
-  }
+  };
 
-  async connect() {
+  connect = async () => {
     if (!this.wallet) {
       await this.init();
     }
 
     return this.wallet.requestSignIn(this.options.contract.accountId);
-  }
+  };
 
-  async disconnect() {
+  disconnect = async () => {
     if (!this.wallet) {
       return;
     }
 
     this.wallet.signOut();
-  }
+  };
 
-  async isConnected() {
+  isConnected = async () => {
     if (!this.wallet) {
       return false;
     }
 
     return this.wallet.isSignedIn();
-  }
+  };
 
-  async getAccount(): Promise<AccountInfo | null> {
+  getAccount = async (): Promise<AccountInfo | null> => {
     const connected = await this.isConnected();
 
     if (!connected) {
@@ -84,9 +84,9 @@ class NearWallet implements BrowserWallet {
       accountId,
       balance: state.amount,
     };
-  }
+  };
 
-  private transformActions(actions: Array<FunctionCallAction>) {
+  private transformActions = (actions: Array<FunctionCallAction>) => {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
@@ -95,12 +95,12 @@ class NearWallet implements BrowserWallet {
         new BN(action.deposit)
       );
     });
-  }
+  };
 
-  async signAndSendTransaction({
+  signAndSendTransaction = async ({
     receiverId,
     actions,
-  }: SignAndSendTransactionParams) {
+  }: SignAndSendTransactionParams) => {
     logger.log("NearWallet:signAndSendTransaction", { receiverId, actions });
 
     const account = this.wallet.account();
@@ -111,7 +111,7 @@ class NearWallet implements BrowserWallet {
       receiverId,
       actions: this.transformActions(actions),
     });
-  }
+  };
 }
 
 export default NearWallet;

@@ -50,7 +50,7 @@ class LedgerWallet implements HardwareWallet {
     this.provider = provider;
   }
 
-  isAvailable() {
+  isAvailable = () => {
     if (!LedgerClient.isSupported()) {
       return false;
     }
@@ -60,9 +60,9 @@ class LedgerWallet implements HardwareWallet {
     }
 
     return true;
-  }
+  };
 
-  private async getClient() {
+  private getClient = async () => {
     if (this.client) {
       return this.client;
     }
@@ -88,41 +88,45 @@ class LedgerWallet implements HardwareWallet {
     this.client = client;
 
     return client;
-  }
+  };
 
-  // private async init() {
-  //   const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
-  //   const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-  //   const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
-  //
-  //   if (!this.accountId) {
-  //     this.accountId = accountId;
-  //   }
-  //
-  //   if (!this.publicKey) {
-  //     this.publicKey = publicKey;
-  //   }
-  //
-  //   if (!this.derivationPath) {
-  //     this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
-  //   }
-  // }
+  init = async () => {
+    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
+    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
+    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
 
-  setDerivationPath(derivationPath: string) {
-    this.derivationPath = derivationPath;
-  }
-
-  setAccountId(accountId: string) {
-    this.accountId = accountId;
-  }
-
-  async connect() {
     if (!this.accountId) {
-      throw new Error("No account id found");
+      this.accountId = accountId;
+    }
+
+    if (!this.publicKey) {
+      this.publicKey = publicKey;
     }
 
     if (!this.derivationPath) {
-      throw new Error("No derivation path found");
+      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
+    }
+  };
+
+  setDerivationPath = (derivationPath: string) => {
+    this.derivationPath = derivationPath;
+  };
+
+  setAccountId = (accountId: string) => {
+    this.accountId = accountId;
+  };
+
+  connect = async () => {
+    if (await this.isConnected()) {
+      return;
+    }
+
+    if (!this.accountId) {
+      throw new Error("Invalid account id");
+    }
+
+    if (!this.derivationPath) {
+      throw new Error("Invalid derivation path");
     }
 
     // TODO: Need to store the access key permission in storage.
@@ -153,17 +157,14 @@ class LedgerWallet implements HardwareWallet {
       );
     }
 
+    this.publicKey = publicKey;
+
     localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
     localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
-    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
-  }
+    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, this.publicKey);
+  };
 
-  private isSignedIn() {
-    return !!this.accountId;
-  }
-
-  // TODO: Need to update state via WalletController.
-  async disconnect() {
+  disconnect = async () => {
     for (const key in this.subscriptions) {
       this.subscriptions[key].remove();
     }
@@ -172,13 +173,13 @@ class LedgerWallet implements HardwareWallet {
     if (this.client) {
       await this.client.disconnect();
     }
-  }
+  };
 
-  async isConnected(): Promise<boolean> {
-    return this.isSignedIn();
-  }
+  isConnected = async (): Promise<boolean> => {
+    return !!this.publicKey;
+  };
 
-  private async validate({ accountId, derivationPath }: ValidateParams) {
+  private validate = async ({ accountId, derivationPath }: ValidateParams) => {
     logger.log("LedgerWallet:validate", { accountId, derivationPath });
 
     const client = await this.getClient();
@@ -211,9 +212,9 @@ class LedgerWallet implements HardwareWallet {
 
       throw err;
     }
-  }
+  };
 
-  async getAccount(): Promise<AccountInfo | null> {
+  getAccount = async (): Promise<AccountInfo | null> => {
     const connected = await this.isConnected();
     const accountId = this.accountId;
 
@@ -227,9 +228,9 @@ class LedgerWallet implements HardwareWallet {
       accountId,
       balance: account.amount,
     };
-  }
+  };
 
-  private transformActions(actions: Array<FunctionCallAction>) {
+  private transformActions = (actions: Array<FunctionCallAction>) => {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
@@ -238,12 +239,12 @@ class LedgerWallet implements HardwareWallet {
         new BN(action.deposit)
       );
     });
-  }
+  };
 
-  async signAndSendTransaction({
+  signAndSendTransaction = async ({
     receiverId,
     actions,
-  }: SignAndSendTransactionParams) {
+  }: SignAndSendTransactionParams) => {
     logger.log("LedgerWallet:signAndSendTransaction", { receiverId, actions });
 
     if (!this.accountId) {
@@ -308,7 +309,7 @@ class LedgerWallet implements HardwareWallet {
 
       return JSON.parse(Buffer.from(successValue, "base64").toString());
     });
-  }
+  };
 }
 
 export default LedgerWallet;

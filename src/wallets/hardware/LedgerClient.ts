@@ -64,46 +64,46 @@ class LedgerClient {
   private transport: Transport;
 
   // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
-  static isSupported() {
+  static isSupported = () => {
     return !!window.navigator?.hid;
-  }
+  };
 
-  async connect() {
+  connect = async () => {
     this.transport = await TransportWebHID.create();
-  }
+  };
 
-  disconnect() {
+  disconnect = () => {
     return this.transport.close();
-  }
+  };
 
-  listen(callback: (data: Log) => void) {
+  listen = (callback: (data: Log) => void) => {
     const unsubscribe = listen(callback);
 
     return {
       remove: () => unsubscribe(),
     };
-  }
+  };
 
-  setScrambleKey(key: string) {
+  setScrambleKey = (key: string) => {
     this.transport.setScrambleKey(key);
-  }
+  };
 
-  on<Event extends keyof EventMap>(
+  on = <Event extends keyof EventMap>(
     event: Event,
     callback: (data: EventMap[Event]) => void
-  ): Subscription {
+  ): Subscription => {
     this.transport.on(event, callback);
 
     return {
       remove: () => this.transport.off(event, callback),
     };
-  }
+  };
 
-  off(event: keyof EventMap, callback: () => void) {
+  off = (event: keyof EventMap, callback: () => void) => {
     this.transport.off(event, callback);
-  }
+  };
 
-  async getVersion() {
+  getVersion = async () => {
     const res = await this.transport.send(
       CLA,
       INS_GET_APP_VERSION,
@@ -114,9 +114,9 @@ class LedgerClient {
     const [major, minor, patch] = Array.from(res);
 
     return `${major}.${minor}.${patch}`;
-  }
+  };
 
-  async getPublicKey({ derivationPath }: GetPublicKeyParams) {
+  getPublicKey = async ({ derivationPath }: GetPublicKeyParams) => {
     const res = await this.transport.send(
       CLA,
       INS_GET_PUBLIC_KEY,
@@ -126,9 +126,9 @@ class LedgerClient {
     );
 
     return utils.serialize.base_encode(res.subarray(0, -2));
-  }
+  };
 
-  async sign({ data, derivationPath }: SignParams) {
+  sign = async ({ data, derivationPath }: SignParams) => {
     // NOTE: getVersion call resets state to avoid starting from partially filled buffer
     await this.getVersion();
 
@@ -156,7 +156,7 @@ class LedgerClient {
     }
 
     throw new Error("Invalid data or derivation path");
-  }
+  };
 }
 
 export default LedgerClient;

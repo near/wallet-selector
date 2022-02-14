@@ -6,18 +6,56 @@ import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
 import { Options } from "../core/NearWalletSelector";
+import { Emitter } from "../utils/EventsHandler";
 
 class WalletController {
   private options: Options;
   private provider: ProviderService;
+  private emitter: Emitter;
 
   private wallets: Array<Wallet>;
 
-  constructor(options: Options, provider: ProviderService) {
+  constructor(options: Options, provider: ProviderService, emitter: Emitter) {
     this.options = options;
     this.provider = provider;
+    this.emitter = emitter;
 
     this.wallets = [];
+  }
+
+  private decorateWallets(wallets: Array<Wallet>) {
+    return wallets.map((wallet) => {
+      return {
+        ...wallet,
+        connect: () => {
+          return wallet.connect().then(() => {
+            localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, wallet.id);
+
+            updateState((prevState) => ({
+              ...prevState,
+              showModal: false,
+              isSignedIn: true,
+              signedInWalletId: wallet.id,
+            }));
+
+            this.emitter.emit("connect");
+          });
+        },
+        disconnect: () => {
+          return wallet.disconnect().then(() => {
+            window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+
+            updateState((prevState) => ({
+              ...prevState,
+              signedInWalletId: null,
+              isSignedIn: false,
+            }));
+
+            this.emitter.emit("disconnect");
+          });
+        },
+      };
+    });
   }
 
   private getBuiltInWallets() {
@@ -25,18 +63,18 @@ class WalletController {
       switch (walletId) {
         case "near-wallet":
           return new NearWallet({
-            provider: this.provider,
             options: this.options,
+            provider: this.provider,
           });
         case "sender-wallet":
           return new SenderWallet({
-            provider: this.provider,
             options: this.options,
+            provider: this.provider,
           });
         case "ledger-wallet":
           return new LedgerWallet({
-            provider: this.provider,
             options: this.options,
+            provider: this.provider,
           });
         default:
           throw new Error(`Invalid wallet id '${walletId}'`);
@@ -45,7 +83,7 @@ class WalletController {
   }
 
   async init() {
-    this.wallets = this.getBuiltInWallets();
+    this.wallets = this.decorateWallets(this.getBuiltInWallets());
 
     const state = getState();
     const walletId = state.signedInWalletId;
@@ -53,7 +91,7 @@ class WalletController {
     if (walletId) {
       const wallet = this.getWallet(walletId)!;
 
-      await wallet.connect();
+      await wallet.init();
     }
   }
 
@@ -68,7 +106,7 @@ class WalletController {
     return this.getWallet(walletId);
   }
 
-  getWallet(walletId: string) {
+  private getWallet(walletId: string) {
     return this.wallets.find((x) => x.id === walletId) || null;
   }
 
@@ -82,25 +120,6 @@ class WalletController {
     return state.isSignedIn;
   }
 
-  async connect(walletId: string) {
-    const wallet = this.getWallet(walletId);
-
-    if (!wallet) {
-      throw new Error(`Invalid walletId '${walletId}'`);
-    }
-
-    await wallet.connect();
-
-    localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, walletId);
-
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-      isSignedIn: true,
-      signedInWalletId: walletId,
-    }));
-  }
-
   async disconnect() {
     const wallet = this.getSelectedWallet();
 
@@ -109,14 +128,6 @@ class WalletController {
     }
 
     await wallet.disconnect();
-
-    window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
-
-    updateState((prevState) => ({
-      ...prevState,
-      signedInWalletId: null,
-      isSignedIn: false,
-    }));
   }
 
   async getAccount() {

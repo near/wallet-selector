@@ -1,9 +1,9 @@
-import ProviderService from "../services/provider/ProviderService";
 import { Options } from "../core/NearWalletSelector";
+import ProviderService from "../services/provider/ProviderService";
 
 export interface WalletOptions {
-  provider: ProviderService;
   options: Options;
+  provider: ProviderService;
 }
 
 export interface FunctionCallAction {
@@ -37,6 +37,8 @@ interface BaseWallet {
   description: string | null;
   iconUrl: string;
   type: WalletType;
+
+  init(): Promise<void>;
 
   // Determines if the wallet is available for selection.
   // - Browser wallets: always supported?
