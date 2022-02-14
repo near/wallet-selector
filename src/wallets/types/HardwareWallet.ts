@@ -4,8 +4,6 @@ import { Emitter } from "../../utils/EventsHandler";
 import ProviderService from "../../services/provider/ProviderService";
 
 export default abstract class HardwareWallet extends BaseWallet {
-  protected transport: any | void;
-
   constructor(emitter: Emitter, provider: ProviderService) {
     super(emitter, provider);
 
