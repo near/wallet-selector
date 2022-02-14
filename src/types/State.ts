@@ -7,6 +7,7 @@ type State = {
   showLedgerDerivationPath: boolean;
   showSenderWalletNotInstalled: boolean;
   showSwitchNetwork: boolean;
+  loading: boolean;
   options: Options;
   walletProviders: {
     [name: string]: IWallet;

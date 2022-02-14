@@ -167,8 +167,12 @@ const Modal: React.FC = () => {
               <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
-              <button className="right-button" onClick={handleConnectClick}>
-                Connect
+              <button
+                className="right-button"
+                onClick={handleConnectClick}
+                disabled={state.loading}
+              >
+                {state.loading ? "Loading..." : "Connect"}
               </button>
             </div>
           </div>

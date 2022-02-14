@@ -8,6 +8,7 @@ const state: { current: State } = {
     showLedgerDerivationPath: false,
     showSenderWalletNotInstalled: false,
     showSwitchNetwork: false,
+    loading: false,
     options: {
       theme: null,
       networkId: "testnet",
