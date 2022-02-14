@@ -58,7 +58,7 @@ class WalletController {
     });
   }
 
-  lookupBuiltInWallet(walletId: BuiltInWalletId) {
+  private lookupBuiltInWallet(walletId: BuiltInWalletId) {
     switch (walletId) {
       case "near-wallet":
         return NearWallet;
