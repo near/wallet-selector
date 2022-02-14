@@ -60,10 +60,10 @@ Hide modal:
 near.hide();
 ```
 
-Is signed in:
+Sign in:
 
 ```ts
-near.isSignedIn();
+await near.signIn("near-wallet");
 ```
 
 Sign out:
@@ -72,7 +72,13 @@ Sign out:
 await near.signOut();
 ```
 
-Add event listeners (disconnect, signIn):
+Is signed in:
+
+```ts
+await near.isSignedIn();
+```
+
+Add event listeners (`signIn` & `signOut`):
 
 ```ts
 near.on("signIn", () => {
