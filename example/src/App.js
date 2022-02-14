@@ -86,7 +86,7 @@ const App = ({ near, initialAccount }) => {
   };
 
   const signIn = () => {
-    near.showModal();
+    near.show();
   };
 
   const signOut = () => {
@@ -101,7 +101,7 @@ const App = ({ near, initialAccount }) => {
   };
 
   function switchProviderHandler() {
-    near.showModal();
+    near.show();
   }
 
   return (
