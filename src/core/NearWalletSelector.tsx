@@ -10,6 +10,8 @@ import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 
+export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+
 export type NetworkId =
   | "mainnet"
   | "testnet"
@@ -18,7 +20,7 @@ export type NetworkId =
   | "ci-betanet";
 
 export interface Options {
-  wallets: Array<string>;
+  wallets: Array<BuiltInWalletId>;
   networkId: NetworkId;
   theme: "dark" | "light" | null;
   contract: {

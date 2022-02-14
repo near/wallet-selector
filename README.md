@@ -20,7 +20,7 @@ Then use it in your dApp:
 import NearWalletSelector from "near-wallet-selector";
 
 const near = new NearWalletSelector({
-  wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
+  wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
   theme: "light",
   contract: {
