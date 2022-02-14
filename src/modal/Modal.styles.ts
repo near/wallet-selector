@@ -72,6 +72,7 @@ export default `
   cursor: pointer;
   height: 24px;
   padding: 4px;
+  background-color: transparent;
 }
 
 .Modal-header button:active {
