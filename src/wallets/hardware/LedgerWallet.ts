@@ -8,11 +8,10 @@ import {
 } from "../../interfaces/IWallet";
 import HardwareWallet from "../types/HardwareWallet";
 import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import { Emitter } from "../../utils/EventsHandler";
-import { getState, updateState } from "../../state/State";
 import ProviderService from "../../services/provider/ProviderService";
 import LedgerClient, { Subscription } from "./LedgerClient";
 import { logger } from "../../services/logging.service";
+import { Options } from "../../core/NearWalletSelector";
 
 const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
 const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
@@ -39,8 +38,8 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
   private debugMode = false;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    super(emitter, provider);
+  constructor(provider: ProviderService, options: Options) {
+    super(provider, options);
   }
 
   getInfo() {
@@ -107,14 +106,6 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     this.accountId = accountId;
   }
 
-  async walletSelected() {
-    updateState((prevState) => ({
-      ...prevState,
-      showWalletOptions: false,
-      showLedgerDerivationPath: true,
-    }));
-  }
-
   isSignedIn() {
     return !!this.accountId;
   }
@@ -129,8 +120,6 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     if (this.client) {
       await this.client.disconnect();
     }
-
-    this.emitter.emit("disconnect");
   }
 
   async isConnected(): Promise<boolean> {
@@ -193,15 +182,13 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
       );
 
       if (ok) {
-        const state = getState();
-
         // TODO: Need access to the real config.walletUrl.
         const newUrl = new URL(
-          `https://wallet.${state.options.networkId}.near.org/login/`
+          `https://wallet.${this.options.networkId}.near.org/login/`
         );
         newUrl.searchParams.set("success_url", window.location.href);
         newUrl.searchParams.set("failure_url", window.location.href);
-        newUrl.searchParams.set("contract_id", state.options.accountId);
+        newUrl.searchParams.set("contract_id", this.options.accountId);
         newUrl.searchParams.set("public_key", publicKey);
 
         window.location.assign(newUrl.toString());
@@ -216,15 +203,6 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
     localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
     localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
     localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
-
-    await this.setWalletAsSignedIn();
-
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
-
-    this.emitter.emit("signIn");
   }
 
   async getAccount(): Promise<AccountInfo | null> {
