@@ -23,12 +23,12 @@ class Contract {
   }
 
   getAccountId() {
-    return this.options.contractId;
+    return this.options.contract.accountId;
   }
 
   view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
     return this.provider.callFunction({
-      accountId: this.options.contractId,
+      accountId: this.options.contract.accountId,
       methodName,
       args,
       finality,
@@ -43,7 +43,7 @@ class Contract {
     }
 
     return wallet.signAndSendTransaction({
-      receiverId: this.options.contractId,
+      receiverId: this.options.contract.accountId,
       actions,
     });
   }

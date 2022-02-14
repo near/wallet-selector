@@ -50,7 +50,7 @@ class NearWallet implements BrowserWallet {
       await this.init();
     }
 
-    return this.wallet.requestSignIn(this.options.contractId);
+    return this.wallet.requestSignIn(this.options.contract.accountId);
   }
 
   async disconnect() {

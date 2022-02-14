@@ -21,7 +21,11 @@ export interface Options {
   wallets: Array<string>;
   networkId: NetworkId;
   theme: "dark" | "light" | null;
-  contractId: string;
+  contract: {
+    accountId: string;
+    viewMethods?: Array<string>;
+    changeMethods?: Array<string>;
+  };
   walletSelectorUI: {
     description: string;
     explanation: string;

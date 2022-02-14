@@ -68,7 +68,7 @@ class SenderWallet implements InjectedWallet {
     });
 
     return this.wallet
-      .init({ contractId: this.options.contractId })
+      .init({ contractId: this.options.contract.accountId })
       .then((res) => logger.log("SenderWallet:init", res));
   }
 
@@ -92,7 +92,7 @@ class SenderWallet implements InjectedWallet {
     }
 
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: this.options.contractId,
+      contractId: this.options.contract.accountId,
     });
 
     if (!accessKey) {
