@@ -6,11 +6,11 @@ import React, {
   useState,
 } from "react";
 import styles from "./Modal.styles";
-import { getState, updateState } from "../state/State";
-import ILedgerWallet from "../interfaces/ILedgerWallet";
-import State from "../types/State";
+import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
 import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
+import { Options } from "../core/NearWalletSelector";
+import { HardwareWallet } from "../wallets/Wallet";
 
 declare global {
   // tslint:disable-next-line
@@ -30,7 +30,11 @@ const getThemeClass = (theme: string | null) => {
   }
 };
 
-const Modal: React.FC = () => {
+interface ModalProps {
+  options: Options;
+}
+
+const Modal: React.FC<ModalProps> = ({ options }) => {
   const [state, setState] = useState(getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -75,19 +79,19 @@ const Modal: React.FC = () => {
   };
 
   const handleConnectClick = useCallback(async () => {
-    const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
+    const wallet = state.walletProviders["ledgerwallet"] as HardwareWallet;
 
     wallet.setDerivationPath(ledgerDerivationPath);
     wallet.setAccountId(ledgerAccountId);
 
-    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
+    wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
   }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(state.options.theme)}`}
+        className={`Modal ${getThemeClass(options.theme)}`}
         onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
@@ -95,11 +99,9 @@ const Modal: React.FC = () => {
             style={{ display: state.showWalletOptions ? "block" : "none" }}
             className="Modal-body Modal-select-wallet-option"
           >
-            <p>
-              {state.options.walletSelectorUI.description || defaultDescription}
-            </p>
+            <p>{options.walletSelectorUI.description || defaultDescription}</p>
             <ul className="Modal-option-list">
-              {state.options.wallets
+              {options.wallets
                 .map((walletId) => state.walletProviders[walletId])
                 .filter((wallet) => wallet.getShowWallet())
                 .map((wallet) => {
@@ -229,7 +231,7 @@ const Modal: React.FC = () => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${state.options.networkId}`}</strong> for this dApp.
+                <strong>{` ${options.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -254,7 +256,7 @@ const Modal: React.FC = () => {
               </button>
             </div>
           </div>
-          {state.options.walletSelectorUI.explanation && (
+          {options.walletSelectorUI.explanation && (
             <div className="info">
               <span
                 onClick={() => {
@@ -268,7 +270,7 @@ const Modal: React.FC = () => {
                   walletInfoVisible ? "show" : "hide"
                 }-explanation`}
               >
-                <p>{state.options.walletSelectorUI.explanation}</p>
+                <p>{options.walletSelectorUI.explanation}</p>
               </div>
             </div>
           )}

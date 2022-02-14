@@ -1,10 +1,12 @@
 import { getState } from "../state/State";
-import { CallParams } from "../interfaces/IWallet";
 import ProviderService, {
   CallFunctionParams,
 } from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
 import { Options } from "./NearWalletSelector";
+import { SignAndSendTransactionParams } from "../wallets/Wallet";
+
+type CallParams = Omit<SignAndSendTransactionParams, "receiverId">;
 
 class Contract {
   private readonly options: Options;
@@ -34,7 +36,7 @@ class Contract {
     });
   }
 
-  async call({ actions }: Omit<CallParams, "receiverId">) {
+  async call({ actions }: CallParams) {
     const state = getState();
     const walletId = state.signedInWalletId;
 
@@ -44,7 +46,7 @@ class Contract {
 
     const instance = this.controller.getInstance(walletId)!;
 
-    return instance.call({
+    return instance.signAndSendTransaction({
       receiverId: this.options.contractId,
       actions,
     });

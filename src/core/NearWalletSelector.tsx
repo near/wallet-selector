@@ -8,7 +8,6 @@ import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
 import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
-import { WalletInfo } from "../interfaces/IWallet";
 
 export type NetworkId =
   | "mainnet"
@@ -17,19 +16,9 @@ export type NetworkId =
   | "ci-testnet"
   | "ci-betanet";
 
-export interface CustomWalletOptions {
-  info: WalletInfo;
-  onConnectFunction: () => void;
-  onDisconnectFunction: () => void;
-  isConnectedFunction: () => boolean;
-}
-
 export interface Options {
   wallets: Array<string>;
   networkId: NetworkId;
-  customWallets: {
-    [name: string]: CustomWalletOptions;
-  };
   theme: "dark" | "light" | null;
   contractId: string;
   walletSelectorUI: {
@@ -67,8 +56,8 @@ export default class NearWalletSelector {
     ReactDOM.render(
       <Modal
         options={this.options}
-        wallets={this.controller.getInstances()}
-        signIn={this.signIn.bind(this)}
+        // wallets={this.controller.getInstances()}
+        // signIn={this.signIn.bind(this)}
       />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
@@ -92,15 +81,15 @@ export default class NearWalletSelector {
     return this.controller.isSignedIn();
   }
 
-  signIn(walletId: string) {
+  connect(walletId: string) {
     return this.controller
-      .signIn(walletId)
-      .then(() => this.emitter.emit("signIn"));
+      .connect(walletId)
+      .then(() => this.emitter.emit("connect"));
   }
 
-  signOut() {
+  disconnect() {
     return this.controller
-      .signOut()
+      .disconnect()
       .then(() => this.emitter.emit("disconnect"));
   }
 

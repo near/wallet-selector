@@ -1,18 +1,17 @@
-import CustomWallet from "../wallets/CustomWallet";
 import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import ProviderService from "../services/provider/ProviderService";
-import IWallet from "../interfaces/IWallet";
+import { Wallet } from "../wallets/Wallet";
 import { Options } from "../core/NearWalletSelector";
 
 class WalletController {
   private options: Options;
   private provider: ProviderService;
 
-  private instances: Array<IWallet>;
+  private instances: Array<Wallet>;
 
   constructor(options: Options, provider: ProviderService) {
     this.options = options;
@@ -24,36 +23,29 @@ class WalletController {
   private getBuiltInWallets() {
     return this.options.wallets.map((walletId) => {
       switch (walletId) {
-        case "nearwallet":
-          return new NearWallet(this.provider, this.options);
-        case "senderwallet":
-          return new SenderWallet(this.provider, this.options);
-        case "ledgerwallet":
-          return new LedgerWallet(this.provider, this.options);
+        case "near-wallet":
+          return new NearWallet({
+            provider: this.provider,
+            options: this.options,
+          });
+        case "sender-wallet":
+          return new SenderWallet({
+            provider: this.provider,
+            options: this.options,
+          });
+        case "ledger-wallet":
+          return new LedgerWallet({
+            provider: this.provider,
+            options: this.options,
+          });
         default:
           throw new Error(`Invalid wallet id '${walletId}'`);
       }
     });
   }
 
-  private getCustomWallets() {
-    const wallets = [];
-
-    for (const id in this.options.customWallets) {
-      wallets.push(
-        new CustomWallet(
-          this.provider,
-          this.options,
-          this.options.customWallets[id]
-        )
-      );
-    }
-
-    return wallets;
-  }
-
   async init() {
-    this.instances = [...this.getBuiltInWallets(), ...this.getCustomWallets()];
+    this.instances = this.getBuiltInWallets();
 
     const state = getState();
     const walletId = state.signedInWalletId;
@@ -61,16 +53,12 @@ class WalletController {
     if (walletId) {
       const instance = this.getInstance(walletId)!;
 
-      await instance.init();
+      await instance.connect();
     }
   }
 
   getInstance(walletId: string) {
-    return this.instances.find((wallet) => {
-      const { id } = wallet.getInfo();
-
-      return id === walletId;
-    });
+    return this.instances.find((x) => x.id === walletId);
   }
 
   getInstances() {
@@ -101,14 +89,14 @@ class WalletController {
     return state.isSignedIn;
   }
 
-  async signIn(walletId: string) {
+  async connect(walletId: string) {
     const instance = this.getInstance(walletId);
 
     if (!instance) {
       throw new Error(`Invalid walletId '${walletId}'`);
     }
 
-    await instance.signIn();
+    await instance.connect();
 
     localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, walletId);
 
@@ -120,7 +108,7 @@ class WalletController {
     }));
   }
 
-  async signOut() {
+  async disconnect() {
     const state = getState();
 
     if (!state.signedInWalletId) {

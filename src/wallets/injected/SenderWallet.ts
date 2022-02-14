@@ -1,7 +1,5 @@
-import ISenderWallet from "../../interfaces/ISenderWallet";
-import InjectedWallet from "../types/InjectedWallet";
+import isMobile from "is-mobile";
 import { updateState } from "../../state/State";
-import { AccountInfo, CallParams } from "../../interfaces/IWallet";
 import InjectedSenderWallet, {
   GetRpcResponse,
   RpcChangedResponse,
@@ -9,6 +7,12 @@ import InjectedSenderWallet, {
 import ProviderService from "../../services/provider/ProviderService";
 import { Options } from "../../core/NearWalletSelector";
 import { logger } from "../../services/logging.service";
+import {
+  AccountInfo,
+  InjectedWallet,
+  SignAndSendTransactionParams,
+  WalletOptions,
+} from "../Wallet";
 
 declare global {
   interface Window {
@@ -16,14 +20,39 @@ declare global {
   }
 }
 
-class SenderWallet extends InjectedWallet implements ISenderWallet {
-  wallet: InjectedSenderWallet;
+class SenderWallet implements InjectedWallet {
+  private wallet: InjectedSenderWallet;
+  private provider: ProviderService;
+  private options: Options;
 
-  constructor(provider: ProviderService, options: Options) {
-    super(provider, options);
+  id: "sender-wallet";
+  type: "injected";
+  name: "Sender Wallet";
+  description: null;
+  iconUrl: "https://senderwallet.io/logo.png";
+
+  constructor({ options, provider }: WalletOptions) {
+    this.options = options;
+    this.provider = provider;
   }
 
-  async init() {
+  isAvailable() {
+    if (!this.isInstalled()) {
+      return false;
+    }
+
+    if (isMobile()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private isInstalled() {
+    return !!window.wallet;
+  }
+
+  private async init() {
     await this.timeout(200);
 
     if (!this.isInstalled()) {
@@ -43,20 +72,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
       .then((res) => logger.log("SenderWallet:init", res));
   }
 
-  getInfo() {
-    return {
-      id: "senderwallet",
-      name: "Sender Wallet",
-      description: "Sender Wallet",
-      iconUrl: "https://senderwallet.io/logo.png",
-    };
-  }
-
-  isInstalled() {
-    return !!window.wallet;
-  }
-
-  async signIn() {
+  async connect() {
     if (!this.isInstalled()) {
       return updateState((prevState) => ({
         ...prevState,
@@ -104,10 +120,10 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   onAccountChanged() {
     this.wallet.onAccountChanged(async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
+
       try {
         await this.disconnect();
-
-        await this.signIn();
+        await this.connect();
       } catch (e) {
         logger.log(`Failed to change account ${e.message}`);
       }
@@ -142,8 +158,11 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     };
   }
 
-  async call({ receiverId, actions }: CallParams) {
-    logger.log("SenderWallet:call", { receiverId, actions });
+  async signAndSendTransaction({
+    receiverId,
+    actions,
+  }: SignAndSendTransactionParams) {
+    logger.log("SenderWallet:signAndSendTransaction", { receiverId, actions });
 
     return this.wallet
       .signAndSendTransaction({ receiverId, actions })

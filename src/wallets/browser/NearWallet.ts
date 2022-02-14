@@ -6,26 +6,36 @@ import {
 } from "near-api-js";
 import BN from "bn.js";
 
-import BrowserWallet from "../types/BrowserWallet";
-import INearWallet from "../../interfaces/INearWallet";
-import {
-  AccountInfo,
-  CallParams,
-  FunctionCallAction,
-} from "../../interfaces/IWallet";
-import ProviderService from "../../services/provider/ProviderService";
 import getConfig from "../../config";
 import { Options } from "../../core/NearWalletSelector";
 import { logger } from "../../services/logging.service";
+import {
+  AccountInfo,
+  BrowserWallet,
+  FunctionCallAction,
+  SignAndSendTransactionParams,
+  WalletOptions,
+} from "../Wallet";
 
-class NearWallet extends BrowserWallet implements INearWallet {
+class NearWallet implements BrowserWallet {
+  private options: Options;
   private wallet: WalletConnection;
 
-  constructor(provider: ProviderService, options: Options) {
-    super(provider, options);
+  id: "near-wallet";
+  type: "browser";
+  name: "NEAR Wallet";
+  description: null;
+  iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png";
+
+  constructor({ options }: WalletOptions) {
+    this.options = options;
   }
 
-  async init() {
+  isAvailable() {
+    return true;
+  }
+
+  private async init() {
     const near = await connect({
       keyStore: new keyStores.BrowserLocalStorageKeyStore(),
       ...getConfig(this.options.networkId),
@@ -35,16 +45,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     this.wallet = new WalletConnection(near, "near_app");
   }
 
-  getInfo() {
-    return {
-      id: "nearwallet",
-      name: "Near Wallet",
-      description: "Near Wallet",
-      iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png",
-    };
-  }
-
-  async signIn() {
+  async connect() {
     if (!this.wallet) {
       await this.init();
     }
@@ -84,7 +85,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
     };
   }
 
-  transformActions(actions: Array<FunctionCallAction>) {
+  private transformActions(actions: Array<FunctionCallAction>) {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
@@ -95,10 +96,13 @@ class NearWallet extends BrowserWallet implements INearWallet {
     });
   }
 
-  async call({ receiverId, actions }: CallParams) {
-    const account = this.wallet.account();
+  async signAndSendTransaction({
+    receiverId,
+    actions,
+  }: SignAndSendTransactionParams) {
+    logger.log("NearWallet:signAndSendTransaction", { receiverId, actions });
 
-    logger.log("NearWallet:call", { receiverId, actions });
+    const account = this.wallet.account();
 
     // @ts-ignore
     // near-api-js marks this method as protected.

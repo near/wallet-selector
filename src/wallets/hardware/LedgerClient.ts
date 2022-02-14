@@ -63,6 +63,11 @@ export interface Subscription {
 class LedgerClient {
   private transport: Transport;
 
+  // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
+  static isSupported() {
+    return !!window.navigator?.hid;
+  }
+
   async connect() {
     this.transport = await TransportWebHID.create();
   }
