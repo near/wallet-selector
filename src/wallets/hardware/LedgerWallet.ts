@@ -169,6 +169,14 @@ class LedgerWallet implements HardwareWallet {
       this.subscriptions[key].remove();
     }
 
+    localStorage.removeItem(LOCAL_STORAGE_ACCOUNT_ID);
+    localStorage.removeItem(LOCAL_STORAGE_DERIVATION_PATH);
+    localStorage.removeItem(LOCAL_STORAGE_PUBLIC_KEY);
+
+    this.accountId = null;
+    this.derivationPath = null;
+    this.publicKey = null;
+
     // Only close if we've already connected.
     if (this.client) {
       await this.client.disconnect();
