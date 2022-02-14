@@ -93,7 +93,7 @@ const Modal: React.FC = () => {
         <div className="Modal-content">
           <div className="Modal-header">
             <h2>Connect Wallet</h2>
-            <button onClick={handleCloseModal}>
+            <button onClick={handleDismissClick}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24"
