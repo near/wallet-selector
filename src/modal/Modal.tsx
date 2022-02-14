@@ -1,16 +1,10 @@
-import React, {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
 import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 import { Options } from "../core/NearWalletSelector";
-import { HardwareWallet } from "../wallets/Wallet";
+import { Wallet } from "../wallets/Wallet";
 
 declare global {
   // tslint:disable-next-line
@@ -32,9 +26,10 @@ const getThemeClass = (theme: string | null) => {
 
 interface ModalProps {
   options: Options;
+  wallets: Array<Wallet>;
 }
 
-const Modal: React.FC<ModalProps> = ({ options }) => {
+const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   const [state, setState] = useState(getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -78,14 +73,29 @@ const Modal: React.FC<ModalProps> = ({ options }) => {
     setLedgerAccountId(e.target.value);
   };
 
-  const handleConnectClick = useCallback(async () => {
-    const wallet = state.walletProviders["ledgerwallet"] as HardwareWallet;
+  const handleWalletClick = (wallet: Wallet) => () => {
+    if (wallet.type === "hardware") {
+      return updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+        showLedgerDerivationPath: true,
+      }));
+    }
 
-    wallet.setDerivationPath(ledgerDerivationPath);
-    wallet.setAccountId(ledgerAccountId);
+    wallet.connect().catch((err) => {
+      logger.log(`Failed to select ${wallet.name}`);
+      logger.error(err);
+    });
+  };
 
-    wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
-  }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
+  // const handleConnectClick = useCallback(async () => {
+  //   const wallet = state.walletProviders["ledgerwallet"] as HardwareWallet;
+  //
+  //   wallet.setDerivationPath(ledgerDerivationPath);
+  //   wallet.setAccountId(ledgerAccountId);
+  //
+  //   wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
+  // }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
@@ -101,11 +111,10 @@ const Modal: React.FC<ModalProps> = ({ options }) => {
           >
             <p>{options.walletSelectorUI.description || defaultDescription}</p>
             <ul className="Modal-option-list">
-              {options.wallets
-                .map((walletId) => state.walletProviders[walletId])
-                .filter((wallet) => wallet.getShowWallet())
+              {wallets
+                .filter((wallet) => wallet.isAvailable())
                 .map((wallet) => {
-                  const { id, name, description, iconUrl } = wallet.getInfo();
+                  const { id, name, description, iconUrl } = wallet;
                   const selected = state.signedInWalletId === id;
 
                   return (
@@ -113,14 +122,9 @@ const Modal: React.FC<ModalProps> = ({ options }) => {
                       key={id}
                       id={id}
                       className={selected ? "selected-wallet" : ""}
-                      onClick={() => {
-                        wallet.walletSelected().catch((err) => {
-                          logger.log(`Failed to select ${name}`);
-                          logger.error(err);
-                        });
-                      }}
+                      onClick={handleWalletClick(wallet)}
                     >
-                      <div title={description}>
+                      <div title={description || ""}>
                         <img src={iconUrl} alt={name} />
                         <div>
                           <span>{name}</span>
@@ -169,7 +173,12 @@ const Modal: React.FC<ModalProps> = ({ options }) => {
               <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
-              <button className="right-button" onClick={handleConnectClick}>
+              <button
+                className="right-button"
+                onClick={() => {
+                  /* TODO */
+                }}
+              >
                 Connect
               </button>
             </div>

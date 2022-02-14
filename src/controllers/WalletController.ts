@@ -11,13 +11,13 @@ class WalletController {
   private options: Options;
   private provider: ProviderService;
 
-  private instances: Array<Wallet>;
+  private wallets: Array<Wallet>;
 
   constructor(options: Options, provider: ProviderService) {
     this.options = options;
     this.provider = provider;
 
-    this.instances = [];
+    this.wallets = [];
   }
 
   private getBuiltInWallets() {
@@ -45,42 +45,35 @@ class WalletController {
   }
 
   async init() {
-    this.instances = this.getBuiltInWallets();
+    this.wallets = this.getBuiltInWallets();
 
     const state = getState();
     const walletId = state.signedInWalletId;
 
     if (walletId) {
-      const instance = this.getInstance(walletId)!;
+      const wallet = this.getWallet(walletId)!;
 
-      await instance.connect();
+      await wallet.connect();
     }
   }
 
-  getInstance(walletId: string) {
-    return this.instances.find((x) => x.id === walletId);
+  getSelectedWallet() {
+    const state = getState();
+    const walletId = state.signedInWalletId;
+
+    if (!walletId) {
+      return null;
+    }
+
+    return this.getWallet(walletId);
   }
 
-  getInstances() {
-    return this.instances;
+  getWallet(walletId: string) {
+    return this.wallets.find((x) => x.id === walletId) || null;
   }
 
-  showModal() {
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: true,
-      showWalletOptions: true,
-      showLedgerDerivationPath: false,
-      showSenderWalletNotInstalled: false,
-      showSwitchNetwork: false,
-    }));
-  }
-
-  hideModal() {
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
+  getWallets() {
+    return this.wallets;
   }
 
   isSignedIn() {
@@ -90,13 +83,13 @@ class WalletController {
   }
 
   async connect(walletId: string) {
-    const instance = this.getInstance(walletId);
+    const wallet = this.getWallet(walletId);
 
-    if (!instance) {
+    if (!wallet) {
       throw new Error(`Invalid walletId '${walletId}'`);
     }
 
-    await instance.connect();
+    await wallet.connect();
 
     localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, walletId);
 
@@ -109,15 +102,13 @@ class WalletController {
   }
 
   async disconnect() {
-    const state = getState();
+    const wallet = this.getSelectedWallet();
 
-    if (!state.signedInWalletId) {
+    if (!wallet) {
       return;
     }
 
-    const instance = this.getInstance(state.signedInWalletId)!;
-
-    await instance.disconnect();
+    await wallet.disconnect();
 
     window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
 
@@ -129,15 +120,13 @@ class WalletController {
   }
 
   async getAccount() {
-    const state = getState();
+    const wallet = this.getSelectedWallet();
 
-    if (!state.signedInWalletId) {
+    if (!wallet) {
       return null;
     }
 
-    const instance = this.getInstance(state.signedInWalletId)!;
-
-    return instance.getAccount();
+    return wallet.getAccount();
   }
 }
 

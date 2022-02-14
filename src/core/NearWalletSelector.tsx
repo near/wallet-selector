@@ -8,6 +8,7 @@ import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
 import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
+import { updateState } from "../state/State";
 
 export type NetworkId =
   | "mainnet"
@@ -56,7 +57,7 @@ export default class NearWalletSelector {
     ReactDOM.render(
       <Modal
         options={this.options}
-        // wallets={this.controller.getInstances()}
+        wallets={this.controller.getWallets()}
         // signIn={this.signIn.bind(this)}
       />,
       document.getElementById(MODAL_ELEMENT_ID)
@@ -69,12 +70,22 @@ export default class NearWalletSelector {
     this.renderModal();
   }
 
-  showModal() {
-    this.controller.showModal();
+  show() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: true,
+      showWalletOptions: true,
+      showLedgerDerivationPath: false,
+      showSenderWalletNotInstalled: false,
+      showSwitchNetwork: false,
+    }));
   }
 
-  hideModal() {
-    this.controller.hideModal();
+  hide() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
   }
 
   isSignedIn() {
