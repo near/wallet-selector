@@ -51,7 +51,7 @@ class ProviderService {
   }: CallFunctionParams) {
     return this.query<CodeResult>({
       request_type: "call_function",
-      finality: "final",
+      finality: "optimistic",
       account_id: accountId,
       method_name: methodName,
       args_base64: this.encodeArgs(args),

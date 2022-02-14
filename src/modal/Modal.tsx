@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styles from "./Modal.styles";
 import { getState, updateState } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
 import State from "../types/State";
 import { logger } from "../services/logging.service";
+import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 
 declare global {
   // tslint:disable-next-line
@@ -12,16 +19,27 @@ declare global {
   }
 }
 
-function Modal(): JSX.Element {
-  const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
-    useState("44'/397'/0'/0'/0'");
-  const [ledgerWalletError, setLedgerWalletError] = useState("");
-  const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
-  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [accountId, setAccountId] = useState("");
-  const defaultDescription = "Please select a wallet to connect to this dapp:";
+const getThemeClass = (theme: string | null) => {
+  switch (theme) {
+    case "dark":
+      return "Modal-dark-theme";
+    case "light":
+      return "Modal-light-theme";
+    default:
+      return "";
+  }
+};
+
+const Modal: React.FC = () => {
   const [state, setState] = useState(getState());
+  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
+  const [ledgerError, setLedgerError] = useState("");
+  const [ledgerAccountId, setLedgerAccountId] = useState("");
+  const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
+    DEFAULT_DERIVATION_PATH
+  );
+
+  const defaultDescription = "Please select a wallet to connect to this dApp:";
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -29,61 +47,48 @@ function Modal(): JSX.Element {
     };
   }, []);
 
-  function onCloseModalHandler() {
+  const handleDismissClick = () => {
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
     }));
-    setUseCustomDerivationPath(false);
-    setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
-    setLedgerWalletError("");
+
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setLedgerError("");
     setWalletInfoVisible(false);
-  }
+  };
 
-  function handleCloseModal(event: any) {
-    event.preventDefault();
-    if (event.target === event.currentTarget) onCloseModalHandler();
-  }
+  const handleDismissOutsideClick = (e: MouseEvent) => {
+    e.preventDefault();
 
-  function getThemeClass(theme: string | null) {
-    let themeClass = "";
-    switch (theme) {
-      case "dark":
-        themeClass = "Modal-dark-theme";
-        break;
-      case "light":
-        themeClass = "Modal-light-theme";
-        break;
-      default:
-        themeClass = "";
-        break;
+    if (e.target === e.currentTarget) {
+      handleDismissClick();
     }
-    return themeClass;
-  }
+  };
 
-  function onUseCustomPathHandler() {
-    setUseCustomDerivationPath(true);
-  }
+  const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerDerivationPath(e.target.value);
+  };
 
-  function onUseDefaultDerivationPathHandler() {
-    setUseCustomDerivationPath(false);
-    setLedgerWalletError("");
-  }
+  const handleAccountIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerAccountId(e.target.value);
+  };
 
-  function onCustomDerivationPathChangeHandler(event: any) {
-    setLedgerCustomDerivationPath(event.target.value);
-  }
+  const handleConnectClick = useCallback(async () => {
+    const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
 
-  function onAccountIdChangeHandler(event: any) {
-    setAccountId(event.target.value);
-  }
+    wallet.setDerivationPath(ledgerDerivationPath);
+    wallet.setAccountId(ledgerAccountId);
+
+    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
+  }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
         className={`Modal ${getThemeClass(state.options.theme)}`}
-        onClick={handleCloseModal}
+        onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
           <div
@@ -136,73 +141,33 @@ function Modal(): JSX.Element {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then select an account id and
-              derivation path to connect your accounts:
+              Make sure your Ledger is plugged in, then enter an account id and
+              derivation path to connect:
             </p>
             <div className="derivation-paths-list">
               <div className="account-id">
                 <input
                   type="text"
-                  onChange={onAccountIdChangeHandler}
-                  placeholder="Account Id"
+                  placeholder="Account ID"
+                  autoFocus={true}
+                  value={ledgerAccountId}
+                  onChange={handleAccountIdChange}
                 />
               </div>
-              <button
-                className={
-                  !useCustomDerivationPath ? "path-option-highlighted" : ""
-                }
-                onClick={onUseDefaultDerivationPathHandler}
-              >
-                NEAR - 44'/397'/0'/0'/0'
-              </button>
-              {!useCustomDerivationPath && (
-                <button
-                  className={
-                    useCustomDerivationPath ? "path-option-highlighted" : ""
-                  }
-                  onClick={onUseCustomPathHandler}
-                >
-                  Custom Path
-                </button>
-              )}
-              {useCustomDerivationPath && (
-                <input
-                  autoFocus
-                  className={ledgerWalletError ? "input-error" : ""}
-                  type="text"
-                  placeholder="custom derivation path"
-                  value={ledgerCustomDerivationPath}
-                  onChange={onCustomDerivationPathChangeHandler}
-                />
-              )}
-              {ledgerWalletError && (
-                <p className="error">{ledgerWalletError}</p>
-              )}
+              <input
+                type="text"
+                className={ledgerError ? "input-error" : ""}
+                placeholder="Derivation Path"
+                value={ledgerDerivationPath}
+                onChange={handleDerivationPathChange}
+              />
+              {ledgerError && <p className="error">{ledgerError}</p>}
             </div>
             <div className="derivation-paths--actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
-              <button
-                className="right-button"
-                onClick={async () => {
-                  let derivationPath = ledgerDerivationPath;
-                  if (useCustomDerivationPath) {
-                    derivationPath = ledgerCustomDerivationPath;
-                  }
-
-                  try {
-                    const ledgerWalletProvider = state.walletProviders[
-                      "ledgerwallet"
-                    ] as ILedgerWallet;
-                    ledgerWalletProvider.setDerivationPath(derivationPath);
-                    ledgerWalletProvider.setAccountId(accountId);
-                    await ledgerWalletProvider.signIn();
-                  } catch (e) {
-                    setLedgerWalletError(`Error: ${e.message}`);
-                  }
-                }}
-              >
+              <button className="right-button" onClick={handleConnectClick}>
                 Connect
               </button>
             </div>
@@ -264,7 +229,7 @@ function Modal(): JSX.Element {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${state.options.networkId}`}</strong> for this Dapp.
+                <strong>{` ${state.options.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -272,7 +237,7 @@ function Modal(): JSX.Element {
               </p>
             </div>
             <div className="actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
               <button
@@ -311,6 +276,6 @@ function Modal(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default Modal;
