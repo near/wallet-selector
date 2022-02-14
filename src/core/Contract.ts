@@ -1,4 +1,3 @@
-import { getState } from "../state/State";
 import ProviderService, {
   CallFunctionParams,
 } from "../services/provider/ProviderService";
@@ -37,16 +36,13 @@ class Contract {
   }
 
   async call({ actions }: CallParams) {
-    const state = getState();
-    const walletId = state.signedInWalletId;
+    const wallet = this.controller.getSelectedWallet();
 
-    if (!walletId) {
+    if (!wallet) {
       throw new Error("Wallet not selected!");
     }
 
-    const instance = this.controller.getInstance(walletId)!;
-
-    return instance.signAndSendTransaction({
+    return wallet.signAndSendTransaction({
       receiverId: this.options.contractId,
       actions,
     });

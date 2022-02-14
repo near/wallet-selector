@@ -87,23 +87,23 @@ class LedgerWallet implements HardwareWallet {
     return client;
   }
 
-  private async init() {
-    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
-    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
-
-    if (!this.accountId) {
-      this.accountId = accountId;
-    }
-
-    if (!this.publicKey) {
-      this.publicKey = publicKey;
-    }
-
-    if (!this.derivationPath) {
-      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
-    }
-  }
+  // private async init() {
+  //   const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
+  //   const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
+  //   const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
+  //
+  //   if (!this.accountId) {
+  //     this.accountId = accountId;
+  //   }
+  //
+  //   if (!this.publicKey) {
+  //     this.publicKey = publicKey;
+  //   }
+  //
+  //   if (!this.derivationPath) {
+  //     this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
+  //   }
+  // }
 
   setDerivationPath(derivationPath: string) {
     this.derivationPath = derivationPath;
