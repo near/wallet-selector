@@ -31,5 +31,6 @@ export default interface IWallet {
   isConnected(): Promise<boolean>;
   signIn(): Promise<void>;
   getAccount(): Promise<AccountInfo | null>;
-  call(params: CallParams): Promise<any>;
+  // TODO: Determine standardised response.
+  call(params: CallParams): Promise<unknown>;
 }

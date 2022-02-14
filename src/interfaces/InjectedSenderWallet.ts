@@ -5,16 +5,23 @@ export interface InitParams {
 }
 
 // Empty string if we haven't signed in before.
+interface AccessKey {
+  publicKey: {
+    data: Uint8Array;
+    keyType: number;
+  };
+  secretKey: string;
+}
+
 export interface InitResponse {
-  accessKey:
-    | ""
-    | {
-        publicKey: {
-          data: Uint8Array;
-          keyType: number;
-        };
-        secretKey: string;
-      };
+  accessKey: AccessKey | "";
+}
+
+export interface RequestSignInResponse {
+  accessKey: AccessKey;
+  error: string;
+  notificationId: number;
+  type: "sender-wallet-result";
 }
 
 export interface RpcInfo {
@@ -97,7 +104,9 @@ interface InjectedSenderWallet {
   init: (params: InitParams) => Promise<InitResponse>;
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
-  requestSignIn: (params: RequestSignInParams) => Promise<InitResponse>;
+  requestSignIn: (
+    params: RequestSignInParams
+  ) => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
   onAccountChanged: (callback: AccountChangedCallback) => void;

@@ -32,7 +32,7 @@ const App = ({ near, initialAccount }) => {
         });
     });
 
-    near.on("disconnected", () => {
+    near.on("disconnect", () => {
       console.log("'disconnect' event triggered!");
       setAccount(null);
     });

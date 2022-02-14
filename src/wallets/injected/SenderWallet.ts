@@ -8,6 +8,7 @@ import InjectedSenderWallet, {
 } from "../../interfaces/InjectedSenderWallet";
 import ProviderService from "../../services/provider/ProviderService";
 import { Options } from "../../core/NearWalletSelector";
+import { logger } from "../../services/logging.service";
 
 declare global {
   interface Window {
@@ -31,9 +32,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     this.wallet = window.wallet!;
 
-    this.wallet.onAccountChanged((newAccountId) => {
-      console.log("SenderWallet:onAccountChange", newAccountId);
-    });
+    this.onAccountChanged();
 
     this.wallet.onRpcChanged((response) => {
       this.networkMatches(response);
@@ -41,7 +40,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
 
     return this.wallet
       .init({ contractId: this.options.accountId })
-      .then((res) => console.log("SenderWallet:init", res));
+      .then((res) => logger.log("SenderWallet:init", res));
   }
 
   getInfo() {
@@ -102,18 +101,29 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
     return true;
   }
 
+  onAccountChanged() {
+    this.wallet.onAccountChanged(async (newAccountId) => {
+      logger.log("SenderWallet:onAccountChange", newAccountId);
+      try {
+        await this.disconnect();
+
+        await this.signIn();
+      } catch (e) {
+        logger.log(`Failed to change account ${e.message}`);
+      }
+    });
+  }
+
   async isConnected() {
     return this.wallet.isSignedIn();
   }
 
-  disconnect() {
-    return this.wallet.signOut().then((res) => {
-      if (res.result !== "success") {
-        throw new Error("Failed to sign out");
-      }
+  async disconnect() {
+    const res = await this.wallet.signOut();
 
-      return;
-    });
+    if (res.result !== "success") {
+      throw new Error("Failed to sign out");
+    }
   }
 
   async getAccount(): Promise<AccountInfo | null> {
@@ -133,7 +143,7 @@ class SenderWallet extends InjectedWallet implements ISenderWallet {
   }
 
   async call({ receiverId, actions }: CallParams) {
-    console.log("SenderWallet:call", { receiverId, actions });
+    logger.log("SenderWallet:call", { receiverId, actions });
 
     return this.wallet
       .signAndSendTransaction({ receiverId, actions })

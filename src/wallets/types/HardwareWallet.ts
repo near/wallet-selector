@@ -4,8 +4,6 @@ import ProviderService from "../../services/provider/ProviderService";
 import { Options } from "../../core/NearWalletSelector";
 
 export default abstract class HardwareWallet extends BaseWallet {
-  protected transport: any | void;
-
   constructor(provider: ProviderService, options: Options) {
     super(provider, options);
 

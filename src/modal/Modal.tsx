@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styles from "./Modal.styles";
-import { getState, updateState, State } from "../state/State";
+import { getState, updateState } from "../state/State";
 import ILedgerWallet from "../interfaces/ILedgerWallet";
-import { Options } from "../core/NearWalletSelector";
-import IWallet from "../interfaces/IWallet";
+import State from "../types/State";
+import { logger } from "../services/logging.service";
+import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 
 declare global {
   // tslint:disable-next-line
@@ -12,22 +19,27 @@ declare global {
   }
 }
 
-interface ModalProps {
-  options: Options;
-  wallets: Array<IWallet>;
-  signIn: (walletId: string) => Promise<void>;
-}
+const getThemeClass = (theme: string | null) => {
+  switch (theme) {
+    case "dark":
+      return "Modal-dark-theme";
+    case "light":
+      return "Modal-light-theme";
+    default:
+      return "";
+  }
+};
 
-const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
-  const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
-    useState("44'/397'/0'/0'/0'");
-  const [ledgerWalletError, setLedgerWalletError] = useState("");
-  const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
-  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [accountId, setAccountId] = useState("");
-  const defaultDescription = "Please select a wallet to connect to this dApp:";
+const Modal: React.FC = () => {
   const [state, setState] = useState(getState());
+  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
+  const [ledgerError, setLedgerError] = useState("");
+  const [ledgerAccountId, setLedgerAccountId] = useState("");
+  const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
+    DEFAULT_DERIVATION_PATH
+  );
+
+  const defaultDescription = "Please select a wallet to connect to this dApp:";
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -35,70 +47,60 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
     };
   }, []);
 
-  function onCloseModalHandler() {
+  const handleDismissClick = () => {
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
     }));
-    setUseCustomDerivationPath(false);
-    setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
-    setLedgerWalletError("");
+
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setLedgerError("");
     setWalletInfoVisible(false);
-  }
+  };
 
-  function handleCloseModal(event: any) {
-    event.preventDefault();
-    if (event.target === event.currentTarget) onCloseModalHandler();
-  }
+  const handleDismissOutsideClick = (e: MouseEvent) => {
+    e.preventDefault();
 
-  function getThemeClass(theme: string | null) {
-    let themeClass = "";
-    switch (theme) {
-      case "dark":
-        themeClass = "Modal-dark-theme";
-        break;
-      case "light":
-        themeClass = "Modal-light-theme";
-        break;
-      default:
-        themeClass = "";
-        break;
+    if (e.target === e.currentTarget) {
+      handleDismissClick();
     }
-    return themeClass;
-  }
+  };
 
-  function onUseCustomPathHandler() {
-    setUseCustomDerivationPath(true);
-  }
+  const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerDerivationPath(e.target.value);
+  };
 
-  function onUseDefaultDerivationPathHandler() {
-    setUseCustomDerivationPath(false);
-    setLedgerWalletError("");
-  }
+  const handleAccountIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerAccountId(e.target.value);
+  };
 
-  function onCustomDerivationPathChangeHandler(event: any) {
-    setLedgerCustomDerivationPath(event.target.value);
-  }
+  const handleConnectClick = useCallback(async () => {
+    const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
 
-  function onAccountIdChangeHandler(event: any) {
-    setAccountId(event.target.value);
-  }
+    wallet.setDerivationPath(ledgerDerivationPath);
+    wallet.setAccountId(ledgerAccountId);
+
+    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
+  }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(options.theme)}`}
-        onClick={handleCloseModal}
+        className={`Modal ${getThemeClass(state.options.theme)}`}
+        onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
           <div
             style={{ display: state.showWalletOptions ? "block" : "none" }}
             className="Modal-body Modal-select-wallet-option"
           >
-            <p>{options.walletSelectorUI.description || defaultDescription}</p>
+            <p>
+              {state.options.walletSelectorUI.description || defaultDescription}
+            </p>
             <ul className="Modal-option-list">
-              {wallets
+              {state.options.wallets
+                .map((walletId) => state.walletProviders[walletId])
                 .filter((wallet) => wallet.getShowWallet())
                 .map((wallet) => {
                   const { id, name, description, iconUrl } = wallet.getInfo();
@@ -110,9 +112,9 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
                       id={id}
                       className={selected ? "selected-wallet" : ""}
                       onClick={() => {
-                        signIn(id).catch((err) => {
-                          console.log(`Failed to select ${name}`);
-                          console.error(err);
+                        wallet.walletSelected().catch((err) => {
+                          logger.log(`Failed to select ${name}`);
+                          logger.error(err);
                         });
                       }}
                     >
@@ -139,74 +141,33 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then select an account id and
-              derivation path to connect your accounts:
+              Make sure your Ledger is plugged in, then enter an account id and
+              derivation path to connect:
             </p>
             <div className="derivation-paths-list">
               <div className="account-id">
                 <input
                   type="text"
-                  onChange={onAccountIdChangeHandler}
-                  placeholder="Account Id"
+                  placeholder="Account ID"
+                  autoFocus={true}
+                  value={ledgerAccountId}
+                  onChange={handleAccountIdChange}
                 />
               </div>
-              <button
-                className={
-                  !useCustomDerivationPath ? "path-option-highlighted" : ""
-                }
-                onClick={onUseDefaultDerivationPathHandler}
-              >
-                NEAR - 44'/397'/0'/0'/0'
-              </button>
-              {!useCustomDerivationPath && (
-                <button
-                  className={
-                    useCustomDerivationPath ? "path-option-highlighted" : ""
-                  }
-                  onClick={onUseCustomPathHandler}
-                >
-                  Custom Path
-                </button>
-              )}
-              {useCustomDerivationPath && (
-                <input
-                  autoFocus
-                  className={ledgerWalletError ? "input-error" : ""}
-                  type="text"
-                  placeholder="custom derivation path"
-                  value={ledgerCustomDerivationPath}
-                  onChange={onCustomDerivationPathChangeHandler}
-                />
-              )}
-              {ledgerWalletError && (
-                <p className="error">{ledgerWalletError}</p>
-              )}
+              <input
+                type="text"
+                className={ledgerError ? "input-error" : ""}
+                placeholder="Derivation Path"
+                value={ledgerDerivationPath}
+                onChange={handleDerivationPathChange}
+              />
+              {ledgerError && <p className="error">{ledgerError}</p>}
             </div>
             <div className="derivation-paths--actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
-              <button
-                className="right-button"
-                onClick={() => {
-                  const derivationPath = useCustomDerivationPath
-                    ? ledgerCustomDerivationPath
-                    : ledgerDerivationPath;
-
-                  const wallet = wallets.find((x) => {
-                    const { id } = x.getInfo();
-
-                    return id === state.signedInWalletId;
-                  }) as ILedgerWallet;
-
-                  wallet.setDerivationPath(derivationPath);
-                  wallet.setAccountId(accountId);
-
-                  wallet.signIn().catch((err) => {
-                    setLedgerWalletError(`Error: ${err.message}`);
-                  });
-                }}
-              >
+              <button className="right-button" onClick={handleConnectClick}>
                 Connect
               </button>
             </div>
@@ -268,7 +229,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${options.networkId}`}</strong> for this dApp.
+                <strong>{` ${state.options.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -276,7 +237,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
               </p>
             </div>
             <div className="actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
               <button
@@ -293,7 +254,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
               </button>
             </div>
           </div>
-          {options.walletSelectorUI.explanation && (
+          {state.options.walletSelectorUI.explanation && (
             <div className="info">
               <span
                 onClick={() => {
@@ -307,7 +268,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets, signIn }) => {
                   walletInfoVisible ? "show" : "hide"
                 }-explanation`}
               >
-                <p>{options.walletSelectorUI.explanation}</p>
+                <p>{state.options.walletSelectorUI.explanation}</p>
               </div>
             </div>
           )}

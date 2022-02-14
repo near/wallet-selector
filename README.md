@@ -8,16 +8,16 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 ## Installation and Usage
 
-The easiest way to use `near-walletselector` is to install it from NPM:
+The easiest way to use `near-wallet-selector` is to install it from NPM:
 
 ```bash
-npm install near-walletselector
+npm install near-wallet-selector
 ```
 
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "near-walletselector";
+import NearWalletSelector from "near-wallet-selector";
 
 const near = new NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],

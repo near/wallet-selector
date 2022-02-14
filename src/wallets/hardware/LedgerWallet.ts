@@ -1,58 +1,46 @@
-import HardwareWallet from "../types/HardwareWallet";
-import LedgerTransportWebHid from "@ledgerhq/hw-transport-webhid";
-import { listen } from "@ledgerhq/logs";
-import bs58 from "bs58";
-import ILedgerWallet from "../../interfaces/ILedgerWallet";
-import { updateState } from "../../state/State";
 import { transactions, utils } from "near-api-js";
+import { TypedError } from "near-api-js/lib/utils/errors";
 import BN from "bn.js";
-import { AccountInfo, CallParams } from "../../interfaces/IWallet";
+import {
+  AccountInfo,
+  CallParams,
+  FunctionCallAction,
+} from "../../interfaces/IWallet";
+import HardwareWallet from "../types/HardwareWallet";
+import ILedgerWallet from "../../interfaces/ILedgerWallet";
+import { Emitter } from "../../utils/EventsHandler";
+import { getState, updateState } from "../../state/State";
 import ProviderService from "../../services/provider/ProviderService";
-import { Options } from "../../core/NearWalletSelector";
+import LedgerClient, { Subscription } from "./LedgerClient";
+import { logger } from "../../services/logging.service";
 
-export default class LedgerWallet
-  extends HardwareWallet
-  implements ILedgerWallet
-{
-  private readonly CLA = 0x80;
-  private readonly GET_ADDRESS_INS = 0x04;
-  private readonly SIGN_INS = 0x02;
+const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
+const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
+const LOCAL_STORAGE_PUBLIC_KEY = "ledgerPublicKey";
+export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
-  private readonly LEDGER_LOCALSTORAGE_PUBLIC_KEY = "ledgerPublicKey";
-  private readonly LEDGER_LOCALSTORAGE_DERIVATION_PATH = "ledgerDerivationPath";
+interface ValidateParams {
+  accountId: string;
+  derivationPath: string;
+}
+
+interface SignAndSendTransactionParams {
+  receiverId: string;
+  actions: Array<transactions.Action>;
+}
+
+class LedgerWallet extends HardwareWallet implements ILedgerWallet {
+  private client: LedgerClient;
+  private subscriptions: Record<string, Subscription> = {};
+
+  private accountId: string | null;
+  private derivationPath: string | null;
+  private publicKey: string | null;
 
   private debugMode = false;
-  private derivationPath = "44'/397'/0'/0'/0'";
-  private publicKey: Uint8Array;
-  private accountId: string;
-  private nonce: number;
 
-  constructor(provider: ProviderService, options: Options) {
-    super(provider, options);
-
-    const ledgerLocalStoragePublicKey = window.localStorage.getItem(
-      this.LEDGER_LOCALSTORAGE_PUBLIC_KEY
-    );
-
-    if (ledgerLocalStoragePublicKey !== null) {
-      this.publicKey = this.arrayToBuffer(
-        bs58.decode(ledgerLocalStoragePublicKey).toJSON().data
-      );
-    }
-
-    const ledgerLocalStorageDerivationPath = window.localStorage.getItem(
-      this.LEDGER_LOCALSTORAGE_DERIVATION_PATH
-    );
-
-    if (ledgerLocalStorageDerivationPath !== null) {
-      this.derivationPath = ledgerLocalStorageDerivationPath;
-    }
-
-    listen((log) => {
-      if (this.debugMode) {
-        console.log(log);
-      }
-    });
+  constructor(emitter: Emitter, provider: ProviderService) {
+    super(emitter, provider);
   }
 
   getInfo() {
@@ -65,167 +53,178 @@ export default class LedgerWallet
     };
   }
 
-  arrayToBuffer(arr: number[]): Uint8Array {
-    const ret = new Uint8Array(arr.length);
-    for (let i = 0; i < arr.length; i++) {
-      ret[i] = arr[i];
+  async init() {
+    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
+    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
+    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
+
+    if (!this.accountId) {
+      this.accountId = accountId;
     }
-    return ret;
+
+    if (!this.publicKey) {
+      this.publicKey = publicKey;
+    }
+
+    if (!this.derivationPath) {
+      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
+    }
   }
 
-  getPublicKey() {
-    return this.publicKey;
+  async getClient() {
+    if (this.client) {
+      return this.client;
+    }
+
+    const client = new LedgerClient();
+
+    await client.connect();
+    client.setScrambleKey("NEAR");
+
+    // TODO: Need to update state via WalletController.
+    this.subscriptions.disconnect = client.on("disconnect", (err) => {
+      logger.error(err);
+
+      this.disconnect();
+    });
+
+    if (this.debugMode) {
+      this.subscriptions.logs = client.listen((data) => {
+        logger.log("LedgerWallet:init:logs", data);
+      });
+    }
+
+    this.client = client;
+
+    return client;
   }
 
-  setDerivationPath(path: string) {
-    this.derivationPath = path;
+  setDerivationPath(derivationPath: string) {
+    this.derivationPath = derivationPath;
   }
 
-  async setAccountId(accountId: string) {
+  setAccountId(accountId: string) {
     this.accountId = accountId;
   }
 
-  async checkAccountId(accountId: string, publicKey: string) {
-    return this.provider
-      .viewAccessKey({ accountId, publicKey })
-      .then((res) => {
-        this.nonce = res.nonce;
-        return true;
-      })
-      .catch((err) => {
-        console.log(err);
-
-        return false;
-      });
-  }
-
-  setDebugMode(debugMode: boolean) {
-    this.debugMode = debugMode;
-  }
-
-  bip32PathToBytes(path: string) {
-    const parts = path.split("/");
-    return Buffer.concat(
-      parts
-        .map((part) =>
-          part.endsWith(`'`)
-            ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000
-            : Math.abs(parseInt(part))
-        )
-        .map((i32) =>
-          Buffer.from([
-            (i32 >> 24) & 0xff,
-            (i32 >> 16) & 0xff,
-            (i32 >> 8) & 0xff,
-            i32 & 0xff,
-          ])
-        )
-    );
-  }
-
-  private async sign(transactionData: Uint8Array) {
-    if (!this.transport) return;
-    const txData = Buffer.from(transactionData);
-    // 128 - 5 service bytes
-    const CHUNK_SIZE = 123;
-    const allData = Buffer.concat([
-      this.bip32PathToBytes(this.derivationPath),
-      txData,
-    ]);
-
-    for (let offset = 0; offset < allData.length; offset += CHUNK_SIZE) {
-      const chunk = Buffer.from(allData.subarray(offset, offset + CHUNK_SIZE));
-      const isLastChunk = offset + CHUNK_SIZE >= allData.length;
-      const response = await this.transport.send(
-        this.CLA,
-        this.SIGN_INS,
-        isLastChunk ? 0x80 : 0x0,
-        0x0,
-        chunk
-      );
-      if (isLastChunk) {
-        return Buffer.from(response.subarray(0, -2));
-      }
-    }
-
-    return Buffer.from([]);
-  }
-
-  async init() {
-    if (this.transport) return;
-
-    this.transport = await LedgerTransportWebHid.create().catch((err) => {
-      console.log(err);
-    });
-
-    if (!this.transport) {
-      throw new Error("Could not connect to Ledger device");
-    }
-
-    this.transport.setScrambleKey("NEAR");
-
-    this.transport.on("disconnect", (res: any) => {
-      console.log(res);
-    });
-  }
-
-  async disconnect() {
-    throw new Error("Not implemented");
-  }
-
-  async isConnected(): Promise<boolean> {
-    return false;
-  }
-
-  async signIn() {
-    await this.init();
-
+  async walletSelected() {
     updateState((prevState) => ({
       ...prevState,
       showWalletOptions: false,
       showLedgerDerivationPath: true,
     }));
+  }
 
-    let publicKeyString;
-    if (!this.publicKey) {
-      const pk = await this.generatePublicKey();
-      this.publicKey = pk;
-      publicKeyString = this.encodePublicKey(pk);
-      window.localStorage.setItem(
-        this.LEDGER_LOCALSTORAGE_PUBLIC_KEY,
-        publicKeyString
-      );
-    } else {
-      publicKeyString = this.encodePublicKey(this.publicKey);
+  isSignedIn() {
+    return !!this.accountId;
+  }
+
+  // TODO: Need to update state via WalletController.
+  async disconnect() {
+    for (const key in this.subscriptions) {
+      this.subscriptions[key].remove();
     }
-    window.localStorage.setItem(
-      this.LEDGER_LOCALSTORAGE_DERIVATION_PATH,
-      this.derivationPath
-    );
-    const hasPersmission = await this.checkAccountId(
-      this.accountId,
-      "ed25519:" + publicKeyString
-    );
 
-    if (!hasPersmission) {
-      throw new Error(
-        "You do not have permission to sign transactions for this account"
-      );
+    // Only close if we've already connected.
+    if (this.client) {
+      await this.client.disconnect();
+    }
+
+    this.emitter.emit("disconnect");
+  }
+
+  async isConnected(): Promise<boolean> {
+    return this.isSignedIn();
+  }
+
+  async validate({ accountId, derivationPath }: ValidateParams) {
+    logger.log("LedgerWallet:validate", { accountId, derivationPath });
+
+    const client = await this.getClient();
+
+    const publicKey = await client.getPublicKey({
+      derivationPath: derivationPath,
+    });
+
+    logger.log("LedgerWallet:validate:publicKey", { publicKey });
+
+    try {
+      const accessKey = await this.provider.viewAccessKey({
+        accountId,
+        publicKey,
+      });
+
+      logger.log("LedgerWallet:validate:accessKey", { accessKey });
+
+      return {
+        publicKey,
+        accessKey,
+      };
+    } catch (err) {
+      if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
+        return {
+          publicKey,
+          accessKey: null,
+        };
+      }
+
+      throw err;
     }
   }
 
-  async generatePublicKey() {
-    if (!this.transport) return;
+  async signIn() {
+    if (!this.accountId) {
+      throw new Error("No account id found");
+    }
 
-    const response = await this.transport.send(
-      this.CLA,
-      this.GET_ADDRESS_INS,
-      0x0,
-      0x0,
-      this.bip32PathToBytes(this.derivationPath)
-    );
+    if (!this.derivationPath) {
+      throw new Error("No derivation path found");
+    }
 
-    return response.subarray(0, -2);
+    // TODO: Need to store the access key permission in storage.
+    const { publicKey, accessKey } = await this.validate({
+      accountId: this.accountId,
+      derivationPath: this.derivationPath,
+    });
+
+    if (!accessKey) {
+      const ok = confirm(
+        `Your public key is not registered with the account '${this.accountId}'. Would you like to add it?`
+      );
+
+      if (ok) {
+        const state = getState();
+
+        // TODO: Need access to the real config.walletUrl.
+        const newUrl = new URL(
+          `https://wallet.${state.options.networkId}.near.org/login/`
+        );
+        newUrl.searchParams.set("success_url", window.location.href);
+        newUrl.searchParams.set("failure_url", window.location.href);
+        newUrl.searchParams.set("contract_id", state.options.accountId);
+        newUrl.searchParams.set("public_key", publicKey);
+
+        window.location.assign(newUrl.toString());
+        return;
+      }
+
+      throw new Error(
+        `Public key is not registered with the account '${this.accountId}'.`
+      );
+    }
+
+    localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
+    localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
+    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, publicKey);
+
+    await this.setWalletAsSignedIn();
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
+
+    this.emitter.emit("signIn");
   }
 
   async getAccount(): Promise<AccountInfo | null> {
@@ -244,63 +243,42 @@ export default class LedgerWallet
     };
   }
 
-  encodePublicKey(publicKey: Uint8Array) {
-    return bs58.encode(Buffer.from(publicKey));
-  }
-
-  // TODO: Refactor callContract into this new method.
-  async call({ receiverId, actions }: CallParams) {
-    console.log("LedgerWallet:call", { receiverId, actions });
-
-    // To keep the alias simple, lets just support a single action.
-    if (actions.length !== 1) {
-      throw new Error(
-        "Ledger Wallet implementation currently supports just one action"
-      );
+  async signAndSendTransaction({
+    receiverId,
+    actions,
+  }: SignAndSendTransactionParams) {
+    if (!this.accountId) {
+      throw new Error("No account id found");
     }
 
-    const action = actions[0];
+    if (!this.derivationPath) {
+      throw new Error("No derivation path found");
+    }
 
-    return this.callContract(
-      action.methodName,
-      action.args,
-      action.gas,
-      action.deposit
-    );
-  }
+    if (!this.publicKey) {
+      throw new Error("No public key found");
+    }
 
-  async callContract(
-    method: string,
-    args?: object,
-    gas = "10000000000000",
-    deposit = "0"
-  ) {
-    if (!args) args = [];
+    const client = await this.getClient();
 
-    const bnGas = new BN(gas.toString());
-    const bnDeposit = new BN(deposit.toString());
+    const [block, accessKey] = await Promise.all([
+      this.provider.block({ finality: "final" }),
+      this.provider.viewAccessKey({
+        accountId: this.accountId,
+        publicKey: this.publicKey,
+      }),
+    ]);
 
-    const response = await this.provider.block({ finality: "final" });
-
-    if (!response) return;
-
-    const recentBlockHash = utils.serialize.base_decode(response.header.hash);
-    const nonce = ++this.nonce;
-
-    const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
-
-    const pk = keyPair.getPublicKey();
-    pk.data = this.publicKey;
-
-    const actions = [transactions.functionCall(method, args, bnGas, bnDeposit)];
+    logger.log("LedgerWallet:call:block", block);
+    logger.log("LedgerWallet:call:accessKey", accessKey);
 
     const transaction = transactions.createTransaction(
       this.accountId,
-      pk,
-      this.options.accountId,
-      nonce,
+      utils.PublicKey.from(this.publicKey),
+      receiverId,
+      accessKey.nonce + 1,
       actions,
-      recentBlockHash
+      utils.serialize.base_decode(block.header.hash)
     );
 
     const serializedTx = utils.serialize.serialize(
@@ -308,9 +286,12 @@ export default class LedgerWallet
       transaction
     );
 
-    const signature = await this.sign(serializedTx);
+    const signature = await client.sign({
+      data: serializedTx,
+      derivationPath: this.derivationPath,
+    });
 
-    const signedTransaction = new transactions.SignedTransaction({
+    const signedTx = new transactions.SignedTransaction({
       transaction,
       signature: new transactions.Signature({
         keyType: transaction.publicKey.keyType,
@@ -318,18 +299,37 @@ export default class LedgerWallet
       }),
     });
 
-    const res = await this.provider.sendTransaction(signedTransaction);
-
-    if (typeof res.status !== "string") {
-      const successValue = res.status.SuccessValue || "";
+    return this.provider.sendTransaction(signedTx).then((res) => {
+      const successValue =
+        (typeof res.status !== "string" && res.status.SuccessValue) || "";
 
       if (successValue === "") {
         return null;
       }
 
       return JSON.parse(Buffer.from(successValue, "base64").toString());
-    }
+    });
+  }
 
-    return null;
+  transformActions(actions: Array<FunctionCallAction>) {
+    return actions.map((action) => {
+      return transactions.functionCall(
+        action.methodName,
+        action.args,
+        new BN(action.gas),
+        new BN(action.deposit)
+      );
+    });
+  }
+
+  async call({ receiverId, actions }: CallParams) {
+    logger.log("LedgerWallet:call", { receiverId, actions });
+
+    return this.signAndSendTransaction({
+      receiverId,
+      actions: this.transformActions(actions),
+    });
   }
 }
+
+export default LedgerWallet;
