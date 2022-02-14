@@ -188,7 +188,7 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
         );
         newUrl.searchParams.set("success_url", window.location.href);
         newUrl.searchParams.set("failure_url", window.location.href);
-        newUrl.searchParams.set("contract_id", this.options.accountId);
+        newUrl.searchParams.set("contract_id", this.options.contractId);
         newUrl.searchParams.set("public_key", publicKey);
 
         window.location.assign(newUrl.toString());

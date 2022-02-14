@@ -23,11 +23,7 @@ const near = new NearWalletSelector({
   wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
   networkId: "testnet",
   theme: "light",
-  contract: {
-    address: "guest-book.testnet",
-    viewMethods: ["getMessages"],
-    changeMethods: ["addMessage"],
-  },
+  contractId: "guest-book.testnet",
   walletSelectorUI: {
     description: "Please select a wallet to connect to this dApp:",
     explanation: [

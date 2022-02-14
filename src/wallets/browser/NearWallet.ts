@@ -49,7 +49,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
       await this.init();
     }
 
-    return this.wallet.requestSignIn(this.options.accountId);
+    return this.wallet.requestSignIn(this.options.contractId);
   }
 
   async disconnect() {

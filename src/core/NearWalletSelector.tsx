@@ -31,7 +31,7 @@ export interface Options {
     [name: string]: CustomWalletOptions;
   };
   theme: "dark" | "light" | null;
-  accountId: string;
+  contractId: string;
   walletSelectorUI: {
     description: string;
     explanation: string;

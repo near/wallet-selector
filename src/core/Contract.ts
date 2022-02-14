@@ -22,12 +22,12 @@ class Contract {
   }
 
   getAccountId() {
-    return this.options.accountId;
+    return this.options.contractId;
   }
 
   view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
     return this.provider.callFunction({
-      accountId: this.options.accountId,
+      accountId: this.options.contractId,
       methodName,
       args,
       finality,
@@ -45,7 +45,7 @@ class Contract {
     const instance = this.controller.getInstance(walletId)!;
 
     return instance.call({
-      receiverId: this.options.accountId,
+      receiverId: this.options.contractId,
       actions,
     });
   }
