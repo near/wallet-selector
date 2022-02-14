@@ -47,13 +47,13 @@ await near.init();
 Show modal:
 
 ```ts
-near.showModal();
+near.show();
 ```
 
 Hide modal:
 
 ```ts
-near.hideModal();
+near.hide();
 ```
 
 Is signed in:
