@@ -48,15 +48,15 @@ interface BaseWallet {
 
   // Determines if we've already signed in previously, before attempting a new connection.
   // - Hardware wallets: should defer an actual connection until user input is required (e.g. public key or signing).
-  connect(): Promise<void>;
+  signIn(): Promise<void>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
-  disconnect(): Promise<void>;
+  signOut(): Promise<void>;
 
   // Determines if we're signed in with the wallet.
   // - Hardware wallets: do we have a public key & accountId?
   // - isSignedIn is a common method in other wallets.
-  isConnected(): Promise<boolean>;
+  isSignedIn(): Promise<boolean>;
 
   // Retrieves account info based on associated accountId.
   getAccount(): Promise<AccountInfo | null>;

@@ -27,8 +27,8 @@ class WalletController {
     return wallets.map((wallet) => {
       return {
         ...wallet,
-        connect: () => {
-          return wallet.connect().then(() => {
+        signIn: () => {
+          return wallet.signIn().then(() => {
             localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, wallet.id);
 
             updateState((prevState) => ({
@@ -38,11 +38,11 @@ class WalletController {
               signedInWalletId: wallet.id,
             }));
 
-            this.emitter.emit("connect");
+            this.emitter.emit("signIn");
           });
         },
-        disconnect: () => {
-          return wallet.disconnect().then(() => {
+        signOut: () => {
+          return wallet.signOut().then(() => {
             window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
 
             updateState((prevState) => ({
@@ -51,7 +51,7 @@ class WalletController {
               isSignedIn: false,
             }));
 
-            this.emitter.emit("disconnect");
+            this.emitter.emit("signOut");
           });
         },
       };
@@ -114,20 +114,30 @@ class WalletController {
     return this.wallets;
   }
 
-  isSignedIn() {
-    const state = getState();
+  async signIn(walletId: BuiltInWalletId) {
+    const wallet = this.getWallet(walletId);
 
-    return state.isSignedIn;
+    if (!wallet) {
+      throw new Error(`Invalid built-in wallet '${walletId}'`);
+    }
+
+    await wallet.signIn();
   }
 
-  async disconnect() {
+  async signOut() {
     const wallet = this.getSelectedWallet();
 
     if (!wallet) {
       return;
     }
 
-    await wallet.disconnect();
+    await wallet.signOut();
+  }
+
+  isSignedIn() {
+    const state = getState();
+
+    return state.isSignedIn;
   }
 
   async getAccount() {

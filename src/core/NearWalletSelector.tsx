@@ -91,16 +91,20 @@ export default class NearWalletSelector {
     }));
   }
 
+  signIn(walletId: BuiltInWalletId) {
+    return this.controller.signIn(walletId);
+  }
+
+  signOut() {
+    return this.controller.signOut();
+  }
+
   isSignedIn() {
     return this.controller.isSignedIn();
   }
 
   getAccount() {
     return this.controller.getAccount();
-  }
-
-  signOut() {
-    return this.controller.disconnect();
   }
 
   on(event: EventList, callback: () => void) {

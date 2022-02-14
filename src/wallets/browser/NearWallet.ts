@@ -46,7 +46,7 @@ class NearWallet implements BrowserWallet {
     this.wallet = new WalletConnection(near, "near_app");
   };
 
-  connect = async () => {
+  signIn = async () => {
     if (!this.wallet) {
       await this.init();
     }
@@ -54,7 +54,7 @@ class NearWallet implements BrowserWallet {
     return this.wallet.requestSignIn(this.options.contract.accountId);
   };
 
-  disconnect = async () => {
+  signOut = async () => {
     if (!this.wallet) {
       return;
     }
@@ -62,7 +62,7 @@ class NearWallet implements BrowserWallet {
     this.wallet.signOut();
   };
 
-  isConnected = async () => {
+  isSignedIn = async () => {
     if (!this.wallet) {
       return false;
     }
@@ -71,9 +71,9 @@ class NearWallet implements BrowserWallet {
   };
 
   getAccount = async (): Promise<AccountInfo | null> => {
-    const connected = await this.isConnected();
+    const signedIn = await this.isSignedIn();
 
-    if (!connected) {
+    if (!signedIn) {
       return null;
     }
 

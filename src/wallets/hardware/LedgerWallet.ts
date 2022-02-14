@@ -76,7 +76,7 @@ class LedgerWallet implements HardwareWallet {
     this.subscriptions.disconnect = client.on("disconnect", (err) => {
       logger.error(err);
 
-      this.disconnect();
+      this.signOut();
     });
 
     if (this.debugMode) {
@@ -116,8 +116,8 @@ class LedgerWallet implements HardwareWallet {
     this.accountId = accountId;
   };
 
-  connect = async () => {
-    if (await this.isConnected()) {
+  signIn = async () => {
+    if (await this.isSignedIn()) {
       return;
     }
 
@@ -164,7 +164,7 @@ class LedgerWallet implements HardwareWallet {
     localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, this.publicKey);
   };
 
-  disconnect = async () => {
+  signOut = async () => {
     for (const key in this.subscriptions) {
       this.subscriptions[key].remove();
     }
@@ -183,7 +183,7 @@ class LedgerWallet implements HardwareWallet {
     }
   };
 
-  isConnected = async (): Promise<boolean> => {
+  isSignedIn = async (): Promise<boolean> => {
     return !!this.publicKey;
   };
 
@@ -223,10 +223,10 @@ class LedgerWallet implements HardwareWallet {
   };
 
   getAccount = async (): Promise<AccountInfo | null> => {
-    const connected = await this.isConnected();
+    const signedIn = await this.isSignedIn();
     const accountId = this.accountId;
 
-    if (!connected || !accountId) {
+    if (!signedIn || !accountId) {
       return null;
     }
 

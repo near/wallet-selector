@@ -73,7 +73,7 @@ class SenderWallet implements InjectedWallet {
       .then((res) => logger.log("SenderWallet:init", res));
   };
 
-  connect = async () => {
+  signIn = async () => {
     if (!this.isInstalled()) {
       return updateState((prevState) => ({
         ...prevState,
@@ -118,24 +118,25 @@ class SenderWallet implements InjectedWallet {
     return true;
   };
 
+  // TODO: Need to handle emitting this event.
   private onAccountChanged = () => {
     this.wallet.onAccountChanged(async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
 
       try {
-        await this.disconnect();
-        await this.connect();
+        await this.signOut();
+        await this.signIn();
       } catch (e) {
         logger.log(`Failed to change account ${e.message}`);
       }
     });
   };
 
-  isConnected = async () => {
+  isSignedIn = async () => {
     return this.wallet.isSignedIn();
   };
 
-  disconnect = async () => {
+  signOut = async () => {
     const res = await this.wallet.signOut();
 
     if (res.result !== "success") {
@@ -144,9 +145,9 @@ class SenderWallet implements InjectedWallet {
   };
 
   getAccount = async (): Promise<AccountInfo | null> => {
-    const connected = await this.isConnected();
+    const signedIn = await this.isSignedIn();
 
-    if (!connected) {
+    if (!signedIn) {
       return null;
     }
 

@@ -82,7 +82,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
       }));
     }
 
-    wallet.connect().catch((err) => {
+    wallet.signIn().catch((err) => {
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
     });
@@ -97,7 +97,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     wallet.setDerivationPath(ledgerDerivationPath);
     wallet.setAccountId(ledgerAccountId);
 
-    wallet.connect().catch((err) => setLedgerError(`Error: ${err.message}`));
+    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
   };
 
   return (
