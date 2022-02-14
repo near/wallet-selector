@@ -5,7 +5,7 @@ import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
-import { Options } from "../core/NearWalletSelector";
+import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
 import { Emitter } from "../utils/EventsHandler";
 
 class WalletController {
@@ -58,27 +58,27 @@ class WalletController {
     });
   }
 
+  lookupBuiltInWallet(walletId: BuiltInWalletId) {
+    switch (walletId) {
+      case "near-wallet":
+        return NearWallet;
+      case "sender-wallet":
+        return SenderWallet;
+      case "ledger-wallet":
+        return LedgerWallet;
+      default:
+        throw new Error(`Invalid built-in wallet '${walletId}'`);
+    }
+  }
+
   private getBuiltInWallets() {
     return this.options.wallets.map((walletId) => {
-      switch (walletId) {
-        case "near-wallet":
-          return new NearWallet({
-            options: this.options,
-            provider: this.provider,
-          });
-        case "sender-wallet":
-          return new SenderWallet({
-            options: this.options,
-            provider: this.provider,
-          });
-        case "ledger-wallet":
-          return new LedgerWallet({
-            options: this.options,
-            provider: this.provider,
-          });
-        default:
-          throw new Error(`Invalid wallet id '${walletId}'`);
-      }
+      const BuiltInWallet = this.lookupBuiltInWallet(walletId);
+
+      return new BuiltInWallet({
+        options: this.options,
+        provider: this.provider,
+      });
     });
   }
 
