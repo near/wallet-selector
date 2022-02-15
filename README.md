@@ -78,6 +78,12 @@ Is signed in:
 await near.isSignedIn();
 ```
 
+Get account:
+
+```ts
+const account = await near.getAccount();
+```
+
 Add event listeners:
 
 ```ts
