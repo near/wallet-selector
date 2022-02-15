@@ -6,18 +6,11 @@ import Contract from "./Contract";
 import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import getConfig from "../config";
+import getConfig, { NetworkId } from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 
 export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
-
-export type NetworkId =
-  | "mainnet"
-  | "testnet"
-  | "betanet"
-  | "ci-testnet"
-  | "ci-betanet";
 
 export interface Options {
   wallets: Array<BuiltInWalletId>;
