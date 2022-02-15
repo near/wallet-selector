@@ -125,7 +125,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                       key={id}
                       id={id}
                       className={selected ? "selected-wallet" : ""}
-                      onClick={handleWalletClick(wallet)}
+                      onClick={selected ? undefined : handleWalletClick(wallet)}
                     >
                       <div title={description || ""}>
                         <img src={iconUrl} alt={name} />
