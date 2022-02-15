@@ -94,6 +94,7 @@ class LedgerWallet implements HardwareWallet {
     return client;
   };
 
+  // TODO: Migrate to storage service (with JSON support).
   private getAuthData = (): AuthData | null => {
     const authData = localStorage.getItem(
       LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA
