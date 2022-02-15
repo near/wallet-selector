@@ -128,7 +128,6 @@ class LedgerWallet implements HardwareWallet {
       throw new Error("Invalid derivation path");
     }
 
-    // TODO: Need to store the access key permission in storage.
     const { publicKey, accessKey } = await this.validate({
       accountId: this.accountId,
       derivationPath: this.derivationPath,
@@ -138,10 +137,6 @@ class LedgerWallet implements HardwareWallet {
       throw new Error(
         `Public key is not registered with the account '${this.accountId}'.`
       );
-    }
-
-    if (accessKey.permission !== "FullAccess") {
-      throw new Error("Public key requires 'FullAccess' permission");
     }
 
     const authData: AuthData = {
@@ -198,13 +193,16 @@ class LedgerWallet implements HardwareWallet {
     logger.log("LedgerWallet:validate:publicKey", { publicKey });
 
     try {
-      // TODO: Ensure access key has FullAccess permission.
       const accessKey = await this.provider.viewAccessKey({
         accountId,
         publicKey,
       });
 
       logger.log("LedgerWallet:validate:accessKey", { accessKey });
+
+      if (accessKey.permission !== "FullAccess") {
+        throw new Error("Public key requires 'FullAccess' permission");
+      }
 
       return {
         publicKey,
