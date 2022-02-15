@@ -104,8 +104,6 @@ class LedgerWallet implements HardwareWallet {
 
   init = async () => {
     this.authData = this.getAuthData();
-
-    console.log("authData", this.authData);
   };
 
   setDerivationPath = (derivationPath: string) => {
