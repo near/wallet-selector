@@ -13,7 +13,7 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "jest",
-    "prepare": "npm run build"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
