@@ -20,11 +20,11 @@ Then use it in your dApp:
 import NearWalletSelector from "near-wallet-selector";
 
 const near = new NearWalletSelector({
-  wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
+  wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
   theme: "light",
   contract: {
-    address: "guest-book.testnet",
+    accountId: "guest-book.testnet",
     viewMethods: ["getMessages"],
     changeMethods: ["addMessage"],
   },
@@ -51,19 +51,19 @@ await near.init();
 Show modal:
 
 ```ts
-near.showModal();
+near.show();
 ```
 
 Hide modal:
 
 ```ts
-near.hideModal();
+near.hide();
 ```
 
-Is signed in:
+Sign in (programmatically):
 
 ```ts
-near.isSignedIn();
+await near.signIn("near-wallet");
 ```
 
 Sign out:
@@ -72,18 +72,52 @@ Sign out:
 await near.signOut();
 ```
 
-Add event listeners (disconnect, signIn):
+Is signed in:
+
+```ts
+await near.isSignedIn();
+```
+
+Get account:
+
+```ts
+const account = await near.getAccount();
+```
+
+Add event listeners:
 
 ```ts
 near.on("signIn", () => {
    // your code
 });
+
+near.on("signOut", () => {
+  // your code
+});
 ```
 
-Interact with smart contract:
+Remove event listeners:
 
 ```ts
+// Method 1:
+const subscription = near.on("signIn", () => {
+   // your code
+});
 
+subscription.remove();
+
+// Method 2:
+const handleSignIn = () => {
+  // your code
+}
+
+near.on("signIn", handleSignIn);
+near.off("signIn", handleSignIn);
+```
+
+Interact with the Smart Contract:
+
+```ts
 // Retrieve messages via RPC endpoint (view method).
 const messages = await near.contract.view({ methodName: "getMessages" });
 
@@ -96,6 +130,9 @@ await near.contract.call({
     deposit: "10000000000000000000000"
   }]
 });
+
+// Retrieve contract accountId.
+const accountId = near.contract.getAccountId();
 ```
 
 ## Example Integration

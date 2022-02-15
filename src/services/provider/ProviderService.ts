@@ -5,6 +5,7 @@ import {
   AccountView,
   BlockReference,
   QueryResponseKind,
+  Finality,
 } from "near-api-js/lib/providers/provider";
 import { SignedTransaction } from "near-api-js/lib/transaction";
 
@@ -14,6 +15,7 @@ export interface CallFunctionParams {
   accountId: string;
   methodName: string;
   args?: object;
+  finality?: Finality;
 }
 
 export interface ViewAccessKeyParams {
@@ -48,10 +50,11 @@ class ProviderService {
     accountId,
     methodName,
     args = {},
+    finality = "optimistic",
   }: CallFunctionParams) {
     return this.query<CodeResult>({
       request_type: "call_function",
-      finality: "optimistic",
+      finality,
       account_id: accountId,
       method_name: methodName,
       args_base64: this.encodeArgs(args),

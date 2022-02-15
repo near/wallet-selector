@@ -1,129 +1,165 @@
-import CustomWallet from "../wallets/CustomWallet";
 import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import { Emitter } from "../utils/EventsHandler";
-import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
-import EventList from "../types/EventList";
-import State from "../types/State";
 import ProviderService from "../services/provider/ProviderService";
+import { Wallet } from "../wallets/Wallet";
+import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
+import { Emitter } from "../utils/EventsHandler";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 
 class WalletController {
-  private emitter: Emitter;
+  private options: Options;
   private provider: ProviderService;
+  private emitter: Emitter;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    this.emitter = emitter;
+  private wallets: Array<Wallet>;
+
+  constructor(options: Options, provider: ProviderService, emitter: Emitter) {
+    this.options = options;
     this.provider = provider;
+    this.emitter = emitter;
 
-    this.generateDefaultWallets();
-    this.generateCustomWallets();
+    this.wallets = [];
   }
 
-  private generateDefaultWallets() {
-    const state = getState();
+  private decorateWallets(wallets: Array<Wallet>) {
+    return wallets.map((wallet) => {
+      return {
+        ...wallet,
+        signIn: async () => {
+          const selectedWallet = this.getSelectedWallet();
 
-    const walletProviders = state.options.wallets.reduce<
-      State["walletProviders"]
-    >((result, wallet) => {
-      switch (wallet) {
-        case "nearwallet":
-          result.nearwallet = new NearWallet(this.emitter, this.provider);
-          break;
-        case "senderwallet":
-          result.senderwallet = new SenderWallet(this.emitter, this.provider);
-          break;
-        case "ledgerwallet":
-          result.ledgerwallet = new LedgerWallet(this.emitter, this.provider);
-          break;
-        default:
-          break;
-      }
-      return result;
-    }, {});
+          if (selectedWallet) {
+            if (wallet.id === selectedWallet.id) {
+              return;
+            }
 
-    updateState((prevState) => ({
-      ...prevState,
-      walletProviders: {
-        ...prevState.walletProviders,
-        ...walletProviders,
-      },
-    }));
+            await selectedWallet.signOut();
+          }
+
+          return wallet.signIn();
+        },
+      };
+    });
   }
 
-  private generateCustomWallets() {
-    const state = getState();
-
-    for (const id in state.options.customWallets) {
-      if (state.walletProviders[id]) {
-        throw new Error(
-          `Failed to add custom wallet. A wallet with the id '${id}' already exists`
-        );
-      }
-
-      const options = state.options.customWallets[id];
-
-      state.walletProviders[id] = new CustomWallet(
-        this.emitter,
-        this.provider,
-        options
-      );
+  private lookupBuiltInWallet(walletId: BuiltInWalletId) {
+    switch (walletId) {
+      case "near-wallet":
+        return NearWallet;
+      case "sender-wallet":
+        return SenderWallet;
+      case "ledger-wallet":
+        return LedgerWallet;
+      default:
+        throw new Error(`Invalid built-in wallet '${walletId}'`);
     }
   }
 
-  showModal() {
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: true,
-      showWalletOptions: true,
-      showLedgerDerivationPath: false,
-      showSenderWalletNotInstalled: false,
-      showSwitchNetwork: false,
-    }));
+  private getBuiltInWallets() {
+    return this.options.wallets.map((walletId) => {
+      const BuiltInWallet = this.lookupBuiltInWallet(walletId);
+
+      return new BuiltInWallet({
+        options: this.options,
+        provider: this.provider,
+        emitter: this.emitter,
+      });
+    });
   }
 
-  hideModal() {
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
+  // TODO: Migrate to storage service (with JSON support).
+  private getSelectedWalletId() {
+    const selectedWalletId = localStorage.getItem(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
+
+    return selectedWalletId ? JSON.parse(selectedWalletId) : null;
   }
 
-  isSignedIn() {
+  async init() {
+    this.wallets = this.decorateWallets(this.getBuiltInWallets());
+
+    const selectedWalletId = this.getSelectedWalletId();
+    const wallet = this.getWallet(selectedWalletId);
+
+    if (wallet) {
+      await wallet.init();
+      const signedIn = await wallet.isSignedIn();
+
+      if (signedIn) {
+        updateState((prevState) => ({
+          ...prevState,
+          selectedWalletId,
+        }));
+
+        return;
+      }
+    }
+
+    if (selectedWalletId) {
+      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+    }
+  }
+
+  getSelectedWallet() {
     const state = getState();
-    return state.isSignedIn;
+    const walletId = state.selectedWalletId;
+
+    return this.getWallet(walletId);
+  }
+
+  private getWallet(walletId: string | null) {
+    if (!walletId) {
+      return null;
+    }
+
+    return this.wallets.find((x) => x.id === walletId) || null;
+  }
+
+  getWallets() {
+    return this.wallets;
+  }
+
+  async signIn(walletId: BuiltInWalletId) {
+    const wallet = this.getWallet(walletId);
+
+    if (!wallet) {
+      throw new Error(`Invalid built-in wallet '${walletId}'`);
+    }
+
+    return wallet.signIn();
   }
 
   async signOut() {
-    const state = getState();
+    const wallet = this.getSelectedWallet();
 
-    if (state.signedInWalletId) {
-      await state.walletProviders[state.signedInWalletId].disconnect();
+    if (!wallet) {
+      return;
     }
 
-    window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+    return wallet.signOut();
+  }
 
-    updateState((prevState) => ({
-      ...prevState,
-      signedInWalletId: null,
-      isSignedIn: false,
-    }));
+  isSignedIn() {
+    const wallet = this.getSelectedWallet();
 
-    this.emitter.emit("disconnect");
+    if (!wallet) {
+      return false;
+    }
+
+    return wallet.isSignedIn();
   }
 
   async getAccount() {
-    const state = getState();
+    const wallet = this.getSelectedWallet();
 
-    if (state.signedInWalletId !== null) {
-      return state.walletProviders[state.signedInWalletId].getAccount();
+    if (!wallet) {
+      return null;
     }
-    return null;
-  }
 
-  on(event: EventList, callback: () => void) {
-    this.emitter.on(event, callback);
+    return wallet.getAccount();
   }
 }
 

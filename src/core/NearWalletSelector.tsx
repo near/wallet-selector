@@ -1,83 +1,110 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Options from "../types/Options";
 import WalletController from "../controllers/WalletController";
-import { getState, updateState } from "../state/State";
 import Contract from "./Contract";
-import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter } from "../utils/EventsHandler";
-import EventList from "../types/EventList";
-import getConfig from "../config";
+import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
+import getConfig, { NetworkId } from "../config";
 import ProviderService from "../services/provider/ProviderService";
+import { updateState } from "../state/State";
+import { MODAL_ELEMENT_ID } from "../constants";
+
+export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+
+export interface Options {
+  wallets: Array<BuiltInWalletId>;
+  networkId: NetworkId;
+  theme: "dark" | "light" | null;
+  contract: {
+    accountId: string;
+    viewMethods?: Array<string>;
+    changeMethods?: Array<string>;
+  };
+  walletSelectorUI: {
+    description: string;
+    explanation: string;
+  };
+}
 
 export default class NearWalletSelector {
-  private walletController: WalletController;
+  private options: Options;
+
   private emitter: Emitter;
-  private provider: ProviderService;
+  private controller: WalletController;
 
   contract: Contract;
 
   constructor(options: Options) {
-    if (options) {
-      updateState((prevState) => ({
-        ...prevState,
-        options: {
-          ...prevState.options,
-          ...options,
-        },
-      }));
-    }
-
     const config = getConfig(options.networkId);
 
-    this.emitter = new EventHandler();
-    this.provider = new ProviderService(config.nodeUrl);
-    this.walletController = new WalletController(this.emitter, this.provider);
+    const emitter = new EventHandler();
+    const provider = new ProviderService(config.nodeUrl);
+    const controller = new WalletController(options, provider, emitter);
+    const contract = new Contract(options, provider, controller);
 
-    this.contract = new Contract(options.accountId, this.provider);
+    this.options = options;
+    this.emitter = emitter;
+    this.controller = controller;
+    this.contract = contract;
   }
 
-  async init() {
-    const state = getState();
-
-    if (state.signedInWalletId) {
-      await state.walletProviders[state.signedInWalletId].init();
-    }
-
-    this.renderModal();
-  }
-
-  renderModal() {
+  private renderModal() {
     const el = document.createElement("div");
     el.id = MODAL_ELEMENT_ID;
     document.body.appendChild(el);
 
-    ReactDOM.render(<Modal />, document.getElementById(MODAL_ELEMENT_ID));
+    ReactDOM.render(
+      <Modal options={this.options} wallets={this.controller.getWallets()} />,
+      document.getElementById(MODAL_ELEMENT_ID)
+    );
   }
 
-  showModal() {
-    this.walletController.showModal();
+  async init() {
+    await this.controller.init();
+
+    this.renderModal();
   }
 
-  hideModal() {
-    this.walletController.hideModal();
+  show() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: true,
+      showWalletOptions: true,
+      showLedgerDerivationPath: false,
+      showSenderWalletNotInstalled: false,
+      showSwitchNetwork: false,
+    }));
   }
 
-  isSignedIn() {
-    return this.walletController.isSignedIn();
+  hide() {
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+    }));
+  }
+
+  signIn(walletId: BuiltInWalletId) {
+    return this.controller.signIn(walletId);
   }
 
   signOut() {
-    return this.walletController.signOut();
+    return this.controller.signOut();
+  }
+
+  isSignedIn() {
+    return this.controller.isSignedIn();
   }
 
   getAccount() {
-    return this.walletController.getAccount();
+    return this.controller.getAccount();
   }
 
   on(event: EventList, callback: () => void) {
     this.emitter.on(event, callback);
+  }
+
+  off(event: EventList, callback: () => void) {
+    this.emitter.off(event, callback);
   }
 }
