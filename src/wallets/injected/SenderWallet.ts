@@ -8,6 +8,7 @@ import { Options } from "../../core/NearWalletSelector";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { setSelectedWalletId } from "../helpers";
 import {
   AccountInfo,
   InjectedWallet,
@@ -102,6 +103,9 @@ class SenderWallet implements InjectedWallet {
     if (!accessKey) {
       throw new Error("Failed to sign in");
     }
+
+    setSelectedWalletId(this.id);
+    this.emitter.emit("signIn");
   };
 
   private timeout = (ms: number) => {
@@ -128,8 +132,6 @@ class SenderWallet implements InjectedWallet {
       try {
         await this.signOut();
         await this.signIn();
-
-        this.emitter.emit("accountChange");
       } catch (e) {
         logger.log(`Failed to change account ${e.message}`);
       }
@@ -146,6 +148,9 @@ class SenderWallet implements InjectedWallet {
     if (res.result !== "success") {
       throw new Error("Failed to sign out");
     }
+
+    setSelectedWalletId(null);
+    this.emitter.emit("signOut");
   };
 
   getAccount = async (): Promise<AccountInfo | null> => {

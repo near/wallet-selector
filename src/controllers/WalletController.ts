@@ -38,32 +38,7 @@ class WalletController {
             await selectedWallet.signOut();
           }
 
-          return wallet.signIn().then(() => {
-            localStorage.setItem(
-              LOCAL_STORAGE_SELECTED_WALLET_ID,
-              JSON.stringify(wallet.id)
-            );
-
-            updateState((prevState) => ({
-              ...prevState,
-              showModal: false,
-              selectedWalletId: wallet.id,
-            }));
-
-            this.emitter.emit("signIn");
-          });
-        },
-        signOut: () => {
-          return wallet.signOut().then(() => {
-            window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
-
-            updateState((prevState) => ({
-              ...prevState,
-              selectedWalletId: null,
-            }));
-
-            this.emitter.emit("signOut");
-          });
+          return wallet.signIn();
         },
       };
     });

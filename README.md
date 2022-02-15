@@ -94,10 +94,6 @@ near.on("signIn", () => {
 near.on("signOut", () => {
   // your code
 });
-
-near.on("accountChange", () => {
-  // your code
-});
 ```
 
 Remove event listeners:

@@ -8,7 +8,9 @@ import BN from "bn.js";
 
 import getConfig from "../../config";
 import { Options } from "../../core/NearWalletSelector";
+import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { setSelectedWalletId } from "../helpers";
 import {
   AccountInfo,
   BrowserWallet,
@@ -17,10 +19,13 @@ import {
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 
 class NearWallet implements BrowserWallet {
-  private options: Options;
   private wallet: WalletConnection;
+
+  private options: Options;
+  private emitter: Emitter;
 
   id = "near-wallet";
   type: BrowserWalletType = "browser";
@@ -28,8 +33,9 @@ class NearWallet implements BrowserWallet {
   description = null;
   iconUrl = "https://cryptologos.cc/logos/near-protocol-near-logo.png";
 
-  constructor({ options }: WalletOptions) {
+  constructor({ options, emitter }: WalletOptions) {
     this.options = options;
+    this.emitter = emitter;
   }
 
   isAvailable = () => {
@@ -46,12 +52,20 @@ class NearWallet implements BrowserWallet {
     this.wallet = new WalletConnection(near, "near_app");
   };
 
+  // We don't emit "signIn" or update state as we can't guarantee the user will
+  // actually sign in. Best we can do is temporarily set it as selected and
+  // validate on initialise.
   signIn = async () => {
     if (!this.wallet) {
       await this.init();
     }
 
-    return this.wallet.requestSignIn(this.options.contract.accountId);
+    await this.wallet.requestSignIn(this.options.contract.accountId);
+
+    localStorage.setItem(
+      LOCAL_STORAGE_SELECTED_WALLET_ID,
+      JSON.stringify(this.id)
+    );
   };
 
   signOut = async () => {
@@ -60,6 +74,9 @@ class NearWallet implements BrowserWallet {
     }
 
     this.wallet.signOut();
+
+    setSelectedWalletId(null);
+    this.emitter.emit("signOut");
   };
 
   isSignedIn = async () => {
