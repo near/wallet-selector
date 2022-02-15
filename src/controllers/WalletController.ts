@@ -27,7 +27,17 @@ class WalletController {
     return wallets.map((wallet) => {
       return {
         ...wallet,
-        signIn: () => {
+        signIn: async () => {
+          const selectedWallet = this.getSelectedWallet();
+
+          if (selectedWallet) {
+            if (wallet.id === selectedWallet.id) {
+              return;
+            }
+
+            await selectedWallet.signOut();
+          }
+
           return wallet.signIn().then(() => {
             localStorage.setItem(
               LOCAL_STORAGE_SELECTED_WALLET_ID,
