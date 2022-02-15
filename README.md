@@ -78,15 +78,42 @@ Is signed in:
 await near.isSignedIn();
 ```
 
-Add event listeners (`signIn`, `accountChange` & `signOut`):
+Add event listeners:
 
 ```ts
 near.on("signIn", () => {
    // your code
 });
+
+near.on("signOut", () => {
+  // your code
+});
+
+near.on("accountChange", () => {
+  // your code
+});
 ```
 
-Interact with smart contract:
+Remove event listeners:
+
+```ts
+// Method 1:
+const subscription = near.on("signIn", () => {
+   // your code
+});
+
+subscription.remove();
+
+// Method 2:
+const handleSignIn = () => {
+  // your code
+}
+
+near.on("signIn", handleSignIn);
+near.off("signIn", handleSignIn);
+```
+
+Interact with the Smart Contract:
 
 ```ts
 // Retrieve messages via RPC endpoint (view method).
@@ -101,6 +128,9 @@ await near.contract.call({
     deposit: "10000000000000000000000"
   }]
 });
+
+// Retrieve contract accountId.
+const accountId = near.contract.getAccountId();
 ```
 
 ## Example Integration

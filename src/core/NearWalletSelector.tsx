@@ -110,4 +110,8 @@ export default class NearWalletSelector {
   on(event: EventList, callback: () => void) {
     this.emitter.on(event, callback);
   }
+
+  off(event: EventList, callback: () => void) {
+    this.emitter.off(event, callback);
+  }
 }

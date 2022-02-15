@@ -30,24 +30,36 @@ const App = ({ near, initialAccount }) => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     near.contract.view({ methodName: "getMessages" }).then(setMessages);
+  }, []);
 
-    near.on("signIn", () => {
+  useEffect(() => {
+    const subscription = near.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
       getAccount();
     });
 
-    near.on("accountChange", () => {
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    const subscription = near.on("accountChange", () => {
       console.log("'accountChange' event triggered!");
 
       setAccount(null);
       getAccount();
     });
 
-    near.on("signOut", () => {
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    const subscription = near.on("signOut", () => {
       console.log("'signOut' event triggered!");
       setAccount(null);
     });
+
+    return () => subscription.remove();
   }, []);
 
   const onSubmit = (e) => {
