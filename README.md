@@ -60,7 +60,7 @@ Hide modal:
 near.hide();
 ```
 
-Sign in:
+Sign in (programmatically):
 
 ```ts
 await near.signIn("near-wallet");

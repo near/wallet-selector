@@ -15,18 +15,6 @@ const App = ({ near, initialAccount }) => {
   const [account, setAccount] = useState(initialAccount);
   const [messages, setMessages] = useState([]);
 
-  const getAccount = () => {
-    near.getAccount()
-      .then((data) => {
-        console.log("Account", data);
-        setAccount(data);
-      })
-      .catch((err) => {
-        console.log("Failed to retrieve account info");
-        console.error(err);
-      });
-  };
-
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     near.contract.view({ methodName: "getMessages" }).then(setMessages);
@@ -36,18 +24,15 @@ const App = ({ near, initialAccount }) => {
     const subscription = near.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
-      getAccount();
-    });
-
-    return () => subscription.remove();
-  }, []);
-
-  useEffect(() => {
-    const subscription = near.on("accountChange", () => {
-      console.log("'accountChange' event triggered!");
-
-      setAccount(null);
-      getAccount();
+      near.getAccount()
+        .then((data) => {
+          console.log("Account", data);
+          setAccount(data);
+        })
+        .catch((err) => {
+          console.log("Failed to retrieve account info");
+          console.error(err);
+        });
     });
 
     return () => subscription.remove();
