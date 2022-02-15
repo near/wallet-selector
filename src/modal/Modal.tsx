@@ -183,7 +183,7 @@ const Modal: React.FC = () => {
                 onClick={handleConnectClick}
                 disabled={isLoading}
               >
-                {isLoading ? "Loading..." : "Connect"}
+                {isLoading ? "Connecting..." : "Connect"}
               </button>
             </div>
           </div>
