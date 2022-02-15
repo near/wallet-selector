@@ -2,9 +2,9 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
-import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
 import { Options } from "../core/NearWalletSelector";
 import { HardwareWallet, Wallet } from "../wallets/Wallet";
+import { DEFAULT_DERIVATION_PATH } from "../constants";
 
 declare global {
   // tslint:disable-next-line
@@ -118,7 +118,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                 .filter((wallet) => wallet.isAvailable())
                 .map((wallet) => {
                   const { id, name, description, iconUrl } = wallet;
-                  const selected = state.signedInWalletId === id;
+                  const selected = state.selectedWalletId === id;
 
                   return (
                     <li

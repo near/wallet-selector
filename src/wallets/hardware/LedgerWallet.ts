@@ -15,11 +15,13 @@ import {
   WalletOptions,
 } from "../Wallet";
 import getConfig from "../../config";
+import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "../../constants";
 
-const LOCAL_STORAGE_ACCOUNT_ID = "ledgerAccountId";
-const LOCAL_STORAGE_DERIVATION_PATH = "ledgerDerivationPath";
-const LOCAL_STORAGE_PUBLIC_KEY = "ledgerPublicKey";
-export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
+interface AuthData {
+  accountId: string;
+  derivationPath: string;
+  publicKey: string;
+}
 
 interface ValidateParams {
   accountId: string;
@@ -32,9 +34,11 @@ class LedgerWallet implements HardwareWallet {
   private provider: ProviderService;
   private options: Options;
 
+  private authData: AuthData | null;
+
+  // Temporary values before committing to authData.
   private accountId: string | null;
   private derivationPath: string | null;
-  private publicKey: string | null;
 
   private debugMode = false;
 
@@ -90,22 +94,18 @@ class LedgerWallet implements HardwareWallet {
     return client;
   };
 
+  private getAuthData = (): AuthData | null => {
+    const authData = localStorage.getItem(
+      LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA
+    );
+
+    return authData ? JSON.parse(authData) : null;
+  };
+
   init = async () => {
-    const accountId = localStorage.getItem(LOCAL_STORAGE_ACCOUNT_ID);
-    const publicKey = localStorage.getItem(LOCAL_STORAGE_PUBLIC_KEY);
-    const derivationPath = localStorage.getItem(LOCAL_STORAGE_DERIVATION_PATH);
+    this.authData = this.getAuthData();
 
-    if (!this.accountId) {
-      this.accountId = accountId;
-    }
-
-    if (!this.publicKey) {
-      this.publicKey = publicKey;
-    }
-
-    if (!this.derivationPath) {
-      this.derivationPath = derivationPath || DEFAULT_DERIVATION_PATH;
-    }
+    console.log("authData", this.authData);
   };
 
   setDerivationPath = (derivationPath: string) => {
@@ -157,11 +157,20 @@ class LedgerWallet implements HardwareWallet {
       );
     }
 
-    this.publicKey = publicKey;
+    const authData: AuthData = {
+      accountId: this.accountId,
+      derivationPath: this.derivationPath,
+      publicKey,
+    };
 
-    localStorage.setItem(LOCAL_STORAGE_ACCOUNT_ID, this.accountId);
-    localStorage.setItem(LOCAL_STORAGE_DERIVATION_PATH, this.derivationPath);
-    localStorage.setItem(LOCAL_STORAGE_PUBLIC_KEY, this.publicKey);
+    localStorage.setItem(
+      LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA,
+      JSON.stringify(authData)
+    );
+
+    this.authData = authData;
+    this.accountId = null;
+    this.derivationPath = null;
   };
 
   signOut = async () => {
@@ -169,13 +178,10 @@ class LedgerWallet implements HardwareWallet {
       this.subscriptions[key].remove();
     }
 
-    localStorage.removeItem(LOCAL_STORAGE_ACCOUNT_ID);
-    localStorage.removeItem(LOCAL_STORAGE_DERIVATION_PATH);
-    localStorage.removeItem(LOCAL_STORAGE_PUBLIC_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
 
     this.accountId = null;
     this.derivationPath = null;
-    this.publicKey = null;
 
     // Only close if we've already connected.
     if (this.client) {
@@ -184,7 +190,7 @@ class LedgerWallet implements HardwareWallet {
   };
 
   isSignedIn = async (): Promise<boolean> => {
-    return !!this.publicKey;
+    return !!this.authData;
   };
 
   private validate = async ({ accountId, derivationPath }: ValidateParams) => {
@@ -199,6 +205,7 @@ class LedgerWallet implements HardwareWallet {
     logger.log("LedgerWallet:validate:publicKey", { publicKey });
 
     try {
+      // TODO: Ensure access key has FullAccess permission.
       const accessKey = await this.provider.viewAccessKey({
         accountId,
         publicKey,
@@ -224,7 +231,7 @@ class LedgerWallet implements HardwareWallet {
 
   getAccount = async (): Promise<AccountInfo | null> => {
     const signedIn = await this.isSignedIn();
-    const accountId = this.accountId;
+    const accountId = this.authData?.accountId;
 
     if (!signedIn || !accountId) {
       return null;
@@ -255,34 +262,24 @@ class LedgerWallet implements HardwareWallet {
   }: SignAndSendTransactionParams) => {
     logger.log("LedgerWallet:signAndSendTransaction", { receiverId, actions });
 
-    if (!this.accountId) {
-      throw new Error("No account id found");
+    if (!this.authData) {
+      throw new Error("Not signed in");
     }
 
-    if (!this.derivationPath) {
-      throw new Error("No derivation path found");
-    }
-
-    if (!this.publicKey) {
-      throw new Error("No public key found");
-    }
-
+    const { accountId, derivationPath, publicKey } = this.authData;
     const client = await this.getClient();
 
     const [block, accessKey] = await Promise.all([
       this.provider.block({ finality: "final" }),
-      this.provider.viewAccessKey({
-        accountId: this.accountId,
-        publicKey: this.publicKey,
-      }),
+      this.provider.viewAccessKey({ accountId, publicKey }),
     ]);
 
     logger.log("LedgerWallet:signAndSendTransaction:block", block);
     logger.log("LedgerWallet:signAndSendTransaction:accessKey", accessKey);
 
     const transaction = transactions.createTransaction(
-      this.accountId,
-      utils.PublicKey.from(this.publicKey),
+      accountId,
+      utils.PublicKey.from(publicKey),
       receiverId,
       accessKey.nonce + 1,
       this.transformActions(actions),
@@ -294,10 +291,7 @@ class LedgerWallet implements HardwareWallet {
       transaction
     );
 
-    const signature = await client.sign({
-      data: serializedTx,
-      derivationPath: this.derivationPath,
-    });
+    const signature = await client.sign({ data: serializedTx, derivationPath });
 
     const signedTx = new transactions.SignedTransaction({
       transaction,

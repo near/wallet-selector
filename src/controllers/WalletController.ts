@@ -2,11 +2,11 @@ import { getState, updateState } from "../state/State";
 import NearWallet from "../wallets/browser/NearWallet";
 import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
-import { LOCALSTORAGE_SIGNED_IN_WALLET_KEY } from "../constants";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
 import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
 import { Emitter } from "../utils/EventsHandler";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 
 class WalletController {
   private options: Options;
@@ -29,13 +29,15 @@ class WalletController {
         ...wallet,
         signIn: () => {
           return wallet.signIn().then(() => {
-            localStorage.setItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY, wallet.id);
+            localStorage.setItem(
+              LOCAL_STORAGE_SELECTED_WALLET_ID,
+              JSON.stringify(wallet.id)
+            );
 
             updateState((prevState) => ({
               ...prevState,
               showModal: false,
-              isSignedIn: true,
-              signedInWalletId: wallet.id,
+              selectedWalletId: wallet.id,
             }));
 
             this.emitter.emit("signIn");
@@ -43,12 +45,11 @@ class WalletController {
         },
         signOut: () => {
           return wallet.signOut().then(() => {
-            window.localStorage.removeItem(LOCALSTORAGE_SIGNED_IN_WALLET_KEY);
+            window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
 
             updateState((prevState) => ({
               ...prevState,
-              signedInWalletId: null,
-              isSignedIn: false,
+              selectedWalletId: null,
             }));
 
             this.emitter.emit("signOut");
@@ -83,31 +84,51 @@ class WalletController {
     });
   }
 
+  private getSelectedWalletId() {
+    const selectedWalletId = localStorage.getItem(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
+
+    return selectedWalletId ? JSON.parse(selectedWalletId) : null;
+  }
+
   async init() {
     this.wallets = this.decorateWallets(this.getBuiltInWallets());
 
-    const state = getState();
-    const walletId = state.signedInWalletId;
+    const selectedWalletId = this.getSelectedWalletId();
+    const wallet = this.getWallet(selectedWalletId);
 
-    if (walletId) {
-      const wallet = this.getWallet(walletId)!;
-
+    if (wallet) {
       await wallet.init();
+      const signedIn = await wallet.isSignedIn();
+
+      if (signedIn) {
+        updateState((prevState) => ({
+          ...prevState,
+          selectedWalletId,
+        }));
+
+        return;
+      }
+    }
+
+    if (selectedWalletId) {
+      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
     }
   }
 
   getSelectedWallet() {
     const state = getState();
-    const walletId = state.signedInWalletId;
-
-    if (!walletId) {
-      return null;
-    }
+    const walletId = state.selectedWalletId;
 
     return this.getWallet(walletId);
   }
 
-  private getWallet(walletId: string) {
+  private getWallet(walletId: string | null) {
+    if (!walletId) {
+      return null;
+    }
+
     return this.wallets.find((x) => x.id === walletId) || null;
   }
 
@@ -122,7 +143,7 @@ class WalletController {
       throw new Error(`Invalid built-in wallet '${walletId}'`);
     }
 
-    await wallet.signIn();
+    return wallet.signIn();
   }
 
   async signOut() {
@@ -132,13 +153,17 @@ class WalletController {
       return;
     }
 
-    await wallet.signOut();
+    return wallet.signOut();
   }
 
   isSignedIn() {
-    const state = getState();
+    const wallet = this.getSelectedWallet();
 
-    return state.isSignedIn;
+    if (!wallet) {
+      return false;
+    }
+
+    return wallet.isSignedIn();
   }
 
   async getAccount() {

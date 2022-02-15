@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 
 import WalletController from "../controllers/WalletController";
 import Contract from "./Contract";
-import { MODAL_ELEMENT_ID } from "../constants";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
 import getConfig, { NetworkId } from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
+import { MODAL_ELEMENT_ID } from "../constants";
 
 export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
 
