@@ -142,19 +142,9 @@ class LedgerWallet extends HardwareWallet implements ILedgerWallet {
 
     const client = await this.getClient();
 
-    updateState((prevState) => ({
-      ...prevState,
-      loading: true,
-    }));
-
     const publicKey = await client.getPublicKey({
       derivationPath: derivationPath,
     });
-
-    updateState((prevState) => ({
-      ...prevState,
-      loading: false,
-    }));
 
     logger.log("LedgerWallet:validate:publicKey", { publicKey });
 

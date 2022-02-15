@@ -38,6 +38,7 @@ const Modal: React.FC = () => {
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultDescription = "Please select a wallet to connect to this dApp:";
 
@@ -75,12 +76,16 @@ const Modal: React.FC = () => {
   };
 
   const handleConnectClick = useCallback(async () => {
+    setIsLoading(true);
     const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
 
     wallet.setDerivationPath(ledgerDerivationPath);
     wallet.setAccountId(ledgerAccountId);
 
-    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
+    await wallet
+      .signIn()
+      .catch((err) => setLedgerError(`Error: ${err.message}`));
+    setIsLoading(false);
   }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
 
   return (
@@ -152,6 +157,7 @@ const Modal: React.FC = () => {
                   autoFocus={true}
                   value={ledgerAccountId}
                   onChange={handleAccountIdChange}
+                  readOnly={isLoading}
                 />
               </div>
               <input
@@ -160,19 +166,24 @@ const Modal: React.FC = () => {
                 placeholder="Derivation Path"
                 value={ledgerDerivationPath}
                 onChange={handleDerivationPathChange}
+                readOnly={isLoading}
               />
               {ledgerError && <p className="error">{ledgerError}</p>}
             </div>
             <div className="derivation-paths--actions">
-              <button className="left-button" onClick={handleDismissClick}>
+              <button
+                className="left-button"
+                onClick={handleDismissClick}
+                disabled={isLoading}
+              >
                 Dismiss
               </button>
               <button
                 className="right-button"
                 onClick={handleConnectClick}
-                disabled={state.loading}
+                disabled={isLoading}
               >
-                {state.loading ? "Loading..." : "Connect"}
+                {isLoading ? "Loading..." : "Connect"}
               </button>
             </div>
           </div>
