@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 
 // TODO: Move away from hardcoded event types in this util.
-export type EventList = "signIn" | "signOut";
+export type EventList = "signIn" | "accountChange" | "signOut";
 
 type EventMap = Record<EventList, unknown>;
 

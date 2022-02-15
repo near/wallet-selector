@@ -4,8 +4,9 @@ import InjectedSenderWallet, {
   GetRpcResponse,
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
-import ProviderService from "../../services/provider/ProviderService";
 import { Options } from "../../core/NearWalletSelector";
+import ProviderService from "../../services/provider/ProviderService";
+import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
 import {
   AccountInfo,
@@ -23,8 +24,9 @@ declare global {
 
 class SenderWallet implements InjectedWallet {
   private wallet: InjectedSenderWallet;
-  private provider: ProviderService;
   private options: Options;
+  private provider: ProviderService;
+  private emitter: Emitter;
 
   id = "sender-wallet";
   type: InjectedWalletType = "injected";
@@ -32,9 +34,10 @@ class SenderWallet implements InjectedWallet {
   description = null;
   iconUrl = "https://senderwallet.io/logo.png";
 
-  constructor({ options, provider }: WalletOptions) {
+  constructor({ options, provider, emitter }: WalletOptions) {
     this.options = options;
     this.provider = provider;
+    this.emitter = emitter;
   }
 
   isAvailable = () => {
@@ -118,7 +121,6 @@ class SenderWallet implements InjectedWallet {
     return true;
   };
 
-  // TODO: Need to handle emitting this event.
   private onAccountChanged = () => {
     this.wallet.onAccountChanged(async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
@@ -126,6 +128,8 @@ class SenderWallet implements InjectedWallet {
       try {
         await this.signOut();
         await this.signIn();
+
+        this.emitter.emit("accountChange");
       } catch (e) {
         logger.log(`Failed to change account ${e.message}`);
       }

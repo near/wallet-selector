@@ -78,7 +78,7 @@ Is signed in:
 await near.isSignedIn();
 ```
 
-Add event listeners (`signIn` & `signOut`):
+Add event listeners (`signIn`, `accountChange` & `signOut`):
 
 ```ts
 near.on("signIn", () => {
@@ -89,7 +89,6 @@ near.on("signIn", () => {
 Interact with smart contract:
 
 ```ts
-
 // Retrieve messages via RPC endpoint (view method).
 const messages = await near.contract.view({ methodName: "getMessages" });
 

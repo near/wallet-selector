@@ -78,6 +78,7 @@ class WalletController {
       return new BuiltInWallet({
         options: this.options,
         provider: this.provider,
+        emitter: this.emitter,
       });
     });
   }

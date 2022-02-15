@@ -1,9 +1,10 @@
 import "regenerator-runtime/runtime";
 import React, { useState, useEffect } from "react";
+import { utils } from "near-api-js";
+
 import Form from "./components/Form";
 import SignIn from "./components/SignIn";
 import Messages from "./components/Messages";
-import { utils } from "near-api-js";
 
 const { parseNearAmount } = utils.format;
 
@@ -14,26 +15,37 @@ const App = ({ near, initialAccount }) => {
   const [account, setAccount] = useState(initialAccount);
   const [messages, setMessages] = useState([]);
 
+  const getAccount = () => {
+    near.getAccount()
+      .then((data) => {
+        console.log("Account", data);
+        setAccount(data);
+      })
+      .catch((err) => {
+        console.log("Failed to retrieve account info");
+        console.error(err);
+      });
+  };
+
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     near.contract.view({ methodName: "getMessages" }).then(setMessages);
 
-    near.on("connect", () => {
-      console.log("'connect' event triggered!");
+    near.on("signIn", () => {
+      console.log("'signIn' event triggered!");
 
-      near.getAccount()
-        .then((data) => {
-          console.log("account info", data);
-          setAccount(data);
-        })
-        .catch((err) => {
-          console.log("Failed to retrieve account info");
-          console.error(err);
-        });
+      getAccount();
     });
 
-    near.on("disconnect", () => {
-      console.log("'disconnect' event triggered!");
+    near.on("accountChange", () => {
+      console.log("'accountChange' event triggered!");
+
+      setAccount(null);
+      getAccount();
+    });
+
+    near.on("signOut", () => {
+      console.log("'signOut' event triggered!");
       setAccount(null);
     });
   }, []);
@@ -91,9 +103,6 @@ const App = ({ near, initialAccount }) => {
 
   const signOut = () => {
     near.signOut()
-      .then(() => {
-        window.location.replace(window.location.origin + window.location.pathname);
-      })
       .catch((err) => {
         console.log("Failed to sign out");
         console.error(err);

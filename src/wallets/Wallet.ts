@@ -1,9 +1,11 @@
 import { Options } from "../core/NearWalletSelector";
 import ProviderService from "../services/provider/ProviderService";
+import { Emitter } from "../utils/EventsHandler";
 
 export interface WalletOptions {
   options: Options;
   provider: ProviderService;
+  emitter: Emitter;
 }
 
 export interface FunctionCallAction {
