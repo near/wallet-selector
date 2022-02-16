@@ -48,6 +48,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   }, []);
 
   const handleDismissClick = () => {
+    if (isLoading) return;
+
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
