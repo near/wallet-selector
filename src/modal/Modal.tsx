@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import { getState, updateState } from "../state/State";
-import ILedgerWallet from "../interfaces/ILedgerWallet";
-import State from "../types/State";
+import { getState, updateState, State } from "../state/State";
+import { logger } from "../services/logging.service";
+import { Options } from "../core/NearWalletSelector";
+import { HardwareWallet, Wallet } from "../wallets/Wallet";
+import { DEFAULT_DERIVATION_PATH } from "../constants";
 
 declare global {
   // tslint:disable-next-line
@@ -11,16 +13,33 @@ declare global {
   }
 }
 
-function Modal(): JSX.Element {
-  const [ledgerDerivationPath] = useState("44'/397'/0'/0'/0'");
-  const [ledgerCustomDerivationPath, setLedgerCustomDerivationPath] =
-    useState("44'/397'/0'/0'/0'");
-  const [ledgerWalletError, setLedgerWalletError] = useState("");
-  const [useCustomDerivationPath, setUseCustomDerivationPath] = useState(false);
-  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [accountId, setAccountId] = useState("");
-  const defaultDescription = "Please select a wallet to connect to this dapp:";
+const getThemeClass = (theme: string | null) => {
+  switch (theme) {
+    case "dark":
+      return "Modal-dark-theme";
+    case "light":
+      return "Modal-light-theme";
+    default:
+      return "";
+  }
+};
+
+interface ModalProps {
+  options: Options;
+  wallets: Array<Wallet>;
+}
+
+const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   const [state, setState] = useState(getState());
+  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
+  const [ledgerError, setLedgerError] = useState("");
+  const [ledgerAccountId, setLedgerAccountId] = useState("");
+  const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
+    DEFAULT_DERIVATION_PATH
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  const defaultDescription = "Please select a wallet to connect to this dApp:";
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -28,91 +47,111 @@ function Modal(): JSX.Element {
     };
   }, []);
 
-  function onCloseModalHandler() {
+  const handleDismissClick = () => {
+    if (isLoading) return;
+
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
     }));
-    setUseCustomDerivationPath(false);
-    setLedgerCustomDerivationPath("44'/397'/0'/0'/0'");
-    setLedgerWalletError("");
+
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setLedgerError("");
     setWalletInfoVisible(false);
-  }
+  };
 
-  function handleCloseModal(event: any) {
-    event.preventDefault();
-    if (event.target === event.currentTarget) onCloseModalHandler();
-  }
+  const handleDismissOutsideClick = (e: MouseEvent) => {
+    e.preventDefault();
 
-  function getThemeClass(theme: string | null) {
-    let themeClass = "";
-    switch (theme) {
-      case "dark":
-        themeClass = "Modal-dark-theme";
-        break;
-      case "light":
-        themeClass = "Modal-light-theme";
-        break;
-      default:
-        themeClass = "";
-        break;
+    if (e.target === e.currentTarget) {
+      handleDismissClick();
     }
-    return themeClass;
-  }
+  };
 
-  function onUseCustomPathHandler() {
-    setUseCustomDerivationPath(true);
-  }
+  const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerDerivationPath(e.target.value);
+  };
 
-  function onUseDefaultDerivationPathHandler() {
-    setUseCustomDerivationPath(false);
-    setLedgerWalletError("");
-  }
+  const handleAccountIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLedgerAccountId(e.target.value);
+  };
 
-  function onCustomDerivationPathChangeHandler(event: any) {
-    setLedgerCustomDerivationPath(event.target.value);
-  }
+  const handleWalletClick = (wallet: Wallet) => () => {
+    if (wallet.type === "hardware") {
+      return updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+        showLedgerDerivationPath: true,
+      }));
+    }
 
-  function onAccountIdChangeHandler(event: any) {
-    setAccountId(event.target.value);
-  }
+    wallet.signIn().catch((err) => {
+      logger.log(`Failed to select ${wallet.name}`);
+      logger.error(err);
+    });
+  };
+
+  const handleConnectClick = async () => {
+    setIsLoading(true);
+    // TODO: Can't assume "ledger-wallet" once we implement more hardware wallets.
+    const wallet = wallets.find(
+      (x) => x.id === "ledger-wallet"
+    ) as HardwareWallet;
+
+    wallet.setDerivationPath(ledgerDerivationPath);
+    wallet.setAccountId(ledgerAccountId);
+
+    await wallet
+      .signIn()
+      .catch((err) => setLedgerError(`Error: ${err.message}`));
+    setIsLoading(false);
+  };
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(state.options.theme)}`}
-        onClick={handleCloseModal}
+        className={`Modal ${getThemeClass(options.theme)}`}
+        onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
+          <div className="Modal-header">
+            <h2>Connect Wallet</h2>
+            <button onClick={handleDismissClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+                fill="#A7A7A7"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
+            </button>
+          </div>
           <div
             style={{ display: state.showWalletOptions ? "block" : "none" }}
             className="Modal-body Modal-select-wallet-option"
           >
-            <p>
-              {state.options.walletSelectorUI.description || defaultDescription}
+            <p className="Modal-description">
+              {options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">
-              {state.options.wallets
-                .map((walletId) => state.walletProviders[walletId])
-                .filter((wallet) => wallet.getShowWallet())
+              {wallets
+                .filter((wallet) => wallet.isAvailable())
                 .map((wallet) => {
-                  const { id, name, description, iconUrl } = wallet.getInfo();
-                  const selected = state.signedInWalletId === id;
+                  const { id, name, description, iconUrl } = wallet;
+                  const selected = state.selectedWalletId === id;
 
                   return (
                     <li
                       key={id}
                       id={id}
                       className={selected ? "selected-wallet" : ""}
-                      onClick={() => {
-                        wallet.walletSelected().catch((err) => {
-                          console.log(`Failed to select ${name}`);
-                          console.error(err);
-                        });
-                      }}
+                      onClick={selected ? undefined : handleWalletClick(wallet)}
                     >
-                      <div title={description}>
+                      <div title={description || ""}>
                         <img src={iconUrl} alt={name} />
                         <div>
                           <span>{name}</span>
@@ -135,74 +174,44 @@ function Modal(): JSX.Element {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then select an account id and
-              derivation path to connect your accounts:
+              Make sure your Ledger is plugged in, then enter an account id and
+              derivation path to connect:
             </p>
             <div className="derivation-paths-list">
               <div className="account-id">
                 <input
                   type="text"
-                  onChange={onAccountIdChangeHandler}
-                  placeholder="Account Id"
+                  placeholder="Account ID"
+                  autoFocus={true}
+                  value={ledgerAccountId}
+                  onChange={handleAccountIdChange}
+                  readOnly={isLoading}
                 />
               </div>
-              <button
-                className={
-                  !useCustomDerivationPath ? "path-option-highlighted" : ""
-                }
-                onClick={onUseDefaultDerivationPathHandler}
-              >
-                NEAR - 44'/397'/0'/0'/0'
-              </button>
-              {!useCustomDerivationPath && (
-                <button
-                  className={
-                    useCustomDerivationPath ? "path-option-highlighted" : ""
-                  }
-                  onClick={onUseCustomPathHandler}
-                >
-                  Custom Path
-                </button>
-              )}
-              {useCustomDerivationPath && (
-                <input
-                  autoFocus
-                  className={ledgerWalletError ? "input-error" : ""}
-                  type="text"
-                  placeholder="custom derivation path"
-                  value={ledgerCustomDerivationPath}
-                  onChange={onCustomDerivationPathChangeHandler}
-                />
-              )}
-              {ledgerWalletError && (
-                <p className="error">{ledgerWalletError}</p>
-              )}
+              <input
+                type="text"
+                className={ledgerError ? "input-error" : ""}
+                placeholder="Derivation Path"
+                value={ledgerDerivationPath}
+                onChange={handleDerivationPathChange}
+                readOnly={isLoading}
+              />
+              {ledgerError && <p className="error">{ledgerError}</p>}
             </div>
             <div className="derivation-paths--actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button
+                className="left-button"
+                onClick={handleDismissClick}
+                disabled={isLoading}
+              >
                 Dismiss
               </button>
               <button
                 className="right-button"
-                onClick={async () => {
-                  let derivationPath = ledgerDerivationPath;
-                  if (useCustomDerivationPath) {
-                    derivationPath = ledgerCustomDerivationPath;
-                  }
-
-                  try {
-                    const ledgerWalletProvider = state.walletProviders[
-                      "ledgerwallet"
-                    ] as ILedgerWallet;
-                    ledgerWalletProvider.setDerivationPath(derivationPath);
-                    ledgerWalletProvider.setAccountId(accountId);
-                    await ledgerWalletProvider.signIn();
-                  } catch (e) {
-                    setLedgerWalletError(`Error: ${e.message}`);
-                  }
-                }}
+                onClick={handleConnectClick}
+                disabled={isLoading}
               >
-                Connect
+                {isLoading ? "Connecting..." : "Connect"}
               </button>
             </div>
           </div>
@@ -263,7 +272,7 @@ function Modal(): JSX.Element {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${state.options.networkId}`}</strong> for this Dapp.
+                <strong>{` ${options.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -271,7 +280,7 @@ function Modal(): JSX.Element {
               </p>
             </div>
             <div className="actions">
-              <button className="left-button" onClick={onCloseModalHandler}>
+              <button className="left-button" onClick={handleDismissClick}>
                 Dismiss
               </button>
               <button
@@ -288,7 +297,7 @@ function Modal(): JSX.Element {
               </button>
             </div>
           </div>
-          {state.options.walletSelectorUI.explanation && (
+          {options.walletSelectorUI.explanation && (
             <div className="info">
               <span
                 onClick={() => {
@@ -302,7 +311,7 @@ function Modal(): JSX.Element {
                   walletInfoVisible ? "show" : "hide"
                 }-explanation`}
               >
-                <p>{state.options.walletSelectorUI.explanation}</p>
+                <p>{options.walletSelectorUI.explanation}</p>
               </div>
             </div>
           )}
@@ -310,6 +319,6 @@ function Modal(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default Modal;

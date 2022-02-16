@@ -6,88 +6,92 @@ import {
 } from "near-api-js";
 import BN from "bn.js";
 
-import BrowserWallet from "../types/BrowserWallet";
-import INearWallet from "../../interfaces/INearWallet";
+import getConfig from "../../config";
+import { Options } from "../../core/NearWalletSelector";
 import { Emitter } from "../../utils/EventsHandler";
-import { getState } from "../../state/State";
+import { logger } from "../../services/logging.service";
+import { setSelectedWalletId } from "../helpers";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
+import { nearWalletIcon } from "../icons";
 import {
   AccountInfo,
-  CallParams,
+  BrowserWallet,
+  BrowserWalletType,
   FunctionCallAction,
-} from "../../interfaces/IWallet";
-import ProviderService from "../../services/provider/ProviderService";
-import getConfig from "../../config";
+  SignAndSendTransactionParams,
+  WalletOptions,
+} from "../Wallet";
 
-class NearWallet extends BrowserWallet implements INearWallet {
+class NearWallet implements BrowserWallet {
   private wallet: WalletConnection;
 
-  constructor(emitter: Emitter, provider: ProviderService) {
-    super(emitter, provider);
+  private options: Options;
+  private emitter: Emitter;
 
-    this.init();
+  id = "near-wallet";
+  type: BrowserWalletType = "browser";
+  name = "NEAR Wallet";
+  description = null;
+  iconUrl = nearWalletIcon;
+
+  constructor({ options, emitter }: WalletOptions) {
+    this.options = options;
+    this.emitter = emitter;
   }
 
-  async walletSelected() {
-    await this.signIn();
-  }
+  isAvailable = () => {
+    return true;
+  };
 
-  async init() {
-    const state = getState();
+  init = async () => {
     const near = await connect({
       keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-      ...getConfig(state.options.networkId),
+      ...getConfig(this.options.networkId),
       headers: {},
     });
 
     this.wallet = new WalletConnection(near, "near_app");
+  };
 
-    if (this.wallet.isSignedIn()) {
-      this.setWalletAsSignedIn();
+  // We don't emit "signIn" or update state as we can't guarantee the user will
+  // actually sign in. Best we can do is temporarily set it as selected and
+  // validate on initialise.
+  signIn = async () => {
+    if (!this.wallet) {
+      await this.init();
     }
-  }
 
-  getInfo() {
-    return {
-      id: "nearwallet",
-      name: "Near Wallet",
-      description: "Near Wallet",
-      iconUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.png",
-    };
-  }
+    await this.wallet.requestSignIn(this.options.contract.accountId);
 
-  async signIn() {
-    const state = getState();
+    localStorage.setItem(
+      LOCAL_STORAGE_SELECTED_WALLET_ID,
+      JSON.stringify(this.id)
+    );
+  };
 
-    this.wallet.requestSignIn(state.options.accountId).then(() => {
-      if (!this.wallet.isSignedIn()) {
-        return;
-      }
-
-      this.setWalletAsSignedIn();
-      this.emitter.emit("signIn");
-    });
-  }
-  async disconnect() {
+  signOut = async () => {
     if (!this.wallet) {
       return;
     }
 
     this.wallet.signOut();
-    this.emitter.emit("disconnect");
-  }
 
-  async isConnected() {
+    setSelectedWalletId(null);
+    this.emitter.emit("signOut");
+  };
+
+  isSignedIn = async () => {
     if (!this.wallet) {
       return false;
     }
 
     return this.wallet.isSignedIn();
-  }
+  };
 
-  async getAccount(): Promise<AccountInfo | null> {
-    const connected = await this.isConnected();
+  getAccount = async (): Promise<AccountInfo | null> => {
+    const signedIn = await this.isSignedIn();
 
-    if (!connected) {
+    if (!signedIn) {
       return null;
     }
 
@@ -98,9 +102,9 @@ class NearWallet extends BrowserWallet implements INearWallet {
       accountId,
       balance: state.amount,
     };
-  }
+  };
 
-  transformActions(actions: Array<FunctionCallAction>) {
+  private transformActions = (actions: Array<FunctionCallAction>) => {
     return actions.map((action) => {
       return transactions.functionCall(
         action.methodName,
@@ -109,12 +113,15 @@ class NearWallet extends BrowserWallet implements INearWallet {
         new BN(action.deposit)
       );
     });
-  }
+  };
 
-  async call({ receiverId, actions }: CallParams) {
+  signAndSendTransaction = async ({
+    receiverId,
+    actions,
+  }: SignAndSendTransactionParams) => {
+    logger.log("NearWallet:signAndSendTransaction", { receiverId, actions });
+
     const account = this.wallet.account();
-
-    console.log("NearWallet:call", { receiverId, actions });
 
     // @ts-ignore
     // near-api-js marks this method as protected.
@@ -122,7 +129,7 @@ class NearWallet extends BrowserWallet implements INearWallet {
       receiverId,
       actions: this.transformActions(actions),
     });
-  }
+  };
 }
 
 export default NearWallet;

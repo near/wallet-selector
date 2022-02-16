@@ -1,9 +1,10 @@
 import "regenerator-runtime/runtime";
 import React, { useState, useEffect } from "react";
+import { utils } from "near-api-js";
+
 import Form from "./components/Form";
 import SignIn from "./components/SignIn";
 import Messages from "./components/Messages";
-import { utils } from "near-api-js";
 
 const { parseNearAmount } = utils.format;
 
@@ -17,13 +18,15 @@ const App = ({ near, initialAccount }) => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     near.contract.view({ methodName: "getMessages" }).then(setMessages);
+  }, []);
 
-    near.on("signIn", () => {
+  useEffect(() => {
+    const subscription = near.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
       near.getAccount()
         .then((data) => {
-          console.log("account info", data);
+          console.log("Account", data);
           setAccount(data);
         })
         .catch((err) => {
@@ -32,10 +35,16 @@ const App = ({ near, initialAccount }) => {
         });
     });
 
-    near.on("disconnect", () => {
-      console.log("'disconnect' event triggered!");
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    const subscription = near.on("signOut", () => {
+      console.log("'signOut' event triggered!");
       setAccount(null);
     });
+
+    return () => subscription.remove();
   }, []);
 
   const onSubmit = (e) => {
@@ -64,8 +73,8 @@ const App = ({ near, initialAccount }) => {
       })
       .then(() => {
         return near.contract.view({ methodName: "getMessages" })
-          .then((messages) => {
-            setMessages(messages);
+          .then((nextMessages) => {
+            setMessages(nextMessages);
             message.value = "";
             donation.value = SUGGESTED_DONATION;
             fieldset.disabled = false;
@@ -86,14 +95,11 @@ const App = ({ near, initialAccount }) => {
   };
 
   const signIn = () => {
-    near.showModal();
+    near.show();
   };
 
   const signOut = () => {
     near.signOut()
-      .then(() => {
-        window.location.replace(window.location.origin + window.location.pathname);
-      })
       .catch((err) => {
         console.log("Failed to sign out");
         console.error(err);
@@ -101,7 +107,7 @@ const App = ({ near, initialAccount }) => {
   };
 
   function switchProviderHandler() {
-    near.showModal();
+    near.show();
   }
 
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import getConfig from "./config.js";
-import NearWalletSelector from "near-walletselector";
+import NearWalletSelector from "near-wallet-selector";
 
 // Initializing contract
 async function initContract() {
@@ -11,10 +11,12 @@ async function initContract() {
   const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
 
   const near = new NearWalletSelector({
-    wallets: ["nearwallet", "senderwallet", "ledgerwallet"],
+    wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
     networkId: "testnet",
     theme: "light",
-    accountId: nearConfig.contractName,
+    contract: {
+      accountId: nearConfig.contractName
+    },
     walletSelectorUI: {
       description: "Please select a wallet to connect to this dApp:",
       explanation: [

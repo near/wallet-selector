@@ -38,8 +38,7 @@ module.exports = {
       "selector": "variableLike",
       "format": ["camelCase", "PascalCase", "UPPER_CASE"]
     }],
-    // TODO: Switch this to an error once 'any' is removed from the project.
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-empty-interface": "error",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-var-requires": "warn",
@@ -51,7 +50,7 @@ module.exports = {
     "default-case": "off",
     "no-caller": "error",
     "no-case-declarations": "off",
-    "no-console": ["warn", { allow: ["error", "info", "warn"] }],
+    "no-console": "error",
     "no-debugger": "error",
     "no-eval": "error",
     "no-fallthrough": "error",
