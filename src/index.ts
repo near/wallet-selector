@@ -1,5 +1,3 @@
-import Modal from "./components/Modal/Modal";
+import NearWalletSelector from "./core/NearWalletSelector";
 
-import * as providers from "./providers";
-
-export default { Modal, providers };
+export default NearWalletSelector;
