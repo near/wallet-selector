@@ -10,7 +10,7 @@
     "build": "npm run build:esm && npm run build:cjs",
     "lint": "eslint ./src --ext .ts,.tsx",
     "lint:fix": "npm run lint -- --fix",
-    "build:esm": "tsc",
+    "build:esm": "tsc --module esnext --outDir lib/esm",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "jest",
     "prepublish": "npm run build"
