@@ -4,11 +4,7 @@
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
     "dbaeumer.vscode-eslint",
-    "kisstkondoros.vscode-codemetrics",
-    "EditorConfig.EditorConfig",
-    "PhilHindle.errorlens",
-    "wix.vscode-import-cost",
-    "syler.sass-indented"
+    "EditorConfig.EditorConfig"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": [
