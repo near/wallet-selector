@@ -55,9 +55,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
       showModal: false,
     }));
 
-    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-    setLedgerError("");
-    setWalletInfoVisible(false);
+    resetState();
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -104,8 +102,17 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     await wallet
       .signIn()
       .catch((err) => setLedgerError(`Error: ${err.message}`));
-    setIsLoading(false);
+
+    resetState();
   };
+
+  function resetState() {
+    setWalletInfoVisible(false);
+    setLedgerError("");
+    setLedgerAccountId("");
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setIsLoading(false);
+  }
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
