@@ -21,6 +21,7 @@ import {
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
+import { storage } from "../../services/persistent-storage.service";
 
 class NearWallet implements BrowserWallet {
   private wallet: WalletConnection;
@@ -63,10 +64,7 @@ class NearWallet implements BrowserWallet {
 
     await this.wallet.requestSignIn(this.options.contract.accountId);
 
-    localStorage.setItem(
-      LOCAL_STORAGE_SELECTED_WALLET_ID,
-      JSON.stringify(this.id)
-    );
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, JSON.stringify(this.id));
   };
 
   signOut = async () => {

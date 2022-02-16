@@ -17,6 +17,7 @@ import {
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
+import { storage } from "../../services/persistent-storage.service";
 
 interface AuthData {
   accountId: string;
@@ -96,9 +97,7 @@ class LedgerWallet implements HardwareWallet {
 
   // TODO: Migrate to storage service (with JSON support).
   private getAuthData = (): AuthData | null => {
-    const authData = localStorage.getItem(
-      LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA
-    );
+    const authData = storage.getItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
 
     return authData ? JSON.parse(authData) : null;
   };
@@ -145,7 +144,7 @@ class LedgerWallet implements HardwareWallet {
       publicKey,
     };
 
-    localStorage.setItem(
+    storage.setItem(
       LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA,
       JSON.stringify(authData)
     );
@@ -163,7 +162,7 @@ class LedgerWallet implements HardwareWallet {
       this.subscriptions[key].remove();
     }
 
-    localStorage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
+    storage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
 
     this.accountId = null;
     this.derivationPath = null;

@@ -13,10 +13,10 @@ describe("PersistentStorage Unit Tests", () => {
     persistentStorage = new PersistentStorage(prefix, storage);
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     // Reset the mock after the JS stack has cleared
-    mockReset(storage);
     persistentStorage.clear();
+    mockReset(storage);
   });
 
   it("should exist", () => {
@@ -75,6 +75,7 @@ describe("PersistentStorage Unit Tests", () => {
     persistentStorage.clear();
     const size = persistentStorage.length;
     expect(size).toBe(0);
+    expect(storage.clear).toBeCalledTimes(1);
   });
 
   it("should remove item", () => {
@@ -96,5 +97,20 @@ describe("PersistentStorage Unit Tests", () => {
     persistentStorage.setItem(key, value);
     const existing = persistentStorage.key(0);
     expect(existing).toEqual(key);
+  });
+
+  it("should update instance prefix and values", () => {
+    const otherPrefix = "other";
+    persistentStorage.setItem(key, value);
+    PersistentStorage.updateInstance(prefix, {
+      prefix: otherPrefix,
+    });
+
+    expect(persistentStorage.getItem(key)).toBe(value);
+    expect(storage.setItem).toBeCalledTimes(2);
+
+    PersistentStorage.updateInstance(otherPrefix, {
+      prefix: prefix,
+    });
   });
 });

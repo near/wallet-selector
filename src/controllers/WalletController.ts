@@ -7,6 +7,7 @@ import { Wallet } from "../wallets/Wallet";
 import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
+import { storage } from "../services/persistent-storage.service";
 
 class WalletController {
   private options: Options;
@@ -71,9 +72,7 @@ class WalletController {
 
   // TODO: Migrate to storage service (with JSON support).
   private getSelectedWalletId() {
-    const selectedWalletId = localStorage.getItem(
-      LOCAL_STORAGE_SELECTED_WALLET_ID
-    );
+    const selectedWalletId = storage.getItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
 
     return selectedWalletId ? JSON.parse(selectedWalletId) : null;
   }
@@ -99,7 +98,7 @@ class WalletController {
     }
 
     if (selectedWalletId) {
-      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
     }
   }
 

@@ -1,11 +1,37 @@
+import { PACKAGE_NAME } from "../constants";
+
 export class PersistentStorage {
   private static instances = new Map<string, PersistentStorage>();
 
   private readonly map = new Map<string, string>();
 
+  static updateInstance(
+    prefix: string = PACKAGE_NAME,
+    update: { prefix?: string; storage?: Storage }
+  ) {
+    if (!PersistentStorage.instances.has(prefix)) return;
+    const instance = PersistentStorage.instances.get(prefix)!;
+    if (update.prefix) {
+      instance.prefix = update.prefix;
+      PersistentStorage.instances.set(update.prefix, instance);
+    }
+    if (update.storage) {
+      instance.storage = update.storage;
+    }
+
+    const map = new Map(instance.map);
+    instance.clear();
+    instance.map.clear();
+
+    const keyValuePairs = Object.fromEntries(map.entries());
+    for (const key of Object.keys(keyValuePairs)) {
+      instance.setItem(key, map.get(key)!);
+    }
+  }
+
   constructor(
-    public readonly prefix: string,
-    private readonly storage: Storage = window?.localStorage
+    private prefix: string = PACKAGE_NAME,
+    private storage: Storage = window?.localStorage
   ) {
     if (!storage) {
       throw new Error("No storage available");
@@ -32,6 +58,7 @@ export class PersistentStorage {
 
   clear(): void {
     this.map.clear();
+    this.storage.clear();
   }
   getItem(key: string): string | null {
     return this.map.get(key) || null;
@@ -54,3 +81,5 @@ export class PersistentStorage {
     return this.map.size;
   }
 }
+
+export const storage = new PersistentStorage();
