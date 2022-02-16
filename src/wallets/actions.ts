@@ -7,14 +7,14 @@ export interface CreateAccountAction {
 
 export interface DeployContractAction {
   type: "DeployContract";
-  action: {
+  params: {
     code: Uint8Array;
   };
 }
 
 export interface FunctionCallAction {
   type: "FunctionCall";
-  action: {
+  params: {
     methodName: string;
     args: object;
     gas: string;
@@ -24,14 +24,14 @@ export interface FunctionCallAction {
 
 export interface TransferAction {
   type: "Transfer";
-  action: {
+  params: {
     deposit: string;
   };
 }
 
 export interface StakeAction {
   type: "Stake";
-  action: {
+  params: {
     stake: string;
     publicKey: string;
   };
@@ -39,7 +39,7 @@ export interface StakeAction {
 
 export interface AddKeyAction {
   type: "AddKey";
-  action: {
+  params: {
     publicKey: string;
     // TODO: Determine the serializable version of `AccessKey`.
     accessKey: unknown;
@@ -48,14 +48,14 @@ export interface AddKeyAction {
 
 export interface DeleteKeyAction {
   type: "DeleteKey";
-  action: {
+  params: {
     publicKey: string;
   };
 }
 
 export interface DeleteAccountAction {
   type: "DeleteAccount";
-  action: {
+  params: {
     beneficiaryId: string;
   };
 }
@@ -71,17 +71,17 @@ export type Action =
   | DeleteAccountAction;
 
 export const transformActions = (actions: Array<Action>) => {
-  return actions.map((x) => {
-    switch (x.type) {
+  return actions.map((action) => {
+    switch (action.type) {
       case "CreateAccount":
         return transactions.createAccount();
       case "DeployContract": {
-        const { code } = x.action;
+        const { code } = action.params;
 
         return transactions.deployContract(code);
       }
       case "FunctionCall": {
-        const { methodName, args, gas, deposit } = x.action;
+        const { methodName, args, gas, deposit } = action.params;
 
         return transactions.functionCall(
           methodName,
@@ -91,12 +91,12 @@ export const transformActions = (actions: Array<Action>) => {
         );
       }
       case "Transfer": {
-        const { deposit } = x.action;
+        const { deposit } = action.params;
 
         return transactions.transfer(new BN(deposit));
       }
       case "Stake": {
-        const { stake, publicKey } = x.action;
+        const { stake, publicKey } = action.params;
 
         return transactions.stake(
           new BN(stake),
@@ -104,23 +104,23 @@ export const transformActions = (actions: Array<Action>) => {
         );
       }
       // case "AddKey": {
-      //   const { publicKey, accessKey } = x.action;
+      //   const { publicKey, accessKey } = action.params;
       //
-      //   // TODO: Figure out how to convert to an access key.
+      //   // TODO: Figure out how to convert to an AccessKey.
       //   return transactions.addKey(utils.PublicKey.from(publicKey), accessKey);
       // }
       case "DeleteKey": {
-        const { publicKey } = x.action;
+        const { publicKey } = action.params;
 
         return transactions.deleteKey(utils.PublicKey.from(publicKey));
       }
       case "DeleteAccount": {
-        const { beneficiaryId } = x.action;
+        const { beneficiaryId } = action.params;
 
         return transactions.deleteAccount(beneficiaryId);
       }
       default:
-        throw new Error(`Invalid action type '${x.type}'`);
+        throw new Error(`Invalid action type '${action.type}'`);
     }
   });
 };
