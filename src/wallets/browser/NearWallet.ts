@@ -1,15 +1,10 @@
-import {
-  WalletConnection,
-  transactions,
-  connect,
-  keyStores,
-} from "near-api-js";
-import BN from "bn.js";
+import { WalletConnection, connect, keyStores } from "near-api-js";
 
 import getConfig from "../../config";
 import { Options } from "../../core/NearWalletSelector";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { transformActions } from "../Actions";
 import { setSelectedWalletId } from "../helpers";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
@@ -17,7 +12,6 @@ import {
   AccountInfo,
   BrowserWallet,
   BrowserWalletType,
-  FunctionCallAction,
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
@@ -104,17 +98,6 @@ class NearWallet implements BrowserWallet {
     };
   };
 
-  private transformActions = (actions: Array<FunctionCallAction>) => {
-    return actions.map((action) => {
-      return transactions.functionCall(
-        action.methodName,
-        action.args,
-        new BN(action.gas),
-        new BN(action.deposit)
-      );
-    });
-  };
-
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -127,7 +110,7 @@ class NearWallet implements BrowserWallet {
     // near-api-js marks this method as protected.
     return account.signAndSendTransaction({
       receiverId,
-      actions: this.transformActions(actions),
+      actions: transformActions(actions),
     });
   };
 }
