@@ -59,10 +59,13 @@ const App = ({ near, initialAccount }) => {
     // add uuid to each message, so we know which one is already known
     near.contract.call({
         actions: [{
-          methodName: "addMessage",
-          args: { text: message.value },
-          gas: BOATLOAD_OF_GAS,
-          deposit: parseNearAmount(donation.value || "0")
+          type: "FunctionCall",
+          params: {
+            methodName: "addMessage",
+            args: { text: message.value },
+            gas: BOATLOAD_OF_GAS,
+            deposit: parseNearAmount(donation.value || "0")
+          }
         }]
       })
       .catch((err) => {
