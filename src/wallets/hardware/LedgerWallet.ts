@@ -5,6 +5,7 @@ import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import LedgerClient, { Subscription } from "./LedgerClient";
 import { logger } from "../../services/logging.service";
+import { transformActions } from "../Actions";
 import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "../../constants";
 import { setSelectedWalletId } from "../helpers";
 import { ledgerWalletIcon } from "../icons";
@@ -15,7 +16,6 @@ import {
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
-import { transformActions } from "../Actions";
 
 interface AuthData {
   accountId: string;
