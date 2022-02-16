@@ -37,6 +37,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultDescription = "Please select a wallet to connect to this dApp:";
 
@@ -47,6 +48,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   }, []);
 
   const handleDismissClick = () => {
+    if (isLoading) return;
+
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
@@ -88,7 +91,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     });
   };
 
-  const handleConnectClick = () => {
+  const handleConnectClick = async () => {
+    setIsLoading(true);
     // TODO: Can't assume "ledger-wallet" once we implement more hardware wallets.
     const wallet = wallets.find(
       (x) => x.id === "ledger-wallet"
@@ -97,7 +101,10 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     wallet.setDerivationPath(ledgerDerivationPath);
     wallet.setAccountId(ledgerAccountId);
 
-    wallet.signIn().catch((err) => setLedgerError(`Error: ${err.message}`));
+    await wallet
+      .signIn()
+      .catch((err) => setLedgerError(`Error: ${err.message}`));
+    setIsLoading(false);
   };
 
   return (
@@ -178,6 +185,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                   autoFocus={true}
                   value={ledgerAccountId}
                   onChange={handleAccountIdChange}
+                  readOnly={isLoading}
                 />
               </div>
               <input
@@ -186,15 +194,24 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                 placeholder="Derivation Path"
                 value={ledgerDerivationPath}
                 onChange={handleDerivationPathChange}
+                readOnly={isLoading}
               />
               {ledgerError && <p className="error">{ledgerError}</p>}
             </div>
             <div className="derivation-paths--actions">
-              <button className="left-button" onClick={handleDismissClick}>
+              <button
+                className="left-button"
+                onClick={handleDismissClick}
+                disabled={isLoading}
+              >
                 Dismiss
               </button>
-              <button className="right-button" onClick={handleConnectClick}>
-                Connect
+              <button
+                className="right-button"
+                onClick={handleConnectClick}
+                disabled={isLoading}
+              >
+                {isLoading ? "Connecting..." : "Connect"}
               </button>
             </div>
           </div>

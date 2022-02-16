@@ -29,7 +29,7 @@ interface ValidateParams {
 }
 
 class LedgerWallet implements HardwareWallet {
-  private client: LedgerClient;
+  private client: LedgerClient | undefined;
   private subscriptions: Record<string, Subscription> = {};
 
   private provider: ProviderService;
@@ -171,9 +171,10 @@ class LedgerWallet implements HardwareWallet {
     if (this.client) {
       await this.client.disconnect();
     }
-
     setSelectedWalletId(null);
     this.emitter.emit("signOut");
+    this.authData = null;
+    this.client = undefined;
   };
 
   isSignedIn = async (): Promise<boolean> => {
