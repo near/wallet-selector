@@ -4,7 +4,7 @@ import getConfig from "../../config";
 import { Options } from "../../core/NearWalletSelector";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
-import { transformActions } from "../Actions";
+import { transformActions } from "../actions";
 import { setSelectedWalletId } from "../helpers";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
