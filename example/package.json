@@ -7,7 +7,7 @@
     "build:contract": "asb",
     "build:contract:dev": "asb --target debug",
     "build:web": "parcel build src/index.html --public-url ./",
-    "build:wallet-selector": "(cd .. && npm run prepare)",
+    "build:wallet-selector": "(cd .. && npm run build)",
     "deploy": "npm run build && npm run deploy:contract && npm run deploy:web",
     "deploy:contract": "near deploy",
     "deploy:contract:dev": "near dev-deploy",
