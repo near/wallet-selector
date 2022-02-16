@@ -57,7 +57,7 @@ const App = ({ near, initialAccount }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    near.contract.call({
+    near.contract.signAndSendTransaction({
         actions: [{
           type: "FunctionCall",
           params: {

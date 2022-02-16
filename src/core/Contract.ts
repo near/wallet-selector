@@ -33,7 +33,7 @@ class Contract {
     });
   }
 
-  async signAndSendTransactions({
+  async signAndSendTransaction({
     actions,
   }: Omit<SignAndSendTransactionParams, "receiverId">) {
     const wallet = this.controller.getSelectedWallet();
