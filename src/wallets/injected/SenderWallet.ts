@@ -186,7 +186,7 @@ class SenderWallet implements InjectedWallet {
       );
     }
 
-    return actions.map((x) => x.action);
+    return actions.map((x) => x.params);
   };
 
   signAndSendTransaction = async ({
