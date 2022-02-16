@@ -1,14 +1,31 @@
 export default `
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
+
+.Modal {
+  --backdrop-bg: #26262630;
+  --black: #262626;
+  --black-rgb: 38, 38, 38; 
+  --dark-gray: #3F4246;
+  --dark-gray-op-30: #A7A7A730;
+  --light-gray: #A7A7A7;
+  --text-color: #676767;
+  --white: #FFFFFF;
+  --blue: #5F8AFA;
+  --red: #DB5555;
+}
+
 .Modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: var(--backdrop-bg);
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Manrope, sans-serif;
+  font-weight: 500;
 }
 
 .Modal * {
@@ -16,40 +33,66 @@ export default `
 }
 
 .Modal.Modal-light-theme {
-  color: #000;
+  color: var(--text-color);
 }
 
 .Modal .Modal-content {
   max-width: 700px;
   max-height: 70vh;
   width: 400px;
-  background-color: #fff;
+  background-color: var(--white);
   margin: 10px;
   border-radius: 16px;
-  padding: 24px;
+  padding: 32px;
   overflow-y: auto;
 }
 
-.Modal-option-list li span,
-.Modal .Modal-content p {
+.Modal-option-list li span {
+  font-size: 14px;
+}
+
+.Modal .Modal-content {
   font-size: 16px;
+  line-height: 1.6;
+}
+
+.Modal-description {
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .Modal-header {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(214, 214, 214);
-  padding-bottom: 0.5em;
 }
 
 .Modal-header button {
   border: 0;
   cursor: pointer;
+  height: 24px;
+  padding: 4px;
+  background-color: transparent;
 }
 
-.Modal-header h3 {
-  margin: 0;
+.Modal-header button:active {
+  background: transparent;
+}
+
+.Modal-header button svg {
+  pointer-events: none;
+}
+
+.Modal-header button:hover svg {
+  fill: var(--black);
+  transition: all 0.2s ease-in;
+}
+
+.Modal-header h2 {
+  color: var(--black);
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .Modal-option-list {
@@ -65,7 +108,7 @@ export default `
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
-  border: 1px solid #f4f4f4;
+  border: 1px solid var(--dark-gray-op-30);
   display: flex;
 }
 
@@ -74,7 +117,7 @@ export default `
 }
 
 .Modal-option-list li:hover {
-  box-shadow: 0 2px 10px 0 rgb(0 0 0 / 10%);
+  box-shadow: 0 2px 10px 0 var(--backdrop-bg);
 }
 
 .Modal-option-list li img {
@@ -84,7 +127,7 @@ export default `
 }
 
 .Modal-option-list li.selected-wallet {
-  background: #ededed;
+  background-color: var(--dark-gray-op-30);
 }
 .Modal-option-list li .selected-wallet-text {
   text-align: center;
@@ -129,33 +172,14 @@ export default `
   display: flex;
   justify-content: space-between;
 }
- 
-.derivation-paths--actions .right-button {
-  color: white;
-  border: 1px solid rgb(64, 153, 255);
-  background: rgb(64, 153, 255);
-}
-    
-.derivation-paths--actions .left-button {
-  border: 0.5px solid #bfbfbf;
-}
-
-.derivation-paths--actions .right-button:hover {
-  background-color: rgb(89 166 255);
-}
- 
-.derivation-paths--actions .left-button:hover {
-  background-color: #ebebeb;
-}
 
 .path-option-highlighted {
-  border-color: rgb(64, 153, 255) !important;
+  border-color: var(--blue)!important;
 }
 
 .error {
   font-family: inherit;
-  color: inherit;
-  color: #e2504a;
+  color: var(--red);
 }
 .info {
   margin-top: 20px;
@@ -163,7 +187,7 @@ export default `
 
 .info span {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 200ms ease-out;
 }
@@ -176,6 +200,7 @@ export default `
 
 .info .info-description p {
     font-size: 14px;
+    margin-bottom: 0px;
 }
 
 .info-description.show-explanation {
@@ -188,7 +213,7 @@ export default `
 }
 
 .input-error {
-  border-color: #e2504a;
+  border-color: var(--red)!important;
 }
 
 .Modal-wallet-not-installed .icon-display {
@@ -204,7 +229,7 @@ export default `
 }
 
 .Modal-wallet-not-installed .refresh-link {
-  color: rgb(64, 153, 255);
+  color: var(--blue);
   cursor: pointer;
 }
 
@@ -214,29 +239,27 @@ export default `
   align-items: center;
 }
 
-.Modal-wallet-not-installed .action-buttons .left-button,
-.Modal-switch-network-message .actions .left-button {
-  border: 0.5px solid #bfbfbf;
+.Modal .Modal-content .left-button {
+  border: 0.5px solid var(--light-gray);
 }
-.Modal-wallet-not-installed .action-buttons .left-button:hover,
-.Modal-switch-network-message .actions .left-button:hover {
-  background-color: #ebebeb;
+.Modal .Modal-content .left-button:hover {
+  background-color: var(--dark-gray-op-30);
 }
 
-.Modal-wallet-not-installed .action-buttons .right-button,
-.Modal-switch-network-message .actions .right-button {
-  color: white;
-  background-color: rgb(64, 153, 255);
-  border: 1px solid rgb(64, 153, 255);
+.Modal .Modal-content .right-button {
+  color: var(--white);
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
 }
 
-.Modal-wallet-not-installed .action-buttons .right-button:hover,
-.Modal-switch-network-message .actions .right-button:hover {
+.Modal .Modal-content .right-button:hover {
   background-color: rgb(89 166 255);
 }
 
 .Modal-switch-network-message .header h2 {
-  font-size: 24px;
+  font-size: 18px;
+  margin-top: 0px;
+  color: var(--black);
 }
 
 .Modal-switch-network-message .content p {
@@ -250,12 +273,20 @@ export default `
 }
 
 .Modal-dark-theme .Modal-content {
-  background-color: #414141;
-  color: white;
+  background-color: var(--dark-gray);
+  color: var(--white);
+}
+
+.Modal-dark-theme .Modal-content .Modal-header h2 {
+  color: var(--white);
+}
+
+.Modal-dark-theme .Modal-header button:hover svg {
+  fill: var(--light-gray);
 }
   
 .Modal-dark-theme .Modal-content .Modal-option-list li {
-  border-color: #393939;
+  border-color: var(--dark-gray-op-30);
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -265,28 +296,39 @@ export default `
 
 .Modal-dark-theme .Modal-content .Modal-option-list li:hover,
 .Modal-dark-theme .Modal-content .Modal-option-list li.selected-wallet {
-  background-color: #313131;
+  background-color: rgba(var(--black-rgb), 0.8);
+}
+
+.Modal-dark-theme .Modal-switch-network-message .header h2 {
+  color: var(--white);
 }
 
 .Modal-dark-theme .Modal-content .info span:hover {
-  color: #a2a2a2;
+  color: var(--light-gray);
   transition: all 200ms ease-in;
 }
 
-.Modal-dark-theme .Modal-wallet-not-installed .action-buttons .left-button:hover,
-.Modal-dark-theme .derivation-paths--actions .left-button:hover,
-.Modal-dark-theme .Modal-switch-network-message .left-button:hover {
-    background-color: #313131;
+.Modal-dark-theme .Modal-content .left-button:hover {
+    background-color: rgba(var(--black-rgb), 0.8);
+    border-color: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {
   .Modal .Modal-content {
-    background-color: #414141;
-    color: white;
+    background-color: var(--dark-gray);
+    color: var(--white);
+  }
+  
+  .Modal-content .Modal-header h2 {
+    color: var(--white);
+  }
+  
+  .Modal-header button:hover svg {
+    fill: var(--light-gray);
   }
     
   .Modal-content .Modal-option-list li {
-    border-color: #393939;
+    border-color: var(--dark-gray-op-30);
     transition: background-color 0.2s ease-in-out;
   }
   
@@ -296,18 +338,21 @@ export default `
 
   .Modal-content .Modal-option-list li:hover,
   .Modal-content .Modal-option-list li.selected-wallet {
-    background-color: #313131;
+    background-color: rgba(var(--black-rgb), 0.8);
+  }
+  
+  .Modal-switch-network-message .header h2 {
+    color: var(--white);
   }
 
   .Modal-content .info span:hover {
-    color: #a2a2a2;
+    color: var(--light-gray);
     transition: all 200ms ease-in;
   }
 
-  .Modal-wallet-not-installed .action-buttons .left-button:hover,
-  .derivation-paths--actions .left-button:hover,
-  .Modal-switch-network-message .left-button:hover {
-      background-color: #313131;
+  .Modal .Modal-content .left-button:hover {
+      background-color: rgba(var(--black-rgb), 0.8);
+      border-color: var(--black);
   }
 }
 

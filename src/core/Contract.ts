@@ -1,43 +1,49 @@
-import { getState } from "../state/State";
-import { CallParams } from "../interfaces/IWallet";
-import ProviderService from "../services/provider/ProviderService";
+import ProviderService, {
+  CallFunctionParams,
+} from "../services/provider/ProviderService";
+import WalletController from "../controllers/WalletController";
+import { Options } from "./NearWalletSelector";
+import { SignAndSendTransactionParams } from "../wallets/Wallet";
 
-interface ViewParams {
-  methodName: string;
-  args?: object;
-}
+type CallParams = Omit<SignAndSendTransactionParams, "receiverId">;
 
 class Contract {
-  private readonly accountId: string;
+  private readonly options: Options;
   private readonly provider: ProviderService;
+  private readonly controller: WalletController;
 
-  constructor(accountId: string, provider: ProviderService) {
-    this.accountId = accountId;
+  constructor(
+    options: Options,
+    provider: ProviderService,
+    controller: WalletController
+  ) {
+    this.options = options;
     this.provider = provider;
+    this.controller = controller;
   }
 
   getAccountId() {
-    return this.accountId;
+    return this.options.contract.accountId;
   }
 
-  view({ methodName, args }: ViewParams) {
+  view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
     return this.provider.callFunction({
-      accountId: this.accountId,
+      accountId: this.options.contract.accountId,
       methodName,
       args,
+      finality,
     });
   }
 
-  async call({ actions }: Omit<CallParams, "receiverId">) {
-    const state = getState();
-    const walletId = state.signedInWalletId;
+  async call({ actions }: CallParams) {
+    const wallet = this.controller.getSelectedWallet();
 
-    if (!walletId) {
+    if (!wallet) {
       throw new Error("Wallet not selected!");
     }
 
-    return state.walletProviders[walletId].call({
-      receiverId: this.accountId,
+    return wallet.signAndSendTransaction({
+      receiverId: this.options.contract.accountId,
       actions,
     });
   }

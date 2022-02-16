@@ -84,6 +84,7 @@ describe("callFunction", () => {
       accountId: "accountId",
       methodName: "methodName",
       args: {},
+      finality: "final",
     };
 
     provider.query.mockResolvedValue(createFunctionCallResponseMock([]));
@@ -92,7 +93,7 @@ describe("callFunction", () => {
 
     expect(provider.query).toHaveBeenCalledWith({
       request_type: "call_function",
-      finality: "optimistic",
+      finality: params.finality,
       account_id: params.accountId,
       method_name: params.methodName,
       args_base64: Buffer.from(JSON.stringify(params.args)).toString("base64"),

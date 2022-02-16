@@ -1,16 +1,10 @@
-import React, {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import { getState, updateState } from "../state/State";
-import ILedgerWallet from "../interfaces/ILedgerWallet";
-import State from "../types/State";
+import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
-import { DEFAULT_DERIVATION_PATH } from "../wallets/hardware/LedgerWallet";
+import { Options } from "../core/NearWalletSelector";
+import { HardwareWallet, Wallet } from "../wallets/Wallet";
+import { DEFAULT_DERIVATION_PATH } from "../constants";
 
 declare global {
   // tslint:disable-next-line
@@ -30,7 +24,12 @@ const getThemeClass = (theme: string | null) => {
   }
 };
 
-const Modal: React.FC = () => {
+interface ModalProps {
+  options: Options;
+  wallets: Array<Wallet>;
+}
+
+const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   const [state, setState] = useState(getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -75,9 +74,27 @@ const Modal: React.FC = () => {
     setLedgerAccountId(e.target.value);
   };
 
-  const handleConnectClick = useCallback(async () => {
+  const handleWalletClick = (wallet: Wallet) => () => {
+    if (wallet.type === "hardware") {
+      return updateState((prevState) => ({
+        ...prevState,
+        showWalletOptions: false,
+        showLedgerDerivationPath: true,
+      }));
+    }
+
+    wallet.signIn().catch((err) => {
+      logger.log(`Failed to select ${wallet.name}`);
+      logger.error(err);
+    });
+  };
+
+  const handleConnectClick = async () => {
     setIsLoading(true);
-    const wallet = state.walletProviders["ledgerwallet"] as ILedgerWallet;
+    // TODO: Can't assume "ledger-wallet" once we implement more hardware wallets.
+    const wallet = wallets.find(
+      (x) => x.id === "ledger-wallet"
+    ) as HardwareWallet;
 
     wallet.setDerivationPath(ledgerDerivationPath);
     wallet.setAccountId(ledgerAccountId);
@@ -86,44 +103,53 @@ const Modal: React.FC = () => {
       .signIn()
       .catch((err) => setLedgerError(`Error: ${err.message}`));
     setIsLoading(false);
-  }, [state.walletProviders, ledgerDerivationPath, ledgerAccountId]);
+  };
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(state.options.theme)}`}
+        className={`Modal ${getThemeClass(options.theme)}`}
         onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
+          <div className="Modal-header">
+            <h2>Connect Wallet</h2>
+            <button onClick={handleDismissClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+                fill="#A7A7A7"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
+            </button>
+          </div>
           <div
             style={{ display: state.showWalletOptions ? "block" : "none" }}
             className="Modal-body Modal-select-wallet-option"
           >
-            <p>
-              {state.options.walletSelectorUI.description || defaultDescription}
+            <p className="Modal-description">
+              {options.walletSelectorUI.description || defaultDescription}
             </p>
             <ul className="Modal-option-list">
-              {state.options.wallets
-                .map((walletId) => state.walletProviders[walletId])
-                .filter((wallet) => wallet.getShowWallet())
+              {wallets
+                .filter((wallet) => wallet.isAvailable())
                 .map((wallet) => {
-                  const { id, name, description, iconUrl } = wallet.getInfo();
-                  const selected = state.signedInWalletId === id;
+                  const { id, name, description, iconUrl } = wallet;
+                  const selected = state.selectedWalletId === id;
 
                   return (
                     <li
                       key={id}
                       id={id}
                       className={selected ? "selected-wallet" : ""}
-                      onClick={() => {
-                        wallet.walletSelected().catch((err) => {
-                          logger.log(`Failed to select ${name}`);
-                          logger.error(err);
-                        });
-                      }}
+                      onClick={selected ? undefined : handleWalletClick(wallet)}
                     >
-                      <div title={description}>
+                      <div title={description || ""}>
                         <img src={iconUrl} alt={name} />
                         <div>
                           <span>{name}</span>
@@ -244,7 +270,7 @@ const Modal: React.FC = () => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${state.options.networkId}`}</strong> for this dApp.
+                <strong>{` ${options.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -269,7 +295,7 @@ const Modal: React.FC = () => {
               </button>
             </div>
           </div>
-          {state.options.walletSelectorUI.explanation && (
+          {options.walletSelectorUI.explanation && (
             <div className="info">
               <span
                 onClick={() => {
@@ -283,7 +309,7 @@ const Modal: React.FC = () => {
                   walletInfoVisible ? "show" : "hide"
                 }-explanation`}
               >
-                <p>{state.options.walletSelectorUI.explanation}</p>
+                <p>{options.walletSelectorUI.explanation}</p>
               </div>
             </div>
           )}
