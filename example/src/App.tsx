@@ -26,13 +26,16 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     selector.contract.view({ methodName: "getMessages" }).then(setMessages);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const subscription = selector.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
-      selector.getAccount()
+      selector
+        .getAccount()
         .then((data) => {
           console.log("Account", data);
           setAccount(data);
@@ -44,6 +47,7 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
     });
 
     return () => subscription.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -53,6 +57,7 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
     });
 
     return () => subscription.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit: FormEventHandler = (e) => {
@@ -67,13 +72,16 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    selector.contract.call({
-        actions: [{
-          methodName: "addMessage",
-          args: { text: message.value },
-          gas: BOATLOAD_OF_GAS,
-          deposit: parseNearAmount(donation.value || "0")!
-        }]
+    selector.contract
+      .call({
+        actions: [
+          {
+            methodName: "addMessage",
+            args: { text: message.value },
+            gas: BOATLOAD_OF_GAS,
+            deposit: parseNearAmount(donation.value || "0")!,
+          },
+        ],
       })
       .catch((err) => {
         alert("Failed to add message");
@@ -82,7 +90,8 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
         throw err;
       })
       .then(() => {
-        return selector.contract.view({ methodName: "getMessages" })
+        return selector.contract
+          .view({ methodName: "getMessages" })
           .then((nextMessages: Array<Message>) => {
             setMessages(nextMessages);
             message.value = "";
@@ -109,11 +118,10 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
   };
 
   const signOut = () => {
-    selector.signOut()
-      .catch((err) => {
-        console.log("Failed to sign out");
-        console.error(err);
-      });
+    selector.signOut().catch((err) => {
+      console.log("Failed to sign out");
+      console.error(err);
+    });
   };
 
   function switchProviderHandler() {
@@ -133,11 +141,7 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
           <button onClick={signIn}>Log in</button>
         )}
       </header>
-      {account ? (
-        <Form account={account} onSubmit={onSubmit} />
-      ) : (
-        <SignIn />
-      )}
+      {account ? <Form account={account} onSubmit={onSubmit} /> : <SignIn />}
       {!!account && !!messages.length && <Messages messages={messages} />}
     </main>
   );

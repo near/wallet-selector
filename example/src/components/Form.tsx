@@ -22,7 +22,9 @@ const Form: React.FC<FormProps> = ({ account, onSubmit }) => {
             autoComplete="off"
             defaultValue={"0"}
             id="donation"
-            max={Big(account.balance).div(10 ** 24).toString()}
+            max={Big(account.balance)
+              .div(10 ** 24)
+              .toString()}
             min="0"
             step="0.01"
             type="number"
@@ -33,6 +35,6 @@ const Form: React.FC<FormProps> = ({ account, onSubmit }) => {
       </fieldset>
     </form>
   );
-}
+};
 
 export default Form;

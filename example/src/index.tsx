@@ -15,7 +15,7 @@ async function initContract() {
     networkId: "testnet",
     theme: "light",
     contract: {
-      accountId: nearConfig.contractName
+      accountId: nearConfig.contractName,
     },
     walletSelectorUI: {
       description: "Please select a wallet to connect to this dApp:",
