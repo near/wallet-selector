@@ -47,6 +47,14 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     };
   }, []);
 
+  const resetState = () => {
+    setWalletInfoVisible(false);
+    setLedgerError("");
+    setLedgerAccountId("");
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setIsLoading(false);
+  };
+
   const handleDismissClick = () => {
     if (isLoading) return;
 
@@ -105,14 +113,6 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
 
     resetState();
   };
-
-  function resetState() {
-    setWalletInfoVisible(false);
-    setLedgerError("");
-    setLedgerAccountId("");
-    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-    setIsLoading(false);
-  }
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
