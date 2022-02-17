@@ -9,5 +9,6 @@ module.exports = {
 
   rules: {
     "prettier/prettier": [ "error", require("./../prettier.config") ],
+    "no-console": "off",
   }
 }
