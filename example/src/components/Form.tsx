@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Big from "big.js";
 
-export default function Form({ onSubmit, currentUser }) {
+function Form({ onSubmit, currentUser }: any) {
   return (
     <form onSubmit={onSubmit}>
       <fieldset id="fieldset">
@@ -37,3 +37,5 @@ Form.propTypes = {
     balance: PropTypes.string.isRequired,
   }),
 };
+
+export default Form;

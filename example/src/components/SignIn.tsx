@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SignIn() {
+function SignIn() {
   return (
     <>
       <p>
@@ -20,3 +20,5 @@ export default function SignIn() {
     </>
   );
 }
+
+export default SignIn;

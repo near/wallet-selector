@@ -11,7 +11,7 @@ const { parseNearAmount } = utils.format;
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 
-const App = ({ near, initialAccount }) => {
+const App = ({ near, initialAccount }: any) => {
   const [account, setAccount] = useState(initialAccount);
   const [messages, setMessages] = useState([]);
 
@@ -25,7 +25,7 @@ const App = ({ near, initialAccount }) => {
       console.log("'signIn' event triggered!");
 
       near.getAccount()
-        .then((data) => {
+        .then((data: any) => {
           console.log("Account", data);
           setAccount(data);
         })

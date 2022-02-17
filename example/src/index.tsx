@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import getConfig from "./config.js";
+import getConfig from "./config";
 import NearWalletSelector from "near-wallet-selector";
 
 // Initializing contract
