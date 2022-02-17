@@ -54,6 +54,11 @@ class NearWallet implements BrowserWallet {
 
     this.wallet = new WalletConnection(near, "near_app");
     this.keyStore = keyStore;
+
+    // Cleanup up any pending keys (cancelled logins).
+    if (!this.wallet.isSignedIn()) {
+      await this.keyStore.clear();
+    }
   };
 
   // We don't emit "signIn" or update state as we can't guarantee the user will
