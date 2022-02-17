@@ -16,6 +16,7 @@
     "start:dev": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
     "watch": "npm run build:contract:dev && npm run deploy:contract:dev && nodemon",
     "lint": "eslint ./src --ext .ts,.tsx",
+    "lint:fix": "npm run lint -- --fix",
     "test": "npm run build:contract:dev && asp && jest"
   },
   "devDependencies": {
