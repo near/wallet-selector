@@ -1,11 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Message } from "../interfaces";
 
-function Messages({ messages }: any) {
+interface MessagesProps {
+  messages: Array<Message>;
+}
+
+const Messages: React.FC<MessagesProps> = ({ messages }) => {
   return (
     <>
       <h2>Messages</h2>
-      {messages.map((message: any, i: number) =>
+      {messages.map((message, i) =>
         // TODO: format as cards, add timestamp
         <p key={i} className={message.premium ? 'is-premium' : ''}>
           <strong>{message.sender}</strong>:<br/>
@@ -15,9 +19,5 @@ function Messages({ messages }: any) {
     </>
   );
 }
-
-Messages.propTypes = {
-  messages: PropTypes.array
-};
 
 export default Messages;

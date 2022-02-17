@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-function SignIn() {
+const SignIn: React.FC = () => {
   return (
-    <>
+    <Fragment>
       <p>
           This app demonstrates a key element of NEAR’s UX: once an app has
           permission to make calls on behalf of a user (that is, once a user
@@ -17,7 +17,7 @@ function SignIn() {
       <p>
           Go ahead and sign in to try it out!
       </p>
-    </>
+    </Fragment>
   );
 }
 

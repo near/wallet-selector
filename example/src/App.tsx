@@ -1,31 +1,39 @@
 import "regenerator-runtime/runtime";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEventHandler } from "react";
 import { utils } from "near-api-js";
+import NearWalletSelector from "near-wallet-selector";
+import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
 import Form from "./components/Form";
 import SignIn from "./components/SignIn";
 import Messages from "./components/Messages";
+import { Message } from "./interfaces";
 
 const { parseNearAmount } = utils.format;
 
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
+const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003")!;
 
-const App = ({ near, initialAccount }: any) => {
+interface AppProps {
+  selector: NearWalletSelector;
+  initialAccount: AccountInfo | null;
+}
+
+const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
   const [account, setAccount] = useState(initialAccount);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Array<Message>>([]);
 
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    near.contract.view({ methodName: "getMessages" }).then(setMessages);
+    selector.contract.view({ methodName: "getMessages" }).then(setMessages);
   }, []);
 
   useEffect(() => {
-    const subscription = near.on("signIn", () => {
+    const subscription = selector.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
-      near.getAccount()
-        .then((data: any) => {
+      selector.getAccount()
+        .then((data) => {
           console.log("Account", data);
           setAccount(data);
         })
@@ -39,7 +47,7 @@ const App = ({ near, initialAccount }: any) => {
   }, []);
 
   useEffect(() => {
-    const subscription = near.on("signOut", () => {
+    const subscription = selector.on("signOut", () => {
       console.log("'signOut' event triggered!");
       setAccount(null);
     });
@@ -47,9 +55,11 @@ const App = ({ near, initialAccount }: any) => {
     return () => subscription.remove();
   }, []);
 
-  const onSubmit = (e) => {
+  const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
 
+    // TODO: Fix the typing so that target.elements exists..
+    // @ts-ignore.
     const { fieldset, message, donation } = e.target.elements;
 
     fieldset.disabled = true;
@@ -57,12 +67,12 @@ const App = ({ near, initialAccount }: any) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    near.contract.call({
+    selector.contract.call({
         actions: [{
           methodName: "addMessage",
           args: { text: message.value },
           gas: BOATLOAD_OF_GAS,
-          deposit: parseNearAmount(donation.value || "0")
+          deposit: parseNearAmount(donation.value || "0")!
         }]
       })
       .catch((err) => {
@@ -72,8 +82,8 @@ const App = ({ near, initialAccount }: any) => {
         throw err;
       })
       .then(() => {
-        return near.contract.view({ methodName: "getMessages" })
-          .then((nextMessages) => {
+        return selector.contract.view({ methodName: "getMessages" })
+          .then((nextMessages: Array<Message>) => {
             setMessages(nextMessages);
             message.value = "";
             donation.value = SUGGESTED_DONATION;
@@ -95,11 +105,11 @@ const App = ({ near, initialAccount }: any) => {
   };
 
   const signIn = () => {
-    near.show();
+    selector.show();
   };
 
   const signOut = () => {
-    near.signOut()
+    selector.signOut()
       .catch((err) => {
         console.log("Failed to sign out");
         console.error(err);
@@ -107,7 +117,7 @@ const App = ({ near, initialAccount }: any) => {
   };
 
   function switchProviderHandler() {
-    near.show();
+    selector.show();
   }
 
   return (
@@ -124,7 +134,7 @@ const App = ({ near, initialAccount }: any) => {
         )}
       </header>
       {account ? (
-        <Form near={near} onSubmit={onSubmit} currentUser={account} />
+        <Form account={account} onSubmit={onSubmit} />
       ) : (
         <SignIn />
       )}

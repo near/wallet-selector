@@ -10,7 +10,7 @@ async function initContract() {
   // based on the network ID we pass to getConfig()
   const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
 
-  const near = new NearWalletSelector({
+  const selector = new NearWalletSelector({
     wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
     networkId: "testnet",
     theme: "light",
@@ -28,19 +28,20 @@ async function initContract() {
     },
   });
 
-  await near.init();
+  await selector.init();
+  const account = await selector.getAccount();
 
   return {
-    near,
-    initialAccount: await near.getAccount(),
+    selector,
+    initialAccount: account,
   };
 }
 
 window.onload = () => {
   initContract()
-    .then(({ near, initialAccount }) => {
+    .then(({ selector, initialAccount }) => {
       ReactDOM.render(
-        <App near={near} initialAccount={initialAccount} />,
+        <App selector={selector} initialAccount={initialAccount} />,
         document.getElementById("root")
       );
     })
