@@ -17,6 +17,7 @@ import {
 } from "../Wallet";
 
 class NearWallet implements BrowserWallet {
+  private keyStore: keyStores.KeyStore;
   private wallet: WalletConnection;
 
   private options: Options;
@@ -38,13 +39,20 @@ class NearWallet implements BrowserWallet {
   };
 
   init = async () => {
+    const keyStore = new keyStores.BrowserLocalStorageKeyStore();
     const near = await connect({
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+      keyStore,
       ...getConfig(this.options.networkId),
       headers: {},
     });
 
     this.wallet = new WalletConnection(near, "near_app");
+    this.keyStore = keyStore;
+
+    // Cleanup up any pending keys (cancelled logins).
+    if (!this.wallet.isSignedIn()) {
+      await this.keyStore.clear();
+    }
   };
 
   // We don't emit "signIn" or update state as we can't guarantee the user will
@@ -69,6 +77,7 @@ class NearWallet implements BrowserWallet {
     }
 
     this.wallet.signOut();
+    await this.keyStore.clear();
 
     setSelectedWalletId(null);
     this.emitter.emit("signOut");
