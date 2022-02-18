@@ -72,16 +72,16 @@ const App: React.FC<AppProps> = ({ selector, initialAccount }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    selector.contract
-      .call({
-        actions: [
-          {
+    selector.contract.signAndSendTransaction({
+        actions: [{
+          type: "FunctionCall",
+          params: {
             methodName: "addMessage",
             args: { text: message.value },
             gas: BOATLOAD_OF_GAS,
-            deposit: parseNearAmount(donation.value || "0")!,
-          },
-        ],
+            deposit: parseNearAmount(donation.value || "0")
+          }
+        }]
       })
       .catch((err) => {
         alert("Failed to add message");

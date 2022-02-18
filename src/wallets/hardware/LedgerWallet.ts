@@ -1,17 +1,16 @@
 import { transactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
-import BN from "bn.js";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import LedgerClient, { Subscription } from "./LedgerClient";
 import { logger } from "../../services/logging.service";
+import { transformActions } from "../actions";
 import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "../../constants";
 import { setSelectedWalletId } from "../helpers";
 import { ledgerWalletIcon } from "../icons";
 import {
   AccountInfo,
-  FunctionCallAction,
   HardwareWallet,
   HardwareWalletType,
   SignAndSendTransactionParams,
@@ -237,17 +236,6 @@ class LedgerWallet implements HardwareWallet {
     };
   };
 
-  private transformActions = (actions: Array<FunctionCallAction>) => {
-    return actions.map((action) => {
-      return transactions.functionCall(
-        action.methodName,
-        action.args,
-        new BN(action.gas),
-        new BN(action.deposit)
-      );
-    });
-  };
-
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -274,7 +262,7 @@ class LedgerWallet implements HardwareWallet {
       utils.PublicKey.from(publicKey),
       receiverId,
       accessKey.nonce + 1,
-      this.transformActions(actions),
+      transformActions(actions),
       utils.serialize.base_decode(block.header.hash)
     );
 

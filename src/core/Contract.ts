@@ -5,8 +5,6 @@ import WalletController from "../controllers/WalletController";
 import { Options } from "./NearWalletSelector";
 import { SignAndSendTransactionParams } from "../wallets/Wallet";
 
-type CallParams = Omit<SignAndSendTransactionParams, "receiverId">;
-
 class Contract {
   private readonly options: Options;
   private readonly provider: ProviderService;
@@ -35,7 +33,9 @@ class Contract {
     });
   }
 
-  async call({ actions }: CallParams) {
+  async signAndSendTransaction({
+    actions,
+  }: Omit<SignAndSendTransactionParams, "receiverId">) {
     const wallet = this.controller.getSelectedWallet();
 
     if (!wallet) {

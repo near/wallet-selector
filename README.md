@@ -121,13 +121,16 @@ Interact with the Smart Contract:
 // Retrieve messages via RPC endpoint (view method).
 const messages = await near.contract.view({ methodName: "getMessages" });
 
-// Send a message, modifying the blockchain (change method).
-await near.contract.call({
+// Add a message, modifying the blockchain (change method).
+await near.contract.signAndSendTransaction({
   actions: [{
-    methodName: "addMessage",
-    args: { text: message.value },
-    gas: "30000000000000",
-    deposit: "10000000000000000000000"
+    type: "FunctionCall",
+    params: {
+      methodName: "addMessage",
+      args: {text: message.value},
+      gas: "30000000000000",
+      deposit: "10000000000000000000000"
+    }
   }]
 });
 
