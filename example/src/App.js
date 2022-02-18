@@ -57,12 +57,15 @@ const App = ({ near, initialAccount }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    near.contract.call({
+    near.contract.signAndSendTransaction({
         actions: [{
-          methodName: "addMessage",
-          args: { text: message.value },
-          gas: BOATLOAD_OF_GAS,
-          deposit: parseNearAmount(donation.value || "0")
+          type: "FunctionCall",
+          params: {
+            methodName: "addMessage",
+            args: { text: message.value },
+            gas: BOATLOAD_OF_GAS,
+            deposit: parseNearAmount(donation.value || "0")
+          }
         }]
       })
       .catch((err) => {

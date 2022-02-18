@@ -1,6 +1,7 @@
 import { Options } from "../core/NearWalletSelector";
 import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
+import { Action } from "./actions";
 
 export interface WalletOptions {
   options: Options;
@@ -8,16 +9,9 @@ export interface WalletOptions {
   emitter: Emitter;
 }
 
-export interface FunctionCallAction {
-  methodName: string;
-  args: object;
-  gas: string;
-  deposit: string;
-}
-
 export interface SignAndSendTransactionParams {
   receiverId: string;
-  actions: Array<FunctionCallAction>;
+  actions: Array<Action>;
 }
 
 export interface AccountInfo {
