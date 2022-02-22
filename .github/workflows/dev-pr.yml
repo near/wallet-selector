@@ -1,0 +1,24 @@
+name: Dev PR
+on:
+  pull_request_target:
+    types: [opened, reopened, edited]
+    branches:
+      - dev
+
+jobs:
+  dev-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Ensure checklists are filled
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const script = require('.github/actions/checklist.js').check;
+            await script({context});
+      - name: Ensure title update with changes type
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const script = require('.github/actions/pr-title.js').update;
+            await script({ context, github });
