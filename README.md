@@ -6,6 +6,12 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 - [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
 - [Ledger](https://www.ledger.com/) - Hardware wallet.
 
+
+## Preview 
+You can test the library on the guest book dApp which is located inside [example](https://github.com/near-projects/wallet-selector/tree/dev/example)
+
+![Preview](./src/images/preview.PNG)
+
 ## Installation and Usage
 
 The easiest way to use `near-wallet-selector` is to install it from NPM:
