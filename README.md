@@ -8,7 +8,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 
 ## Preview 
-You can test the library on the guest book dApp which is located inside [example](https://github.com/near-projects/wallet-selector/tree/dev/example)
+You can test the library on the [Guest Book](https://github.com/near-projects/wallet-selector/tree/dev/example) dApp which is located inside `/example`
 
 ![Preview](./src/images/preview.PNG)
 
