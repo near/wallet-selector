@@ -1,9 +1,5 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
-export interface InitParams {
-  contractId: string;
-}
-
 // Empty string if we haven't signed in before.
 interface AccessKey {
   publicKey: {
@@ -11,10 +7,6 @@ interface AccessKey {
     keyType: number;
   };
   secretKey: string;
-}
-
-export interface InitResponse {
-  accessKey: AccessKey | "";
 }
 
 export interface RequestSignInResponse {
@@ -53,7 +45,7 @@ export interface SignOutResponse {
   result: "success";
 }
 
-export type AccountChangedCallback = (newAccountId: string) => void;
+export type Callback = (response: any) => void;
 
 export interface RpcChangedResponse {
   method: "rpcChanged";
@@ -61,8 +53,6 @@ export interface RpcChangedResponse {
   rpc: RpcInfo;
   type: "sender-wallet-fromContent";
 }
-
-export type RpcChangedCallback = (newRpc: RpcChangedResponse) => void;
 
 export interface SendMoneyParams {
   receiverId: string;
@@ -101,16 +91,15 @@ export interface RequestSignTransactionsParams {
 }
 
 interface InjectedSenderWallet {
-  init: (params: InitParams) => Promise<InitResponse>;
+  isSender: string,
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => Promise<SignOutResponse>;
+  signOut: () => SignOutResponse;
   isSignedIn: () => boolean;
-  onAccountChanged: (callback: AccountChangedCallback) => void;
-  onRpcChanged: (callback: RpcChangedCallback) => void;
+  on: (event: string, callback: Callback) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (

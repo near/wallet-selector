@@ -21,7 +21,7 @@ import {
 
 declare global {
   interface Window {
-    wallet: InjectedSenderWallet | undefined;
+    near: InjectedSenderWallet | undefined;
   }
 }
 
@@ -56,7 +56,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private isInstalled = () => {
-    return !!window.wallet;
+    return typeof window.near !== 'undefined' && window.near.isSender;
   };
 
   init = async () => {
@@ -66,17 +66,13 @@ class SenderWallet implements InjectedWallet {
       throw new Error("Wallet not installed");
     }
 
-    this.wallet = window.wallet!;
+    this.wallet = window.near!;
 
     this.onAccountChanged();
 
-    this.wallet.onRpcChanged((response) => {
+    this.wallet.on('rpcChanged', (response) => {
       this.networkMatches(response);
     });
-
-    return this.wallet
-      .init({ contractId: this.options.contract.accountId })
-      .then((res) => logger.log("SenderWallet:init", res));
   };
 
   signIn = async () => {
@@ -92,14 +88,9 @@ class SenderWallet implements InjectedWallet {
       await this.init();
     }
 
-    const rpcResponse = await this.wallet.getRpc();
-
-    if (!this.networkMatches(rpcResponse)) {
-      return;
-    }
-
     const { accessKey } = await this.wallet.requestSignIn({
       contractId: this.options.contract.accountId,
+      methodNames: this.options.contract.changeMethods || [],
     });
 
     if (!accessKey) {
@@ -128,7 +119,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private onAccountChanged = () => {
-    this.wallet.onAccountChanged(async (newAccountId) => {
+    this.wallet.on('accountChanged', async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
 
       try {
@@ -145,7 +136,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   signOut = async () => {
-    const res = await this.wallet.signOut();
+    const res = this.wallet.signOut();
 
     if (res.result !== "success") {
       throw new Error("Failed to sign out");
