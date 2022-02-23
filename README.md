@@ -6,6 +6,12 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 - [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
 - [Ledger](https://www.ledger.com/) - Hardware wallet.
 
+
+## Preview 
+You can test the library on the [Guest Book](https://github.com/near-projects/wallet-selector/tree/dev/example) dApp which is located inside `/example`
+
+![Preview](./src/images/preview-img.PNG)
+
 ## Installation and Usage
 
 The easiest way to use `near-wallet-selector` is to install it from NPM:
@@ -138,6 +144,45 @@ await near.contract.signAndSendTransaction({
 const accountId = near.contract.getAccountId();
 ```
 
+## Custom Themes
+
+If no value is provided for `theme` option then the theme will be picked by System's default mode/theme.
+
+There are two available themes `light` and `dark`:
+
+To use the `light` mode, add `theme` option with the value `light`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "light",
+});
+```
+
+To use the `dark` mode, add `theme` option with the value `dark`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "dark",
+});
+```
+## Custom/Optional UI Elements
+
+The `walletSelectorUI` option provides two properties which help to modify/customize the UI:
+
+- The `description` property if provided replaces the default description.
+- The `explanation` property if provided shows **What is a wallet?** section, if not provided there is no default wallet explanation the section will be hidden.
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  walletSelectorUI: {
+    description: "Add your own description",
+    explanation: "Add your own wallet explanation",
+  }
+});
+```
 ## Example Integration
 
 A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
@@ -154,3 +199,7 @@ Contributors to this package may also find this integration useful as it provide
 This project uses [ESLint](https://eslint.org/) (with [Prettier](https://prettier.io/)) to enforce a consistent coding style. It's important that you configure your editor correctly to avoid issues when you're ready to open a Pull Request.
 
 Although this project uses Prettier, it's simply an "internal" dependency to our ESLint configuration. This is because we want Prettier to handle code styling while avoiding conflicts with ESLint which specifically focuses on potentially problematic code. As a result, **it's important that you switch off Prettier in your editor and ensure only ESLint is enabled**.
+
+## License
+
+This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0). See [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE) for details.
