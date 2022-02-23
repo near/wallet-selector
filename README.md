@@ -144,6 +144,31 @@ await near.contract.signAndSendTransaction({
 const accountId = near.contract.getAccountId();
 ```
 
+## Custom Themes
+
+If no value is provided for `theme` option then the theme will be picked by System's default mode/theme.
+
+There are two available themes `light` and `dark`:
+
+To use the `light` mode, add `theme` option with the value `light`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "light",
+});
+```
+
+To use the `dark` mode, add `theme` option with the value `dark`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "dark",
+});
+```
+
+
 ## Example Integration
 
 A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
