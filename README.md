@@ -167,8 +167,22 @@ const near = new NearWalletSelector({
   theme: "dark",
 });
 ```
+## Custom/Optional UI Elements
 
+The `walletSelectorUI` option provides two properties which help to modify/customize the UI:
 
+- The `description` property if provided replaces the default description.
+- The `explanation` property if provided shows **What is a wallet?** section, if not provided there is no default wallet explanation the section will be hidden.
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  walletSelectorUI: {
+    description: "Add your own description",
+    explanation: "Add your own wallet explanation",
+  }
+});
+```
 ## Example Integration
 
 A variation of the [guest-book](https://github.com/near-examples/guest-book/)  example project can be found in the `example` directory. You can use this to gain a concrete understanding of how to integrate this package into your own dApp.
