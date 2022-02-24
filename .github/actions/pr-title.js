@@ -1,4 +1,4 @@
-const REGEX_CHANGE_TYPE = /(- \[[x]\] (PATCH|MINOR|MAJOR).+)/g;
+const REGEX_CHANGE_TYPE = /(- \[[x]\] (PATCH|MINOR|MAJOR|NONE).+)/g;
 module.exports.update = async function({
   context,
   github
@@ -7,7 +7,7 @@ module.exports.update = async function({
   let { title, body } = context.payload.pull_request;
 
   for(const { 2: type } of body.matchAll(REGEX_CHANGE_TYPE)) {
-    title = `[${type}] ${title.replace(/^\[(PATCH|MINOR|MAJOR)\]/g, '').trim()}`;
+    title = `[${type}] ${title.replace(/^\[(PATCH|MINOR|MAJOR|NONE)\]/g, '').trim()}`;
   }
 
   const updateParams = {
