@@ -8,6 +8,7 @@ import { Options } from "../../core/NearWalletSelector";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { Action, FunctionCallAction } from "../actions";
 import { setSelectedWalletId } from "../helpers";
 import { senderWalletIcon } from "../icons";
 import {
@@ -170,6 +171,24 @@ class SenderWallet implements InjectedWallet {
     };
   };
 
+  private isValidActions = (
+    actions: Array<Action>
+  ): actions is Array<FunctionCallAction> => {
+    return actions.every((x) => x.type === "FunctionCall");
+  };
+
+  private transformActions = (actions: Array<Action>) => {
+    const validActions = this.isValidActions(actions);
+
+    if (!validActions) {
+      throw new Error(
+        "Only 'FunctionCall' actions types are supported by Sender Wallet"
+      );
+    }
+
+    return actions.map((x) => x.params);
+  };
+
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -177,7 +196,10 @@ class SenderWallet implements InjectedWallet {
     logger.log("SenderWallet:signAndSendTransaction", { receiverId, actions });
 
     return this.wallet
-      .signAndSendTransaction({ receiverId, actions })
+      .signAndSendTransaction({
+        receiverId,
+        actions: this.transformActions(actions),
+      })
       .then((res) => {
         if (res.error) {
           throw new Error(res.error);
