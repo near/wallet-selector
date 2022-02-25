@@ -6691,8 +6691,10 @@ near-vm@^1.1.0:
   dependencies:
     binary-install "^0.0.1"
 
-"near-wallet-selector@file:..":
-  version "1.0.1"
+near-wallet-selector@*:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/near-wallet-selector/-/near-wallet-selector-1.0.2.tgz#d6e0f1b34dbd25f9dbcb722b566c3887dcc63105"
+  integrity sha512-90b/696+xkqdxBQflXDL0fB6np2bekt6xHSnJ0tnZRfXK2vgg6ba7FERUlHiTbklkpdPhZKmBhCGhZ62EiZ2Ew==
   dependencies:
     "@ledgerhq/hw-transport-webhid" "^6.20.0"
     "@ledgerhq/hw-transport-webusb" "^6.20.0"
