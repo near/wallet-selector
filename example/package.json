@@ -3,21 +3,21 @@
   "version": "0.1.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "build": "npm run build:contract && npm run build:web",
+    "build": "yarn build:contract && yarn build:web",
     "build:contract": "asb",
     "build:contract:dev": "asb --target debug",
     "build:web": "parcel build src/index.html --public-url ./",
-    "build:wallet-selector": "(cd .. && npm run build)",
-    "deploy": "npm run build && npm run deploy:contract && npm run deploy:web",
+    "build:wallet-selector": "(cd .. && yarn build)",
+    "deploy": "yarn build && yarn deploy:contract && yarn deploy:web",
     "deploy:contract": "near deploy",
     "deploy:contract:dev": "near dev-deploy",
     "deploy:web": "gh-pages -d dist",
-    "start": "npm run deploy && parcel src/index.html",
+    "start": "yarn deploy && parcel src/index.html",
     "start:dev": "env-cmd -f ./neardev/dev-account.env parcel src/index.html",
-    "watch": "npm run build:contract:dev && npm run deploy:contract:dev && nodemon",
+    "watch": "yarn build:contract:dev && yarn deploy:contract:dev && nodemon",
     "lint": "eslint ./src --ext .ts,.tsx",
-    "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build:contract:dev && asp && jest"
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn build:contract:dev && asp && jest"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

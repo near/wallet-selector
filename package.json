@@ -10,7 +10,7 @@
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "build": "yarn build:esm && yarn build:cjs",
     "lint": "eslint ./src --ext .ts,.tsx",
-    "lint:fix": "yarn lint -- --fix",
+    "lint:fix": "yarn lint --fix",
     "test": "jest",
     "test:e2e": "playwright test",
     "prepack": "yarn build"
