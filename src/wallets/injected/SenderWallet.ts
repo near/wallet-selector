@@ -90,7 +90,6 @@ class SenderWallet implements InjectedWallet {
 
     const { accessKey } = await this.wallet.requestSignIn({
       contractId: this.options.contract.accountId,
-      methodNames: this.options.contract.changeMethods || [],
     });
 
     if (!accessKey) {
