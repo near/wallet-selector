@@ -137,7 +137,7 @@ class SenderWallet implements InjectedWallet {
   signOut = async () => {
     const res = this.wallet.signOut();
 
-    if (res.result !== "success") {
+    if (res) {
       throw new Error("Failed to sign out");
     }
 
