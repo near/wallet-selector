@@ -56,7 +56,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private isInstalled = () => {
-    return typeof window.near !== 'undefined' && window.near.isSender;
+    return !!window.near?.isSender;
   };
 
   init = async () => {

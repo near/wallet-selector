@@ -40,11 +40,6 @@ export interface RequestSignInParams {
   methodNames?: Array<string>;
 }
 
-export interface SignOutResponse {
-  // TODO: Figure out when this isn't "success".
-  result: "success";
-}
-
 export type Callback = (response: any) => void;
 
 export interface RpcChangedResponse {
@@ -91,13 +86,13 @@ export interface RequestSignTransactionsParams {
 }
 
 interface InjectedSenderWallet {
-  isSender: string,
+  isSender: boolean,
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => SignOutResponse;
+  signOut: () => boolean;
   isSignedIn: () => boolean;
   on: (event: string, callback: Callback) => void;
   // TODO: Determine return type.
