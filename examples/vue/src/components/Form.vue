@@ -18,13 +18,13 @@ defineProps<{
       <p>
         <label>Donation (optional):</label>
         <input
+          id="donation"
+          type="number"
           autoComplete="off"
           defaultValue="0"
-          id="donation"
           max="1000"
           min="0"
           step="0.01"
-          type="number"
         />
         <span title="NEAR Tokens">Ⓝ</span>
       </p>
