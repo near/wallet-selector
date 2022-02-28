@@ -3,6 +3,13 @@ import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
 import {AccountInfo} from "near-wallet-selector/lib/cjs/wallets/Wallet";
 
+import { utils } from "near-api-js";
+import {NewMessage} from "./components/form/form.component";
+const { parseNearAmount } = utils.format;
+
+const SUGGESTED_DONATION = "0";
+const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
+
 export interface Message {
   premium: boolean;
   sender: string;
@@ -93,5 +100,48 @@ export class AppComponent implements OnInit {
       console.log("'signOut' event triggered!");
       this.account = null;
     })
+  }
+
+  onSubmit(newMessage: NewMessage) {
+    console.log(newMessage)
+
+    let { message, donation } = newMessage;
+
+    // TODO: optimistically update page with new message,
+    // update blockchain data in background
+    // add uuid to each message, so we know which one is already known
+    this.selector.contract.signAndSendTransaction({
+      actions: [{
+        type: "FunctionCall",
+        params: {
+          methodName: "addMessage",
+          args: { text: message },
+          gas: BOATLOAD_OF_GAS,
+          deposit: utils.format.parseNearAmount(donation || "0")!
+        }
+      }]
+    })
+      .catch((err) => {
+        alert("Failed to add message");
+        console.log("Failed to add message");
+        throw err;
+      })
+      .then(() => {
+        return this.selector.contract
+          .view({ methodName: "getMessages" })
+          .then((nextMessages: Message[]) => {
+            this.messages = nextMessages;
+            message = "";
+            donation = SUGGESTED_DONATION;
+          })
+          .catch((err) => {
+            alert("Failed to refresh messages");
+            console.log("Failed to refresh messages");
+            throw err;
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 }

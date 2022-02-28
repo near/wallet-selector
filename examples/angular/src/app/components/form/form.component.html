@@ -1,0 +1,25 @@
+<form (ngSubmit)="onSubmit()">
+  <fieldset id="fieldset">
+    <p>Sign the guest book, {{ account.accountId }}!</p>
+    <p class="highlight">
+      <label for="message">Message:</label>
+      <input autoComplete="off" autoFocus id="message" required [(ngModel)]="message" name="message"/>
+    </p>
+    <p>
+      <label for="donation">Donation (optional):</label>
+      <input
+        autoComplete="off"
+        [defaultValue]="'0'"
+        id="donation"
+        max="{{ maxValue }}"
+        min="0"
+        step="0.01"
+        type="number"
+        [(ngModel)]="donation"
+        name="donation"
+      />
+      <span title="NEAR Tokens">Ⓝ</span>
+    </p>
+    <button type="submit">Sign</button>
+  </fieldset>
+</form>
