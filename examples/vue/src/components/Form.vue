@@ -11,7 +11,7 @@ defineProps<{
   <form>
     <fieldset id="fieldset">
       <p>Sign the guest book, {{ account.accountId }}!</p>
-      <p className="highlight">
+      <p class="highlight">
         <label>Message:</label>
         <input id="message" autoFocus required autoComplete="off" />
       </p>
