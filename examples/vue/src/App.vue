@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from "vue";
+import { onMounted, shallowRef } from "vue";
 import NearWalletSelector from "near-wallet-selector";
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
 import getConfig from "./config";
 import Content from "./components/Content.vue";
 
 const selector = shallowRef<NearWalletSelector>();
-const account = shallowRef<AccountInfo | null>(null);
 
 onMounted(async () => {
   const nearConfig = getConfig("testnet");
