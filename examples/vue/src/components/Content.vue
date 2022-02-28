@@ -18,7 +18,6 @@ const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 interface ContentState {
-  loaded: false;
   account: AccountInfo | null;
   messages: Array<Message>;
 }
@@ -29,7 +28,6 @@ const { selector } = defineProps<{
 
 const subscriptions: Record<string, Subscription> = {};
 const state = reactive<ContentState>({
-  loaded: false,
   account: null,
   messages: []
 });
@@ -140,14 +138,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="!!state.account">
-    <button @click="handleSignOut">Log out</button>
-    <button @click="handleSwitchProvider">Switch Provider</button>
-  </div>
-  <div v-else>
-    <button @click="handleSignIn">Log in</button>
-  </div>
-  <Form v-if="!!state.account" :account="state.account" :onSubmit="handleSubmit" />
-  <SignIn v-else />
-  <Messages v-if="!!state.account" :messages="state.messages" />
+  <template v-if="state.account">
+    <div>
+      <button @click="handleSignOut">Log out</button>
+      <button @click="handleSwitchProvider">Switch Provider</button>
+    </div>
+    <Form :account="state.account" :onSubmit="handleSubmit" />
+    <Messages :messages="state.messages" />
+  </template>
+  <template v-else>
+    <div>
+      <button @click="handleSignIn">Log in</button>
+    </div>
+    <SignIn />
+  </template>
 </template>
