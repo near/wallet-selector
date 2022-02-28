@@ -3,19 +3,35 @@ import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
 import {AccountInfo} from "near-wallet-selector/lib/cjs/wallets/Wallet";
 
+export interface Message {
+  premium: boolean;
+  sender: string;
+  text: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent implements OnInit {
   selector: NearWalletSelector;
   account: AccountInfo;
+  messages: Message[];
 
   async ngOnInit() {
     await this.initialize();
 
-    this.account = await this.selector?.getAccount();
+    const [ messages, account ] = await Promise.all([
+      this.selector.contract.view({methodName: "getMessages"}),
+      this.selector.getAccount(),
+    ]);
+
+    this.account = account;
+    // @ts-ignore
+    this.messages = messages;
+
     this.subscribeToEvents();
   }
 
