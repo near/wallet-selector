@@ -49,9 +49,9 @@ const handleSwitchProvider = () => {
   selector.show();
 }
 
-const handleSubmit = (e: any) => {
-  e.preventDefault();
-
+const handleSubmit = (e: SubmitEvent) => {
+  // TODO: Fix the typing so that target.elements exists..
+  // @ts-ignore.
   const { fieldset, message, donation } = e.target.elements;
 
   fieldset.disabled = true;
@@ -147,7 +147,7 @@ onUnmounted(() => {
   <div v-else>
     <button @click="handleSignIn">Log in</button>
   </div>
-  <Form v-if="!!state.account" :account="state.account" @submit="handleSubmit" />
+  <Form v-if="!!state.account" :account="state.account" :onSubmit="handleSubmit" />
   <SignIn v-else />
   <Messages v-if="!!state.account" :messages="state.messages" />
 </template>

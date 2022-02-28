@@ -3,12 +3,13 @@ import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
 defineProps<{
   account: AccountInfo;
+  onSubmit: (event: SubmitEvent) => void;
 }>()
 
 </script>
 
 <template>
-  <form>
+  <form @submit.prevent="onSubmit">
     <fieldset id="fieldset">
       <p>Sign the guest book, {{ account.accountId }}!</p>
       <p class="highlight">
@@ -28,7 +29,7 @@ defineProps<{
         />
         <span title="NEAR Tokens">Ⓝ</span>
       </p>
-      <button type="submit" @click="$emit('submit')">Sign</button>
+      <button type="submit">Sign</button>
     </fieldset>
   </form>
 </template>
