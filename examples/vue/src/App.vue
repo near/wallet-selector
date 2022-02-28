@@ -1,12 +1,46 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+import { onMounted, ref } from "vue";
+import NearWalletSelector from "near-wallet-selector";
+
+import getConfig from "./config";
+import Content from "./components/Content.vue";
+
+const loaded = ref(false);
+const selector = ref(null);
+const account = ref(null);
+
+onMounted(async () => {
+  const nearConfig = getConfig("testnet");
+
+  const selector = new NearWalletSelector({
+    wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+    networkId: "testnet",
+    theme: "light",
+    contract: {
+      accountId: nearConfig.contractName,
+    },
+    walletSelectorUI: {
+      description: "Please select a wallet to connect to this dApp:",
+      explanation: [
+        "Wallets are used to send, receive, and store digital assets.",
+        "There are different types of wallets. They can be an extension",
+        "added to your browser, a hardware device plugged into your",
+        "computer, web-based, or as an app on your phone.",
+      ].join(" "),
+    },
+  });
+
+  await selector.init();
+
+  selector.value = selector;
+  account.value = await selector.getAccount();
+  loaded.value = true;
+});
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <h1>NEAR Guest Book</h1>
+  <Content v-if="loaded" :selector="selector" :initial-account="account" />
 </template>
 
 <style>
