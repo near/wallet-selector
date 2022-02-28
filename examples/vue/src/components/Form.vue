@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import Big from "big.js";
 
-defineProps<{
+const props = defineProps<{
   account: AccountInfo;
   onSubmit: (event: SubmitEvent) => void;
 }>()
 
+const maxDonation = Big(props.account.balance)
+  .div(10 ** 24)
+  .toString()
 </script>
 
 <template>
@@ -23,7 +27,7 @@ defineProps<{
           type="number"
           autoComplete="off"
           defaultValue="0"
-          max="1000"
+          :max="maxDonation"
           min="0"
           step="0.01"
         />
