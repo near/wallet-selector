@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
-const props = defineProps<{
+defineProps<{
   account: AccountInfo;
 }>()
 
-console.log(props.account);
 </script>
 
 <template>
-  <form onSubmit={onSubmit}>
+  <form>
     <fieldset id="fieldset">
       <p>Sign the guest book, {{ account.accountId }}!</p>
       <p className="highlight">
@@ -29,7 +28,7 @@ console.log(props.account);
         />
         <span title="NEAR Tokens">Ⓝ</span>
       </p>
-      <button type="submit">Sign</button>
+      <button type="submit" @click="$emit('submit')">Sign</button>
     </fieldset>
   </form>
 </template>

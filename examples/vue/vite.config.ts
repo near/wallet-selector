@@ -6,6 +6,7 @@ import inject from "@rollup/plugin-inject";
 export default defineConfig({
   define: {
     global: {},
+    "process.env": {}
   },
   plugins: [
     inject({ Buffer: ["buffer", "Buffer"] }),
