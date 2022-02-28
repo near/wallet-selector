@@ -1,1 +1,3 @@
-<button (click)="show()">Log In</button>
+<button *ngIf="!account" (click)="signIn()">Log In</button>
+<button *ngIf="account" (click)=signOut()>Log out</button>
+<button *ngIf="account" (click)=switchProvider()>Switch Provider</button>

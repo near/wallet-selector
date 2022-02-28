@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
+import {AccountInfo} from "near-wallet-selector/lib/cjs/wallets/Wallet";
 
 @Component({
   selector: 'app-root',
@@ -8,20 +9,20 @@ import getConfig from "../config";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  nearWalletSelector: NearWalletSelector | undefined;
+  selector: NearWalletSelector;
+  account: AccountInfo;
 
   async ngOnInit() {
     await this.initialize();
-  }
 
-  show() {
-    this.nearWalletSelector?.show()
+    this.account = await this.selector?.getAccount();
+    this.subscribeToEvents();
   }
 
   async initialize() {
     const nearConfig = getConfig("testnet");
 
-    this.nearWalletSelector = new NearWalletSelector({
+    this.selector = new NearWalletSelector({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
       networkId: "testnet",
       theme: "light",
@@ -38,6 +39,43 @@ export class AppComponent implements OnInit {
         ].join(" "),
       },
     });
-    await this.nearWalletSelector.init();
+    await this.selector.init();
+  }
+
+  signIn() {
+    this.selector.show();
+  }
+
+  signOut() {
+    this.selector.signOut().catch((err) => {
+      console.log("Failed to sign out");
+      console.error(err);
+    });
+  }
+
+  switchProvider() {
+    this.selector.show();
+  }
+
+  subscribeToEvents() {
+    this.selector.on("signIn", () => {
+      console.log("'signIn' event triggered!");
+
+      this.selector
+        .getAccount()
+        .then((data) => {
+          console.log("Account", data);
+          this.account = data;
+        })
+        .catch((err) => {
+          console.log("Failed to retrieve account info");
+          console.error(err);
+        });
+    });
+
+    this.selector.on("signOut", () => {
+      console.log("'signOut' event triggered!");
+      this.account = null;
+    })
   }
 }
