@@ -122,7 +122,7 @@ onMounted(async () => {
 
   // TODO: don't just fetch once; subscribe!
   const [ messages, account ] = await Promise.all([
-    selector.contract.view({methodName: "getMessages"}),
+    selector.contract.view({ methodName: "getMessages" }),
     selector.getAccount(),
   ]);
 
