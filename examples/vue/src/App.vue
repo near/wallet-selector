@@ -33,11 +33,10 @@ onMounted(async () => {
   await nearWalletSelector.init();
 
   selector.value = nearWalletSelector;
-  account.value = await nearWalletSelector.getAccount();
 });
 </script>
 
 <template>
   <h1>NEAR Guest Book</h1>
-  <Content v-if="!!selector" :selector="selector" :initial-account="account" />
+  <Content v-if="!!selector" :selector="selector" />
 </template>

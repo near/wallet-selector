@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from "vue";
+import {
+  onMounted,
+  onUnmounted,
+  reactive
+} from "vue";
 import NearWalletSelector from "near-wallet-selector";
 import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import { Subscription } from "../../../../lib/esm/utils/EventsHandler";
 import { utils } from "near-api-js";
 
 import Form from "./Form.vue";
@@ -12,27 +17,36 @@ import { Message } from "../interfaces";
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
-const props = defineProps<{
+interface ContentState {
+  loaded: false;
+  account: AccountInfo | null;
+  messages: Array<Message>;
+}
+
+const { selector } = defineProps<{
   selector: NearWalletSelector;
-  initialAccount: AccountInfo | null;
 }>()
 
-const account = shallowRef(props.initialAccount);
-const messages = ref<Array<Message>>([]);
+const subscriptions: Record<string, Subscription> = {};
+const state = reactive<ContentState>({
+  loaded: false,
+  account: null,
+  messages: []
+});
 
 const handleSignIn = () => {
-  props.selector.show();
+  selector.show();
 };
 
 const handleSignOut = () => {
-  props.selector.signOut().catch((err) => {
+  selector.signOut().catch((err) => {
     console.log("Failed to sign out");
     console.error(err);
   });
 };
 
 const handleSwitchProvider = () => {
-  props.selector.show();
+  selector.show();
 }
 
 const handleSubmit = (e: any) => {
@@ -45,7 +59,7 @@ const handleSubmit = (e: any) => {
   // TODO: optimistically update page with new message,
   // update blockchain data in background
   // add uuid to each message, so we know which one is already known
-  props.selector.contract.signAndSendTransaction({
+  selector.contract.signAndSendTransaction({
     actions: [{
       type: "FunctionCall",
       params: {
@@ -63,10 +77,10 @@ const handleSubmit = (e: any) => {
       throw err;
     })
     .then(() => {
-      return props.selector.contract
+      return selector.contract
         .view({ methodName: "getMessages" })
         .then((nextMessages) => {
-          messages.value = nextMessages;
+          state.messages = nextMessages;
           message.value = "";
           donation.value = SUGGESTED_DONATION;
           fieldset.disabled = false;
@@ -87,24 +101,53 @@ const handleSubmit = (e: any) => {
 };
 
 onMounted(async () => {
-  // TODO: don't just fetch once; subscribe!
-  const newMessages = await props.selector.contract.view({
-    methodName: "getMessages"
-  })
+  subscriptions.signIn = selector.on("signIn", () => {
+    console.log("'signIn' event triggered!");
 
-  messages.value = newMessages;
+    selector.getAccount()
+      .then((account) => {
+        console.log("Account", account);
+        state.account = account;
+      })
+      .catch((err) => {
+        console.log("Failed to retrieve account info");
+        console.error(err);
+      });
+  });
+
+  subscriptions.signOut = selector.on("signOut", () => {
+    console.log("'signOut' event triggered!");
+    state.account = null;
+  });
+
+  // TODO: don't just fetch once; subscribe!
+  const [ messages, account ] = await Promise.all([
+    selector.contract.view({methodName: "getMessages"}),
+    selector.getAccount(),
+  ]);
+
+  state.messages = messages;
+  state.account = account;
+});
+
+onUnmounted(() => {
+  for (let key in subscriptions) {
+    const subscription = subscriptions[key];
+
+    subscription.remove();
+  }
 });
 </script>
 
 <template>
-  <div v-if="!!initialAccount">
+  <div v-if="!!state.account">
     <button @click="handleSignOut">Log out</button>
     <button @click="handleSwitchProvider">Switch Provider</button>
   </div>
   <div v-else>
     <button @click="handleSignIn">Log in</button>
   </div>
-  <Form v-if="!!initialAccount" :account="initialAccount" @submit="handleSubmit" />
+  <Form v-if="!!state.account" :account="state.account" @submit="handleSubmit" />
   <SignIn v-else />
-  <Messages v-if="!!initialAccount" :messages="messages" />
+  <Messages v-if="!!state.account" :messages="state.messages" />
 </template>
