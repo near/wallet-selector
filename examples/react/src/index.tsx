@@ -8,7 +8,7 @@ import NearWalletSelector from "near-wallet-selector";
 async function initContract() {
   // get network configuration values from config.js
   // based on the network ID we pass to getConfig()
-  const nearConfig = getConfig(process.env.NEAR_ENV || "testnet");
+  const nearConfig = getConfig("testnet");
 
   const selector = new NearWalletSelector({
     wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
