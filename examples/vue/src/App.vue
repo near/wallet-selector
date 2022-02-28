@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, shallowRef } from "vue";
 import NearWalletSelector from "near-wallet-selector";
+import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
 import getConfig from "./config";
 import Content from "./components/Content.vue";
 
-const loaded = ref(false);
-const selector = ref(null);
-const account = ref(null);
+const selector = shallowRef<NearWalletSelector>();
+const account = ref<AccountInfo | null>(null);
 
 onMounted(async () => {
   const nearConfig = getConfig("testnet");
 
-  const selector = new NearWalletSelector({
+  const nearWalletSelector = new NearWalletSelector({
     wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
     networkId: "testnet",
     theme: "light",
@@ -30,26 +30,14 @@ onMounted(async () => {
     },
   });
 
-  await selector.init();
+  await nearWalletSelector.init();
 
-  selector.value = selector;
-  account.value = await selector.getAccount();
-  loaded.value = true;
+  selector.value = nearWalletSelector;
+  account.value = await nearWalletSelector.getAccount();
 });
 </script>
 
 <template>
   <h1>NEAR Guest Book</h1>
-  <Content v-if="loaded" :selector="selector" :initial-account="account" />
+  <Content v-if="selector" :selector="selector" :initial-account="account" />
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

@@ -2,13 +2,18 @@
 import NearWalletSelector from "near-wallet-selector";
 import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 
+import Form from "./Form.vue";
+import SignIn from "./SignIn.vue";
+
 const props = defineProps<{
   selector: NearWalletSelector;
   initialAccount: AccountInfo | null;
 }>()
 
-console.log(props.initialAccount);
-console.log(props.selector);
+const signIn = () => {
+  props.selector.show();
+};
+
 </script>
 
 <template>
@@ -17,9 +22,8 @@ console.log(props.selector);
     <button>Switch Provider</button>
   </div>
   <div v-else>
-    <button>Log in</button>
+    <button @click="signIn">Log in</button>
   </div>
+  <Form v-if="initialAccount" account={account} />
+  <SignIn v-else />
 </template>
-
-<style scoped>
-</style>
