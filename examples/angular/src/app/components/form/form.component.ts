@@ -1,11 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
 import Big from "big.js";
-
-export interface NewMessage {
-  donation: string;
-  message: string;
-}
 
 @Component({
   selector: 'app-form',
@@ -14,20 +9,14 @@ export interface NewMessage {
 })
 export class FormComponent implements OnInit {
   @Input() account: AccountInfo;
-  @Output() onAddMessage: EventEmitter<NewMessage> = new EventEmitter();
-  donation  = "0";
-  message = '';
+  @Output() onAddMessage: EventEmitter<SubmitEvent> = new EventEmitter();
   maxValue: string;
 
   ngOnInit(): void {
     this.maxValue = Big(this.account.balance).div(10 ** 24).toString();
   }
 
-  onSubmit () {
-    const data: NewMessage = {
-      message: this.message.toString(),
-      donation: this.donation.toString()
-    }
-    this.onAddMessage.emit(data)
+  onSubmit (event: SubmitEvent) {
+    this.onAddMessage.emit(event)
   }
 }

@@ -4,7 +4,6 @@ import getConfig from "../config";
 import {AccountInfo} from "near-wallet-selector/lib/cjs/wallets/Wallet";
 
 import { utils } from "near-api-js";
-import {NewMessage} from "./components/form/form.component";
 const { parseNearAmount } = utils.format;
 
 const SUGGESTED_DONATION = "0";
@@ -102,10 +101,11 @@ export class AppComponent implements OnInit {
     })
   }
 
-  onSubmit(newMessage: NewMessage) {
-    console.log(newMessage)
+  onSubmit(e: SubmitEvent) {
+    //@ts-ignore
+    let { fieldset, message, donation } = e.target.elements;
 
-    let { message, donation } = newMessage;
+    fieldset.disabled = true;
 
     // TODO: optimistically update page with new message,
     // update blockchain data in background
@@ -115,9 +115,9 @@ export class AppComponent implements OnInit {
         type: "FunctionCall",
         params: {
           methodName: "addMessage",
-          args: { text: message },
+          args: { text: message.value },
           gas: BOATLOAD_OF_GAS,
-          deposit: utils.format.parseNearAmount(donation || "0")!
+          deposit: utils.format.parseNearAmount(donation.value || "0")!
         }
       }]
     })
@@ -131,8 +131,10 @@ export class AppComponent implements OnInit {
           .view({ methodName: "getMessages" })
           .then((nextMessages: Message[]) => {
             this.messages = nextMessages;
-            message = "";
-            donation = SUGGESTED_DONATION;
+            message.value = "";
+            donation.value = SUGGESTED_DONATION;
+            fieldset.disabled = false;
+            message.focus();
           })
           .catch((err) => {
             alert("Failed to refresh messages");
@@ -142,6 +144,8 @@ export class AppComponent implements OnInit {
       })
       .catch((err) => {
         console.error(err);
+
+        fieldset.disabled = false;
       });
   }
 }
