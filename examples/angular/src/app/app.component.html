@@ -1,3 +1,13 @@
-<button *ngIf="!account" (click)="signIn()">Log In</button>
-<button *ngIf="account" (click)=signOut()>Log out</button>
-<button *ngIf="account" (click)=switchProvider()>Switch Provider</button>
+<main>
+  <header>
+    <h1>NEAR Guest Book</h1>
+    <button *ngIf="!account" (click)="signIn()">Log In</button>
+    <button *ngIf="account" (click)=signOut()>Log out</button>
+    <button *ngIf="account" (click)=switchProvider()>Switch Provider</button>
+  </header>
+
+  <!--  TODO Create below components and functionality-->
+<!--  <app-form *ngIf="account" [account]="account" (onAddMessage)="onSubmit($event)"></app-form>-->
+  <app-sign-in *ngIf="!account"></app-sign-in>
+<!--  <app-messages *ngIf="!!account && !!messages.length" [messages]="messages"></app-messages>-->
+</main>
