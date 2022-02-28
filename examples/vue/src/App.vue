@@ -7,7 +7,7 @@ import getConfig from "./config";
 import Content from "./components/Content.vue";
 
 const selector = shallowRef<NearWalletSelector>();
-const account = ref<AccountInfo | null>(null);
+const account = shallowRef<AccountInfo | null>(null);
 
 onMounted(async () => {
   const nearConfig = getConfig("testnet");
@@ -39,5 +39,5 @@ onMounted(async () => {
 
 <template>
   <h1>NEAR Guest Book</h1>
-  <Content v-if="selector" :selector="selector" :initial-account="account" />
+  <Content v-if="!!selector" :selector="selector" :initial-account="account" />
 </template>
