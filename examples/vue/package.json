@@ -1,5 +1,5 @@
 {
-  "name": "vue",
+  "name": "near-wallet-selector-example-vue",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "big.js": "^6.1.1",
+    "near-api-js": "0.44.2",
     "near-wallet-selector": "*",
     "vue": "^3.2.25"
   },

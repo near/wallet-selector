@@ -1,7 +1,7 @@
 {
-  "name": "wallet-selector-example",
-  "version": "0.1.0",
-  "license": "(MIT AND Apache-2.0)",
+  "name": "near-wallet-selector-example-react",
+  "private": true,
+  "version": "0.0.0",
   "scripts": {
     "start": "parcel src/index.html",
     "watch": "nodemon",
