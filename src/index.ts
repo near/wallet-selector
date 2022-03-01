@@ -24,4 +24,6 @@ export {
   DeleteAccountAction,
 } from "./wallets/actions";
 
+export { Transaction } from "./wallets/transactions";
+
 export default NearWalletSelector;

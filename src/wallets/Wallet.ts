@@ -1,6 +1,7 @@
 import { Options } from "../core/NearWalletSelector";
 import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
+import { Transaction } from "./transactions";
 import { Action } from "./actions";
 
 export interface WalletOptions {
@@ -12,6 +13,10 @@ export interface WalletOptions {
 export interface SignAndSendTransactionParams {
   receiverId: string;
   actions: Array<Action>;
+}
+
+export interface SignAndSendTransactionsParams {
+  transactions: Array<Transaction>;
 }
 
 export interface AccountInfo {
@@ -57,6 +62,12 @@ interface BaseWallet {
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
+  ): Promise<unknown>;
+
+  // TODO: Determine standardised response.
+  // Signs a list of transactions before sending them via an RPC endpoint.
+  signAndSendTransactions(
+    params: SignAndSendTransactionsParams
   ): Promise<unknown>;
 }
 
