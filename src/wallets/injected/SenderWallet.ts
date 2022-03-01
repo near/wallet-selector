@@ -16,8 +16,10 @@ import {
   InjectedWallet,
   InjectedWalletType,
   SignAndSendTransactionParams,
+  SignAndSendTransactionsParams,
   WalletOptions,
 } from "../Wallet";
+import { Transaction } from "../transactions";
 
 declare global {
   interface Window {
@@ -186,7 +188,16 @@ class SenderWallet implements InjectedWallet {
       );
     }
 
-    return actions.map((x) => x.params);
+    return actions.map((action) => action.params);
+  };
+
+  private transformTransactions = (transactions: Array<Transaction>) => {
+    return transactions.map((transaction) => {
+      return {
+        receiverId: transaction.receiverId,
+        actions: this.transformActions(transaction.actions),
+      };
+    });
   };
 
   signAndSendTransaction = async ({
@@ -207,6 +218,17 @@ class SenderWallet implements InjectedWallet {
 
         return res;
       });
+  };
+
+  // TODO: Assuming a similar response to signAndSendTransaction. Might need to add similar error handling.
+  signAndSendTransactions = async ({
+    transactions,
+  }: SignAndSendTransactionsParams) => {
+    logger.log("SenderWallet:signAndSendTransactions", { transactions });
+
+    return this.wallet.requestSignTransactions({
+      transactions: this.transformTransactions(transactions),
+    });
   };
 }
 
