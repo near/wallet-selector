@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import { AccountInfo } from "near-wallet-selector";
 import Big from "big.js";
 
 const props = defineProps<{
