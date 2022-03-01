@@ -1,5 +1,6 @@
 {
   "name": "near-wallet-selector",
+  "version": "1.0.2",
   "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -12,8 +13,7 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
     "test": "jest",
-    "prepublish": "npm run build",
-    "prepare": "husky install"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -34,12 +34,9 @@
     "@commitlint/config-conventional": "^16.2.1",
     "@ledgerhq/logs": "^6.10.0",
     "@playwright/test": "^1.18.0",
-    "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^8.0.2",
     "@semantic-release/npm": "^9.0.0",
-    "@semantic-release/release-notes-generator": "^10.0.3",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@types/big.js": "^6.1.2",
@@ -54,7 +51,6 @@
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
     "jest": "^27.4.7",
     "jest-mock-extended": "^2.0.4",
     "playwright": "^1.18.0",
