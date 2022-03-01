@@ -3,7 +3,7 @@
 Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
 Closes # (issue)
-
+<!-- REMOVE ALL THE TEMPLATE BELOW IF THE PR IS A RELEASE -->
 # Checklist:
 <!-- CHECKLIST_TYPE: ALL -->
 - [ ] My code follows the style guidelines of this project
