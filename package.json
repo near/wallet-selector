@@ -6,8 +6,8 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "build:esm": "rm -rf lib/esm && tsc --module esnext --outDir lib/esm",
+    "build:cjs": "rm -rf lib/cjs && tsc --module commonjs --outDir lib/cjs",
     "build": "yarn build:esm && yarn build:cjs",
     "lint": "eslint ./src --ext .ts,.tsx",
     "lint:fix": "yarn lint --fix",
