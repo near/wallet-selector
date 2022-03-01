@@ -11,6 +11,8 @@ export {
   AccountInfo,
 } from "./wallets/Wallet";
 
+export { Subscription } from "./utils/EventsHandler";
+
 export {
   Action,
   ActionType,
