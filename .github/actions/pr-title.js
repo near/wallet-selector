@@ -14,8 +14,6 @@ const CONVENTIONAL_COMMIT_CHANGES = {
 
 const REGEX_CHANGE_TYPE = new RegExp(`(- \\[[x]\\] (${Object.keys(CONVENTIONAL_COMMIT_CHANGES).join('|')}).+)`, 'g');
 
-const CONTAINS_BREAKING_CHANGES = /(- \[[x]\] (BREAKING CHANGE).+)/g;
-
 module.exports.update = async function ({
   context,
   github
@@ -29,11 +27,10 @@ module.exports.update = async function ({
 
   if (scopes.length > 1) throw new Error(`Too many scopes: ${scopes.join(', ')}`);
 
-  const [ breaking ] = body.match(CONTAINS_BREAKING_CHANGES) || [];
   const [ scope ] = scopes;
 
   for (const { 2: type } of body.matchAll(REGEX_CHANGE_TYPE)) {
-    title = `${CONVENTIONAL_COMMIT_CHANGES[type]}${scope ? '(' + scope + ')' : ''}${breaking ? '!' : ''}: ${title.replace(/^.*:(\s)?/g, '').trim()}`;
+    title = `${CONVENTIONAL_COMMIT_CHANGES[type]}${scope ? '(' + scope + ')' : ''}: ${title.replace(/^.*:(\s)?/g, '').trim()}`;
   }
 
 
