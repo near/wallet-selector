@@ -1,4 +1,4 @@
 node_modules
 lib/
-example/out/
-example/dist/
+examples/react/out/
+examples/react/dist/
