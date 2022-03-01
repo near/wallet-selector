@@ -1,10 +1,10 @@
-<ng-container>
-  <div *ngIf="account">
+<ng-container *ngIf="account">
+  <div>
     <button (click)=signOut()>Log out</button>
     <button (click)=switchProvider()>Switch Provider</button>
   </div>
-  <app-form *ngIf="account" [account]="account" (onAddMessage)="onSubmit($event)"></app-form>
-  <app-messages *ngIf="!!account && !!messages.length" [messages]="messages"></app-messages>
+  <app-form [account]="account" (onAddMessage)="onSubmit($event)"></app-form>
+  <app-messages *ngIf="!!messages.length" [messages]="messages"></app-messages>
 </ng-container>
 
 <ng-container *ngIf="!account">
