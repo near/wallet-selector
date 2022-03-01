@@ -5,6 +5,7 @@ import { Options } from "../../core/NearWalletSelector";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
 import { transformActions } from "../actions";
+import { transformTransactions } from "../transactions";
 import { setSelectedWalletId } from "../helpers";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
@@ -13,6 +14,7 @@ import {
   BrowserWallet,
   BrowserWalletType,
   SignAndSendTransactionParams,
+  SignAndSendTransactionsParams,
   WalletOptions,
 } from "../Wallet";
 
@@ -120,6 +122,20 @@ class NearWallet implements BrowserWallet {
     return account.signAndSendTransaction({
       receiverId,
       actions: transformActions(actions),
+    });
+  };
+
+  signAndSendTransactions = ({
+    transactions,
+  }: SignAndSendTransactionsParams) => {
+    logger.log("NearWallet:signAndSendTransactions", { transactions });
+
+    const account = this.wallet.account();
+
+    // @ts-ignore
+    // near-api-js doesn't have this method declared in TypeScript.
+    return account.requestSignTransactions({
+      transactions: transformTransactions(transactions),
     });
   };
 }

@@ -3,7 +3,10 @@ import ProviderService, {
 } from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
 import { Options } from "./NearWalletSelector";
-import { SignAndSendTransactionParams } from "../wallets/Wallet";
+import {
+  SignAndSendTransactionParams,
+  SignAndSendTransactionsParams,
+} from "../wallets/Wallet";
 
 class Contract {
   private readonly options: Options;
@@ -46,6 +49,18 @@ class Contract {
       receiverId: this.options.contract.accountId,
       actions,
     });
+  }
+
+  async signAndSendTransactions({
+    transactions,
+  }: SignAndSendTransactionsParams) {
+    const wallet = this.controller.getSelectedWallet();
+
+    if (!wallet) {
+      throw new Error("Wallet not selected!");
+    }
+
+    return wallet.signAndSendTransactions({ transactions });
   }
 }
 
