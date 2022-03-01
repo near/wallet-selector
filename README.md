@@ -189,7 +189,7 @@ const near = new NearWalletSelector({
 ```
 ## Examples
 
-[React](https://reactjs.org/) and [Vue](https://vuejs.org/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) project can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
+[React](https://reactjs.org/) , [Vue](https://vuejs.org/) and  [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) project can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
 
 Contributors to this package may also find these examples useful as it provides a quick and consistent way of manually testing new changes and/or bugs. Below is a common workflow you can use:
 
