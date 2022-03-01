@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
+    "@ledgerhq/hw-transport": "^6.20.0",
     "@ledgerhq/logs": "^6.10.0",
     "bn.js": "^5.2.0",
     "is-mobile": "^3.0.0",

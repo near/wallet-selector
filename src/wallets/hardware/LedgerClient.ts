@@ -1,4 +1,5 @@
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import Transport from "@ledgerhq/hw-transport";
 import { listen, Log } from "@ledgerhq/logs";
 import { utils } from "near-api-js";
 
@@ -60,7 +61,7 @@ export interface Subscription {
 
 // TODO: Needs a method to assert whether we're connected.
 class LedgerClient {
-  private transport: TransportWebHID;
+  private transport: Transport;
 
   // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
   static isSupported = () => {
