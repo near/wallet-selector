@@ -1,6 +1,7 @@
 on:
   push:
-    branches: [main, dev]
+    branches:
+      - main
 
 jobs:
   release:
@@ -14,20 +15,24 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 16.x
-    - name: Install NPM Dependencies
-      run: npm install
-    - name: Run Build
-      run: npm run build
-    - name: Run Linting
-      run: npm run lint
-    - name: Run Unit & Integration Tests
-      run: npm test
-    # - name: Install Playwright Dependencies
-    #   run: sudo npx playwright install-deps
-    # - name: Run End-to-End Tests
-    #   run: npm run test:e2e
+    - name: Install dependencies
+      run: npx ci
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: npx semantic-release
+    - name: set env
+      run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+    # Drafts your next Release notes as Pull Requests are merged into "main"
+    - name: Draft Release notes
+      id: draft-release-notes
+      uses: release-drafter/release-drafter@v5
+      if: github.ref == 'refs/heads/main'
+      with:
+        config-name: release-drafter.yml
+        publish: true
+        tag: ${{ env.TAG }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

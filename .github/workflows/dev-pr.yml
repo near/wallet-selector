@@ -1,13 +1,26 @@
 name: Dev PR
 on:
+  pull_request_review:
+    types:
+      - submitted
   pull_request_target:
-    types: [opened, reopened, edited]
+    types:
+      - opened
+      - reopened
+      - edited
+      - labeled
+      - unlabeled
+      - synchronize
+      - ready_for_review
+      - unlocked
     branches:
       - dev
+      - main
 
 jobs:
   dev-pr:
     runs-on: ubuntu-latest
+    if: github.base_ref == "dev"
     steps:
       - uses: actions/checkout@v2
       - name: Ensure checklists are filled
@@ -22,3 +35,25 @@ jobs:
           script: |
             const script = require('.github/actions/pr-title.js').update;
             await script({ context, github });
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: pull-request-title
+          MERGE_REQUIRED_APPROVALS: 2
+  prod-pr:
+    runs-on: ubuntu-latest
+    if: github.base_ref == "main"
+    steps:
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: rebase
+          MERGE_COMMIT_MESSAGE: automatic
+          MERGE_REQUIRED_APPROVALS: 2
+
+
