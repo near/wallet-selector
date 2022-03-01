@@ -1,0 +1,45 @@
+{
+  "name": "near-wallet-selector-example-react",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "nodemon",
+    "build": "parcel build src/index.html --public-url ./",
+    "build:wallet-selector": "(cd .. && yarn build)",
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "lint:fix": "yarn lint --fix"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.13.13",
+    "nodemon": "^2.0.7",
+    "parcel-bundler": "^1.12.5",
+    "sass": "^1.44.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "big.js": "^6.1.1",
+    "near-api-js": "0.44.2",
+    "near-wallet-selector": "*",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "regenerator-runtime": "^0.13.9"
+  },
+  "resolutions": {
+     "@babel/preset-env": "7.13.8"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
