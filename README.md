@@ -194,7 +194,7 @@ const near = new NearWalletSelector({
 Contributors to this package may also find these examples useful as it provides a quick and consistent way of manually testing new changes and/or bugs. Below is a common workflow you can use:
 
 - Execute `yarn link` in the root directory.
-- Navigate to the `examples/{react|vue}` directory.
+- Navigate to the `examples/{react|vue|angular}` directory.
 - Execute `yarn link near-wallet-selector` to create a symlink locally.
 - Execute `yarn start`
 
