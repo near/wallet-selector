@@ -6,14 +6,14 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "test:e2e": "playwright test",
-    "build": "npm run build:esm && npm run build:cjs",
-    "lint": "eslint ./src --ext .ts,.tsx",
-    "lint:fix": "npm run lint -- --fix",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "build": "yarn build:esm && yarn build:cjs",
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "lint:fix": "yarn lint --fix",
     "test": "jest",
-    "prepublish": "npm run build"
+    "test:e2e": "playwright test",
+    "prepack": "yarn build"
   },
   "repository": {
     "type": "git",

@@ -14,9 +14,13 @@ You can test the library on the [Guest Book](https://github.com/near-projects/wa
 
 ## Installation and Usage
 
-The easiest way to use `near-wallet-selector` is to install it from NPM:
+The easiest way to use `near-wallet-selector` is to install it from the NPM registry:
 
 ```bash
+# Using Yarn
+yarn add near-wallet-selector
+
+# Using NPM.
 npm install near-wallet-selector
 ```
 
@@ -189,10 +193,10 @@ A variation of the [guest-book](https://github.com/near-examples/guest-book/)  e
 
 Contributors to this package may also find this integration useful as it provides a quick and consistent way of manually testing new changes and/or bugs. Below is a common workflow you can use:
 
+- Execute `yarn link` in the root directory.
 - Navigate to the `example` directory.
-- Execute `npm link ../` to create a symlink locally.
-- Execute `npm install`.
-- Execute `npm run watch` to watch both `src` directories and automatically recompile.
+- Execute `yarn link near-wallet-selector` to create a symlink locally.
+- Execute `yarn watch` to watch both `src` directories and automatically recompile.
 
 ## Editor Setup
 
