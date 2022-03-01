@@ -292,6 +292,14 @@ class LedgerWallet implements HardwareWallet {
       return JSON.parse(Buffer.from(successValue, "base64").toString());
     });
   };
+
+  // TODO: Not entirely sure how we should implement this. Is it simply a case of sequentially
+  //  calling provider.sendTransaction? If so, this seems to completely miss the point of
+  //  transactions (from a classic database mental modal)? I would expect this method be to
+  //  used to ensure atomicity.
+  signAndSendTransactions = async () => {
+    throw new Error("Not implemented");
+  };
 }
 
 export default LedgerWallet;
