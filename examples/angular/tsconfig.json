@@ -17,9 +17,6 @@
       "es2020",
       "dom"
     ],
-    "paths": {
-      "process": ["./node_modules/process/browser"],
-    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false
