@@ -50,7 +50,7 @@ import 'zone.js';  // Included with Angular CLI.
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
-(window as any).process = { env: { DEBUG: undefined } }
+(window as any).process = { env: {} };
 
 
 /***************************************************************************************************
