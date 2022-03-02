@@ -9,7 +9,7 @@ categories:
     labels:
       - 'chore'
       - 'ci'
-  - title: '📝 Documentation & Styiling'
+  - title: '📝 Documentation & Styling'
     labels:
       - 'docs'
       - 'style'

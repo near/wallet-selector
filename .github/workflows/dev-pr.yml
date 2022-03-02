@@ -42,7 +42,7 @@ jobs:
           MERGE_LABELS: automerge
           MERGE_METHOD: squash
           MERGE_COMMIT_MESSAGE: pull-request-title
-          MERGE_REQUIRED_APPROVALS: 2
+          MERGE_REQUIRED_APPROVALS: 1
   prod-pr:
     runs-on: ubuntu-latest
     if: github.base_ref == "main"
@@ -54,6 +54,6 @@ jobs:
           MERGE_LABELS: automerge
           MERGE_METHOD: rebase
           MERGE_COMMIT_MESSAGE: automatic
-          MERGE_REQUIRED_APPROVALS: 2
+          MERGE_REQUIRED_APPROVALS: 1
 
 
