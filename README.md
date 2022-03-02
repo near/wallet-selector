@@ -8,7 +8,8 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 
 ## Preview 
-You can test the library on the [Guest Book](https://github.com/near-projects/wallet-selector/tree/dev/example) dApp which is located inside `/example`
+
+[React](https://reactjs.org/) and [Vue](https://vuejs.org/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
 
 ![Preview](./src/images/preview-img.PNG)
 
@@ -187,14 +188,12 @@ const near = new NearWalletSelector({
   }
 });
 ```
-## Examples
+## Contributing 
 
-[React](https://reactjs.org/) and [Vue](https://vuejs.org/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) project can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
-
-Contributors to this package may also find these examples useful as it provides a quick and consistent way of manually testing new changes and/or bugs. Below is a common workflow you can use:
+Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:
 
 - Execute `yarn link` in the root directory.
-- Navigate to the `examples/{react|vue}` directory.
+- Navigate to the `examples/{framework}` directory.
 - Execute `yarn link near-wallet-selector` to create a symlink locally.
 - Execute `yarn start`
 

@@ -1,6 +1,6 @@
 import React, { FormEventHandler } from "react";
 import Big from "big.js";
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import { AccountInfo } from "near-wallet-selector";
 
 interface FormProps {
   account: AccountInfo;

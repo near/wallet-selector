@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { utils } from "near-api-js";
-import NearWalletSelector from "near-wallet-selector";
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import NearWalletSelector, { AccountInfo } from "near-wallet-selector";
 
 import { Message } from "../interfaces";
 import SignIn from "./SignIn";
