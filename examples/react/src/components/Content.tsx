@@ -23,7 +23,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     Promise.all([
       selector.contract.view({ methodName: "getMessages" }),
       selector.getAccount(),
-    ]).then(([ nextMessages, nextAccount ]) => {
+    ]).then(([nextMessages, nextAccount]) => {
       setMessages(nextMessages);
       setAccount(nextAccount);
     });
@@ -74,7 +74,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
 
   const handleSwitchProvider = () => {
     selector.show();
-  }
+  };
 
   const handleSubmit = (e: SubmitEvent) => {
     // TODO: Fix the typing so that target.elements exists..
@@ -86,17 +86,20 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    selector.contract.signAndSendTransaction({
-      actions: [{
-        type: "FunctionCall",
-        params: {
-          methodName: "addMessage",
-          args: { text: message.value },
-          gas: BOATLOAD_OF_GAS,
-          deposit: utils.format.parseNearAmount(donation.value || "0")!
-        }
-      }]
-    })
+    selector.contract
+      .signAndSendTransaction({
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: { text: message.value },
+              gas: BOATLOAD_OF_GAS,
+              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+            },
+          },
+        ],
+      })
       .catch((err) => {
         alert("Failed to add message");
         console.log("Failed to add message");
@@ -148,6 +151,6 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
       <Messages messages={messages} />
     </Fragment>
   );
-}
+};
 
 export default Content;
