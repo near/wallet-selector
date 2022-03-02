@@ -46,6 +46,7 @@ module.exports = {
     "@typescript-eslint/type-annotation-spacing": "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/ban-ts-ignore": "off",
+    "curly": ["error", "all"],
     "eqeqeq": ["error", "smart"],
     "default-case": "off",
     "no-caller": "error",
