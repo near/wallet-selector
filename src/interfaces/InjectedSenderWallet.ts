@@ -38,6 +38,7 @@ export interface GetRpcResponse {
 export interface RequestSignInParams {
   contractId: string;
   methodNames?: Array<string>;
+  amount?: string; // in yoctoⓃ
 }
 
 export type Callback = (response: any) => void;
