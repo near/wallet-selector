@@ -4,9 +4,7 @@ import {
   onUnmounted,
   reactive
 } from "vue";
-import NearWalletSelector from "near-wallet-selector";
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
-import { Subscription } from "../../../../lib/esm/utils/EventsHandler";
+import NearWalletSelector, { AccountInfo, Subscription } from "near-wallet-selector";
 import { utils } from "near-api-js";
 
 import Form from "./Form.vue";
