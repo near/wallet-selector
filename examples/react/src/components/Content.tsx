@@ -21,7 +21,9 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     Promise.all([
-      selector.contract.view({ methodName: "getMessages" }),
+      selector.contract.view({
+        methodName: "getMessages",
+      }) as Promise<Array<Message>>,
       selector.getAccount(),
     ]).then(([nextMessages, nextAccount]) => {
       setMessages(nextMessages);
@@ -109,7 +111,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
       .then(() => {
         return selector.contract
           .view({ methodName: "getMessages" })
-          .then((nextMessages) => {
+          .then((nextMessages: Array<Message>) => {
             setMessages(nextMessages);
             message.value = "";
             donation.value = SUGGESTED_DONATION;
