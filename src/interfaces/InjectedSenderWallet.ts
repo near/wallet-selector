@@ -86,7 +86,7 @@ export interface RequestSignTransactionsParams {
 }
 
 interface InjectedSenderWallet {
-  isSender: boolean,
+  isSender: boolean;
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (

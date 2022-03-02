@@ -70,7 +70,7 @@ class SenderWallet implements InjectedWallet {
 
     this.onAccountChanged();
 
-    this.wallet.on('rpcChanged', (response) => {
+    this.wallet.on("rpcChanged", (response) => {
       this.networkMatches(response);
     });
   };
@@ -118,7 +118,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private onAccountChanged = () => {
-    this.wallet.on('accountChanged', async (newAccountId) => {
+    this.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
 
       try {
