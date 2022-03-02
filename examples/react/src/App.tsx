@@ -1,10 +1,5 @@
 import "regenerator-runtime/runtime";
-import React, {
-  useState,
-  useEffect,
-  Fragment,
-  useRef
-} from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import NearWalletSelector from "near-wallet-selector";
 
 import getConfig from "./config";
@@ -35,11 +30,10 @@ const App: React.FC = () => {
       },
     });
 
-    nearWalletSelector.init()
-      .then(() => {
-        selectorRef.current = nearWalletSelector;
-        setLoaded(true);
-      });
+    nearWalletSelector.init().then(() => {
+      selectorRef.current = nearWalletSelector;
+      setLoaded(true);
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -51,7 +45,7 @@ const App: React.FC = () => {
   return (
     <Fragment>
       <h1>NEAR Guest Book</h1>
-      <Content selector={selectorRef.current} />
+      <Content selector={selectorRef.current!} />
     </Fragment>
   );
 };

@@ -4,11 +4,11 @@ module.exports = {
   },
 
   extends: [
-    "../.eslintrc.js",
+    "../../.eslintrc.js",
   ],
 
   rules: {
-    "prettier/prettier": [ "error", require("./../prettier.config") ],
+    "prettier/prettier": ["error", require("../../prettier.config")],
     "no-console": "off",
   }
 }
