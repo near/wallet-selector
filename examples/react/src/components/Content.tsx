@@ -79,6 +79,8 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   };
 
   const handleSubmit = (e: SubmitEvent) => {
+    e.preventDefault();
+
     // TODO: Fix the typing so that target.elements exists..
     // @ts-ignore.
     const { fieldset, message, donation } = e.target.elements;
