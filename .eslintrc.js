@@ -63,13 +63,11 @@ module.exports = {
     "no-unused-expressions": "error",
     "radix": ["error", "as-needed"],
     "no-restricted-syntax": [
-      "error",
-      {
+      "error", {
         "selector": "CallExpression[callee.name!='parseInt'] > Identifier[name='parseInt']",
         "message": "Call parseInt directly to guarantee radix param is not incorrectly provided"
       },
-      "error",
-      {
+      "error", {
         "selector": "CallExpression[callee.name!='parseFloat'] > Identifier[name='parseFloat']",
         "message": "Call parseFloat directly to guarantee radix param is not incorrectly provided"
       }
