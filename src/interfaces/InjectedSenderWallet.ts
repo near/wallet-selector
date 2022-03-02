@@ -41,8 +41,6 @@ export interface RequestSignInParams {
   amount?: string; // in yoctoⓃ
 }
 
-export type Callback = (response: any) => void;
-
 export interface RpcChangedResponse {
   method: "rpcChanged";
   notificationId: number;
@@ -86,6 +84,13 @@ export interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
+export interface SenderWalletEvents {
+  signIn: () => void;
+  signOut: () => void;
+  accountChanged: (changedAccountId: string) => void;
+  rpcChanged: (response: RpcChangedResponse) => void;
+}
+
 interface InjectedSenderWallet {
   isSender: boolean;
   getAccountId: () => string;
@@ -95,7 +100,10 @@ interface InjectedSenderWallet {
   ) => Promise<RequestSignInResponse>;
   signOut: () => boolean;
   isSignedIn: () => boolean;
-  on: (event: string, callback: Callback) => void;
+  on: <Event extends keyof SenderWalletEvents>(
+    event: Event,
+    callback: SenderWalletEvents[Event]
+  ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (
