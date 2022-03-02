@@ -1,7 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import NearWalletSelector from "near-wallet-selector";
-import { AccountInfo } from "near-wallet-selector/lib/cjs/wallets/Wallet";
-import { Subscription } from "near-wallet-selector/lib/esm/utils/EventsHandler";
+import NearWalletSelector, { AccountInfo, Subscription } from "near-wallet-selector"
 import { utils } from "near-api-js";
 import { Message } from "../../interfaces/message";
 

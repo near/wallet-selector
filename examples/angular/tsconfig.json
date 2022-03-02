@@ -17,6 +17,9 @@
       "es2020",
       "dom"
     ],
+    "paths": {
+      "buffer": ["./node_modules/buffer"],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false

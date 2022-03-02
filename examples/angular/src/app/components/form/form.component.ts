@@ -1,5 +1,5 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import { AccountInfo } from "near-wallet-selector/lib/esm/wallets/Wallet";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { AccountInfo } from "near-wallet-selector";
 import Big from "big.js";
 
 @Component({
