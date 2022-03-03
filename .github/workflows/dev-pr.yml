@@ -20,11 +20,9 @@ on:
 jobs:
   dev-pr:
     runs-on: ubuntu-latest
-    # if: github.base_ref == "dev"
+    if: github.event.pull_request.base.ref == "dev"
     steps:
       - uses: actions/checkout@v2
-      - name: Printing
-        run: echo '${{ toJSON(github) }}'
       - name: Ensure checklists are filled
         uses: actions/github-script@v4
         with:
@@ -45,17 +43,18 @@ jobs:
           MERGE_METHOD: squash
           MERGE_COMMIT_MESSAGE: pull-request-title
           MERGE_REQUIRED_APPROVALS: 1
-  # prod-pr:
-  #   runs-on: ubuntu-latest
-  #   if: github.base_ref == "main"
-  #   steps:
-  #     - name: automerge
-  #       uses: pascalgn/automerge-action@v0.14.3
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         MERGE_LABELS: automerge
-  #         MERGE_METHOD: rebase
-  #         MERGE_COMMIT_MESSAGE: automatic
-  #         MERGE_REQUIRED_APPROVALS: 1
+
+  prod-pr:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == "main"
+    steps:
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: rebase
+          MERGE_COMMIT_MESSAGE: automatic
+          MERGE_REQUIRED_APPROVALS: 1
 
 
