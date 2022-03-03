@@ -47,7 +47,7 @@ const selector = new NearWalletSelector({
       "added to your browser, a hardware device plugged into your",
       "computer, web-based, or as an app on your phone.",
     ].join(" "),
-  }
+  },
 });
 ```
 
@@ -76,12 +76,12 @@ Sign in (programmatically):
 ```ts
 // NEAR Wallet.
 await selector.signIn({
-  walletId: "near-wallet"
+  walletId: "near-wallet",
 });
 
 // Sender Wallet.
 await selector.signIn({
-  walletId: "sender-wallet"
+  walletId: "sender-wallet",
 });
 
 // Ledger Wallet
@@ -153,10 +153,10 @@ await selector.contract.signAndSendTransaction({
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
-      deposit: "10000000000000000000000"
-    }
+      deposit: "10000000000000000000000",
+    },
   }]
 });
 
@@ -200,7 +200,7 @@ const near = new NearWalletSelector({
   walletSelectorUI: {
     description: "Add your own description",
     explanation: "Add your own wallet explanation",
-  }
+  },
 });
 ```
 ## Contributing 
