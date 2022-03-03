@@ -63,7 +63,10 @@ class NearWallet implements BrowserWallet {
       await this.init();
     }
 
-    await this.wallet.requestSignIn(this.options.contract.accountId);
+    await this.wallet.requestSignIn({
+      contractId: this.options.contract.contractId,
+      methodNames: this.options.contract.methodNames,
+    });
 
     localStorage.setItem(
       LOCAL_STORAGE_SELECTED_WALLET_ID,

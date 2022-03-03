@@ -11,19 +11,18 @@ import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 
 export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+export type UITheme = "dark" | "light";
 
 export interface Options {
   wallets: Array<BuiltInWalletId>;
   networkId: NetworkId;
-  theme: "dark" | "light" | null;
   contract: {
-    accountId: string;
-    viewMethods?: Array<string>;
-    changeMethods?: Array<string>;
+    contractId: string;
+    methodNames?: Array<string>;
   };
-  walletSelectorUI: {
-    description: string;
-    explanation: string;
+  ui?: {
+    theme?: "dark" | "light";
+    description?: string;
   };
 }
 
@@ -98,6 +97,10 @@ export default class NearWalletSelector {
 
   getAccount() {
     return this.controller.getAccount();
+  }
+
+  getWallets() {
+    return this.controller.getWallets();
   }
 
   on(event: EventList, callback: () => void) {
