@@ -323,9 +323,6 @@ await near.contract.signAndSendTransaction({
     }
   }]
 });
-
-// Retrieve contract accountId.
-const accountId = near.contract.getAccountId();
 ```
 
 ## Custom Themes
