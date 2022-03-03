@@ -53,71 +53,192 @@ const near = new NearWalletSelector({
 
 ## API Reference
 
-Init:
+### `.init()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `Promise<void>`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 await near.init();
 ```
 
-Show modal:
+### `.show()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `void`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 near.show();
 ```
 
-Hide modal:
+### `.hide()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `void`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 near.hide();
 ```
 
-Sign in (programmatically):
+### `.signIn(walletId)`
+
+#### Parameters
+
+- `walletId` (`"near-wallet" | "sender-wallet" | "ledger-wallet`): TODO: Description here.
+
+#### Returns
+
+- `Promise<void>`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
+
+TODO: Description here.
 
 ```ts
 await near.signIn("near-wallet");
 ```
 
-Sign out:
+### `.signOut()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `Promise<void>`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 await near.signOut();
 ```
 
-Is signed in:
+### `.isSignedIn()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `boolean`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 await near.isSignedIn();
 ```
 
-Get account:
+### `.getAccount()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `Promise<AccountInfo>`: TODO: Description here.
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
 const account = await near.getAccount();
 ```
 
-Add event listeners:
+### `.on(event, callback)`
+
+#### Parameters
+
+- `event` (`"signIn" | "signOut"`): TODO: Description here.
+- `callback` (`() => void`): TODO: Description here.
+
+#### Returns
+
+- `Subscription`: TODO: Description here.
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
-near.on("signIn", () => {
-   // your code
-});
-
-near.on("signOut", () => {
-  // your code
-});
-```
-
-Remove event listeners:
-
-```ts
-// Method 1:
 const subscription = near.on("signIn", () => {
    // your code
 });
 
+// Unsubscribe.
 subscription.remove();
+```
 
-// Method 2:
+### `.off(event, callback)`
+
+#### Parameters
+
+- `event` (`"signIn" | "signOut"`): TODO: Description here.
+- `callback` (`() => void`): TODO: Description here.
+
+#### Returns
+
+- `void`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
+
+```ts
 const handleSignIn = () => {
   // your code
 }
@@ -126,19 +247,77 @@ near.on("signIn", handleSignIn);
 near.off("signIn", handleSignIn);
 ```
 
-Interact with the Smart Contract:
+### `.contract.getContractId()`
+
+#### Parameters
+
+- N/A
+
+#### Returns
+
+- `string`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
 
 ```ts
-// Retrieve messages via RPC endpoint (view method).
-const messages = await near.contract.view({ methodName: "getMessages" });
+near.contract.getContractId();
+```
 
-// Add a message, modifying the blockchain (change method).
+### `.contract.view(params)`
+
+#### Parameters
+
+- `params` (`object`)
+  - `methodName` (`string`): TODO: Description here.
+  - `args` (`object?`): TODO: Description here.
+  - `finality` (`string?`): TODO: Description here.
+
+#### Returns
+
+- `Promise<unknown>`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
+
+```ts
+await near.contract.view({
+  methodName: "getMessages"
+});
+```
+
+### `.contract.signAndSendTransaction(params)`
+
+#### Parameters
+
+- `params` (`object`)
+  - `actions` (`Array<Action>`)
+    - `type` (`ActionType`): TODO: Description here.
+    - `params` (`object`): TODO: Description here.
+
+#### Returns
+
+- `Promise<unknown>`
+
+#### Description
+
+TODO: Description here.
+
+#### Example
+
+```ts
 await near.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
       deposit: "10000000000000000000000"
     }
