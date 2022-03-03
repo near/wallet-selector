@@ -1,0 +1,175 @@
+<script setup lang="ts">
+import { onMounted, shallowRef } from "vue";
+import NearWalletSelector from "near-wallet-selector";
+
+import getConfig from "./config";
+import Content from "./components/Content.vue";
+
+const selector = shallowRef<NearWalletSelector>();
+
+onMounted(async () => {
+  const nearConfig = getConfig("testnet");
+
+  const nearWalletSelector = new NearWalletSelector({
+    wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+    networkId: "testnet",
+    theme: "light",
+    contract: {
+      accountId: nearConfig.contractName,
+    },
+    walletSelectorUI: {
+      description: "Please select a wallet to connect to this dApp:",
+      explanation: [
+        "Wallets are used to send, receive, and store digital assets.",
+        "There are different types of wallets. They can be an extension",
+        "added to your browser, a hardware device plugged into your",
+        "computer, web-based, or as an app on your phone.",
+      ].join(" "),
+    },
+  });
+
+  await nearWalletSelector.init();
+
+  selector.value = nearWalletSelector;
+});
+</script>
+
+<template>
+  <h1>NEAR Guest Book</h1>
+  <Content v-if="!!selector" :selector="selector" />
+</template>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #fff;
+  --fg: #25282A;
+  --gray: #888;
+  --royal: #0072CE;
+  --blue: #6AD1E3;
+  --primary: #D1CCBD;
+  --secondary: var(--royal);
+  --tertiary: #FF585D;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-size: calc(.65em + 0.7vw);
+  line-height: 1.3;
+}
+
+::selection {
+  background: var(--secondary);
+  color: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #25282A;
+    --fg: #fff;
+    --secondary: var(--blue);
+  }
+
+  ::selection {
+    background: var(--secondary);
+    color: var(--fg);
+  }
+}
+
+body {
+  margin: 0 auto;
+  padding: 0 1em;
+  max-width: 40em;
+}
+
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.highlight {
+  align-items: center;
+  display: flex;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+.highlight label {
+  margin-right: 0.5em;
+}
+
+.highlight input {
+  caret-color: var(--secondary);
+}
+
+label {
+  color: var(--gray);
+}
+
+button, .highlight {
+  border-radius: 5px;
+  border-color: var(--primary);
+  border: 0.1em solid var(--primary);
+  padding: 0.5em 1em;
+}
+
+button:hover, button:focus, button:focus-within,
+.highlight:hover, .highlight:focus, .highlight:focus-within {
+  border-color: var(--secondary);
+}
+
+input {
+  border: none;
+  flex: 1;
+}
+
+input:read-only {
+  color: var(--primary)
+}
+
+input[type="number"] {
+  text-align: center;
+  border-bottom: 0.1em solid var(--primary);
+  margin: 0 1em;
+  width: 4em;
+  padding-left: 0.5em;
+}
+
+input[type="number"]:hover, input[type="number"]:focus {
+  border-color: var(--secondary);
+}
+
+button, input {
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  outline: none;
+}
+
+button {
+  position: relative;
+  transition: top 50ms;
+}
+
+button:hover, button:focus {
+  top: -1px;
+}
+
+button:active {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  top: 1px;
+}
+
+.is-premium {
+  border-left: 0.25em solid var(--secondary);
+  padding-left: 0.25em;
+  margin-left: -0.5em;
+}
+</style>

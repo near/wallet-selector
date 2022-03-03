@@ -27,7 +27,10 @@ export class Logger
   }
 
   private trigger(method: keyof Console, ...args: unknown[]) {
-    if (!Logger.debug) return;
+    if (!Logger.debug) {
+      return;
+    }
+
     this.logger[method].apply(console, args);
   }
 }

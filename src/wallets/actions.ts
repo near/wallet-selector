@@ -80,6 +80,8 @@ export type Action =
   | DeleteKeyAction
   | DeleteAccountAction;
 
+export type ActionType = Action["type"];
+
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
     return transactions.fullAccessKey();
