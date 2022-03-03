@@ -12,6 +12,7 @@ import { ledgerWalletIcon } from "../icons";
 import {
   AccountInfo,
   HardwareWallet,
+  HardwareWalletSignInParams,
   HardwareWalletType,
   SignAndSendTransactionParams,
   WalletOptions,
@@ -36,10 +37,6 @@ class LedgerWallet implements HardwareWallet {
   private emitter: Emitter;
 
   private authData: AuthData | null;
-
-  // Temporary values before committing to authData.
-  private accountId: string | null;
-  private derivationPath: string | null;
 
   private debugMode = false;
 
@@ -106,41 +103,28 @@ class LedgerWallet implements HardwareWallet {
     this.authData = this.getAuthData();
   };
 
-  setDerivationPath = (derivationPath: string) => {
-    this.derivationPath = derivationPath;
-  };
-
-  setAccountId = (accountId: string) => {
-    this.accountId = accountId;
-  };
-
-  signIn = async () => {
+  signIn = async ({
+    accountId,
+    derivationPath,
+  }: HardwareWalletSignInParams) => {
     if (await this.isSignedIn()) {
       return;
     }
 
-    if (!this.accountId) {
-      throw new Error("Invalid account id");
-    }
-
-    if (!this.derivationPath) {
-      throw new Error("Invalid derivation path");
-    }
-
     const { publicKey, accessKey } = await this.validate({
-      accountId: this.accountId,
-      derivationPath: this.derivationPath,
+      accountId,
+      derivationPath,
     });
 
     if (!accessKey) {
       throw new Error(
-        `Public key is not registered with the account '${this.accountId}'.`
+        `Public key is not registered with the account '${accountId}'.`
       );
     }
 
     const authData: AuthData = {
-      accountId: this.accountId,
-      derivationPath: this.derivationPath,
+      accountId,
+      derivationPath,
       publicKey,
     };
 
@@ -150,8 +134,6 @@ class LedgerWallet implements HardwareWallet {
     );
 
     this.authData = authData;
-    this.accountId = null;
-    this.derivationPath = null;
 
     setSelectedWalletId(this.id);
     this.emitter.emit("signIn");
@@ -163,9 +145,6 @@ class LedgerWallet implements HardwareWallet {
     }
 
     localStorage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
-
-    this.accountId = null;
-    this.derivationPath = null;
 
     // Only close if we've already connected.
     if (this.client) {
