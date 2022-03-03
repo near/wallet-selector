@@ -16,12 +16,12 @@ jobs:
       with:
         node-version: 16.x
     - name: Install dependencies
-      run: npx ci
+      run: yarn install --frozen-lockfile
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
+      run: yarn exec semantic-release
     - name: set env
       run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
     # Drafts your next Release notes as Pull Requests are merged into "main"
