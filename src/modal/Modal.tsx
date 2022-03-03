@@ -13,13 +13,14 @@ declare global {
   }
 }
 
-// TODO: Default to "auto".
 const getThemeClass = (theme?: Theme) => {
   switch (theme) {
     case "dark":
       return "Modal-dark-theme";
-    default:
+    case "light":
       return "Modal-light-theme";
+    default:
+      return "";
   }
 };
 
