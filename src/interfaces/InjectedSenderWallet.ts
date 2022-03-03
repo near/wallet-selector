@@ -1,9 +1,5 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
-export interface InitParams {
-  contractId: string;
-}
-
 // Empty string if we haven't signed in before.
 interface AccessKey {
   publicKey: {
@@ -11,10 +7,6 @@ interface AccessKey {
     keyType: number;
   };
   secretKey: string;
-}
-
-export interface InitResponse {
-  accessKey: AccessKey | "";
 }
 
 export interface RequestSignInResponse {
@@ -46,14 +38,8 @@ export interface GetRpcResponse {
 export interface RequestSignInParams {
   contractId: string;
   methodNames?: Array<string>;
+  amount?: string; // in yoctoⓃ
 }
-
-export interface SignOutResponse {
-  // TODO: Figure out when this isn't "success".
-  result: "success";
-}
-
-export type AccountChangedCallback = (newAccountId: string) => void;
 
 export interface RpcChangedResponse {
   method: "rpcChanged";
@@ -61,8 +47,6 @@ export interface RpcChangedResponse {
   rpc: RpcInfo;
   type: "sender-wallet-fromContent";
 }
-
-export type RpcChangedCallback = (newRpc: RpcChangedResponse) => void;
 
 export interface SendMoneyParams {
   receiverId: string;
@@ -100,17 +84,26 @@ export interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
+export interface SenderWalletEvents {
+  signIn: () => void;
+  signOut: () => void;
+  accountChanged: (changedAccountId: string) => void;
+  rpcChanged: (response: RpcChangedResponse) => void;
+}
+
 interface InjectedSenderWallet {
-  init: (params: InitParams) => Promise<InitResponse>;
+  isSender: boolean;
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => Promise<SignOutResponse>;
+  signOut: () => boolean;
   isSignedIn: () => boolean;
-  onAccountChanged: (callback: AccountChangedCallback) => void;
-  onRpcChanged: (callback: RpcChangedCallback) => void;
+  on: <Event extends keyof SenderWalletEvents>(
+    event: Event,
+    callback: SenderWalletEvents[Event]
+  ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (
