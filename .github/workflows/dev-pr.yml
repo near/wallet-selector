@@ -18,6 +18,14 @@ on:
       - main
 
 jobs:
+  printer:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Print
+      run: echo '${{ github.workflow.event.pull_request.base.ref }}'
+
   dev-pr:
     runs-on: ubuntu-latest
     if: github.event.pull_request.base.ref == "dev"
