@@ -47,11 +47,15 @@ const near = new NearWalletSelector({
 ## Options
 
 ```ts
+type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+type NetworkId = "mainnet" | "betanet" | "testnet";
+type Theme = "dark" | "light" | "auto";
+
 interface Options {
   // List of wallets you want to support in your dApp.
-  wallets: Array<"near-wallet" | "sender-wallet" | "ledger-wallet">;
+  wallets: Array<BuiltInWalletId>;
   // Network ID matching that of your dApp.
-  networkId: "mainnet" | "betanet" | "testnet";
+  networkId: NetworkId;
   contract: {
     // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
     contractId: string;
@@ -61,7 +65,7 @@ interface Options {
   ui?: {
     // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
     // omitted or set to 'auto'.
-    theme?: "dark" | "light" | "auto";
+    theme?: Theme;
     // Optional: Provides customisation description text in the UI.
     description?: string;
   };
