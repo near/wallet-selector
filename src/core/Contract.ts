@@ -2,7 +2,7 @@ import ProviderService, {
   CallFunctionParams,
 } from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
-import { Options } from "./NearWalletSelector";
+import { Options } from "../interfaces/Options";
 import { SignAndSendTransactionParams } from "../wallets/Wallet";
 
 class Contract {

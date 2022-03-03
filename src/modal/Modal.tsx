@@ -2,7 +2,7 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
-import { Options, UITheme } from "../core/NearWalletSelector";
+import { Options, Theme } from "../interfaces/Options";
 import { HardwareWallet, Wallet } from "../wallets/Wallet";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
 
@@ -14,7 +14,7 @@ declare global {
 }
 
 // TODO: Default to "auto".
-const getThemeClass = (theme?: UITheme) => {
+const getThemeClass = (theme?: Theme) => {
   switch (theme) {
     case "dark":
       return "Modal-dark-theme";

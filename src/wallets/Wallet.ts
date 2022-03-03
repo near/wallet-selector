@@ -1,4 +1,4 @@
-import { Options } from "../core/NearWalletSelector";
+import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
