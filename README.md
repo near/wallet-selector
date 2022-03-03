@@ -76,7 +76,7 @@ Sign in (programmatically):
 ```ts
 // NEAR Wallet.
 await selector.signIn({
- walletId: "near-wallet"
+  walletId: "near-wallet"
 });
 
 // Sender Wallet.
