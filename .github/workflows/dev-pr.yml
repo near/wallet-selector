@@ -18,13 +18,13 @@ on:
       - main
 
 jobs:
-  printer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Print
-        run: echo '${{ github.event.pull_request.base.ref }}'
+  # printer:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Print
+  #       run: echo '${{ github.event.pull_request.base.ref }}'
 
   dev-pr:
     runs-on: ubuntu-latest
