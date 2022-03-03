@@ -33,7 +33,7 @@ class WalletController {
     return wallets.map((wallet) => {
       return {
         ...wallet,
-        signIn: async (x: never) => {
+        signIn: async (params: never) => {
           const selectedWallet = this.getSelectedWallet();
 
           if (selectedWallet) {
@@ -44,7 +44,7 @@ class WalletController {
             await selectedWallet.signOut();
           }
 
-          return wallet.signIn(x);
+          return wallet.signIn(params);
         },
       };
     });
