@@ -118,7 +118,7 @@ selector.hide();
 **Parameters**
 
 - `params` (`object`)
-  - `walletId` (`BuiltInWalletId`): TODO: Description here.
+  - `walletId` (`string`): TODO: Description here.
   - `accountId` (`string?`): TODO: Description here.
   - `derviationPath` (`string?`): TODO: Description here.
 
@@ -217,7 +217,7 @@ const account = await selector.getAccount();
 
 **Parameters**
 
-- `event` (`"signIn" | "signOut"`): TODO: Description here.
+- `event` (`string`): TODO: Description here.
 - `callback` (`() => void`): TODO: Description here.
 
 **Returns**
@@ -243,7 +243,7 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`"signIn" | "signOut"`): TODO: Description here.
+- `event` (`string`): TODO: Description here.
 - `callback` (`() => void`): TODO: Description here.
 
 **Returns**
