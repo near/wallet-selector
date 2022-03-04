@@ -188,7 +188,8 @@ Determines whether the user is signed in.
 **Example**
 
 ```ts
-await selector.isSignedIn();
+const signedIn = await selector.isSignedIn();
+console.log(signedIn) // true
 ```
 
 ### `.getAccount()`
