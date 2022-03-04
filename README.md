@@ -65,7 +65,7 @@ const selector = new NearWalletSelector({
 
 **Description**
 
-TODO: Description here.
+Initialises the selector using the configured options before rendering the UI. If a user has previously signed in, this method will also initialise the selected wallet, ready to handle transaction signing.
 
 **Example**
 
