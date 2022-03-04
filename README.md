@@ -113,11 +113,14 @@ TODO: Description here.
 near.hide();
 ```
 
-### `.signIn(walletId)`
+### `.signIn(params)`
 
 **Parameters**
 
-- `walletId` (`"near-wallet" | "sender-wallet" | "ledger-wallet`): TODO: Description here.
+- `params` (`object`)
+  - `walletId` (`BuiltInWalletId`): TODO: Description here.
+  - `accountId` (`string?`): TODO: Description here.
+  - `derviationPath` (`string?`): TODO: Description here.
 
 **Returns**
 
@@ -132,7 +135,22 @@ TODO: Description here.
 TODO: Description here.
 
 ```ts
-await near.signIn("near-wallet");
+// NEAR Wallet.
+await near.signIn({
+  walletId: "near-wallet",
+});
+
+// Sender Wallet.
+await near.signIn({
+  walletId: "sender-wallet",
+});
+
+// Ledger Wallet
+await near.signIn({
+  walletId: "ledger-wallet",
+  accountId: "account-id.testnet",
+  derviationPath: "44'/397'/0'/0'/1'",
+});
 ```
 
 ### `.signOut()`
