@@ -231,22 +231,23 @@ console.log(account); // { accountId: "test.testnet", balance: "999999999999" }
 
 **Parameters**
 
-- `event` (`string`): TODO: Description here.
-- `callback` (`() => void`): TODO: Description here.
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Handler to be triggered when the `event` fires.
 
 **Returns**
 
-- `Subscription`: TODO: Description here.
+- `object`
+  - `remove` (`() => void`): Removes the event handler.
 
 **Description**
 
-TODO: Description here.
+Attach an event handler to important events.
 
 **Example**
 
 ```ts
 const subscription = selector.on("signIn", () => {
-   // your code
+   console.log("User signed in!");
 });
 
 // Unsubscribe.
@@ -257,8 +258,8 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`string`): TODO: Description here.
-- `callback` (`() => void`): TODO: Description here.
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Original handler passed to `.on(event, callback)`.
 
 **Returns**
 
@@ -266,13 +267,13 @@ subscription.remove();
 
 **Description**
 
-TODO: Description here.
+Removes the event handler attached to the given `event`.
 
 **Example**
 
 ```ts
 const handleSignIn = () => {
-  // your code
+  console.log("User signed in!");
 }
 
 selector.on("signIn", handleSignIn);
