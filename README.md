@@ -275,8 +275,8 @@ const handleSignIn = () => {
   // your code
 }
 
-near.on("signIn", handleSignIn);
-near.off("signIn", handleSignIn);
+selector.on("signIn", handleSignIn);
+selector.off("signIn", handleSignIn);
 ```
 
 ### `.contract.getContractId()`
@@ -352,7 +352,7 @@ await selector.contract.signAndSendTransaction({
       methodName: "addMessage",
       args: { text: "Hello World!" },
       gas: "30000000000000",
-      deposit: "10000000000000000000000"
+      deposit: "10000000000000000000000",
     }
   }]
 });
