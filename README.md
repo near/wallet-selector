@@ -30,39 +30,25 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-wallet-selector";
 
-const near = new NearWalletSelector({
+const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
-  contract: { contractId: "guest-book.testnet" },
-});
-```
-
-## Options
-
-```ts
-type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
-type NetworkId = "mainnet" | "betanet" | "testnet";
-type Theme = "dark" | "light" | "auto";
-
-interface Options {
-  // List of wallets you want to support in your dApp.
-  wallets: Array<BuiltInWalletId>;
-  // Network ID matching that of your dApp.
-  networkId: NetworkId;
+  theme: "light",
   contract: {
-    // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
-    contractId: string;
-    // Optional: Specify limited access to particular methods on the Smart Contract.
-    methodNames?: Array<string>;
-  };
-  ui?: {
-    // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
-    // omitted or set to 'auto'.
-    theme?: Theme;
-    // Optional: Provides customisation description text in the UI.
-    description?: string;
-  };
-}
+    accountId: "guest-book.testnet",
+    viewMethods: ["getMessages"],
+    changeMethods: ["addMessage"],
+  },
+  walletSelectorUI: {
+    description: "Please select a wallet to connect to this dApp:",
+    explanation: [
+      "Wallets are used to send, receive, and store digital assets.",
+      "There are different types of wallets. They can be an extension",
+      "added to your browser, a hardware device plugged into your",
+      "computer, web-based, or as an app on your phone.",
+    ].join(" "),
+  },
+});
 ```
 
 ## API Reference
@@ -70,54 +56,69 @@ interface Options {
 Init:
 
 ```ts
-await near.init();
+await selector.init();
 ```
 
 Show modal:
 
 ```ts
-near.show();
+selector.show();
 ```
 
 Hide modal:
 
 ```ts
-near.hide();
+selector.hide();
 ```
 
 Sign in (programmatically):
 
 ```ts
-await near.signIn("near-wallet");
+// NEAR Wallet.
+await selector.signIn({
+  walletId: "near-wallet",
+});
+
+// Sender Wallet.
+await selector.signIn({
+  walletId: "sender-wallet",
+});
+
+// Ledger Wallet
+await selector.signIn({
+  walletId: "ledger-wallet",
+  accountId: "account-id.testnet",
+  derviationPath: "44'/397'/0'/0'/1'",
+});
 ```
 
 Sign out:
 
 ```ts
-await near.signOut();
+await selector.signOut();
 ```
 
 Is signed in:
 
 ```ts
-await near.isSignedIn();
+await selector.isSignedIn();
 ```
 
 Get account:
 
 ```ts
-const account = await near.getAccount();
+const account = await selector.getAccount();
 ```
 
 Add event listeners:
 
 ```ts
-near.on("signIn", () => {
-   // your code
+selector.on("signIn", () => {
+  // Your code here.
 });
 
-near.on("signOut", () => {
-  // your code
+selector.on("signOut", () => {
+  // Your code here.
 });
 ```
 
@@ -125,44 +126,83 @@ Remove event listeners:
 
 ```ts
 // Method 1:
-const subscription = near.on("signIn", () => {
-   // your code
+const subscription = selector.on("signIn", () => {
+  // Your code here.
 });
 
 subscription.remove();
 
 // Method 2:
 const handleSignIn = () => {
-  // your code
+  // Your code here.
 }
 
-near.on("signIn", handleSignIn);
-near.off("signIn", handleSignIn);
+selector.on("signIn", handleSignIn);
+selector.off("signIn", handleSignIn);
 ```
 
 Interact with the Smart Contract:
 
 ```ts
 // Retrieve messages via RPC endpoint (view method).
-const messages = await near.contract.view({ methodName: "getMessages" });
+const messages = await selector.contract.view({ methodName: "getMessages" });
 
 // Add a message, modifying the blockchain (change method).
-await near.contract.signAndSendTransaction({
+await selector.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
-      deposit: "10000000000000000000000"
-    }
+      deposit: "10000000000000000000000",
+    },
   }]
 });
 
 // Retrieve contract accountId.
-const accountId = near.contract.getContractId();
+const accountId = selector.contract.getAccountId();
 ```
 
+## Custom Themes
+
+If no value is provided for `theme` option then the theme will be picked by System's default mode/theme.
+
+There are two available themes `light` and `dark`:
+
+To use the `light` mode, add `theme` option with the value `light`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "light",
+});
+```
+
+To use the `dark` mode, add `theme` option with the value `dark`
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  theme: "dark",
+});
+```
+## Custom/Optional UI Elements
+
+The `walletSelectorUI` option provides two properties which help to modify/customize the UI:
+
+- The `description` property if provided replaces the default description.
+- The `explanation` property if provided shows **What is a wallet?** section, if not provided there is no default wallet explanation the section will be hidden.
+
+```ts
+const near = new NearWalletSelector({
+  ...otherOptions,
+  walletSelectorUI: {
+    description: "Add your own description",
+    explanation: "Add your own wallet explanation",
+  },
+});
+```
 ## Contributing 
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:

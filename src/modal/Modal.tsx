@@ -104,11 +104,11 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
       (x) => x.id === "ledger-wallet"
     ) as HardwareWallet;
 
-    wallet.setDerivationPath(ledgerDerivationPath);
-    wallet.setAccountId(ledgerAccountId);
-
     await wallet
-      .signIn()
+      .signIn({
+        accountId: ledgerAccountId,
+        derivationPath: ledgerDerivationPath,
+      })
       .catch((err) => setLedgerError(`Error: ${err.message}`));
 
     resetState();

@@ -14,14 +14,17 @@ const App: React.FC = () => {
   useEffect(() => {
     const nearConfig = getConfig("testnet");
 
-    const nearWalletSelector = new NearWalletSelector({
+    const selector = new NearWalletSelector({
       wallets: [nearWallet(), senderWallet(), ledgerWallet()],
       networkId: nearConfig.networkId,
       contract: { contractId: nearConfig.contractName },
     });
 
-    nearWalletSelector.init().then(() => {
-      selectorRef.current = nearWalletSelector;
+    // @ts-ignore
+    window.selector = selector;
+
+    selector.init().then(() => {
+      selectorRef.current = selector;
       setLoaded(true);
     });
 
