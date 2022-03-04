@@ -275,7 +275,7 @@ selector.off("signIn", handleSignIn);
 
 **Description**
 
-Retrieve account ID of the configured Smart Contract.
+Retrieves account ID of the configured Smart Contract.
 
 **Example**
 
