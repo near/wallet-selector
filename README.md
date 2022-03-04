@@ -33,7 +33,7 @@ import NearWalletSelector from "near-wallet-selector";
 const near = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
-  contract: { accountId: "guest-book.testnet" },
+  contract: { contractId: "guest-book.testnet" },
 });
 ```
 
