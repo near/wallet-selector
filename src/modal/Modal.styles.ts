@@ -32,7 +32,7 @@ export default `
   box-sizing: content-box;
 }
 
-.Modal.Modal-light-theme {
+.Modal, .Modal.Modal-light-theme {
   color: var(--text-color);
 }
 
