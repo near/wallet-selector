@@ -22,19 +22,13 @@ interface ValidateParams {
 
 interface LedgerWalletState {
   authData: AuthData | null;
-  accountId: string | null;
-  derivationPath: string | null;
 }
 
 function setupLedgerWallet(): WalletModule<HardwareWallet> {
   return function LedgerWallet({ provider, emitter }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
-    const state: LedgerWalletState = {
-      authData: null,
-      accountId: null,
-      derivationPath: null,
-    };
+    const state: LedgerWalletState = { authData: null };
 
     const debugMode = false;
 
@@ -44,9 +38,6 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
       }
 
       localStorage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
-
-      state.accountId = null;
-      state.derivationPath = null;
 
       // Only close if we've already connected.
       if (client) {
@@ -157,41 +148,33 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         state.authData = getAuthData();
       },
 
-      setDerivationPath(derivationPath: string) {
-        state.derivationPath = derivationPath;
-      },
-
-      setAccountId(accountId: string) {
-        state.accountId = accountId;
-      },
-
-      async signIn() {
+      async signIn({ accountId, derivationPath }) {
         if (await this.isSignedIn()) {
           return;
         }
 
-        if (!state.accountId) {
+        if (!accountId) {
           throw new Error("Invalid account id");
         }
 
-        if (!state.derivationPath) {
+        if (!derivationPath) {
           throw new Error("Invalid derivation path");
         }
 
         const { publicKey, accessKey } = await validate({
-          accountId: state.accountId,
-          derivationPath: state.derivationPath,
+          accountId,
+          derivationPath,
         });
 
         if (!accessKey) {
           throw new Error(
-            `Public key is not registered with the account '${state.accountId}'.`
+            `Public key is not registered with the account '${accountId}'.`
           );
         }
 
         const authData: AuthData = {
-          accountId: state.accountId,
-          derivationPath: state.derivationPath,
+          accountId,
+          derivationPath,
           publicKey,
         };
 
@@ -201,8 +184,6 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         );
 
         state.authData = authData;
-        state.accountId = null;
-        state.derivationPath = null;
 
         setSelectedWalletId(this.id);
         emitter.emit("signIn");
