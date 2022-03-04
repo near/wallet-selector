@@ -85,7 +85,7 @@ await selector.init();
 
 **Description**
 
-TODO: Description here.
+Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
 
 **Example**
 
@@ -105,7 +105,7 @@ selector.show();
 
 **Description**
 
-TODO: Description here.
+Closes the modal.
 
 **Example**
 
