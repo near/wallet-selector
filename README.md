@@ -275,12 +275,13 @@ selector.off("signIn", handleSignIn);
 
 **Description**
 
-TODO: Description here.
+Retrieve account ID of the configured Smart Contract.
 
 **Example**
 
 ```ts
-selector.contract.getContractId();
+const contractId = selector.contract.getContractId();
+console.log(contractId); // "guest-book.testnet"
 ```
 
 ### `.contract.view(params)`
