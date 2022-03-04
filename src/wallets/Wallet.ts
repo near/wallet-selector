@@ -3,12 +3,6 @@ import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
 
-export interface WalletOptions {
-  options: Options;
-  provider: ProviderService;
-  emitter: Emitter;
-}
-
 export interface HardwareWalletSignInParams {
   accountId: string;
   derivationPath: string;
@@ -24,20 +18,12 @@ export interface AccountInfo {
   balance: string;
 }
 
-export type BrowserWalletType = "browser";
-export type InjectedWalletType = "injected";
-export type HardwareWalletType = "hardware";
-export type WalletType =
-  | BrowserWalletType
-  | InjectedWalletType
-  | HardwareWalletType;
-
 interface BaseWallet {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: WalletType;
+  type: string;
 
   // Initialise an SDK or load data from a source such as local storage.
   init(): Promise<void>;
@@ -80,6 +66,14 @@ export interface HardwareWallet extends BaseWallet {
 
 export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;
 
-export type WalletModule<Type extends Wallet = Wallet> = (
+export type WalletType = Wallet["type"];
+
+export interface WalletOptions {
+  options: Options;
+  provider: ProviderService;
+  emitter: Emitter;
+}
+
+export type WalletModule<WalletVariation extends Wallet> = (
   options: WalletOptions
-) => Type;
+) => WalletVariation;

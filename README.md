@@ -28,10 +28,12 @@ npm install near-wallet-selector
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "near-wallet-selector";
+import NearWalletSelector, { wallets } from "near-wallet-selector";
+
+const { nearWallet, senderWallet, ledgerWallet } = wallets;
 
 const selector = new NearWalletSelector({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+  wallets: [nearWallet(), senderWallet(), ledgerWallet()],
   networkId: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
@@ -40,13 +42,12 @@ const selector = new NearWalletSelector({
 ## Options
 
 ```ts
-type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
 type NetworkId = "mainnet" | "betanet" | "testnet";
 type Theme = "dark" | "light" | "auto";
 
 interface Options {
   // List of wallets you want to support in your dApp.
-  wallets: Array<BuiltInWalletId>;
+  wallets: Array<WalletModule>;
   // Network ID matching that of your dApp.
   networkId: NetworkId;
   contract: {

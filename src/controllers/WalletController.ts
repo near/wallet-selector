@@ -1,12 +1,12 @@
 import { getState, updateState } from "../state/State";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
-import { BuiltInWalletId, Options } from "../interfaces/Options";
+import { Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 
 export interface SignInParams {
-  walletId: BuiltInWalletId;
+  walletId: string;
   accountId?: string;
   derivationPath?: string;
 }
