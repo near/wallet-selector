@@ -11,7 +11,7 @@ import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
-import { BuiltInWalletId, Options } from "../interfaces/Options";
+import { Options } from "../interfaces/Options";
 
 export default class NearWalletSelector {
   private options: Options;
