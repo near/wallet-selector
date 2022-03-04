@@ -7,27 +7,11 @@ import WalletController, {
 import Contract from "./Contract";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import getConfig, { NetworkId } from "../config";
+import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
-
-export type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
-
-export interface Options {
-  wallets: Array<BuiltInWalletId>;
-  networkId: NetworkId;
-  theme: "dark" | "light" | null;
-  contract: {
-    accountId: string;
-    viewMethods?: Array<string>;
-    changeMethods?: Array<string>;
-  };
-  walletSelectorUI: {
-    description: string;
-    explanation: string;
-  };
-}
+import { Options } from "../interfaces/Options";
 
 export default class NearWalletSelector {
   private options: Options;

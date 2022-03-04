@@ -1,7 +1,7 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
 
 import getConfig from "../../config";
-import { Options } from "../../core/NearWalletSelector";
+import { Options } from "../../interfaces/Options";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
 import { transformActions } from "../actions";
@@ -63,7 +63,10 @@ class NearWallet implements BrowserWallet {
       await this.init();
     }
 
-    await this.wallet.requestSignIn(this.options.contract.accountId);
+    await this.wallet.requestSignIn({
+      contractId: this.options.contract.contractId,
+      methodNames: this.options.contract.methodNames,
+    });
 
     localStorage.setItem(
       LOCAL_STORAGE_SELECTED_WALLET_ID,
