@@ -4,7 +4,7 @@ import InjectedSenderWallet, {
   GetRpcResponse,
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
-import { Options } from "../../core/NearWalletSelector";
+import { Options } from "../../interfaces/Options";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
@@ -89,7 +89,8 @@ class SenderWallet implements InjectedWallet {
     }
 
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: this.options.contract.accountId,
+      contractId: this.options.contract.contractId,
+      methodNames: this.options.contract.methodNames,
     });
 
     if (!accessKey) {

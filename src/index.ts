@@ -1,6 +1,6 @@
 import NearWalletSelector from "./core/NearWalletSelector";
 
-export { Options } from "./core/NearWalletSelector";
+export { Options } from "./interfaces/Options";
 
 export {
   Wallet,

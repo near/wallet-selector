@@ -1,4 +1,4 @@
-export type NetworkId = "mainnet" | "testnet" | "betanet";
+import { NetworkId } from "./interfaces/Options";
 
 export interface NetworkConfiguration {
   networkId: NetworkId;
