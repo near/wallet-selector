@@ -1,4 +1,4 @@
-import { Options } from "../core/NearWalletSelector";
+import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
@@ -7,6 +7,11 @@ export interface WalletOptions {
   options: Options;
   provider: ProviderService;
   emitter: Emitter;
+}
+
+export interface HardwareWalletSignInParams {
+  accountId: string;
+  derivationPath: string;
 }
 
 export interface SignAndSendTransactionParams {
@@ -42,7 +47,7 @@ interface BaseWallet {
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).
-  signIn(): Promise<void>;
+  signIn(params?: object): Promise<void>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
   signOut(): Promise<void>;
@@ -70,8 +75,7 @@ export interface InjectedWallet extends BaseWallet {
 
 export interface HardwareWallet extends BaseWallet {
   type: "hardware";
-  setAccountId(accountId: string): void;
-  setDerivationPath(derivationPath: string): void;
+  signIn(params: HardwareWalletSignInParams): Promise<void>;
 }
 
 export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;

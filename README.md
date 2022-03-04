@@ -33,22 +33,36 @@ import NearWalletSelector from "near-wallet-selector";
 const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
-  theme: "light",
-  contract: {
-    accountId: "guest-book.testnet",
-    viewMethods: ["getMessages"],
-    changeMethods: ["addMessage"],
-  },
-  walletSelectorUI: {
-    description: "Please select a wallet to connect to this dApp:",
-    explanation: [
-      "Wallets are used to send, receive, and store digital assets.",
-      "There are different types of wallets. They can be an extension",
-      "added to your browser, a hardware device plugged into your",
-      "computer, web-based, or as an app on your phone.",
-    ].join(" "),
-  }
+  contract: { contractId: "guest-book.testnet" },
 });
+```
+
+## Options
+
+```ts
+type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+type NetworkId = "mainnet" | "betanet" | "testnet";
+type Theme = "dark" | "light" | "auto";
+
+interface Options {
+  // List of wallets you want to support in your dApp.
+  wallets: Array<BuiltInWalletId>;
+  // Network ID matching that of your dApp.
+  networkId: NetworkId;
+  contract: {
+    // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
+    contractId: string;
+    // Optional: Specify limited access to particular methods on the Smart Contract.
+    methodNames?: Array<string>;
+  };
+  ui?: {
+    // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
+    // omitted or set to 'auto'.
+    theme?: Theme;
+    // Optional: Provides customisation description text in the UI.
+    description?: string;
+  };
+}
 ```
 
 ## API Reference
@@ -261,8 +275,8 @@ const handleSignIn = () => {
   // your code
 }
 
-selector.on("signIn", handleSignIn);
-selector.off("signIn", handleSignIn);
+near.on("signIn", handleSignIn);
+near.off("signIn", handleSignIn);
 ```
 
 ### `.contract.getContractId()`
@@ -344,45 +358,6 @@ await selector.contract.signAndSendTransaction({
 });
 ```
 
-## Custom Themes
-
-If no value is provided for `theme` option then the theme will be picked by System's default mode/theme.
-
-There are two available themes `light` and `dark`:
-
-To use the `light` mode, add `theme` option with the value `light`
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  theme: "light",
-});
-```
-
-To use the `dark` mode, add `theme` option with the value `dark`
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  theme: "dark",
-});
-```
-## Custom/Optional UI Elements
-
-The `walletSelectorUI` option provides two properties which help to modify/customize the UI:
-
-- The `description` property if provided replaces the default description.
-- The `explanation` property if provided shows **What is a wallet?** section, if not provided there is no default wallet explanation the section will be hidden.
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  walletSelectorUI: {
-    description: "Add your own description",
-    explanation: "Add your own wallet explanation",
-  }
-});
-```
 ## Contributing 
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:
