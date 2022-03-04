@@ -132,8 +132,6 @@ TODO: Description here.
 
 **Example**
 
-TODO: Description here.
-
 ```ts
 // NEAR Wallet.
 await selector.signIn({
@@ -165,7 +163,7 @@ await selector.signIn({
 
 **Description**
 
-TODO: Description here.
+Signs out of the selected wallet.
 
 **Example**
 
