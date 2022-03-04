@@ -74,6 +74,6 @@ export interface WalletOptions {
   emitter: Emitter;
 }
 
-export type WalletModule<WalletVariation extends Wallet> = (
+export type WalletModule<WalletVariation extends Wallet = Wallet> = (
   options: WalletOptions
 ) => WalletVariation;
