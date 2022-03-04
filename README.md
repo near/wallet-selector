@@ -55,19 +55,19 @@ const near = new NearWalletSelector({
 
 ### `.init()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `Promise<void>`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 await near.init();
@@ -75,19 +75,19 @@ await near.init();
 
 ### `.show()`
 
-#### Parameters
+****Parameters****
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `void`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 near.show();
@@ -95,19 +95,19 @@ near.show();
 
 ### `.hide()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `void`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 near.hide();
@@ -115,19 +115,19 @@ near.hide();
 
 ### `.signIn(walletId)`
 
-#### Parameters
+**Parameters**
 
 - `walletId` (`"near-wallet" | "sender-wallet" | "ledger-wallet`): TODO: Description here.
 
-#### Returns
+**Returns**
 
 - `Promise<void>`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 TODO: Description here.
 
@@ -137,19 +137,19 @@ await near.signIn("near-wallet");
 
 ### `.signOut()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `Promise<void>`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 await near.signOut();
@@ -157,19 +157,19 @@ await near.signOut();
 
 ### `.isSignedIn()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `boolean`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 await near.isSignedIn();
@@ -177,19 +177,19 @@ await near.isSignedIn();
 
 ### `.getAccount()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `Promise<AccountInfo>`: TODO: Description here.
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 const account = await near.getAccount();
@@ -197,20 +197,20 @@ const account = await near.getAccount();
 
 ### `.on(event, callback)`
 
-#### Parameters
+**Parameters**
 
 - `event` (`"signIn" | "signOut"`): TODO: Description here.
 - `callback` (`() => void`): TODO: Description here.
 
-#### Returns
+**Returns**
 
 - `Subscription`: TODO: Description here.
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 const subscription = near.on("signIn", () => {
@@ -223,20 +223,20 @@ subscription.remove();
 
 ### `.off(event, callback)`
 
-#### Parameters
+**Parameters**
 
 - `event` (`"signIn" | "signOut"`): TODO: Description here.
 - `callback` (`() => void`): TODO: Description here.
 
-#### Returns
+**Returns**
 
 - `void`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 const handleSignIn = () => {
@@ -249,19 +249,19 @@ near.off("signIn", handleSignIn);
 
 ### `.contract.getContractId()`
 
-#### Parameters
+**Parameters**
 
 - N/A
 
-#### Returns
+**Returns**
 
 - `string`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 near.contract.getContractId();
@@ -269,22 +269,22 @@ near.contract.getContractId();
 
 ### `.contract.view(params)`
 
-#### Parameters
+**Parameters**
 
 - `params` (`object`)
   - `methodName` (`string`): TODO: Description here.
   - `args` (`object?`): TODO: Description here.
   - `finality` (`string?`): TODO: Description here.
 
-#### Returns
+**Returns**
 
 - `Promise<unknown>`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 await near.contract.view({
@@ -294,22 +294,22 @@ await near.contract.view({
 
 ### `.contract.signAndSendTransaction(params)`
 
-#### Parameters
+**Parameters**
 
 - `params` (`object`)
   - `actions` (`Array<Action>`)
     - `type` (`ActionType`): TODO: Description here.
     - `params` (`object`): TODO: Description here.
 
-#### Returns
+**Returns**
 
 - `Promise<unknown>`
 
-#### Description
+**Description**
 
 TODO: Description here.
 
-#### Example
+**Example**
 
 ```ts
 await near.contract.signAndSendTransaction({
