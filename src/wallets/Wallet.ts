@@ -75,3 +75,7 @@ export interface HardwareWallet extends BaseWallet {
 }
 
 export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;
+
+export type WalletModule<Type extends Wallet = Wallet> = (
+  options: WalletOptions
+) => Type;

@@ -1,6 +1,8 @@
 import "regenerator-runtime/runtime";
 import React, { useState, useEffect, Fragment, useRef } from "react";
-import NearWalletSelector from "near-wallet-selector";
+import NearWalletSelector, { wallets } from "near-wallet-selector";
+
+const { nearWallet, senderWallet, ledgerWallet } = wallets;
 
 import getConfig from "./config";
 import Content from "./components/Content";
@@ -13,7 +15,7 @@ const App: React.FC = () => {
     const nearConfig = getConfig("testnet");
 
     const nearWalletSelector = new NearWalletSelector({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+      wallets: [nearWallet(), senderWallet(), ledgerWallet()],
       networkId: nearConfig.networkId,
       contract: { contractId: nearConfig.contractName },
     });

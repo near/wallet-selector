@@ -1,7 +1,4 @@
 import { getState, updateState } from "../state/State";
-import NearWallet from "../wallets/browser/NearWallet";
-import SenderWallet from "../wallets/injected/SenderWallet";
-import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
 import { BuiltInWalletId, Options } from "../interfaces/Options";
@@ -44,24 +41,9 @@ class WalletController {
     });
   }
 
-  private lookupBuiltInWallet(walletId: BuiltInWalletId) {
-    switch (walletId) {
-      case "near-wallet":
-        return NearWallet;
-      case "sender-wallet":
-        return SenderWallet;
-      case "ledger-wallet":
-        return LedgerWallet;
-      default:
-        throw new Error(`Invalid built-in wallet '${walletId}'`);
-    }
-  }
-
-  private getBuiltInWallets() {
-    return this.options.wallets.map((walletId) => {
-      const BuiltInWallet = this.lookupBuiltInWallet(walletId);
-
-      return new BuiltInWallet({
+  private setupWalletModules() {
+    return this.options.wallets.map((module) => {
+      return module({
         options: this.options,
         provider: this.provider,
         emitter: this.emitter,
@@ -79,7 +61,7 @@ class WalletController {
   }
 
   async init() {
-    this.wallets = this.decorateWallets(this.getBuiltInWallets());
+    this.wallets = this.decorateWallets(this.setupWalletModules());
 
     const selectedWalletId = this.getSelectedWalletId();
     const wallet = this.getWallet(selectedWalletId);
