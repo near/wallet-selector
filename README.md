@@ -179,7 +179,7 @@ await selector.signOut();
 
 **Returns**
 
-- `boolean`
+- `Promise<boolean>`
 
 **Description**
 
