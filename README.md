@@ -199,11 +199,11 @@ await selector.isSignedIn();
 
 **Returns**
 
-- `Promise<AccountInfo>`: TODO: Description here.
+- `Promise<object>`: TODO: Description here.
 
 **Description**
 
-TODO: Description here.
+Retrieve `accountId` and `balance` information when the user is signed in.
 
 **Example**
 
