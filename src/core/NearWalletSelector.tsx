@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import WalletController from "../controllers/WalletController";
+import WalletController, {
+  SignInParams,
+} from "../controllers/WalletController";
 import Contract from "./Contract";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
@@ -84,8 +86,8 @@ export default class NearWalletSelector {
     }));
   }
 
-  signIn(walletId: BuiltInWalletId) {
-    return this.controller.signIn(walletId);
+  signIn(params: SignInParams) {
+    return this.controller.signIn(params);
   }
 
   signOut() {

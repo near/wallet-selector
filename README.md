@@ -47,7 +47,7 @@ const selector = new NearWalletSelector({
       "added to your browser, a hardware device plugged into your",
       "computer, web-based, or as an app on your phone.",
     ].join(" "),
-  }
+  },
 });
 ```
 
@@ -261,8 +261,8 @@ const handleSignIn = () => {
   // your code
 }
 
-selector.on("signIn", handleSignIn);
-selector.off("signIn", handleSignIn);
+near.on("signIn", handleSignIn);
+near.off("signIn", handleSignIn);
 ```
 
 ### `.contract.getContractId()`
@@ -336,7 +336,7 @@ await selector.contract.signAndSendTransaction({
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: { text: "Hello World!" },
+      args: {text: message.value},
       gas: "30000000000000",
       deposit: "10000000000000000000000"
     }
@@ -380,7 +380,7 @@ const near = new NearWalletSelector({
   walletSelectorUI: {
     description: "Add your own description",
     explanation: "Add your own wallet explanation",
-  }
+  },
 });
 ```
 ## Contributing 
