@@ -183,7 +183,7 @@ await selector.signOut();
 
 **Description**
 
-TODO: Description here.
+Determines whether the user is signed in.
 
 **Example**
 
