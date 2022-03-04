@@ -232,7 +232,7 @@ TODO: Description here.
 
 ```ts
 const subscription = selector.on("signIn", () => {
-   // your code
+  // Your code here.
 });
 
 // Unsubscribe.
@@ -258,7 +258,7 @@ TODO: Description here.
 
 ```ts
 const handleSignIn = () => {
-  // your code
+  // Your code here.
 }
 
 near.on("signIn", handleSignIn);
@@ -336,7 +336,7 @@ await selector.contract.signAndSendTransaction({
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
       deposit: "10000000000000000000000"
     }
