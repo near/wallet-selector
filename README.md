@@ -199,16 +199,17 @@ await selector.isSignedIn();
 
 **Returns**
 
-- `Promise<object>`: TODO: Description here.
+- `Promise<object | null>`: TODO: Description here.
 
 **Description**
 
-Retrieve `accountId` and `balance` information when the user is signed in.
+Retrieves `accountId` and `balance` information when the user is signed in. Returns `null` when the user is signed out.
 
 **Example**
 
 ```ts
 const account = await selector.getAccount();
+console.log(account); // { accountId: "test.testnet", balance: "999999999999" }
 ```
 
 ### `.on(event, callback)`
