@@ -30,7 +30,7 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-wallet-selector";
 
-const near = new NearWalletSelector({
+const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
   theme: "light",
@@ -47,7 +47,7 @@ const near = new NearWalletSelector({
       "added to your browser, a hardware device plugged into your",
       "computer, web-based, or as an app on your phone.",
     ].join(" "),
-  }
+  },
 });
 ```
 
@@ -56,54 +56,69 @@ const near = new NearWalletSelector({
 Init:
 
 ```ts
-await near.init();
+await selector.init();
 ```
 
 Show modal:
 
 ```ts
-near.show();
+selector.show();
 ```
 
 Hide modal:
 
 ```ts
-near.hide();
+selector.hide();
 ```
 
 Sign in (programmatically):
 
 ```ts
-await near.signIn("near-wallet");
+// NEAR Wallet.
+await selector.signIn({
+  walletId: "near-wallet",
+});
+
+// Sender Wallet.
+await selector.signIn({
+  walletId: "sender-wallet",
+});
+
+// Ledger Wallet
+await selector.signIn({
+  walletId: "ledger-wallet",
+  accountId: "account-id.testnet",
+  derviationPath: "44'/397'/0'/0'/1'",
+});
 ```
 
 Sign out:
 
 ```ts
-await near.signOut();
+await selector.signOut();
 ```
 
 Is signed in:
 
 ```ts
-await near.isSignedIn();
+await selector.isSignedIn();
 ```
 
 Get account:
 
 ```ts
-const account = await near.getAccount();
+const account = await selector.getAccount();
 ```
 
 Add event listeners:
 
 ```ts
-near.on("signIn", () => {
-   // your code
+selector.on("signIn", () => {
+  // Your code here.
 });
 
-near.on("signOut", () => {
-  // your code
+selector.on("signOut", () => {
+  // Your code here.
 });
 ```
 
@@ -111,42 +126,42 @@ Remove event listeners:
 
 ```ts
 // Method 1:
-const subscription = near.on("signIn", () => {
-   // your code
+const subscription = selector.on("signIn", () => {
+  // Your code here.
 });
 
 subscription.remove();
 
 // Method 2:
 const handleSignIn = () => {
-  // your code
+  // Your code here.
 }
 
-near.on("signIn", handleSignIn);
-near.off("signIn", handleSignIn);
+selector.on("signIn", handleSignIn);
+selector.off("signIn", handleSignIn);
 ```
 
 Interact with the Smart Contract:
 
 ```ts
 // Retrieve messages via RPC endpoint (view method).
-const messages = await near.contract.view({ methodName: "getMessages" });
+const messages = await selector.contract.view({ methodName: "getMessages" });
 
 // Add a message, modifying the blockchain (change method).
-await near.contract.signAndSendTransaction({
+await selector.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
-      deposit: "10000000000000000000000"
-    }
+      deposit: "10000000000000000000000",
+    },
   }]
 });
 
 // Retrieve contract accountId.
-const accountId = near.contract.getAccountId();
+const accountId = selector.contract.getAccountId();
 ```
 
 ## Custom Themes
@@ -185,7 +200,7 @@ const near = new NearWalletSelector({
   walletSelectorUI: {
     description: "Add your own description",
     explanation: "Add your own wallet explanation",
-  }
+  },
 });
 ```
 ## Contributing 

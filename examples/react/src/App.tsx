@@ -12,7 +12,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const nearConfig = getConfig("testnet");
 
-    const nearWalletSelector = new NearWalletSelector({
+    const selector = new NearWalletSelector({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
       networkId: "testnet",
       theme: "light",
@@ -30,8 +30,11 @@ const App: React.FC = () => {
       },
     });
 
-    nearWalletSelector.init().then(() => {
-      selectorRef.current = nearWalletSelector;
+    // @ts-ignore
+    window.selector = selector;
+
+    selector.init().then(() => {
+      selectorRef.current = selector;
       setLoaded(true);
     });
 

@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   async initialize() {
     const nearConfig = getConfig("testnet");
 
-    const nearWalletSelector = new NearWalletSelector({
+    const selector = new NearWalletSelector({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
       networkId: "testnet",
       theme: "light",
@@ -35,8 +35,12 @@ export class AppComponent implements OnInit {
         ].join(" "),
       },
     });
-    await nearWalletSelector.init();
 
-    this.selector = nearWalletSelector;
+    // @ts-ignore
+    window.selector = selector;
+
+    await selector.init();
+
+    this.selector = selector;
   }
 }
