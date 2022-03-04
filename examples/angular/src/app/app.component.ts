@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import NearWalletSelector from "near-wallet-selector";
+import NearWalletSelector, { wallets } from "near-wallet-selector";
 import getConfig from "../config";
+
+const { nearWallet, senderWallet, ledgerWallet } = wallets;
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,7 @@ export class AppComponent implements OnInit {
     const nearConfig = getConfig("testnet");
 
     const selector = new NearWalletSelector({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+      wallets: [nearWallet(), senderWallet(), ledgerWallet()],
       networkId: nearConfig.networkId,
       contract: { contractId: nearConfig.contractName },
     });
