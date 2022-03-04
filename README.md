@@ -30,7 +30,7 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-wallet-selector";
 
-const near = new NearWalletSelector({
+const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
   theme: "light",
@@ -70,7 +70,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-await near.init();
+await selector.init();
 ```
 
 ### `.show()`
@@ -90,7 +90,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-near.show();
+selector.show();
 ```
 
 ### `.hide()`
@@ -110,7 +110,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-near.hide();
+selector.hide();
 ```
 
 ### `.signIn(params)`
@@ -136,17 +136,17 @@ TODO: Description here.
 
 ```ts
 // NEAR Wallet.
-await near.signIn({
+await selector.signIn({
   walletId: "near-wallet",
 });
 
 // Sender Wallet.
-await near.signIn({
+await selector.signIn({
   walletId: "sender-wallet",
 });
 
 // Ledger Wallet
-await near.signIn({
+await selector.signIn({
   walletId: "ledger-wallet",
   accountId: "account-id.testnet",
   derviationPath: "44'/397'/0'/0'/1'",
@@ -170,7 +170,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-await near.signOut();
+await selector.signOut();
 ```
 
 ### `.isSignedIn()`
@@ -190,7 +190,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-await near.isSignedIn();
+await selector.isSignedIn();
 ```
 
 ### `.getAccount()`
@@ -210,7 +210,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-const account = await near.getAccount();
+const account = await selector.getAccount();
 ```
 
 ### `.on(event, callback)`
@@ -231,7 +231,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-const subscription = near.on("signIn", () => {
+const subscription = selector.on("signIn", () => {
    // your code
 });
 
@@ -261,8 +261,8 @@ const handleSignIn = () => {
   // your code
 }
 
-near.on("signIn", handleSignIn);
-near.off("signIn", handleSignIn);
+selector.on("signIn", handleSignIn);
+selector.off("signIn", handleSignIn);
 ```
 
 ### `.contract.getContractId()`
@@ -282,7 +282,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-near.contract.getContractId();
+selector.contract.getContractId();
 ```
 
 ### `.contract.view(params)`
@@ -305,7 +305,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-await near.contract.view({
+await selector.contract.view({
   methodName: "getMessages"
 });
 ```
@@ -330,7 +330,7 @@ TODO: Description here.
 **Example**
 
 ```ts
-await near.contract.signAndSendTransaction({
+await selector.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {
