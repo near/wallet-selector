@@ -16,15 +16,8 @@ const App: React.FC = () => {
 			wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
 			networkId: nearConfig.networkId,
 			contract: {
-				accountId: nearConfig.contractName,
-				viewMethods: [],
-				changeMethods: [],
+				contractId: nearConfig.contractName,
 			},
-			walletSelectorUI: {
-				description: 'Mooo!',
-				explanation: 'Meow Woof!'
-			},
-			theme: 'dark' // or 'light'
 		});
 
 		// @ts-ignore

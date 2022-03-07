@@ -83,6 +83,9 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   };
 
   const handleWalletClick = (wallet: Wallet) => () => {
+
+	console.log(wallet)
+	
     if (wallet.type === "hardware") {
       return updateState((prevState) => ({
         ...prevState,
