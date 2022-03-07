@@ -337,7 +337,7 @@ await selector.contract.view({
 
 **Returns**
 
-- `Promise<unknown>`
+- `Promise<object>`: More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
 
 **Description**
 
