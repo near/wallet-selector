@@ -306,9 +306,9 @@ console.log(contractId); // "guest-book.testnet"
 **Parameters**
 
 - `params` (`object`)
-  - `methodName` (`string`): TODO: Description here.
-  - `args` (`object?`): TODO: Description here.
-  - `finality` (`string?`): TODO: Description here.
+  - `methodName` (`string`): Name of the method on the Smart Contract.
+  - `args` (`object?`): Object containing the parameters for the method.
+  - `finality` (`string?`): Defaults to `"optimistic"`. More details on this [here](https://docs.near.org/docs/api/rpc#using-finality-param).
 
 **Returns**
 
@@ -316,7 +316,7 @@ console.log(contractId); // "guest-book.testnet"
 
 **Description**
 
-TODO: Description here.
+Executes a view method on the Smart Contract. Sign in isn't required for these calls.
 
 **Example**
 
