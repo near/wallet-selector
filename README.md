@@ -332,8 +332,8 @@ await selector.contract.view({
 
 - `params` (`object`)
   - `actions` (`Array<Action>`)
-    - `type` (`ActionType`): TODO: Description here.
-    - `params` (`object`): TODO: Description here.
+    - `type` (`string`): Action type. See below for available values.
+    - `params` (`object?`): Parameters for the Action (if applicable).
 
 **Returns**
 
@@ -341,7 +341,80 @@ await selector.contract.view({
 
 **Description**
 
-TODO: Description here.
+Signs one or more actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
+
+Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+
+Below are the 8 supported NEAR Actions:
+
+```ts
+export interface CreateAccountAction {
+  type: "CreateAccount";
+}
+
+export interface DeployContractAction {
+  type: "DeployContract";
+  params: {
+    code: Uint8Array;
+  };
+}
+
+export interface FunctionCallAction {
+  type: "FunctionCall";
+  params: {
+    methodName: string;
+    args: object;
+    gas: string;
+    deposit: string;
+  };
+}
+
+export interface TransferAction {
+  type: "Transfer";
+  params: {
+    deposit: string;
+  };
+}
+
+export interface StakeAction {
+  type: "Stake";
+  params: {
+    stake: string;
+    publicKey: string;
+  };
+}  
+
+export interface AddKeyAction {
+  type: "AddKey";
+  params: {
+    publicKey: string;
+    accessKey: {
+      nonce?: number;
+      permission:
+        | "FullAccess"
+        | {
+            receiverId: string;
+            allowance?: string;
+            methodNames?: Array<string>;
+          };
+    };
+  };
+}
+
+export interface DeleteKeyAction {
+  type: "DeleteKey";
+  params: {
+    publicKey: string;
+  };
+}
+
+export interface DeleteAccountAction {
+  type: "DeleteAccount";
+  params: {
+    beneficiaryId: string;
+  };
+}
+```
 
 **Example**
 
