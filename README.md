@@ -132,9 +132,9 @@ selector.hide();
 **Parameters**
 
 - `params` (`object`)
-  - `walletId` (`string`): TODO: Description here.
-  - `accountId` (`string?`): TODO: Description here.
-  - `derviationPath` (`string?`): TODO: Description here.
+  - `walletId` (`string`): ID of the wallet (see example for specific values).
+  - `accountId` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the account ID related to the public key found at `derivationPath`.
+  - `derviationPath` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the path to the public key on your device.
 
 **Returns**
 
@@ -142,7 +142,7 @@ selector.hide();
 
 **Description**
 
-TODO: Description here.
+Programmatically sign in to a specific wallet without presenting the UI. Hardware wallets (e.g. Ledger Wallet) require `accountId` and `derivationPath` to validate access key permissions.
 
 **Example**
 
