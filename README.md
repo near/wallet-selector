@@ -214,11 +214,11 @@ console.log(signedIn) // true
 
 **Returns**
 
-- `Promise<object | null>`: TODO: Description here.
+- `Promise<object | null>`: Resolves to an object containing `accountId` and `balance`.
 
 **Description**
 
-Retrieves `accountId` and `balance` information when the user is signed in. Returns `null` when the user is signed out.
+Retrieves account information when the user is signed in. Returns `null` when the user is signed out.
 
 **Example**
 
