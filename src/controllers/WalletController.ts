@@ -4,10 +4,16 @@ import SenderWallet from "../wallets/injected/SenderWallet";
 import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
-import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
+import { BuiltInWalletId, Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 import { storage } from "../services/persistent-storage.service";
+
+export interface SignInParams {
+  walletId: BuiltInWalletId;
+  accountId?: string;
+  derivationPath?: string;
+}
 
 class WalletController {
   private options: Options;
@@ -28,7 +34,7 @@ class WalletController {
     return wallets.map((wallet) => {
       return {
         ...wallet,
-        signIn: async () => {
+        signIn: async (params: never) => {
           const selectedWallet = this.getSelectedWallet();
 
           if (selectedWallet) {
@@ -39,7 +45,7 @@ class WalletController {
             await selectedWallet.signOut();
           }
 
-          return wallet.signIn();
+          return wallet.signIn(params);
         },
       };
     });
@@ -121,11 +127,23 @@ class WalletController {
     return this.wallets;
   }
 
-  async signIn(walletId: BuiltInWalletId) {
+  async signIn({ walletId, accountId, derivationPath }: SignInParams) {
     const wallet = this.getWallet(walletId);
 
     if (!wallet) {
-      throw new Error(`Invalid built-in wallet '${walletId}'`);
+      throw new Error(`Invalid wallet '${walletId}'`);
+    }
+
+    if (wallet.type === "hardware") {
+      if (!accountId) {
+        throw new Error("Invalid account id");
+      }
+
+      if (!derivationPath) {
+        throw new Error("Invalid derivation path");
+      }
+
+      return wallet.signIn({ accountId, derivationPath });
     }
 
     return wallet.signIn();

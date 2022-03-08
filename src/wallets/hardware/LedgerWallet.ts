@@ -1,18 +1,18 @@
 import { transactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
-import BN from "bn.js";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import LedgerClient, { Subscription } from "./LedgerClient";
 import { logger } from "../../services/logging.service";
+import { transformActions } from "../actions";
 import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "../../constants";
 import { setSelectedWalletId } from "../helpers";
 import { ledgerWalletIcon } from "../icons";
 import {
   AccountInfo,
-  FunctionCallAction,
   HardwareWallet,
+  HardwareWalletSignInParams,
   HardwareWalletType,
   SignAndSendTransactionParams,
   WalletOptions,
@@ -38,10 +38,6 @@ class LedgerWallet implements HardwareWallet {
   private emitter: Emitter;
 
   private authData: AuthData | null;
-
-  // Temporary values before committing to authData.
-  private accountId: string | null;
-  private derivationPath: string | null;
 
   private debugMode = false;
 
@@ -106,41 +102,28 @@ class LedgerWallet implements HardwareWallet {
     this.authData = this.getAuthData();
   };
 
-  setDerivationPath = (derivationPath: string) => {
-    this.derivationPath = derivationPath;
-  };
-
-  setAccountId = (accountId: string) => {
-    this.accountId = accountId;
-  };
-
-  signIn = async () => {
+  signIn = async ({
+    accountId,
+    derivationPath,
+  }: HardwareWalletSignInParams) => {
     if (await this.isSignedIn()) {
       return;
     }
 
-    if (!this.accountId) {
-      throw new Error("Invalid account id");
-    }
-
-    if (!this.derivationPath) {
-      throw new Error("Invalid derivation path");
-    }
-
     const { publicKey, accessKey } = await this.validate({
-      accountId: this.accountId,
-      derivationPath: this.derivationPath,
+      accountId,
+      derivationPath,
     });
 
     if (!accessKey) {
       throw new Error(
-        `Public key is not registered with the account '${this.accountId}'.`
+        `Public key is not registered with the account '${accountId}'.`
       );
     }
 
     const authData: AuthData = {
-      accountId: this.accountId,
-      derivationPath: this.derivationPath,
+      accountId,
+      derivationPath,
       publicKey,
     };
 
@@ -150,8 +133,6 @@ class LedgerWallet implements HardwareWallet {
     );
 
     this.authData = authData;
-    this.accountId = null;
-    this.derivationPath = null;
 
     setSelectedWalletId(this.id);
     this.emitter.emit("signIn");
@@ -163,9 +144,6 @@ class LedgerWallet implements HardwareWallet {
     }
 
     storage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
-
-    this.accountId = null;
-    this.derivationPath = null;
 
     // Only close if we've already connected.
     if (this.client) {
@@ -236,17 +214,6 @@ class LedgerWallet implements HardwareWallet {
     };
   };
 
-  private transformActions = (actions: Array<FunctionCallAction>) => {
-    return actions.map((action) => {
-      return transactions.functionCall(
-        action.methodName,
-        action.args,
-        new BN(action.gas),
-        new BN(action.deposit)
-      );
-    });
-  };
-
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -273,7 +240,7 @@ class LedgerWallet implements HardwareWallet {
       utils.PublicKey.from(publicKey),
       receiverId,
       accessKey.nonce + 1,
-      this.transformActions(actions),
+      transformActions(actions),
       utils.serialize.base_decode(block.header.hash)
     );
 
@@ -292,16 +259,7 @@ class LedgerWallet implements HardwareWallet {
       }),
     });
 
-    return this.provider.sendTransaction(signedTx).then((res) => {
-      const successValue =
-        (typeof res.status !== "string" && res.status.SuccessValue) || "";
-
-      if (successValue === "") {
-        return null;
-      }
-
-      return JSON.parse(Buffer.from(successValue, "base64").toString());
-    });
+    return this.provider.sendTransaction(signedTx);
   };
 }
 

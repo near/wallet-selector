@@ -1,15 +1,10 @@
-import {
-  WalletConnection,
-  transactions,
-  connect,
-  keyStores,
-} from "near-api-js";
-import BN from "bn.js";
+import { WalletConnection, connect, keyStores } from "near-api-js";
 
 import getConfig from "../../config";
-import { Options } from "../../core/NearWalletSelector";
+import { Options } from "../../interfaces/Options";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { transformActions } from "../actions";
 import { setSelectedWalletId } from "../helpers";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
@@ -17,13 +12,13 @@ import {
   AccountInfo,
   BrowserWallet,
   BrowserWalletType,
-  FunctionCallAction,
   SignAndSendTransactionParams,
   WalletOptions,
 } from "../Wallet";
 import { storage } from "../../services/persistent-storage.service";
 
 class NearWallet implements BrowserWallet {
+  private keyStore: keyStores.KeyStore;
   private wallet: WalletConnection;
 
   private options: Options;
@@ -45,13 +40,20 @@ class NearWallet implements BrowserWallet {
   };
 
   init = async () => {
+    const keyStore = new keyStores.BrowserLocalStorageKeyStore();
     const near = await connect({
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+      keyStore,
       ...getConfig(this.options.networkId),
       headers: {},
     });
 
     this.wallet = new WalletConnection(near, "near_app");
+    this.keyStore = keyStore;
+
+    // Cleanup up any pending keys (cancelled logins).
+    if (!this.wallet.isSignedIn()) {
+      await this.keyStore.clear();
+    }
   };
 
   // We don't emit "signIn" or update state as we can't guarantee the user will
@@ -62,7 +64,10 @@ class NearWallet implements BrowserWallet {
       await this.init();
     }
 
-    await this.wallet.requestSignIn(this.options.contract.accountId);
+    await this.wallet.requestSignIn({
+      contractId: this.options.contract.contractId,
+      methodNames: this.options.contract.methodNames,
+    });
 
     storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, JSON.stringify(this.id));
   };
@@ -73,6 +78,7 @@ class NearWallet implements BrowserWallet {
     }
 
     this.wallet.signOut();
+    await this.keyStore.clear();
 
     setSelectedWalletId(null);
     this.emitter.emit("signOut");
@@ -102,17 +108,6 @@ class NearWallet implements BrowserWallet {
     };
   };
 
-  private transformActions = (actions: Array<FunctionCallAction>) => {
-    return actions.map((action) => {
-      return transactions.functionCall(
-        action.methodName,
-        action.args,
-        new BN(action.gas),
-        new BN(action.deposit)
-      );
-    });
-  };
-
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -125,7 +120,7 @@ class NearWallet implements BrowserWallet {
     // near-api-js marks this method as protected.
     return account.signAndSendTransaction({
       receiverId,
-      actions: this.transformActions(actions),
+      actions: transformActions(actions),
     });
   };
 }

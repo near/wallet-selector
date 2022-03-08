@@ -7,7 +7,7 @@ type EventMap = Record<EventList, unknown>;
 
 type EventKey = keyof EventMap;
 
-interface Subscription {
+export interface Subscription {
   remove: () => void;
 }
 
