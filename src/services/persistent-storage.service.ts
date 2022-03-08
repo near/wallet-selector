@@ -82,6 +82,7 @@ export class PersistentStorage {
 
   removeItem(key: string): void {
     this.map.delete(key);
+    this.storage.removeItem(`${this.prefix}:${key}`);
   }
 
   get length(): number {
