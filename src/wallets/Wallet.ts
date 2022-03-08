@@ -20,6 +20,10 @@ export interface AccountInfo {
   balance: string;
 }
 
+export type BrowserWalletType = "browser";
+export type InjectedWalletType = "injected";
+export type HardwareWalletType = "hardware";
+
 interface BaseWallet {
   id: string;
   name: string;
