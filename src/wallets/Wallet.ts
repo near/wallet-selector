@@ -1,3 +1,5 @@
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
 import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
 import { Emitter } from "../utils/EventsHandler";
@@ -44,11 +46,10 @@ interface BaseWallet {
   // Retrieves account info based on associated accountId.
   getAccount(): Promise<AccountInfo | null>;
 
-  // TODO: Determine standardised response.
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<unknown>;
+  ): Promise<FinalExecutionOutcome>;
 }
 
 export interface BrowserWallet extends BaseWallet {

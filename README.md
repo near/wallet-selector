@@ -68,25 +68,84 @@ interface Options {
 
 ## API Reference
 
-Init:
+### `.init()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Initialises the selector using the configured options before rendering the UI. If a user has previously signed in, this method will also initialise the selected wallet, ready to handle transaction signing.
+
+**Example**
 
 ```ts
 await selector.init();
 ```
 
-Show modal:
+### `.show()`
+
+****Parameters****
+
+- N/A
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
+
+**Example**
 
 ```ts
 selector.show();
 ```
 
-Hide modal:
+### `.hide()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Closes the modal.
+
+**Example**
 
 ```ts
 selector.hide();
 ```
 
-Sign in (programmatically):
+### `.signIn(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `walletId` (`string`): ID of the wallet (see example for specific values).
+  - `accountId` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the account ID related to the public key found at `derivationPath`.
+  - `derviationPath` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the path to the public key on your device.
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Programmatically sign in to a specific wallet without presenting the UI. Hardware wallets (e.g. Ledger Wallet) require `accountId` and `derivationPath` to validate access key permissions.
+
+**Example**
 
 ```ts
 // NEAR Wallet.
@@ -107,62 +166,260 @@ await selector.signIn({
 });
 ```
 
-Sign out:
+### `.signOut()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Signs out of the selected wallet.
+
+**Example**
 
 ```ts
 await selector.signOut();
 ```
 
-Is signed in:
+### `.isSignedIn()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<boolean>`
+
+**Description**
+
+Determines whether the user is signed in.
+
+**Example**
 
 ```ts
-await selector.isSignedIn();
+const signedIn = await selector.isSignedIn();
+console.log(signedIn) // true
 ```
 
-Get account:
+### `.getAccount()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<object | null>`: Resolves to an object containing `accountId` and `balance`.
+
+**Description**
+
+Retrieves account information when the user is signed in. Returns `null` when the user is signed out.
+
+**Example**
 
 ```ts
 const account = await selector.getAccount();
+console.log(account); // { accountId: "test.testnet", balance: "999999999999" }
 ```
 
-Add event listeners:
+### `.on(event, callback)`
+
+**Parameters**
+
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Handler to be triggered when the `event` fires.
+
+**Returns**
+
+- `object`
+  - `remove` (`() => void`): Removes the event handler.
+
+**Description**
+
+Attach an event handler to important events.
+
+**Example**
 
 ```ts
-selector.on("signIn", () => {
-  // Your code here.
-});
-
-selector.on("signOut", () => {
-  // Your code here.
-});
-```
-
-Remove event listeners:
-
-```ts
-// Method 1:
 const subscription = selector.on("signIn", () => {
-  // Your code here.
+   console.log("User signed in!");
 });
 
+// Unsubscribe.
 subscription.remove();
+```
 
-// Method 2:
+### `.off(event, callback)`
+
+**Parameters**
+
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Original handler passed to `.on(event, callback)`.
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Removes the event handler attached to the given `event`.
+
+**Example**
+
+```ts
 const handleSignIn = () => {
-  // Your code here.
+  console.log("User signed in!");
 }
 
 selector.on("signIn", handleSignIn);
 selector.off("signIn", handleSignIn);
 ```
 
-Interact with the Smart Contract:
+### `.contract.getContractId()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `string`
+
+**Description**
+
+Retrieves account ID of the configured Smart Contract.
+
+**Example**
 
 ```ts
-// Retrieve messages via RPC endpoint (view method).
-const messages = await selector.contract.view({ methodName: "getMessages" });
+const contractId = selector.contract.getContractId();
+console.log(contractId); // "guest-book.testnet"
+```
 
-// Add a message, modifying the blockchain (change method).
+### `.contract.view(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `methodName` (`string`): Name of the method on the Smart Contract.
+  - `args` (`object?`): Object containing the parameters for the method.
+  - `finality` (`string?`): Defaults to `"optimistic"`. More details on this [here](https://docs.near.org/docs/api/rpc#using-finality-param).
+
+**Returns**
+
+- `Promise<unknown>`
+
+**Description**
+
+Executes a view method on the Smart Contract. Sign in isn't required for these calls.
+
+**Example**
+
+```ts
+await selector.contract.view({
+  methodName: "getMessages"
+});
+```
+
+### `.contract.signAndSendTransaction(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `actions` (`Array<Action>`)
+    - `type` (`string`): Action type. See below for available values.
+    - `params` (`object?`): Parameters for the Action (if applicable).
+
+**Returns**
+
+- `Promise<object>`: More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+
+**Description**
+
+Signs one or more actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
+
+Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+
+Below are the 8 supported NEAR Actions:
+
+```ts
+export interface CreateAccountAction {
+  type: "CreateAccount";
+}
+
+export interface DeployContractAction {
+  type: "DeployContract";
+  params: {
+    code: Uint8Array;
+  };
+}
+
+export interface FunctionCallAction {
+  type: "FunctionCall";
+  params: {
+    methodName: string;
+    args: object;
+    gas: string;
+    deposit: string;
+  };
+}
+
+export interface TransferAction {
+  type: "Transfer";
+  params: {
+    deposit: string;
+  };
+}
+
+export interface StakeAction {
+  type: "Stake";
+  params: {
+    stake: string;
+    publicKey: string;
+  };
+}  
+
+export interface AddKeyAction {
+  type: "AddKey";
+  params: {
+    publicKey: string;
+    accessKey: {
+      nonce?: number;
+      permission:
+        | "FullAccess"
+        | {
+            receiverId: string;
+            allowance?: string;
+            methodNames?: Array<string>;
+          };
+    };
+  };
+}
+
+export interface DeleteKeyAction {
+  type: "DeleteKey";
+  params: {
+    publicKey: string;
+  };
+}
+
+export interface DeleteAccountAction {
+  type: "DeleteAccount";
+  params: {
+    beneficiaryId: string;
+  };
+}
+```
+
+**Example**
+
+```ts
 await selector.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
@@ -171,12 +428,9 @@ await selector.contract.signAndSendTransaction({
       args: { text: "Hello World!" },
       gas: "30000000000000",
       deposit: "10000000000000000000000",
-    },
+    }
   }]
 });
-
-// Retrieve contract accountId.
-const accountId = selector.contract.getContractId();
 ```
 
 ## Contributing 
