@@ -47,12 +47,35 @@ class WalletController {
     });
   }
 
+  private setSelectedWalletId(walletId: string | null) {
+    if (walletId) {
+      localStorage.setItem(
+        LOCAL_STORAGE_SELECTED_WALLET_ID,
+        JSON.stringify(walletId)
+      );
+
+      updateState((prevState) => ({
+        ...prevState,
+        showModal: false,
+        selectedWalletId: walletId,
+      }));
+    } else {
+      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+
+      updateState((prevState) => ({
+        ...prevState,
+        selectedWalletId: null,
+      }));
+    }
+  }
+
   private setupWalletModules() {
     return this.options.wallets.map((module) => {
       return module({
         options: this.options,
         provider: this.provider,
         emitter: this.emitter,
+        setSelectedWalletId: this.setSelectedWalletId,
       });
     });
   }

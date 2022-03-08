@@ -72,6 +72,7 @@ export interface WalletOptions {
   options: Options;
   provider: ProviderService;
   emitter: Emitter;
+  setSelectedWalletId: (walletId: string | null) => void;
 }
 
 export type WalletModule<WalletVariation extends Wallet = Wallet> = (
