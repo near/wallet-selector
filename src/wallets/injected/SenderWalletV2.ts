@@ -167,7 +167,12 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
               throw new Error(res.error);
             }
 
-            return res;
+            // Shouldn't happen but avoids inconsistent responses.
+            if (!res.responses?.length) {
+              throw new Error("Invalid response");
+            }
+
+            return res.responses[0];
           });
       },
     };
