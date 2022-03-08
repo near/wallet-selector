@@ -35,7 +35,7 @@ describe("PersistentStorage Unit Tests", () => {
     const initStorage = mock<Storage>({
       getItem: jest.fn().mockImplementation(() => initValue),
       length: 1,
-      key: jest.fn().mockImplementation(() => `${initPrefix}-${initKey}`),
+      key: jest.fn().mockImplementation(() => `${initPrefix}:${initKey}`),
     });
 
     const initPersistantStorage = new PersistentStorage(
@@ -46,7 +46,7 @@ describe("PersistentStorage Unit Tests", () => {
     const found = initPersistantStorage.getItem(initKey);
     expect(found).toBe(initValue);
     expect(initStorage.getItem).toHaveBeenCalledWith(
-      `${initPrefix}-${initKey}`
+      `${initPrefix}:${initKey}`
     );
     expect(initPersistantStorage.length).toBe(1);
   });
@@ -55,7 +55,7 @@ describe("PersistentStorage Unit Tests", () => {
     persistentStorage.setItem(key, value);
     const setValue = persistentStorage.getItem(key);
     expect(setValue).toBe(value);
-    expect(storage.setItem).toHaveBeenCalledWith(`${prefix}-${key}`, value);
+    expect(storage.setItem).toHaveBeenCalledWith(`${prefix}:${key}`, value);
     expect(storage.getItem).toBeCalledTimes(0);
   });
 
@@ -90,7 +90,7 @@ describe("PersistentStorage Unit Tests", () => {
 
   it("should set a prefix on storage", () => {
     persistentStorage.setItem(key, value);
-    expect(storage.setItem).toBeCalledWith(`${prefix}-${key}`, value);
+    expect(storage.setItem).toBeCalledWith(`${prefix}:${key}`, value);
   });
 
   it("should get a key", () => {

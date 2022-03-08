@@ -36,7 +36,7 @@ export class PersistentStorage {
   }
 
   constructor(
-    private prefix: string = `${PACKAGE_NAME}:`,
+    private prefix: string = PACKAGE_NAME,
     private storage: Storage = window?.localStorage
   ) {
     if (!storage) {
@@ -53,10 +53,10 @@ export class PersistentStorage {
   private init() {
     for (let i = 0; i < this.storage.length; i++) {
       const key = this.storage.key(i);
-      if (key?.startsWith(`${this.prefix}-`)) {
+      if (key?.startsWith(`${this.prefix}:`)) {
         const value = this.storage.getItem(key);
         if (value) {
-          this.map.set(key.replace(`${this.prefix}-`, ""), value);
+          this.map.set(key.replace(`${this.prefix}:`, ""), value);
         }
       }
     }
@@ -77,8 +77,7 @@ export class PersistentStorage {
 
   setItem(key: string, value: string): void {
     this.map.set(key, value);
-    console.log(this.map);
-    this.storage.setItem(`${this.prefix}-${key}`, value);
+    this.storage.setItem(`${this.prefix}:${key}`, value);
   }
 
   removeItem(key: string): void {
