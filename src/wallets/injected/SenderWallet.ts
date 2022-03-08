@@ -197,11 +197,11 @@ class SenderWallet implements InjectedWallet {
         }
 
         // Shouldn't happen but avoids inconsistent responses.
-        if (!res.responses?.length) {
+        if (!res.response?.length) {
           throw new Error("Invalid response");
         }
 
-        return res.responses[0];
+        return res.response[0];
       });
   };
 }

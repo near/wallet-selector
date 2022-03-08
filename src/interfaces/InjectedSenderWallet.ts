@@ -73,7 +73,7 @@ export interface SignAndSendTransactionResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  responses?: Array<FinalExecutionOutcome>;
+  response?: Array<FinalExecutionOutcome>;
   type: "sender-wallet-extensionResult";
 }
 
