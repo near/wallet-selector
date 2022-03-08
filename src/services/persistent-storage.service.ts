@@ -9,17 +9,23 @@ export class PersistentStorage {
     prefix: string = PACKAGE_NAME,
     update: { prefix?: string; storage?: Storage }
   ) {
-    if (!PersistentStorage.instances.has(prefix)) return;
+    if (!PersistentStorage.instances.has(prefix)) {
+      return;
+    }
+
     const instance = PersistentStorage.instances.get(prefix)!;
+
     if (update.prefix) {
       instance.prefix = update.prefix;
       PersistentStorage.instances.set(update.prefix, instance);
     }
+
     if (update.storage) {
       instance.storage = update.storage;
     }
 
     const map = new Map(instance.map);
+
     instance.clear();
     instance.map.clear();
 
@@ -30,7 +36,7 @@ export class PersistentStorage {
   }
 
   constructor(
-    private prefix: string = PACKAGE_NAME,
+    private prefix: string = `${PACKAGE_NAME}:`,
     private storage: Storage = window?.localStorage
   ) {
     if (!storage) {
@@ -60,6 +66,7 @@ export class PersistentStorage {
     this.map.clear();
     this.storage.clear();
   }
+
   getItem(key: string): string | null {
     return this.map.get(key) || null;
   }
@@ -70,6 +77,7 @@ export class PersistentStorage {
 
   setItem(key: string, value: string): void {
     this.map.set(key, value);
+    console.log(this.map);
     this.storage.setItem(`${this.prefix}-${key}`, value);
   }
 
