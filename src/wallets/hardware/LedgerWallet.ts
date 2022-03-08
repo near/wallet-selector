@@ -260,16 +260,7 @@ class LedgerWallet implements HardwareWallet {
       }),
     });
 
-    return this.provider.sendTransaction(signedTx).then((res) => {
-      const successValue =
-        (typeof res.status !== "string" && res.status.SuccessValue) || "";
-
-      if (successValue === "") {
-        return null;
-      }
-
-      return JSON.parse(Buffer.from(successValue, "base64").toString());
-    });
+    return this.provider.sendTransaction(signedTx);
   };
 }
 
