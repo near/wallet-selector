@@ -1,7 +1,7 @@
 import NearWalletSelector from "./core/NearWalletSelector";
 import setupNearWallet from "./wallets/browser/nearWallet";
-import setupSenderWallet from "./wallets/injected/senderWallet";
-import setupLedgerWallet from "./wallets/hardware/ledgerWallet";
+import setupSenderWallet from "./wallets/injected/SenderWalletV2";
+import setupLedgerWallet from "./wallets/hardware/LedgerWalletV2";
 
 export { Options } from "./interfaces/Options";
 
