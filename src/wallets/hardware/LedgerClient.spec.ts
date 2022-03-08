@@ -2,11 +2,36 @@ import { DeepPartial } from "ts-essentials";
 import { mock } from "jest-mock-extended";
 import Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import {
+  parseDerivationPath,
+  CLA,
+  INS_SIGN,
+  INS_GET_APP_VERSION,
+  INS_GET_PUBLIC_KEY,
+  P1_LAST,
+  P1_IGNORE,
+  P2_IGNORE,
+  networkId,
+} from "./LedgerClient";
+import { transactions, utils } from "near-api-js";
+import { transformActions } from "../actions";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
   transport?: DeepPartial<Transport>;
 }
+
+const createGetVersionResponseMock = () => {
+  return Buffer.from([1, 1, 6, 144, 0]);
+};
+
+const createGetPublicKeyResponseMock = () => {
+  return Buffer.from([
+    226, 125, 56, 106, 199, 195, 73, 246, 10, 249, 57, 121, 249, 233, 201, 22,
+    102, 15, 131, 165, 129, 76, 109, 40, 170, 241, 102, 140, 43, 133, 200, 31,
+    144, 0,
+  ]);
+};
 
 const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const client = mock<TransportWebHID>(params.client);
@@ -35,16 +60,18 @@ describe("getVersion", () => {
   it("returns the current version", async () => {
     const { client, transport } = createLedgerClient({
       transport: {
-        // TODO: Examine real response so this mock is reliable.
-        send: jest.fn().mockResolvedValue(Buffer.from([1, 2, 3])),
+        send: jest.fn().mockResolvedValue(createGetVersionResponseMock()),
       },
     });
-
     await client.connect();
     const result = await client.getVersion();
-
-    expect(transport.send).toHaveBeenCalledWith(128, 6, 0, 0);
-    expect(result).toEqual("1.2.3");
+    expect(transport.send).toHaveBeenCalledWith(
+      CLA,
+      INS_GET_APP_VERSION,
+      P1_IGNORE,
+      P2_IGNORE
+    );
+    expect(result).toEqual("1.1.6");
   });
 });
 
@@ -52,27 +79,26 @@ describe("getPublicKey", () => {
   it("returns the public key", async () => {
     const { client, transport } = createLedgerClient({
       transport: {
-        // TODO: Examine real response so this mock is reliable.
-        send: jest.fn().mockResolvedValue(Buffer.from([1, 2, 3])),
+        send: jest.fn().mockResolvedValue(createGetPublicKeyResponseMock()),
       },
     });
 
+    const derivationPath = "44'/397'/0'/0'/1'";
+
     await client.connect();
     const result = await client.getPublicKey({
-      derivationPath: "44'/397'/0'/0'/1'",
+      derivationPath,
     });
 
     expect(transport.send).toHaveBeenCalledWith(
-      128,
-      4,
-      0,
-      87,
-      // TODO: We should really expect a correctly formatted buffer.
-      //  basically we'll be testing that 'parseDerivationPath' works as expected.
-      expect.any(Buffer)
+      CLA,
+      INS_GET_PUBLIC_KEY,
+      P1_IGNORE,
+      networkId,
+      parseDerivationPath(derivationPath)
     );
 
-    expect(result).toEqual("2");
+    expect(result).toEqual("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC");
   });
 });
 
@@ -84,36 +110,52 @@ describe("sign", () => {
       },
     });
 
+    const transaction = transactions.createTransaction(
+      "amirsaran.testnet",
+      utils.PublicKey.from("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
+      "guest-book.testnet",
+      76068360000003,
+      transformActions([
+        {
+          type: "FunctionCall",
+          params: {
+            methodName: "addMessage",
+            args: { text: "test" },
+            gas: utils.format.formatNearAmount("0.00000000003"),
+            deposit: utils.format.parseNearAmount("0")!,
+          },
+        },
+      ]),
+      utils.serialize.base_decode(
+        "DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t"
+      )
+    );
+
+    const data = utils.serialize.serialize(transactions.SCHEMA, transaction);
+
     await client.connect();
     const result = await client.sign({
-      data: Buffer.from([
-        17, 0, 0, 0, 97, 109, 105, 114, 115, 97, 114, 97, 110, 46, 116, 101,
-        115, 116, 110, 101, 116, 0, 226, 125, 56, 106, 199, 195, 73, 246, 10,
-        249, 57, 121, 249, 233, 201, 22, 102, 15, 131, 165, 129, 76, 109, 40,
-        170, 241, 102, 140, 43, 133, 200, 31, 2, 146, 147, 11, 47, 69, 0, 0, 18,
-        0, 0, 0, 103, 117, 101, 115, 116, 45, 98, 111, 111, 107, 46, 116, 101,
-        115, 116, 110, 101, 116, 211, 174, 138, 47, 84, 199, 21, 141, 240, 194,
-        235, 66, 156, 178, 230, 10, 240, 60, 202, 182, 118, 176, 120, 45, 97,
-        184, 167, 79, 177, 64, 149, 228, 1, 0, 0, 0, 2, 10, 0, 0, 0, 97, 100,
-        100, 77, 101, 115, 115, 97, 103, 101, 14, 0, 0, 0, 123, 34, 116, 101,
-        120, 116, 34, 58, 34, 97, 115, 100, 34, 125, 0, 224, 87, 235, 72, 27, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ]),
+      data,
       derivationPath: "44'/397'/0'/0'/1'",
     });
-    expect(transport.send).toHaveBeenCalledWith(128, 6, 0, 0);
     expect(transport.send).toHaveBeenCalledWith(
-      128,
-      2,
-      0,
-      0,
+      CLA,
+      INS_GET_APP_VERSION,
+      P1_IGNORE,
+      P2_IGNORE
+    );
+    expect(transport.send).toHaveBeenCalledWith(
+      CLA,
+      INS_SIGN,
+      P1_IGNORE,
+      P2_IGNORE,
       expect.any(Buffer)
     );
     expect(transport.send).toHaveBeenCalledWith(
-      128,
-      2,
-      128,
-      0,
+      CLA,
+      INS_SIGN,
+      P1_LAST,
+      P2_IGNORE,
       expect.any(Buffer)
     );
     expect(transport.send).toHaveBeenCalledTimes(3);
@@ -123,30 +165,28 @@ describe("sign", () => {
 
 describe("on", () => {
   it("add event to transport", async () => {
-    const { client, transport } = createLedgerClient({
-      transport: {
-        off: jest.fn().mockResolvedValue({ remove: jest.fn() }),
-      },
-    });
+    const { client, transport } = createLedgerClient();
+
+    const event = "connect";
+    const listener = jest.fn();
 
     await client.connect();
-    await client.on("connect", jest.fn());
-    expect(transport.on).toHaveBeenCalledWith("connect", expect.any(Function));
+    await client.on(event, listener);
+    expect(transport.on).toHaveBeenCalledWith(event, listener);
     expect(transport.on).toHaveBeenCalledTimes(1);
   });
 });
 
 describe("off", () => {
   it("remove event from transport", async () => {
-    const { client, transport } = createLedgerClient({
-      transport: {
-        off: jest.fn(),
-      },
-    });
+    const { client, transport } = createLedgerClient();
+
+    const event = "connect";
+    const listener = jest.fn();
 
     await client.connect();
-    await client.off("connect", jest.fn());
-    expect(transport.off).toHaveBeenCalledWith("connect", expect.any(Function));
+    await client.off(event, listener);
+    expect(transport.off).toHaveBeenCalledWith(event, listener);
     expect(transport.off).toHaveBeenCalledTimes(1);
   });
 });
@@ -159,9 +199,11 @@ describe("setScrambleKey", () => {
       },
     });
 
+    const scrambleKey = "NEAR";
+
     await client.connect();
-    await client.setScrambleKey("NEAR");
-    expect(transport.setScrambleKey).toHaveBeenCalledWith("NEAR");
+    await client.setScrambleKey(scrambleKey);
+    expect(transport.setScrambleKey).toHaveBeenCalledWith(scrambleKey);
     expect(transport.setScrambleKey).toHaveBeenCalledTimes(1);
   });
 });
