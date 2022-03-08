@@ -76,11 +76,8 @@ class WalletController {
     });
   }
 
-  // TODO: Migrate to storage service (with JSON support).
   private getSelectedWalletId() {
-    const selectedWalletId = storage.getItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
-
-    return selectedWalletId ? JSON.parse(selectedWalletId) : null;
+    return storage.getItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
   }
 
   async init() {

@@ -4,7 +4,7 @@ import { storage } from "../services/persistent-storage.service";
 
 export const setSelectedWalletId = (walletId: string | null) => {
   if (walletId) {
-    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, JSON.stringify(walletId));
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
 
     updateState((prevState) => ({
       ...prevState,

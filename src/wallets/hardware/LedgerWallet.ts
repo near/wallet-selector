@@ -91,15 +91,9 @@ class LedgerWallet implements HardwareWallet {
     return client;
   };
 
-  // TODO: Migrate to storage service (with JSON support).
-  private getAuthData = (): AuthData | null => {
-    const authData = storage.getItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
-
-    return authData ? JSON.parse(authData) : null;
-  };
-
   init = async () => {
-    this.authData = this.getAuthData();
+    //@ts-ignore
+    this.authData = storage.getItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
   };
 
   signIn = async ({
@@ -127,10 +121,7 @@ class LedgerWallet implements HardwareWallet {
       publicKey,
     };
 
-    storage.setItem(
-      LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA,
-      JSON.stringify(authData)
-    );
+    storage.setItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA, authData);
 
     this.authData = authData;
 

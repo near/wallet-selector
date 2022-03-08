@@ -69,7 +69,7 @@ class NearWallet implements BrowserWallet {
       methodNames: this.options.contract.methodNames,
     });
 
-    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, JSON.stringify(this.id));
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, this.id);
   };
 
   signOut = async () => {

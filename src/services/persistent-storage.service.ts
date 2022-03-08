@@ -68,16 +68,17 @@ export class PersistentStorage {
   }
 
   getItem(key: string): string | null {
-    return this.map.get(key) || null;
+    return this.map.get(key) ? JSON.parse(this.map.get(key)!) : null;
   }
 
   key(index: number): string | null {
     return Object.keys(Object.fromEntries(this.map))[index] || null;
   }
 
-  setItem(key: string, value: string): void {
-    this.map.set(key, value);
-    this.storage.setItem(`${this.prefix}:${key}`, value);
+  setItem(key: string, value: string | object): void {
+    const valueToString = JSON.stringify(value);
+    this.map.set(key, valueToString);
+    this.storage.setItem(`${this.prefix}:${key}`, valueToString);
   }
 
   removeItem(key: string): void {
