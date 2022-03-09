@@ -1,0 +1,24 @@
+{
+  "name": "near-wallet-selector-example-vue",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "big.js": "^6.1.1",
+    "near-api-js": "0.44.2",
+    "near-wallet-selector": "*",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@rollup/plugin-inject": "^4.0.4",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "buffer": "^6.0.3",
+    "typescript": "^4.5.4",
+    "vite": "^2.8.0",
+    "vue-tsc": "^0.29.8"
+  }
+}

@@ -2,10 +2,8 @@ import ProviderService, {
   CallFunctionParams,
 } from "../services/provider/ProviderService";
 import WalletController from "../controllers/WalletController";
-import { Options } from "./NearWalletSelector";
+import { Options } from "../interfaces/Options";
 import { SignAndSendTransactionParams } from "../wallets/Wallet";
-
-type CallParams = Omit<SignAndSendTransactionParams, "receiverId">;
 
 class Contract {
   private readonly options: Options;
@@ -22,20 +20,26 @@ class Contract {
     this.controller = controller;
   }
 
-  getAccountId() {
-    return this.options.contract.accountId;
+  getContractId() {
+    return this.options.contract.contractId;
   }
 
-  view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
-    return this.provider.callFunction({
-      accountId: this.options.contract.accountId,
+  view<Response>({
+    methodName,
+    args,
+    finality,
+  }: Omit<CallFunctionParams, "accountId">) {
+    return this.provider.callFunction<Response>({
+      accountId: this.options.contract.contractId,
       methodName,
       args,
       finality,
     });
   }
 
-  async call({ actions }: CallParams) {
+  async signAndSendTransaction({
+    actions,
+  }: Omit<SignAndSendTransactionParams, "receiverId">) {
     const wallet = this.controller.getSelectedWallet();
 
     if (!wallet) {
@@ -43,7 +47,7 @@ class Contract {
     }
 
     return wallet.signAndSendTransaction({
-      receiverId: this.options.contract.accountId,
+      receiverId: this.options.contract.contractId,
       actions,
     });
   }

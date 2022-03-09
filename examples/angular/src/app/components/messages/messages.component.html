@@ -1,0 +1,6 @@
+<h2>Messages</h2>
+
+<p *ngFor="let message of messages;" [ngClass]="{'is-premium': message.premium}">
+  <strong>{{ message.sender }}</strong>:<br />
+  {{ message.text }}
+</p>

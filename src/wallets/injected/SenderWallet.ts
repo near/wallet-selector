@@ -4,10 +4,11 @@ import InjectedSenderWallet, {
   GetRpcResponse,
   RpcChangedResponse,
 } from "../../interfaces/InjectedSenderWallet";
-import { Options } from "../../core/NearWalletSelector";
+import { Options } from "../../interfaces/Options";
 import ProviderService from "../../services/provider/ProviderService";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
+import { Action, FunctionCallAction } from "../actions";
 import { setSelectedWalletId } from "../helpers";
 import { senderWalletIcon } from "../icons";
 import {
@@ -20,7 +21,7 @@ import {
 
 declare global {
   interface Window {
-    wallet: InjectedSenderWallet | undefined;
+    near: InjectedSenderWallet | undefined;
   }
 }
 
@@ -55,7 +56,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private isInstalled = () => {
-    return !!window.wallet;
+    return !!window.near?.isSender;
   };
 
   init = async () => {
@@ -65,17 +66,13 @@ class SenderWallet implements InjectedWallet {
       throw new Error("Wallet not installed");
     }
 
-    this.wallet = window.wallet!;
+    this.wallet = window.near!;
 
     this.onAccountChanged();
 
-    this.wallet.onRpcChanged((response) => {
+    this.wallet.on("rpcChanged", (response) => {
       this.networkMatches(response);
     });
-
-    return this.wallet
-      .init({ contractId: this.options.contract.accountId })
-      .then((res) => logger.log("SenderWallet:init", res));
   };
 
   signIn = async () => {
@@ -91,14 +88,9 @@ class SenderWallet implements InjectedWallet {
       await this.init();
     }
 
-    const rpcResponse = await this.wallet.getRpc();
-
-    if (!this.networkMatches(rpcResponse)) {
-      return;
-    }
-
     const { accessKey } = await this.wallet.requestSignIn({
-      contractId: this.options.contract.accountId,
+      contractId: this.options.contract.contractId,
+      methodNames: this.options.contract.methodNames,
     });
 
     if (!accessKey) {
@@ -127,7 +119,7 @@ class SenderWallet implements InjectedWallet {
   };
 
   private onAccountChanged = () => {
-    this.wallet.onAccountChanged(async (newAccountId) => {
+    this.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("SenderWallet:onAccountChange", newAccountId);
 
       try {
@@ -144,9 +136,9 @@ class SenderWallet implements InjectedWallet {
   };
 
   signOut = async () => {
-    const res = await this.wallet.signOut();
+    const res = this.wallet.signOut();
 
-    if (res.result !== "success") {
+    if (!res) {
       throw new Error("Failed to sign out");
     }
 
@@ -170,6 +162,24 @@ class SenderWallet implements InjectedWallet {
     };
   };
 
+  private isValidActions = (
+    actions: Array<Action>
+  ): actions is Array<FunctionCallAction> => {
+    return actions.every((x) => x.type === "FunctionCall");
+  };
+
+  private transformActions = (actions: Array<Action>) => {
+    const validActions = this.isValidActions(actions);
+
+    if (!validActions) {
+      throw new Error(
+        "Only 'FunctionCall' actions types are supported by Sender Wallet"
+      );
+    }
+
+    return actions.map((x) => x.params);
+  };
+
   signAndSendTransaction = async ({
     receiverId,
     actions,
@@ -177,13 +187,21 @@ class SenderWallet implements InjectedWallet {
     logger.log("SenderWallet:signAndSendTransaction", { receiverId, actions });
 
     return this.wallet
-      .signAndSendTransaction({ receiverId, actions })
+      .signAndSendTransaction({
+        receiverId,
+        actions: this.transformActions(actions),
+      })
       .then((res) => {
         if (res.error) {
           throw new Error(res.error);
         }
 
-        return res;
+        // Shouldn't happen but avoids inconsistent responses.
+        if (!res.response?.length) {
+          throw new Error("Invalid response");
+        }
+
+        return res.response[0];
       });
   };
 }

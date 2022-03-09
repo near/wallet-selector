@@ -1,20 +1,14 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
-export interface InitParams {
-  contractId: string;
-}
-
 // Empty string if we haven't signed in before.
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
 interface AccessKey {
   publicKey: {
     data: Uint8Array;
     keyType: number;
   };
   secretKey: string;
-}
-
-export interface InitResponse {
-  accessKey: AccessKey | "";
 }
 
 export interface RequestSignInResponse {
@@ -46,14 +40,8 @@ export interface GetRpcResponse {
 export interface RequestSignInParams {
   contractId: string;
   methodNames?: Array<string>;
+  amount?: string; // in yoctoⓃ
 }
-
-export interface SignOutResponse {
-  // TODO: Figure out when this isn't "success".
-  result: "success";
-}
-
-export type AccountChangedCallback = (newAccountId: string) => void;
 
 export interface RpcChangedResponse {
   method: "rpcChanged";
@@ -61,8 +49,6 @@ export interface RpcChangedResponse {
   rpc: RpcInfo;
   type: "sender-wallet-fromContent";
 }
-
-export type RpcChangedCallback = (newRpc: RpcChangedResponse) => void;
 
 export interface SendMoneyParams {
   receiverId: string;
@@ -81,14 +67,14 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
+// Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
-  error?: string;
-  method: "signAndSendTransaction";
+  actionType: "DAPP/DAPP_POPUP_RESPONSE";
+  method: "signAndSendTransactions";
   notificationId: number;
-  // TODO: Heavily nested objects. Define if needed.
-  res?: Array<object>;
-  type: "sender-wallet-result";
-  url: string;
+  error?: string;
+  response?: Array<FinalExecutionOutcome>;
+  type: "sender-wallet-extensionResult";
 }
 
 export interface Transaction {
@@ -100,17 +86,26 @@ export interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
+export interface SenderWalletEvents {
+  signIn: () => void;
+  signOut: () => void;
+  accountChanged: (changedAccountId: string) => void;
+  rpcChanged: (response: RpcChangedResponse) => void;
+}
+
 interface InjectedSenderWallet {
-  init: (params: InitParams) => Promise<InitResponse>;
+  isSender: boolean;
   getAccountId: () => string;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => Promise<SignOutResponse>;
+  signOut: () => boolean;
   isSignedIn: () => boolean;
-  onAccountChanged: (callback: AccountChangedCallback) => void;
-  onRpcChanged: (callback: RpcChangedCallback) => void;
+  on: <Event extends keyof SenderWalletEvents>(
+    event: Event,
+    callback: SenderWalletEvents[Event]
+  ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (

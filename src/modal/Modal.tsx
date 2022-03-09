@@ -2,7 +2,7 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
 import { getState, updateState, State } from "../state/State";
 import { logger } from "../services/logging.service";
-import { Options } from "../core/NearWalletSelector";
+import { Options, Theme } from "../interfaces/Options";
 import { HardwareWallet, Wallet } from "../wallets/Wallet";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
 
@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const getThemeClass = (theme: string | null) => {
+const getThemeClass = (theme?: Theme) => {
   switch (theme) {
     case "dark":
       return "Modal-dark-theme";
@@ -39,25 +39,31 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const defaultDescription = "Please select a wallet to connect to this dApp:";
-
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
       setState(nextState);
     };
   }, []);
 
+  const resetState = () => {
+    setWalletInfoVisible(false);
+    setLedgerError("");
+    setLedgerAccountId("");
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setIsLoading(false);
+  };
+
   const handleDismissClick = () => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
 
     updateState((prevState) => ({
       ...prevState,
       showModal: false,
     }));
 
-    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-    setLedgerError("");
-    setWalletInfoVisible(false);
+    resetState();
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -98,20 +104,21 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
       (x) => x.id === "ledger-wallet"
     ) as HardwareWallet;
 
-    wallet.setDerivationPath(ledgerDerivationPath);
-    wallet.setAccountId(ledgerAccountId);
-
     await wallet
-      .signIn()
+      .signIn({
+        accountId: ledgerAccountId,
+        derivationPath: ledgerDerivationPath,
+      })
       .catch((err) => setLedgerError(`Error: ${err.message}`));
-    setIsLoading(false);
+
+    resetState();
   };
 
   return (
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(options.theme)}`}
+        className={`Modal ${getThemeClass(options.ui?.theme)}`}
         onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
@@ -135,7 +142,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             className="Modal-body Modal-select-wallet-option"
           >
             <p className="Modal-description">
-              {options.walletSelectorUI.description || defaultDescription}
+              {options.ui?.description ||
+                "Please select a wallet to connect to this dApp:"}
             </p>
             <ul className="Modal-option-list">
               {wallets
@@ -297,24 +305,27 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               </button>
             </div>
           </div>
-          {options.walletSelectorUI.explanation && (
-            <div className="info">
-              <span
-                onClick={() => {
-                  setWalletInfoVisible(!walletInfoVisible);
-                }}
-              >
-                What is a Wallet?
-              </span>
-              <div
-                className={`info-description ${
-                  walletInfoVisible ? "show" : "hide"
-                }-explanation`}
-              >
-                <p>{options.walletSelectorUI.explanation}</p>
-              </div>
+          <div className="info">
+            <span
+              onClick={() => {
+                setWalletInfoVisible(!walletInfoVisible);
+              }}
+            >
+              What is a Wallet?
+            </span>
+            <div
+              className={`info-description ${
+                walletInfoVisible ? "show" : "hide"
+              }-explanation`}
+            >
+              <p>
+                Wallets are used to send, receive and store digital assets.
+                There are different types of wallets. They can be an extension
+                added to your browser, a hardware device plugged into your
+                computer, web-based or an app on your mobile device.
+              </p>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
