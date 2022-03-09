@@ -2,8 +2,11 @@ import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
+import { updateState } from "../state/State";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
+import { Logger } from "../services/logging.service";
+import { PersistentStorage } from "../services/persistent-storage.service";
 
 export interface HardwareWalletSignInParams {
   accountId: string;
@@ -73,7 +76,9 @@ export interface WalletOptions {
   options: Options;
   provider: ProviderService;
   emitter: Emitter;
-  setSelectedWalletId: (walletId: string | null) => void;
+  logger: Logger;
+  storage: PersistentStorage;
+  updateState: typeof updateState;
 }
 
 export type WalletModule<WalletVariation extends Wallet = Wallet> = (

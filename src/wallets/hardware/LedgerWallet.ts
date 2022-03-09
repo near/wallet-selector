@@ -1,13 +1,11 @@
 import { transactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
+
 import LedgerClient, { Subscription } from "./LedgerClient";
-import { logger } from "../../services/logging.service";
 import { transformActions } from "../actions";
 import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "../../constants";
-import { setSelectedWalletId } from "../helpers";
 import { ledgerWalletIcon } from "../icons";
-import { storage } from "../../services/persistent-storage.service";
 import { HardwareWallet, WalletModule } from "../Wallet";
 
 interface AuthData {
@@ -26,7 +24,13 @@ interface LedgerWalletState {
 }
 
 function setupLedgerWallet(): WalletModule<HardwareWallet> {
-  return function LedgerWallet({ provider, emitter }) {
+  return function LedgerWallet({
+    provider,
+    emitter,
+    logger,
+    storage,
+    updateState,
+  }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerWalletState = { authData: null };
@@ -45,7 +49,10 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         await client.disconnect();
       }
 
-      setSelectedWalletId(null);
+      updateState((prevState) => ({
+        ...prevState,
+        selectedWalletId: null,
+      }));
       emitter.emit("signOut");
       state.authData = null;
       client = null;
@@ -176,7 +183,11 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
 
         state.authData = authData;
 
-        setSelectedWalletId(this.id);
+        updateState((prevState) => ({
+          ...prevState,
+          showModal: false,
+          selectedWalletId: this.id,
+        }));
         emitter.emit("signIn");
       },
 

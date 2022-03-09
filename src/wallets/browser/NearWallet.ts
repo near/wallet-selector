@@ -1,16 +1,19 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
 
 import getConfig from "../../config";
-import { logger } from "../../services/logging.service";
 import { transformActions } from "../actions";
-import { setSelectedWalletId } from "../helpers";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
-import { storage } from "../../services/persistent-storage.service";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
 function setupNearWallet(): WalletModule<BrowserWallet> {
-  return function NearWallet({ options, emitter }) {
+  return function NearWallet({
+    options,
+    emitter,
+    logger,
+    storage,
+    updateState,
+  }) {
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
 
@@ -67,7 +70,10 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         wallet.signOut();
         await keyStore.clear();
 
-        setSelectedWalletId(null);
+        updateState((prevState) => ({
+          ...prevState,
+          selectedWalletId: null,
+        }));
         emitter.emit("signOut");
       },
 

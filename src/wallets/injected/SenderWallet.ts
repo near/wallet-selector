@@ -1,9 +1,6 @@
 import isMobile from "is-mobile";
-import { updateState } from "../../state/State";
 import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
-import { logger } from "../../services/logging.service";
 import { Action, FunctionCallAction } from "../actions";
-import { setSelectedWalletId } from "../helpers";
 import { senderWalletIcon } from "../icons";
 import { InjectedWallet, WalletModule } from "../Wallet";
 
@@ -14,7 +11,13 @@ declare global {
 }
 
 function setupSenderWallet(): WalletModule<InjectedWallet> {
-  return function SenderWallet({ options, provider, emitter }) {
+  return function SenderWallet({
+    options,
+    provider,
+    emitter,
+    logger,
+    updateState,
+  }) {
     let wallet: InjectedSenderWallet;
 
     const isInstalled = () => {
@@ -116,7 +119,11 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           throw new Error("Failed to sign in");
         }
 
-        setSelectedWalletId(this.id);
+        updateState((prevState) => ({
+          ...prevState,
+          showModal: false,
+          selectedWalletId: this.id,
+        }));
         emitter.emit("signIn");
       },
 
@@ -131,7 +138,10 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           throw new Error("Failed to sign out");
         }
 
-        setSelectedWalletId(null);
+        updateState((prevState) => ({
+          ...prevState,
+          selectedWalletId: null,
+        }));
         emitter.emit("signOut");
       },
 
