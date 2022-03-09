@@ -76,14 +76,13 @@ class WalletController {
     });
   }
 
-  private getSelectedWalletId() {
-    return storage.getItem<string>(LOCAL_STORAGE_SELECTED_WALLET_ID);
-  }
-
   async init() {
     this.wallets = this.decorateWallets(this.getBuiltInWallets());
 
-    const selectedWalletId = this.getSelectedWalletId();
+    const selectedWalletId = storage.getItem<string>(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
+
     const wallet = this.getWallet(selectedWalletId);
 
     if (wallet) {

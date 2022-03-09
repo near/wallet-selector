@@ -47,7 +47,7 @@ export class PersistentStorage {
     return Object.keys(Object.fromEntries(this.map))[index] || null;
   }
 
-  setItem(key: string, value: string | object): void {
+  setItem(key: string, value: unknown): void {
     const valueToString = JSON.stringify(value);
     this.map.set(key, valueToString);
     this.storage.setItem(`${this.prefix}:${key}`, valueToString);
