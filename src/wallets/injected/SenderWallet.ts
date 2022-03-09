@@ -1,5 +1,6 @@
 import isMobile from "is-mobile";
-import InjectedSenderWallet from "../../interfaces/InjectedSenderWallet";
+
+import InjectedSenderWallet from "./InjectedSenderWallet";
 import { Action, FunctionCallAction } from "../actions";
 import { senderWalletIcon } from "../icons";
 import { InjectedWallet, WalletModule } from "../Wallet";
