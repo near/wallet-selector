@@ -37,8 +37,10 @@ export class PersistentStorage {
     this.storage.clear();
   }
 
-  getItem(key: string): string | null {
-    return this.map.get(key) ? JSON.parse(this.map.get(key)!) : null;
+  getItem<Value>(key: string): Value | null {
+    const value = this.map.get(key);
+
+    return typeof value !== "undefined" ? JSON.parse(value) : null;
   }
 
   key(index: number): string | null {

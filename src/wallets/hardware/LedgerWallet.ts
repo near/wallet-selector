@@ -92,8 +92,9 @@ class LedgerWallet implements HardwareWallet {
   };
 
   init = async () => {
-    //@ts-ignore
-    this.authData = storage.getItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
+    this.authData = storage.getItem<AuthData>(
+      LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA
+    );
   };
 
   signIn = async ({

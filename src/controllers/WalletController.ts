@@ -77,7 +77,7 @@ class WalletController {
   }
 
   private getSelectedWalletId() {
-    return storage.getItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+    return storage.getItem<string>(LOCAL_STORAGE_SELECTED_WALLET_ID);
   }
 
   async init() {
