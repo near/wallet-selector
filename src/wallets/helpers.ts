@@ -1,12 +1,10 @@
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 import { updateState } from "../state/State";
+import { storage } from "../services/persistent-storage.service";
 
 export const setSelectedWalletId = (walletId: string | null) => {
   if (walletId) {
-    localStorage.setItem(
-      LOCAL_STORAGE_SELECTED_WALLET_ID,
-      JSON.stringify(walletId)
-    );
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
 
     updateState((prevState) => ({
       ...prevState,
@@ -14,7 +12,7 @@ export const setSelectedWalletId = (walletId: string | null) => {
       selectedWalletId: walletId,
     }));
   } else {
-    window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+    storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
 
     updateState((prevState) => ({
       ...prevState,

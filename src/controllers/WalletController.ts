@@ -4,6 +4,7 @@ import { Wallet } from "../wallets/Wallet";
 import { Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
+import { storage } from "../services/persistent-storage.service";
 
 export interface SignInParams {
   walletId: string;
@@ -80,19 +81,13 @@ class WalletController {
     });
   }
 
-  // TODO: Migrate to storage service (with JSON support).
-  private getSelectedWalletId() {
-    const selectedWalletId = localStorage.getItem(
-      LOCAL_STORAGE_SELECTED_WALLET_ID
-    );
-
-    return selectedWalletId ? JSON.parse(selectedWalletId) : null;
-  }
-
   async init() {
     this.wallets = this.decorateWallets(this.setupWalletModules());
 
-    const selectedWalletId = this.getSelectedWalletId();
+    const selectedWalletId = storage.getItem<string>(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
+
     const wallet = this.getWallet(selectedWalletId);
 
     if (wallet) {
@@ -110,7 +105,7 @@ class WalletController {
     }
 
     if (selectedWalletId) {
-      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
     }
   }
 
