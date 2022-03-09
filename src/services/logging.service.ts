@@ -11,23 +11,23 @@ export class Logger {
 
   constructor(private readonly logger: Console = window?.console) {}
 
-  log(...params: unknown[]) {
+  log(...params: Array<unknown>) {
     this.trigger("log", ...params);
   }
 
-  error(...params: unknown[]) {
+  error(...params: Array<unknown>) {
     this.trigger("error", ...params);
   }
 
-  info(...params: unknown[]) {
+  info(...params: Array<unknown>) {
     this.trigger("info", ...params);
   }
 
-  warn(...params: unknown[]) {
+  warn(...params: Array<unknown>) {
     this.trigger("warn", ...params);
   }
 
-  private trigger(method: keyof Console, ...args: unknown[]) {
+  private trigger(method: keyof Console, ...args: Array<unknown>) {
     if (!Logger._debug) {
       return;
     }
