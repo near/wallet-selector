@@ -5,36 +5,6 @@ export class PersistentStorage {
 
   private readonly map = new Map<string, string>();
 
-  static updateInstance(
-    prefix: string = PACKAGE_NAME,
-    update: { prefix?: string; storage?: Storage }
-  ) {
-    if (!PersistentStorage.instances.has(prefix)) {
-      return;
-    }
-
-    const instance = PersistentStorage.instances.get(prefix)!;
-
-    if (update.prefix) {
-      instance.prefix = update.prefix;
-      PersistentStorage.instances.set(update.prefix, instance);
-    }
-
-    if (update.storage) {
-      instance.storage = update.storage;
-    }
-
-    const map = new Map(instance.map);
-
-    instance.clear();
-    instance.map.clear();
-
-    const keyValuePairs = Object.fromEntries(map.entries());
-    for (const key of Object.keys(keyValuePairs)) {
-      instance.setItem(key, map.get(key)!);
-    }
-  }
-
   constructor(
     private prefix: string = PACKAGE_NAME,
     private storage: Storage = window?.localStorage

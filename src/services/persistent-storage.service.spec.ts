@@ -104,19 +104,4 @@ describe("PersistentStorage Unit Tests", () => {
     const existing = persistentStorage.key(0);
     expect(existing).toEqual(key);
   });
-
-  it("should update instance prefix and values", () => {
-    const otherPrefix = "other";
-    persistentStorage.setItem(key, value);
-    PersistentStorage.updateInstance(prefix, {
-      prefix: otherPrefix,
-    });
-
-    expect(persistentStorage.getItem(key)).toBe(JSON.stringify(value));
-    expect(storage.setItem).toBeCalledTimes(2);
-
-    PersistentStorage.updateInstance(otherPrefix, {
-      prefix: prefix,
-    });
-  });
 });
