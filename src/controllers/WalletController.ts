@@ -57,7 +57,7 @@ class WalletController {
         emitter: this.emitter,
         logger,
         storage,
-        updateState: updateState,
+        updateState,
       });
     });
   }
