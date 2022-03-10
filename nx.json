@@ -1,0 +1,53 @@
+{
+  "extends": "@nrwl/workspace/presets/core.json",
+  "npmScope": "near-wallet-selector",
+  "workspaceLayout": {
+    "appsDir": "examples",
+    "libsDir": "packages"
+  },
+  "affected": {
+    "defaultBase": "main"
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "NzY1ODVkMGItMTVlNC00MzQxLWJkYmQtZGFkNzY0YmFmODA3fHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "scss",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "scss"
+      },
+      "library": {
+        "style": "scss",
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "defaultProject": "react"
+}

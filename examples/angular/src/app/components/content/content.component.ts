@@ -15,7 +15,7 @@ const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 })
 export class ContentComponent implements OnInit, OnDestroy {
   @Input() selector: NearWalletSelector;
-  account: AccountInfo;
+  account: AccountInfo | null;
   messages: Array<Message>;
   subscriptions: Record<string, Subscription> = {};
 
@@ -56,14 +56,14 @@ export class ContentComponent implements OnInit, OnDestroy {
   };
 
   subscribeToEvents() {
-    this.subscriptions.signIn = this.selector.on("signIn", () => {
+    this.subscriptions['signIn'] = this.selector.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
       this.selector
         .getAccount()
         .then((data) => {
           console.log("Account", data);
-          this.account = data;
+          this.account = data!;
         })
         .catch((err) => {
           console.log("Failed to retrieve account info");
@@ -71,7 +71,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         });
     });
 
-    this.subscriptions.signOut = this.selector.on("signOut", () => {
+    this.subscriptions['signOut'] = this.selector.on("signOut", () => {
       console.log("'signOut' event triggered!");
       this.account = null;
     })
@@ -92,7 +92,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         params: {
           methodName: "addMessage",
           args: { text: message.value },
-          gas: BOATLOAD_OF_GAS,
+          gas: BOATLOAD_OF_GAS!,
           deposit: utils.format.parseNearAmount(donation.value || "0")!
         }
       }]
