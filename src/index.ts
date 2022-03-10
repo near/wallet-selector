@@ -3,8 +3,6 @@ import NearWalletSelector from "./core/NearWalletSelector";
 export { Options } from "./interfaces/Options";
 
 export {
-  WalletModule,
-  WalletOptions,
   Wallet,
   WalletType,
   BrowserWallet,

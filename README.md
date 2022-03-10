@@ -28,7 +28,7 @@ npm install near-wallet-selector
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector  from "near-wallet-selector";
+import NearWalletSelector from "near-wallet-selector";
 
 const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
