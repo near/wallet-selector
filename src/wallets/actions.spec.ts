@@ -1,51 +1,38 @@
-import BN from "bn.js";
 import { transformActions } from "./actions";
+import { transactions } from "near-api-js";
+import BN from "bn.js";
 
 describe("actions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
-    const actions = transformActions([
-      {
-        type: "CreateAccount",
-        params: {
-          account: {},
-        },
-      },
-    ]);
-    expect(actions).toEqual([
-      {
-        enum: "createAccount",
-        createAccount: {},
-      },
-    ]);
+    const actions = transformActions([{ type: "CreateAccount" }]);
+    expect(actions).toEqual([transactions.createAccount()]);
   });
 
   it("correctly transforms 'DeployContract' action", () => {
+    const code = Buffer.from("{}");
     const actions = transformActions([
       {
         type: "DeployContract",
         params: {
-          code: Buffer.from("{}"),
+          code,
         },
       },
     ]);
 
-    expect(actions).toEqual([
-      {
-        enum: "deployContract",
-        deployContract: { code: Buffer.from("{}") },
-      },
-    ]);
+    expect(actions).toEqual([transactions.deployContract(code)]);
   });
 
   it("correctly transforms 'FunctionCall' action", () => {
     const serializedArgs = Buffer.from("{}");
-    const gas = new BN(1);
-    const deposit = new BN(2);
+    const gas = "01";
+    const deposit = "02";
+    const methodName = "methodName";
+
     const actions = transformActions([
       {
         type: "FunctionCall",
         params: {
-          methodName: "methodName",
+          methodName,
           args: serializedArgs,
           gas,
           deposit,
@@ -54,20 +41,17 @@ describe("actions", () => {
     ]);
 
     expect(actions).toEqual([
-      {
-        enum: "functionCall",
-        functionCall: {
-          methodName: "methodName",
-          args: serializedArgs,
-          gas,
-          deposit,
-        },
-      },
+      transactions.functionCall(
+        methodName,
+        serializedArgs,
+        new BN(gas),
+        new BN(deposit)
+      ),
     ]);
   });
 
   it("correctly transforms 'Transfer' action", () => {
-    const deposit = new BN("1");
+    const deposit = "01";
     const actions = transformActions([
       {
         type: "Transfer",
@@ -77,13 +61,6 @@ describe("actions", () => {
       },
     ]);
 
-    expect(actions).toEqual([
-      {
-        enum: "transfer",
-        transfer: {
-          deposit,
-        },
-      },
-    ]);
+    expect(actions).toEqual([transactions.transfer(new BN(deposit))]);
   });
 });

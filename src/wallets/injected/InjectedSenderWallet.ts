@@ -2,7 +2,6 @@
 
 // Empty string if we haven't signed in before.
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import BN from "bn.js";
 
 interface AccessKey {
   publicKey: {
@@ -59,8 +58,8 @@ export interface SendMoneyParams {
 export interface Action {
   methodName: string;
   args: object;
-  gas: string | BN;
-  deposit: string | BN;
+  gas: string;
+  deposit: string;
 }
 
 export interface SignAndSendTransactionParams {
