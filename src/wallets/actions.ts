@@ -1,8 +1,12 @@
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
+import { PublicKey } from "near-api-js/lib/utils";
 
 export interface CreateAccountAction {
   type: "CreateAccount";
+  params: {
+    account: object;
+  };
 }
 
 export interface DeployContractAction {
@@ -17,15 +21,15 @@ export interface FunctionCallAction {
   params: {
     methodName: string;
     args: object;
-    gas: string;
-    deposit: string;
+    gas: string | BN;
+    deposit: string | BN;
   };
 }
 
 export interface TransferAction {
   type: "Transfer";
   params: {
-    deposit: string;
+    deposit: string | BN;
   };
 }
 
@@ -33,7 +37,7 @@ export interface StakeAction {
   type: "Stake";
   params: {
     stake: string;
-    publicKey: string;
+    publicKey: string | PublicKey;
   };
 }
 
