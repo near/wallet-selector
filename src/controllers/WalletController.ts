@@ -1,7 +1,7 @@
 import { getState, updateState } from "../state/State";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
-import { Options } from "../interfaces/Options";
+import { BuiltInWalletId, Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 import { storage } from "../services/persistent-storage.service";
@@ -11,7 +11,7 @@ import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 
 export interface SignInParams {
-  walletId: string;
+  walletId: BuiltInWalletId;
   accountId?: string;
   derivationPath?: string;
 }

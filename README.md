@@ -42,12 +42,13 @@ const selector = new NearWalletSelector({
 ## Options
 
 ```ts
+type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
 type NetworkId = "mainnet" | "betanet" | "testnet";
 type Theme = "dark" | "light" | "auto";
 
 interface Options {
   // List of wallets you want to support in your dApp.
-  wallets: Array<WalletModule>;
+  wallets: Array<BuiltInWalletId>;
   // Network ID matching that of your dApp.
   networkId: NetworkId;
   contract: {

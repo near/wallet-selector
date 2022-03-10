@@ -1,7 +1,4 @@
 import NearWalletSelector from "./core/NearWalletSelector";
-import setupNearWallet from "./wallets/browser/NearWallet";
-import setupSenderWallet from "./wallets/injected/SenderWallet";
-import setupLedgerWallet from "./wallets/hardware/LedgerWallet";
 
 export { Options } from "./interfaces/Options";
 
@@ -15,12 +12,6 @@ export {
   HardwareWallet,
   AccountInfo,
 } from "./wallets/Wallet";
-
-export const wallets = {
-  nearWallet: setupNearWallet,
-  senderWallet: setupSenderWallet,
-  ledgerWallet: setupLedgerWallet,
-};
 
 export { Subscription } from "./utils/EventsHandler";
 

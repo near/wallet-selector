@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from "vue";
-import NearWalletSelector, { wallets } from "near-wallet-selector";
+import NearWalletSelector from "near-wallet-selector";
 
 import getConfig from "./config";
 import Content from "./components/Content.vue";
 
-const { nearWallet, senderWallet, ledgerWallet } = wallets;
 const selectorRef = shallowRef<NearWalletSelector>();
 
 onMounted(async () => {
   const nearConfig = getConfig("testnet");
 
   const selector = new NearWalletSelector({
-    wallets: [nearWallet(), senderWallet(), ledgerWallet()],
+    wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
     networkId: nearConfig.networkId,
     contract: { contractId: nearConfig.contractName },
   });
