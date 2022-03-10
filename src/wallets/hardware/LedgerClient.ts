@@ -7,18 +7,18 @@ import { utils } from "near-api-js";
 // - https://gist.github.com/Wollac/49f0c4e318e42f463b8306298dfb4f4a
 // - https://github.com/LedgerHQ/app-near/blob/master/workdir/app-near/src/constants.h
 
-const CLA = 0x80; // Always the same for Ledger.
-const INS_SIGN = 0x02; // Sign
-const INS_GET_PUBLIC_KEY = 0x04; // Get Public Key
-const INS_GET_APP_VERSION = 0x06; // Get App Version
-const P1_LAST = 0x80; // End of Bytes to Sign (finalize)
-const P1_MORE = 0x00; // More bytes coming
-const P1_IGNORE = 0x00;
-const P2_IGNORE = 0x00;
+export const CLA = 0x80; // Always the same for Ledger.
+export const INS_SIGN = 0x02; // Sign
+export const INS_GET_PUBLIC_KEY = 0x04; // Get Public Key
+export const INS_GET_APP_VERSION = 0x06; // Get App Version
+export const P1_LAST = 0x80; // End of Bytes to Sign (finalize)
+export const P1_MORE = 0x00; // More bytes coming
+export const P1_IGNORE = 0x00;
+export const P2_IGNORE = 0x00;
 
 // Converts BIP32-compliant derivation path to a Buffer.
 // More info here: https://github.com/LedgerHQ/ledger-live-common/blob/master/docs/derivation.md
-function parseDerivationPath(derivationPath: string) {
+export function parseDerivationPath(derivationPath: string) {
   const parts = derivationPath.split("/");
 
   return Buffer.concat(
@@ -40,7 +40,7 @@ function parseDerivationPath(derivationPath: string) {
 }
 
 // TODO: Understand what this is exactly. What's so special about 87?
-const networkId = "W".charCodeAt(0);
+export const networkId = "W".charCodeAt(0);
 
 interface GetPublicKeyParams {
   derivationPath: string;
