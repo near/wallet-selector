@@ -4,10 +4,11 @@
   "projectType": "application",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@ns3/nx-jest-playwright:jest-playwright",
       "options": {
-        "cypressConfig": "examples/react-e2e/cypress.json",
-        "devServerTarget": "react:serve"
+        "devServerTarget": "react:serve",
+        "jestConfig": "examples/react-e2e/jest.config.js",
+        "passWithNoTests": true
       },
       "configurations": {
         "production": {
@@ -19,7 +20,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["examples/react-e2e/**/*.{js,ts}"]
+        "lintFilePatterns": ["examples/react-e2e/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
