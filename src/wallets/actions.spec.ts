@@ -23,35 +23,25 @@ describe("actions", () => {
   });
 
   it("correctly transforms 'FunctionCall' action", () => {
-    const serializedArgs = Buffer.from("{}");
-    const gas = "01";
-    const deposit = "02";
+    const args = Buffer.from("{}");
+    const gas = "1";
+    const deposit = "2";
     const methodName = "methodName";
 
     const actions = transformActions([
       {
         type: "FunctionCall",
-        params: {
-          methodName,
-          args: serializedArgs,
-          gas,
-          deposit,
-        },
+        params: { methodName, args, gas, deposit },
       },
     ]);
 
     expect(actions).toEqual([
-      transactions.functionCall(
-        methodName,
-        serializedArgs,
-        new BN(gas),
-        new BN(deposit)
-      ),
+      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit)),
     ]);
   });
 
   it("correctly transforms 'Transfer' action", () => {
-    const deposit = "01";
+    const deposit = "1";
     const actions = transformActions([
       {
         type: "Transfer",
