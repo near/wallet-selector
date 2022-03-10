@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import NearWalletSelector  from "near-wallet-selector";
+import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
 
 @Component({

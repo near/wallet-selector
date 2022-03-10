@@ -28,12 +28,10 @@ npm install near-wallet-selector
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector, { wallets } from "near-wallet-selector";
-
-const { nearWallet, senderWallet, ledgerWallet } = wallets;
+import NearWalletSelector  from "near-wallet-selector";
 
 const selector = new NearWalletSelector({
-  wallets: [nearWallet(), senderWallet(), ledgerWallet()],
+  wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
