@@ -2,19 +2,8 @@ import { DeepPartial } from "ts-essentials";
 import { mock } from "jest-mock-extended";
 import Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import {
-  parseDerivationPath,
-  CLA,
-  INS_SIGN,
-  INS_GET_APP_VERSION,
-  INS_GET_PUBLIC_KEY,
-  P1_LAST,
-  P1_IGNORE,
-  P2_IGNORE,
-  networkId,
-} from "./LedgerClient";
 import { transactions, utils } from "near-api-js";
-import { transformActions } from "../actions";
+import BN from "bn.js";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
@@ -33,6 +22,26 @@ const createGetPublicKeyResponseMock = () => {
   ]);
 };
 
+const createTransactionMock = () => {
+  const actions = [
+    transactions.functionCall(
+      "addMessage",
+      { text: "test" },
+      new BN(utils.format.parseNearAmount("0.00000000003")!),
+      new BN(utils.format.parseNearAmount("0")!)
+    ),
+  ];
+
+  return transactions.createTransaction(
+    "test.testnet",
+    utils.PublicKey.from("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
+    "guest-book.testnet",
+    76068360000003,
+    actions,
+    utils.serialize.base_decode("DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t")
+  );
+};
+
 const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const client = mock<TransportWebHID>(params.client);
   const transport = mock<Transport>(params.transport);
@@ -44,11 +53,33 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
     };
   });
 
-  const LedgerClient = require("./LedgerClient").default;
+  const {
+    default: LedgerClient,
+    CLA,
+    INS_SIGN,
+    INS_GET_APP_VERSION,
+    INS_GET_PUBLIC_KEY,
+    P1_LAST,
+    P1_IGNORE,
+    P2_IGNORE,
+    networkId,
+    parseDerivationPath,
+  } = require("./LedgerClient");
 
   return {
     client: new LedgerClient(),
     transport,
+    parseDerivationPath,
+    constants: {
+      CLA,
+      INS_SIGN,
+      INS_GET_APP_VERSION,
+      INS_GET_PUBLIC_KEY,
+      P1_LAST,
+      P1_IGNORE,
+      P2_IGNORE,
+      networkId,
+    },
   };
 };
 
@@ -58,7 +89,7 @@ afterEach(() => {
 
 describe("getVersion", () => {
   it("returns the current version", async () => {
-    const { client, transport } = createLedgerClient({
+    const { client, transport, constants } = createLedgerClient({
       transport: {
         send: jest.fn().mockResolvedValue(createGetVersionResponseMock()),
       },
@@ -66,10 +97,10 @@ describe("getVersion", () => {
     await client.connect();
     const result = await client.getVersion();
     expect(transport.send).toHaveBeenCalledWith(
-      CLA,
-      INS_GET_APP_VERSION,
-      P1_IGNORE,
-      P2_IGNORE
+      constants.CLA,
+      constants.INS_GET_APP_VERSION,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE
     );
     expect(result).toEqual("1.1.6");
   });
@@ -77,11 +108,12 @@ describe("getVersion", () => {
 
 describe("getPublicKey", () => {
   it("returns the public key", async () => {
-    const { client, transport } = createLedgerClient({
-      transport: {
-        send: jest.fn().mockResolvedValue(createGetPublicKeyResponseMock()),
-      },
-    });
+    const { client, transport, constants, parseDerivationPath } =
+      createLedgerClient({
+        transport: {
+          send: jest.fn().mockResolvedValue(createGetPublicKeyResponseMock()),
+        },
+      });
 
     const derivationPath = "44'/397'/0'/0'/1'";
 
@@ -91,10 +123,10 @@ describe("getPublicKey", () => {
     });
 
     expect(transport.send).toHaveBeenCalledWith(
-      CLA,
-      INS_GET_PUBLIC_KEY,
-      P1_IGNORE,
-      networkId,
+      constants.CLA,
+      constants.INS_GET_PUBLIC_KEY,
+      constants.P1_IGNORE,
+      constants.networkId,
       parseDerivationPath(derivationPath)
     );
 
@@ -104,33 +136,13 @@ describe("getPublicKey", () => {
 
 describe("sign", () => {
   it("returns the signature", async () => {
-    const { client, transport } = createLedgerClient({
+    const { client, transport, constants } = createLedgerClient({
       transport: {
         send: jest.fn().mockResolvedValue(Buffer.from([1, 2, 3])),
       },
     });
 
-    const transaction = transactions.createTransaction(
-      "amirsaran.testnet",
-      utils.PublicKey.from("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
-      "guest-book.testnet",
-      76068360000003,
-      transformActions([
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "addMessage",
-            args: { text: "test" },
-            gas: utils.format.formatNearAmount("0.00000000003"),
-            deposit: utils.format.parseNearAmount("0")!,
-          },
-        },
-      ]),
-      utils.serialize.base_decode(
-        "DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t"
-      )
-    );
-
+    const transaction = createTransactionMock();
     const data = utils.serialize.serialize(transactions.SCHEMA, transaction);
 
     await client.connect();
@@ -139,23 +151,23 @@ describe("sign", () => {
       derivationPath: "44'/397'/0'/0'/1'",
     });
     expect(transport.send).toHaveBeenCalledWith(
-      CLA,
-      INS_GET_APP_VERSION,
-      P1_IGNORE,
-      P2_IGNORE
+      constants.CLA,
+      constants.INS_GET_APP_VERSION,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE
     );
     expect(transport.send).toHaveBeenCalledWith(
-      CLA,
-      INS_SIGN,
-      P1_IGNORE,
-      P2_IGNORE,
+      constants.CLA,
+      constants.INS_SIGN,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE,
       expect.any(Buffer)
     );
     expect(transport.send).toHaveBeenCalledWith(
-      CLA,
-      INS_SIGN,
-      P1_LAST,
-      P2_IGNORE,
+      constants.CLA,
+      constants.INS_SIGN,
+      constants.P1_LAST,
+      constants.P2_IGNORE,
       expect.any(Buffer)
     );
     expect(transport.send).toHaveBeenCalledTimes(3);
