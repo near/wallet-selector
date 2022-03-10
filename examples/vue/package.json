@@ -10,7 +10,7 @@
   "dependencies": {
     "big.js": "^6.1.1",
     "near-api-js": "0.44.2",
-    "near-wallet-selector": "*",
+    "near-wallet-selector": "file:../../",
     "vue": "^3.2.25"
   },
   "devDependencies": {
