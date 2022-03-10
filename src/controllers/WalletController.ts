@@ -6,6 +6,9 @@ import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 import { storage } from "../services/persistent-storage.service";
 import { logger } from "../services/logging.service";
+import setupNearWallet from "../wallets/browser/NearWallet";
+import setupSenderWallet from "../wallets/injected/SenderWallet";
+import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 
 export interface SignInParams {
   walletId: string;
@@ -28,7 +31,7 @@ class WalletController {
     this.wallets = [];
   }
 
-  private decorateWallets(wallets: Array<Wallet>) {
+  private decorateWallets(wallets: Array<Wallet>): Array<Wallet> {
     return wallets.map((wallet) => {
       return {
         ...wallet,
@@ -49,17 +52,30 @@ class WalletController {
     });
   }
 
-  private setupWalletModules() {
-    return this.options.wallets.map((module) => {
-      return module({
-        options: this.options,
-        provider: this.provider,
-        emitter: this.emitter,
-        logger,
-        storage,
-        updateState,
+  private setupWalletModules(): Array<Wallet> {
+    return this.options.wallets
+      .map((walletId) => {
+        switch (walletId) {
+          case "near-wallet":
+            return setupNearWallet();
+          case "sender-wallet":
+            return setupSenderWallet();
+          case "ledger-wallet":
+            return setupLedgerWallet();
+          default:
+            throw new Error("Invalid wallet id");
+        }
+      })
+      .map((module) => {
+        return module({
+          options: this.options,
+          provider: this.provider,
+          emitter: this.emitter,
+          logger,
+          storage,
+          updateState,
+        });
       });
-    });
   }
 
   async init() {
