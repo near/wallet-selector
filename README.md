@@ -30,164 +30,412 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-wallet-selector";
 
-const near = new NearWalletSelector({
+const selector = new NearWalletSelector({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
   networkId: "testnet",
-  theme: "light",
-  contract: {
-    accountId: "guest-book.testnet",
-    viewMethods: ["getMessages"],
-    changeMethods: ["addMessage"],
-  },
-  walletSelectorUI: {
-    description: "Please select a wallet to connect to this dApp:",
-    explanation: [
-      "Wallets are used to send, receive, and store digital assets.",
-      "There are different types of wallets. They can be an extension",
-      "added to your browser, a hardware device plugged into your",
-      "computer, web-based, or as an app on your phone.",
-    ].join(" "),
-  }
+  contract: { contractId: "guest-book.testnet" },
 });
+```
+
+## Options
+
+```ts
+type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+type NetworkId = "mainnet" | "betanet" | "testnet";
+type Theme = "dark" | "light" | "auto";
+
+interface Options {
+  // List of wallets you want to support in your dApp.
+  wallets: Array<BuiltInWalletId>;
+  // Network ID matching that of your dApp.
+  networkId: NetworkId;
+  contract: {
+    // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
+    contractId: string;
+    // Optional: Specify limited access to particular methods on the Smart Contract.
+    methodNames?: Array<string>;
+  };
+  ui?: {
+    // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
+    // omitted or set to 'auto'.
+    theme?: Theme;
+    // Optional: Provides customisation description text in the UI.
+    description?: string;
+  };
+}
 ```
 
 ## API Reference
 
-Init:
+### `.init()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Initialises the selector using the configured options before rendering the UI. If a user has previously signed in, this method will also initialise the selected wallet, ready to handle transaction signing.
+
+**Example**
 
 ```ts
-await near.init();
+await selector.init();
 ```
 
-Show modal:
+### `.show()`
+
+****Parameters****
+
+- N/A
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
+
+**Example**
 
 ```ts
-near.show();
+selector.show();
 ```
 
-Hide modal:
+### `.hide()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Closes the modal.
+
+**Example**
 
 ```ts
-near.hide();
+selector.hide();
 ```
 
-Sign in (programmatically):
+### `.signIn(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `walletId` (`string`): ID of the wallet (see example for specific values).
+  - `accountId` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the account ID related to the public key found at `derivationPath`.
+  - `derviationPath` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the path to the public key on your device.
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Programmatically sign in to a specific wallet without presenting the UI. Hardware wallets (e.g. Ledger Wallet) require `accountId` and `derivationPath` to validate access key permissions.
+
+**Example**
 
 ```ts
-await near.signIn("near-wallet");
-```
-
-Sign out:
-
-```ts
-await near.signOut();
-```
-
-Is signed in:
-
-```ts
-await near.isSignedIn();
-```
-
-Get account:
-
-```ts
-const account = await near.getAccount();
-```
-
-Add event listeners:
-
-```ts
-near.on("signIn", () => {
-   // your code
+// NEAR Wallet.
+await selector.signIn({
+  walletId: "near-wallet",
 });
 
-near.on("signOut", () => {
-  // your code
+// Sender Wallet.
+await selector.signIn({
+  walletId: "sender-wallet",
+});
+
+// Ledger Wallet
+await selector.signIn({
+  walletId: "ledger-wallet",
+  accountId: "account-id.testnet",
+  derviationPath: "44'/397'/0'/0'/1'",
 });
 ```
 
-Remove event listeners:
+### `.signOut()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<void>`
+
+**Description**
+
+Signs out of the selected wallet.
+
+**Example**
 
 ```ts
-// Method 1:
-const subscription = near.on("signIn", () => {
-   // your code
+await selector.signOut();
+```
+
+### `.isSignedIn()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<boolean>`
+
+**Description**
+
+Determines whether the user is signed in.
+
+**Example**
+
+```ts
+const signedIn = await selector.isSignedIn();
+console.log(signedIn) // true
+```
+
+### `.getAccount()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `Promise<object | null>`: Resolves to an object containing `accountId` and `balance`.
+
+**Description**
+
+Retrieves account information when the user is signed in. Returns `null` when the user is signed out.
+
+**Example**
+
+```ts
+const account = await selector.getAccount();
+console.log(account); // { accountId: "test.testnet", balance: "999999999999" }
+```
+
+### `.on(event, callback)`
+
+**Parameters**
+
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Handler to be triggered when the `event` fires.
+
+**Returns**
+
+- `object`
+  - `remove` (`() => void`): Removes the event handler.
+
+**Description**
+
+Attach an event handler to important events.
+
+**Example**
+
+```ts
+const subscription = selector.on("signIn", () => {
+   console.log("User signed in!");
 });
 
+// Unsubscribe.
 subscription.remove();
+```
 
-// Method 2:
+### `.off(event, callback)`
+
+**Parameters**
+
+- `event` (`string`): Name of the event. This can be either `signIn` or `signOut`.
+- `callback` (`() => void`): Original handler passed to `.on(event, callback)`.
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Removes the event handler attached to the given `event`.
+
+**Example**
+
+```ts
 const handleSignIn = () => {
-  // your code
+  console.log("User signed in!");
 }
 
-near.on("signIn", handleSignIn);
-near.off("signIn", handleSignIn);
+selector.on("signIn", handleSignIn);
+selector.off("signIn", handleSignIn);
 ```
 
-Interact with the Smart Contract:
+### `.contract.getContractId()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `string`
+
+**Description**
+
+Retrieves account ID of the configured Smart Contract.
+
+**Example**
 
 ```ts
-// Retrieve messages via RPC endpoint (view method).
-const messages = await near.contract.view({ methodName: "getMessages" });
+const contractId = selector.contract.getContractId();
+console.log(contractId); // "guest-book.testnet"
+```
 
-// Add a message, modifying the blockchain (change method).
-await near.contract.signAndSendTransaction({
+### `.contract.view(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `methodName` (`string`): Name of the method on the Smart Contract.
+  - `args` (`object?`): Object containing the parameters for the method.
+  - `finality` (`string?`): Defaults to `"optimistic"`. More details on this [here](https://docs.near.org/docs/api/rpc#using-finality-param).
+
+**Returns**
+
+- `Promise<unknown>`
+
+**Description**
+
+Executes a view method on the Smart Contract. Sign in isn't required for these calls.
+
+**Example**
+
+```ts
+await selector.contract.view({
+  methodName: "getMessages"
+});
+```
+
+### `.contract.signAndSendTransaction(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `actions` (`Array<Action>`)
+    - `type` (`string`): Action type. See below for available values.
+    - `params` (`object?`): Parameters for the Action (if applicable).
+
+**Returns**
+
+- `Promise<object>`: More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+
+**Description**
+
+Signs one or more actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
+
+Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+
+Below are the 8 supported NEAR Actions:
+
+```ts
+export interface CreateAccountAction {
+  type: "CreateAccount";
+}
+
+export interface DeployContractAction {
+  type: "DeployContract";
+  params: {
+    code: Uint8Array;
+  };
+}
+
+export interface FunctionCallAction {
+  type: "FunctionCall";
+  params: {
+    methodName: string;
+    args: object;
+    gas: string;
+    deposit: string;
+  };
+}
+
+export interface TransferAction {
+  type: "Transfer";
+  params: {
+    deposit: string;
+  };
+}
+
+export interface StakeAction {
+  type: "Stake";
+  params: {
+    stake: string;
+    publicKey: string;
+  };
+}  
+
+export interface AddKeyAction {
+  type: "AddKey";
+  params: {
+    publicKey: string;
+    accessKey: {
+      nonce?: number;
+      permission:
+        | "FullAccess"
+        | {
+            receiverId: string;
+            allowance?: string;
+            methodNames?: Array<string>;
+          };
+    };
+  };
+}
+
+export interface DeleteKeyAction {
+  type: "DeleteKey";
+  params: {
+    publicKey: string;
+  };
+}
+
+export interface DeleteAccountAction {
+  type: "DeleteAccount";
+  params: {
+    beneficiaryId: string;
+  };
+}
+```
+
+**Example**
+
+```ts
+await selector.contract.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {
       methodName: "addMessage",
-      args: {text: message.value},
+      args: { text: "Hello World!" },
       gas: "30000000000000",
-      deposit: "10000000000000000000000"
+      deposit: "10000000000000000000000",
     }
   }]
 });
-
-// Retrieve contract accountId.
-const accountId = near.contract.getAccountId();
 ```
 
-## Custom Themes
+## Known Issues
 
-If no value is provided for `theme` option then the theme will be picked by System's default mode/theme.
+At the time of writing, there is an issue with Sender Wallet where the signed in state is lost when navigating back to a dApp you had previously signed in to - this includes browser refreshes.
 
-There are two available themes `light` and `dark`:
-
-To use the `light` mode, add `theme` option with the value `light`
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  theme: "light",
-});
-```
-
-To use the `dark` mode, add `theme` option with the value `dark`
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  theme: "dark",
-});
-```
-## Custom/Optional UI Elements
-
-The `walletSelectorUI` option provides two properties which help to modify/customize the UI:
-
-- The `description` property if provided replaces the default description.
-- The `explanation` property if provided shows **What is a wallet?** section, if not provided there is no default wallet explanation the section will be hidden.
-
-```ts
-const near = new NearWalletSelector({
-  ...otherOptions,
-  walletSelectorUI: {
-    description: "Add your own description",
-    explanation: "Add your own wallet explanation",
-  }
-});
-```
 ## Contributing 
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:

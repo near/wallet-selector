@@ -1,12 +1,20 @@
 import { getState, updateState } from "../state/State";
-import NearWallet from "../wallets/browser/NearWallet";
-import SenderWallet from "../wallets/injected/SenderWallet";
-import LedgerWallet from "../wallets/hardware/LedgerWallet";
 import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
-import { BuiltInWalletId, Options } from "../core/NearWalletSelector";
+import { BuiltInWalletId, Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
+import { storage } from "../services/persistent-storage.service";
+import { logger } from "../services/logging.service";
+import setupNearWallet from "../wallets/browser/NearWallet";
+import setupSenderWallet from "../wallets/injected/SenderWallet";
+import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
+
+export interface SignInParams {
+  walletId: BuiltInWalletId;
+  accountId?: string;
+  derivationPath?: string;
+}
 
 class WalletController {
   private options: Options;
@@ -23,11 +31,11 @@ class WalletController {
     this.wallets = [];
   }
 
-  private decorateWallets(wallets: Array<Wallet>) {
+  private decorateWallets(wallets: Array<Wallet>): Array<Wallet> {
     return wallets.map((wallet) => {
       return {
         ...wallet,
-        signIn: async () => {
+        signIn: async (params: never) => {
           const selectedWallet = this.getSelectedWallet();
 
           if (selectedWallet) {
@@ -38,50 +46,45 @@ class WalletController {
             await selectedWallet.signOut();
           }
 
-          return wallet.signIn();
+          return wallet.signIn(params);
         },
       };
     });
   }
 
-  private lookupBuiltInWallet(walletId: BuiltInWalletId) {
-    switch (walletId) {
-      case "near-wallet":
-        return NearWallet;
-      case "sender-wallet":
-        return SenderWallet;
-      case "ledger-wallet":
-        return LedgerWallet;
-      default:
-        throw new Error(`Invalid built-in wallet '${walletId}'`);
-    }
-  }
-
-  private getBuiltInWallets() {
-    return this.options.wallets.map((walletId) => {
-      const BuiltInWallet = this.lookupBuiltInWallet(walletId);
-
-      return new BuiltInWallet({
-        options: this.options,
-        provider: this.provider,
-        emitter: this.emitter,
+  private setupWalletModules(): Array<Wallet> {
+    return this.options.wallets
+      .map((walletId) => {
+        switch (walletId) {
+          case "near-wallet":
+            return setupNearWallet();
+          case "sender-wallet":
+            return setupSenderWallet();
+          case "ledger-wallet":
+            return setupLedgerWallet();
+          default:
+            throw new Error("Invalid wallet id");
+        }
+      })
+      .map((module) => {
+        return module({
+          options: this.options,
+          provider: this.provider,
+          emitter: this.emitter,
+          logger,
+          storage,
+          updateState,
+        });
       });
-    });
-  }
-
-  // TODO: Migrate to storage service (with JSON support).
-  private getSelectedWalletId() {
-    const selectedWalletId = localStorage.getItem(
-      LOCAL_STORAGE_SELECTED_WALLET_ID
-    );
-
-    return selectedWalletId ? JSON.parse(selectedWalletId) : null;
   }
 
   async init() {
-    this.wallets = this.decorateWallets(this.getBuiltInWallets());
+    this.wallets = this.decorateWallets(this.setupWalletModules());
 
-    const selectedWalletId = this.getSelectedWalletId();
+    const selectedWalletId = storage.getItem<string>(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
+
     const wallet = this.getWallet(selectedWalletId);
 
     if (wallet) {
@@ -99,7 +102,7 @@ class WalletController {
     }
 
     if (selectedWalletId) {
-      window.localStorage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
     }
   }
 
@@ -122,11 +125,23 @@ class WalletController {
     return this.wallets;
   }
 
-  async signIn(walletId: BuiltInWalletId) {
+  async signIn({ walletId, accountId, derivationPath }: SignInParams) {
     const wallet = this.getWallet(walletId);
 
     if (!wallet) {
-      throw new Error(`Invalid built-in wallet '${walletId}'`);
+      throw new Error(`Invalid wallet '${walletId}'`);
+    }
+
+    if (wallet.type === "hardware") {
+      if (!accountId) {
+        throw new Error("Invalid account id");
+      }
+
+      if (!derivationPath) {
+        throw new Error("Invalid derivation path");
+      }
+
+      return wallet.signIn({ accountId, derivationPath });
     }
 
     return wallet.signIn();

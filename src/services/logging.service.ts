@@ -1,33 +1,34 @@
-export class Logger
-  implements Pick<Console, "log" | "info" | "warn" | "error">
-{
-  private static _hidden = true;
+export class Logger {
+  private static _debug = false;
+
   static get debug(): boolean {
-    return Logger._hidden;
+    return Logger._debug;
   }
+
   static set debug(value: boolean) {
-    Logger._hidden = value;
+    Logger._debug = value;
   }
+
   constructor(private readonly logger: Console = window?.console) {}
 
-  log(...params: unknown[]): void {
+  log(...params: Array<unknown>) {
     this.trigger("log", ...params);
   }
 
-  error(...params: unknown[]): void {
+  error(...params: Array<unknown>) {
     this.trigger("error", ...params);
   }
 
-  info(...params: unknown[]): void {
+  info(...params: Array<unknown>) {
     this.trigger("info", ...params);
   }
 
-  warn(...params: unknown[]): void {
+  warn(...params: Array<unknown>) {
     this.trigger("warn", ...params);
   }
 
-  private trigger(method: keyof Console, ...args: unknown[]) {
-    if (!Logger.debug) {
+  private trigger(method: keyof Console, ...args: Array<unknown>) {
+    if (!Logger._debug) {
       return;
     }
 

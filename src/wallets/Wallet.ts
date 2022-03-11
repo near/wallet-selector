@@ -1,12 +1,16 @@
-import { Options } from "../core/NearWalletSelector";
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
+import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
+import { updateState } from "../state/State";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
+import { Logger } from "../services/logging.service";
+import { PersistentStorage } from "../services/persistent-storage.service";
 
-export interface WalletOptions {
-  options: Options;
-  provider: ProviderService;
-  emitter: Emitter;
+export interface HardwareWalletSignInParams {
+  accountId: string;
+  derivationPath: string;
 }
 
 export interface SignAndSendTransactionParams {
@@ -19,20 +23,12 @@ export interface AccountInfo {
   balance: string;
 }
 
-export type BrowserWalletType = "browser";
-export type InjectedWalletType = "injected";
-export type HardwareWalletType = "hardware";
-export type WalletType =
-  | BrowserWalletType
-  | InjectedWalletType
-  | HardwareWalletType;
-
 interface BaseWallet {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: WalletType;
+  type: string;
 
   // Initialise an SDK or load data from a source such as local storage.
   init(): Promise<void>;
@@ -42,7 +38,7 @@ interface BaseWallet {
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).
-  signIn(): Promise<void>;
+  signIn(params?: object): Promise<void>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
   signOut(): Promise<void>;
@@ -53,11 +49,10 @@ interface BaseWallet {
   // Retrieves account info based on associated accountId.
   getAccount(): Promise<AccountInfo | null>;
 
-  // TODO: Determine standardised response.
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<unknown>;
+  ): Promise<FinalExecutionOutcome>;
 }
 
 export interface BrowserWallet extends BaseWallet {
@@ -70,8 +65,22 @@ export interface InjectedWallet extends BaseWallet {
 
 export interface HardwareWallet extends BaseWallet {
   type: "hardware";
-  setAccountId(accountId: string): void;
-  setDerivationPath(derivationPath: string): void;
+  signIn(params: HardwareWalletSignInParams): Promise<void>;
 }
 
 export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;
+
+export type WalletType = Wallet["type"];
+
+export interface WalletOptions {
+  options: Options;
+  provider: ProviderService;
+  emitter: Emitter;
+  logger: Logger;
+  storage: PersistentStorage;
+  updateState: typeof updateState;
+}
+
+export type WalletModule<WalletVariation extends Wallet = Wallet> = (
+  options: WalletOptions
+) => WalletVariation;
