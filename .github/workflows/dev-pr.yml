@@ -27,8 +27,8 @@ jobs:
   #       run: echo '${{ github.event.pull_request.base.ref }}'
 
   dev-pr:
+    if: github.base_ref == 'dev'
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == "dev"
     steps:
       - uses: actions/checkout@v2
       - name: Ensure checklists are filled
@@ -53,8 +53,8 @@ jobs:
           MERGE_REQUIRED_APPROVALS: 1
 
   prod-pr:
+    if: github.base_ref == 'main'
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == "main"
     steps:
       - name: automerge
         uses: pascalgn/automerge-action@v0.14.3
