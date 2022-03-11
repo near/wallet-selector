@@ -5,6 +5,15 @@ Please include a summary of the change and which issue is fixed. Please also inc
 Closes # (issue)
 <!-- REMOVE ALL THE TEMPLATE BELOW IF THE PR IS A RELEASE -->
 
+
+# Checklist:
+<!-- CHECKLIST_TYPE: ALL -->
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+<!-- /CHECKLIST_TYPE -->
+
 # Type of change. This type of change is the main reason for the PR.
 <!-- CHECKLIST_TYPE: ONE -->
 - [ ] FIX - a PR of this type patches a bug.
