@@ -82,7 +82,7 @@ export type Action =
 
 export type ActionType = Action["type"];
 
-const getAccessKey = (permission: AddKeyPermission) => {
+export const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
     return transactions.fullAccessKey();
   }
