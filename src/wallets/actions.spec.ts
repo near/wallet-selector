@@ -134,27 +134,4 @@ describe("actions", () => {
 
     expect(actions).toEqual([transactions.deleteAccount(beneficiaryId)]);
   });
-
-  it("correctly gets AccessKey for 'FullAccess' permission", () => {
-    const accessKey = getAccessKey("FullAccess");
-
-    expect(accessKey).toEqual(transactions.fullAccessKey());
-  });
-
-  it("correctly gets AccessKey for 'FunctionCall' permission", () => {
-    const params = {
-      receiverId: "test.testnet",
-      allowance: "1",
-      methodNames: [],
-    };
-    const accessKey = getAccessKey(params);
-
-    expect(accessKey).toEqual(
-      transactions.functionCallAccessKey(
-        params.receiverId,
-        params.methodNames,
-        new BN(params.allowance)
-      )
-    );
-  });
 });
