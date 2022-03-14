@@ -1,4 +1,4 @@
-import { getAccessKey, transformActions } from "./actions";
+import { transformActions } from "./actions";
 import { transactions, utils } from "near-api-js";
 import BN from "bn.js";
 
@@ -86,9 +86,8 @@ describe("actions", () => {
       {
         type: "AddKey",
         params: {
-          publicKey: "",
+          publicKey,
           accessKey: {
-            nonce: 0,
             permission: "FullAccess",
           },
         },
@@ -98,7 +97,41 @@ describe("actions", () => {
     expect(actions).toEqual([
       transactions.addKey(
         utils.PublicKey.from(publicKey),
-        getAccessKey("FullAccess")
+        transactions.fullAccessKey()
+      ),
+    ]);
+  });
+
+  it("correctly transforms 'AddKey' action with 'FunctionCall' permission", () => {
+    const publicKey = "";
+    const receiverId = "test.testnet";
+    const allowance = "1";
+    const methodNames = ["methodName"];
+
+    const actions = transformActions([
+      {
+        type: "AddKey",
+        params: {
+          publicKey,
+          accessKey: {
+            permission: {
+              receiverId,
+              allowance,
+              methodNames,
+            },
+          },
+        },
+      },
+    ]);
+
+    expect(actions).toEqual([
+      transactions.addKey(
+        utils.PublicKey.from(publicKey),
+        transactions.functionCallAccessKey(
+          receiverId,
+          methodNames,
+          new BN(allowance)
+        )
       ),
     ]);
   });
