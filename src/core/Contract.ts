@@ -24,8 +24,12 @@ class Contract {
     return this.options.contract.contractId;
   }
 
-  view({ methodName, args, finality }: Omit<CallFunctionParams, "accountId">) {
-    return this.provider.callFunction({
+  view<Response>({
+    methodName,
+    args,
+    finality,
+  }: Omit<CallFunctionParams, "accountId">) {
+    return this.provider.callFunction<Response>({
       accountId: this.options.contract.contractId,
       methodName,
       args,

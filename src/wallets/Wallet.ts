@@ -1,13 +1,12 @@
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
 import { Options } from "../interfaces/Options";
 import ProviderService from "../services/provider/ProviderService";
+import { updateState } from "../state/State";
 import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
-
-export interface WalletOptions {
-  options: Options;
-  provider: ProviderService;
-  emitter: Emitter;
-}
+import { Logger } from "../services/logging.service";
+import { PersistentStorage } from "../services/persistent-storage.service";
 
 export interface HardwareWalletSignInParams {
   accountId: string;
@@ -24,20 +23,12 @@ export interface AccountInfo {
   balance: string;
 }
 
-export type BrowserWalletType = "browser";
-export type InjectedWalletType = "injected";
-export type HardwareWalletType = "hardware";
-export type WalletType =
-  | BrowserWalletType
-  | InjectedWalletType
-  | HardwareWalletType;
-
 interface BaseWallet {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: WalletType;
+  type: string;
 
   // Initialise an SDK or load data from a source such as local storage.
   init(): Promise<void>;
@@ -58,11 +49,10 @@ interface BaseWallet {
   // Retrieves account info based on associated accountId.
   getAccount(): Promise<AccountInfo | null>;
 
-  // TODO: Determine standardised response.
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<unknown>;
+  ): Promise<FinalExecutionOutcome>;
 }
 
 export interface BrowserWallet extends BaseWallet {
@@ -79,3 +69,18 @@ export interface HardwareWallet extends BaseWallet {
 }
 
 export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;
+
+export type WalletType = Wallet["type"];
+
+export interface WalletOptions {
+  options: Options;
+  provider: ProviderService;
+  emitter: Emitter;
+  logger: Logger;
+  storage: PersistentStorage;
+  updateState: typeof updateState;
+}
+
+export type WalletModule<WalletVariation extends Wallet = Wallet> = (
+  options: WalletOptions
+) => WalletVariation;

@@ -23,7 +23,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     const [ messages, account ] = await Promise.all([
-      this.selector.contract.view({methodName: "getMessages"}),
+      this.getMessages(),
       this.selector.getAccount(),
     ]);
 
@@ -48,6 +48,12 @@ export class ContentComponent implements OnInit, OnDestroy {
   switchProvider() {
     this.selector.show();
   }
+
+  getMessages() {
+    return this.selector.contract.view<Array<Message>>({
+      methodName: "getMessages",
+    });
+  };
 
   subscribeToEvents() {
     this.subscriptions.signIn = this.selector.on("signIn", () => {
@@ -97,9 +103,8 @@ export class ContentComponent implements OnInit, OnDestroy {
         throw err;
       })
       .then(() => {
-        return this.selector.contract
-          .view({ methodName: "getMessages" })
-          .then((nextMessages: Message[]) => {
+        return this.getMessages()
+          .then((nextMessages) => {
             this.messages = nextMessages;
             message.value = "";
             donation.value = SUGGESTED_DONATION;

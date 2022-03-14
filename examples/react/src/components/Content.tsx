@@ -18,17 +18,20 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   const [account, setAccount] = useState<AccountInfo | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
 
+  const getMessages = () => {
+    return selector.contract.view<Array<Message>>({
+      methodName: "getMessages",
+    });
+  };
+
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    Promise.all([
-      selector.contract.view({
-        methodName: "getMessages",
-      }) as Promise<Array<Message>>,
-      selector.getAccount(),
-    ]).then(([nextMessages, nextAccount]) => {
-      setMessages(nextMessages);
-      setAccount(nextAccount);
-    });
+    Promise.all([getMessages(), selector.getAccount()]).then(
+      ([nextMessages, nextAccount]) => {
+        setMessages(nextMessages);
+        setAccount(nextAccount);
+      }
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -111,9 +114,8 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
         throw err;
       })
       .then(() => {
-        return selector.contract
-          .view({ methodName: "getMessages" })
-          .then((nextMessages: Array<Message>) => {
+        return getMessages()
+          .then((nextMessages) => {
             setMessages(nextMessages);
             message.value = "";
             donation.value = SUGGESTED_DONATION;

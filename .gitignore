@@ -4,3 +4,6 @@
 
 # IDEs and editors
 /.idea
+/.angular
+/dist
+yarn-error.log

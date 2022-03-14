@@ -30,6 +30,12 @@ const state = reactive<ContentState>({
   messages: []
 });
 
+const getMessages = () => {
+  return selector.contract.view<Array<Message>>({
+    methodName: "getMessages",
+  });
+};
+
 const handleSignIn = () => {
   selector.show();
 };
@@ -73,8 +79,7 @@ const handleSubmit = (e: SubmitEvent) => {
       throw err;
     })
     .then(() => {
-      return selector.contract
-        .view({ methodName: "getMessages" })
+      return getMessages()
         .then((nextMessages) => {
           state.messages = nextMessages;
           message.value = "";
@@ -96,7 +101,7 @@ const handleSubmit = (e: SubmitEvent) => {
     });
 };
 
-onMounted(async () => {
+onMounted(() => {
   subscriptions.signIn = selector.on("signIn", () => {
     console.log("'signIn' event triggered!");
 
@@ -117,13 +122,12 @@ onMounted(async () => {
   });
 
   // TODO: don't just fetch once; subscribe!
-  const [ messages, account ] = await Promise.all([
-    selector.contract.view({ methodName: "getMessages" }),
-    selector.getAccount(),
-  ]);
-
-  state.messages = messages;
-  state.account = account;
+  Promise.all([getMessages(), selector.getAccount()]).then(
+    ([nextMessages, nextAccount]) => {
+      state.messages = nextMessages;
+      state.account = nextAccount;
+    }
+  );
 });
 
 onUnmounted(() => {

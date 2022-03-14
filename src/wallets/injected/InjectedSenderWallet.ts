@@ -1,6 +1,8 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
 interface AccessKey {
   publicKey: {
     data: Uint8Array;
@@ -65,14 +67,14 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
+// Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
-  error?: string;
-  method: "signAndSendTransaction";
+  actionType: "DAPP/DAPP_POPUP_RESPONSE";
+  method: "signAndSendTransactions";
   notificationId: number;
-  // TODO: Heavily nested objects. Define if needed.
-  res?: Array<object>;
-  type: "sender-wallet-result";
-  url: string;
+  error?: string;
+  response?: Array<FinalExecutionOutcome>;
+  type: "sender-wallet-extensionResult";
 }
 
 export interface Transaction {
