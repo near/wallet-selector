@@ -123,7 +123,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       async signAndSendTransaction({ receiverId, actions }) {
-        logger.log("LedgerWallet:signAndSendTransaction", {
+        logger.log("MathWallet:signAndSendTransaction", {
           receiverId,
           actions,
         });
