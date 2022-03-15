@@ -29,7 +29,7 @@ interface MathNetwork {
 
 export interface InjectedMathWallet {
   signer: {
-    account: MathAccount;
+    account: MathAccount | null;
     network: MathNetwork;
     createKey(accountId: string, networkId?: string): Promise<PublicKey>;
     getPublicKey(accountId?: string, networkId?: string): Promise<PublicKey>;

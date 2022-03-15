@@ -113,7 +113,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           return null;
         }
 
-        const { accountId } = wallet.signer.account;
+        const { accountId } = wallet.signer.account!;
         const account = await provider.viewAccount({ accountId });
 
         return {
@@ -128,7 +128,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           actions,
         });
 
-        const { accountId, publicKey } = wallet.signer.account;
+        const { accountId, publicKey } = wallet.signer.account!;
 
         const [block, accessKey] = await Promise.all([
           provider.block({ finality: "final" }),
