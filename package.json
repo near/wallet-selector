@@ -19,9 +19,6 @@
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
-  "files": [
-    "lib"
-  ],
   "scripts": {
     "build": "yarn build:esm && yarn build:cjs",
     "build:cjs": "rm -rf lib/cjs && tsc --module commonjs --outDir lib/cjs",

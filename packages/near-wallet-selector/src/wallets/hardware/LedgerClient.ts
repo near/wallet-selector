@@ -61,7 +61,7 @@ export interface Subscription {
 
 // TODO: Needs a method to assert whether we're connected.
 class LedgerClient {
-  private transport!: Transport;
+  private transport: Transport;
 
   // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
   static isSupported = () => {
