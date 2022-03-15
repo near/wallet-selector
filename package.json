@@ -80,6 +80,9 @@
     "@nrwl/workspace": "13.8.5",
     "@ns3/nx-jest-playwright": "^2.3.0",
     "@playwright/test": "^1.18.0",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "7.0.2",
@@ -113,6 +116,7 @@
     "react-test-renderer": "17.0.2",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
-    "typescript": "~4.5.2"
+    "typescript": "~4.5.2",
+    "semantic-release": "^19.0.2"
   }
 }
