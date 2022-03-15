@@ -39,6 +39,9 @@ export interface InjectedMathWallet {
       networkId?: string
     ): Promise<Signature>;
   };
-  login: (param: object) => Promise<MathAccount>;
+  login: (param: {
+    publicKey?: PublicKey;
+    contractId?: string;
+  }) => Promise<MathAccount>;
   logout: () => Promise<boolean>;
 }
