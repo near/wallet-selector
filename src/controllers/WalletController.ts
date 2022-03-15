@@ -9,6 +9,7 @@ import { logger } from "../services/logging.service";
 import setupNearWallet from "../wallets/browser/NearWallet";
 import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
+import setupMathWallet from "../wallets/injected/MathWallet";
 
 export interface SignInParams {
   walletId: BuiltInWalletId;
@@ -62,6 +63,8 @@ class WalletController {
             return setupSenderWallet();
           case "ledger-wallet":
             return setupLedgerWallet();
+          case "math-wallet":
+            return setupMathWallet();
           default:
             throw new Error("Invalid wallet id");
         }
