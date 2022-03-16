@@ -24,11 +24,11 @@ jobs:
       - name: Install NPM Dependencies
         run: yarn install
       - name: Run Build
-        run: yarn build
+        run: yarn nx run-many --target=build --all --configuration=production
       - name: Run Linting
-        run: yarn lint
+        run: yarn nx affected --target=lint --base=${{ github.base_ref }}
       - name: Run Unit & Integration Tests
-        run: yarn test
+        run: yarn nx affected --target=test --base=${{ github.base_ref }}
       # - name: Install Playwright Dependencies
       #   run: sudo npx playwright install-deps
       # - name: Run End-to-End Tests
