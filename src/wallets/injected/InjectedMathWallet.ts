@@ -1,20 +1,30 @@
-import { PublicKey, Signature } from "near-api-js/lib/utils/key_pair";
+import { Signer } from "near-api-js/lib/signer";
 
-interface MathAccount {
-  networkUnique: string;
-  address: string;
+export interface LoginParams {
+  contractId?: string;
+  publicKey?: string;
+}
+
+export interface SignedInAccount {
   name: string;
-  authority: string;
-  selected: boolean;
-  type: string;
-
   accountId: string;
   publicKey: string;
   permission: string;
   network: string;
 }
 
-interface MathNetwork {
+export interface PreviouslySignedInAccount {
+  networkUnique: string;
+  address: string;
+  name: string;
+  authority: string;
+  selected: boolean;
+  type: string;
+}
+
+export type MathAccount = SignedInAccount | PreviouslySignedInAccount;
+
+export interface MathNetwork {
   id: string;
   name: string;
   blockchain: string;
@@ -27,21 +37,13 @@ interface MathNetwork {
   extra: string;
 }
 
+export type MathSigner = Signer & {
+  account: MathAccount | null;
+  network: MathNetwork;
+};
+
 export interface InjectedMathWallet {
-  signer: {
-    account: MathAccount | null;
-    network: MathNetwork;
-    createKey(accountId: string, networkId?: string): Promise<PublicKey>;
-    getPublicKey(accountId?: string, networkId?: string): Promise<PublicKey>;
-    signMessage(
-      message: Uint8Array,
-      accountId?: string,
-      networkId?: string
-    ): Promise<Signature>;
-  };
-  login: (param: {
-    publicKey?: PublicKey;
-    contractId?: string;
-  }) => Promise<MathAccount>;
+  signer: MathSigner;
+  login: (param: LoginParams) => Promise<SignedInAccount>;
   logout: () => Promise<boolean>;
 }

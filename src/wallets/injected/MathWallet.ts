@@ -3,7 +3,7 @@ import isMobile from "is-mobile";
 import { mathWalletIcon } from "../icons";
 import { InjectedWallet, WalletModule } from "../Wallet";
 import { transformActions } from "../actions";
-import { InjectedMathWallet } from "./InjectedMathWallet";
+import { InjectedMathWallet, SignedInAccount } from "./InjectedMathWallet";
 import { transactions, utils } from "near-api-js";
 
 declare global {
@@ -24,6 +24,22 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
 
     const isInstalled = () => {
       return !!window.nearWalletApi;
+    };
+
+    // This wallet currently has weird behaviour regarding signer.account.
+    // - When you initially sign in, you get a SignedInAccount interface.
+    // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
+    // This method normalises the behaviour to only return the SignedInAccount interface.
+    const getSignerAccount = async (): Promise<SignedInAccount | null> => {
+      if (!wallet.signer.account) {
+        return null;
+      }
+
+      if ("accountId" in wallet.signer.account) {
+        return wallet.signer.account;
+      }
+
+      return wallet.login({ contractId: options.contract.contractId });
     };
 
     const timeout = (ms: number) => {
@@ -57,10 +73,6 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         }
 
         wallet = window.nearWalletApi!;
-
-        if (wallet.signer.account) {
-          await wallet.login({});
-        }
       },
 
       async signIn() {
@@ -72,13 +84,13 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           await this.init();
         }
 
-        const account = await wallet.login({});
+        const account = await wallet.login({
+          contractId: options.contract.contractId,
+        });
 
         if (!account) {
           throw new Error("Failed to sign in");
         }
-
-        logger.log(options.networkId);
 
         updateState((prevState) => ({
           ...prevState,
@@ -89,7 +101,9 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       async isSignedIn() {
-        return Boolean(wallet.signer.account);
+        const signerAccount = await getSignerAccount();
+
+        return !!signerAccount;
       },
 
       async signOut() {
@@ -107,13 +121,13 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       async getAccount() {
-        const signedIn = await this.isSignedIn();
+        const signerAccount = await getSignerAccount();
 
-        if (!signedIn) {
+        if (!signerAccount) {
           return null;
         }
 
-        const { accountId } = wallet.signer.account!;
+        const { accountId } = signerAccount;
         const account = await provider.viewAccount({ accountId });
 
         return {
@@ -128,7 +142,8 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           actions,
         });
 
-        const { accountId, publicKey } = wallet.signer.account!;
+        const signerAccount = await getSignerAccount();
+        const { accountId, publicKey } = signerAccount!;
 
         const [block, accessKey] = await Promise.all([
           provider.block({ finality: "final" }),
