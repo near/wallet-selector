@@ -5,6 +5,7 @@ import { InjectedWallet, WalletModule } from "../Wallet";
 import { transformActions } from "../actions";
 import { InjectedMathWallet, SignedInAccount } from "./InjectedMathWallet";
 import { transactions, utils } from "near-api-js";
+import { waitFor } from "../../utils/waitFor";
 
 declare global {
   interface Window {
@@ -22,8 +23,14 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
   }) {
     let wallet: InjectedMathWallet;
 
-    const isInstalled = () => {
-      return !!window.nearWalletApi;
+    const isInstalled = async () => {
+      try {
+        return await waitFor(() => !!window.nearWalletApi, {});
+      } catch (e) {
+        logger.log("MathWallet:isInstalled:error", e);
+
+        return false;
+      }
     };
 
     // This wallet currently has weird behaviour regarding signer.account.
@@ -40,10 +47,6 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       }
 
       return wallet.login({ contractId: options.contract.contractId });
-    };
-
-    const timeout = (ms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
     return {
@@ -66,9 +69,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       async init() {
-        await timeout(200);
-
-        if (!isInstalled()) {
+        if (!(await isInstalled())) {
           throw new Error("Wallet not installed");
         }
 
@@ -76,7 +77,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       async signIn() {
-        if (!isInstalled()) {
+        if (!(await isInstalled())) {
           //TODO update state
         }
 
