@@ -1,5 +1,5 @@
 {
-  "watch": ["../src/", "./src/"],
+  "watch": ["../../src/", "./src/"],
   "ext": "tsx,ts,js",
   "ignore": ["dist", "lib"],
   "exec": "yarn build:wallet-selector && yarn start"

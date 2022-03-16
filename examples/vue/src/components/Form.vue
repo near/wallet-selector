@@ -17,7 +17,7 @@ const maxDonation = Big(props.account.balance)
     <fieldset id="fieldset">
       <p>Sign the guest book, {{ account.accountId }}!</p>
       <p class="highlight">
-        <label for"message">Message:</label>
+        <label for="message">Message:</label>
         <input id="message" autoFocus required autoComplete="off" />
       </p>
       <p>

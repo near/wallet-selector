@@ -4,6 +4,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 - [NEAR Wallet](https://wallet.near.org/) - Web wallet.
 - [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
+- [Math Wallet](https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc) - Browser extension wallet.
 - [Ledger](https://www.ledger.com/) - Hardware wallet.
 
 
@@ -31,7 +32,7 @@ Then use it in your dApp:
 import NearWalletSelector from "near-wallet-selector";
 
 const selector = new NearWalletSelector({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
+  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
   networkId: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
@@ -40,7 +41,7 @@ const selector = new NearWalletSelector({
 ## Options
 
 ```ts
-type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
+type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet" | "math-wallet";
 type NetworkId = "mainnet" | "betanet" | "testnet";
 type Theme = "dark" | "light" | "auto";
 
@@ -155,6 +156,11 @@ await selector.signIn({
 // Sender Wallet.
 await selector.signIn({
   walletId: "sender-wallet",
+});
+
+// Math Wallet.
+await selector.signIn({
+  walletId: "math-wallet",
 });
 
 // Ledger Wallet
