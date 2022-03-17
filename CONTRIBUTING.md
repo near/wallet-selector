@@ -10,16 +10,16 @@ The core modules are in the `packages` directory and the example apps are in the
 On the other hand, if you want to run a specific command in a package, you can use the `nx run` command. There are a lot of things defined in every project's `project.json` file:
 
 To run a target:    
-```
-$ nx run [project][:target][:configuration] [options, ...]
-$ nx r [project][:target][:configuration] [options, ...]
+```bash
+yarn nx run [project][:target][:configuration] [options, ...]
+yarn nx r [project][:target][:configuration] [options, ...]
 ```
 
 In order to run a specific example, make sure you build the UI library beforehand and on each modification by running:
 
-```
-$ nx run build:near-wallet-selector #build the library
+```bash
+yarn nx run near-wallet-selector:build #build the library
 
-$ nx serve react # to run the react example
-$ nx serve angular # to run the angular example
+yarn nx serve react # to run the react example
+yarn nx serve angular # to run the angular example
 ```
