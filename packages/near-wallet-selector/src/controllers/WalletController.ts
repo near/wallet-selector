@@ -67,7 +67,7 @@ class WalletController {
           case "math-wallet":
             return setupMathWallet();
           case "wallet-connect":
-            return setupWalletConnect();
+            return setupWalletConnect({ projectId: "c4f79cc..." });
           default:
             throw new Error("Invalid wallet id");
         }

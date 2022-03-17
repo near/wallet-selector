@@ -5,7 +5,11 @@ import { PairingTypes, SessionTypes } from "@walletconnect/types";
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
-function setupWalletConnect(): WalletModule<BrowserWallet> {
+interface WalletConnectParams {
+  projectId: string;
+}
+
+function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<BrowserWallet> {
   return function WalletConnect({ provider }) {
     let client: WalletConnectClient;
     let session: SessionTypes.Settled;
@@ -31,7 +35,7 @@ function setupWalletConnect(): WalletModule<BrowserWallet> {
 
       async init() {
         client = await WalletConnectClient.init({
-          projectId: "c4f79cc...",
+          projectId,
           relayUrl: "wss://relay.walletconnect.com",
           metadata: {
             name: "Example Dapp",
