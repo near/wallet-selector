@@ -20,15 +20,13 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs",
-    "build:cjs": "rm -rf lib/cjs && tsc --module commonjs --outDir lib/cjs",
-    "build:esm": "rm -rf lib/esm && tsc --module esnext --outDir lib/esm",
-    "lint": "eslint ./src --ext .ts,.tsx",
-    "lint:fix": "yarn lint --fix",
+    "build": "nx run-many --target=build --projects=near-wallet-selector --configuration=production",
+    "lint": "nx run-many --target=lint --all",
+    "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
-    "test": "jest",
-    "test:e2e": "playwright test",
-    "postinstall": "ngcc --properties es2015 browser module main && nx run near-wallet-selector:build"
+    "test": "nx run-many --target=test --all",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && nx run near-wallet-selector:build",
+    "ng": "nx"
   },
   "dependencies": {
     "@angular/animations": "~13.2.0",
