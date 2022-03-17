@@ -95,7 +95,7 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
           },
           permissions: {
             blockchain: {
-              chains: ["near:testnet"],
+              chains: [`near:${options.networkId}`],
             },
             jsonrpc: {
               methods: ["near_signAndSendTransaction"],
