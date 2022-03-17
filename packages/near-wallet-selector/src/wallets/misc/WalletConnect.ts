@@ -10,7 +10,7 @@ interface WalletConnectParams {
 }
 
 function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<BrowserWallet> {
-  return function WalletConnect({ provider }) {
+  return function WalletConnect({ provider, emitter, logger, updateState }) {
     let client: WalletConnectClient;
     let session: SessionTypes.Settled;
 
@@ -45,28 +45,36 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
           },
         });
 
-        console.log("Client", client);
-
         client.on(
           CLIENT_EVENTS.pairing.proposal,
           async (proposal: PairingTypes.Proposal) => {
             // uri should be shared with the Wallet either through QR Code scanning or mobile deep linking
             const { uri } = proposal.signal.params;
 
-            console.log("url:", uri);
+            console.log("Pairing URI:", uri);
           }
         );
 
         if (client.session.topics.length) {
-          console.log("Found existing session", client.session.topics[0]);
+          logger.log("WalletConnect:init:session", client.session.topics[0])
           session = await client.session.get(client.session.topics[0]);
         }
-
-        console.log("session:", session);
       },
 
       async signIn() {
-        await client.connect({
+        if (!client) {
+          await this.init();
+        }
+
+        if (session) {
+          return updateState((prevState) => ({
+            ...prevState,
+            showModal: false,
+            selectedWalletId: this.id,
+          }));
+        }
+
+        session = await client.connect({
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
@@ -82,10 +90,29 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
             },
           },
         });
+
+        updateState((prevState) => ({
+          ...prevState,
+          showModal: false,
+          selectedWalletId: this.id,
+        }));
+        emitter.emit("signIn");
       },
 
       async signOut() {
-        throw new Error("Not implemented")
+        await client.disconnect({
+          topic: session.topic,
+          reason: {
+            code: 5900,
+            message: "User disconnected"
+          },
+        });
+
+        updateState((prevState) => ({
+          ...prevState,
+          selectedWalletId: null,
+        }));
+        emitter.emit("signOut");
       },
 
       async isSignedIn() {
@@ -110,7 +137,14 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
       async signAndSendTransaction({ receiverId, actions }) {
         const signerId = getAccountId()!;
 
-        const result = await client.request({
+        logger.log("WalletConnect:signAndSendTransaction", {
+          topic: session.topic,
+          signerId,
+          receiverId,
+          actions,
+        });
+
+        return client.request({
           topic: session.topic,
           chainId: "near:testnet",
           request: {
@@ -122,9 +156,6 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
             },
           },
         });
-
-        console.log("result:", result);
-        return result;
       }
     };
   };
