@@ -10,6 +10,7 @@ import setupNearWallet from "../wallets/browser/NearWallet";
 import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 import setupMathWallet from "../wallets/injected/MathWallet";
+import setupWalletConnect from "../wallets/misc/WalletConnect";
 
 export interface SignInParams {
   walletId: BuiltInWalletId;
@@ -65,6 +66,8 @@ class WalletController {
             return setupLedgerWallet();
           case "math-wallet":
             return setupMathWallet();
+          case "wallet-connect":
+            return setupWalletConnect();
           default:
             throw new Error("Invalid wallet id");
         }

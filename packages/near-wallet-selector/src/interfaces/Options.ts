@@ -2,7 +2,8 @@ export type BuiltInWalletId =
   | "near-wallet"
   | "sender-wallet"
   | "ledger-wallet"
-  | "math-wallet";
+  | "math-wallet"
+  | "wallet-connect";
 export type NetworkId = "mainnet" | "betanet" | "testnet";
 export type Theme = "dark" | "light" | "auto";
 
