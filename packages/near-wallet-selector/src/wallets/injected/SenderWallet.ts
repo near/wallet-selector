@@ -4,6 +4,7 @@ import InjectedSenderWallet from "./InjectedSenderWallet";
 import { Action, FunctionCallAction } from "../actions";
 import { senderWalletIcon } from "../icons";
 import { InjectedWallet, WalletModule } from "../Wallet";
+import { waitFor } from "../../utils/waitFor";
 
 declare global {
   interface Window {
@@ -21,12 +22,14 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
   }) {
     let wallet: InjectedSenderWallet;
 
-    const isInstalled = () => {
-      return !!window.near?.isSender;
-    };
+    const isInstalled = async () => {
+      try {
+        return await waitFor(() => !!window.near?.isSender, {});
+      } catch (e) {
+        logger.log("SenderWallet:isInstalled:error", e);
 
-    const timeout = (ms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+        return false;
+      }
     };
 
     const isValidActions = (
@@ -67,9 +70,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
       },
 
       async init() {
-        await timeout(200);
-
-        if (!isInstalled()) {
+        if (!(await isInstalled())) {
           throw new Error("Wallet not installed");
         }
 
@@ -100,7 +101,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
       },
 
       async signIn() {
-        if (!isInstalled()) {
+        if (!(await isInstalled())) {
           return updateState((prevState) => ({
             ...prevState,
             showWalletOptions: false,

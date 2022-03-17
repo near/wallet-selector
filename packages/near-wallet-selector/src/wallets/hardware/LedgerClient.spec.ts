@@ -48,7 +48,7 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const client = mock<TransportWebHID>(params.client);
   const transport = mock<Transport>(params.transport);
 
-  jest.mock("@ledgerhq/hw-transport-webhid", () => {
+  jest.doMock("@ledgerhq/hw-transport-webhid", () => {
     return {
       ...client,
       create: () => transport,
