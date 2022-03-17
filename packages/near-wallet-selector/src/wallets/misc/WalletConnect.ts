@@ -4,6 +4,7 @@ import { PairingTypes, SessionTypes } from "@walletconnect/types";
 
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
+import { Subscription } from "../../utils/EventsHandler";
 
 interface WalletConnectParams {
   projectId: string;
@@ -11,6 +12,7 @@ interface WalletConnectParams {
 
 function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<BrowserWallet> {
   return function WalletConnect({ provider, emitter, logger, updateState }) {
+    const subscriptions: Record<string, Subscription> = {};
     let client: WalletConnectClient;
     let session: SessionTypes.Settled;
 
@@ -20,6 +22,14 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
       }
 
       return session.state.accounts[0].split(":")[2];
+    }
+
+    const addEventListener = (event: string, listener: unknown) => {
+      client.on(event, listener);
+
+      subscriptions[event] = {
+        remove: () => client.off(event, listener)
+      }
     }
 
     return {
@@ -45,9 +55,9 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
           },
         });
 
-        client.on(
+        addEventListener(
           CLIENT_EVENTS.pairing.proposal,
-          async (proposal: PairingTypes.Proposal) => {
+          (proposal: PairingTypes.Proposal) => {
             // uri should be shared with the Wallet either through QR Code scanning or mobile deep linking
             const { uri } = proposal.signal.params;
 
@@ -100,6 +110,10 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
       },
 
       async signOut() {
+        for (const key in subscriptions) {
+          subscriptions[key].remove();
+        }
+
         await client.disconnect({
           topic: session.topic,
           reason: {
