@@ -142,7 +142,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             className="Modal-body Modal-select-wallet-option"
           >
             <p className="Modal-description">
-              {options.ui?.description ||
+              {options.ui ? options.ui.description :
                 "Please select a wallet to connect to this dApp:"}
             </p>
             <ul className="Modal-option-list">
