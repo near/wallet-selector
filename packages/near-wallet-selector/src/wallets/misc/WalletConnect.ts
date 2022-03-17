@@ -1,12 +1,23 @@
 import WalletConnectClient from "@walletconnect/client";
 import { CLIENT_EVENTS } from "@walletconnect/client";
-import { PairingTypes } from "@walletconnect/types";
+import { PairingTypes, SessionTypes } from "@walletconnect/types";
 
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
 function setupWalletConnect(): WalletModule<BrowserWallet> {
-  return function WalletConnect() {
+  return function WalletConnect({ provider }) {
+    let client: WalletConnectClient;
+    let session: SessionTypes.Settled;
+
+    const getAccountId = () => {
+      if (!session?.state.accounts.length) {
+        return null;
+      }
+
+      return session.state.accounts[0].split(":")[2];
+    }
+
     return {
       id: "wallet-connect",
       type: "browser",
@@ -19,7 +30,7 @@ function setupWalletConnect(): WalletModule<BrowserWallet> {
       },
 
       async init() {
-        const client = await WalletConnectClient.init({
+        client = await WalletConnectClient.init({
           projectId: "c4f79cc...",
           relayUrl: "wss://relay.walletconnect.com",
           metadata: {
@@ -42,60 +53,31 @@ function setupWalletConnect(): WalletModule<BrowserWallet> {
           }
         );
 
-        let session;
         if (client.session.topics.length) {
           console.log("Found existing session", client.session.topics[0]);
           session = await client.session.get(client.session.topics[0]);
-        } else {
-          console.log("Creating new session");
-          session = await client.connect({
-            metadata: {
-              name: "NEAR Wallet Selector",
-              description: "Example dApp used by NEAR Wallet Selector",
-              url: "https://github.com/near-projects/wallet-selector",
-              icons: ["https://avatars.githubusercontent.com/u/37784886"],
-            },
-            permissions: {
-              blockchain: {
-                chains: ["near:testnet"],
-              },
-              jsonrpc: {
-                methods: ["near_signAndSendTransaction"],
-              },
-            },
-          });
         }
 
         console.log("session:", session);
-
-        const [namespace, chainId, address] = session.state.accounts[0].split(":");
-
-        const result = await client!.request({
-          topic: session.topic,
-          chainId: "near:testnet",
-          request: {
-            method: "near_signAndSendTransaction",
-            params: {
-              signerId: address,
-              receiverId: "guest-book.testnet",
-              actions: [{
-                type: "FunctionCall",
-                params: {
-                  methodName: "addMessage",
-                  args: { text: "Hello from Wallet Connect!" },
-                  gas: "30000000000000",
-                  deposit: "0",
-                }
-              }]
-            },
-          },
-        });
-
-        console.log("result:", result);
       },
 
       async signIn() {
-        throw new Error("Not implemented")
+        await client.connect({
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near-projects/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+          permissions: {
+            blockchain: {
+              chains: ["near:testnet"],
+            },
+            jsonrpc: {
+              methods: ["near_signAndSendTransaction"],
+            },
+          },
+        });
       },
 
       async signOut() {
@@ -103,15 +85,42 @@ function setupWalletConnect(): WalletModule<BrowserWallet> {
       },
 
       async isSignedIn() {
-        throw new Error("Not implemented")
+        return Boolean(client.session.topics.length);
       },
 
       async getAccount() {
-        throw new Error("Not implemented")
+        const accountId = getAccountId();
+
+        if (!accountId) {
+          return null;
+        }
+
+        const account = await provider.viewAccount({ accountId });
+
+        return {
+          accountId,
+          balance: account.amount,
+        };
       },
 
-      async signAndSendTransaction() {
-        throw new Error("Not implemented")
+      async signAndSendTransaction({ receiverId, actions }) {
+        const signerId = getAccountId()!;
+
+        const result = await client.request({
+          topic: session.topic,
+          chainId: "near:testnet",
+          request: {
+            method: "near_signAndSendTransaction",
+            params: {
+              signerId,
+              receiverId,
+              actions
+            },
+          },
+        });
+
+        console.log("result:", result);
+        return result;
       }
     };
   };
