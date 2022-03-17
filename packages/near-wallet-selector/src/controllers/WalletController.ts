@@ -67,7 +67,15 @@ class WalletController {
           case "math-wallet":
             return setupMathWallet();
           case "wallet-connect":
-            return setupWalletConnect({ projectId: "c4f79cc..." });
+            return setupWalletConnect({
+              projectId: "c4f79cc...",
+              metadata: {
+                name: "NEAR Wallet Selector",
+                description: "Example dApp used by NEAR Wallet Selector",
+                url: "https://github.com/near-projects/wallet-selector",
+                icons: ["https://avatars.githubusercontent.com/u/37784886"],
+              },
+            });
           default:
             throw new Error("Invalid wallet id");
         }

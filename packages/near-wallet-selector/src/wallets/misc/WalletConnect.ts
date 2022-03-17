@@ -1,6 +1,6 @@
 import WalletConnectClient from "@walletconnect/client";
 import { CLIENT_EVENTS } from "@walletconnect/client";
-import { PairingTypes, SessionTypes } from "@walletconnect/types";
+import { PairingTypes, SessionTypes, AppMetadata } from "@walletconnect/types";
 
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
@@ -8,9 +8,10 @@ import { Subscription } from "../../utils/EventsHandler";
 
 interface WalletConnectParams {
   projectId: string;
+  metadata: AppMetadata
 }
 
-function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<BrowserWallet> {
+function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BrowserWallet> {
   return function WalletConnect({ options, provider, emitter, logger, updateState }) {
     const subscriptions: Record<string, Subscription> = {};
     let client: WalletConnectClient;
@@ -47,12 +48,7 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
         client = await WalletConnectClient.init({
           projectId,
           relayUrl: "wss://relay.walletconnect.com",
-          metadata: {
-            name: "Example Dapp",
-            description: "Example Dapp",
-            url: "#",
-            icons: ["https://walletconnect.com/walletconnect-logo.png"],
-          },
+          metadata,
         });
 
         addEventListener(
@@ -87,12 +83,7 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
         }
 
         session = await client.connect({
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near-projects/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
+          metadata,
           permissions: {
             blockchain: {
               chains: [`near:${options.networkId}`],
