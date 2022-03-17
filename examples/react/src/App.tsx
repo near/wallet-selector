@@ -12,7 +12,7 @@ const App: React.FC = () => {
     const nearConfig = getConfig("testnet");
 
     const selector = new NearWalletSelector({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet", "wallet-connect"],
       networkId: nearConfig.networkId,
       contract: { contractId: nearConfig.contractName },
     });
