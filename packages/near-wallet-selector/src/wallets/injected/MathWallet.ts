@@ -73,7 +73,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           throw new Error("Wallet not installed");
         }
 
-        wallet = window.nearWalletApi!;
+        wallet = window.nearWalletApi as InjectedMathWallet;
       },
 
       async signIn() {
@@ -144,7 +144,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         });
 
         const signerAccount = await getSignerAccount();
-        const { accountId, publicKey } = signerAccount!;
+        const { accountId, publicKey } = signerAccount as SignedInAccount;
 
         const [block, accessKey] = await Promise.all([
           provider.block({ finality: "final" }),

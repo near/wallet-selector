@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { testEnvironment, ...nxPreset } = require("@nrwl/jest/preset");
 
 module.exports = {
