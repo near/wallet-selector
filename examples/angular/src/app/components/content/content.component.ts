@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import NearWalletSelector, { AccountInfo, Subscription } from "near-wallet-selector"
 import { utils } from "near-api-js";
 import { Message } from "../../interfaces/message";
+import { Sumbitted } from '../form/form.component';
 
 const { parseNearAmount } = utils.format;
 
@@ -9,7 +10,7 @@ const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 
 @Component({
-  selector: 'app-content',
+  selector: 'near-wallet-selector-content',
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.scss']
 })
@@ -19,8 +20,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   messages: Array<Message>;
   subscriptions: Record<string, Subscription> = {};
 
-  constructor() { }
-
   async ngOnInit() {
     const [ messages, account ] = await Promise.all([
       this.getMessages(),
@@ -28,7 +27,6 @@ export class ContentComponent implements OnInit, OnDestroy {
     ]);
 
     this.account = account;
-    // @ts-ignore
     this.messages = messages;
 
     this.subscribeToEvents();
@@ -63,7 +61,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         .getAccount()
         .then((data) => {
           console.log("Account", data);
-          this.account = data!;
+          this.account = data;
         })
         .catch((err) => {
           console.log("Failed to retrieve account info");
@@ -77,9 +75,8 @@ export class ContentComponent implements OnInit, OnDestroy {
     })
   }
 
-  onSubmit(e: SubmitEvent) {
-    //@ts-ignore
-    let { fieldset, message, donation } = e.target.elements;
+  onSubmit(e: Sumbitted) {
+    const { fieldset, message, donation } = e.target.elements;
 
     fieldset.disabled = true;
 
@@ -92,8 +89,8 @@ export class ContentComponent implements OnInit, OnDestroy {
         params: {
           methodName: "addMessage",
           args: { text: message.value },
-          gas: BOATLOAD_OF_GAS!,
-          deposit: utils.format.parseNearAmount(donation.value || "0")!
+          gas: BOATLOAD_OF_GAS as string,
+          deposit: utils.format.parseNearAmount(donation.value || "0") as string
         }
       }]
     })
@@ -125,7 +122,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    for (let key in this.subscriptions) {
+    for (const key in this.subscriptions) {
       const subscription = this.subscriptions[key];
 
       subscription.remove();

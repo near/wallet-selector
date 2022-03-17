@@ -3,7 +3,7 @@ import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
 
 @Component({
-  selector: 'app-root',
+  selector: 'near-wallet-selector-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -24,8 +24,8 @@ export class AppComponent implements OnInit {
       contract: { contractId: nearConfig.contractName },
     });
 
-    // @ts-ignore
-    window.selector = selector;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).selector = selector;
 
     await selector.init();
 
