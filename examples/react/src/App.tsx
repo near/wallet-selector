@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import NearWalletSelector from "near-wallet-selector";
 
@@ -18,7 +17,8 @@ const App: React.FC = () => {
       contract: { contractId: nearConfig.contractName },
     });
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore-next-line
     window.selector = selector;
 
     selector.init().then(() => {
@@ -36,6 +36,7 @@ const App: React.FC = () => {
   return (
     <Fragment>
       <h1>NEAR Guest Book</h1>
+      {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
       <Content selector={selectorRef.current!} />
     </Fragment>
   );

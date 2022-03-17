@@ -7,9 +7,9 @@ interface FormProps {
   onSubmit: FormEventHandler;
 }
 
-const Form: React.FC<FormProps> = ({ account, onSubmit }) => {
+const Form: React.FC<FormProps> = ({ account, ...props }) => {
   return (
-    <form onSubmit={onSubmit}>
+    <form {...props}>
       <fieldset id="fieldset">
         <p>Sign the guest book, {account.accountId}!</p>
         <p className="highlight">

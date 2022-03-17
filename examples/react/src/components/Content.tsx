@@ -8,6 +8,7 @@ import Form from "./Form";
 import Messages from "./Messages";
 
 const SUGGESTED_DONATION = "0";
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 interface ContentProps {
@@ -85,6 +86,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     e.preventDefault();
 
     // TODO: Fix the typing so that target.elements exists..
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore.
     const { fieldset, message, donation } = e.target.elements;
 
@@ -102,6 +104,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
               methodName: "addMessage",
               args: { text: message.value },
               gas: BOATLOAD_OF_GAS,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               deposit: utils.format.parseNearAmount(donation.value || "0")!,
             },
           },
@@ -153,7 +156,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>
       </div>
-      <Form account={account} onSubmit={handleSubmit} />
+      <Form account={account} onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
       <Messages messages={messages} />
     </Fragment>
   );
