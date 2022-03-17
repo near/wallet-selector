@@ -11,7 +11,7 @@ interface WalletConnectParams {
 }
 
 function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<BrowserWallet> {
-  return function WalletConnect({ provider, emitter, logger, updateState }) {
+  return function WalletConnect({ options, provider, emitter, logger, updateState }) {
     const subscriptions: Record<string, Subscription> = {};
     let client: WalletConnectClient;
     let session: SessionTypes.Settled;
@@ -66,8 +66,10 @@ function setupWalletConnect({ projectId }: WalletConnectParams): WalletModule<Br
         );
 
         if (client.session.topics.length) {
-          logger.log("WalletConnect:init:session", client.session.topics[0])
-          session = await client.session.get(client.session.topics[0]);
+          const topic = client.session.topics[0];
+          logger.log("WalletConnect:init:topic", topic);
+
+          session = await client.session.get(topic);
         }
       },
 
