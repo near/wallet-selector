@@ -290,7 +290,8 @@ export default `
   transition: background-color 0.2s ease-in-out;
 }
 
-.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img  {
+.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img,
+.Modal-dark-theme .Modal-content .Modal-option-list #math-wallet img {
   filter: invert(1);
 }
 
@@ -332,7 +333,8 @@ export default `
     transition: background-color 0.2s ease-in-out;
   }
   
-  .Modal-content .Modal-option-list li:first-child img  {
+  .Modal-content .Modal-option-list li:first-child img,
+  .Modal-content .Modal-option-list #math-wallet img   {
     filter: invert(1);
   }
 

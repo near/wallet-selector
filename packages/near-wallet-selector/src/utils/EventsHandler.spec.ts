@@ -1,4 +1,4 @@
-import { EventHandler } from "../EventsHandler";
+import { EventHandler } from "./EventsHandler";
 
 describe("emit", () => {
   it("calls the subscribed handlers for the event", () => {
