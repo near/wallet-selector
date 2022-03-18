@@ -68,7 +68,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
     return {
       id: "wallet-connect",
       type: "browser",
-      name: "Wallet Connect",
+      name: "WalletConnect",
       description: null,
       iconUrl: nearWalletIcon,
 
