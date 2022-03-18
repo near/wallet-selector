@@ -68,7 +68,11 @@ export interface HardwareWallet extends BaseWallet {
   signIn(params: HardwareWalletSignInParams): Promise<void>;
 }
 
-export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet;
+export interface BridgeWallet extends BaseWallet {
+  type: "bridge";
+}
+
+export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet | BridgeWallet;
 
 export type WalletType = Wallet["type"];
 

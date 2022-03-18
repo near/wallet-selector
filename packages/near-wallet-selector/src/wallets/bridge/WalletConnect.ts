@@ -8,7 +8,7 @@ import { PairingTypes, SessionTypes, AppMetadata } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
 import { walletConnectIcon } from "../icons";
-import { WalletModule, BrowserWallet } from "../Wallet";
+import { WalletModule, BridgeWallet } from "../Wallet";
 import { Subscription } from "../../utils/EventsHandler";
 
 interface WalletConnectParams {
@@ -16,7 +16,7 @@ interface WalletConnectParams {
   metadata: AppMetadata
 }
 
-function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BrowserWallet> {
+function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BridgeWallet> {
   return function WalletConnect({ options, provider, emitter, logger, updateState }) {
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
@@ -122,7 +122,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
     return {
       id: "wallet-connect",
-      type: "browser",
+      type: "bridge",
       name: "WalletConnect",
       description: null,
       iconUrl: walletConnectIcon,
@@ -133,9 +133,6 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
       async init() {
         await setupClient();
-
-        // @ts-ignore
-        window.wcClient = client;
 
         if (await this.isSignedIn()) {
           logger.log("WalletConnect:init", "Found historic session");

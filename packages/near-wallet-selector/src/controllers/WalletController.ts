@@ -10,7 +10,7 @@ import setupNearWallet from "../wallets/browser/NearWallet";
 import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 import setupMathWallet from "../wallets/injected/MathWallet";
-import setupWalletConnect from "../wallets/misc/WalletConnect";
+import setupWalletConnect from "../wallets/bridge/WalletConnect";
 
 export interface SignInParams {
   walletId: BuiltInWalletId;
