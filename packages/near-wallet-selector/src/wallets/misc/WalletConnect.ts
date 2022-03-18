@@ -38,6 +38,42 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       }
     };
 
+    const setupClient = async () => {
+      client = await WalletConnectClient.init({
+        projectId,
+        relayUrl: "wss://relay.walletconnect.com",
+        metadata,
+      });
+
+      subscriptions.push(
+        addEventListener(
+          CLIENT_EVENTS.pairing.created,
+          (pairing: PairingTypes.Settled) => {
+            logger.log("Pairing Created", pairing);
+          }
+        )
+      );
+
+      subscriptions.push(
+        addEventListener(
+          CLIENT_EVENTS.session.created,
+          (newSession: SessionTypes.Settled) => {
+            logger.log("Session Created", newSession);
+          }
+        )
+      );
+
+      subscriptions.push(
+        addEventListener(
+          CLIENT_EVENTS.session.updated,
+          (updatedSession: SessionTypes.Settled) => {
+            logger.log("Session Updated", updatedSession);
+            session = updatedSession;
+          }
+        )
+      );
+    }
+
     // Used instead of client.connect to reduce the timeout of pairing from 5 minutes.
     const connect = async () => {
       const relay = { protocol: RELAYER_DEFAULT_PROTOCOL };
@@ -77,39 +113,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       },
 
       async init() {
-        client = await WalletConnectClient.init({
-          projectId,
-          relayUrl: "wss://relay.walletconnect.com",
-          metadata,
-        });
-
-        subscriptions.push(
-          addEventListener(
-            CLIENT_EVENTS.pairing.created,
-            (pairing: PairingTypes.Settled) => {
-              logger.log("Pairing Created", pairing);
-            }
-          )
-        );
-
-        subscriptions.push(
-          addEventListener(
-            CLIENT_EVENTS.session.created,
-            (newSession: SessionTypes.Settled) => {
-              logger.log("Session Created", newSession);
-            }
-          )
-        );
-
-        subscriptions.push(
-          addEventListener(
-            CLIENT_EVENTS.session.updated,
-            (updatedSession: SessionTypes.Settled) => {
-              logger.log("Session Updated", updatedSession);
-              session = updatedSession;
-            }
-          )
-        );
+        await setupClient();
 
         // @ts-ignore
         window.wcClient = client;
@@ -124,19 +128,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
       async signIn() {
         if (!client) {
-          await this.init();
-        }
-
-        if (session) {
-          logger.log("Session already exists");
-
-          updateState((prevState) => ({
-            ...prevState,
-            showModal: false,
-            selectedWalletId: this.id,
-          }));
-          emitter.emit("signIn");
-          return;
+          await setupClient();
         }
 
         const subscription = addEventListener(
