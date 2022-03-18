@@ -41,6 +41,7 @@
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
     "@ledgerhq/logs": "^6.10.0",
     "@walletconnect/client": "^2.0.0-beta.23",
+    "@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "buffer": "^6.0.3",
