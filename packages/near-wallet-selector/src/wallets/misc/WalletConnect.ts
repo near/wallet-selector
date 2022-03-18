@@ -1,6 +1,11 @@
-import WalletConnectClient from "@walletconnect/client";
+import WalletConnectClient, {
+  RELAYER_DEFAULT_PROTOCOL,
+  SESSION_EMPTY_PERMISSIONS,
+  SESSION_SIGNAL_METHOD_PAIRING
+} from "@walletconnect/client";
 import { CLIENT_EVENTS } from "@walletconnect/client";
 import { PairingTypes, SessionTypes, AppMetadata } from "@walletconnect/types";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
@@ -13,7 +18,7 @@ interface WalletConnectParams {
 
 function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BrowserWallet> {
   return function WalletConnect({ options, provider, emitter, logger, updateState }) {
-    const subscriptions: Record<string, Subscription> = {};
+    const subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled;
 
@@ -23,14 +28,41 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       }
 
       return session.state.accounts[0].split(":")[2];
-    }
+    };
 
-    const addEventListener = (event: string, listener: unknown) => {
+    const addEventListener = (event: string, listener: unknown): Subscription => {
       client.on(event, listener);
 
-      subscriptions[event] = {
+      return {
         remove: () => client.off(event, listener)
       }
+    };
+
+    // Used instead of client.connect to reduce the timeout of pairing from 5 minutes.
+    const connect = async () => {
+      const relay = { protocol: RELAYER_DEFAULT_PROTOCOL };
+      const timeout = 30 * 1000;
+
+      const pairing = await client.pairing.create({ relay, timeout });
+
+      return client.session.create({
+        signal: {
+          method: SESSION_SIGNAL_METHOD_PAIRING,
+          params: { topic: pairing.topic }
+        },
+        relay,
+        timeout,
+        metadata,
+        permissions: {
+          ...SESSION_EMPTY_PERMISSIONS,
+          blockchain: {
+            chains: [`near:${options.networkId}`],
+          },
+          jsonrpc: {
+            methods: ["near_signAndSendTransaction"],
+          },
+        },
+      })
     }
 
     return {
@@ -51,15 +83,36 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
           metadata,
         });
 
-        addEventListener(
-          CLIENT_EVENTS.pairing.proposal,
-          (proposal: PairingTypes.Proposal) => {
-            // uri should be shared with the Wallet either through QR Code scanning or mobile deep linking
-            const { uri } = proposal.signal.params;
-
-            console.log("Pairing URI:", uri);
-          }
+        subscriptions.push(
+          addEventListener(
+            CLIENT_EVENTS.pairing.created,
+            (pairing: PairingTypes.Settled) => {
+              logger.log("Pairing Created", pairing);
+            }
+          )
         );
+
+        subscriptions.push(
+          addEventListener(
+            CLIENT_EVENTS.session.created,
+            (newSession: SessionTypes.Settled) => {
+              logger.log("Session Created", newSession);
+            }
+          )
+        );
+
+        subscriptions.push(
+          addEventListener(
+            CLIENT_EVENTS.session.updated,
+            (updatedSession: SessionTypes.Settled) => {
+              logger.log("Session Updated", updatedSession);
+              session = updatedSession;
+            }
+          )
+        );
+
+        // @ts-ignore
+        window.wcClient = client;
 
         if (client.session.topics.length) {
           const topic = client.session.topics[0];
@@ -75,37 +128,67 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         }
 
         if (session) {
-          return updateState((prevState) => ({
+          logger.log("Session already exists");
+
+          updateState((prevState) => ({
             ...prevState,
             showModal: false,
             selectedWalletId: this.id,
           }));
+          emitter.emit("signIn");
+          return;
         }
 
-        session = await client.connect({
-          metadata,
-          permissions: {
-            blockchain: {
-              chains: [`near:${options.networkId}`],
-            },
-            jsonrpc: {
-              methods: ["near_signAndSendTransaction"],
-            },
-          },
-        });
+        const subscription = addEventListener(
+          CLIENT_EVENTS.pairing.proposal,
+          (proposal: PairingTypes.Proposal) => {
+            logger.log("Pairing Proposal", proposal);
+            const { uri } = proposal.signal.params;
 
-        updateState((prevState) => ({
-          ...prevState,
-          showModal: false,
-          selectedWalletId: this.id,
-        }));
-        emitter.emit("signIn");
+            QRCodeModal.open(uri, () => {
+              subscription.remove();
+            });
+          }
+        );
+
+        try {
+          const newSession = await connect();
+
+          if (newSession.state.accounts.length > 1) {
+            const message = "Multiple accounts not supported";
+            await client.session.delete({
+              topic: newSession.topic,
+              reason: { code: 9000, message }
+            });
+
+            throw new Error(message);
+          }
+
+          session = newSession;
+
+          updateState((prevState) => ({
+            ...prevState,
+            showModal: false,
+            selectedWalletId: this.id,
+          }));
+          emitter.emit("signIn");
+        } catch (err) {
+          // Consider timeouts a 'cancelled' case.
+          if (typeof err === "string" && err.startsWith("failed to settle after")) {
+            return;
+          }
+
+          logger.log("Failed to establish a WalletConnect session");
+          logger.error(err);
+          throw new Error("Failed to sign in");
+        } finally {
+          subscription.remove();
+          QRCodeModal.close();
+        }
       },
 
       async signOut() {
-        for (const key in subscriptions) {
-          subscriptions[key].remove();
-        }
+        subscriptions.forEach((subscription) => subscription.remove());
 
         await client.disconnect({
           topic: session.topic,
