@@ -1,11 +1,6 @@
-import WalletConnectClient, {
-  RELAYER_DEFAULT_PROTOCOL,
-  SESSION_EMPTY_PERMISSIONS,
-  SESSION_SIGNAL_METHOD_PAIRING
-} from "@walletconnect/client";
-import { CLIENT_EVENTS } from "@walletconnect/client";
-import { PairingTypes, SessionTypes, AppMetadata } from "@walletconnect/types";
+import WalletConnectClient from "./WalletConnectClient"
 import QRCodeModal from "@walletconnect/qrcode-modal";
+import { AppMetadata, SessionTypes } from "@walletconnect/types";
 
 import { walletConnectIcon } from "../icons";
 import { WalletModule, BridgeWallet } from "../Wallet";
@@ -30,14 +25,6 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       return session.state.accounts[0].split(":")[2];
     };
 
-    const addEventListener = (event: string, listener: unknown): Subscription => {
-      client.on(event, listener);
-
-      return {
-        remove: () => client.off(event, listener)
-      }
-    };
-
     const cleanup = () => {
       subscriptions.forEach((subscription) => subscription.remove());
       subscriptions = [];
@@ -46,78 +33,46 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
     }
 
     const setupClient = async () => {
-      client = await WalletConnectClient.init({
+      const wcClient = new WalletConnectClient();
+
+      await wcClient.init({
         projectId,
         relayUrl: "wss://relay.walletconnect.com",
         metadata,
-      });
-
-      subscriptions.push(
-        addEventListener(
-          CLIENT_EVENTS.pairing.created,
-          (pairing: PairingTypes.Settled) => {
-            logger.log("Pairing Created", pairing);
-          }
-        )
-      );
-
-      subscriptions.push(
-        addEventListener(
-          CLIENT_EVENTS.session.updated,
-          (updatedSession: SessionTypes.Settled) => {
-            logger.log("Session Updated", updatedSession);
-
-            if (updatedSession.topic === session?.topic) {
-              session = updatedSession;
-            }
-          }
-        )
-      );
-
-      subscriptions.push(
-        addEventListener(
-          CLIENT_EVENTS.session.deleted,
-          (deletedSession: SessionTypes.Settled) => {
-            logger.log("Session Deleted", deletedSession);
-
-            if (deletedSession.topic === session?.topic) {
-              cleanup();
-              updateState((prevState) => ({
-                ...prevState,
-                selectedWalletId: null,
-              }));
-              emitter.emit("signOut");
-            }
-          }
-        )
-      );
-    }
-
-    // Used instead of client.connect to reduce the timeout of pairing from 5 minutes.
-    const connect = async () => {
-      const relay = { protocol: RELAYER_DEFAULT_PROTOCOL };
-      const timeout = 30 * 1000;
-
-      const pairing = await client.pairing.create({ relay, timeout });
-
-      return client.session.create({
-        signal: {
-          method: SESSION_SIGNAL_METHOD_PAIRING,
-          params: { topic: pairing.topic }
-        },
-        relay,
-        timeout,
-        metadata,
-        permissions: {
-          ...SESSION_EMPTY_PERMISSIONS,
-          blockchain: {
-            chains: [`near:${options.networkId}`],
-          },
-          jsonrpc: {
-            methods: ["near_signAndSendTransaction"],
-          },
-        },
       })
+
+      subscriptions.push(
+        wcClient.on("pairing_created", (pairing) => {
+          logger.log("Pairing Created", pairing);
+        })
+      );
+
+      subscriptions.push(
+        wcClient.on("session_updated", (updatedSession) => {
+          logger.log("Session Updated", updatedSession);
+
+          if (updatedSession.topic === session?.topic) {
+            session = updatedSession;
+          }
+        })
+      );
+
+      subscriptions.push(
+        wcClient.on("session_deleted", (deletedSession) => {
+          logger.log("Session Deleted", deletedSession);
+
+          if (deletedSession.topic === session?.topic) {
+            cleanup();
+            updateState((prevState) => ({
+              ...prevState,
+              selectedWalletId: null,
+            }));
+            emitter.emit("signOut");
+          }
+        })
+      );
+
+      client = wcClient;
     }
 
     return {
@@ -145,32 +100,28 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
           await setupClient();
         }
 
-        const subscription = addEventListener(
-          CLIENT_EVENTS.pairing.proposal,
-          (proposal: PairingTypes.Proposal) => {
-            logger.log("Pairing Proposal", proposal);
-            const { uri } = proposal.signal.params;
+        const subscription = client.on("pairing_proposal", (proposal) => {
+          logger.log("Pairing Proposal", proposal);
+          const { uri } = proposal.signal.params;
 
-            QRCodeModal.open(uri, () => {
-              subscription.remove();
-            });
-          }
-        );
+          QRCodeModal.open(uri, () => {
+            subscription.remove();
+          });
+        });
 
         try {
-          const newSession = await connect();
-
-          if (newSession.state.accounts.length > 1) {
-            const message = "Multiple accounts not supported";
-            await client.session.delete({
-              topic: newSession.topic,
-              reason: { code: 9000, message }
-            });
-
-            throw new Error(message);
-          }
-
-          session = newSession;
+          session = await client.connect({
+            metadata,
+            timeout: 30 * 1000,
+            permissions: {
+              blockchain: {
+                chains: [`near:${options.networkId}`],
+              },
+              jsonrpc: {
+                methods: ["near_signAndSendTransaction"],
+              },
+            }
+          });
 
           updateState((prevState) => ({
             ...prevState,
@@ -207,7 +158,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       },
 
       async isSignedIn() {
-        return Boolean(client.session.topics.length);
+        return client.isSignedIn()
       },
 
       async getAccount() {

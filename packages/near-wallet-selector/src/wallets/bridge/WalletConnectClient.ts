@@ -34,6 +34,14 @@ class WalletConnectClient {
     this.client = await Client.init(opts);
   }
 
+  get session() {
+    return this.client.session;
+  }
+
+  isSignedIn() {
+    return Boolean(this.client.session.topics.length)
+  }
+
   on<Event extends keyof WalletConnectEvents>(
     event: Event,
     callback: WalletConnectEvents[Event]
@@ -50,8 +58,7 @@ class WalletConnectClient {
     const timeout = params.timeout || 30 * 1000;
 
     const pairing = await this.client.pairing.create({ relay, timeout });
-
-    return this.client.session.create({
+    const session = await this.client.session.create({
       signal: {
         method: SESSION_SIGNAL_METHOD_PAIRING,
         params: { topic: pairing.topic }
@@ -63,7 +70,28 @@ class WalletConnectClient {
         ...SESSION_EMPTY_PERMISSIONS,
         ...params.permissions,
       },
-    })
+    });
+
+    if (session.state.accounts.length > 1) {
+      const message = "Multiple accounts not supported";
+
+      await this.client.session.delete({
+        topic: session.topic,
+        reason: { code: 9000, message }
+      });
+
+      throw new Error(message);
+    }
+
+    return session;
+  }
+
+  async request<Response>(params: ClientTypes.RequestParams): Promise<Response> {
+    return this.client.request(params)
+  }
+
+  async disconnect(params: ClientTypes.DisconnectParams) {
+    return this.client.disconnect(params);
   }
 }
 
