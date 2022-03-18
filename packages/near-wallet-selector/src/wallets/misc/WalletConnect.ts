@@ -173,12 +173,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
           }));
           emitter.emit("signIn");
         } catch (err) {
-          // Consider timeouts a 'cancelled' case.
-          if (typeof err === "string" && err.startsWith("failed to settle after")) {
-            return;
-          }
-
-          logger.log("Failed to establish a WalletConnect session");
+          logger.log("Failed to create WalletConnect session");
           logger.error(err);
           throw new Error("Failed to sign in");
         } finally {
