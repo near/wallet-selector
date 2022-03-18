@@ -118,11 +118,8 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         // @ts-ignore
         window.wcClient = client;
 
-        if (client.session.topics.length) {
-          const topic = client.session.topics[0];
-          logger.log("WalletConnect:init:topic", topic);
-
-          session = await client.session.get(topic);
+        if (await this.isSignedIn()) {
+          session = await client.session.get(client.session.topics[0]);
         }
       },
 
