@@ -187,6 +187,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         });
 
         return client.request({
+          timeout: 30 * 1000,
           topic: session!.topic,
           chainId: "near:testnet",
           request: {
