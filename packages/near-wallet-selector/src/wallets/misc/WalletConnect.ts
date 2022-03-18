@@ -18,7 +18,7 @@ interface WalletConnectParams {
 
 function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BrowserWallet> {
   return function WalletConnect({ options, provider, emitter, logger, updateState }) {
-    const subscriptions: Array<Subscription> = [];
+    let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
 
@@ -38,6 +38,13 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       }
     };
 
+    const cleanup = () => {
+      subscriptions.forEach((subscription) => subscription.remove());
+      subscriptions = [];
+
+      session = null;
+    }
+
     const setupClient = async () => {
       client = await WalletConnectClient.init({
         projectId,
@@ -56,19 +63,31 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
       subscriptions.push(
         addEventListener(
-          CLIENT_EVENTS.session.created,
-          (newSession: SessionTypes.Settled) => {
-            logger.log("Session Created", newSession);
+          CLIENT_EVENTS.session.updated,
+          (updatedSession: SessionTypes.Settled) => {
+            logger.log("Session Updated", updatedSession);
+
+            if (updatedSession.topic === session?.topic) {
+              session = updatedSession;
+            }
           }
         )
       );
 
       subscriptions.push(
         addEventListener(
-          CLIENT_EVENTS.session.updated,
-          (updatedSession: SessionTypes.Settled) => {
-            logger.log("Session Updated", updatedSession);
-            session = updatedSession;
+          CLIENT_EVENTS.session.deleted,
+          (deletedSession: SessionTypes.Settled) => {
+            logger.log("Session Deleted", deletedSession);
+
+            if (deletedSession.topic === session?.topic) {
+              cleanup();
+              updateState((prevState) => ({
+                ...prevState,
+                selectedWalletId: null,
+              }));
+              emitter.emit("signOut");
+            }
           }
         )
       );
@@ -119,6 +138,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         window.wcClient = client;
 
         if (await this.isSignedIn()) {
+          logger.log("WalletConnect:init", "Found historic session");
           session = await client.session.get(client.session.topics[0]);
         }
       },
@@ -172,8 +192,6 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       },
 
       async signOut() {
-        subscriptions.forEach((subscription) => subscription.remove());
-
         await client.disconnect({
           topic: session!.topic,
           reason: {
@@ -181,7 +199,8 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
             message: "User disconnected"
           },
         });
-        session = null;
+
+        cleanup();
 
         updateState((prevState) => ({
           ...prevState,
