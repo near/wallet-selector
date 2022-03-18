@@ -20,7 +20,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
   return function WalletConnect({ options, provider, emitter, logger, updateState }) {
     const subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
-    let session: SessionTypes.Settled;
+    let session: SessionTypes.Settled | null = null;
 
     const getAccountId = () => {
       if (!session?.state.accounts.length) {
@@ -186,12 +186,13 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         subscriptions.forEach((subscription) => subscription.remove());
 
         await client.disconnect({
-          topic: session.topic,
+          topic: session!.topic,
           reason: {
             code: 5900,
             message: "User disconnected"
           },
         });
+        session = null;
 
         updateState((prevState) => ({
           ...prevState,
@@ -223,14 +224,14 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         const signerId = getAccountId()!;
 
         logger.log("WalletConnect:signAndSendTransaction", {
-          topic: session.topic,
+          topic: session!.topic,
           signerId,
           receiverId,
           actions,
         });
 
         return client.request({
-          topic: session.topic,
+          topic: session!.topic,
           chainId: "near:testnet",
           request: {
             method: "near_signAndSendTransaction",
