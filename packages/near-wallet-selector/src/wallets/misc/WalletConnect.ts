@@ -7,7 +7,7 @@ import { CLIENT_EVENTS } from "@walletconnect/client";
 import { PairingTypes, SessionTypes, AppMetadata } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
-import { nearWalletIcon } from "../icons";
+import { walletConnectIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 import { Subscription } from "../../utils/EventsHandler";
 
@@ -106,7 +106,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       type: "browser",
       name: "WalletConnect",
       description: null,
-      iconUrl: nearWalletIcon,
+      iconUrl: walletConnectIcon,
 
       isAvailable() {
         return true;
