@@ -140,21 +140,13 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       },
 
       async signOut() {
-        await client.disconnect({
+        return client.disconnect({
           topic: session!.topic,
           reason: {
             code: 5900,
             message: "User disconnected"
           },
         });
-
-        cleanup();
-
-        updateState((prevState) => ({
-          ...prevState,
-          selectedWalletId: null,
-        }));
-        emitter.emit("signOut");
       },
 
       async isSignedIn() {
