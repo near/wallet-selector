@@ -16,6 +16,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
+    const chainId = `near:${options.networkId}`;
 
     const getAccountId = () => {
       if (!session?.state.accounts.length) {
@@ -115,7 +116,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
             timeout: 30 * 1000,
             permissions: {
               blockchain: {
-                chains: [`near:${options.networkId}`],
+                chains: [chainId],
               },
               jsonrpc: {
                 methods: ["near_signAndSendTransaction"],
@@ -177,7 +178,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         return client.request({
           timeout: 30 * 1000,
           topic: session!.topic,
-          chainId: "near:testnet",
+          chainId,
           request: {
             method: "near_signAndSendTransaction",
             params: {
