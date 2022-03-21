@@ -133,8 +133,9 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("MathWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });

@@ -97,8 +97,9 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("NearWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });

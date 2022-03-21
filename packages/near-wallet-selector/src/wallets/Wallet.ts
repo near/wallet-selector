@@ -14,6 +14,7 @@ export interface HardwareWalletSignInParams {
 }
 
 export interface SignAndSendTransactionParams {
+  signerId?: string;
   receiverId: string;
   actions: Array<Action>;
 }

@@ -338,6 +338,7 @@ await selector.contract.view({
 **Parameters**
 
 - `params` (`object`)
+  - `signerId` (`string?`): Account ID used to sign the transaction. 
   - `actions` (`Array<Action>`)
     - `type` (`string`): Action type. See below for available values.
     - `params` (`object?`): Parameters for the Action (if applicable).

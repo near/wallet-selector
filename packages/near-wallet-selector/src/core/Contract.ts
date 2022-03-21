@@ -38,6 +38,7 @@ class Contract {
   }
 
   async signAndSendTransaction({
+    signerId,
     actions,
   }: Omit<SignAndSendTransactionParams, "receiverId">) {
     const wallet = this.controller.getSelectedWallet();
@@ -47,6 +48,7 @@ class Contract {
     }
 
     return wallet.signAndSendTransaction({
+      signerId,
       receiverId: this.options.contract.contractId,
       actions,
     });

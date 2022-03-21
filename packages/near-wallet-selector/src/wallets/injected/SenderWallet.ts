@@ -160,8 +160,9 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("SenderWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });
