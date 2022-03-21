@@ -129,10 +129,6 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
             selectedWalletId: this.id,
           }));
           emitter.emit("signIn");
-        } catch (err) {
-          logger.log("Failed to create WalletConnect session");
-          logger.error(err);
-          throw new Error("Failed to sign in");
         } finally {
           subscription.remove();
           QRCodeModal.close();

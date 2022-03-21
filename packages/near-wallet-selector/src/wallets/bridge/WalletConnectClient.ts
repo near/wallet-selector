@@ -57,33 +57,42 @@ class WalletConnectClient {
     const relay = params.relay || { protocol: RELAYER_DEFAULT_PROTOCOL };
     const timeout = params.timeout || 30 * 1000;
 
-    const pairing = await this.client.pairing.create({ relay, timeout });
-    const session = await this.client.session.create({
-      signal: {
-        method: SESSION_SIGNAL_METHOD_PAIRING,
-        params: { topic: pairing.topic }
-      },
-      relay,
-      timeout,
-      metadata: params.metadata,
-      permissions: {
-        ...SESSION_EMPTY_PERMISSIONS,
-        ...params.permissions,
-      },
-    });
-
-    if (session.state.accounts.length > 1) {
-      const message = "Multiple accounts not supported";
-
-      await this.client.disconnect({
-        topic: session.topic,
-        reason: { code: 9000, message }
+    try {
+      const pairing = await this.client.pairing.create({relay, timeout});
+      const session = await this.client.session.create({
+        signal: {
+          method: SESSION_SIGNAL_METHOD_PAIRING,
+          params: {topic: pairing.topic}
+        },
+        relay,
+        timeout,
+        metadata: params.metadata,
+        permissions: {
+          ...SESSION_EMPTY_PERMISSIONS,
+          ...params.permissions,
+        },
       });
 
-      throw new Error(message);
-    }
+      if (session.state.accounts.length > 1) {
+        const message = "Multiple accounts not supported";
 
-    return session;
+        await this.client.disconnect({
+          topic: session.topic,
+          reason: {code: 9000, message}
+        });
+
+        throw new Error(message);
+      }
+
+      return session;
+    } catch (err) {
+      // WalletConnect sadly throws strings.
+      if (typeof err === "string") {
+        throw new Error(err);
+      }
+
+      throw err;
+    }
   }
 
   async request<Response>(params: ClientTypes.RequestParams): Promise<Response> {

@@ -94,6 +94,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     wallet.signIn().catch((err) => {
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
+
+      alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
     });
   };
 
