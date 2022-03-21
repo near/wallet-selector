@@ -4,14 +4,13 @@ import ReactDOM from "react-dom";
 import WalletController, {
   SignInParams,
 } from "../controllers/WalletController";
-import Contract from "./Contract";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
+import { SignAndSendTransactionParams } from "../wallets/Wallet";
 
 export default class NearWalletSelector {
   private options: Options;
@@ -19,21 +18,16 @@ export default class NearWalletSelector {
   private emitter: Emitter;
   private controller: WalletController;
 
-  contract: Contract;
   provider: ProviderService;
 
   constructor(options: Options) {
-    const config = getConfig(options.networkId);
-
     const emitter = new EventHandler();
-    const provider = new ProviderService(config.nodeUrl);
+    const provider = new ProviderService(options);
     const controller = new WalletController(options, provider, emitter);
-    const contract = new Contract(options, provider, controller);
 
     this.options = options;
     this.emitter = emitter;
     this.controller = controller;
-    this.contract = contract;
     this.provider = provider;
   }
 
@@ -102,5 +96,22 @@ export default class NearWalletSelector {
 
   off(event: EventList, callback: () => void) {
     this.emitter.off(event, callback);
+  }
+
+  async signAndSendTransaction({
+    signerId,
+    actions,
+  }: Omit<SignAndSendTransactionParams, "receiverId">) {
+    const wallet = this.controller.getSelectedWallet();
+
+    if (!wallet) {
+      throw new Error("Wallet not selected!");
+    }
+
+    return wallet.signAndSendTransaction({
+      signerId,
+      receiverId: this.options.contract.contractId,
+      actions,
+    });
   }
 }

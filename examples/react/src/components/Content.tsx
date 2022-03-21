@@ -20,7 +20,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const getMessages = () => {
-    return selector.contract.view<Array<Message>>({
+    return selector.provider.callFunction<Array<Message>>({
       methodName: "getMessages",
     });
   };
@@ -109,21 +109,20 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    selector.contract
-      .signAndSendTransaction({
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              deposit: utils.format.parseNearAmount(donation.value || "0")!,
-            },
+    selector.signAndSendTransaction({
+      actions: [
+        {
+          type: "FunctionCall",
+          params: {
+            methodName: "addMessage",
+            args: { text: message.value },
+            gas: BOATLOAD_OF_GAS,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            deposit: utils.format.parseNearAmount(donation.value || "0")!,
           },
-        ],
-      })
+        },
+      ],
+    })
       .catch((err) => {
         alert("Failed to add message");
         console.log("Failed to add message");
