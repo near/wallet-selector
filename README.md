@@ -212,7 +212,7 @@ const signedIn = await selector.isSignedIn();
 console.log(signedIn) // true
 ```
 
-### `.getAccount()`
+### `.getAccounts()`
 
 **Parameters**
 
@@ -220,17 +220,18 @@ console.log(signedIn) // true
 
 **Returns**
 
-- `Promise<object | null>`: Resolves to an object containing `accountId` and `balance`.
+- `Promise<Array<object>>`
+  - `accountId`: An account id for each account associated with the selected wallet.
 
 **Description**
 
-Retrieves account information when the user is signed in. Returns `null` when the user is signed out.
+Retrieves account information when the user is signed in. Returns an empty array when the user is signed out. This method can be useful for wallets that support accounts at once such as WalletConnect. In this case, you can use an `accountId` returned as the `signerId` for `signAndSendTransaction`.
 
 **Example**
 
 ```ts
-const account = await selector.getAccount();
-console.log(account); // { accountId: "test.testnet", balance: "999999999999" }
+const accounts = await selector.getAccounts();
+console.log(accounts); // [{ accountId: "test.testnet" }]
 ```
 
 ### `.on(event, callback)`
