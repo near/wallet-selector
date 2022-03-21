@@ -53,7 +53,7 @@ class ProviderService {
   }
 
   callFunction<Response>({
-    accountId = this.options.contract.contractId,
+    accountId = this.options.contractId,
     methodName,
     args = {},
     finality = "optimistic",

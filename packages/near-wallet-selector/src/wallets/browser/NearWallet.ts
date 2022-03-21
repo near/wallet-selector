@@ -55,8 +55,8 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         }
 
         await wallet.requestSignIn({
-          contractId: options.contract.contractId,
-          methodNames: options.contract.methodNames,
+          contractId: options.contractId,
+          methodNames: options.methodNames,
         });
 
         storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, this.id);

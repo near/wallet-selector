@@ -46,7 +46,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         return wallet.signer.account;
       }
 
-      return wallet.login({ contractId: options.contract.contractId });
+      return wallet.login({ contractId: options.contractId });
     };
 
     return {
@@ -86,7 +86,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         }
 
         const account = await wallet.login({
-          contractId: options.contract.contractId,
+          contractId: options.contractId,
         });
 
         if (!account) {

@@ -110,7 +110,7 @@ export default class NearWalletSelector {
 
     return wallet.signAndSendTransaction({
       signerId,
-      receiverId: this.options.contract.contractId,
+      receiverId: this.options.contractId,
       actions,
     });
   }

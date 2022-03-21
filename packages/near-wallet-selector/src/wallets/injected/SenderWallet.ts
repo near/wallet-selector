@@ -114,8 +114,8 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         }
 
         const { accessKey } = await wallet.requestSignIn({
-          contractId: options.contract.contractId,
-          methodNames: options.contract.methodNames,
+          contractId: options.contractId,
+          methodNames: options.methodNames,
         });
 
         if (!accessKey) {
