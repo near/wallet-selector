@@ -26,7 +26,9 @@ export class ContentComponent implements OnInit, OnDestroy {
       this.selector.getAccount(),
     ]);
 
-    this.account = account;
+    if (this.selector.isSignedIn()) {
+      this.account = account;
+    }
     this.messages = messages;
 
     this.subscribeToEvents();

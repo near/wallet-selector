@@ -30,7 +30,10 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     Promise.all([getMessages(), selector.getAccount()]).then(
       ([nextMessages, nextAccount]) => {
         setMessages(nextMessages);
-        setAccount(nextAccount);
+
+        if (selector.isSignedIn()) {
+          setAccount(nextAccount);
+        }
       }
     );
 
