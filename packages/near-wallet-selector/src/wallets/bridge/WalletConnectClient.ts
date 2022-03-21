@@ -75,7 +75,7 @@ class WalletConnectClient {
     if (session.state.accounts.length > 1) {
       const message = "Multiple accounts not supported";
 
-      await this.client.session.delete({
+      await this.client.disconnect({
         topic: session.topic,
         reason: { code: 9000, message }
       });
