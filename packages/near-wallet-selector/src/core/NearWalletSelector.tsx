@@ -82,8 +82,8 @@ export default class NearWalletSelector {
     return this.controller.isSignedIn();
   }
 
-  getAccount() {
-    return this.controller.getAccount();
+  getAccounts() {
+    return this.controller.getAccounts();
   }
 
   on(event: EventList, callback: () => void) {

@@ -148,20 +148,16 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut");
       },
 
-      async getAccount() {
-        const signedIn = await this.isSignedIn();
+      async getAccounts() {
+        const accountId = wallet.getAccountId();
 
-        if (!signedIn) {
-          return null;
+        if (!accountId) {
+          return [];
         }
 
-        const accountId = wallet.getAccountId();
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return [{
+          accountId
+        }];
       },
 
       async signAndSendTransaction({ receiverId, actions }) {

@@ -18,9 +18,9 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
+// TODO: Extend to include key type (ed25519) and public key.
 export interface AccountInfo {
   accountId: string;
-  balance: string;
 }
 
 interface BaseWallet {
@@ -46,8 +46,8 @@ interface BaseWallet {
   // Determines if we're signed in with the wallet.
   isSignedIn(): Promise<boolean>;
 
-  // Retrieves account info based on associated accountId.
-  getAccount(): Promise<AccountInfo | null>;
+  // Retrieves all active accounts.
+  getAccounts(): Promise<Array<AccountInfo>>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(

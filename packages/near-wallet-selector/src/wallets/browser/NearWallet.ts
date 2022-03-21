@@ -85,20 +85,16 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         return wallet.isSignedIn();
       },
 
-      async getAccount() {
-        const signedIn = await this.isSignedIn();
+      async getAccounts() {
+        const accountId: string | null = wallet.getAccountId();
 
-        if (!signedIn) {
-          return null;
+        if (!accountId) {
+          return [];
         }
 
-        const accountId = wallet.getAccountId();
-        const state = await wallet.account().state();
-
-        return {
-          accountId,
-          balance: state.amount,
-        };
+        return [{
+          accountId
+        }];
       },
 
       async signAndSendTransaction({ receiverId, actions }) {
@@ -108,7 +104,6 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         });
 
         const account = wallet.account();
-
 
         // near-api-js marks this method as protected.
         return account['signAndSendTransaction']({

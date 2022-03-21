@@ -121,20 +121,16 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut");
       },
 
-      async getAccount() {
+      async getAccounts() {
         const signerAccount = await getSignerAccount();
 
         if (!signerAccount) {
-          return null;
+          return [];
         }
 
-        const { accountId } = signerAccount;
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return [{
+          accountId: signerAccount.accountId
+        }];
       },
 
       async signAndSendTransaction({ receiverId, actions }) {
