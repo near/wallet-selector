@@ -179,6 +179,26 @@ class WalletController {
 
     return wallet.getAccounts();
   }
+
+  async getAccountId() {
+    const wallet = this.getSelectedWallet();
+
+    if (!wallet) {
+      return null;
+    }
+
+    return wallet.getAccountId();
+  }
+
+  async setAccountId(accountId: string) {
+    const wallet = this.getSelectedWallet();
+
+    if (!wallet) {
+      return;
+    }
+
+    return wallet.setAccountId(accountId);
+  }
 }
 
 export default WalletController;

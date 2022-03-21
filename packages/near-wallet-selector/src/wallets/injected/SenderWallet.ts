@@ -160,6 +160,16 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         }];
       },
 
+      async getAccountId() {
+        const accounts = await this.getAccounts();
+
+        return accounts.length ? accounts[0].accountId : null;
+      },
+
+      async setAccountId() {
+        return Promise.resolve();
+      },
+
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("SenderWallet:signAndSendTransaction", {
           signerId,

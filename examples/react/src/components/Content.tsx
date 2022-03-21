@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { utils } from "near-api-js";
-import NearWalletSelector, { AccountInfo } from "near-wallet-selector";
+import NearWalletSelector from "near-wallet-selector";
 
-import { Message } from "../interfaces";
+import { Account, Message } from "../interfaces";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
@@ -16,7 +16,7 @@ interface ContentProps {
 }
 
 const Content: React.FC<ContentProps> = ({ selector }) => {
-  const [account, setAccount] = useState<AccountInfo | null>(null);
+  const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const getMessages = () => {
@@ -25,9 +25,24 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     });
   };
 
+  const getAccount = async (): Promise<Account | null> => {
+    const accountId = await selector.getAccountId();
+
+    if (!accountId) {
+      return null;
+    }
+
+    const account = await selector.provider.viewAccount({ accountId });
+
+    return {
+      ...account,
+      account_id: accountId,
+    };
+  }
+
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    Promise.all([getMessages(), selector.getAccount()]).then(
+    Promise.all([getMessages(), getAccount()]).then(
       ([nextMessages, nextAccount]) => {
         setMessages(nextMessages);
         setAccount(nextAccount);
@@ -41,8 +56,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     const subscription = selector.on("signIn", () => {
       console.log("'signIn' event triggered!");
 
-      selector
-        .getAccount()
+      getAccount()
         .then((data) => {
           console.log("Account", data);
           setAccount(data);

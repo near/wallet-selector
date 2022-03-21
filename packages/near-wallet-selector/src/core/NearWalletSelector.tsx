@@ -20,6 +20,7 @@ export default class NearWalletSelector {
   private controller: WalletController;
 
   contract: Contract;
+  provider: ProviderService;
 
   constructor(options: Options) {
     const config = getConfig(options.networkId);
@@ -33,6 +34,7 @@ export default class NearWalletSelector {
     this.emitter = emitter;
     this.controller = controller;
     this.contract = contract;
+    this.provider = provider;
   }
 
   private renderModal() {
@@ -84,6 +86,14 @@ export default class NearWalletSelector {
 
   getAccounts() {
     return this.controller.getAccounts();
+  }
+
+  getAccountId() {
+    return this.controller.getAccountId();
+  }
+
+  setAccountId(accountId: string) {
+    return this.controller.setAccountId(accountId);
   }
 
   on(event: EventList, callback: () => void) {
