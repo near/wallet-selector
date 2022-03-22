@@ -38,6 +38,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     DEFAULT_DERIVATION_PATH
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [currentWallet, setCurrentWallet] = useState<Wallet>();
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -83,6 +84,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   };
 
   const handleWalletClick = (wallet: Wallet) => () => {
+    setCurrentWallet(wallet);
+
     if (wallet.type === "hardware") {
       return updateState((prevState) => ({
         ...prevState,
@@ -231,7 +234,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
           >
             <div className="icon-display">
               <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
-              <p>SenderWallet</p>
+              <p>{currentWallet?.name}</p>
             </div>
             <p>
               You'll need to install SenderWallet to continue. After installing

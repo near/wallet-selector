@@ -78,7 +78,11 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
 
       async signIn() {
         if (!(await isInstalled())) {
-          //TODO update state
+          return updateState((prevState) => ({
+            ...prevState,
+            showWalletOptions: false,
+            showSenderWalletNotInstalled: true,
+          }));
         }
 
         if (!wallet) {
