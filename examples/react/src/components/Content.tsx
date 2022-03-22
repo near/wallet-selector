@@ -57,6 +57,10 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
       }
     );
 
+    selector.getAccounts().then((accounts) => {
+      console.log("Available Accounts", accounts);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

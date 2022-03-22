@@ -8,7 +8,6 @@ const App: React.FC = () => {
   const selectorRef = useRef<NearWalletSelector>();
 
   useEffect(() => {
-
     const selector = new NearWalletSelector({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
       networkId: "testnet",
