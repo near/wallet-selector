@@ -4,38 +4,59 @@ import { storage } from "../../services/persistent-storage.service";
 import ProviderService from "../../services/provider/ProviderService";
 import { updateState } from "../../state/State";
 import EventHandler from "../../utils/EventsHandler";
-import setupNearWallet from "./NearWallet";
+import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
 import { mock } from "jest-mock-extended";
-import * as NearApiJs from "near-api-js";
-
-const createNearWallet = async () => {
-  const networkId = "testnet";
-
-  const config = getConfig(networkId);
-
-  const nearWallet = setupNearWallet()({
-    options: {
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet"],
-      networkId: networkId,
-      contract: { contractId: "guest-book.testnet" },
-    },
-    provider: new ProviderService(config.nodeUrl),
-    emitter: new EventHandler(),
-    logger,
-    storage,
-    updateState,
-  });
-
-  const near = mock<NearApiJs>();
+import { AccountView } from "near-api-js/lib/providers/provider";
+const createNearWallet = () => {
+  const walletConnection = mock<WalletConnection>();
+  const account = mock<ConnectedWalletAccount>();
 
   jest.mock("near-api-js", () => {
+    const module = jest.requireActual("near-api-js");
     return {
-      ...jest.requireActual("near-api-js"),
-      connect: jest.fn().mockResolvedValue({}),
+      ...module,
+      connect: jest.fn().mockResolvedValue(mock<Near>()),
+      WalletConnection: jest.fn().mockReturnValue(walletConnection),
     };
   });
 
-  return { nearWallet, near };
+  walletConnection.isSignedIn.calledWith().mockReturnValue(true);
+  walletConnection.getAccountId
+    .calledWith()
+    .mockReturnValue("test-account.testnet");
+  walletConnection.account.calledWith().mockReturnValue(account);
+  // @ts-ignore
+  // near-api-js marks this method as protected.
+  // TODO: return value instead of null
+  account.signAndSendTransaction.mockResolvedValue(null);
+  account.state.mockResolvedValue(mock<AccountView>());
+
+  const networkId = "testnet";
+
+  const setupNearWallet = require("./NearWallet").default;
+  const NearWallet = setupNearWallet();
+
+  const config = getConfig(networkId);
+
+  return {
+    nearApiJs: require("near-api-js"),
+    wallet: NearWallet({
+      options: {
+        wallets: ["near-wallet"],
+        networkId: networkId,
+        contract: {
+          contractId: "guest-book.testnet",
+        },
+      },
+      provider: new ProviderService(config.nodeUrl),
+      emitter: new EventHandler(),
+      logger,
+      storage,
+      updateState,
+    }),
+    walletConnection,
+    account,
+  };
 };
 
 afterEach(() => {
@@ -44,71 +65,79 @@ afterEach(() => {
 
 describe("isAvailable", () => {
   it("returns true", async () => {
-    const { nearWallet } = await createNearWallet();
-    expect(nearWallet.isAvailable()).toBe(true);
+    const { wallet } = createNearWallet();
+    expect(wallet.isAvailable()).toBe(true);
   });
 });
 
 describe("init", () => {
   it("connects to near and clears storage", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    // expect(near.connect).toHaveBeenCalled();
-    // expect(near.connect).toBeCalledTimes(1);
+    const { wallet, nearApiJs } = createNearWallet();
+    await wallet.init();
+    expect(nearApiJs.connect).toHaveBeenCalled();
   });
 });
 
-// TODO
 describe("signIn", () => {
   it("sign into near wallet", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    nearWallet.signIn();
-    // expect(near.signIn).toHaveBeenCalled();
-    // expect(near.signIn).toBeCalledTimes(1);
+    const { wallet, walletConnection } = createNearWallet();
+    await wallet.init();
+    await wallet.signIn();
+    expect(walletConnection.requestSignIn).toHaveBeenCalled();
   });
 });
 
-// TODO
 describe("signOut", () => {
   it("sign out of near wallet", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    nearWallet.signIn();
-    // expect(near.signIn).toHaveBeenCalled();
-    // expect(near.signIn).toBeCalledTimes(1);
+    const { wallet, walletConnection } = createNearWallet();
+    await wallet.init();
+    await wallet.signOut();
+    expect(walletConnection.signOut).toHaveBeenCalled();
   });
 });
 
-// TODO
 describe("isSignedIn", () => {
-  it("isSignedIn returns true", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    const result = nearWallet.isSignedIn();
+  it("isSignedIn returns false", async () => {
+    const { wallet } = createNearWallet();
+    await wallet.init();
+    const result = await wallet.isSignedIn();
     expect(result).toEqual(true);
   });
 });
 
-// TODO
 describe("getAccount", () => {
   it("returns account object", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    const result = await nearWallet.getAccount();
-    expect(result).toEqual({});
+    const { wallet, walletConnection, account } = createNearWallet();
+    await wallet.init();
+    await wallet.signIn();
+    await wallet.getAccount();
+    expect(walletConnection.getAccountId).toHaveBeenCalled();
+    expect(account.state).toHaveBeenCalled();
+    // expect(result).toEqual({
+    //   accountId: "test-account.testnet",
+    //   balance: expect.any(String),
+    // });
   });
 });
 
-// TODO
 describe("signAndSendTransaction", () => {
   it("signs and seonds transaction", async () => {
-    const { nearWallet } = await createNearWallet();
-    nearWallet.init();
-    const result = await nearWallet.signAndSendTransaction({
+    const { wallet, walletConnection, account } = createNearWallet();
+    await wallet.init();
+    await wallet.signIn();
+    const result = await wallet.signAndSendTransaction({
       receiverId: "guest-book.testnet",
       actions: [],
     });
-    expect(result).toEqual({});
+    expect(walletConnection.account).toHaveBeenCalled();
+    // near-api-js marks this method as protected.
+    // @ts-ignore
+    expect(account.signAndSendTransaction).toHaveBeenCalled();
+    // @ts-ignore
+    expect(account.signAndSendTransaction).toBeCalledWith({
+      actions: [],
+      receiverId: "guest-book.testnet",
+    });
+    expect(result).toEqual(null);
   });
 });
