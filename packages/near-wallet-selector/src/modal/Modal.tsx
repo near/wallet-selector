@@ -232,7 +232,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             }}
             className="Modal-body Modal-wallet-not-installed"
           >
-            <div className="icon-display">
+            <div className={`icon-display ${currentWallet?.id}`}>
               <img src={currentWallet?.iconUrl} alt={currentWallet?.name} />
               <p>{currentWallet?.name}</p>
             </div>
