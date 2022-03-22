@@ -8,13 +8,11 @@ import {
   Finality,
 } from "near-api-js/lib/providers/provider";
 import { SignedTransaction } from "near-api-js/lib/transaction";
-import { Options } from "../../interfaces/Options";
-import getConfig from "../../config";
 
 export type QueryParams = { [key in string]: unknown };
 
 export interface CallFunctionParams {
-  accountId?: string;
+  accountId: string;
   methodName: string;
   args?: object;
   finality?: Finality;
@@ -30,14 +28,10 @@ export interface ViewAccountParams {
 }
 
 class ProviderService {
-  private options: Options;
   private provider: providers.JsonRpcProvider;
 
-  constructor(options: Options) {
-    const config = getConfig(options.networkId);
-
-    this.options = options;
-    this.provider = new providers.JsonRpcProvider(config.nodeUrl);
+  constructor(url: string) {
+    this.provider = new providers.JsonRpcProvider(url);
   }
 
   private parseCodeResult<Response>(res: CodeResult): Response {
@@ -53,7 +47,7 @@ class ProviderService {
   }
 
   callFunction<Response>({
-    accountId = this.options.contractId,
+    accountId,
     methodName,
     args = {},
     finality = "optimistic",
