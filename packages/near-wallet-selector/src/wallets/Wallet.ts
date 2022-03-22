@@ -61,7 +61,7 @@ export interface BrowserWallet extends BaseWallet {
 
 export interface InjectedWallet extends BaseWallet {
   type: "injected";
-  downloadLink: string;
+  downloadUrl: string;
 }
 
 export interface HardwareWallet extends BaseWallet {

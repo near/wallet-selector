@@ -56,7 +56,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
       name: "Sender Wallet",
       description: null,
       iconUrl: senderWalletIcon,
-      downloadLink:
+      downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
       isAvailable() {

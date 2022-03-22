@@ -55,7 +55,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       name: "Math Wallet",
       description: null,
       iconUrl: mathWalletIcon,
-      downloadLink:
+      downloadUrl:
         "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 
       isAvailable() {

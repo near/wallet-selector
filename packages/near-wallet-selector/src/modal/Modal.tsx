@@ -263,8 +263,8 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               <button
                 className="right-button"
                 onClick={() => {
-                  if ("downloadLink" in currentWallet!) {
-                    window.open(currentWallet.downloadLink, "_blank");
+                  if ("downloadUrl" in currentWallet!) {
+                    window.open(currentWallet.downloadUrl, "_blank");
                   }
                 }}
               >
