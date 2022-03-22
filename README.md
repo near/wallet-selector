@@ -285,7 +285,7 @@ selector.on("signIn", handleSignIn);
 selector.off("signIn", handleSignIn);
 ```
 
-### `.contract.getContractId()`
+### `.getContractId()`
 
 **Parameters**
 
@@ -302,33 +302,8 @@ Retrieves account ID of the configured Smart Contract.
 **Example**
 
 ```ts
-const contractId = selector.contract.getContractId();
+const contractId = selector.getContractId();
 console.log(contractId); // "guest-book.testnet"
-```
-
-### `.callFunction(params)`
-
-**Parameters**
-
-- `params` (`object`)
-  - `methodName` (`string`): Name of the method on the Smart Contract.
-  - `args` (`object?`): Object containing the parameters for the method.
-  - `finality` (`string?`): Defaults to `"optimistic"`. More details on this [here](https://docs.near.org/docs/api/rpc#using-finality-param).
-
-**Returns**
-
-- `Promise<unknown>`
-
-**Description**
-
-Executes a view method on the Smart Contract. Sign in isn't required for these calls.
-
-**Example**
-
-```ts
-await selector.contract.view({
-  methodName: "getMessages"
-});
 ```
 
 ### `.signAndSendTransaction(params)`
@@ -424,7 +399,7 @@ export interface DeleteAccountAction {
 **Example**
 
 ```ts
-await selector.contract.signAndSendTransaction({
+await selector.signAndSendTransaction({
   actions: [{
     type: "FunctionCall",
     params: {

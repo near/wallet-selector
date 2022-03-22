@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { providers, utils } from "near-api-js";
-import { AccountView } from "near-api-js/lib/providers/provider";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
 import NearWalletSelector from "near-wallet-selector";
 
 import { Account, Message } from "../interfaces";
@@ -24,9 +24,14 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   }, [selector.network.nodeUrl]);
 
   const getMessages = () => {
-    return selector.callFunction<Array<Message>>({
-      methodName: "getMessages",
-    });
+    return provider.query<CodeResult>({
+      request_type: "call_function",
+      account_id: selector.getContractId(),
+      method_name: "getMessages",
+      args_base64: "",
+      finality: "optimistic",
+    })
+      .then((res) => JSON.parse(Buffer.from(res.result).toString()));
   };
 
   const getAccount = async (): Promise<Account | null> => {

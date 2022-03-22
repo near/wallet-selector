@@ -34,31 +34,8 @@ class ProviderService {
     this.provider = new providers.JsonRpcProvider(url);
   }
 
-  private parseCodeResult<Response>(res: CodeResult): Response {
-    return JSON.parse(Buffer.from(res.result).toString());
-  }
-
-  private encodeArgs(args: object) {
-    return Buffer.from(JSON.stringify(args)).toString("base64");
-  }
-
   query<Response extends QueryResponseKind>(params: QueryParams) {
     return this.provider.query<Response>(params);
-  }
-
-  callFunction<Response>({
-    accountId,
-    methodName,
-    args = {},
-    finality = "optimistic",
-  }: CallFunctionParams) {
-    return this.query<CodeResult>({
-      request_type: "call_function",
-      finality,
-      account_id: accountId,
-      method_name: methodName,
-      args_base64: this.encodeArgs(args),
-    }).then((res) => this.parseCodeResult<Response>(res));
   }
 
   viewAccessKey({ accountId, publicKey }: ViewAccessKeyParams) {
@@ -67,14 +44,6 @@ class ProviderService {
       finality: "final",
       account_id: accountId,
       public_key: publicKey,
-    });
-  }
-
-  viewAccount({ accountId }: ViewAccountParams) {
-    return this.query<AccountView>({
-      request_type: "view_account",
-      finality: "final",
-      account_id: accountId,
     });
   }
 
