@@ -215,8 +215,17 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         return accounts.length ? accounts[0].accountId : null;
       },
 
-      async setAccountId() {
-        return Promise.resolve();
+      // Ledger Wallet doesn't really support multiple accounts, though this
+      // could be opened up in the future based on different derivation paths?
+      async setAccountId(accountId: string) {
+        const currentAccountId = await this.getAccountId();
+
+        // No-op since account is already selected.
+        if (accountId === currentAccountId) {
+          return Promise.resolve();
+        }
+
+        throw new Error("Invalid account id");
       },
 
       async signAndSendTransaction({ receiverId, actions }) {
