@@ -107,9 +107,8 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         return Promise.resolve();
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({ receiverId, actions }) {
         logger.log("NearWallet:signAndSendTransaction", {
-          signerId,
           receiverId,
           actions,
         });

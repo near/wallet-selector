@@ -219,9 +219,8 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         return Promise.resolve();
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({ receiverId, actions }) {
         logger.log("LedgerWallet:signAndSendTransaction", {
-          signerId,
           receiverId,
           actions,
         });
