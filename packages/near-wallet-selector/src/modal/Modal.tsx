@@ -263,10 +263,9 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               <button
                 className="right-button"
                 onClick={() => {
-                  window.open(
-                    "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
-                    "_blank"
-                  );
+                  if ("downloadLink" in currentWallet!) {
+                    window.open(currentWallet.downloadLink, "_blank");
+                  }
                 }}
               >
                 {`Open ${currentWallet?.name}`}
