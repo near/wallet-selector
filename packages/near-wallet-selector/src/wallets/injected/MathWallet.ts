@@ -140,7 +140,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       },
 
       // Math Wallet doesn't support multiple accounts.
-      async setAccountId(accountId: string) {
+      async setAccountId(accountId) {
         const currentAccountId = await this.getAccountId();
 
         // No-op since account is already selected.
