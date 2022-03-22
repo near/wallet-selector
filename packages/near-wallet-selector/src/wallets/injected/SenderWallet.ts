@@ -109,7 +109,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           return updateState((prevState) => ({
             ...prevState,
             showWalletOptions: false,
-            showSenderWalletNotInstalled: true,
+            showWalletNotInstalled: true,
           }));
         }
 

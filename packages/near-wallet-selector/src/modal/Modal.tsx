@@ -228,7 +228,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
           </div>
           <div
             style={{
-              display: state.showSenderWalletNotInstalled ? "block" : "none",
+              display: state.showWalletNotInstalled ? "block" : "none",
             }}
             className="Modal-body Modal-wallet-not-installed"
           >
@@ -254,7 +254,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                   updateState((prevState) => ({
                     ...prevState,
                     showWalletOptions: true,
-                    showSenderWalletNotInstalled: false,
+                    showWalletNotInstalled: false,
                   }));
                 }}
               >
