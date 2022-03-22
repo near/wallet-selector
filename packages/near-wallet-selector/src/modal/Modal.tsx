@@ -38,7 +38,9 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     DEFAULT_DERIVATION_PATH
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [currentWallet, setCurrentWallet] = useState<Wallet>();
+  const notInstalledWallet = wallets.find(
+    (wallet) => wallet.id === state.showWalletNotInstalled
+  );
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -84,8 +86,6 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
   };
 
   const handleWalletClick = (wallet: Wallet) => () => {
-    setCurrentWallet(wallet);
-
     if (wallet.type === "hardware") {
       return updateState((prevState) => ({
         ...prevState,
@@ -232,12 +232,15 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             }}
             className="Modal-body Modal-wallet-not-installed"
           >
-            <div className={`icon-display ${currentWallet?.id}`}>
-              <img src={currentWallet?.iconUrl} alt={currentWallet?.name} />
-              <p>{currentWallet?.name}</p>
+            <div className={`icon-display ${notInstalledWallet?.id}`}>
+              <img
+                src={notInstalledWallet?.iconUrl}
+                alt={notInstalledWallet?.name}
+              />
+              <p>{notInstalledWallet?.name}</p>
             </div>
             <p>
-              {`You'll need to install ${currentWallet?.name} to continue. After installing`}
+              {`You'll need to install ${notInstalledWallet?.name} to continue. After installing`}
               <span
                 className="refresh-link"
                 onClick={() => {
@@ -254,7 +257,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                   updateState((prevState) => ({
                     ...prevState,
                     showWalletOptions: true,
-                    showWalletNotInstalled: false,
+                    showWalletNotInstalled: null,
                   }));
                 }}
               >
@@ -263,12 +266,12 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               <button
                 className="right-button"
                 onClick={() => {
-                  if ("downloadUrl" in currentWallet!) {
-                    window.open(currentWallet.downloadUrl, "_blank");
+                  if ("downloadUrl" in notInstalledWallet!) {
+                    window.open(notInstalledWallet.downloadUrl, "_blank");
                   }
                 }}
               >
-                {`Open ${currentWallet?.name}`}
+                {`Open ${notInstalledWallet?.name}`}
               </button>
             </div>
           </div>

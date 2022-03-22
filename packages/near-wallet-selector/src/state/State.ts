@@ -5,7 +5,7 @@ export interface State {
   showModal: boolean;
   showWalletOptions: boolean;
   showLedgerDerivationPath: boolean;
-  showWalletNotInstalled: boolean;
+  showWalletNotInstalled: string | null;
   showSwitchNetwork: boolean;
   selectedWalletId: string | null;
 }
@@ -15,7 +15,7 @@ const state: { current: State } = {
     showModal: false,
     showWalletOptions: true,
     showLedgerDerivationPath: false,
-    showWalletNotInstalled: false,
+    showWalletNotInstalled: null,
     showSwitchNetwork: false,
     selectedWalletId: null,
   },

@@ -83,7 +83,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           return updateState((prevState) => ({
             ...prevState,
             showWalletOptions: false,
-            showWalletNotInstalled: true,
+            showWalletNotInstalled: this.id,
           }));
         }
 
