@@ -50,12 +50,10 @@ interface Options {
   wallets: Array<BuiltInWalletId>;
   // Network ID matching that of your dApp.
   networkId: NetworkId;
-  contract: {
-    // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
-    contractId: string;
-    // Optional: Specify limited access to particular methods on the Smart Contract.
-    methodNames?: Array<string>;
-  };
+  // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
+  contractId: string;
+  // Optional: Specify limited access to particular methods on the Smart Contract.
+  methodNames?: Array<string>;
   ui?: {
     // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
     // omitted or set to 'auto'.
@@ -308,7 +306,7 @@ const contractId = selector.contract.getContractId();
 console.log(contractId); // "guest-book.testnet"
 ```
 
-### `.contract.view(params)`
+### `.callFunction(params)`
 
 **Parameters**
 
@@ -333,7 +331,7 @@ await selector.contract.view({
 });
 ```
 
-### `.contract.signAndSendTransaction(params)`
+### `.signAndSendTransaction(params)`
 
 **Parameters**
 
