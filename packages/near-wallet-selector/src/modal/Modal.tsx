@@ -233,11 +233,11 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             className="Modal-body Modal-wallet-not-installed"
           >
             <div className="icon-display">
-              <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
+              <img src={currentWallet?.iconUrl} alt={currentWallet?.name} />
               <p>{currentWallet?.name}</p>
             </div>
             <p>
-              You'll need to install SenderWallet to continue. After installing
+              {`You'll need to install ${currentWallet?.name} to continue. After installing`}
               <span
                 className="refresh-link"
                 onClick={() => {
@@ -269,7 +269,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                   );
                 }}
               >
-                Open SenderWallet
+                {`Open ${currentWallet?.name}`}
               </button>
             </div>
           </div>
