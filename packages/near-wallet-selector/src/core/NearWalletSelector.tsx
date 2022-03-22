@@ -6,7 +6,9 @@ import WalletController, {
 } from "../controllers/WalletController";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import ProviderService from "../services/provider/ProviderService";
+import ProviderService, {
+  CallFunctionParams
+} from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
@@ -17,8 +19,7 @@ export default class NearWalletSelector {
 
   private emitter: Emitter;
   private controller: WalletController;
-
-  provider: ProviderService;
+  private provider: ProviderService;
 
   constructor(options: Options) {
     const emitter = new EventHandler();
@@ -96,6 +97,19 @@ export default class NearWalletSelector {
 
   off(event: EventList, callback: () => void) {
     this.emitter.off(event, callback);
+  }
+
+  async view<Response>({
+    methodName,
+    args,
+    finality
+  }: Omit<CallFunctionParams, "accountId">) {
+    return this.provider.callFunction<Response>({
+      accountId: this.options.contractId,
+      methodName,
+      args,
+      finality
+    });
   }
 
   async signAndSendTransaction({

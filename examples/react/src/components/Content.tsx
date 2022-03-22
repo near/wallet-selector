@@ -20,7 +20,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const getMessages = () => {
-    return selector.provider.callFunction<Array<Message>>({
+    return selector.view<Array<Message>>({
       methodName: "getMessages",
     });
   };
