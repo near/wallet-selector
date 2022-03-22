@@ -26,7 +26,7 @@ export default class NearWalletSelector {
   constructor(options: Options) {
     const config = getConfig(options.networkId);
     const emitter = new EventHandler();
-    const provider = new ProviderService(options);
+    const provider = new ProviderService(config.nodeUrl);
     const controller = new WalletController(options, provider, emitter);
 
     this.network = config;
@@ -117,7 +117,6 @@ export default class NearWalletSelector {
   }
 
   async signAndSendTransaction({
-    signerId,
     actions,
   }: Omit<SignAndSendTransactionParams, "receiverId">) {
     const wallet = this.controller.getSelectedWallet();
@@ -127,7 +126,6 @@ export default class NearWalletSelector {
     }
 
     return wallet.signAndSendTransaction({
-      signerId,
       receiverId: this.options.contractId,
       actions,
     });
