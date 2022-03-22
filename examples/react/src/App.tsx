@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import NearWalletSelector from "near-wallet-selector";
 
-import getConfig from "./config";
 import Content from "./components/Content";
 
 const App: React.FC = () => {
@@ -9,12 +8,11 @@ const App: React.FC = () => {
   const selectorRef = useRef<NearWalletSelector>();
 
   useEffect(() => {
-    const nearConfig = getConfig("testnet");
 
     const selector = new NearWalletSelector({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
-      networkId: nearConfig.networkId,
-      contract: { contractId: nearConfig.contractName },
+      networkId: "testnet",
+      contractId: "guest-book.testnet",
     });
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

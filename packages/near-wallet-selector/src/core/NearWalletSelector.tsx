@@ -13,19 +13,23 @@ import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
 import { SignAndSendTransactionParams } from "../wallets/Wallet";
+import getConfig, { NetworkConfiguration } from "../config";
 
 export default class NearWalletSelector {
   private options: Options;
-
   private emitter: Emitter;
   private controller: WalletController;
   private provider: ProviderService;
 
+  network: NetworkConfiguration
+
   constructor(options: Options) {
+    const config = getConfig(options.networkId);
     const emitter = new EventHandler();
     const provider = new ProviderService(options);
     const controller = new WalletController(options, provider, emitter);
 
+    this.network = config;
     this.options = options;
     this.emitter = emitter;
     this.controller = controller;
@@ -99,7 +103,7 @@ export default class NearWalletSelector {
     this.emitter.off(event, callback);
   }
 
-  async view<Response>({
+  async callFunction<Response>({
     methodName,
     args,
     finality

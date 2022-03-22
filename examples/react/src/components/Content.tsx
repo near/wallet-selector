@@ -1,5 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { utils } from "near-api-js";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { providers, utils } from "near-api-js";
+import { AccountView } from "near-api-js/lib/providers/provider";
 import NearWalletSelector from "near-wallet-selector";
 
 import { Account, Message } from "../interfaces";
@@ -18,9 +19,12 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ selector }) => {
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
+  const provider = useMemo(() => {
+    return new providers.JsonRpcProvider({ url: selector.network.nodeUrl })
+  }, [selector.network.nodeUrl]);
 
   const getMessages = () => {
-    return selector.view<Array<Message>>({
+    return selector.callFunction<Array<Message>>({
       methodName: "getMessages",
     });
   };
@@ -32,7 +36,11 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
       return null;
     }
 
-    const account = await selector.provider.viewAccount({ accountId });
+    const account = await provider.query<AccountView>({
+      request_type: "view_account",
+      finality: "final",
+      account_id: accountId,
+    });
 
     return {
       ...account,
