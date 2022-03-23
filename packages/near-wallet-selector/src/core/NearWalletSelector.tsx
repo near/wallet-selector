@@ -91,14 +91,6 @@ export default class NearWalletSelector {
     return this.controller.getAccounts();
   }
 
-  getAccountId() {
-    return this.controller.getAccountId();
-  }
-
-  setAccountId(accountId: string) {
-    return this.controller.setAccountId(accountId);
-  }
-
   on(event: EventList, callback: () => void) {
     return this.emitter.on(event, callback);
   }
