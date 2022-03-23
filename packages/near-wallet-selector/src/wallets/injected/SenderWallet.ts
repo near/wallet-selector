@@ -118,8 +118,8 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         }
 
         const { accessKey } = await wallet.requestSignIn({
-          contractId: options.contract.contractId,
-          methodNames: options.contract.methodNames,
+          contractId: options.contractId,
+          methodNames: options.methodNames,
         });
 
         if (!accessKey) {
@@ -152,24 +152,21 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut");
       },
 
-      async getAccount() {
-        const signedIn = await this.isSignedIn();
+      async getAccounts() {
+        const accountId = wallet.getAccountId();
 
-        if (!signedIn) {
-          return null;
+        if (!accountId) {
+          return [];
         }
 
-        const accountId = wallet.getAccountId();
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return [{
+          accountId
+        }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("SenderWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });

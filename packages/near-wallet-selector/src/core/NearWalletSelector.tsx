@@ -4,35 +4,46 @@ import ReactDOM from "react-dom";
 import WalletController, {
   SignInParams,
 } from "../controllers/WalletController";
-import Contract from "./Contract";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import getConfig from "../config";
 import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
+import { Action } from "../wallets/actions";
+import getConfig, { NetworkConfiguration } from "../config";
+
+interface SignAndSendTransactionParams {
+  signerId?: string;
+  actions: Array<Action>;
+}
 
 export default class NearWalletSelector {
   private options: Options;
-
   private emitter: Emitter;
   private controller: WalletController;
 
-  contract: Contract;
+  network: NetworkConfiguration
 
-  constructor(options: Options) {
+  static async init(options: Options) {
+    const selector = new NearWalletSelector(options);
+
+    await selector.controller.init();
+    selector.renderModal();
+
+    return selector;
+  }
+
+  private constructor(options: Options) {
     const config = getConfig(options.networkId);
-
     const emitter = new EventHandler();
     const provider = new ProviderService(config.nodeUrl);
     const controller = new WalletController(options, provider, emitter);
-    const contract = new Contract(options, provider, controller);
 
+    this.network = config;
     this.options = options;
     this.emitter = emitter;
     this.controller = controller;
-    this.contract = contract;
   }
 
   private renderModal() {
@@ -44,12 +55,6 @@ export default class NearWalletSelector {
       <Modal options={this.options} wallets={this.controller.getWallets()} />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
-  }
-
-  async init() {
-    await this.controller.init();
-
-    this.renderModal();
   }
 
   show() {
@@ -82,8 +87,8 @@ export default class NearWalletSelector {
     return this.controller.isSignedIn();
   }
 
-  getAccount() {
-    return this.controller.getAccount();
+  getAccounts() {
+    return this.controller.getAccounts();
   }
 
   on(event: EventList, callback: () => void) {
@@ -92,5 +97,35 @@ export default class NearWalletSelector {
 
   off(event: EventList, callback: () => void) {
     this.emitter.off(event, callback);
+  }
+
+  getContractId() {
+    return this.options.contractId;
+  }
+
+  async signAndSendTransaction({
+    signerId,
+    actions,
+  }: SignAndSendTransactionParams) {
+    const wallet = this.controller.getSelectedWallet();
+    const accounts = await this.getAccounts();
+
+    if (!wallet) {
+      throw new Error("Wallet not selected");
+    }
+
+    if (!accounts.length) {
+      throw new Error("No accounts available for signing");
+    }
+
+    if (signerId && !accounts.some((x) => x.accountId === signerId)) {
+      throw new Error("Invalid signerId");
+    }
+
+    return wallet.signAndSendTransaction({
+      signerId: signerId || accounts[0].accountId,
+      receiverId: this.getContractId(),
+      actions,
+    });
   }
 }

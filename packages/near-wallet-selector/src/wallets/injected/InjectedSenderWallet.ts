@@ -95,7 +95,7 @@ export interface SenderWalletEvents {
 
 interface InjectedSenderWallet {
   isSender: boolean;
-  getAccountId: () => string;
+  getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
     params: RequestSignInParams
