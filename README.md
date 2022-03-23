@@ -31,59 +31,44 @@ Then use it in your dApp:
 ```ts
 import NearWalletSelector from "near-wallet-selector";
 
-const selector = new NearWalletSelector({
+const selector = await NearWalletSelector.init({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
   networkId: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
 ```
 
-## Options
-
-```ts
-type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet" | "math-wallet";
-type NetworkId = "mainnet" | "betanet" | "testnet";
-type Theme = "dark" | "light" | "auto";
-
-interface Options {
-  // List of wallets you want to support in your dApp.
-  wallets: Array<BuiltInWalletId>;
-  // Network ID matching that of your dApp.
-  networkId: NetworkId;
-  // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
-  contractId: string;
-  // Optional: Specify limited access to particular methods on the Smart Contract.
-  methodNames?: Array<string>;
-  ui?: {
-    // Optional: Specify light/dark theme for UI. Defaults to the browser configuration when
-    // omitted or set to 'auto'.
-    theme?: Theme;
-    // Optional: Provides customisation description text in the UI.
-    description?: string;
-  };
-}
-```
-
 ## API Reference
 
-### `.init()`
+### `.init(options)`
 
 **Parameters**
 
-- N/A
+- `options` (`object`)
+  - `wallets` (`Array<string>`): List of wallets you want to support in your dApp.
+  - `networkId` (`string`): Network ID matching that of your dApp. This can be either `testnet`, `betanet` or `mainnet`.
+  - `contractId` (`string`): Account ID of the Smart Contract used for `.signIn` and `.signAndSendTransaction`.
+  - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
+  - `ui`: (`object?`)
+    - `theme` (`string?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
+    - `description` (`string?`): Define a custom description in the UI.
 
 **Returns**
 
-- `Promise<void>`
+- `Promise<NearWalletSelector>`
 
 **Description**
 
-Initialises the selector using the configured options before rendering the UI. If a user has previously signed in, this method will also initialise the selected wallet, ready to handle transaction signing.
+Initialises the selector using the configured options before rendering the UI. If a user has previously signed in, this method will also initialise the selected wallet, ready to handle signing.
 
 **Example**
 
 ```ts
-await selector.init();
+await NearWalletSelector.init({
+  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+  networkId: "testnet",
+  contract: { contractId: "guest-book.testnet" },
+});
 ```
 
 ### `.show()`
