@@ -1,18 +1,19 @@
 import React, { FormEventHandler } from "react";
 import Big from "big.js";
 
-import { Account } from "../interfaces";
+import { useWalletSelector } from "../contexts/WalletSelectorContext";
 
 interface FormProps {
-  account: Account;
   onSubmit: FormEventHandler;
 }
 
-const Form: React.FC<FormProps> = ({ account, ...props }) => {
+const Form: React.FC<FormProps> = ({ onSubmit }) => {
+  const { account } = useWalletSelector();
+
   return (
-    <form {...props}>
+    <form onSubmit={onSubmit}>
       <fieldset id="fieldset">
-        <p>Sign the guest book, {account.account_id}!</p>
+        <p>Sign the guest book, {account!.account_id}!</p>
         <p className="highlight">
           <label htmlFor="message">Message:</label>
           <input autoComplete="off" autoFocus id="message" required />
@@ -23,7 +24,7 @@ const Form: React.FC<FormProps> = ({ account, ...props }) => {
             autoComplete="off"
             defaultValue={"0"}
             id="donation"
-            max={Big(account.amount)
+            max={Big(account!.amount)
               .div(10 ** 24)
               .toString()}
             min="0"

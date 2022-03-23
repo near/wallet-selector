@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { providers, utils } from "near-api-js";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
-import NearWalletSelector from "near-wallet-selector";
+import { CodeResult } from "near-api-js/lib/providers/provider";
 
-import { Account, Message } from "../interfaces";
+import { Message } from "../interfaces";
+import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
@@ -12,18 +12,15 @@ const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
-interface ContentProps {
-  selector: NearWalletSelector;
-}
-
-const Content: React.FC<ContentProps> = ({ selector }) => {
-  const [account, setAccount] = useState<Account | null>(null);
+const Content: React.FC = () => {
+  const { selector, account } = useWalletSelector();
   const [messages, setMessages] = useState<Array<Message>>([]);
-  const provider = useMemo(() => {
-    return new providers.JsonRpcProvider({ url: selector.network.nodeUrl })
-  }, [selector.network.nodeUrl]);
 
   const getMessages = () => {
+    const provider = new providers.JsonRpcProvider({
+      url: selector.network.nodeUrl
+    });
+
     return provider.query<CodeResult>({
       request_type: "call_function",
       account_id: selector.getContractId(),
@@ -34,69 +31,10 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
       .then((res) => JSON.parse(Buffer.from(res.result).toString()));
   };
 
-  const getAccount = async (): Promise<Account | null> => {
-    const accounts = await selector.getAccounts();
-
-    if (!accounts.length) {
-      return null;
-    }
-
-    // Assume the first account.
-    const accountId = accounts[0].accountId;
-    const account = await provider.query<AccountView>({
-      request_type: "view_account",
-      finality: "final",
-      account_id: accountId,
-    });
-
-    return {
-      ...account,
-      account_id: accountId,
-    };
-  }
-
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
-    Promise.all([getMessages(), getAccount()]).then(
-      ([nextMessages, nextAccount]) => {
-        setMessages(nextMessages);
-        setAccount(nextAccount);
-      }
-    );
+    getMessages().then(setMessages);
 
-    selector.getAccounts().then((accounts) => {
-      console.log("Available Accounts", accounts);
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const subscription = selector.on("signIn", () => {
-      console.log("'signIn' event triggered!");
-
-      getAccount()
-        .then((data) => {
-          console.log("Account", data);
-          setAccount(data);
-        })
-        .catch((err) => {
-          console.log("Failed to retrieve account info");
-          console.error(err);
-        });
-    });
-
-    return () => subscription.remove();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const subscription = selector.on("signOut", () => {
-      console.log("'signOut' event triggered!");
-      setAccount(null);
-    });
-
-    return () => subscription.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -189,7 +127,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>
       </div>
-      <Form account={account} onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
+      <Form onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
       <Messages messages={messages} />
     </Fragment>
   );
