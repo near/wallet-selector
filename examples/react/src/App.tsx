@@ -8,21 +8,23 @@ const App: React.FC = () => {
   const selectorRef = useRef<NearWalletSelector>();
 
   useEffect(() => {
-    const selector = new NearWalletSelector({
+    NearWalletSelector.init({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
       networkId: "testnet",
       contractId: "guest-book.testnet",
-    });
+    })
+      .then((selector) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore-next-line
+        window.selector = selector;
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore-next-line
-    window.selector = selector;
-
-    selector.init().then(() => {
-      selectorRef.current = selector;
-      setLoaded(true);
-    });
-
+        selectorRef.current = selector;
+        setLoaded(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to initialise wallet selector");
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

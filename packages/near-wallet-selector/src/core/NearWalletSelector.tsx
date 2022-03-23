@@ -25,7 +25,16 @@ export default class NearWalletSelector {
 
   network: NetworkConfiguration
 
-  constructor(options: Options) {
+  static async init(options: Options) {
+    const selector = new NearWalletSelector(options);
+
+    await selector.controller.init();
+    selector.renderModal();
+
+    return selector;
+  }
+
+  private constructor(options: Options) {
     const config = getConfig(options.networkId);
     const emitter = new EventHandler();
     const provider = new ProviderService(config.nodeUrl);
@@ -46,12 +55,6 @@ export default class NearWalletSelector {
       <Modal options={this.options} wallets={this.controller.getWallets()} />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
-  }
-
-  async init() {
-    await this.controller.init();
-
-    this.renderModal();
   }
 
   show() {
