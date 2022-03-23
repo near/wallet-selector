@@ -29,7 +29,11 @@ const createNearWallet = () => {
   // near-api-js marks this method as protected.
   // TODO: return value instead of null
   account.signAndSendTransaction.mockResolvedValue(null);
-  account.state.mockResolvedValue(mock<AccountView>());
+  account.state.calledWith().mockResolvedValue(
+    mock<AccountView>({
+      amount: "1000000000000000000000000",
+    })
+  );
 
   const networkId = "testnet";
 
@@ -107,16 +111,15 @@ describe("isSignedIn", () => {
 
 describe("getAccount", () => {
   it("returns account object", async () => {
-    const { wallet, walletConnection, account } = createNearWallet();
+    const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
     await wallet.signIn();
-    await wallet.getAccount();
+    const result = await wallet.getAccount();
     expect(walletConnection.getAccountId).toHaveBeenCalled();
-    expect(account.state).toHaveBeenCalled();
-    // expect(result).toEqual({
-    //   accountId: "test-account.testnet",
-    //   balance: expect.any(String),
-    // });
+    expect(result).toEqual({
+      accountId: "test-account.testnet",
+      balance: "1000000000000000000000000",
+    });
   });
 });
 
