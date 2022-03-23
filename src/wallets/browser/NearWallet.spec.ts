@@ -7,6 +7,7 @@ import EventHandler from "../../utils/EventsHandler";
 import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
 import { mock } from "jest-mock-extended";
 import { AccountView } from "near-api-js/lib/providers/provider";
+
 const createNearWallet = () => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>();
@@ -28,7 +29,7 @@ const createNearWallet = () => {
   // @ts-ignore
   // near-api-js marks this method as protected.
   // TODO: return value instead of null
-  account.signAndSendTransaction.mockResolvedValue(null);
+  account.signAndSendTransaction.calledWith().mockReturnValue(null);
   account.state.calledWith().mockResolvedValue(
     mock<AccountView>({
       amount: "1000000000000000000000000",
@@ -124,7 +125,7 @@ describe("getAccount", () => {
 });
 
 describe("signAndSendTransaction", () => {
-  it("signs and seonds transaction", async () => {
+  it("signs and sends transaction", async () => {
     const { wallet, walletConnection, account } = createNearWallet();
     await wallet.init();
     await wallet.signIn();
