@@ -1,30 +1,16 @@
 import { providers } from "near-api-js";
 import {
-  CodeResult,
   AccessKeyView,
-  AccountView,
   BlockReference,
   QueryResponseKind,
-  Finality,
 } from "near-api-js/lib/providers/provider";
 import { SignedTransaction } from "near-api-js/lib/transaction";
 
 export type QueryParams = { [key in string]: unknown };
 
-export interface CallFunctionParams {
-  accountId: string;
-  methodName: string;
-  args?: object;
-  finality?: Finality;
-}
-
 export interface ViewAccessKeyParams {
   accountId: string;
   publicKey: string;
-}
-
-export interface ViewAccountParams {
-  accountId: string;
 }
 
 class ProviderService {
