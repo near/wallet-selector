@@ -55,6 +55,8 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       name: "Math Wallet",
       description: null,
       iconUrl: mathWalletIcon,
+      downloadUrl:
+        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 
       isAvailable() {
         if (!isInstalled()) {
@@ -78,7 +80,11 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
 
       async signIn() {
         if (!(await isInstalled())) {
-          //TODO update state
+          return updateState((prevState) => ({
+            ...prevState,
+            showWalletOptions: false,
+            showWalletNotInstalled: this.id,
+          }));
         }
 
         if (!wallet) {

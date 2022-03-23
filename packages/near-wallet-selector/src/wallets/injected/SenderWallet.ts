@@ -56,6 +56,8 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
       name: "Sender Wallet",
       description: null,
       iconUrl: senderWalletIcon,
+      downloadUrl:
+        "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
       isAvailable() {
         if (!isInstalled()) {
@@ -84,7 +86,9 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
             await this.signOut();
             await this.signIn();
           } catch (e) {
-            logger.log(`Failed to change account ${(e as unknown as Error).message}`);
+            logger.log(
+              `Failed to change account ${(e as unknown as Error).message}`
+            );
           }
         });
 
@@ -105,7 +109,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           return updateState((prevState) => ({
             ...prevState,
             showWalletOptions: false,
-            showSenderWalletNotInstalled: true,
+            showWalletNotInstalled: this.id,
           }));
         }
 

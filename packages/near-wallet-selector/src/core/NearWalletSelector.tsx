@@ -58,7 +58,7 @@ export default class NearWalletSelector {
       showModal: true,
       showWalletOptions: true,
       showLedgerDerivationPath: false,
-      showSenderWalletNotInstalled: false,
+      showWalletNotInstalled: null,
       showSwitchNetwork: false,
     }));
   }

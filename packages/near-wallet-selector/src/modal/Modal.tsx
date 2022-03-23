@@ -38,6 +38,9 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
     DEFAULT_DERIVATION_PATH
   );
   const [isLoading, setIsLoading] = useState(false);
+  const notInstalledWallet = wallets.find(
+    (wallet) => wallet.id === state.showWalletNotInstalled
+  );
 
   useEffect(() => {
     window.updateWalletSelector = (nextState) => {
@@ -225,16 +228,19 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
           </div>
           <div
             style={{
-              display: state.showSenderWalletNotInstalled ? "block" : "none",
+              display: state.showWalletNotInstalled ? "block" : "none",
             }}
             className="Modal-body Modal-wallet-not-installed"
           >
-            <div className="icon-display">
-              <img src="https://senderwallet.io/logo.png" alt="Sender Wallet" />
-              <p>SenderWallet</p>
+            <div className={`icon-display ${notInstalledWallet?.id}`}>
+              <img
+                src={notInstalledWallet?.iconUrl}
+                alt={notInstalledWallet?.name}
+              />
+              <p>{notInstalledWallet?.name}</p>
             </div>
             <p>
-              You'll need to install SenderWallet to continue. After installing
+              {`You'll need to install ${notInstalledWallet?.name} to continue. After installing`}
               <span
                 className="refresh-link"
                 onClick={() => {
@@ -251,7 +257,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
                   updateState((prevState) => ({
                     ...prevState,
                     showWalletOptions: true,
-                    showSenderWalletNotInstalled: false,
+                    showWalletNotInstalled: null,
                   }));
                 }}
               >
@@ -260,13 +266,12 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
               <button
                 className="right-button"
                 onClick={() => {
-                  window.open(
-                    "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
-                    "_blank"
-                  );
+                  if ("downloadUrl" in notInstalledWallet!) {
+                    window.open(notInstalledWallet.downloadUrl, "_blank");
+                  }
                 }}
               >
-                Open SenderWallet
+                {`Open ${notInstalledWallet?.name}`}
               </button>
             </div>
           </div>
