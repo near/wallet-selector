@@ -1,34 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import NearWalletSelector from "near-wallet-selector";
-import { AccountView } from "near-api-js/lib/providers/provider";
-import { providers } from "near-api-js";
-import { Account } from "../interfaces";
+import NearWalletSelector, { AccountInfo } from "near-wallet-selector";
 
 interface WalletSelectorContextValue {
   selector: NearWalletSelector;
-  account: Account | null;
+  accounts: Array<AccountInfo>;
+  accountId: string | null;
+  setAccountId: (accountId: string) => void;
 }
 
 const WalletSelectorContext = React.createContext<WalletSelectorContextValue | null>(null);
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
-  const [account, setAccount] = useState<Account | null>(null);
+  const [accountId, setAccountId] = useState<string | null>(null);
+  const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const getAccount = (nodeUrl: string, accountId: string): Promise<Account> => {
-    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
-
-    return provider.query<AccountView>({
-      request_type: "view_account",
-      finality: "final",
-      account_id: accountId,
-    })
-      .then((data) => ({
-        ...data,
-        account_id: accountId,
-      }));
-  }
 
   useEffect(() => {
     NearWalletSelector.init({
@@ -54,14 +40,15 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
             }
 
             if (accountId) {
-              const { nodeUrl } = instance.network;
-              setAccount(await getAccount(nodeUrl, accountId));
+              setAccountId(accountId);
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore-next-line
             window.selector = instance;
             setSelector(instance);
+
+            setAccounts(accounts);
           });
       })
       .catch((err) => {
@@ -82,10 +69,10 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         .then(async (accounts) => {
           // Assume the first account.
           const accountId = accounts[0].accountId;
-          localStorage.setItem("accountId", accountId);
 
-          const { nodeUrl } = selector.network;
-          setAccount(await getAccount(nodeUrl, accountId));
+          localStorage.setItem("accountId", accountId);
+          setAccountId(accountId);
+          setAccounts(accounts);
           setLoading(false);
         });
     });
@@ -99,7 +86,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     }
 
     const subscription = selector.on("signOut", () => {
-      setAccount(null);
+      setAccountId(null);
+      setAccounts([]);
     });
 
     return () => subscription.remove();
@@ -110,7 +98,12 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <WalletSelectorContext.Provider value={{ selector, account }}>
+    <WalletSelectorContext.Provider value={{
+      selector,
+      accounts,
+      accountId,
+      setAccountId
+    }}>
       {children}
     </WalletSelectorContext.Provider>
   )

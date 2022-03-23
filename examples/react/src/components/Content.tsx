@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { providers, utils } from "near-api-js";
-import { CodeResult } from "near-api-js/lib/providers/provider";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
 
-import { Message } from "../interfaces";
+import { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import SignIn from "./SignIn";
 import Form from "./Form";
@@ -13,8 +13,28 @@ const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 const Content: React.FC = () => {
-  const { selector, account } = useWalletSelector();
+  const { selector, accounts, accountId, setAccountId } = useWalletSelector();
+  const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
+
+  const getAccount = useCallback(async (): Promise<Account | null> => {
+    if (!accountId) {
+      return null;
+    }
+
+    const { nodeUrl } = selector.network;
+    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+
+    return provider.query<AccountView>({
+      request_type: "view_account",
+      finality: "final",
+      account_id: accountId,
+    })
+      .then((data) => ({
+        ...data,
+        account_id: accountId,
+      }));
+  }, [accountId, selector.network]);
 
   const getMessages = () => {
     const provider = new providers.JsonRpcProvider({
@@ -38,6 +58,14 @@ const Content: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!accountId) {
+      return setAccount(null);
+    }
+
+    getAccount().then(setAccount);
+  }, [accountId, getAccount])
+
   const handleSignIn = () => {
     selector.show();
   };
@@ -53,6 +81,18 @@ const Content: React.FC = () => {
     selector.show();
   };
 
+  const handleSwitchAccount = () => {
+    const currentIndex = accounts.findIndex((x) => x.accountId === accountId);
+    const nextIndex = (currentIndex < accounts.length - 1)
+      ? currentIndex + 1
+      : 0;
+
+    const nextAccountId = accounts[nextIndex].accountId;
+
+    setAccountId(nextAccountId);
+    alert("Switched account to " + nextAccountId);
+  }
+
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
 
@@ -67,7 +107,7 @@ const Content: React.FC = () => {
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
     selector.signAndSendTransaction({
-      signerId: account!.account_id,
+      signerId: accountId!,
       actions: [
         {
           type: "FunctionCall",
@@ -126,8 +166,9 @@ const Content: React.FC = () => {
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>
+        {accounts.length > 1 && <button onClick={handleSwitchAccount}>Switch Account</button>}
       </div>
-      <Form onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
+      <Form account={account} onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
       <Messages messages={messages} />
     </Fragment>
   );
