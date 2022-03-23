@@ -12,7 +12,7 @@ interface WalletConnectParams {
 }
 
 function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BridgeWallet> {
-  return function WalletConnect({ options, provider, emitter, logger, updateState }) {
+  return function WalletConnect({ options, emitter, logger, updateState }) {
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
@@ -150,19 +150,14 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         return client.isSignedIn()
       },
 
-      async getAccount() {
-        const accountId = getAccountId();
-
-        if (!accountId) {
-          return null;
+      async getAccounts() {
+        if (!session) {
+          return [];
         }
 
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return session.state.accounts.map((accountId) => ({
+          accountId: accountId
+        }));
       },
 
       async signAndSendTransaction({ receiverId, actions }) {
