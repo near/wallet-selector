@@ -14,6 +14,7 @@ export interface HardwareWalletSignInParams {
 }
 
 export interface SignAndSendTransactionParams {
+  signerId: string;
   receiverId: string;
   actions: Array<Action>;
 }
@@ -48,10 +49,6 @@ interface BaseWallet {
 
   // Retrieves all active accounts.
   getAccounts(): Promise<Array<AccountInfo>>;
-
-  getAccountId(): Promise<string | null>;
-
-  setAccountId(accountId: string): Promise<void>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(

@@ -133,26 +133,9 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         }];
       },
 
-      async getAccountId() {
-        const accounts = await this.getAccounts();
-
-        return accounts.length ? accounts[0].accountId : null;
-      },
-
-      // Math Wallet doesn't support multiple accounts.
-      async setAccountId(accountId) {
-        const currentAccountId = await this.getAccountId();
-
-        // No-op since account is already selected.
-        if (accountId === currentAccountId) {
-          return Promise.resolve();
-        }
-
-        throw new Error("Invalid account id");
-      },
-
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("MathWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });

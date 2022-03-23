@@ -35,12 +35,14 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
   };
 
   const getAccount = async (): Promise<Account | null> => {
-    const accountId = await selector.getAccountId();
+    const accounts = await selector.getAccounts();
 
-    if (!accountId) {
+    if (!accounts.length) {
       return null;
     }
 
+    // Assume the first account.
+    const accountId = accounts[0].accountId;
     const account = await provider.query<AccountView>({
       request_type: "view_account",
       finality: "final",
@@ -127,6 +129,7 @@ const Content: React.FC<ContentProps> = ({ selector }) => {
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
     selector.signAndSendTransaction({
+      signerId: account!.account_id,
       actions: [
         {
           type: "FunctionCall",

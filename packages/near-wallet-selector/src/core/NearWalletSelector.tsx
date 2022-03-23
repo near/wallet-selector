@@ -10,8 +10,13 @@ import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
-import { SignAndSendTransactionParams } from "../wallets/Wallet";
+import { Action } from "../wallets/actions";
 import getConfig, { NetworkConfiguration } from "../config";
+
+interface SignAndSendTransactionParams {
+  signerId?: string;
+  actions: Array<Action>;
+}
 
 export default class NearWalletSelector {
   private options: Options;
@@ -104,15 +109,26 @@ export default class NearWalletSelector {
   }
 
   async signAndSendTransaction({
+    signerId,
     actions,
-  }: Omit<SignAndSendTransactionParams, "receiverId">) {
+  }: SignAndSendTransactionParams) {
     const wallet = this.controller.getSelectedWallet();
+    const accounts = await this.getAccounts();
 
     if (!wallet) {
-      throw new Error("Wallet not selected!");
+      throw new Error("Wallet not selected");
+    }
+
+    if (!accounts.length) {
+      throw new Error("No accounts available for signing");
+    }
+
+    if (signerId && !accounts.some((x) => x.accountId === signerId)) {
+      throw new Error("Invalid signerId");
     }
 
     return wallet.signAndSendTransaction({
+      signerId: signerId || accounts[0].accountId,
       receiverId: this.getContractId(),
       actions,
     });
