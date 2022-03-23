@@ -16,6 +16,7 @@ const Content: React.FC = () => {
   const { selector, accounts, accountId, setAccountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {
@@ -63,7 +64,13 @@ const Content: React.FC = () => {
       return setAccount(null);
     }
 
-    getAccount().then(setAccount);
+    setLoading(true);
+
+    getAccount()
+      .then((nextAccount) => {
+        setAccount(nextAccount);
+        setLoading(false);
+      });
   }, [accountId, getAccount])
 
   const handleSignIn = () => {
@@ -149,6 +156,10 @@ const Content: React.FC = () => {
         fieldset.disabled = false;
       });
   };
+
+  if (loading) {
+    return null;
+  }
 
   if (!account) {
     return (
