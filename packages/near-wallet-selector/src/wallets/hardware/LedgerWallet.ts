@@ -197,24 +197,21 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         return !!state.authData;
       },
 
-      async getAccount() {
-        const signedIn = await this.isSignedIn();
+      async getAccounts() {
         const accountId = state.authData?.accountId;
 
-        if (!signedIn || !accountId) {
-          return null;
+        if (!accountId) {
+          return [];
         }
 
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return [{
+          accountId
+        }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("LedgerWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });

@@ -181,14 +181,14 @@ class WalletController {
     return wallet.isSignedIn();
   }
 
-  async getAccount() {
+  async getAccounts() {
     const wallet = this.getSelectedWallet();
 
     if (!wallet) {
-      return null;
+      return [];
     }
 
-    return wallet.getAccount();
+    return wallet.getAccounts();
   }
 }
 

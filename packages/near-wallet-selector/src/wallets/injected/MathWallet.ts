@@ -46,7 +46,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         return wallet.signer.account;
       }
 
-      return wallet.login({ contractId: options.contract.contractId });
+      return wallet.login({ contractId: options.contractId });
     };
 
     return {
@@ -55,6 +55,8 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
       name: "Math Wallet",
       description: null,
       iconUrl: mathWalletIcon,
+      downloadUrl:
+        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 
       isAvailable() {
         if (!isInstalled()) {
@@ -78,7 +80,11 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
 
       async signIn() {
         if (!(await isInstalled())) {
-          //TODO update state
+          return updateState((prevState) => ({
+            ...prevState,
+            showWalletOptions: false,
+            showWalletNotInstalled: this.id,
+          }));
         }
 
         if (!wallet) {
@@ -86,7 +92,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         }
 
         const account = await wallet.login({
-          contractId: options.contract.contractId,
+          contractId: options.contractId,
         });
 
         if (!account) {
@@ -121,24 +127,21 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut");
       },
 
-      async getAccount() {
+      async getAccounts() {
         const signerAccount = await getSignerAccount();
 
         if (!signerAccount) {
-          return null;
+          return [];
         }
 
-        const { accountId } = signerAccount;
-        const account = await provider.viewAccount({ accountId });
-
-        return {
-          accountId,
-          balance: account.amount,
-        };
+        return [{
+          accountId: signerAccount.accountId
+        }];
       },
 
-      async signAndSendTransaction({ receiverId, actions }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("MathWallet:signAndSendTransaction", {
+          signerId,
           receiverId,
           actions,
         });
