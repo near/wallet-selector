@@ -14,42 +14,43 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const syncAccountId = (
+    currentAccountId: string | null,
+    currentAccounts: Array<AccountInfo>
+  ) => {
+    let newAccountId = currentAccountId;
+
+    // Ensure the accountId in storage is still valid.
+    if (newAccountId && !currentAccounts.some((x) => x.accountId === newAccountId)) {
+      newAccountId = null;
+      localStorage.removeItem("accountId");
+    }
+
+    // Assume the first account if one hasn't been selected.
+    if (!newAccountId && currentAccounts.length) {
+      newAccountId = currentAccounts[0].accountId;
+      localStorage.setItem("accountId", newAccountId);
+    }
+
+    setAccountId(newAccountId);
+  }
 
   useEffect(() => {
     NearWalletSelector.init({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet", "wallet-connect"],
       networkId: "testnet",
       contractId: "guest-book.testnet",
     })
       .then((instance) => {
-        return instance.getAccounts()
-          .then(async (accounts) => {
-            let accountId = localStorage.getItem("accountId");
+        const accounts = instance.getAccounts();
+        syncAccountId(localStorage.getItem("accountId"), accounts);
+        setAccounts(accounts);
 
-            // Ensure the accountId in storage is still valid.
-            if (accountId && !accounts.some((x) => x.accountId === accountId)) {
-              accountId = null;
-              localStorage.removeItem("accountId");
-            }
-
-            // Assume the first account if one hasn't been selected.
-            if (!accountId && accounts.length) {
-              accountId = accounts[0].accountId;
-              localStorage.setItem("accountId", accountId);
-            }
-
-            if (accountId) {
-              setAccountId(accountId);
-            }
-
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore-next-line
-            window.selector = instance;
-            setSelector(instance);
-
-            setAccounts(accounts);
-          });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore-next-line
+        window.selector = instance;
+        setSelector(instance);
       })
       .catch((err) => {
         console.error(err);
@@ -62,38 +63,15 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.on("signIn", () => {
-      setLoading(true);
-
-      selector.getAccounts()
-        .then(async (accounts) => {
-          // Assume the first account.
-          const accountId = accounts[0].accountId;
-
-          localStorage.setItem("accountId", accountId);
-          setAccountId(accountId);
-          setAccounts(accounts);
-          setLoading(false);
-        });
+    const subscription = selector.on("accountsChanged", ({ accounts }) => {
+      syncAccountId(accountId, accounts);
+      setAccounts(accounts);
     });
 
     return () => subscription.remove();
-  }, [selector]);
+  }, [selector, accountId]);
 
-  useEffect(() => {
-    if (!selector) {
-      return;
-    }
-
-    const subscription = selector.on("signOut", () => {
-      setAccountId(null);
-      setAccounts([]);
-    });
-
-    return () => subscription.remove();
-  }, [selector]);
-
-  if (!selector || loading) {
+  if (!selector) {
     return null;
   }
 

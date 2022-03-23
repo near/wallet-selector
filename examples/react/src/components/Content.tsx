@@ -100,7 +100,7 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   }
 
-  const handleSubmit = (e: SubmitEvent) => {
+  const handleSubmit = useCallback((e: SubmitEvent) => {
     e.preventDefault();
 
     // TODO: Fix the typing so that target.elements exists..
@@ -155,7 +155,7 @@ const Content: React.FC = () => {
 
         fieldset.disabled = false;
       });
-  };
+  }, [selector, accountId, getMessages]);
 
   if (loading) {
     return null;
