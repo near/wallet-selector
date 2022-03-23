@@ -108,7 +108,7 @@ export default class NearWalletSelector {
     actions,
   }: SignAndSendTransactionParams) {
     const wallet = this.controller.getSelectedWallet();
-    const accounts = await this.getAccounts();
+    const accounts = this.getAccounts();
 
     if (!wallet) {
       throw new Error("Wallet not selected");

@@ -23,6 +23,18 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
   }) {
     let wallet: InjectedMathWallet;
 
+    const getAccounts = () => {
+      if (!wallet.signer.account) {
+        return [];
+      }
+
+      const accountId = ("accountId" in wallet.signer.account)
+        ? wallet.signer.account.accountId
+        : wallet.signer.account.address;
+
+      return [{ accountId }];
+    };
+
     const isInstalled = async () => {
       try {
         return await waitFor(() => !!window.nearWalletApi, {});
@@ -127,17 +139,7 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut");
       },
 
-      async getAccounts() {
-        const signerAccount = await getSignerAccount();
-
-        if (!signerAccount) {
-          return [];
-        }
-
-        return [{
-          accountId: signerAccount.accountId
-        }];
-      },
+      getAccounts,
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("MathWallet:signAndSendTransaction", {

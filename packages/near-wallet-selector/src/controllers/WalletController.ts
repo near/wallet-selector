@@ -181,7 +181,7 @@ class WalletController {
     return wallet.isSignedIn();
   }
 
-  async getAccounts() {
+  getAccounts() {
     const wallet = this.getSelectedWallet();
 
     if (!wallet) {

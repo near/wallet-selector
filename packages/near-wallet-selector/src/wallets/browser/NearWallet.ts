@@ -17,6 +17,16 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
 
+    const getAccounts = () => {
+      const accountId: string | null = wallet.getAccountId();
+
+      if (!accountId) {
+        return [];
+      }
+
+      return [{ accountId }];
+    }
+
     return {
       id: "near-wallet",
       type: "browser",
@@ -85,17 +95,7 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         return wallet.isSignedIn();
       },
 
-      async getAccounts() {
-        const accountId: string | null = wallet.getAccountId();
-
-        if (!accountId) {
-          return [];
-        }
-
-        return [{
-          accountId
-        }];
-      },
+      getAccounts,
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("NearWallet:signAndSendTransaction", {

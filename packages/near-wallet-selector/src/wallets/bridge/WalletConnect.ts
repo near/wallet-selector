@@ -18,13 +18,15 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
     let session: SessionTypes.Settled | null = null;
     const chainId = `near:${options.networkId}`;
 
-    const getAccountId = () => {
-      if (!session?.state.accounts.length) {
-        return null;
+    const getAccounts = () => {
+      if (!session) {
+        return [];
       }
 
-      return session.state.accounts[0].split(":")[2];
-    };
+      return session.state.accounts.map((wcAccountId) => ({
+        accountId: wcAccountId.split(":")[2],
+      }))
+    }
 
     const cleanup = () => {
       subscriptions.forEach((subscription) => subscription.remove());
@@ -150,15 +152,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         return client.isSignedIn()
       },
 
-      async getAccounts() {
-        if (!session) {
-          return [];
-        }
-
-        return session.state.accounts.map((accountId) => ({
-          accountId: accountId
-        }));
-      },
+      getAccounts,
 
       async signAndSendTransaction({ receiverId, actions }) {
         const signerId = getAccountId()!;

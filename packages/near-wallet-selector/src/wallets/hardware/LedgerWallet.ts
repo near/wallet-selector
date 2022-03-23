@@ -37,6 +37,16 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
 
     const debugMode = false;
 
+    const getAccounts = () => {
+      const accountId = state.authData?.accountId;
+
+      if (!accountId) {
+        return [];
+      }
+
+      return [{ accountId }];
+    }
+
     const signOut = async () => {
       for (const key in subscriptions) {
         subscriptions[key].remove();
@@ -197,17 +207,7 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         return !!state.authData;
       },
 
-      async getAccounts() {
-        const accountId = state.authData?.accountId;
-
-        if (!accountId) {
-          return [];
-        }
-
-        return [{
-          accountId
-        }];
-      },
+      getAccounts,
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("LedgerWallet:signAndSendTransaction", {
