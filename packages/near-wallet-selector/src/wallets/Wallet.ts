@@ -19,7 +19,6 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
-// TODO: Extend to include key type (ed25519) and public key.
 export interface AccountInfo {
   accountId: string;
 }
