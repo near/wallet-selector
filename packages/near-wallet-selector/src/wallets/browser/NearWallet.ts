@@ -84,7 +84,10 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       async isSignedIn() {

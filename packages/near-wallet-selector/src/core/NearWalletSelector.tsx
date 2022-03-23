@@ -91,7 +91,7 @@ export default class NearWalletSelector {
     return this.controller.getAccounts();
   }
 
-  on(event: EventList, callback: () => void) {
+  on(event: EventList, callback: (...args: Array<any>) => void) {
     return this.emitter.on(event, callback);
   }
 

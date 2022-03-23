@@ -116,7 +116,10 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       async isSignedIn() {
@@ -136,7 +139,10 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       getAccounts,

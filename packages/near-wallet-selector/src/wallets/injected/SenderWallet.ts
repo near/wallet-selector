@@ -15,7 +15,6 @@ declare global {
 function setupSenderWallet(): WalletModule<InjectedWallet> {
   return function SenderWallet({
     options,
-    provider,
     emitter,
     logger,
     updateState,
@@ -141,7 +140,10 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       async isSignedIn() {
@@ -159,7 +161,10 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       getAccounts,

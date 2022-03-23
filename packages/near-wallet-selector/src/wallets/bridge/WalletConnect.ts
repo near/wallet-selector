@@ -56,6 +56,8 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
           if (updatedSession.topic === session?.topic) {
             session = updatedSession;
+            const accounts = getAccounts();
+            emitter.emit("accountsChanged", { accounts });
           }
         })
       );
@@ -70,7 +72,10 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
               ...prevState,
               selectedWalletId: null,
             }));
-            emitter.emit("signOut");
+
+            const accounts = getAccounts();
+            emitter.emit("accountsChanged", { accounts });
+            emitter.emit("signOut", { accounts });
           }
         })
       );
@@ -131,7 +136,10 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
             showModal: false,
             selectedWalletId: this.id,
           }));
-          emitter.emit("signIn");
+
+          const accounts = getAccounts();
+          emitter.emit("signIn", { accounts });
+          emitter.emit("accountsChanged", { accounts });
         } finally {
           subscription.remove();
           QRCodeModal.close();
@@ -154,9 +162,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
       getAccounts,
 
-      async signAndSendTransaction({ receiverId, actions }) {
-        const signerId = getAccountId()!;
-
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("WalletConnect:signAndSendTransaction", {
           topic: session!.topic,
           signerId,

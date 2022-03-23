@@ -63,7 +63,11 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
         ...prevState,
         selectedWalletId: null,
       }));
-      emitter.emit("signOut");
+
+      const accounts = getAccounts();
+      emitter.emit("accountsChanged", { accounts });
+      emitter.emit("signOut", { accounts });
+
       state.authData = null;
       client = null;
     };
@@ -198,7 +202,10 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       signOut,
