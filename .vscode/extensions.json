@@ -4,7 +4,7 @@
     "EditorConfig.EditorConfig",
     "syler.sass-indented",
     "firsttris.vscode-jest-runner",
-    "nrwl.angular-console"
-  ],
-  "unwantedRecommendations": ["esbenp.prettier-vscode"]
+    "nrwl.angular-console",
+    "esbenp.prettier-vscode"
+  ]
 }
