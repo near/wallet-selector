@@ -8,7 +8,8 @@ interface WalletSelectorContextValue {
   setAccountId: (accountId: string) => void;
 }
 
-const WalletSelectorContext = React.createContext<WalletSelectorContextValue | null>(null);
+const WalletSelectorContext =
+  React.createContext<WalletSelectorContextValue | null>(null);
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
@@ -23,33 +24,35 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       contractId: "guest-book.testnet",
     })
       .then((instance) => {
-        return instance.getAccounts()
-          .then(async (accounts) => {
-            let accountId = localStorage.getItem("accountId");
+        return instance.getAccounts().then(async (initAccounts) => {
+          let initAccountId = localStorage.getItem("accountId");
 
-            // Ensure the accountId in storage is still valid.
-            if (accountId && !accounts.some((x) => x.accountId === accountId)) {
-              accountId = null;
-              localStorage.removeItem("accountId");
-            }
+          // Ensure the accountId in storage is still valid.
+          if (
+            initAccountId &&
+            !initAccounts.some((x) => x.accountId === initAccountId)
+          ) {
+            initAccountId = null;
+            localStorage.removeItem("accountId");
+          }
 
-            // Assume the first account if one hasn't been selected.
-            if (!accountId && accounts.length) {
-              accountId = accounts[0].accountId;
-              localStorage.setItem("accountId", accountId);
-            }
+          // Assume the first account if one hasn't been selected.
+          if (!initAccountId && initAccounts.length) {
+            initAccountId = initAccounts[0].accountId;
+            localStorage.setItem("accountId", initAccountId);
+          }
 
-            if (accountId) {
-              setAccountId(accountId);
-            }
+          if (initAccountId) {
+            setAccountId(initAccountId);
+          }
 
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore-next-line
-            window.selector = instance;
-            setSelector(instance);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore-next-line
+          window.selector = instance;
+          setSelector(instance);
 
-            setAccounts(accounts);
-          });
+          setAccounts(initAccounts);
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -65,16 +68,15 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     const subscription = selector.on("signIn", () => {
       setLoading(true);
 
-      selector.getAccounts()
-        .then(async (accounts) => {
-          // Assume the first account.
-          const accountId = accounts[0].accountId;
+      selector.getAccounts().then(async (signInAccounts) => {
+        // Assume the first account.
+        const signInAccountId = signInAccounts[0].accountId;
 
-          localStorage.setItem("accountId", accountId);
-          setAccountId(accountId);
-          setAccounts(accounts);
-          setLoading(false);
-        });
+        localStorage.setItem("accountId", signInAccountId);
+        setAccountId(signInAccountId);
+        setAccounts(signInAccounts);
+        setLoading(false);
+      });
     });
 
     return () => subscription.remove();
@@ -98,22 +100,26 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <WalletSelectorContext.Provider value={{
-      selector,
-      accounts,
-      accountId,
-      setAccountId
-    }}>
+    <WalletSelectorContext.Provider
+      value={{
+        selector,
+        accounts,
+        accountId,
+        setAccountId,
+      }}
+    >
       {children}
     </WalletSelectorContext.Provider>
-  )
-}
+  );
+};
 
 export function useWalletSelector() {
   const context = useContext(WalletSelectorContext);
 
   if (!context) {
-    throw new Error("useWalletSelector must be used within a WalletSelectorContextProvider");
+    throw new Error(
+      "useWalletSelector must be used within a WalletSelectorContextProvider"
+    );
   }
 
   return context;

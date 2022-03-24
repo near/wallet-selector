@@ -21,7 +21,7 @@
   "types": "./lib/esm/index.d.ts",
   "scripts": {
     "build": "nx run-many --target=build --projects=near-wallet-selector --configuration=production",
-    "lint": "nx run-many --target=lint --all",
+    "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
     "test": "nx run-many --target=test --all",
