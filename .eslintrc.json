@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nrwl/nx", "prettier"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -23,8 +23,13 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
+      "extends": [
+        "plugin:@nrwl/nx/typescript",
+        "eslint:recommended",
+        "prettier"
+      ],
       "rules": {
+        "prettier/prettier": ["error"],
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/explicit-function-return-type": "off",

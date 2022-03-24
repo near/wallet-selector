@@ -1,7 +1,8 @@
 {
   "eslint.format.enable": true,
-  "prettier.enable": true,
-  "prettier.configPath": ".prettierrc",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
+  "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint":
+    true
+  }
 }
