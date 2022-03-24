@@ -1,0 +1,29 @@
+{
+  "root": "examples/angular-e2e",
+  "sourceRoot": "examples/angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@ns3/nx-jest-playwright:jest-playwright",
+      "options": {
+        "devServerTarget": "angular:serve",
+        "jestConfig": "examples/angular-e2e/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["examples/angular-e2e/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["angular"]
+}

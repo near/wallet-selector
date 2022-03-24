@@ -1,0 +1,46 @@
+{
+  "root": "packages/near-wallet-selector",
+  "sourceRoot": "packages/near-wallet-selector/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/near-wallet-selector",
+        "tsConfig": "packages/near-wallet-selector/tsconfig.lib.json",
+        "project": "packages/near-wallet-selector/package.json",
+        "entryFile": "packages/near-wallet-selector/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/near-wallet-selector/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/near-wallet-selector/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/near-wallet-selector"],
+      "options": {
+        "jestConfig": "packages/near-wallet-selector/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

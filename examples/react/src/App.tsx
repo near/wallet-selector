@@ -1,11 +1,10 @@
-import "regenerator-runtime/runtime";
-import React, { useState, useEffect, Fragment, useRef } from "react";
-import NearWalletSelector from "near-wallet-selector";
+import React, { Fragment } from "react";
 
-import getConfig from "./config";
 import Content from "./components/Content";
+import { WalletSelectorContextProvider } from "./contexts/WalletSelectorContext";
 
 const App: React.FC = () => {
+<<<<<<< HEAD
 	const [loaded, setLoaded] = useState(false);
 	const selectorRef = useRef<NearWalletSelector>();
 
@@ -41,6 +40,16 @@ const App: React.FC = () => {
 			<Content selector={selectorRef.current!} />
 		</Fragment>
 	);
+=======
+  return (
+    <Fragment>
+      <h1>NEAR Guest Book</h1>
+      <WalletSelectorContextProvider>
+        <Content />
+      </WalletSelectorContextProvider>
+    </Fragment>
+  );
+>>>>>>> upstream/dev
 };
 
 export default App;
