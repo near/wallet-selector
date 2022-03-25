@@ -68,14 +68,14 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
       await ledgerClient.connect();
       ledgerClient.setScrambleKey("NEAR");
 
-      subscriptions['disconnect'] = ledgerClient.on("disconnect", (err) => {
+      subscriptions["disconnect"] = ledgerClient.on("disconnect", (err) => {
         logger.error(err);
 
         signOut();
       });
 
       if (debugMode) {
-        subscriptions['logs'] = ledgerClient.listen((data) => {
+        subscriptions["logs"] = ledgerClient.listen((data) => {
           logger.log("LedgerWallet:init:logs", data);
         });
       }
@@ -204,9 +204,7 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
           return [];
         }
 
-        return [{
-          accountId
-        }];
+        return [{ accountId }];
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

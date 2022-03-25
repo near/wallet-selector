@@ -1,7 +1,20 @@
 {
   "root": true,
+  "env": {
+    "commonjs": true,
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx", "prettier"],
+  "plugins": [
+    "@nrwl/nx",
+    "@typescript-eslint",
+    "prettier",
+    "react",
+    "react-hooks"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -26,6 +39,8 @@
       "extends": [
         "plugin:@nrwl/nx/typescript",
         "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
         "prettier"
       ],
       "rules": {

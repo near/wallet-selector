@@ -92,9 +92,7 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
           return [];
         }
 
-        return [{
-          accountId
-        }];
+        return [{ accountId }];
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -107,7 +105,7 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         const account = wallet.account();
 
         // near-api-js marks this method as protected.
-        return account['signAndSendTransaction']({
+        return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
         });

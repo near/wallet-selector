@@ -8,4 +8,4 @@ export interface Message {
 
 export type Account = AccountView & {
   account_id: string;
-}
+};
