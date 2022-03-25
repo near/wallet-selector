@@ -5,7 +5,7 @@ export type BuiltInWalletId =
   | "sender-wallet"
   | "ledger-wallet"
   | "math-wallet";
-export type NetworkId = "mainnet" | "testnet" | "betanet" | "guildnet";
+export type NetworkId = "mainnet" | "testnet" | "betanet";
 export type Theme = "dark" | "light" | "auto";
 
 export interface Options {

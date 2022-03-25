@@ -40,19 +40,6 @@ describe("getNetwork", () => {
       restApiUrl: "https://rest.nearapi.org",
     });
   });
-
-  it("returns the correct config for 'guildnet'", () => {
-    const networkId: NetworkId = "guildnet";
-    const network = getNetwork(networkId);
-
-    expect(network).toEqual({
-      networkId,
-      nodeUrl: "https://rpc.guildnet.near.org",
-      helperUrl: "https://helper.guildnet.near.org",
-      explorerUrl: "https://explorer.guildnet.near.org",
-      restApiUrl: "https://rest.nearapi.org",
-    });
-  });
 });
 
 describe("resolveNetwork", () => {

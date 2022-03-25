@@ -34,14 +34,6 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         explorerUrl: "https://explorer.betanet.near.org",
         restApiUrl: "https://rest.nearapi.org",
       };
-    case "guildnet":
-      return {
-        networkId,
-        nodeUrl: "https://rpc.guildnet.near.org",
-        helperUrl: "https://helper.guildnet.near.org",
-        explorerUrl: "https://explorer.guildnet.near.org",
-        restApiUrl: "https://rest.nearapi.org",
-      };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);
   }
