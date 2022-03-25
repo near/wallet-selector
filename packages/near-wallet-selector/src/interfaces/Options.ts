@@ -1,14 +1,16 @@
+import { NetworkConfiguration } from "../network";
+
 export type BuiltInWalletId =
   | "near-wallet"
   | "sender-wallet"
   | "ledger-wallet"
   | "math-wallet";
-export type NetworkId = "mainnet" | "betanet" | "testnet";
+export type NetworkId = "mainnet" | "testnet" | "betanet" | "guildnet";
 export type Theme = "dark" | "light" | "auto";
 
 export interface Options {
   wallets: Array<BuiltInWalletId>;
-  networkId: NetworkId;
+  network: NetworkId | NetworkConfiguration;
   contractId: string;
   methodNames?: Array<string>;
   ui?: {
