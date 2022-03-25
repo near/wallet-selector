@@ -41,14 +41,24 @@ const selector = new NearWalletSelector({
 
 ```ts
 type BuiltInWalletId = "near-wallet" | "sender-wallet" | "ledger-wallet";
-type NetworkId = "mainnet" | "betanet" | "testnet";
+type NetworkId = "mainnet" | "betanet" | "testnet" | "customnet";
 type Theme = "dark" | "light" | "auto";
+
+interface NetworkConfiguration {
+  networkId: string;
+  nodeUrl: string;
+  helperUrl: string;
+  explorerUrl: string;
+  restApiUrl: string;
+}
 
 interface Options {
   // List of wallets you want to support in your dApp.
   wallets: Array<BuiltInWalletId>;
   // Network ID matching that of your dApp.
   networkId: NetworkId;
+  // Required when networkId is 'customnet'.
+  network?: NetworkConfiguration;
   contract: {
     // Account ID of the Smart Contract used for 'view' and 'signAndSendTransaction' calls.
     contractId: string;
