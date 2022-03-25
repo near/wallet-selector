@@ -46,7 +46,11 @@ const selector = await NearWalletSelector.init({
 
 - `options` (`object`)
   - `wallets` (`Array<string>`): List of wallets you want to support in your dApp.
-  - `networkId` (`string`): Network ID matching that of your dApp. This can be either `testnet`, `betanet` or `mainnet`.
+  - `network` (`string | object`): Network ID or object matching that of your dApp configuration . Network ID can be either `testnet`, `betanet` or `mainnet`.
+    - `networkId` (`string`): Custom network ID (e.g. 'localnet').
+    - `nodeUrl` (`string`): Custom URL for RPC requests.
+    - `helperUrl` (`string`): Custom URL for creating accounts.
+    - `explorerUrl` (`string`): Custom URL for 
   - `contractId` (`string`): Account ID of the Smart Contract used for `.signIn` and `.signAndSendTransaction`.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `ui`: (`object?`)
