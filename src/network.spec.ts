@@ -50,6 +50,12 @@ describe("getNetwork", () => {
 });
 
 describe("resolveNetwork", () => {
+  it("resolves to network configuration matching the preset", () => {
+    const networkId = "testnet";
+
+    expect(resolveNetwork(networkId)).toEqual(getNetwork(networkId));
+  });
+
   it("resolves to custom network configuration for 'customnet'", () => {
     const network: NetworkConfiguration = {
       networkId: "localnet",
