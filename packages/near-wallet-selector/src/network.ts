@@ -5,6 +5,7 @@ export interface NetworkConfiguration {
   nodeUrl: string;
   helperUrl: string;
   explorerUrl: string;
+  restApiUrl: string;
 }
 
 export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
@@ -15,6 +16,7 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         nodeUrl: "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.near.org",
+        restApiUrl: "https://rest.nearapi.org",
       };
     case "testnet":
       return {
@@ -22,6 +24,7 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         nodeUrl: "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
+        restApiUrl: "https://rest.nearapi.org",
       };
     case "betanet":
       return {
@@ -29,6 +32,7 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         nodeUrl: "https://rpc.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
         explorerUrl: "https://explorer.betanet.near.org",
+        restApiUrl: "https://rest.nearapi.org",
       };
     case "guildnet":
       return {
@@ -36,6 +40,7 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         nodeUrl: "https://rpc.guildnet.near.org",
         helperUrl: "https://helper.guildnet.near.org",
         explorerUrl: "https://explorer.guildnet.near.org",
+        restApiUrl: "https://rest.nearapi.org",
       };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);

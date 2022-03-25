@@ -11,6 +11,7 @@ describe("getNetwork", () => {
       nodeUrl: "https://rpc.mainnet.near.org",
       helperUrl: "https://helper.mainnet.near.org",
       explorerUrl: "https://explorer.near.org",
+      restApiUrl: "https://rest.nearapi.org",
     });
   });
 
@@ -23,6 +24,7 @@ describe("getNetwork", () => {
       nodeUrl: "https://rpc.testnet.near.org",
       helperUrl: "https://helper.testnet.near.org",
       explorerUrl: "https://explorer.testnet.near.org",
+      restApiUrl: "https://rest.nearapi.org",
     });
   });
 
@@ -35,6 +37,7 @@ describe("getNetwork", () => {
       nodeUrl: "https://rpc.betanet.near.org",
       helperUrl: "https://helper.betanet.near.org",
       explorerUrl: "https://explorer.betanet.near.org",
+      restApiUrl: "https://rest.nearapi.org",
     });
   });
 
@@ -47,6 +50,7 @@ describe("getNetwork", () => {
       nodeUrl: "https://rpc.guildnet.near.org",
       helperUrl: "https://helper.guildnet.near.org",
       explorerUrl: "https://explorer.guildnet.near.org",
+      restApiUrl: "https://rest.nearapi.org",
     });
   });
 });
@@ -60,10 +64,11 @@ describe("resolveNetwork", () => {
 
   it("resolves custom network configuration", () => {
     const network: NetworkConfiguration = {
-      networkId: "local",
+      networkId: "localnet",
       nodeUrl: "http://127.0.0.1:52993",
       helperUrl: "http://127.0.0.1:52997",
-      explorerUrl: "http://127.0.0.1:53009"
+      explorerUrl: "http://127.0.0.1:53009",
+      restApiUrl: "https://rest.nearapi.org",
     };
 
     expect(resolveNetwork(network)).toEqual(network);
