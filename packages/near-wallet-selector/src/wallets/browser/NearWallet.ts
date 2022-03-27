@@ -7,113 +7,126 @@ import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
 function setupNearWallet(): WalletModule<BrowserWallet> {
-  return function NearWallet({
-    options,
-    emitter,
-    logger,
-    storage,
-    updateState,
-  }) {
-    let keyStore: keyStores.KeyStore;
-    let wallet: WalletConnection;
+	return function NearWallet({
+		options,
+		emitter,
+		logger,
+		storage,
+		updateState,
+	}) {
+		let keyStore: keyStores.KeyStore;
+		let wallet: WalletConnection;
 
-    return {
-      id: "near-wallet",
-      type: "browser",
-      name: "NEAR Wallet",
-      description: null,
-      iconUrl: nearWalletIcon,
+		return {
+			id: "near-wallet",
+			type: "browser",
+			name: "NEAR Wallet",
+			description: null,
+			iconUrl: nearWalletIcon,
 
-      isAvailable() {
-        return true;
-      },
+			isAvailable() {
+				return true;
+			},
 
-      async init() {
-        const localStorageKeyStore =
-          new keyStores.BrowserLocalStorageKeyStore();
-        const near = await connect({
-          keyStore: localStorageKeyStore,
-          ...getConfig(options.networkId),
-          headers: {},
-        });
+			async init() {
+				const localStorageKeyStore =
+					new keyStores.BrowserLocalStorageKeyStore();
+				const near = await connect({
+					keyStore: localStorageKeyStore,
+					...getConfig(options.networkId),
+					headers: {},
+				});
 
-        wallet = new WalletConnection(near, "near_app");
-        keyStore = localStorageKeyStore;
+				wallet = new WalletConnection(near, "near_app");
+				keyStore = localStorageKeyStore;
 
-        // Cleanup up any pending keys (cancelled logins).
-        if (!wallet.isSignedIn()) {
-          await localStorageKeyStore.clear();
-        }
-      },
+				// Cleanup up any pending keys (cancelled logins).
+				if (!wallet.isSignedIn()) {
+					await localStorageKeyStore.clear();
+				}
+			},
 
-      // We don't emit "signIn" or update state as we can't guarantee the user will
-      // actually sign in. Best we can do is temporarily set it as selected and
-      // validate on initialise.
-      async signIn() {
-        if (!wallet) {
-          await this.init();
-        }
+			// We don't emit "signIn" or update state as we can't guarantee the user will
+			// actually sign in. Best we can do is temporarily set it as selected and
+			// validate on initialise.
+			async signIn() {
+				if (!wallet) {
+					await this.init();
+				}
 
-        await wallet.requestSignIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-        });
+				await wallet.requestSignIn({
+					contractId: options.contractId,
+					methodNames: options.methodNames,
+				});
 
-        storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, this.id);
-      },
+				storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, this.id);
+			},
 
-      async signOut() {
-        if (!wallet) {
-          return;
-        }
+			async signOut() {
+				if (!wallet) {
+					return;
+				}
 
-        wallet.signOut();
-        await keyStore.clear();
+				wallet.signOut();
+				await keyStore.clear();
 
-        updateState((prevState) => ({
-          ...prevState,
-          selectedWalletId: null,
-        }));
-        emitter.emit("signOut");
-      },
+				updateState((prevState) => ({
+					...prevState,
+					selectedWalletId: null,
+				}));
+				emitter.emit("signOut");
+			},
 
-      async isSignedIn() {
-        if (!wallet) {
-          return false;
-        }
+			async isSignedIn() {
+				if (!wallet) {
+					return false;
+				}
 
-        return wallet.isSignedIn();
-      },
+				return wallet.isSignedIn();
+			},
 
-      async getAccounts() {
-        const accountId: string | null = wallet.getAccountId();
+			async getAccounts() {
+				const accountId: string | null = wallet.getAccountId();
 
-        if (!accountId) {
-          return [];
-        }
+				if (!accountId) {
+					return [];
+				}
 
-        return [{
-          accountId
-        }];
-      },
+				return [{
+					accountId
+				}];
+			},
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
-        logger.log("NearWallet:signAndSendTransaction", {
-          signerId,
-          receiverId,
-          actions,
-        });
+			async signAndSendTransaction({ signerId, receiverId, actions }) {
+				logger.log("NearWallet:signAndSendTransaction", {
+					signerId,
+					receiverId,
+					actions,
+				});
 
-        const account = wallet.account();
+				const account = wallet.account();
 
-        // near-api-js marks this method as protected.
-        return account['signAndSendTransaction']({
-          receiverId,
-          actions: transformActions(actions),
-        });
-      },
-    };
-  };
+				return account['signAndSendTransaction']({
+					receiverId,
+					actions,
+				});
+			},
+
+			async requestSignTransactions({ transactions, callbackUrl, meta }) {
+				logger.log("NearWallet:requestSignTransactions", {
+					transactions,
+					callbackUrl,
+					meta,
+				});
+
+				const account = wallet.account();
+
+				return account.walletConnection.requestSignTransactions({
+					transactions, callbackUrl, meta
+				});
+			},
+		};
+	};
 }
 
 export default setupNearWallet;

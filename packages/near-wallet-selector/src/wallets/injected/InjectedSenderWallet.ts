@@ -2,6 +2,7 @@
 
 // Empty string if we haven't signed in before.
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import { RequestSignTransactionsParams } from '../Wallet';
 
 interface AccessKey {
   publicKey: {
@@ -80,10 +81,6 @@ export interface SignAndSendTransactionResponse {
 export interface Transaction {
   receiverId: string;
   actions: Array<Action>;
-}
-
-export interface RequestSignTransactionsParams {
-  transactions: Array<Transaction>;
 }
 
 export interface SenderWalletEvents {
