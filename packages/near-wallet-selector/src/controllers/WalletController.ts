@@ -10,6 +10,7 @@ import setupNearWallet from "../wallets/browser/NearWallet";
 import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 import setupMathWallet from "../wallets/injected/MathWallet";
+import { NetworkConfiguration } from "../network";
 
 export interface SignInParams {
   walletId: BuiltInWalletId;
@@ -19,14 +20,16 @@ export interface SignInParams {
 
 class WalletController {
   private options: Options;
+  private network: NetworkConfiguration;
   private provider: ProviderService;
   private emitter: Emitter;
 
   private wallets: Array<Wallet>;
 
-  constructor(options: Options, provider: ProviderService, emitter: Emitter) {
+  constructor(options: Options, network: NetworkConfiguration, emitter: Emitter) {
     this.options = options;
-    this.provider = provider;
+    this.network = network;
+    this.provider = new ProviderService(network.nodeUrl);
     this.emitter = emitter;
 
     this.wallets = [];
@@ -72,6 +75,7 @@ class WalletController {
       .map((module) => {
         return module({
           options: this.options,
+          network: this.network,
           provider: this.provider,
           emitter: this.emitter,
           logger,

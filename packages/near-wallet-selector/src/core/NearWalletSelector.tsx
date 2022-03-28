@@ -6,12 +6,11 @@ import WalletController, {
 } from "../controllers/WalletController";
 import Modal from "../modal/Modal";
 import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import ProviderService from "../services/provider/ProviderService";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
 import { Action } from "../wallets/actions";
-import getConfig, { NetworkConfiguration } from "../config";
+import { NetworkConfiguration, resolveNetwork } from "../network";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
@@ -35,13 +34,12 @@ export default class NearWalletSelector {
   }
 
   private constructor(options: Options) {
-    const config = getConfig(options.networkId);
+    const network = resolveNetwork(options.network);
     const emitter = new EventHandler();
-    const provider = new ProviderService(config.nodeUrl);
-    const controller = new WalletController(options, provider, emitter);
+    const controller = new WalletController(options, network, emitter);
 
-    this.network = config;
     this.options = options;
+    this.network = network;
     this.emitter = emitter;
     this.controller = controller;
   }
@@ -52,7 +50,11 @@ export default class NearWalletSelector {
     document.body.appendChild(el);
 
     ReactDOM.render(
-      <Modal options={this.options} wallets={this.controller.getWallets()} />,
+      <Modal
+        options={this.options}
+        network={this.network}
+        wallets={this.controller.getWallets()}
+      />,
       document.getElementById(MODAL_ELEMENT_ID)
     );
   }
