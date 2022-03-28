@@ -1,6 +1,6 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
 
-import getConfig from "../../config";
+import { NetworkConfiguration, resolveNetwork } from "../../network";
 import { Options } from "../../interfaces/Options";
 import { Emitter } from "../../utils/EventsHandler";
 import { logger } from "../../services/logging.service";
@@ -39,11 +39,32 @@ class NearWallet implements BrowserWallet {
     return true;
   };
 
+  private getWalletUrl(network: NetworkConfiguration) {
+    switch (network.networkId) {
+      case "mainnet":
+        return "https://wallet.near.org";
+      case "testnet":
+        return "https://wallet.testnet.near.org";
+      case "betanet":
+        return "https://wallet.betanet.near.org";
+      default:
+        // TODO: Make this a parameter once we have wallet modules.
+        return "https://wallet.testnet.near.org";
+    }
+  }
+
   init = async () => {
+    const network = resolveNetwork(
+      this.options.networkId,
+      this.options.network
+    );
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
     const near = await connect({
       keyStore,
-      ...getConfig(this.options.networkId),
+      networkId: network.networkId,
+      nodeUrl: network.nodeUrl,
+      helperUrl: network.helperUrl,
+      walletUrl: this.getWalletUrl(network),
       headers: {},
     });
 
