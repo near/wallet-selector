@@ -24,7 +24,12 @@
             "prefix": "near-wallet-selector",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+        "react-hooks/rules-of-hooks": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "no-console": "off"
       }
     },
     {

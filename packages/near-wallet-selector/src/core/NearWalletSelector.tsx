@@ -22,7 +22,7 @@ export default class NearWalletSelector {
   private emitter: Emitter;
   private controller: WalletController;
 
-  network: NetworkConfiguration
+  network: NetworkConfiguration;
 
   static async init(options: Options) {
     const selector = new NearWalletSelector(options);

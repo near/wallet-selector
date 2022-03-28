@@ -1,13 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import NearWalletSelector from "near-wallet-selector";
 import getConfig from "../config";
 
 @Component({
-  selector: 'near-wallet-selector-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: "near-wallet-selector-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
-
 export class AppComponent implements OnInit {
   selector: NearWalletSelector;
 

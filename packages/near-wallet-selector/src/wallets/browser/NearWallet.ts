@@ -9,7 +9,9 @@ interface NearWalletParams {
   walletUrl?: string;
 }
 
-function setupNearWallet({ walletUrl }: NearWalletParams = {}): WalletModule<BrowserWallet> {
+function setupNearWallet({
+  walletUrl,
+}: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({
     options,
     network,
@@ -32,7 +34,7 @@ function setupNearWallet({ walletUrl }: NearWalletParams = {}): WalletModule<Bro
 
       // TODO: Throw once wallets are separate packages.
       return undefined;
-    }
+    };
 
     return {
       id: "near-wallet",
@@ -111,9 +113,7 @@ function setupNearWallet({ walletUrl }: NearWalletParams = {}): WalletModule<Bro
           return [];
         }
 
-        return [{
-          accountId
-        }];
+        return [{ accountId }];
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -126,7 +126,7 @@ function setupNearWallet({ walletUrl }: NearWalletParams = {}): WalletModule<Bro
         const account = wallet.account();
 
         // near-api-js marks this method as protected.
-        return account['signAndSendTransaction']({
+        return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
         });

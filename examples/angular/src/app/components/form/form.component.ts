@@ -1,13 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AccountInfo } from "near-wallet-selector";
 import Big from "big.js";
 
-export type Sumbitted = SubmitEvent & { target: { elements: { [key: string]: HTMLInputElement } }};
+export type Sumbitted = SubmitEvent & {
+  target: { elements: { [key: string]: HTMLInputElement } };
+};
 
 @Component({
-  selector: 'near-wallet-selector-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  selector: "near-wallet-selector-form",
+  templateUrl: "./form.component.html",
+  styleUrls: ["./form.component.scss"],
 })
 export class FormComponent implements OnInit {
   @Input() account: AccountInfo;
@@ -15,10 +17,12 @@ export class FormComponent implements OnInit {
   maxValue: string;
 
   ngOnInit(): void {
-    this.maxValue = Big(this.account.balance).div(10 ** 24).toString();
+    this.maxValue = Big(this.account.balance)
+      .div(10 ** 24)
+      .toString();
   }
 
-  onSubmit (event: Sumbitted) {
-    this.addMessage.emit(event)
+  onSubmit(event: Sumbitted) {
+    this.addMessage.emit(event);
   }
 }

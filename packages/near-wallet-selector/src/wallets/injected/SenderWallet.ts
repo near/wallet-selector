@@ -159,9 +159,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
           return [];
         }
 
-        return [{
-          accountId
-        }];
+        return [{ accountId }];
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
