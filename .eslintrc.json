@@ -44,7 +44,25 @@
         "prettier"
       ],
       "rules": {
-        "prettier/prettier": ["error"],
+        "prettier/prettier": ["error",
+          {
+            "arrowParens": "always",
+            "bracketSpacing": true,
+            "jsxSingleQuote": false,
+            "printWidth": 80,
+            "semi": true,
+            "singleQuote": false,
+            "tabWidth": 2,
+            "useTabs": false,
+            "trailingComma": "es5",
+            "quoteProps": "as-needed",
+            "proseWrap": "preserve",
+            "insertPragma": false,
+            "requirePragma": false,
+            "bracketSameLine": false,
+            "endOfLine": "auto"
+          }
+        ],
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
