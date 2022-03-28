@@ -106,7 +106,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 
 export const transformActions = (actions: Array<Action | TxAction>) => {
 	return actions.map((action) => {
-
+		
 		if (action instanceof transactions.Action) {
 			return action
 		}

@@ -108,7 +108,7 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
 
 				return account['signAndSendTransaction']({
 					receiverId,
-					actions,
+					actions: transformActions(actions),
 				});
 			},
 

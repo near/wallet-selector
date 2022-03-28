@@ -5,14 +5,6 @@ module.exports = (config) => {
 
 	nrwlConfig(config); // first call it so that it @nrwl/react plugin adds its configs,
 
-	Object.assign(config.resolve, {
-		fallback: {
-			"crypto": require.resolve("crypto-browserify"),
-			"stream": require.resolve("stream-browserify"),
-			"util": require.resolve("util/"),
-		}
-	})
-
 	// then override your config.
 	return {
 		...config,
@@ -24,10 +16,7 @@ module.exports = (config) => {
 			}),
 			new webpack.DefinePlugin({
 				'process.env.NODE_ENV': JSON.stringify('production')
-			}),
-			new webpack.DefinePlugin({
-				'process': `({ browser: true })`
-			}),
+			})
 		]
 	};
 };
