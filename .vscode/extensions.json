@@ -5,6 +5,6 @@
     "syler.sass-indented",
     "firsttris.vscode-jest-runner",
     "nrwl.angular-console",
-    "esbenp.prettier-vscode"
-  ]
+  ],
+  "unwantedRecommendations": ["esbenp.prettier-vscode"]
 }
