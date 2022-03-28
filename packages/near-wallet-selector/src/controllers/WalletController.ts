@@ -26,7 +26,11 @@ class WalletController {
 
   private wallets: Array<Wallet>;
 
-  constructor(options: Options, network: NetworkConfiguration, emitter: Emitter) {
+  constructor(
+    options: Options,
+    network: NetworkConfiguration,
+    emitter: Emitter
+  ) {
     this.options = options;
     this.network = network;
     this.provider = new ProviderService(network.nodeUrl);
