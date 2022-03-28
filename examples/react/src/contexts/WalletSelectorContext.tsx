@@ -20,7 +20,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     NearWalletSelector.init({
       wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
-      networkId: "testnet",
+      network: "testnet",
       contractId: "guest-book.testnet",
     })
       .then((instance) => {

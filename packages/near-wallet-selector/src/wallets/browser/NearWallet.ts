@@ -1,14 +1,18 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
 
-import getConfig from "../../config";
 import { transformActions } from "../actions";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
-function setupNearWallet(): WalletModule<BrowserWallet> {
+interface NearWalletParams {
+  walletUrl?: string;
+}
+
+function setupNearWallet({ walletUrl }: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({
     options,
+    network,
     emitter,
     logger,
     storage,
@@ -16,6 +20,19 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
   }) {
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
+
+    const getWalletUrl = () => {
+      if (walletUrl) {
+        return walletUrl;
+      }
+
+      if (typeof options.network === "string") {
+        return `https://wallet.${options.network}.near.org`;
+      }
+
+      // TODO: Throw once wallets are separate packages.
+      return undefined;
+    }
 
     return {
       id: "near-wallet",
@@ -31,9 +48,11 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
       async init() {
         const localStorageKeyStore =
           new keyStores.BrowserLocalStorageKeyStore();
+
         const near = await connect({
           keyStore: localStorageKeyStore,
-          ...getConfig(options.networkId),
+          walletUrl: getWalletUrl(),
+          ...network,
           headers: {},
         });
 
