@@ -6,6 +6,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
+		"indent": [2, 2],
         "@nrwl/nx/enforce-module-boundaries": [
           "error",
           {
