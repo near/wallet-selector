@@ -151,8 +151,9 @@ export class ContentComponent implements OnInit, OnDestroy {
               methodName: "addMessage",
               args: { text: message.value },
               gas: `${BOATLOAD_OF_GAS}`,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+              deposit: utils.format.parseNearAmount(
+                donation.value || "0"
+              ) as string,
             },
           },
         ],
