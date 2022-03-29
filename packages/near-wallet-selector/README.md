@@ -59,7 +59,7 @@ Initialises the selector using the configured options before rendering the UI. I
 await NearWalletSelector.init({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
   network: "testnet",
-  contract: { contractId: "guest-book.testnet" },
+  contractId: "guest-book.testnet",
 });
 ```
 
