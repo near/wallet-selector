@@ -2,6 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import NearWalletSelector from "near-wallet-selector";
 import { AccountInfo } from "near-wallet-selector";
 
+declare global {
+  interface Window {
+    selector: NearWalletSelector;
+  }
+}
+
 @Component({
   selector: "near-wallet-selector-root",
   templateUrl: "./app.component.html",
@@ -45,8 +51,6 @@ export class AppComponent implements OnInit {
             this.accountId = initAccountId;
           }
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-next-line
           window.selector = instance;
           this.selector = instance;
 
