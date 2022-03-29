@@ -150,7 +150,7 @@ export class ContentComponent implements OnInit, OnDestroy {
             params: {
               methodName: "addMessage",
               args: { text: message.value },
-              gas: `${BOATLOAD_OF_GAS}`,
+              gas: BOATLOAD_OF_GAS as string,
               deposit: utils.format.parseNearAmount(
                 donation.value || "0"
               ) as string,
