@@ -18,8 +18,8 @@ yarn nx r [project][:target][:configuration] [options, ...]
 In order to run a specific example, make sure you build the UI library beforehand and on each modification by running:
 
 ```bash
-yarn nx run near-wallet-selector:build #build the library
+yarn nx run @near-wallet-selector/core:build # build the library
 
-yarn nx serve react # to run the react example
-yarn nx serve angular # to run the angular example
+yarn nx serve react # run the react example
+yarn nx serve angular # run the angular example
 ```
