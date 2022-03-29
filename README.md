@@ -20,20 +20,20 @@ The easiest way to use `near-wallet-selector` is to install it from the NPM regi
 
 ```bash
 # Using Yarn
-yarn add near-wallet-selector
+yarn add @near-wallet-selector/core
 
 # Using NPM.
-npm install near-wallet-selector
+npm install @near-wallet-selector/core
 ```
 
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "near-wallet-selector";
+import NearWalletSelector from "@near-wallet-selector/core";
 
 const selector = await NearWalletSelector.init({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
-  networkId: "testnet",
+  network: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
 ```
@@ -70,7 +70,7 @@ Initialises the selector using the configured options before rendering the UI. I
 ```ts
 await NearWalletSelector.init({
   wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
-  networkId: "testnet",
+  network: "testnet",
   contract: { contractId: "guest-book.testnet" },
 });
 ```

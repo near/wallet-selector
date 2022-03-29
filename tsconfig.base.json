@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "near-wallet-selector": ["dist/packages/near-wallet-selector"]
+      "@near-wallet-selector/core": ["dist/packages/near-wallet-selector"]
     }
   },
   "exclude": ["node_modules", "tmp"]
