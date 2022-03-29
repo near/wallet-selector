@@ -3,9 +3,11 @@ import NearWalletSelector, {
   AccountInfo,
   Subscription,
 } from "@near-wallet-selector/core";
-import { utils } from "near-api-js";
+import { providers, utils } from "near-api-js";
 import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
+import { Account } from "../../interfaces/account";
 
 const { parseNearAmount } = utils.format;
 
@@ -19,20 +21,44 @@ const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
 })
 export class ContentComponent implements OnInit, OnDestroy {
   @Input() selector: NearWalletSelector;
-  account: AccountInfo | null;
+  @Input() accounts: Array<AccountInfo>;
+  @Input() accountId: string | null;
+
+  account: Account | null;
   messages: Array<Message>;
   subscriptions: Record<string, Subscription> = {};
 
   async ngOnInit() {
     const [messages, account] = await Promise.all([
       this.getMessages(),
-      this.selector.getAccount(),
+      this.getAccount(),
     ]);
 
     this.account = account;
+    console.log(this.account);
     this.messages = messages;
 
     this.subscribeToEvents();
+  }
+
+  async getAccount() {
+    if (!this.accountId) {
+      return null;
+    }
+
+    const { nodeUrl } = this.selector.network;
+    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+
+    return provider
+      .query<AccountView>({
+        request_type: "view_account",
+        finality: "final",
+        account_id: this.accountId,
+      })
+      .then((data) => ({
+        ...data,
+        account_id: this.accountId,
+      }));
   }
 
   signIn() {
@@ -51,30 +77,58 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    return this.selector.contract.view<Array<Message>>({
-      methodName: "getMessages",
+    const provider = new providers.JsonRpcProvider({
+      url: this.selector.network.nodeUrl,
     });
+
+    return provider
+      .query<CodeResult>({
+        request_type: "call_function",
+        account_id: this.selector.getContractId(),
+        method_name: "getMessages",
+        args_base64: "",
+        finality: "optimistic",
+      })
+      .then((res) => JSON.parse(Buffer.from(res.result).toString()));
+  }
+
+  switchAccount() {
+    const currentIndex = this.accounts.findIndex(
+      (x) => x.accountId === this.accountId
+    );
+    const nextIndex =
+      currentIndex < this.accounts.length - 1 ? currentIndex + 1 : 0;
+
+    const nextAccountId = this.accounts[nextIndex].accountId;
+
+    this.accountId = nextAccountId;
+    alert("Switched account to " + nextAccountId);
   }
 
   subscribeToEvents() {
+    if (!this.selector) {
+      return;
+    }
+
     this.subscriptions["signIn"] = this.selector.on("signIn", () => {
       console.log("'signIn' event triggered!");
+      this.selector.getAccounts().then(async (signInAccounts) => {
+        // Assume the first account.
+        const signInAccountId = signInAccounts[0].accountId;
 
-      this.selector
-        .getAccount()
-        .then((data) => {
-          console.log("Account", data);
-          this.account = data;
-        })
-        .catch((err) => {
-          console.log("Failed to retrieve account info");
-          console.error(err);
+        localStorage.setItem("accountId", signInAccountId);
+        this.accountId = signInAccountId;
+        this.accounts = signInAccounts;
+        this.getAccount().then((account) => {
+          this.account = account;
         });
+      });
     });
 
     this.subscriptions["signOut"] = this.selector.on("signOut", () => {
       console.log("'signOut' event triggered!");
       this.account = null;
+      this.accounts = [];
     });
   }
 
@@ -86,8 +140,10 @@ export class ContentComponent implements OnInit, OnDestroy {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    this.selector.contract
+    this.selector
       .signAndSendTransaction({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        signerId: this.accountId!,
         actions: [
           {
             type: "FunctionCall",
