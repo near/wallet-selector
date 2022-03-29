@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import NearWalletSelector, {
   AccountInfo,
   Subscription,
-} from "near-wallet-selector";
+} from "@near-wallet-selector/core";
 import { utils } from "near-api-js";
 import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { AccountInfo } from "near-wallet-selector";
+import { AccountInfo } from "@near-wallet-selector/core";
 import Big from "big.js";
 
 export type Sumbitted = SubmitEvent & {

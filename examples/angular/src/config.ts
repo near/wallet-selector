@@ -1,4 +1,4 @@
-import { Options } from "near-wallet-selector";
+import { Options } from "near-wallet-selector/core";
 
 const CONTRACT_NAME = "guest-book.testnet";
 

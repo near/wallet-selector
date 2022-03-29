@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import NearWalletSelector, { AccountInfo } from "near-wallet-selector";
+import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
 
 interface WalletSelectorContextValue {
   selector: NearWalletSelector;
