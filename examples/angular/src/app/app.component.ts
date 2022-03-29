@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import NearWalletSelector from "near-wallet-selector";
-import { AccountInfo } from "near-wallet-selector";
+import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
 
 declare global {
   interface Window {

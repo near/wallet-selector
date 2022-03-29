@@ -1,18 +1,18 @@
 {
   "name": "near-wallet-selector",
-  "version": "2.0.0",
+  "version": "3.0.0-alpha.0",
   "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
   "keywords": [
     "near",
     "walletselector"
   ],
-  "homepage": "https://github.com/near-projects/wallet-selector#readme",
+  "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
-    "url": "https://github.com/near-projects/wallet-selector/issues"
+    "url": "https://github.com/near/wallet-selector/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/near-projects/wallet-selector.git"
+    "url": "git+https://github.com/near/wallet-selector.git"
   },
   "license": "ISC",
   "author": "near",
@@ -20,12 +20,12 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build": "nx run-many --target=build --projects=near-wallet-selector --configuration=production",
+    "build": "nx run-many --target=build --projects=@near-wallet-selector/core --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
     "test": "nx run-many --target=test --all",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && nx run near-wallet-selector:build",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && nx run @near-wallet-selector/core:build",
     "ng": "nx"
   },
   "dependencies": {
