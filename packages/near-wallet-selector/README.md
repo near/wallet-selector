@@ -33,7 +33,7 @@ const selector = await NearWalletSelector.init({
 **Parameters**
 
 - `options` (`object`)
-  - `wallets` (`Array<string>`): List of wallets you want to support in your dApp.
+  - `wallets` (`Array<string | WalletModule>`): List of wallets you want to support in your dApp.
   - `network` (`string | object`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
     - `networkId` (`string`): Custom network ID (e.g. `localnet`).
     - `nodeUrl` (`string`): Custom URL for RPC requests.

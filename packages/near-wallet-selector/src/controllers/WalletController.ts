@@ -62,8 +62,12 @@ class WalletController {
 
   private setupWalletModules(): Array<Wallet> {
     return this.options.wallets
-      .map((walletId) => {
-        switch (walletId) {
+      .map((wallet) => {
+        if (typeof wallet !== "string") {
+          return wallet;
+        }
+
+        switch (wallet) {
           case "near-wallet":
             return setupNearWallet();
           case "sender-wallet":

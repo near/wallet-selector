@@ -6,6 +6,7 @@ export { NetworkConfiguration } from "./network";
 export {
   Wallet,
   WalletType,
+  WalletModule,
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,
