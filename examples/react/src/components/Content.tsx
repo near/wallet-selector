@@ -68,12 +68,11 @@ const Content: React.FC = () => {
 
     setLoading(true);
 
-    getAccount()
-      .then((nextAccount) => {
-        setAccount(nextAccount);
-        setLoading(false);
-      });
-  }, [accountId, getAccount])
+    getAccount().then((nextAccount) => {
+      setAccount(nextAccount);
+      setLoading(false);
+    });
+  }, [accountId, getAccount]);
 
   const handleSignIn = () => {
     selector.show();
@@ -100,63 +99,66 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
-  const handleSubmit = useCallback((e: SubmitEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: SubmitEvent) => {
+      e.preventDefault();
 
-    // TODO: Fix the typing so that target.elements exists..
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore.
-    const { fieldset, message, donation } = e.target.elements;
+      // TODO: Fix the typing so that target.elements exists..
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore.
+      const { fieldset, message, donation } = e.target.elements;
 
-    fieldset.disabled = true;
+      fieldset.disabled = true;
 
-    // TODO: optimistically update page with new message,
-    // update blockchain data in background
-    // add uuid to each message, so we know which one is already known
-    selector
-      .signAndSendTransaction({
-        signerId: accountId!,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+      // TODO: optimistically update page with new message,
+      // update blockchain data in background
+      // add uuid to each message, so we know which one is already known
+      selector
+        .signAndSendTransaction({
+          signerId: accountId!,
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: message.value },
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount(donation.value || "0")!,
+              },
             },
-          },
-        ],
-      })
-      .catch((err) => {
-        alert("Failed to add message");
-        console.log("Failed to add message");
+          ],
+        })
+        .catch((err) => {
+          alert("Failed to add message");
+          console.log("Failed to add message");
 
-        throw err;
-      })
-      .then(() => {
-        return getMessages()
-          .then((nextMessages) => {
-            setMessages(nextMessages);
-            message.value = "";
-            donation.value = SUGGESTED_DONATION;
-            fieldset.disabled = false;
-            message.focus();
-          })
-          .catch((err) => {
-            alert("Failed to refresh messages");
-            console.log("Failed to refresh messages");
+          throw err;
+        })
+        .then(() => {
+          return getMessages()
+            .then((nextMessages) => {
+              setMessages(nextMessages);
+              message.value = "";
+              donation.value = SUGGESTED_DONATION;
+              fieldset.disabled = false;
+              message.focus();
+            })
+            .catch((err) => {
+              alert("Failed to refresh messages");
+              console.log("Failed to refresh messages");
 
-            throw err;
-          });
-      })
-      .catch((err) => {
-        console.error(err);
+              throw err;
+            });
+        })
+        .catch((err) => {
+          console.error(err);
 
-        fieldset.disabled = false;
-      });
-  }, [selector, accountId, getMessages]);
+          fieldset.disabled = false;
+        });
+    },
+    [selector, accountId, getMessages]
+  );
 
   if (loading) {
     return null;
