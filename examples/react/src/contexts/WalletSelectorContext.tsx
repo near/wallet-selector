@@ -15,7 +15,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     NearWalletSelector.init({
@@ -65,18 +64,13 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.on("signIn", () => {
-      setLoading(true);
+    const subscription = selector.on("signIn", ({ accounts }) => {
+      // Assume the first account.
+      const signInAccountId = accounts[0].accountId;
 
-      selector.getAccounts().then(async (signInAccounts) => {
-        // Assume the first account.
-        const signInAccountId = signInAccounts[0].accountId;
-
-        localStorage.setItem("accountId", signInAccountId);
-        setAccountId(signInAccountId);
-        setAccounts(signInAccounts);
-        setLoading(false);
-      });
+      localStorage.setItem("accountId", signInAccountId);
+      setAccountId(signInAccountId);
+      setAccounts(accounts);
     });
 
     return () => subscription.remove();
@@ -95,7 +89,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     return () => subscription.remove();
   }, [selector]);
 
-  if (!selector || loading) {
+  if (!selector) {
     return null;
   }
 
