@@ -28,12 +28,17 @@ function setupNearWallet({
         return walletUrl;
       }
 
-      if (typeof options.network === "string") {
-        return `https://wallet.${options.network}.near.org`;
+      switch (network.networkId) {
+        case "mainnet":
+          return "https://wallet.near.org";
+        case "testnet":
+          return "https://wallet.testnet.near.org";
+        case "betanet":
+          return "https://wallet.betanet.near.org";
+        default:
+          // TODO: Throw once wallets are separate packages.
+          return "https://wallet.testnet.near.org";
       }
-
-      // TODO: Throw once wallets are separate packages.
-      return undefined;
     };
 
     return {
