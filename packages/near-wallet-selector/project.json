@@ -14,6 +14,7 @@
         "entryFile": "packages/near-wallet-selector/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "umd", "cjs"],
         "assets": [
