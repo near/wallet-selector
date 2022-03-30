@@ -1,1 +1,5 @@
-export * from "./lib/wallet-connect";
+import { setupWalletConnect, WalletConnectParams } from "./WalletConnect";
+
+export { WalletConnectParams };
+
+export default setupWalletConnect;

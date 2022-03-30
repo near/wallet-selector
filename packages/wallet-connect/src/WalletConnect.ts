@@ -1,17 +1,20 @@
-import WalletConnectClient from "./WalletConnectClient";
-import QRCodeModal from "@walletconnect/qrcode-modal";
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+import {
+  Subscription,
+  WalletModule,
+  BridgeWallet,
+} from "@near-wallet-selector/core";
 
-import { walletConnectIcon } from "../icons";
-import { WalletModule, BridgeWallet } from "../Wallet";
-import { Subscription } from "../../utils/EventsHandler";
+import WalletConnectClient from "./WalletConnectClient";
+import { walletConnectIcon } from "./icon";
 
-interface WalletConnectParams {
+export interface WalletConnectParams {
   projectId: string;
   metadata: AppMetadata;
 }
 
-function setupWalletConnect({
+export function setupWalletConnect({
   projectId,
   metadata,
 }: WalletConnectParams): WalletModule<BridgeWallet> {
@@ -199,5 +202,3 @@ function setupWalletConnect({
     };
   };
 }
-
-export default setupWalletConnect;

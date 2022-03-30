@@ -10,6 +10,7 @@ export {
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,
+  BridgeWallet,
   AccountInfo,
 } from "./wallets/Wallet";
 
