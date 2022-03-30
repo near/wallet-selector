@@ -289,6 +289,7 @@ console.log(contractId); // "guest-book.testnet"
 
 - `params` (`object`)
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
+  - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
   - `actions` (`Array<Action>`)
     - `type` (`string`): Action type. See below for available values.
     - `params` (`object?`): Parameters for the Action (if applicable).
