@@ -1,41 +1,48 @@
 import { EventEmitter } from "events";
 
-// TODO: Move away from hardcoded event types in this util.
-export type EventList = "signIn" | "signOut" | "accountsChanged";
-
-type EventMap = Record<EventList, unknown>;
-
-type EventKey = keyof EventMap;
-
 export interface Subscription {
   remove: () => void;
 }
 
-export interface Emitter<T extends EventMap = EventMap> {
-  on<K extends EventKey>(eventName: K, callback: () => void): Subscription;
+export interface Emitter<Events extends Record<string, unknown>> {
+  on<Event extends keyof Events>(
+    event: Event,
+    callback: (data: Events[Event]) => void
+  ): Subscription;
 
-  off<K extends EventKey>(eventName: K, callback: () => void): void;
+  off<Event extends keyof Events>(
+    event: Event,
+    callback: (data: Events[Event]) => void
+  ): void;
 
-  emit<K extends EventKey>(eventName: K, params?: T[K]): void;
+  emit<Event extends keyof Events>(event: Event, data: Events[Event]): void;
 }
 
-export class EventHandler<T extends EventMap> implements Emitter<T> {
+export class EventHandler<Events extends Record<string, unknown>>
+  implements Emitter<Events>
+{
   private emitter = new EventEmitter();
 
-  on<K extends EventKey>(eventName: K, callback: () => void): Subscription {
-    this.emitter.on(eventName, callback);
+  on<Event extends keyof Events>(
+    event: Event,
+    callback: (data: Events[Event]) => void
+  ): Subscription {
+    this.emitter.on(event as string, callback);
 
     return {
-      remove: () => this.emitter.off(eventName, callback),
+      remove: () => this.emitter.off(event as string, callback),
     };
   }
 
-  off<K extends EventKey>(eventName: K, callback: () => void) {
-    this.emitter.off(eventName, callback);
+  off<Event extends keyof Events>(
+    event: Event,
+    callback: (data: Events[Event]) => void
+  ) {
+    this.emitter.off(event as string, callback);
   }
 
-  emit<K extends EventKey>(eventName: K, params?: T[K]) {
-    this.emitter.emit(eventName, params);
+  emit<Event extends keyof Events>(event: Event, data: Events[Event]) {
+    this.emitter.emit(event as string, data);
   }
 }
 

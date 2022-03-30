@@ -24,6 +24,12 @@ export interface AccountInfo {
   accountId: string;
 }
 
+export type WalletEvents = {
+  signIn: { accounts: Array<AccountInfo> };
+  signOut: { accounts: Array<AccountInfo> };
+  accountsChanged: { accounts: Array<AccountInfo> };
+};
+
 interface BaseWallet {
   id: string;
   name: string;
@@ -74,7 +80,11 @@ export interface BridgeWallet extends BaseWallet {
   type: "bridge";
 }
 
-export type Wallet = BrowserWallet | InjectedWallet | HardwareWallet | BridgeWallet;
+export type Wallet =
+  | BrowserWallet
+  | InjectedWallet
+  | HardwareWallet
+  | BridgeWallet;
 
 export type WalletType = Wallet["type"];
 
@@ -82,7 +92,7 @@ export interface WalletOptions {
   options: Options;
   network: NetworkConfiguration;
   provider: ProviderService;
-  emitter: Emitter;
+  emitter: Emitter<WalletEvents>;
   logger: Logger;
   storage: PersistentStorage;
   updateState: typeof updateState;

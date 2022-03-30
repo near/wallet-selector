@@ -5,12 +5,13 @@ import WalletController, {
   SignInParams,
 } from "../controllers/WalletController";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
+import EventHandler, { Emitter } from "../utils/EventsHandler";
 import { updateState } from "../state/State";
 import { MODAL_ELEMENT_ID } from "../constants";
 import { Options } from "../interfaces/Options";
 import { Action } from "../wallets/actions";
 import { NetworkConfiguration, resolveNetwork } from "../network";
+import { WalletEvents } from "../wallets/Wallet";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
@@ -19,7 +20,7 @@ interface SignAndSendTransactionParams {
 
 export default class NearWalletSelector {
   private options: Options;
-  private emitter: Emitter;
+  private emitter: Emitter<WalletEvents>;
   private controller: WalletController;
 
   network: NetworkConfiguration;
@@ -35,7 +36,7 @@ export default class NearWalletSelector {
 
   private constructor(options: Options) {
     const network = resolveNetwork(options.network);
-    const emitter = new EventHandler();
+    const emitter = new EventHandler<WalletEvents>();
     const controller = new WalletController(options, network, emitter);
 
     this.options = options;
@@ -93,11 +94,17 @@ export default class NearWalletSelector {
     return this.controller.getAccounts();
   }
 
-  on(event: EventList, callback: (...args: Array<any>) => void) {
+  on<Event extends keyof WalletEvents>(
+    event: Event,
+    callback: (data: WalletEvents[Event]) => void
+  ) {
     return this.emitter.on(event, callback);
   }
 
-  off(event: EventList, callback: () => void) {
+  off<Event extends keyof WalletEvents>(
+    event: Event,
+    callback: (data: WalletEvents[Event]) => void
+  ) {
     this.emitter.off(event, callback);
   }
 
@@ -110,7 +117,7 @@ export default class NearWalletSelector {
     actions,
   }: SignAndSendTransactionParams) {
     const wallet = this.controller.getSelectedWallet();
-    const accounts = this.getAccounts();
+    const accounts = await this.getAccounts();
 
     if (!wallet) {
       throw new Error("Wallet not selected");
