@@ -45,7 +45,7 @@ function setupLedgerWallet(): WalletModule<HardwareWallet> {
       }
 
       return [{ accountId }];
-    }
+    };
 
     const signOut = async () => {
       for (const key in subscriptions) {

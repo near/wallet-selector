@@ -28,9 +28,10 @@ function setupMathWallet(): WalletModule<InjectedWallet> {
         return [];
       }
 
-      const accountId = ("accountId" in wallet.signer.account)
-        ? wallet.signer.account.accountId
-        : wallet.signer.account.address;
+      const accountId =
+        "accountId" in wallet.signer.account
+          ? wallet.signer.account.accountId
+          : wallet.signer.account.address;
 
       return [{ accountId }];
     };

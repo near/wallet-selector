@@ -48,7 +48,7 @@ interface BaseWallet {
   isSignedIn(): Promise<boolean>;
 
   // Retrieves all active accounts.
-  getAccounts(): Array<AccountInfo>;
+  getAccounts(): Promise<Array<AccountInfo>>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(

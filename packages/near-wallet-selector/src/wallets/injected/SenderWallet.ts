@@ -168,7 +168,9 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         emitter.emit("signOut", { accounts });
       },
 
-      getAccounts,
+      async getAccounts() {
+        return getAccounts();
+      },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("SenderWallet:signAndSendTransaction", {

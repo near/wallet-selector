@@ -31,7 +31,7 @@ function setupNearWallet({
       }
 
       return [{ accountId }];
-    }
+    };
 
     const getWalletUrl = () => {
       if (walletUrl) {
