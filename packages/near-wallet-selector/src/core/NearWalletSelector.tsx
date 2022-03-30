@@ -14,6 +14,7 @@ import { NetworkConfiguration, resolveNetwork } from "../network";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
+  receiverId?: string;
   actions: Array<Action>;
 }
 
@@ -107,6 +108,7 @@ export default class NearWalletSelector {
 
   async signAndSendTransaction({
     signerId,
+    receiverId,
     actions,
   }: SignAndSendTransactionParams) {
     const wallet = this.controller.getSelectedWallet();
@@ -126,7 +128,7 @@ export default class NearWalletSelector {
 
     return wallet.signAndSendTransaction({
       signerId: signerId || accounts[0].accountId,
-      receiverId: this.getContractId(),
+      receiverId: receiverId || this.getContractId(),
       actions,
     });
   }
