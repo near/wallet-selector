@@ -21,14 +21,11 @@ function setupWalletConnect({
     let session: SessionTypes.Settled | null = null;
 
     const getChainId = () => {
-      switch (network.networkId) {
-        case "mainnet":
-        case "testnet":
-        case "betanet":
-          return `near:${network.networkId}`;
-        default:
-          return "near:testnet";
+      if (["mainnet", "testnet", "betanet"].includes(network.networkId)) {
+        return `near:${network.networkId}`;
       }
+
+      return "near:testnet";
     };
 
     const getAccounts = () => {
