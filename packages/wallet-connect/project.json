@@ -13,6 +13,7 @@
         "project": "packages/wallet-connect/package.json",
         "entryFile": "packages/wallet-connect/src/index.ts",
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "umd", "cjs"],
         "assets": [
