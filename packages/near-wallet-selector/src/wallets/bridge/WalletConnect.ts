@@ -1,4 +1,4 @@
-import WalletConnectClient from "./WalletConnectClient"
+import WalletConnectClient from "./WalletConnectClient";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
 
@@ -8,15 +8,28 @@ import { Subscription } from "../../utils/EventsHandler";
 
 interface WalletConnectParams {
   projectId: string;
-  metadata: AppMetadata
+  metadata: AppMetadata;
 }
 
-function setupWalletConnect({ projectId, metadata }: WalletConnectParams): WalletModule<BridgeWallet> {
-  return function WalletConnect({ options, emitter, logger, updateState }) {
+function setupWalletConnect({
+  projectId,
+  metadata,
+}: WalletConnectParams): WalletModule<BridgeWallet> {
+  return function WalletConnect({ network, emitter, logger, updateState }) {
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
-    const chainId = `near:${options.networkId}`;
+
+    const getChainId = () => {
+      switch (network.networkId) {
+        case "mainnet":
+        case "testnet":
+        case "betanet":
+          return `near:${network.networkId}`;
+        default:
+          return "near:testnet";
+      }
+    };
 
     const getAccounts = () => {
       if (!session) {
@@ -25,15 +38,15 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
 
       return session.state.accounts.map((wcAccountId) => ({
         accountId: wcAccountId.split(":")[2],
-      }))
-    }
+      }));
+    };
 
     const cleanup = () => {
       subscriptions.forEach((subscription) => subscription.remove());
       subscriptions = [];
 
       session = null;
-    }
+    };
 
     const setupClient = async () => {
       const wcClient = new WalletConnectClient();
@@ -42,7 +55,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         projectId,
         relayUrl: "wss://relay.walletconnect.com",
         metadata,
-      })
+      });
 
       subscriptions.push(
         wcClient.on("pairing_created", (pairing) => {
@@ -81,7 +94,7 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
       );
 
       client = wcClient;
-    }
+    };
 
     return {
       id: "wallet-connect",
@@ -123,12 +136,12 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
             timeout: 30 * 1000,
             permissions: {
               blockchain: {
-                chains: [chainId],
+                chains: [getChainId()],
               },
               jsonrpc: {
                 methods: ["near_signAndSendTransaction"],
               },
-            }
+            },
           });
 
           updateState((prevState) => ({
@@ -151,16 +164,18 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
           topic: session!.topic,
           reason: {
             code: 5900,
-            message: "User disconnected"
+            message: "User disconnected",
           },
         });
       },
 
       async isSignedIn() {
-        return client.isSignedIn()
+        return client.isSignedIn();
       },
 
-      getAccounts,
+      async getAccounts() {
+        return getAccounts();
+      },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("WalletConnect:signAndSendTransaction", {
@@ -173,17 +188,17 @@ function setupWalletConnect({ projectId, metadata }: WalletConnectParams): Walle
         return client.request({
           timeout: 30 * 1000,
           topic: session!.topic,
-          chainId,
+          chainId: getChainId(),
           request: {
             method: "near_signAndSendTransaction",
             params: {
               signerId,
               receiverId,
-              actions
+              actions,
             },
           },
         });
-      }
+      },
     };
   };
 }
