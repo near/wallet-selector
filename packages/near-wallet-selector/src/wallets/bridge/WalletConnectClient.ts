@@ -1,19 +1,20 @@
 import Client, {
-  RELAYER_DEFAULT_PROTOCOL, SESSION_EMPTY_PERMISSIONS,
-  SESSION_SIGNAL_METHOD_PAIRING
+  RELAYER_DEFAULT_PROTOCOL,
+  SESSION_EMPTY_PERMISSIONS,
+  SESSION_SIGNAL_METHOD_PAIRING,
 } from "@walletconnect/client";
 import {
   AppMetadata,
   ClientOptions,
   PairingTypes,
-  SessionTypes
+  SessionTypes,
 } from "@walletconnect/types";
 import { ClientTypes } from "@walletconnect/types/dist/cjs/client";
 
 export type ConnectParams = ClientTypes.ConnectParams & {
   metadata: AppMetadata;
   timeout?: number;
-}
+};
 
 interface WalletConnectEvents {
   pairing_proposal: (proposal: PairingTypes.Proposal) => void;
@@ -39,7 +40,7 @@ class WalletConnectClient {
   }
 
   isSignedIn() {
-    return Boolean(this.client.session.topics.length)
+    return Boolean(this.client.session.topics.length);
   }
 
   on<Event extends keyof WalletConnectEvents>(
@@ -49,7 +50,7 @@ class WalletConnectClient {
     this.client.on(event, callback);
 
     return {
-      remove: () => this.client.off(event, callback)
+      remove: () => this.client.off(event, callback),
     };
   }
 
@@ -63,7 +64,7 @@ class WalletConnectClient {
       return this.client.session.create({
         signal: {
           method: SESSION_SIGNAL_METHOD_PAIRING,
-          params: {topic: pairing.topic}
+          params: { topic: pairing.topic },
         },
         relay,
         timeout,
@@ -83,8 +84,10 @@ class WalletConnectClient {
     }
   }
 
-  async request<Response>(params: ClientTypes.RequestParams): Promise<Response> {
-    return this.client.request(params)
+  async request<Response>(
+    params: ClientTypes.RequestParams
+  ): Promise<Response> {
+    return this.client.request(params);
   }
 
   async disconnect(params: ClientTypes.DisconnectParams) {
