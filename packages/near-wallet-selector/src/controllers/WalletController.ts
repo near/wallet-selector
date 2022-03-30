@@ -11,7 +11,7 @@ import setupNearWallet from "../wallets/browser/NearWallet";
 import setupSenderWallet from "../wallets/injected/SenderWallet";
 import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
 import setupMathWallet from "../wallets/injected/MathWallet";
-import setupWalletConnect from "../wallets/bridge/WalletConnect";
+// import setupWalletConnect from "../wallets/bridge/WalletConnect";
 
 export interface SignInParams {
   walletId: BuiltInWalletId;
@@ -77,16 +77,16 @@ class WalletController {
             return setupLedgerWallet();
           case "math-wallet":
             return setupMathWallet();
-          case "wallet-connect":
-            return setupWalletConnect({
-              projectId: "c4f79cc...",
-              metadata: {
-                name: "NEAR Wallet Selector",
-                description: "Example dApp used by NEAR Wallet Selector",
-                url: "https://github.com/near-projects/wallet-selector",
-                icons: ["https://avatars.githubusercontent.com/u/37784886"],
-              },
-            });
+          // case "wallet-connect":
+          //   return setupWalletConnect({
+          //     projectId: "c4f79cc...",
+          //     metadata: {
+          //       name: "NEAR Wallet Selector",
+          //       description: "Example dApp used by NEAR Wallet Selector",
+          //       url: "https://github.com/near-projects/wallet-selector",
+          //       icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          //     },
+          //   });
           default:
             throw new Error("Invalid wallet id");
         }
