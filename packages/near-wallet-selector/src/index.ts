@@ -1,11 +1,12 @@
 import NearWalletSelector from "./core/NearWalletSelector";
 
 export { Options } from "./interfaces/Options";
-export { NetworkConfiguration } from "./config";
+export { NetworkConfiguration } from "./network";
 
 export {
   Wallet,
   WalletType,
+  WalletModule,
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,

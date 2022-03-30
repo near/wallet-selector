@@ -5,6 +5,7 @@ import { logger } from "../services/logging.service";
 import { Options, Theme } from "../interfaces/Options";
 import { HardwareWallet, Wallet } from "../wallets/Wallet";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
+import { NetworkConfiguration } from "../network";
 
 declare global {
   // tslint:disable-next-line
@@ -26,10 +27,11 @@ const getThemeClass = (theme?: Theme) => {
 
 interface ModalProps {
   options: Options;
+  network: NetworkConfiguration;
   wallets: Array<Wallet>;
 }
 
-const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
+const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
   const [state, setState] = useState(getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -287,7 +289,7 @@ const Modal: React.FC<ModalProps> = ({ options, wallets }) => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${options.networkId}`}</strong> for this dApp.
+                <strong>{` ${network.networkId}`}</strong> for this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not

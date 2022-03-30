@@ -1,15 +1,22 @@
 <ng-container *ngIf="account">
   <div>
-    <button (click)=signOut()>Log out</button>
-    <button (click)=switchProvider()>Switch Provider</button>
+    <button (click)="signOut()">Log out</button>
+    <button (click)="switchProvider()">Switch Provider</button>
+    <button *ngIf="accounts.length > 1" (click)="switchAccount()">
+      Switch Account
+    </button>
   </div>
-  <near-wallet-selector-form [account]="account" (addMessage)="onSubmit($event)"></near-wallet-selector-form>
-  <near-wallet-selector-messages *ngIf="!!messages.length" [messages]="messages"></near-wallet-selector-messages>
+  <near-wallet-selector-form
+    [account]="account"
+    (addMessage)="onSubmit($event)"
+  ></near-wallet-selector-form>
+  <near-wallet-selector-messages
+    *ngIf="!!messages.length"
+    [messages]="messages"
+  ></near-wallet-selector-messages>
 </ng-container>
 
 <ng-container *ngIf="!account">
-  <button  (click)="signIn()">Log In</button>
+  <button (click)="signIn()">Log In</button>
   <near-wallet-selector-sign-in></near-wallet-selector-sign-in>
 </ng-container>
-
-

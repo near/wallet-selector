@@ -26,11 +26,12 @@ const Content: React.FC = () => {
     const { nodeUrl } = selector.network;
     const provider = new providers.JsonRpcProvider({ url: nodeUrl });
 
-    return provider.query<AccountView>({
-      request_type: "view_account",
-      finality: "final",
-      account_id: accountId,
-    })
+    return provider
+      .query<AccountView>({
+        request_type: "view_account",
+        finality: "final",
+        account_id: accountId,
+      })
       .then((data) => ({
         ...data,
         account_id: accountId,
@@ -39,16 +40,17 @@ const Content: React.FC = () => {
 
   const getMessages = () => {
     const provider = new providers.JsonRpcProvider({
-      url: selector.network.nodeUrl
+      url: selector.network.nodeUrl,
     });
 
-    return provider.query<CodeResult>({
-      request_type: "call_function",
-      account_id: selector.getContractId(),
-      method_name: "getMessages",
-      args_base64: "",
-      finality: "optimistic",
-    })
+    return provider
+      .query<CodeResult>({
+        request_type: "call_function",
+        account_id: selector.getContractId(),
+        method_name: "getMessages",
+        args_base64: "",
+        finality: "optimistic",
+      })
       .then((res) => JSON.parse(Buffer.from(res.result).toString()));
   };
 
@@ -90,15 +92,13 @@ const Content: React.FC = () => {
 
   const handleSwitchAccount = () => {
     const currentIndex = accounts.findIndex((x) => x.accountId === accountId);
-    const nextIndex = (currentIndex < accounts.length - 1)
-      ? currentIndex + 1
-      : 0;
+    const nextIndex = currentIndex < accounts.length - 1 ? currentIndex + 1 : 0;
 
     const nextAccountId = accounts[nextIndex].accountId;
 
     setAccountId(nextAccountId);
     alert("Switched account to " + nextAccountId);
-  }
+  };
 
   const handleSubmit = useCallback((e: SubmitEvent) => {
     e.preventDefault();
@@ -113,21 +113,22 @@ const Content: React.FC = () => {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    selector.signAndSendTransaction({
-      signerId: accountId!,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "addMessage",
-            args: { text: message.value },
-            gas: BOATLOAD_OF_GAS,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            deposit: utils.format.parseNearAmount(donation.value || "0")!,
+    selector
+      .signAndSendTransaction({
+        signerId: accountId!,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: { text: message.value },
+              gas: BOATLOAD_OF_GAS,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+            },
           },
-        },
-      ],
-    })
+        ],
+      })
       .catch((err) => {
         alert("Failed to add message");
         console.log("Failed to add message");
@@ -177,9 +178,14 @@ const Content: React.FC = () => {
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>
-        {accounts.length > 1 && <button onClick={handleSwitchAccount}>Switch Account</button>}
+        {accounts.length > 1 && (
+          <button onClick={handleSwitchAccount}>Switch Account</button>
+        )}
       </div>
-      <Form account={account} onSubmit={e => handleSubmit(e as unknown as SubmitEvent)} />
+      <Form
+        account={account}
+        onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
+      />
       <Messages messages={messages} />
     </Fragment>
   );

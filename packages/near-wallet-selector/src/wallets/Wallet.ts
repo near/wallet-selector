@@ -7,6 +7,7 @@ import { Emitter } from "../utils/EventsHandler";
 import { Action } from "./actions";
 import { Logger } from "../services/logging.service";
 import { PersistentStorage } from "../services/persistent-storage.service";
+import { NetworkConfiguration } from "../network";
 
 export interface HardwareWalletSignInParams {
   accountId: string;
@@ -79,6 +80,7 @@ export type WalletType = Wallet["type"];
 
 export interface WalletOptions {
   options: Options;
+  network: NetworkConfiguration;
   provider: ProviderService;
   emitter: Emitter;
   logger: Logger;

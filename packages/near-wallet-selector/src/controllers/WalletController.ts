@@ -3,6 +3,7 @@ import ProviderService from "../services/provider/ProviderService";
 import { Wallet } from "../wallets/Wallet";
 import { BuiltInWalletId, Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
+import { NetworkConfiguration } from "../network";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
 import { storage } from "../services/persistent-storage.service";
 import { logger } from "../services/logging.service";
@@ -20,14 +21,20 @@ export interface SignInParams {
 
 class WalletController {
   private options: Options;
+  private network: NetworkConfiguration;
   private provider: ProviderService;
   private emitter: Emitter;
 
   private wallets: Array<Wallet>;
 
-  constructor(options: Options, provider: ProviderService, emitter: Emitter) {
+  constructor(
+    options: Options,
+    network: NetworkConfiguration,
+    emitter: Emitter
+  ) {
     this.options = options;
-    this.provider = provider;
+    this.network = network;
+    this.provider = new ProviderService(network.nodeUrl);
     this.emitter = emitter;
 
     this.wallets = [];
@@ -56,8 +63,12 @@ class WalletController {
 
   private setupWalletModules(): Array<Wallet> {
     return this.options.wallets
-      .map((walletId) => {
-        switch (walletId) {
+      .map((wallet) => {
+        if (typeof wallet !== "string") {
+          return wallet;
+        }
+
+        switch (wallet) {
           case "near-wallet":
             return setupNearWallet();
           case "sender-wallet":
@@ -83,6 +94,7 @@ class WalletController {
       .map((module) => {
         return module({
           options: this.options,
+          network: this.network,
           provider: this.provider,
           emitter: this.emitter,
           logger,
@@ -181,7 +193,7 @@ class WalletController {
     return wallet.isSignedIn();
   }
 
-  getAccounts() {
+  async getAccounts() {
     const wallet = this.getSelectedWallet();
 
     if (!wallet) {

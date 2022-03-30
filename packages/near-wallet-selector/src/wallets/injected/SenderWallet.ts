@@ -15,6 +15,7 @@ declare global {
 function setupSenderWallet(): WalletModule<InjectedWallet> {
   return function SenderWallet({
     options,
+    network,
     emitter,
     logger,
     updateState,
@@ -102,7 +103,7 @@ function setupSenderWallet(): WalletModule<InjectedWallet> {
         });
 
         wallet.on("rpcChanged", (response) => {
-          if (options.networkId !== response.rpc.networkId) {
+          if (network.networkId !== response.rpc.networkId) {
             updateState((prevState) => ({
               ...prevState,
               showModal: true,

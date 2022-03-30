@@ -1,14 +1,20 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
 
-import getConfig from "../../config";
 import { transformActions } from "../actions";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../../constants";
 import { nearWalletIcon } from "../icons";
 import { WalletModule, BrowserWallet } from "../Wallet";
 
-function setupNearWallet(): WalletModule<BrowserWallet> {
+interface NearWalletParams {
+  walletUrl?: string;
+}
+
+function setupNearWallet({
+  walletUrl,
+}: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({
     options,
+    network,
     emitter,
     logger,
     storage,
@@ -27,6 +33,24 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
       return [{ accountId }];
     }
 
+    const getWalletUrl = () => {
+      if (walletUrl) {
+        return walletUrl;
+      }
+
+      switch (network.networkId) {
+        case "mainnet":
+          return "https://wallet.near.org";
+        case "testnet":
+          return "https://wallet.testnet.near.org";
+        case "betanet":
+          return "https://wallet.betanet.near.org";
+        default:
+          // TODO: Throw once wallets are separate packages.
+          return "https://wallet.testnet.near.org";
+      }
+    };
+
     return {
       id: "near-wallet",
       type: "browser",
@@ -41,9 +65,11 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
       async init() {
         const localStorageKeyStore =
           new keyStores.BrowserLocalStorageKeyStore();
+
         const near = await connect({
           keyStore: localStorageKeyStore,
-          ...getConfig(options.networkId),
+          walletUrl: getWalletUrl(),
+          ...network,
           headers: {},
         });
 
@@ -98,7 +124,9 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         return wallet.isSignedIn();
       },
 
-      getAccounts,
+      async getAccounts() {
+        return getAccounts();
+      },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("NearWallet:signAndSendTransaction", {
@@ -110,7 +138,7 @@ function setupNearWallet(): WalletModule<BrowserWallet> {
         const account = wallet.account();
 
         // near-api-js marks this method as protected.
-        return account['signAndSendTransaction']({
+        return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
         });
