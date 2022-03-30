@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import setupWalletConnect from "@near-wallet-selector/wallet-connect";
 
 interface WalletSelectorContextValue {
   selector: NearWalletSelector;
@@ -41,8 +42,24 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
+    const walletConnect = setupWalletConnect({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    });
+
     NearWalletSelector.init({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+      wallets: [
+        "near-wallet",
+        "sender-wallet",
+        "ledger-wallet",
+        "math-wallet",
+        walletConnect,
+      ],
       network: "testnet",
       contractId: "guest-book.testnet",
     })
