@@ -38,7 +38,7 @@ const Content: React.FC = () => {
       }));
   }, [accountId, selector.network]);
 
-  const getMessages = () => {
+  const getMessages = useCallback(() => {
     const provider = new providers.JsonRpcProvider({
       url: selector.network.nodeUrl,
     });
@@ -52,7 +52,7 @@ const Content: React.FC = () => {
         finality: "optimistic",
       })
       .then((res) => JSON.parse(Buffer.from(res.result).toString()));
-  };
+  }, [selector]);
 
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
