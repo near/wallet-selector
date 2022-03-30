@@ -1,6 +1,6 @@
 import { getState, updateState } from "../state/State";
 import ProviderService from "../services/provider/ProviderService";
-import { Wallet } from "../wallets/Wallet";
+import { Wallet, WalletEvents } from "../wallets/Wallet";
 import { BuiltInWalletId, Options } from "../interfaces/Options";
 import { Emitter } from "../utils/EventsHandler";
 import { NetworkConfiguration } from "../network";
@@ -23,14 +23,14 @@ class WalletController {
   private options: Options;
   private network: NetworkConfiguration;
   private provider: ProviderService;
-  private emitter: Emitter;
+  private emitter: Emitter<WalletEvents>;
 
   private wallets: Array<Wallet>;
 
   constructor(
     options: Options,
     network: NetworkConfiguration,
-    emitter: Emitter
+    emitter: Emitter<WalletEvents>
   ) {
     this.options = options;
     this.network = network;
