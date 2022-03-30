@@ -94,18 +94,18 @@ export default class NearWalletSelector {
     return this.controller.getAccounts();
   }
 
-  on<Event extends keyof WalletEvents>(
-    event: Event,
-    callback: (data: WalletEvents[Event]) => void
+  on<EventName extends keyof WalletEvents>(
+    eventName: EventName,
+    callback: (event: WalletEvents[EventName]) => void
   ) {
-    return this.emitter.on(event, callback);
+    return this.emitter.on(eventName, callback);
   }
 
-  off<Event extends keyof WalletEvents>(
-    event: Event,
-    callback: (data: WalletEvents[Event]) => void
+  off<EventName extends keyof WalletEvents>(
+    eventName: EventName,
+    callback: (event: WalletEvents[EventName]) => void
   ) {
-    this.emitter.off(event, callback);
+    this.emitter.off(eventName, callback);
   }
 
   getContractId() {

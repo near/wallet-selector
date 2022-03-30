@@ -5,17 +5,20 @@ export interface Subscription {
 }
 
 export interface Emitter<Events extends Record<string, unknown>> {
-  on<Event extends keyof Events>(
-    event: Event,
-    callback: (data: Events[Event]) => void
+  on<EventName extends keyof Events>(
+    eventName: EventName,
+    callback: (event: Events[EventName]) => void
   ): Subscription;
 
-  off<Event extends keyof Events>(
-    event: Event,
-    callback: (data: Events[Event]) => void
+  off<EventName extends keyof Events>(
+    eventName: EventName,
+    callback: (event: Events[EventName]) => void
   ): void;
 
-  emit<Event extends keyof Events>(event: Event, data: Events[Event]): void;
+  emit<EventName extends keyof Events>(
+    eventName: EventName,
+    event: Events[EventName]
+  ): void;
 }
 
 export class EventHandler<Events extends Record<string, unknown>>
@@ -24,25 +27,25 @@ export class EventHandler<Events extends Record<string, unknown>>
   private emitter = new EventEmitter();
 
   on<Event extends keyof Events>(
-    event: Event,
-    callback: (data: Events[Event]) => void
+    eventName: Event,
+    callback: (event: Events[Event]) => void
   ): Subscription {
-    this.emitter.on(event as string, callback);
+    this.emitter.on(eventName as string, callback);
 
     return {
-      remove: () => this.emitter.off(event as string, callback),
+      remove: () => this.emitter.off(eventName as string, callback),
     };
   }
 
   off<Event extends keyof Events>(
-    event: Event,
-    callback: (data: Events[Event]) => void
+    eventName: Event,
+    callback: (event: Events[Event]) => void
   ) {
-    this.emitter.off(event as string, callback);
+    this.emitter.off(eventName as string, callback);
   }
 
-  emit<Event extends keyof Events>(event: Event, data: Events[Event]) {
-    this.emitter.emit(event as string, data);
+  emit<Event extends keyof Events>(eventName: Event, event: Events[Event]) {
+    this.emitter.emit(eventName as string, event);
   }
 }
 
