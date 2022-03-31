@@ -4,16 +4,17 @@ import { Subscription } from "@near-wallet-selector/utils";
 import { WalletModule, BridgeWallet } from "@near-wallet-selector/wallet";
 
 import WalletConnectClient from "./WalletConnectClient";
-import { walletConnectIcon } from "./icon";
 
 export interface WalletConnectParams {
   projectId: string;
   metadata: AppMetadata;
+  iconPath?: string;
 }
 
 export function setupWalletConnect({
   projectId,
   metadata,
+  iconPath,
 }: WalletConnectParams): WalletModule<BridgeWallet> {
   return function WalletConnect({ network, emitter, logger, updateState }) {
     let subscriptions: Array<Subscription> = [];
@@ -98,7 +99,7 @@ export function setupWalletConnect({
       type: "bridge",
       name: "WalletConnect",
       description: null,
-      iconUrl: walletConnectIcon,
+      iconUrl: iconPath || "/assets/wallet-connect-icon.png",
 
       isAvailable() {
         return true;
