@@ -18,7 +18,7 @@ Then use it in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
-import setupWalletConnect from "@near-wallet-selector/wallet-connect";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const walletConnect = setupWalletConnect({
   projectId: "c4f79cc...",
