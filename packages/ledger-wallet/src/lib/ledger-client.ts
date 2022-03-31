@@ -60,7 +60,7 @@ export interface Subscription {
 }
 
 // TODO: Needs a method to assert whether we're connected.
-class LedgerClient {
+export class LedgerClient {
   private transport: Transport;
 
   // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
@@ -158,5 +158,3 @@ class LedgerClient {
     throw new Error("Invalid data or derivation path");
   };
 }
-
-export default LedgerClient;

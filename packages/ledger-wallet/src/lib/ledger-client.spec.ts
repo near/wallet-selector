@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import { transactions, utils } from "near-api-js";
-import BN from "bn.js";
+import { BN } from "bn.js";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
@@ -48,15 +48,17 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const client = mock<TransportWebHID>(params.client);
   const transport = mock<Transport>(params.transport);
 
-  jest.doMock("@ledgerhq/hw-transport-webhid", () => {
+  jest.mock("@ledgerhq/hw-transport-webhid", () => {
     return {
       ...client,
-      create: () => transport,
+      default: {
+        create: () => transport,
+      },
     };
   });
 
   const {
-    default: LedgerClient,
+    LedgerClient,
     CLA,
     INS_SIGN,
     INS_GET_APP_VERSION,
@@ -67,7 +69,7 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
     networkId,
     parseDerivationPath,
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-  } = require("./LedgerClient");
+  } = require("./ledger-client");
 
   return {
     client: new LedgerClient(),

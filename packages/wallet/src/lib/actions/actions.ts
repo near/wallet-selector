@@ -1,5 +1,5 @@
 import { transactions, utils } from "near-api-js";
-import BN from "bn.js";
+import { BN } from "bn.js";
 
 export interface CreateAccountAction {
   type: "CreateAccount";

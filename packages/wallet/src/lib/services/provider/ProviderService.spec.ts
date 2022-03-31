@@ -1,4 +1,5 @@
-import ProviderService, {
+import {
+  ProviderService,
   QueryParams,
   ViewAccessKeyParams,
 } from "./ProviderService";

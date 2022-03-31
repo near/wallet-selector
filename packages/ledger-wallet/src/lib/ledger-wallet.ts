@@ -2,9 +2,13 @@ import { transactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
 
-import LedgerClient, { Subscription } from "./ledger-client";
+import { LedgerClient, Subscription } from "./ledger-client";
 import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "@near-wallet-selector/utils";
-import { HardwareWallet, WalletModule, transformActions } from "@near-wallet-selector/wallet";
+import {
+  HardwareWallet,
+  WalletModule,
+  transformActions,
+} from "@near-wallet-selector/wallet";
 
 interface AuthData {
   accountId: string;
@@ -26,7 +30,7 @@ export interface LedgerWalletParams {
 }
 
 export function setupLedgerWallet({
-  iconPath
+  iconPath,
 }: LedgerWalletParams = {}): WalletModule<HardwareWallet> {
   return function LedgerWallet({
     provider,
@@ -133,7 +137,7 @@ export function setupLedgerWallet({
       type: "hardware",
       name: "Ledger Wallet",
       description: null,
-      iconUrl: iconPath || '/assets/ledger-wallet-icon.png',
+      iconUrl: iconPath || "/assets/ledger-wallet-icon.png",
 
       isAvailable() {
         if (!LedgerClient.isSupported()) {

@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "strictPropertyInitialization": false,
-    "allowSyntheticDefaultImports": true,
     "paths": {
       "@near-wallet-selector/core": ["dist/packages/core"],
       "@near-wallet-selector/ledger-wallet": [

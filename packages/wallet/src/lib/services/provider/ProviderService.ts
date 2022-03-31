@@ -17,7 +17,7 @@ export class ProviderService {
   private provider: providers.JsonRpcProvider;
 
   constructor(url: string) {
-    this.provider = new providers.JsonRpcProvider(url);
+    this.provider = new providers.JsonRpcProvider({ url });
   }
 
   query<Response extends QueryResponseKind>(params: QueryParams) {
@@ -41,4 +41,3 @@ export class ProviderService {
     return this.provider.sendTransaction(signedTransaction);
   }
 }
-

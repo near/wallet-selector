@@ -1,9 +1,12 @@
-import getConfig from "../../config";
-import { logger } from "../../services/logging.service";
-import { storage } from "../../services/persistent-storage.service";
-import ProviderService from "../../services/provider/ProviderService";
-import { updateState } from "../../state/State";
-import EventHandler from "../../utils/EventsHandler";
+import {
+  ProviderService,
+  getNetwork,
+  storage,
+  logger,
+  updateState,
+  resolveNetwork,
+} from "@near-wallet-selector/wallet";
+import { EventHandler } from "@near-wallet-selector/utils";
 import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
 import { mock } from "jest-mock-extended";
 import { AccountView } from "near-api-js/lib/providers/provider";
@@ -38,21 +41,22 @@ const createNearWallet = () => {
 
   const networkId = "testnet";
 
-  const setupNearWallet = require("./NearWallet").default;
+  const { setupNearWallet } = require("./near-wallet");
   const NearWallet = setupNearWallet();
 
-  const config = getConfig(networkId);
+  const config = getNetwork(networkId);
 
   return {
     nearApiJs: require("near-api-js"),
     wallet: NearWallet({
       options: {
         wallets: ["near-wallet"],
-        networkId: networkId,
+        network: networkId,
         contract: {
           contractId: "guest-book.testnet",
         },
       },
+      network: resolveNetwork(networkId),
       provider: new ProviderService(config.nodeUrl),
       emitter: new EventHandler(),
       logger,
@@ -110,17 +114,18 @@ describe("isSignedIn", () => {
   });
 });
 
-describe("getAccount", () => {
-  it("returns account object", async () => {
+describe("getAccounts", () => {
+  it("returns array of accounts", async () => {
     const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
     await wallet.signIn();
-    const result = await wallet.getAccount();
+    const result = await wallet.getAccounts();
     expect(walletConnection.getAccountId).toHaveBeenCalled();
-    expect(result).toEqual({
-      accountId: "test-account.testnet",
-      balance: "1000000000000000000000000",
-    });
+    expect(result).toEqual([
+      {
+        accountId: "test-account.testnet",
+      },
+    ]);
   });
 });
 
