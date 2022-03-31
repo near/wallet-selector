@@ -16,7 +16,27 @@
         "inlineStyleLanguage": "scss",
         "assets": [
           "examples/angular/src/favicon.ico",
-          "examples/angular/src/assets"
+          "examples/angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "packages/near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/sender-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/math-wallet/assets/",
+            "output": "assets/"
+          }
         ],
         "styles": ["examples/angular/src/styles.scss"],
         "scripts": []

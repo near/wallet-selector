@@ -1,7 +1,13 @@
 {
   "version": 2,
   "projects": {
-    "core": "packages/near-wallet-selector",
+    "core": "packages/core",
+    "wallet": "packages/wallet",
+    "utils": "packages/utils",
+    "ledger-wallet": "packages/ledger-wallet",
+    "math-wallet": "packages/math-wallet",
+    "near-wallet": "packages/near-wallet",
+    "sender-wallet": "packages/sender-wallet",
     "wallet-connect": "packages/wallet-connect",
     "angular": "examples/angular",
     "angular-e2e": "examples/angular-e2e",
