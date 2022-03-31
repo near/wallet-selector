@@ -10,6 +10,7 @@
       "options": {
         "outputPath": "dist/examples/angular",
         "index": "examples/angular/src/index.html",
+        "baseHref": "/wallet-selector/",
         "main": "examples/angular/src/main.ts",
         "polyfills": "examples/angular/src/polyfills.ts",
         "tsConfig": "examples/angular/tsconfig.app.json",
