@@ -3,6 +3,7 @@
   "sourceRoot": "examples/react/src",
   "projectType": "application",
   "targets": {
+    "deploy": "gh-pages -d dist/examples/react",
     "build": {
       "executor": "@nrwl/web:webpack",
       "outputs": ["{options.outputPath}"],
@@ -11,7 +12,7 @@
         "compiler": "babel",
         "outputPath": "dist/examples/react",
         "index": "examples/react/src/index.html",
-        "baseHref": "/",
+        "baseHref": "/wallet-selector/",
         "main": "examples/react/src/main.tsx",
         "polyfills": "examples/react/src/polyfills.ts",
         "tsConfig": "examples/react/tsconfig.app.json",
