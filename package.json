@@ -20,7 +20,8 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
+    "prepublishOnly": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
+    "build": "nx run-many --target=build --projects=core --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
