@@ -1,5 +1,1 @@
-import { setupWalletConnect, WalletConnectParams } from "./WalletConnect";
-
-export { WalletConnectParams };
-
-export default setupWalletConnect;
+export * from "./WalletConnect";
