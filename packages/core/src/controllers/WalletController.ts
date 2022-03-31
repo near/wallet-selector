@@ -8,7 +8,7 @@ import {
   Options,
 } from "@near-wallet-selector/wallet";
 
-import { Wallet } from "@near-wallet-selector/wallet";
+import { Wallet, WalletEvents } from "@near-wallet-selector/wallet";
 import {
   LOCAL_STORAGE_SELECTED_WALLET_ID,
   Emitter,

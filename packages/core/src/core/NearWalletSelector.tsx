@@ -7,11 +7,10 @@ import WalletController, {
 import Modal from "../modal/Modal";
 import {
   Emitter,
-  EventList,
   EventHandler,
   MODAL_ELEMENT_ID,
 } from "@near-wallet-selector/utils";
-import { updateState } from "@near-wallet-selector/wallet";
+import { updateState, WalletEvents } from "@near-wallet-selector/wallet";
 import {
   Action,
   NetworkConfiguration,
