@@ -26,7 +26,6 @@
     "prepack": "yarn build",
     "test": "nx run-many --target=test --all",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && nx run @near-wallet-selector/core:build",
-    "deploy": "gh-pages -d dist/examples/react",
     "ng": "nx"
   },
   "dependencies": {

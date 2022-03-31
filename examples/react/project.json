@@ -3,7 +3,6 @@
   "sourceRoot": "examples/react/src",
   "projectType": "application",
   "targets": {
-    "deploy": "gh-pages -d dist/examples/react",
     "build": {
       "executor": "@nrwl/web:webpack",
       "outputs": ["{options.outputPath}"],
@@ -67,6 +66,12 @@
       "options": {
         "jestConfig": "examples/react/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-script",
+      "options": {
+        "script": "gh-pages -d dist/examples/react"
       }
     }
   },
