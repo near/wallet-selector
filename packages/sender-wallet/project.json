@@ -1,0 +1,34 @@
+{
+  "root": "packages/sender-wallet",
+  "sourceRoot": "packages/sender-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sender-wallet",
+        "main": "packages/sender-wallet/src/index.ts",
+        "tsConfig": "packages/sender-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": ["packages/sender-wallet/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/sender-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/sender-wallet"],
+      "options": {
+        "jestConfig": "packages/sender-wallet/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}

@@ -20,12 +20,13 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build": "nx run-many --target=build --projects=@near-wallet-selector/core --configuration=production",
+    "prepublishOnly": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
+    "build": "nx run-many --target=build --projects=core --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
     "test": "nx run-many --target=test --all",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && nx run @near-wallet-selector/core:build",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build",
     "ng": "nx"
   },
   "dependencies": {
@@ -67,6 +68,7 @@
     "@nrwl/cypress": "13.8.5",
     "@nrwl/eslint-plugin-nx": "13.8.5",
     "@nrwl/jest": "13.8.5",
+    "@nrwl/js": "13.8.5",
     "@nrwl/linter": "13.8.5",
     "@nrwl/nx-cloud": "latest",
     "@nrwl/react": "^13.8.5",
