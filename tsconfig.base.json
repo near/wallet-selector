@@ -17,7 +17,7 @@
     "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@near-wallet-selector/core": ["dist/packages/near-wallet-selector"],
+      "@near-wallet-selector/core": ["dist/packages/core"],
       "@near-wallet-selector/ledger-wallet": [
         "packages/ledger-wallet/src/index.ts"
       ],
