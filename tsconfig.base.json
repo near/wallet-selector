@@ -15,9 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "strictPropertyInitialization": false,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@near-wallet-selector/core": ["dist/packages/near-wallet-selector"],
-      "@near-wallet-selector/wallet-connect": ["dist/packages/wallet-connect"]
+      "@near-wallet-selector/wallet-connect": ["packages/wallet-connect/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

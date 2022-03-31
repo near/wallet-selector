@@ -1,11 +1,11 @@
 {
   "version": 2,
   "projects": {
-    "@near-wallet-selector/core": "packages/near-wallet-selector",
+    "core": "packages/near-wallet-selector",
+    "wallet-connect": "packages/wallet-connect",
     "angular": "examples/angular",
     "angular-e2e": "examples/angular-e2e",
     "react": "examples/react",
-    "react-e2e": "examples/react-e2e",
-    "@near-wallet-selector/wallet-connect": "packages/wallet-connect"
+    "react-e2e": "examples/react-e2e"
   }
 }
