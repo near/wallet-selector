@@ -5,6 +5,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
 import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 declare global {
   interface Window {
@@ -33,6 +34,15 @@ export class AppComponent implements OnInit {
         setupSenderWallet(),
         setupLedgerWallet(),
         setupMathWallet(),
+        setupWalletConnect({
+          projectId: "c4f79cc...",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
       ],
       network: "testnet",
       contractId: "guest-book.testnet",
