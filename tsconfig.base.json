@@ -16,7 +16,21 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-wallet-selector/core": ["dist/packages/near-wallet-selector"]
+      "@near-wallet-selector/core": ["dist/packages/core"],
+      "@near-wallet-selector/ledger-wallet": [
+        "packages/ledger-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/math-wallet": [
+        "packages/math-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/near-wallet": [
+        "packages/near-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/sender-wallet": [
+        "packages/sender-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/utils": ["packages/utils/src/index.ts"],
+      "@near-wallet-selector/wallet": ["packages/wallet/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
