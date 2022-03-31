@@ -10,6 +10,7 @@
         "outputPath": "dist/packages/wallet",
         "main": "packages/wallet/src/index.ts",
         "tsConfig": "packages/wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": ["packages/wallet/*.md"]
       }
     },

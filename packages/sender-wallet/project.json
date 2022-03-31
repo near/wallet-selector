@@ -10,6 +10,7 @@
         "outputPath": "dist/packages/sender-wallet",
         "main": "packages/sender-wallet/src/index.ts",
         "tsConfig": "packages/sender-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": ["packages/sender-wallet/*.md"]
       }
     },

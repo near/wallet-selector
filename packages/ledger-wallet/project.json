@@ -10,6 +10,7 @@
         "outputPath": "dist/packages/ledger-wallet",
         "main": "packages/ledger-wallet/src/index.ts",
         "tsConfig": "packages/ledger-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": ["packages/ledger-wallet/*.md"]
       }
     },

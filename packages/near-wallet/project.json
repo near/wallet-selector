@@ -10,6 +10,7 @@
         "outputPath": "dist/packages/near-wallet",
         "main": "packages/near-wallet/src/index.ts",
         "tsConfig": "packages/near-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": ["packages/near-wallet/*.md"]
       }
     },
