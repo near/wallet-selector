@@ -1,11 +1,17 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import { getState, updateState, State } from "../state/State";
-import { logger } from "../services/logging.service";
-import { Options, Theme } from "../interfaces/Options";
-import { HardwareWallet, Wallet } from "../wallets/Wallet";
-import { DEFAULT_DERIVATION_PATH } from "../constants";
-import { NetworkConfiguration } from "../network";
+import {
+  getState,
+  updateState,
+  State,
+  logger,
+  NetworkConfiguration,
+  Options,
+  Theme,
+  HardwareWallet,
+  Wallet,
+} from "@near-wallet-selector/wallet";
+import { DEFAULT_DERIVATION_PATH } from "@near-wallet-selector/utils";
 
 declare global {
   // tslint:disable-next-line

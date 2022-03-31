@@ -1,5 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import NearWalletSelector from "@near-wallet-selector/core";
+import { AccountInfo } from "@near-wallet-selector/wallet";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
+import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 
 declare global {
   interface Window {
@@ -23,7 +28,12 @@ export class AppComponent implements OnInit {
 
   async initialize() {
     NearWalletSelector.init({
-      wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+      wallets: [
+        setupNearWallet(),
+        setupSenderWallet(),
+        setupLedgerWallet(),
+        setupMathWallet(),
+      ],
       network: "testnet",
       contractId: "guest-book.testnet",
     })

@@ -1,19 +1,21 @@
-import { getState, updateState } from "../state/State";
-import ProviderService from "../services/provider/ProviderService";
-import { Wallet } from "../wallets/Wallet";
-import { BuiltInWalletId, Options } from "../interfaces/Options";
-import { Emitter } from "../utils/EventsHandler";
-import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "../constants";
-import { storage } from "../services/persistent-storage.service";
-import { logger } from "../services/logging.service";
-import setupNearWallet from "../wallets/browser/NearWallet";
-import setupSenderWallet from "../wallets/injected/SenderWallet";
-import setupLedgerWallet from "../wallets/hardware/LedgerWallet";
-import setupMathWallet from "../wallets/injected/MathWallet";
-import { NetworkConfiguration } from "../network";
+import {
+  getState,
+  updateState,
+  ProviderService,
+  storage,
+  logger,
+  NetworkConfiguration,
+  Options,
+} from "@near-wallet-selector/wallet";
+
+import { Wallet } from "@near-wallet-selector/wallet";
+import {
+  LOCAL_STORAGE_SELECTED_WALLET_ID,
+  Emitter,
+} from "@near-wallet-selector/utils";
 
 export interface SignInParams {
-  walletId: BuiltInWalletId;
+  walletId: Wallet["id"];
   accountId?: string;
   derivationPath?: string;
 }
@@ -61,36 +63,17 @@ class WalletController {
   }
 
   private setupWalletModules(): Array<Wallet> {
-    return this.options.wallets
-      .map((wallet) => {
-        if (typeof wallet !== "string") {
-          return wallet;
-        }
-
-        switch (wallet) {
-          case "near-wallet":
-            return setupNearWallet();
-          case "sender-wallet":
-            return setupSenderWallet();
-          case "ledger-wallet":
-            return setupLedgerWallet();
-          case "math-wallet":
-            return setupMathWallet();
-          default:
-            throw new Error("Invalid wallet id");
-        }
-      })
-      .map((module) => {
-        return module({
-          options: this.options,
-          network: this.network,
-          provider: this.provider,
-          emitter: this.emitter,
-          logger,
-          storage,
-          updateState,
-        });
+    return this.options.wallets.map((module) => {
+      return module({
+        options: this.options,
+        network: this.network,
+        provider: this.provider,
+        emitter: this.emitter,
+        logger,
+        storage,
+        updateState,
       });
+    });
   }
 
   async init() {

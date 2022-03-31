@@ -5,12 +5,19 @@ import WalletController, {
   SignInParams,
 } from "../controllers/WalletController";
 import Modal from "../modal/Modal";
-import EventHandler, { Emitter, EventList } from "../utils/EventsHandler";
-import { updateState } from "../state/State";
-import { MODAL_ELEMENT_ID } from "../constants";
-import { Options } from "../interfaces/Options";
-import { Action } from "../wallets/actions";
-import { NetworkConfiguration, resolveNetwork } from "../network";
+import {
+  Emitter,
+  EventList,
+  EventHandler,
+  MODAL_ELEMENT_ID,
+} from "@near-wallet-selector/utils";
+import { updateState } from "@near-wallet-selector/wallet";
+import {
+  Action,
+  NetworkConfiguration,
+  resolveNetwork,
+  Options,
+} from "@near-wallet-selector/wallet";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
