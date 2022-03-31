@@ -5,11 +5,11 @@ import Client, {
 } from "@walletconnect/client";
 import {
   AppMetadata,
-  ClientOptions,
   PairingTypes,
   SessionTypes,
+  ClientTypes,
+  ClientOptions,
 } from "@walletconnect/types";
-import { ClientTypes } from "@walletconnect/types/dist/cjs/client";
 
 export type ConnectParams = ClientTypes.ConnectParams & {
   metadata: AppMetadata;
