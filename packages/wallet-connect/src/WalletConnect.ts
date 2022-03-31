@@ -1,10 +1,7 @@
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {
-  Subscription,
-  WalletModule,
-  BridgeWallet,
-} from "@near-wallet-selector/core";
+import { Subscription } from "@near-wallet-selector/utils";
+import { WalletModule, BridgeWallet } from "@near-wallet-selector/wallet";
 
 import WalletConnectClient from "./WalletConnectClient";
 import { walletConnectIcon } from "./icon";
