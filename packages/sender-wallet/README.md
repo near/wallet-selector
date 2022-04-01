@@ -1,7 +1,41 @@
-# sender-wallet
+# @near-wallet-selector/sender-wallet
 
-This library was generated with [Nx](https://nx.dev).
+This is the Sender Wallet package for NEAR Wallet Selector.
 
-## Running unit tests
+## Installation and Usage
 
-Run `nx test sender-wallet` to execute the unit tests via [Jest](https://jestjs.io).
+The easiest way to use this package is to install it from the NPM registry:
+
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/sender-wallet
+
+# Using NPM.
+npm install @near-wallet-selector/sender-wallet
+```
+
+Then use it in your dApp:
+
+```ts
+import NearWalletSelector from "@near-wallet-selector/core";
+import { setupSenderWallet } from "@near-wallet-selector/near-wallet";
+
+// Sender Wallet for Wallet Selector can be setup without any params or it can take one optional param.
+const senderWallet = setupSenderWallet({
+  iconPath: "https://yourdomain.com/yourwallet-icon.png" //optional
+});
+
+const selector = await NearWalletSelector.init({
+  wallets: [senderWallet],
+  network: "testnet",
+  contractId: "guest-book.testnet",
+});
+```
+
+## Options
+
+- `iconPath`: (`string`): Icon Path is an optional parameter to set a custom icon for the wallet option showed in the modal.
+
+## License
+
+This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
