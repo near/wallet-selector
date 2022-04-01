@@ -187,7 +187,6 @@ export function setupNearWallet({
       async signAndSendTransactions({ transactions }) {
         logger.log("NearWallet:signAndSendTransactions", { transactions });
 
-        // near-api-js doesn't have this method declared in TypeScript.
         return wallet
           .requestSignTransactions({
             transactions: await transformTransactions(transactions),
