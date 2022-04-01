@@ -83,12 +83,9 @@ At the time of writing, there is an issue with Sender Wallet where the signed in
 
 ## Contributing
 
-Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:
+Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
 
-- Execute `yarn link` in the root directory.
-- Navigate to the `examples/{framework}` directory.
-- Execute `yarn link near-wallet-selector` to create a symlink locally.
-- Execute `yarn start`
+More details around contributing to this project can be found [here](./CONTRIBUTING.md).
 
 ## Editor Setup
 
