@@ -34,7 +34,7 @@ const selector = await NearWalletSelector.init({
 
 ## Options
 
-- `iconPath`: (`string`): Icon Path is an optional parameter to set a custom icon for the wallet option showed in the modal.
+- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image
 
 ## License
 

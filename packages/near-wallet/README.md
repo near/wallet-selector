@@ -35,9 +35,8 @@ const selector = await NearWalletSelector.init({
 
 ## Options
 
-- `walletUrl` (`string`): Wallet Url is an optional parameter to set a custom walletUrl, if using custom network configuration it defaults to testnet if it can't lookup the networkId.
-- `iconPath`: (`string`): Icon Path is an optional parameter to set a custom icon for the wallet option showed in the modal.
-
+- `walletUrl` (`string?`): Wallet URL used to redirect when signing transactions. This parameter is required when using custom network configuration.
+- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image.
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
