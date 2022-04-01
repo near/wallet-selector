@@ -22,10 +22,6 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-export interface SignAndSendTransactionsResponse {
-  results: Array<providers.FinalExecutionOutcome>;
-}
-
 export interface AccountInfo {
   accountId: string;
 }
@@ -70,7 +66,7 @@ interface BaseWallet {
   // Sings a list of transactions before sending them via an RPC endpoint.
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
-  ): Promise<SignAndSendTransactionsResponse>;
+  ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
 export interface BrowserWallet extends BaseWallet {
