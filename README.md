@@ -6,6 +6,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 - [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
 - [Math Wallet](https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc) - Browser extension wallet.
 - [Ledger](https://www.ledger.com/) - Hardware wallet.
+- [WalletConnect](https://walletconnect.com/) - Bridge wallet.
 
 ## Preview
 
