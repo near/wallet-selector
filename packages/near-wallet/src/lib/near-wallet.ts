@@ -177,10 +177,12 @@ export function setupNearWallet({
 
         const account = wallet.account();
 
-        // near-api-js marks this method as protected.
         return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
+        }).then(() => {
+          // Suppress response since transactions with deposits won't actually
+          // return FinalExecutionOutcome.
         });
       },
 
