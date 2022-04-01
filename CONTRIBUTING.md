@@ -23,3 +23,10 @@ yarn build # build all packages
 yarn nx serve react # run the react example
 yarn nx serve angular # run the angular example
 ```
+
+Build and deploy react example
+
+```bash
+yarn nx build react # build the react example
+yarn nx deploy react # deploys react example to gh-pages
+```
