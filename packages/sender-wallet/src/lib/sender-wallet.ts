@@ -8,29 +8,23 @@ import {
   waitFor,
 } from "@near-wallet-selector/core";
 
-import { InjectedSenderWallet } from "./injected-sender-wallet";
+import { InjectedSender } from "./injected-sender-wallet";
 
 declare global {
   interface Window {
-    near: InjectedSenderWallet | undefined;
+    near: InjectedSender | undefined;
   }
 }
 
-export interface SenderWalletParams {
+export interface SenderParams {
   iconPath?: string;
 }
 
-export function setupSenderWallet({
+export function setupSender({
   iconPath,
-}: SenderWalletParams = {}): WalletModule<InjectedWallet> {
-  return function SenderWallet({
-    options,
-    network,
-    emitter,
-    logger,
-    updateState,
-  }) {
-    let wallet: InjectedSenderWallet;
+}: SenderParams = {}): WalletModule<InjectedWallet> {
+  return function Sender({ options, network, emitter, logger, updateState }) {
+    let wallet: InjectedSender;
 
     const getAccounts = () => {
       const accountId = wallet.getAccountId();
@@ -46,7 +40,7 @@ export function setupSenderWallet({
       try {
         return await waitFor(() => !!window.near?.isSender, {});
       } catch (e) {
-        logger.log("SenderWallet:isInstalled:error", e);
+        logger.log("Sender:isInstalled:error", e);
 
         return false;
       }
@@ -80,11 +74,11 @@ export function setupSenderWallet({
     };
 
     return {
-      id: "sender-wallet",
+      id: "sender",
       type: "injected",
-      name: "Sender Wallet",
+      name: "Sender",
       description: null,
-      iconUrl: iconPath || "./assets/sender-wallet-icon.png",
+      iconUrl: iconPath || "./assets/sender-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
@@ -109,7 +103,7 @@ export function setupSenderWallet({
         wallet = window.near!;
 
         wallet.on("accountChanged", async (newAccountId) => {
-          logger.log("SenderWallet:onAccountChange", newAccountId);
+          logger.log("Sender:onAccountChange", newAccountId);
 
           try {
             await this.signOut();
@@ -192,7 +186,7 @@ export function setupSenderWallet({
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
-        logger.log("SenderWallet:signAndSendTransaction", {
+        logger.log("Sender:signAndSendTransaction", {
           signerId,
           receiverId,
           actions,
@@ -218,7 +212,7 @@ export function setupSenderWallet({
       },
 
       async signAndSendTransactions({ transactions }) {
-        logger.log("SenderWallet:signAndSendTransactions", { transactions });
+        logger.log("Sender:signAndSendTransactions", { transactions });
 
         return wallet
           .requestSignTransactions({

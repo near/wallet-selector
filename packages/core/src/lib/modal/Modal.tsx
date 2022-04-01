@@ -106,10 +106,8 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
 
   const handleConnectClick = async () => {
     setIsLoading(true);
-    // TODO: Can't assume "ledger-wallet" once we implement more hardware wallets.
-    const wallet = wallets.find(
-      (x) => x.id === "ledger-wallet"
-    ) as HardwareWallet;
+    // TODO: Can't assume "ledger" once we implement more hardware wallets.
+    const wallet = wallets.find((x) => x.id === "ledger") as HardwareWallet;
 
     await wallet
       .signIn({

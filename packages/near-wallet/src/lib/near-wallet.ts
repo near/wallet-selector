@@ -50,8 +50,7 @@ export function setupNearWallet({
         case "betanet":
           return "https://wallet.betanet.near.org";
         default:
-          // TODO: Throw once wallets are separate packages.
-          return "https://wallet.testnet.near.org";
+          throw new Error("Invalid wallet URL");
       }
     };
 

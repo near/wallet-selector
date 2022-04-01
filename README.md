@@ -2,10 +2,11 @@
 
 The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
-- [NEAR Wallet](https://wallet.near.org/) - Web wallet.
-- [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
-- [Math Wallet](https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc) - Browser extension wallet.
-- [Ledger](https://www.ledger.com/) - Hardware wallet.
+- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Browser extension wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
+- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
+- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
 ## Preview
 
@@ -15,7 +16,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 ## Installation and Usage
 
-The easiest way to use `near-wallet-selector` is to install it from the NPM registry:
+The easiest way to use NEAR Wallet Selector is to install the [`core`](https://www.npmjs.com/package/@near-wallet-selector/core) package from the NPM registry:
 
 ```bash
 # Using Yarn
@@ -25,15 +26,54 @@ yarn add @near-wallet-selector/core
 npm install @near-wallet-selector/core
 ```
 
-Then use it in your dApp:
+Next, you'll need to install the wallets you want to support:
+
+```bash
+# Using Yarn
+yarn add \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/wallet-connect
+
+# Using NPM.
+npm install \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/wallet-connect
+```
+
+Then them in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
+import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const selector = await NearWalletSelector.init({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [
+    setupNearWallet(),
+    setupSender(),
+    setupLedger(),
+    setupMathWallet(),
+    setupWalletConnect({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    }),
+  ],
 });
 ```
 
@@ -43,12 +83,9 @@ At the time of writing, there is an issue with Sender Wallet where the signed in
 
 ## Contributing
 
-Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes. Below is a common workflow you can use:
+Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
 
-- Execute `yarn link` in the root directory.
-- Navigate to the `examples/{framework}` directory.
-- Execute `yarn link near-wallet-selector` to create a symlink locally.
-- Execute `yarn start`
+More details around contributing to this project can be found [here](./CONTRIBUTING.md).
 
 ## Editor Setup
 

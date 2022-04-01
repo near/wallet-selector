@@ -1,6 +1,6 @@
 # @near-wallet-selector/near-wallet
 
-This is the NEAR Wallet package for NEAR Wallet Selector.
+This is the [NEAR Wallet](https://wallet.near.org/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 

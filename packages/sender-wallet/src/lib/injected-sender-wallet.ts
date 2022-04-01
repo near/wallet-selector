@@ -95,14 +95,14 @@ export interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-export interface SenderWalletEvents {
+export interface SenderEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;
   rpcChanged: (response: RpcChangedResponse) => void;
 }
 
-export interface InjectedSenderWallet {
+export interface InjectedSender {
   isSender: boolean;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
@@ -111,9 +111,9 @@ export interface InjectedSenderWallet {
   ) => Promise<RequestSignInResponse>;
   signOut: () => boolean;
   isSignedIn: () => boolean;
-  on: <Event extends keyof SenderWalletEvents>(
+  on: <Event extends keyof SenderEvents>(
     event: Event,
-    callback: SenderWalletEvents[Event]
+    callback: SenderEvents[Event]
   ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;

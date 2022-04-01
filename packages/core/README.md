@@ -18,9 +18,10 @@ Then use it in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 const selector = await NearWalletSelector.init({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+  wallets: [setupNearWallet()],
   network: "testnet",
   contractId: "guest-book.testnet",
 });
@@ -57,7 +58,7 @@ Initialises the selector using the configured options before rendering the UI. I
 
 ```ts
 await NearWalletSelector.init({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
+  wallets: [/* Supported wallets in your dApp */],
   network: "testnet",
   contractId: "guest-book.testnet",
 });
@@ -128,9 +129,9 @@ await selector.signIn({
   walletId: "near-wallet",
 });
 
-// Sender Wallet.
+// Sender.
 await selector.signIn({
-  walletId: "sender-wallet",
+  walletId: "sender",
 });
 
 // Math Wallet.
@@ -138,11 +139,16 @@ await selector.signIn({
   walletId: "math-wallet",
 });
 
-// Ledger Wallet
+// Ledger
 await selector.signIn({
-  walletId: "ledger-wallet",
+  walletId: "ledger",
   accountId: "account-id.testnet",
   derviationPath: "44'/397'/0'/0'/1'",
+});
+
+// WalletConnect.
+await selector.signIn({
+  walletId: "wallet-connect",
 });
 ```
 

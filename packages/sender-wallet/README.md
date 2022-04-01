@@ -1,6 +1,6 @@
-# @near-wallet-selector/sender-wallet
+# @near-wallet-selector/sender
 
-This is the Sender Wallet package for NEAR Wallet Selector.
+This is the [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -18,15 +18,15 @@ Then use it in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
-import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
 
 // Sender Wallet for Wallet Selector can be setup without any params or it can take one optional param.
-const senderWallet = setupSenderWallet({
+const sender = setupSender({
   iconPath: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [senderWallet],
+  wallets: [sender],
   network: "testnet",
   contractId: "guest-book.testnet",
 });

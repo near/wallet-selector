@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "sender-wallet",
+  displayName: "sender",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {

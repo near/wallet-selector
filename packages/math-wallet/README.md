@@ -1,6 +1,6 @@
 # @near-wallet-selector/math-wallet
 
-This is the Math Wallet package for NEAR Wallet Selector.
+This is the [Math Wallet](https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
