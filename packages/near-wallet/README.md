@@ -22,8 +22,8 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 // NEAR Wallet for Wallet Selector can be setup without any params or it can take two optional params.
 const nearWallet = setupNearWallet({
-  walletUrl: "https://wallet.testnet.near.org", // optional
-  iconPath: "https://yourdomain.com/yourwallet-icon.png" //optional
+  walletUrl: "https://wallet.testnet.near.org",
+  iconPath: "https://yourdomain.com/yourwallet-icon.png"
 });
 
 const selector = await NearWalletSelector.init({

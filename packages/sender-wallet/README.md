@@ -18,7 +18,7 @@ Then use it in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
-import { setupSenderWallet } from "@near-wallet-selector/near-wallet";
+import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
 
 // Sender Wallet for Wallet Selector can be setup without any params or it can take one optional param.
 const senderWallet = setupSenderWallet({
