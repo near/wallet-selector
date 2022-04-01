@@ -25,12 +25,12 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/sender/assets/",
+            "input": "packages/sender-wallet/assets/",
             "output": "assets/"
           },
           {
             "glob": "**/*",
-            "input": "packages/ledger/assets/",
+            "input": "packages/ledger-wallet/assets/",
             "output": "assets/"
           },
           {
