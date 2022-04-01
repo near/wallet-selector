@@ -20,7 +20,7 @@ interface ValidateParams {
   derivationPath: string;
 }
 
-interface LedgerWalletState {
+interface LedgerState {
   authData: AuthData | null;
 }
 
@@ -36,7 +36,7 @@ export function setupLedger({
   return function Ledger({ provider, emitter, logger, storage, updateState }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
-    const state: LedgerWalletState = { authData: null };
+    const state: LedgerState = { authData: null };
 
     const debugMode = false;
 
@@ -93,7 +93,7 @@ export function setupLedger({
 
       if (debugMode) {
         subscriptions["logs"] = ledgerClient.listen((data) => {
-          logger.log("LedgerWallet:init:logs", data);
+          logger.log("Ledger:init:logs", data);
         });
       }
 
@@ -103,7 +103,7 @@ export function setupLedger({
     };
 
     const validate = async ({ accountId, derivationPath }: ValidateParams) => {
-      logger.log("LedgerWallet:validate", { accountId, derivationPath });
+      logger.log("Ledger:validate", { accountId, derivationPath });
 
       const ledgerClient = await getClient();
 
@@ -111,7 +111,7 @@ export function setupLedger({
         derivationPath: derivationPath,
       });
 
-      logger.log("LedgerWallet:validate:publicKey", { publicKey });
+      logger.log("Ledger:validate:publicKey", { publicKey });
 
       try {
         const accessKey = await provider.viewAccessKey({
@@ -119,7 +119,7 @@ export function setupLedger({
           publicKey,
         });
 
-        logger.log("LedgerWallet:validate:accessKey", { accessKey });
+        logger.log("Ledger:validate:accessKey", { accessKey });
 
         if (accessKey.permission !== "FullAccess") {
           throw new Error("Public key requires 'FullAccess' permission");
@@ -220,7 +220,7 @@ export function setupLedger({
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
-        logger.log("LedgerWallet:signAndSendTransaction", {
+        logger.log("Ledger:signAndSendTransaction", {
           signerId,
           receiverId,
           actions,
@@ -238,8 +238,8 @@ export function setupLedger({
           provider.viewAccessKey({ accountId, publicKey }),
         ]);
 
-        logger.log("LedgerWallet:signAndSendTransaction:block", block);
-        logger.log("LedgerWallet:signAndSendTransaction:accessKey", accessKey);
+        logger.log("Ledger:signAndSendTransaction:block", block);
+        logger.log("Ledger:signAndSendTransaction:accessKey", accessKey);
 
         const transaction = transactions.createTransaction(
           accountId,

@@ -53,7 +53,7 @@ import NearWalletSelector from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedgerWallet } from "@near-wallet-selector/ledger";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const selector = await NearWalletSelector.init({
@@ -62,7 +62,7 @@ const selector = await NearWalletSelector.init({
   wallets: [
     setupNearWallet(),
     setupSender(),
-    setupLedgerWallet(),
+    setupLedger(),
     setupMathWallet(),
     setupWalletConnect({
       projectId: "c4f79cc...",
