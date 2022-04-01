@@ -99,6 +99,42 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
+  const handleSendMultipleTransactions = () => {
+    selector.signAndSendTransactions({
+      transactions: [
+        {
+          // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
+          receiverId: "dev-1648806797290-14624341764914",
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "increment",
+                args: {},
+                gas: BOATLOAD_OF_GAS,
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+        {
+          receiverId: selector.getContractId(),
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: "Hello World!" },
+                gas: BOATLOAD_OF_GAS,
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  };
+
   const handleSubmit = useCallback(
     (e: SubmitEvent) => {
       e.preventDefault();
@@ -180,6 +216,9 @@ const Content: React.FC = () => {
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>
+        <button onClick={handleSendMultipleTransactions}>
+          Send Multiple Transactions
+        </button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
