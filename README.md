@@ -5,7 +5,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 - [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
 - [Sender Wallet](https://www.npmjs.com/package/@near-wallet-selector/sender-wallet) - Browser extension wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
-- [Ledger Wallet](https://www.npmjs.com/package/@near-wallet-selector/ledger-wallet) - Hardware wallet.
+- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
 ## Preview
