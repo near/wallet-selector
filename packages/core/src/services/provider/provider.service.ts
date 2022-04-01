@@ -13,7 +13,7 @@ export interface ViewAccessKeyParams {
   publicKey: string;
 }
 
-export class ProviderService {
+export class Provider {
   private provider: providers.JsonRpcProvider;
 
   constructor(url: string) {

@@ -1,8 +1,8 @@
-import { EventHandler } from "./EventsHandler";
+import { EventEmitter } from "./event-emitter.service";
 
 describe("emit", () => {
   it("calls the subscribed handlers for the event", () => {
-    const emitter = new EventHandler();
+    const emitter = new EventEmitter();
     const event = "signIn";
     const handler = jest.fn();
     emitter.on(event, handler);
@@ -11,7 +11,7 @@ describe("emit", () => {
   });
 
   it("calls the subscribed handlers with data for the event", () => {
-    const emitter = new EventHandler();
+    const emitter = new EventEmitter();
     const event = "signIn";
     const data = { value: "test" };
     const handler = jest.fn();
@@ -22,7 +22,7 @@ describe("emit", () => {
   });
 
   it("calls the multiple subscribed handlers with data for the event", () => {
-    const emitter = new EventHandler();
+    const emitter = new EventEmitter();
     const event = "signIn";
     const data = { value: "test" };
     const handler = jest.fn();
@@ -39,7 +39,7 @@ describe("emit", () => {
 
 describe("off", () => {
   it("doesn't call the handler after unsubscribing", () => {
-    const emitter = new EventHandler();
+    const emitter = new EventEmitter();
     const event = "signIn";
     const handler = jest.fn();
     emitter.on(event, handler);

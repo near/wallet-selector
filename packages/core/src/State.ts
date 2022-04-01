@@ -1,5 +1,5 @@
 import { storage } from "./services";
-import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "@near-wallet-selector/utils";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 
 declare global {
   // tslint:disable-next-line

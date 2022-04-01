@@ -1,8 +1,4 @@
-import {
-  ProviderService,
-  QueryParams,
-  ViewAccessKeyParams,
-} from "./ProviderService";
+import { Provider, QueryParams, ViewAccessKeyParams } from "./provider.service";
 import { mock } from "jest-mock-extended";
 import {
   FinalExecutionOutcome,
@@ -12,7 +8,7 @@ import { providers } from "near-api-js";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
-} from "./providerServiceMocks";
+} from "./provider.service.mocks";
 import { SignedTransaction } from "near-api-js/lib/transaction";
 import {
   BlockReference,
@@ -30,7 +26,7 @@ const setup = (url: string) => {
 
   return {
     provider,
-    service: new ProviderService(url),
+    service: new Provider(url),
   };
 };
 

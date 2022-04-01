@@ -1,18 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  Emitter,
-  EventHandler,
-  MODAL_ELEMENT_ID,
-} from "@near-wallet-selector/utils";
 
 import WalletController, { SignInParams } from "./WalletController";
 import Modal from "./modal/Modal";
-import { Action } from "./wallet/actions";
+import { Action, WalletEvents } from "./wallet";
 import { Options } from "./Options";
-import { WalletEvents } from "./wallet/wallet";
 import { NetworkConfiguration, resolveNetwork } from "./network";
 import { updateState } from "./State";
+import { Emitter, EventEmitter } from "./services";
+import { MODAL_ELEMENT_ID } from "./constants";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
@@ -38,7 +34,7 @@ export default class NearWalletSelector {
 
   private constructor(options: Options) {
     const network = resolveNetwork(options.network);
-    const emitter = new EventHandler<WalletEvents>();
+    const emitter = new EventEmitter<WalletEvents>();
     const controller = new WalletController(options, network, emitter);
 
     this.options = options;

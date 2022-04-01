@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter as NEventEmitter } from "events";
 
 export interface Subscription {
   remove: () => void;
@@ -21,10 +21,10 @@ export interface Emitter<Events extends Record<string, unknown>> {
   ): void;
 }
 
-export class EventHandler<Events extends Record<string, unknown>>
+export class EventEmitter<Events extends Record<string, unknown>>
   implements Emitter<Events>
 {
-  private emitter = new EventEmitter();
+  private emitter = new NEventEmitter();
 
   on<Event extends keyof Events>(
     eventName: Event,
@@ -48,4 +48,3 @@ export class EventHandler<Events extends Record<string, unknown>>
     this.emitter.emit(eventName as string, event);
   }
 }
-

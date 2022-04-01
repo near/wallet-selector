@@ -1,15 +1,10 @@
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import { Emitter } from "@near-wallet-selector/utils";
 
-import { ProviderService } from "../services/provider/ProviderService";
 import { updateState } from "../State";
-import { Logger } from "../services/logging.service";
-import { PersistentStorage } from "../services/persistent-storage.service";
-import { Action } from "../../../wallet/src/lib/actions";
-import {
-  Options,
-  NetworkConfiguration,
-} from "../../../wallet/src/lib/interfaces";
+import { Provider, Logger, PersistentStorage, Emitter } from "../services";
+import { Action } from "./actions";
+import { Options } from "../Options";
+import { NetworkConfiguration } from "../network";
 
 export interface HardwareWalletSignInParams {
   accountId: string;
@@ -93,7 +88,7 @@ export type WalletType = Wallet["type"];
 export interface WalletOptions {
   options: Options;
   network: NetworkConfiguration;
-  provider: ProviderService;
+  provider: Provider;
   emitter: Emitter<WalletEvents>;
   logger: Logger;
   storage: PersistentStorage;

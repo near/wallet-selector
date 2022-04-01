@@ -1,12 +1,9 @@
 import { Options } from "./Options";
-import {
-  LOCAL_STORAGE_SELECTED_WALLET_ID,
-  Emitter,
-} from "@near-wallet-selector/utils";
-import { logger, ProviderService, storage } from "./services";
+import { logger, storage, Provider, Emitter } from "./services";
 import { Wallet, WalletEvents } from "./wallet/wallet";
 import { NetworkConfiguration } from "./network";
 import { getState, updateState } from "./State";
+import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 
 export interface SignInParams {
   walletId: Wallet["id"];
@@ -17,7 +14,7 @@ export interface SignInParams {
 class WalletController {
   private options: Options;
   private network: NetworkConfiguration;
-  private provider: ProviderService;
+  private provider: Provider;
   private emitter: Emitter<WalletEvents>;
 
   private wallets: Array<Wallet>;
@@ -29,7 +26,7 @@ class WalletController {
   ) {
     this.options = options;
     this.network = network;
-    this.provider = new ProviderService(network.nodeUrl);
+    this.provider = new Provider(network.nodeUrl);
     this.emitter = emitter;
 
     this.wallets = [];

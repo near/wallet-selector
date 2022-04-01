@@ -1,4 +1,4 @@
-import { PACKAGE_NAME } from "@near-wallet-selector/utils";
+import { PACKAGE_NAME } from "../../constants";
 
 export class PersistentStorage {
   private static instances = new Map<string, PersistentStorage>();
