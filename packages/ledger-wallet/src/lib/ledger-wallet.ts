@@ -276,6 +276,10 @@ export function setupLedgerWallet({
 
         return provider.sendTransaction(signedTx);
       },
+
+      async signAndSendTransactions() {
+        throw new Error("Not implemented");
+      },
     };
   };
 }

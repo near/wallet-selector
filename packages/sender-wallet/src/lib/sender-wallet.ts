@@ -206,6 +206,10 @@ export function setupSenderWallet({
             return res.response[0];
           });
       },
+
+      async signAndSendTransactions() {
+        throw new Error("Not implemented");
+      },
     };
   };
 }

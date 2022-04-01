@@ -195,6 +195,10 @@ export function setupMathWallet({
 
         return provider.sendTransaction(signedTx);
       },
+
+      async signAndSendTransactions() {
+        throw new Error("Not implemented");
+      },
     };
   };
 }
