@@ -1,6 +1,6 @@
 # @near-wallet-selector/wallet-connect
 
-This is the WalletConnect package for NEAR Wallet Selector.
+This is the [WalletConnect](https://walletconnect.com/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 

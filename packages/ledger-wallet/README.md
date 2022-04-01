@@ -1,6 +1,6 @@
 # @near-wallet-selector/ledger-wallet
 
-This is the Ledger Wallet package for NEAR Wallet Selector.
+This is the [Ledger Wallet](https://www.ledger.com/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 

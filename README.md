@@ -2,11 +2,11 @@
 
 The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
-- [NEAR Wallet](https://wallet.near.org/) - Web wallet.
-- [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) - Browser extension wallet.
-- [Math Wallet](https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc) - Browser extension wallet.
-- [Ledger](https://www.ledger.com/) - Hardware wallet.
-- [WalletConnect](https://walletconnect.com/) - Bridge wallet.
+- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
+- [Sender Wallet](https://www.npmjs.com/package/@near-wallet-selector/sender-wallet) - Browser extension wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
+- [Ledger Wallet](https://www.npmjs.com/package/@near-wallet-selector/ledger-wallet) - Hardware wallet.
+- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
 ## Preview
 
@@ -16,7 +16,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 ## Installation and Usage
 
-The easiest way to use `near-wallet-selector` is to install it from the NPM registry:
+The easiest way to use NEAR Wallet Selector is to install the [`core`](https://www.npmjs.com/package/@near-wallet-selector/core) package from the NPM registry:
 
 ```bash
 # Using Yarn

@@ -1,6 +1,6 @@
 # @near-wallet-selector/sender-wallet
 
-This is the Sender Wallet package for NEAR Wallet Selector.
+This is the [Sender Wallet](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
