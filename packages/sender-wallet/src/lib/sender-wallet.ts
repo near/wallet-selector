@@ -181,15 +181,7 @@ export function setupSenderWallet({
         return getAccounts();
       },
 
-      async signAndSendTransaction({
-        signerId,
-        receiverId,
-        actions,
-      }: {
-        signerId: string;
-        receiverId: string;
-        actions: Array<Action>;
-      }) {
+      async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("SenderWallet:signAndSendTransaction", {
           signerId,
           receiverId,
