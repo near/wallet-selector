@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import styles from "./Modal.styles";
-import { getState, State, updateState } from "../State";
+import { getState, State, updateState } from "../state";
 import { Options, Theme } from "../Options";
 import { NetworkConfiguration } from "../network";
 import { HardwareWallet, Wallet } from "../wallet";

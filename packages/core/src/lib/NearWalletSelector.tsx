@@ -6,7 +6,7 @@ import Modal from "./modal/Modal";
 import { Action, WalletEvents } from "./wallet";
 import { Options } from "./Options";
 import { NetworkConfiguration, resolveNetwork } from "./network";
-import { updateState } from "./State";
+import { updateState } from "./state";
 import { Emitter, EventEmitter } from "./services";
 import { MODAL_ELEMENT_ID } from "./constants";
 

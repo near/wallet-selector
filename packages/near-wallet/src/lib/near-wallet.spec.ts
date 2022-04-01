@@ -12,7 +12,7 @@ import {
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { getNetwork, resolveNetwork } from "../../../core/src/lib/network";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { updateState } from "../../../core/src/lib/State";
+import { updateState } from "../../../core/src/lib/state";
 
 const createNearWallet = () => {
   const walletConnection = mock<WalletConnection>();

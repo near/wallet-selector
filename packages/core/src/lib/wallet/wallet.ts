@@ -1,6 +1,6 @@
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-import { updateState } from "../State";
+import { updateState } from "../state";
 import { Provider, Logger, PersistentStorage, Emitter } from "../services";
 import { Action } from "./actions";
 import { Options } from "../Options";

@@ -1,8 +1,8 @@
 import { Options } from "./Options";
 import { logger, storage, Provider, Emitter } from "./services";
-import { Wallet, WalletEvents } from "./wallet/wallet";
+import { Wallet, WalletEvents } from "./wallet";
 import { NetworkConfiguration } from "./network";
-import { getState, updateState } from "./State";
+import { getState, updateState } from "./state";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 
 export interface SignInParams {
