@@ -1,12 +1,15 @@
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-
-import { ProviderService } from "./services/provider/ProviderService";
-import { updateState } from "./state/State";
 import { Emitter } from "@near-wallet-selector/utils";
-import { Logger } from "./services/logging.service";
-import { PersistentStorage } from "./services/persistent-storage.service";
-import { Action } from "./actions";
-import { Options, NetworkConfiguration } from "./interfaces";
+
+import { ProviderService } from "../services/provider/ProviderService";
+import { updateState } from "../State";
+import { Logger } from "../services/logging.service";
+import { PersistentStorage } from "../services/persistent-storage.service";
+import { Action } from "../../../wallet/src/lib/actions";
+import {
+  Options,
+  NetworkConfiguration,
+} from "../../../wallet/src/lib/interfaces";
 
 export interface HardwareWalletSignInParams {
   accountId: string;

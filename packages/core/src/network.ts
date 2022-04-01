@@ -1,4 +1,4 @@
-import { NetworkId } from "../Options";
+import { NetworkId } from "./Options";
 
 export interface NetworkConfiguration {
   networkId: string;

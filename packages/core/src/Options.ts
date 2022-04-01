@@ -1,5 +1,5 @@
-import { NetworkConfiguration } from "./network/network";
-import { WalletModule } from "../wallet";
+import { NetworkConfiguration } from "./network";
+import { WalletModule } from "./wallet/wallet";
 export type NetworkId = "mainnet" | "testnet" | "betanet";
 export type Theme = "dark" | "light" | "auto";
 

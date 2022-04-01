@@ -1,3 +1,3 @@
-import NearWalletSelector from "./core/NearWalletSelector";
+import NearWalletSelector from "./NearWalletSelector";
 
 export default NearWalletSelector;

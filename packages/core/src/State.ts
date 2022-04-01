@@ -1,4 +1,4 @@
-import { storage } from "../services/persistent-storage.service";
+import { storage } from "./services";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "@near-wallet-selector/utils";
 
 declare global {
@@ -51,4 +51,23 @@ export const updateState = (func: (prevState: State) => State) => {
 
 export const getState = () => {
   return state.current;
+};
+
+export const setSelectedWalletId = (walletId: string | null) => {
+  if (walletId) {
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
+
+    updateState((prevState) => ({
+      ...prevState,
+      showModal: false,
+      selectedWalletId: walletId,
+    }));
+  } else {
+    storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+
+    updateState((prevState) => ({
+      ...prevState,
+      selectedWalletId: null,
+    }));
+  }
 };

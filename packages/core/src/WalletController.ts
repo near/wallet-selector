@@ -1,18 +1,12 @@
-import {
-  getState,
-  updateState,
-  ProviderService,
-  storage,
-  logger,
-  NetworkConfiguration,
-  Options,
-} from "@near-wallet-selector/wallet";
-
-import { Wallet, WalletEvents } from "@near-wallet-selector/wallet";
+import { Options } from "./Options";
 import {
   LOCAL_STORAGE_SELECTED_WALLET_ID,
   Emitter,
 } from "@near-wallet-selector/utils";
+import { logger, ProviderService, storage } from "./services";
+import { Wallet, WalletEvents } from "./wallet/wallet";
+import { NetworkConfiguration } from "./network";
+import { getState, updateState } from "./State";
 
 export interface SignInParams {
   walletId: Wallet["id"];

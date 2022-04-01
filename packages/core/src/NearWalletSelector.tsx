@@ -1,22 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-import WalletController, {
-  SignInParams,
-} from "../controllers/WalletController";
-import Modal from "../modal/Modal";
 import {
   Emitter,
   EventHandler,
   MODAL_ELEMENT_ID,
 } from "@near-wallet-selector/utils";
-import { updateState, WalletEvents } from "@near-wallet-selector/wallet";
-import {
-  Action,
-  NetworkConfiguration,
-  resolveNetwork,
-  Options,
-} from "@near-wallet-selector/wallet";
+
+import WalletController, { SignInParams } from "./WalletController";
+import Modal from "./modal/Modal";
+import { Action } from "./wallet/actions";
+import { Options } from "./Options";
+import { WalletEvents } from "./wallet/wallet";
+import { NetworkConfiguration, resolveNetwork } from "./network";
+import { updateState } from "./State";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
