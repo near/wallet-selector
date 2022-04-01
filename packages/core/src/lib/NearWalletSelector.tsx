@@ -3,17 +3,22 @@ import ReactDOM from "react-dom";
 
 import WalletController, { SignInParams } from "./WalletController";
 import Modal from "./modal/Modal";
-import { Action, WalletEvents } from "./wallet";
+import { Action, Transaction, WalletEvents } from "./wallet";
 import { Options } from "./Options";
 import { NetworkConfiguration, resolveNetwork } from "./network";
 import { updateState } from "./state";
 import { Emitter, EventEmitter } from "./services";
 import { MODAL_ELEMENT_ID } from "./constants";
+import { Optional } from "./Optional";
 
 interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
   actions: Array<Action>;
+}
+
+interface SignAndSendTransactionsParams {
+  transactions: Array<Optional<Transaction, "signerId">>;
 }
 
 export default class NearWalletSelector {
@@ -134,6 +139,35 @@ export default class NearWalletSelector {
       signerId: signerId || accounts[0].accountId,
       receiverId: receiverId || this.getContractId(),
       actions,
+    });
+  }
+
+  async signAndSendTransactions({
+    transactions,
+  }: SignAndSendTransactionsParams) {
+    const wallet = this.controller.getSelectedWallet();
+    const accounts = await this.getAccounts();
+
+    if (!wallet) {
+      throw new Error("Wallet not selected");
+    }
+
+    if (!accounts.length) {
+      throw new Error("No accounts available for signing");
+    }
+
+    return wallet.signAndSendTransactions({
+      transactions: transactions.map(({ signerId, receiverId, actions }) => {
+        if (signerId && !accounts.some((x) => x.accountId === signerId)) {
+          throw new Error("Invalid signerId");
+        }
+
+        return {
+          signerId: signerId || accounts[0].accountId,
+          receiverId,
+          actions,
+        };
+      }),
     });
   }
 }
