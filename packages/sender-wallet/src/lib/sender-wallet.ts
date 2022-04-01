@@ -1,8 +1,13 @@
 import isMobile from "is-mobile";
+import {
+  Action,
+  FunctionCallAction,
+  InjectedWallet,
+  WalletModule,
+  waitFor,
+} from "@near-wallet-selector/core";
 
-import { InjectedSenderWallet } from "./injected-sender-wallet";
-import { Action, FunctionCallAction, State, WalletOptions, InjectedWallet, WalletModule } from "@near-wallet-selector/wallet";
-import { waitFor } from "@near-wallet-selector/utils";
+import { InjectedSenderWallet } from "./injected-sender-wallet";
 
 declare global {
   interface Window {
@@ -15,7 +20,7 @@ export interface SenderWalletParams {
 }
 
 export function setupSenderWallet({
-  iconPath
+  iconPath,
 }: SenderWalletParams = {}): WalletModule<InjectedWallet> {
   return function SenderWallet({
     options,
@@ -23,7 +28,7 @@ export function setupSenderWallet({
     emitter,
     logger,
     updateState,
-  }: WalletOptions) {
+  }) {
     let wallet: InjectedSenderWallet;
 
     const getAccounts = () => {
@@ -69,7 +74,7 @@ export function setupSenderWallet({
       type: "injected",
       name: "Sender Wallet",
       description: null,
-      iconUrl: iconPath || '/assets/sender-wallet-icon.png',
+      iconUrl: iconPath || "/assets/sender-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
@@ -108,7 +113,7 @@ export function setupSenderWallet({
 
         wallet.on("rpcChanged", (response) => {
           if (network.networkId !== response.rpc.networkId) {
-            updateState((prevState: State) => ({
+            updateState((prevState) => ({
               ...prevState,
               showModal: true,
               showWalletOptions: false,
@@ -120,7 +125,7 @@ export function setupSenderWallet({
 
       async signIn() {
         if (!(await isInstalled())) {
-          return updateState((prevState: State) => ({
+          return updateState((prevState) => ({
             ...prevState,
             showWalletOptions: false,
             showWalletNotInstalled: this.id,
@@ -140,7 +145,7 @@ export function setupSenderWallet({
           throw new Error("Failed to sign in");
         }
 
-        updateState((prevState: State) => ({
+        updateState((prevState) => ({
           ...prevState,
           showModal: false,
           selectedWalletId: this.id,
@@ -162,7 +167,7 @@ export function setupSenderWallet({
           throw new Error("Failed to sign out");
         }
 
-        updateState((prevState: State) => ({
+        updateState((prevState) => ({
           ...prevState,
           selectedWalletId: null,
         }));
@@ -176,7 +181,15 @@ export function setupSenderWallet({
         return getAccounts();
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }: { signerId: string, receiverId: string, actions: Array<Action> }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId,
+        actions,
+      }: {
+        signerId: string;
+        receiverId: string;
+        actions: Array<Action>;
+      }) {
         logger.log("SenderWallet:signAndSendTransaction", {
           signerId,
           receiverId,

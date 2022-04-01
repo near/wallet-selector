@@ -1,8 +1,9 @@
 import { WalletConnection, connect, keyStores } from "near-api-js";
-
-import { transformActions } from "@near-wallet-selector/wallet";
-import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "@near-wallet-selector/utils";
-import { WalletModule, BrowserWallet } from "@near-wallet-selector/wallet";
+import {
+  WalletModule,
+  BrowserWallet,
+  transformActions,
+} from "@near-wallet-selector/core";
 
 export interface NearWalletParams {
   walletUrl?: string;
@@ -11,7 +12,7 @@ export interface NearWalletParams {
 
 export function setupNearWallet({
   walletUrl,
-  iconPath
+  iconPath,
 }: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({
     options,
@@ -57,7 +58,7 @@ export function setupNearWallet({
       type: "browser",
       name: "NEAR Wallet",
       description: null,
-      iconUrl: iconPath || '/assets/near-wallet-icon.png',
+      iconUrl: iconPath || "/assets/near-wallet-icon.png",
 
       isAvailable() {
         return true;
@@ -96,7 +97,8 @@ export function setupNearWallet({
           methodNames: options.methodNames,
         });
 
-        storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, this.id);
+        // TODO: Find better way to do this with exposing 'LOCAL_STORAGE_SELECTED_WALLET_ID' in core.
+        storage.setItem("selectedWalletId", this.id);
       },
 
       async signOut() {

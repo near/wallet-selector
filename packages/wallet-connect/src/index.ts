@@ -1,1 +1,1 @@
-export * from "./WalletConnect";
+export { setupWalletConnect, WalletConnectParams } from "./lib/wallet-connect";

@@ -1,1 +1,1 @@
-export * from "./lib/math-wallet";
+export { setupMathWallet, MathWalletParams } from "./lib/math-wallet";
