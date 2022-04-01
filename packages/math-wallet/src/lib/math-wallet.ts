@@ -75,7 +75,7 @@ export function setupMathWallet({
       type: "injected",
       name: "Math Wallet",
       description: null,
-      iconUrl: iconPath || "/assets/math-wallet-icon.png",
+      iconUrl: iconPath || "./assets/math-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 

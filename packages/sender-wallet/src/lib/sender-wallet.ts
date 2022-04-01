@@ -74,7 +74,7 @@ export function setupSenderWallet({
       type: "injected",
       name: "Sender Wallet",
       description: null,
-      iconUrl: iconPath || "/assets/sender-wallet-icon.png",
+      iconUrl: iconPath || "./assets/sender-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
