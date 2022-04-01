@@ -233,8 +233,6 @@ export function setupSenderWallet({
             if (!res.response?.length) {
               throw new Error("Invalid response");
             }
-
-            return res.response;
           });
       },
     };

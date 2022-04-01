@@ -187,11 +187,9 @@ export function setupNearWallet({
       async signAndSendTransactions({ transactions }) {
         logger.log("NearWallet:signAndSendTransactions", { transactions });
 
-        return wallet
-          .requestSignTransactions({
-            transactions: await transformTransactions(transactions),
-          })
-          .then(() => []);
+        return wallet.requestSignTransactions({
+          transactions: await transformTransactions(transactions),
+        });
       },
     };
   };
