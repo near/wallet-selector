@@ -336,7 +336,8 @@ export default `
 
   .Modal-content .Modal-option-list li:first-child img,
   .Modal-content .Modal-option-list #math-wallet img,
-  .Modal-content .Modal-wallet-not-installed .math-wallet img {
+  .Modal-content .Modal-wallet-not-installed .math-wallet img,
+  .Modal-content .Modal-option-list #wallet-connect img {
     filter: invert(1);
   }
 

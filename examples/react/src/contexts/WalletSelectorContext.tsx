@@ -5,6 +5,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 interface WalletSelectorContextValue {
   selector: NearWalletSelector;
@@ -20,48 +21,59 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<NearWalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const syncAccountState = (
+    currentAccountId: string | null,
+    newAccounts: Array<AccountInfo>
+  ) => {
+    if (!newAccounts.length) {
+      localStorage.removeItem("accountId");
+      setAccountId(null);
+      setAccounts([]);
+
+      return;
+    }
+
+    const validAccountId =
+      currentAccountId &&
+      newAccounts.some((x) => x.accountId === currentAccountId);
+    const newAccountId = validAccountId
+      ? currentAccountId
+      : newAccounts[0].accountId;
+
+    localStorage.setItem("accountId", newAccountId);
+    setAccountId(newAccountId);
+    setAccounts(newAccounts);
+  };
 
   useEffect(() => {
     NearWalletSelector.init({
+      network: "testnet",
+      contractId: "guest-book.testnet",
       wallets: [
         setupNearWallet(),
         setupSenderWallet(),
         setupLedgerWallet(),
         setupMathWallet(),
+        setupWalletConnect({
+          projectId: "c4f79cc...",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
       ],
-      network: "testnet",
-      contractId: "guest-book.testnet",
     })
       .then((instance) => {
-        return instance.getAccounts().then(async (initAccounts) => {
-          let initAccountId = localStorage.getItem("accountId");
-
-          // Ensure the accountId in storage is still valid.
-          if (
-            initAccountId &&
-            !initAccounts.some((x) => x.accountId === initAccountId)
-          ) {
-            initAccountId = null;
-            localStorage.removeItem("accountId");
-          }
-
-          // Assume the first account if one hasn't been selected.
-          if (!initAccountId && initAccounts.length) {
-            initAccountId = initAccounts[0].accountId;
-            localStorage.setItem("accountId", initAccountId);
-          }
-
-          if (initAccountId) {
-            setAccountId(initAccountId);
-          }
+        return instance.getAccounts().then(async (newAccounts) => {
+          syncAccountState(localStorage.getItem("accountId"), newAccounts);
 
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore-next-line
           window.selector = instance;
           setSelector(instance);
-
-          setAccounts(initAccounts);
         });
       })
       .catch((err) => {
@@ -75,37 +87,14 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.on("signIn", () => {
-      setLoading(true);
-
-      selector.getAccounts().then(async (signInAccounts) => {
-        // Assume the first account.
-        const signInAccountId = signInAccounts[0].accountId;
-
-        localStorage.setItem("accountId", signInAccountId);
-        setAccountId(signInAccountId);
-        setAccounts(signInAccounts);
-        setLoading(false);
-      });
+    const subscription = selector.on("accountsChanged", (e) => {
+      syncAccountState(accountId, e.accounts);
     });
 
     return () => subscription.remove();
-  }, [selector]);
+  }, [selector, accountId]);
 
-  useEffect(() => {
-    if (!selector) {
-      return;
-    }
-
-    const subscription = selector.on("signOut", () => {
-      setAccountId(null);
-      setAccounts([]);
-    });
-
-    return () => subscription.remove();
-  }, [selector]);
-
-  if (!selector || loading) {
+  if (!selector) {
     return null;
   }
 

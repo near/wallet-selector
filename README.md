@@ -11,7 +11,7 @@ The NEAR Wallet Selector makes it easy for users to interact with your dApp. Thi
 
 [React](https://reactjs.org/), [Vue](https://vuejs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
 
-![Preview](./packages/near-wallet-selector/src/images/preview-img.PNG)
+![Preview](./images/preview-img.PNG)
 
 ## Installation and Usage
 

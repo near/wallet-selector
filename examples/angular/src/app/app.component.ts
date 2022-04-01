@@ -5,6 +5,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
 import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 declare global {
   interface Window {
@@ -26,44 +27,56 @@ export class AppComponent implements OnInit {
     await this.initialize();
   }
 
+  syncAccountState(
+    currentAccountId: string | null,
+    newAccounts: Array<AccountInfo>
+  ) {
+    if (!newAccounts.length) {
+      localStorage.removeItem("accountId");
+      this.accountId = null;
+      this.accounts = [];
+
+      return;
+    }
+
+    const validAccountId =
+      currentAccountId &&
+      newAccounts.some((x) => x.accountId === currentAccountId);
+    const newAccountId = validAccountId
+      ? currentAccountId
+      : newAccounts[0].accountId;
+
+    localStorage.setItem("accountId", newAccountId);
+    this.accountId = newAccountId;
+    this.accounts = newAccounts;
+  }
+
   async initialize() {
     NearWalletSelector.init({
+      network: "testnet",
+      contractId: "guest-book.testnet",
       wallets: [
         setupNearWallet(),
         setupSenderWallet(),
         setupLedgerWallet(),
         setupMathWallet(),
+        setupWalletConnect({
+          projectId: "d43d7d0e46eea5ee28e1f75e1131f984",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
       ],
-      network: "testnet",
-      contractId: "guest-book.testnet",
     })
       .then((instance) => {
-        return instance.getAccounts().then(async (initAccounts) => {
-          let initAccountId = localStorage.getItem("accountId");
-
-          // Ensure the accountId in storage is still valid.
-          if (
-            initAccountId &&
-            !initAccounts.some((x) => x.accountId === initAccountId)
-          ) {
-            initAccountId = null;
-            localStorage.removeItem("accountId");
-          }
-
-          // Assume the first account if one hasn't been selected.
-          if (!initAccountId && initAccounts.length) {
-            initAccountId = initAccounts[0].accountId;
-            localStorage.setItem("accountId", initAccountId);
-          }
-
-          if (initAccountId) {
-            this.accountId = initAccountId;
-          }
+        return instance.getAccounts().then(async (newAccounts) => {
+          this.syncAccountState(localStorage.getItem("accountId"), newAccounts);
 
           window.selector = instance;
           this.selector = instance;
-
-          this.accounts = initAccounts;
         });
       })
       .catch((err) => {

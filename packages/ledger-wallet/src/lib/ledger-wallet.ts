@@ -45,6 +45,16 @@ export function setupLedgerWallet({
 
     const debugMode = false;
 
+    const getAccounts = () => {
+      const accountId = state.authData?.accountId;
+
+      if (!accountId) {
+        return [];
+      }
+
+      return [{ accountId }];
+    };
+
     const signOut = async () => {
       for (const key in subscriptions) {
         subscriptions[key].remove();
@@ -61,7 +71,11 @@ export function setupLedgerWallet({
         ...prevState,
         selectedWalletId: null,
       }));
-      emitter.emit("signOut");
+
+      const accounts = getAccounts();
+      emitter.emit("accountsChanged", { accounts });
+      emitter.emit("signOut", { accounts });
+
       state.authData = null;
       client = null;
     };
@@ -196,7 +210,10 @@ export function setupLedgerWallet({
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       signOut,
@@ -206,13 +223,7 @@ export function setupLedgerWallet({
       },
 
       async getAccounts() {
-        const accountId = state.authData?.accountId;
-
-        if (!accountId) {
-          return [];
-        }
-
-        return [{ accountId }];
+        return getAccounts();
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

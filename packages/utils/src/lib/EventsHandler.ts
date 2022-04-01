@@ -1,41 +1,51 @@
 import { EventEmitter } from "events";
 
-// TODO: Move away from hardcoded event types in this util.
-export type EventList = "signIn" | "signOut";
-
-type EventMap = Record<EventList, unknown>;
-
-type EventKey = keyof EventMap;
-
 export interface Subscription {
   remove: () => void;
 }
 
-export interface Emitter<T extends EventMap = EventMap> {
-  on<K extends EventKey>(eventName: K, callback: () => void): Subscription;
+export interface Emitter<Events extends Record<string, unknown>> {
+  on<EventName extends keyof Events>(
+    eventName: EventName,
+    callback: (event: Events[EventName]) => void
+  ): Subscription;
 
-  off<K extends EventKey>(eventName: K, callback: () => void): void;
+  off<EventName extends keyof Events>(
+    eventName: EventName,
+    callback: (event: Events[EventName]) => void
+  ): void;
 
-  emit<K extends EventKey>(eventName: K, params?: T[K]): void;
+  emit<EventName extends keyof Events>(
+    eventName: EventName,
+    event: Events[EventName]
+  ): void;
 }
 
-export class EventHandler<T extends EventMap> implements Emitter<T> {
+export class EventHandler<Events extends Record<string, unknown>>
+  implements Emitter<Events>
+{
   private emitter = new EventEmitter();
 
-  on<K extends EventKey>(eventName: K, callback: () => void): Subscription {
-    this.emitter.on(eventName, callback);
+  on<Event extends keyof Events>(
+    eventName: Event,
+    callback: (event: Events[Event]) => void
+  ): Subscription {
+    this.emitter.on(eventName as string, callback);
 
     return {
-      remove: () => this.emitter.off(eventName, callback),
+      remove: () => this.emitter.off(eventName as string, callback),
     };
   }
 
-  off<K extends EventKey>(eventName: K, callback: () => void) {
-    this.emitter.off(eventName, callback);
+  off<Event extends keyof Events>(
+    eventName: Event,
+    callback: (event: Events[Event]) => void
+  ) {
+    this.emitter.off(eventName as string, callback);
   }
 
-  emit<K extends EventKey>(eventName: K, params?: T[K]) {
-    this.emitter.emit(eventName, params);
+  emit<Event extends keyof Events>(eventName: Event, event: Events[Event]) {
+    this.emitter.emit(eventName as string, event);
   }
 }
 
