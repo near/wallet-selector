@@ -2,15 +2,16 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
-    "angular": "examples/angular",
-    "angular-e2e": "examples/angular-e2e",
+    "wallet": "packages/wallet",
+    "utils": "packages/utils",
     "ledger-wallet": "packages/ledger-wallet",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",
-    "react": "examples/react",
-    "react-e2e": "examples/react-e2e",
     "sender-wallet": "packages/sender-wallet",
-    "utils": "packages/utils",
-    "wallet": "packages/wallet"
+    "wallet-connect": "packages/wallet-connect",
+    "angular": "examples/angular",
+    "angular-e2e": "examples/angular-e2e",
+    "react": "examples/react",
+    "react-e2e": "examples/react-e2e"
   }
 }

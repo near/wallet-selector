@@ -8,7 +8,7 @@ import {
   Options,
 } from "@near-wallet-selector/wallet";
 
-import { Wallet } from "@near-wallet-selector/wallet";
+import { Wallet, WalletEvents } from "@near-wallet-selector/wallet";
 import {
   LOCAL_STORAGE_SELECTED_WALLET_ID,
   Emitter,
@@ -24,14 +24,14 @@ class WalletController {
   private options: Options;
   private network: NetworkConfiguration;
   private provider: ProviderService;
-  private emitter: Emitter;
+  private emitter: Emitter<WalletEvents>;
 
   private wallets: Array<Wallet>;
 
   constructor(
     options: Options,
     network: NetworkConfiguration,
-    emitter: Emitter
+    emitter: Emitter<WalletEvents>
   ) {
     this.options = options;
     this.network = network;

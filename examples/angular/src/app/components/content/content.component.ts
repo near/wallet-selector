@@ -25,7 +25,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   account: Account | null;
   messages: Array<Message>;
-  subscriptions: Record<string, Subscription> = {};
+  subscription?: Subscription;
 
   async ngOnInit() {
     const [messages, account] = await Promise.all([
@@ -34,7 +34,6 @@ export class ContentComponent implements OnInit, OnDestroy {
     ]);
 
     this.account = account;
-    console.log(this.account);
     this.messages = messages;
 
     this.subscribeToEvents();
@@ -102,32 +101,48 @@ export class ContentComponent implements OnInit, OnDestroy {
 
     this.accountId = nextAccountId;
     alert("Switched account to " + nextAccountId);
+
+    this.account = null;
+    this.getAccount().then((account) => {
+      this.account = account;
+    });
   }
 
-  subscribeToEvents() {
-    if (!this.selector) {
+  syncAccountState(
+    currentAccountId: string | null,
+    newAccounts: Array<AccountInfo>
+  ) {
+    if (!newAccounts.length) {
+      localStorage.removeItem("accountId");
+      this.accountId = null;
+      this.accounts = [];
+
       return;
     }
 
-    this.subscriptions["signIn"] = this.selector.on("signIn", () => {
-      console.log("'signIn' event triggered!");
-      this.selector.getAccounts().then(async (signInAccounts) => {
-        // Assume the first account.
-        const signInAccountId = signInAccounts[0].accountId;
+    const validAccountId =
+      currentAccountId &&
+      newAccounts.some((x) => x.accountId === currentAccountId);
+    const newAccountId = validAccountId
+      ? currentAccountId
+      : newAccounts[0].accountId;
 
-        localStorage.setItem("accountId", signInAccountId);
-        this.accountId = signInAccountId;
-        this.accounts = signInAccounts;
+    localStorage.setItem("accountId", newAccountId);
+    this.accountId = newAccountId;
+    this.accounts = newAccounts;
+  }
+
+  subscribeToEvents() {
+    this.subscription = this.selector.on("accountsChanged", (e) => {
+      const prevAccountId = this.accountId;
+
+      this.syncAccountState(this.accountId, e.accounts);
+
+      if (prevAccountId !== this.accountId) {
         this.getAccount().then((account) => {
           this.account = account;
         });
-      });
-    });
-
-    this.subscriptions["signOut"] = this.selector.on("signOut", () => {
-      console.log("'signOut' event triggered!");
-      this.account = null;
-      this.accounts = [];
+      }
     });
   }
 
@@ -185,10 +200,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    for (const key in this.subscriptions) {
-      const subscription = this.subscriptions[key];
-
-      subscription.remove();
-    }
+    this.subscription?.remove();
   }
 }

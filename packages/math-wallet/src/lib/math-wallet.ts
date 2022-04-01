@@ -27,6 +27,19 @@ export function setupMathWallet({
   }) {
     let wallet: InjectedMathWallet;
 
+    const getAccounts = () => {
+      if (!wallet.signer.account) {
+        return [];
+      }
+
+      const accountId =
+        "accountId" in wallet.signer.account
+          ? wallet.signer.account.accountId
+          : wallet.signer.account.address;
+
+      return [{ accountId }];
+    };
+
     const isInstalled = async () => {
       try {
         return await waitFor(() => !!window.nearWalletApi, {});
@@ -49,6 +62,7 @@ export function setupMathWallet({
       if ("accountId" in wallet.signer.account) {
         return wallet.signer.account;
       }
+
       return wallet.login({ contractId: options.contractId });
     };
 
@@ -107,7 +121,10 @@ export function setupMathWallet({
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       async isSignedIn() {
@@ -127,17 +144,14 @@ export function setupMathWallet({
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       async getAccounts() {
-        const signerAccount = await getSignerAccount();
-
-        if (!signerAccount) {
-          return [];
-        }
-
-        return [{ accountId: signerAccount.accountId }];
+        return getAccounts();
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

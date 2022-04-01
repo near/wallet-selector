@@ -16,7 +16,7 @@
   ></near-wallet-selector-messages>
 </ng-container>
 
-<ng-container *ngIf="!account">
+<ng-container *ngIf="!accountId">
   <button (click)="signIn()">Log In</button>
   <near-wallet-selector-sign-in></near-wallet-selector-sign-in>
 </ng-container>

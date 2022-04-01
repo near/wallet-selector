@@ -24,6 +24,16 @@ export function setupNearWallet({
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
 
+    const getAccounts = () => {
+      const accountId: string | null = wallet.getAccountId();
+
+      if (!accountId) {
+        return [];
+      }
+
+      return [{ accountId }];
+    };
+
     const getWalletUrl = () => {
       if (walletUrl) {
         return walletUrl;
@@ -101,7 +111,10 @@ export function setupNearWallet({
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       async isSignedIn() {
@@ -113,13 +126,7 @@ export function setupNearWallet({
       },
 
       async getAccounts() {
-        const accountId: string | null = wallet.getAccountId();
-
-        if (!accountId) {
-          return [];
-        }
-
-        return [{ accountId }];
+        return getAccounts();
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

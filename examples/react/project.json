@@ -37,6 +37,11 @@
             "glob": "**/*",
             "input": "packages/math-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/react/src/styles.scss"],

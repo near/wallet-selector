@@ -26,6 +26,16 @@ export function setupSenderWallet({
   }: WalletOptions) {
     let wallet: InjectedSenderWallet;
 
+    const getAccounts = () => {
+      const accountId = wallet.getAccountId();
+
+      if (!accountId) {
+        return [];
+      }
+
+      return [{ accountId }];
+    };
+
     const isInstalled = async () => {
       try {
         return await waitFor(() => !!window.near?.isSender, {});
@@ -135,7 +145,10 @@ export function setupSenderWallet({
           showModal: false,
           selectedWalletId: this.id,
         }));
-        emitter.emit("signIn");
+
+        const accounts = getAccounts();
+        emitter.emit("signIn", { accounts });
+        emitter.emit("accountsChanged", { accounts });
       },
 
       async isSignedIn() {
@@ -153,17 +166,14 @@ export function setupSenderWallet({
           ...prevState,
           selectedWalletId: null,
         }));
-        emitter.emit("signOut");
+
+        const accounts = getAccounts();
+        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("signOut", { accounts });
       },
 
       async getAccounts() {
-        const accountId = wallet.getAccountId();
-
-        if (!accountId) {
-          return [];
-        }
-
-        return [{ accountId }];
+        return getAccounts();
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }: { signerId: string, receiverId: string, actions: Array<Action> }) {

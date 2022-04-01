@@ -6,7 +6,7 @@ describe("emit", () => {
     const event = "signIn";
     const handler = jest.fn();
     emitter.on(event, handler);
-    emitter.emit(event);
+    emitter.emit(event, { accounts: [] });
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
@@ -44,7 +44,7 @@ describe("off", () => {
     const handler = jest.fn();
     emitter.on(event, handler);
     emitter.off(event, handler);
-    emitter.emit(event);
+    emitter.emit(event, { accounts: [] });
     expect(handler).not.toHaveBeenCalled();
   });
 });

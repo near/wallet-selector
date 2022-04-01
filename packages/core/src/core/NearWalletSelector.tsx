@@ -7,11 +7,10 @@ import WalletController, {
 import Modal from "../modal/Modal";
 import {
   Emitter,
-  EventList,
   EventHandler,
   MODAL_ELEMENT_ID,
 } from "@near-wallet-selector/utils";
-import { updateState } from "@near-wallet-selector/wallet";
+import { updateState, WalletEvents } from "@near-wallet-selector/wallet";
 import {
   Action,
   NetworkConfiguration,
@@ -27,7 +26,7 @@ interface SignAndSendTransactionParams {
 
 export default class NearWalletSelector {
   private options: Options;
-  private emitter: Emitter;
+  private emitter: Emitter<WalletEvents>;
   private controller: WalletController;
 
   network: NetworkConfiguration;
@@ -43,7 +42,7 @@ export default class NearWalletSelector {
 
   private constructor(options: Options) {
     const network = resolveNetwork(options.network);
-    const emitter = new EventHandler();
+    const emitter = new EventHandler<WalletEvents>();
     const controller = new WalletController(options, network, emitter);
 
     this.options = options;
@@ -101,12 +100,18 @@ export default class NearWalletSelector {
     return this.controller.getAccounts();
   }
 
-  on(event: EventList, callback: () => void) {
-    return this.emitter.on(event, callback);
+  on<EventName extends keyof WalletEvents>(
+    eventName: EventName,
+    callback: (event: WalletEvents[EventName]) => void
+  ) {
+    return this.emitter.on(eventName, callback);
   }
 
-  off(event: EventList, callback: () => void) {
-    this.emitter.off(event, callback);
+  off<EventName extends keyof WalletEvents>(
+    eventName: EventName,
+    callback: (event: WalletEvents[EventName]) => void
+  ) {
+    this.emitter.off(eventName, callback);
   }
 
   getContractId() {
