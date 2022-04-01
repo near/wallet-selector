@@ -1,6 +1,10 @@
 import isMobile from "is-mobile";
 
-import { transformActions, InjectedWallet, WalletModule } from "@near-wallet-selector/wallet";
+import {
+  transformActions,
+  InjectedWallet,
+  WalletModule,
+} from "@near-wallet-selector/wallet";
 import { InjectedMathWallet, SignedInAccount } from "./injected-math-wallet";
 import { transactions, utils } from "near-api-js";
 import { waitFor } from "@near-wallet-selector/utils";
@@ -16,7 +20,7 @@ export interface MathWalletParams {
 }
 
 export function setupMathWallet({
-  iconPath
+  iconPath,
 }: MathWalletParams = {}): WalletModule<InjectedWallet> {
   return function MathWallet({
     options,
@@ -71,7 +75,7 @@ export function setupMathWallet({
       type: "injected",
       name: "Math Wallet",
       description: null,
-      iconUrl: iconPath || '/assets/math-wallet-icon.png',
+      iconUrl: iconPath || "./assets/math-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 

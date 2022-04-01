@@ -151,7 +151,7 @@ export function setupLedgerWallet({
       type: "hardware",
       name: "Ledger Wallet",
       description: null,
-      iconUrl: iconPath || "/assets/ledger-wallet-icon.png",
+      iconUrl: iconPath || "./assets/ledger-wallet-icon.png",
 
       isAvailable() {
         if (!LedgerClient.isSupported()) {
