@@ -10,10 +10,9 @@ import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";
 import { Account } from "../../interfaces/account";
 
-const { parseNearAmount } = utils.format;
-
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 @Component({
   selector: "near-wallet-selector-content",
@@ -110,6 +109,44 @@ export class ContentComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSendMultipleTransactions() {
+    this.selector.signAndSendTransactions({
+      transactions: [
+        {
+          // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
+          receiverId: "dev-1648806797290-14624341764914",
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "increment",
+                args: {},
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+        {
+          receiverId: this.selector.getContractId(),
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: "Hello World!" },
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  }
+
   syncAccountState(
     currentAccountId: string | null,
     newAccounts: Array<AccountInfo>
@@ -167,9 +204,8 @@ export class ContentComponent implements OnInit, OnDestroy {
               methodName: "addMessage",
               args: { text: message.value },
               gas: BOATLOAD_OF_GAS as string,
-              deposit: utils.format.parseNearAmount(
-                donation.value || "0"
-              ) as string,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              deposit: utils.format.parseNearAmount(donation.value || "0")!,
             },
           },
         ],
