@@ -26,15 +26,54 @@ yarn add @near-wallet-selector/core
 npm install @near-wallet-selector/core
 ```
 
-Then use it in your dApp:
+Next, you'll need to install the wallets you want to support:
+
+```bash
+# Using Yarn
+yarn add \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/sender-wallet \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/ledger-wallet \
+  @near-wallet-selector/wallet-connect
+
+# Using NPM.
+npm install \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/sender-wallet \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/ledger-wallet \
+  @near-wallet-selector/wallet-connect
+```
+
+Then them in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
+import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const selector = await NearWalletSelector.init({
-  wallets: ["near-wallet", "sender-wallet", "ledger-wallet", "math-wallet"],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [
+    setupNearWallet(),
+    setupSenderWallet(),
+    setupLedgerWallet(),
+    setupMathWallet(),
+    setupWalletConnect({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    }),
+  ],
 });
 ```
 
