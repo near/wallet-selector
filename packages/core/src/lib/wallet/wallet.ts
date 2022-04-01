@@ -64,9 +64,7 @@ interface BaseWallet {
   ): Promise<providers.FinalExecutionOutcome>;
 
   // Sings a list of transactions before sending them via an RPC endpoint.
-  signAndSendTransactions(
-    params: SignAndSendTransactionsParams
-  ): Promise<Array<providers.FinalExecutionOutcome>>;
+  signAndSendTransactions(params: SignAndSendTransactionsParams): Promise<void>;
 }
 
 export interface BrowserWallet extends BaseWallet {
