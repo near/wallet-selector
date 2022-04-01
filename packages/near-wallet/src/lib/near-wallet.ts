@@ -97,7 +97,7 @@ export function setupNearWallet({
           methodNames: options.methodNames,
         });
 
-        // TODO: Find better way to do this with exposing 'LOCAL_STORAGE_SELECTED_WALLET_ID' in core.
+        // TODO: Find better way to do this without exposing 'LOCAL_STORAGE_SELECTED_WALLET_ID' in core.
         storage.setItem("selectedWalletId", this.id);
       },
 
