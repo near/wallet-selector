@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "ledger-wallet",
+  displayName: "ledger",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {

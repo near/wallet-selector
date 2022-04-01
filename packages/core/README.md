@@ -129,7 +129,7 @@ await selector.signIn({
   walletId: "near-wallet",
 });
 
-// Sender Wallet.
+// Sender.
 await selector.signIn({
   walletId: "sender",
 });
@@ -139,11 +139,16 @@ await selector.signIn({
   walletId: "math-wallet",
 });
 
-// Ledger Wallet
+// Ledger
 await selector.signIn({
   walletId: "ledger",
   accountId: "account-id.testnet",
   derviationPath: "44'/397'/0'/0'/1'",
+});
+
+// WalletConnect.
+await selector.signIn({
+  walletId: "wallet-connect",
 });
 ```
 
