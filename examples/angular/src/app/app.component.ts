@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
-import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
@@ -56,8 +56,8 @@ export class AppComponent implements OnInit {
       contractId: "guest-book.testnet",
       wallets: [
         setupNearWallet(),
-        setupSenderWallet(),
-        setupLedgerWallet(),
+        setupSender(),
+        setupLedger(),
         setupMathWallet(),
         setupWalletConnect({
           projectId: "d43d7d0e46eea5ee28e1f75e1131f984",

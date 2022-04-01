@@ -24,22 +24,16 @@ interface LedgerWalletState {
   authData: AuthData | null;
 }
 
-export interface LedgerWalletParams {
+export interface LedgerParams {
   iconPath?: string;
 }
 
-export const LOCAL_STORAGE_AUTH_DATA = `ledger-wallet:authData`;
+export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 
-export function setupLedgerWallet({
+export function setupLedger({
   iconPath,
-}: LedgerWalletParams = {}): WalletModule<HardwareWallet> {
-  return function LedgerWallet({
-    provider,
-    emitter,
-    logger,
-    storage,
-    updateState,
-  }) {
+}: LedgerParams = {}): WalletModule<HardwareWallet> {
+  return function Ledger({ provider, emitter, logger, storage, updateState }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerWalletState = { authData: null };
@@ -148,11 +142,11 @@ export function setupLedgerWallet({
     };
 
     return {
-      id: "ledger-wallet",
+      id: "ledger",
       type: "hardware",
-      name: "Ledger Wallet",
+      name: "Ledger",
       description: null,
-      iconUrl: iconPath || "./assets/ledger-wallet-icon.png",
+      iconUrl: iconPath || "./assets/ledger-icon.png",
 
       isAvailable() {
         if (!LedgerClient.isSupported()) {

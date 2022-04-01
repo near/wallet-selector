@@ -8,25 +8,25 @@ The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/ledger-wallet
+yarn add @near-wallet-selector/ledger
 
 # Using NPM.
-npm install @near-wallet-selector/ledger-wallet
+npm install @near-wallet-selector/ledger
 ```
 
 Then use it in your dApp:
 
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
-import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 
-// Ledger Wallet for Wallet Selector can be setup without any params or it can take one optional param.
-const ledgerWallet = setupLedgerWallet({
+// Ledger for Wallet Selector can be setup without any params or it can take one optional param.
+const ledger = setupLedger({
   iconPath: "https://yourdomain.com/yourwallet-icon.png"
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [ledgerWallet],
+  wallets: [ledger],
   network: "testnet",
   contractId: "guest-book.testnet",
 });

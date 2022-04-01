@@ -3,7 +3,7 @@
 The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
 - [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
-- [Sender Wallet](https://www.npmjs.com/package/@near-wallet-selector/sender-wallet) - Browser extension wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Browser extension wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
@@ -32,17 +32,17 @@ Next, you'll need to install the wallets you want to support:
 # Using Yarn
 yarn add \
   @near-wallet-selector/near-wallet \
-  @near-wallet-selector/sender-wallet \
+  @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
-  @near-wallet-selector/ledger-wallet \
+  @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
 
 # Using NPM.
 npm install \
   @near-wallet-selector/near-wallet \
-  @near-wallet-selector/sender-wallet \
+  @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
-  @near-wallet-selector/ledger-wallet \
+  @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
 ```
 
@@ -51,9 +51,9 @@ Then them in your dApp:
 ```ts
 import NearWalletSelector from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupSenderWallet } from "@near-wallet-selector/sender-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedgerWallet } from "@near-wallet-selector/ledger-wallet";
+import { setupLedgerWallet } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const selector = await NearWalletSelector.init({
@@ -61,7 +61,7 @@ const selector = await NearWalletSelector.init({
   contractId: "guest-book.testnet",
   wallets: [
     setupNearWallet(),
-    setupSenderWallet(),
+    setupSender(),
     setupLedgerWallet(),
     setupMathWallet(),
     setupWalletConnect({

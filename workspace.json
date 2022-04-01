@@ -2,10 +2,10 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
-    "ledger-wallet": "packages/ledger-wallet",
+    "ledger": "packages/ledger-wallet",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",
-    "sender-wallet": "packages/sender-wallet",
+    "sender": "packages/sender-wallet",
     "wallet-connect": "packages/wallet-connect",
     "angular": "examples/angular",
     "angular-e2e": "examples/angular-e2e",
