@@ -1,6 +1,6 @@
 # @near-wallet-selector/math-wallet
 
-This is the Ledger Wallet package for NEAR Wallet Selector.
+This is the Math Wallet package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -26,7 +26,7 @@ const mathWallet = setupMathWallet({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [ledgerWallet],
+  wallets: [mathWallet],
   network: "testnet",
   contractId: "guest-book.testnet",
 });
