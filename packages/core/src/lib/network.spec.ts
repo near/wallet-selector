@@ -1,4 +1,4 @@
-import { NetworkId } from "@near-wallet-selector/wallet";
+import { NetworkId } from "@near-wallet-selector/core";
 import { getNetwork, NetworkConfiguration, resolveNetwork } from "./network";
 
 describe("getNetwork", () => {

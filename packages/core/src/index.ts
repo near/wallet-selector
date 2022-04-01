@@ -1,6 +1,6 @@
 import NearWalletSelector from "./lib/NearWalletSelector";
 
-export { Options } from "./lib/Options";
+export { NetworkId, Options } from "./lib/Options";
 export { NetworkConfiguration } from "./lib/network";
 export { Subscription } from "./lib/services";
 
