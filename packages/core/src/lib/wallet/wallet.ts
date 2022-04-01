@@ -1,10 +1,10 @@
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-
 import { updateState } from "../state";
 import { Provider, Logger, PersistentStorage, Emitter } from "../services";
+import { Transaction } from "./transactions";
 import { Action } from "./actions";
 import { Options } from "../Options";
 import { NetworkConfiguration } from "../network";
+import { providers } from "near-api-js";
 
 export interface HardwareWalletSignInParams {
   accountId: string;
@@ -17,6 +17,10 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
+export interface SignAndSendTransactionsParams {
+  transactions: Array<Transaction>;
+}
+
 export interface AccountInfo {
   accountId: string;
 }
@@ -27,7 +31,7 @@ export type WalletEvents = {
   accountsChanged: { accounts: Array<AccountInfo> };
 };
 
-interface BaseWallet {
+interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
   id: string;
   name: string;
   description: string | null;
@@ -56,10 +60,15 @@ interface BaseWallet {
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<FinalExecutionOutcome>;
+  ): Promise<ExecutionOutcome>;
+
+  // Sings a list of transactions before sending them via an RPC endpoint.
+  signAndSendTransactions(
+    params: SignAndSendTransactionsParams
+  ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
 }
 
-export interface BrowserWallet extends BaseWallet {
+export interface BrowserWallet extends BaseWallet<void> {
   type: "browser";
 }
 

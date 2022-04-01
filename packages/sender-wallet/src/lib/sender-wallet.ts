@@ -1,6 +1,7 @@
 import isMobile from "is-mobile";
 import {
   Action,
+  Transaction,
   FunctionCallAction,
   InjectedWallet,
   WalletModule,
@@ -67,6 +68,15 @@ export function setupSenderWallet({
       }
 
       return actions.map((x) => x.params);
+    };
+
+    const transformTransactions = (transactions: Array<Transaction>) => {
+      return transactions.map((transaction) => {
+        return {
+          receiverId: transaction.receiverId,
+          actions: transformActions(transaction.actions),
+        };
+      });
     };
 
     return {
@@ -204,6 +214,27 @@ export function setupSenderWallet({
             }
 
             return res.response[0];
+          });
+      },
+
+      async signAndSendTransactions({ transactions }) {
+        logger.log("SenderWallet:signAndSendTransactions", { transactions });
+
+        return wallet
+          .requestSignTransactions({
+            transactions: transformTransactions(transactions),
+          })
+          .then((res) => {
+            if (res.error) {
+              throw new Error(res.error);
+            }
+
+            // Shouldn't happen but avoids inconsistent responses.
+            if (!res.response?.length) {
+              throw new Error("Invalid response");
+            }
+
+            return res.response;
           });
       },
     };

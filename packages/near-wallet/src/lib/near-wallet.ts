@@ -1,7 +1,9 @@
-import { WalletConnection, connect, keyStores } from "near-api-js";
+import { WalletConnection, connect, keyStores, utils } from "near-api-js";
+import * as nearApi from "near-api-js";
 import {
   WalletModule,
   BrowserWallet,
+  Transaction,
   transformActions,
 } from "@near-wallet-selector/core";
 
@@ -51,6 +53,41 @@ export function setupNearWallet({
           // TODO: Throw once wallets are separate packages.
           return "https://wallet.testnet.near.org";
       }
+    };
+
+    const transformTransactions = async (transactions: Array<Transaction>) => {
+      const account = wallet.account();
+      const { networkId, signer, provider } = account.connection;
+
+      const localKey = await signer.getPublicKey(account.accountId, networkId);
+
+      return Promise.all(
+        transactions.map(async (transaction, index) => {
+          const actions = transformActions(transaction.actions);
+          const accessKey = await account.accessKeyForTransaction(
+            transaction.receiverId,
+            actions,
+            localKey
+          );
+
+          if (!accessKey) {
+            throw new Error(
+              `Failed to find matching key for transaction sent to ${transaction.receiverId}`
+            );
+          }
+
+          const block = await provider.block({ finality: "final" });
+
+          return nearApi.transactions.createTransaction(
+            account.accountId,
+            utils.PublicKey.from(accessKey.public_key),
+            transaction.receiverId,
+            accessKey.access_key.nonce + index + 1,
+            actions,
+            utils.serialize.base_decode(block.header.hash)
+          );
+        })
+      );
     };
 
     return {
@@ -140,10 +177,20 @@ export function setupNearWallet({
 
         const account = wallet.account();
 
-        // near-api-js marks this method as protected.
         return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
+        }).then(() => {
+          // Suppress response since transactions with deposits won't actually
+          // return FinalExecutionOutcome.
+        });
+      },
+
+      async signAndSendTransactions({ transactions }) {
+        logger.log("NearWallet:signAndSendTransactions", { transactions });
+
+        return wallet.requestSignTransactions({
+          transactions: await transformTransactions(transactions),
         });
       },
     };

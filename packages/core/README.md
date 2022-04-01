@@ -296,7 +296,7 @@ console.log(contractId); // "guest-book.testnet"
 
 **Returns**
 
-- `Promise<object>`: More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+- `Promise<void | object>`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
 
 **Description**
 
@@ -387,6 +387,47 @@ await selector.signAndSendTransaction({
       gas: "30000000000000",
       deposit: "10000000000000000000000",
     }
+  }]
+});
+```
+
+### `.signAndSendTransactions(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `transactions` (`Array<Transaction>`)
+    - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
+    - `receiverId` (`string`): Account ID to receive the transaction.
+    - `actions` (`Array<Action>`)
+      - `type` (`string`): Action type. See above for available values.
+      - `params` (`object?`): Parameters for the Action (if applicable).
+
+**Returns**
+
+- `Promise<void | Array<object>>`: Browser wallets won't return the transaction outcomes as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+
+**Description**
+
+Signs one or more transactions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
+
+Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+
+**Example**
+
+```ts
+await selector.signAndSendTransactions({
+  transactions: [{
+    receiverId: "guest-book.testnet",
+    actions: [{
+      type: "FunctionCall",
+      params: {
+        methodName: "addMessage",
+        args: { text: "Hello World!" },
+        gas: "30000000000000",
+        deposit: "10000000000000000000000",
+      }
+    }]
   }]
 });
 ```

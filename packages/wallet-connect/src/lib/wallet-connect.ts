@@ -200,6 +200,10 @@ export function setupWalletConnect({
           },
         });
       },
+
+      async signAndSendTransactions() {
+        throw new Error("Not implemented");
+      },
     };
   };
 }

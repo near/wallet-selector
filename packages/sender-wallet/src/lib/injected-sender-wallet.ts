@@ -77,6 +77,15 @@ export interface SignAndSendTransactionResponse {
   type: "sender-wallet-extensionResult";
 }
 
+export interface SignAndSendTransactionsResponse {
+  actionType: "DAPP/DAPP_POPUP_RESPONSE";
+  method: "signAndSendTransactions";
+  notificationId: number;
+  error?: string;
+  response?: Array<FinalExecutionOutcome>;
+  type: "sender-wallet-extensionResult";
+}
+
 export interface Transaction {
   receiverId: string;
   actions: Array<Action>;
@@ -111,8 +120,7 @@ export interface InjectedSenderWallet {
   signAndSendTransaction: (
     params: SignAndSendTransactionParams
   ) => Promise<SignAndSendTransactionResponse>;
-  // TODO: Determine return type.
   requestSignTransactions: (
     params: RequestSignTransactionsParams
-  ) => Promise<unknown>;
+  ) => Promise<SignAndSendTransactionsResponse>;
 }

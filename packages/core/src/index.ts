@@ -13,6 +13,7 @@ export {
   HardwareWallet,
   BridgeWallet,
   AccountInfo,
+  Transaction,
   Action,
   ActionType,
   CreateAccountAction,
