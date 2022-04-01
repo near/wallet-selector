@@ -1,11 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import NearWalletSelector from "@near-wallet-selector/core";
-import { AccountInfo } from "@near-wallet-selector/wallet";
-import { Subscription } from "@near-wallet-selector/utils";
 import { providers, utils } from "near-api-js";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
+import NearWalletSelector, {
+  AccountInfo,
+  Subscription,
+} from "@near-wallet-selector/core";
+
 import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
 import { Account } from "../../interfaces/account";
 
 const { parseNearAmount } = utils.format;

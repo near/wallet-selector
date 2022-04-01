@@ -1,13 +1,13 @@
+import { transactions, utils } from "near-api-js";
 import isMobile from "is-mobile";
-
 import {
-  transformActions,
   InjectedWallet,
   WalletModule,
-} from "@near-wallet-selector/wallet";
+  transformActions,
+  waitFor,
+} from "@near-wallet-selector/core";
+
 import { InjectedMathWallet, SignedInAccount } from "./injected-math-wallet";
-import { transactions, utils } from "near-api-js";
-import { waitFor } from "@near-wallet-selector/utils";
 
 declare global {
   interface Window {

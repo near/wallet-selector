@@ -1,14 +1,13 @@
 import { transactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
-
-import { LedgerClient, Subscription } from "./ledger-client";
-import { LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA } from "@near-wallet-selector/utils";
 import {
   HardwareWallet,
   WalletModule,
   transformActions,
-} from "@near-wallet-selector/wallet";
+} from "@near-wallet-selector/core";
+
+import { LedgerClient, Subscription } from "./ledger-client";
 
 interface AuthData {
   accountId: string;
@@ -28,6 +27,8 @@ interface LedgerWalletState {
 export interface LedgerWalletParams {
   iconPath?: string;
 }
+
+export const LOCAL_STORAGE_AUTH_DATA = `ledger-wallet:authData`;
 
 export function setupLedgerWallet({
   iconPath,
@@ -60,7 +61,7 @@ export function setupLedgerWallet({
         subscriptions[key].remove();
       }
 
-      storage.removeItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA);
+      storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
 
       // Only close if we've already connected.
       if (client) {
@@ -166,9 +167,7 @@ export function setupLedgerWallet({
       },
 
       async init() {
-        state.authData = storage.getItem<AuthData>(
-          LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA
-        );
+        state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
       },
 
       async signIn({ accountId, derivationPath }) {
@@ -201,7 +200,7 @@ export function setupLedgerWallet({
           publicKey,
         };
 
-        storage.setItem(LOCAL_STORAGE_LEDGER_WALLET_AUTH_DATA, authData);
+        storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
 
         state.authData = authData;
 

@@ -2,8 +2,6 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
-    "wallet": "packages/wallet",
-    "utils": "packages/utils",
     "ledger-wallet": "packages/ledger-wallet",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",
