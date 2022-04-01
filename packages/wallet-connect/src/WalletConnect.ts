@@ -99,7 +99,7 @@ export function setupWalletConnect({
       type: "bridge",
       name: "WalletConnect",
       description: null,
-      iconUrl: iconPath || "/assets/wallet-connect-icon.png",
+      iconUrl: iconPath || "./assets/wallet-connect-icon.png",
 
       isAvailable() {
         return true;

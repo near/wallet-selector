@@ -1,7 +1,14 @@
 import isMobile from "is-mobile";
 
-import { InjectedSenderWallet } from "./injected-sender-wallet";
-import { Action, FunctionCallAction, State, WalletOptions, InjectedWallet, WalletModule } from "@near-wallet-selector/wallet";
+import { InjectedSenderWallet } from "./injected-sender-wallet";
+import {
+  Action,
+  FunctionCallAction,
+  State,
+  WalletOptions,
+  InjectedWallet,
+  WalletModule,
+} from "@near-wallet-selector/wallet";
 import { waitFor } from "@near-wallet-selector/utils";
 
 declare global {
@@ -15,7 +22,7 @@ export interface SenderWalletParams {
 }
 
 export function setupSenderWallet({
-  iconPath
+  iconPath,
 }: SenderWalletParams = {}): WalletModule<InjectedWallet> {
   return function SenderWallet({
     options,
@@ -69,7 +76,7 @@ export function setupSenderWallet({
       type: "injected",
       name: "Sender Wallet",
       description: null,
-      iconUrl: iconPath || '/assets/sender-wallet-icon.png',
+      iconUrl: iconPath || "./assets/sender-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
@@ -176,7 +183,15 @@ export function setupSenderWallet({
         return getAccounts();
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }: { signerId: string, receiverId: string, actions: Array<Action> }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId,
+        actions,
+      }: {
+        signerId: string;
+        receiverId: string;
+        actions: Array<Action>;
+      }) {
         logger.log("SenderWallet:signAndSendTransaction", {
           signerId,
           receiverId,
