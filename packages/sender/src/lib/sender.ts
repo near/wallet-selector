@@ -20,10 +20,20 @@ export interface SenderParams {
   iconUrl?: string;
 }
 
+// TODO: Temporary fix for Sender until the sign in flow is fixed on their end.
+export const LOCAL_STORAGE_SIGNED_IN = `sender:signedIn`;
+
 export function setupSender({
   iconUrl,
 }: SenderParams = {}): WalletModule<InjectedWallet> {
-  return function Sender({ options, network, emitter, logger, updateState }) {
+  return function Sender({
+    options,
+    network,
+    emitter,
+    logger,
+    storage,
+    updateState,
+  }) {
     let wallet: InjectedSender;
 
     const getAccounts = () => {
@@ -125,6 +135,23 @@ export function setupSender({
             }));
           }
         });
+
+        wallet.on("signIn", () => {
+          storage.setItem(LOCAL_STORAGE_SIGNED_IN, true);
+        });
+
+        wallet.on("signOut", () => {
+          storage.removeItem(LOCAL_STORAGE_SIGNED_IN);
+        });
+
+        const prevState = storage.getItem<boolean>(LOCAL_STORAGE_SIGNED_IN);
+
+        if (!wallet.isSignedIn() && prevState) {
+          await wallet.requestSignIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+          });
+        }
       },
 
       async signIn() {
