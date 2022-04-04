@@ -18,7 +18,7 @@
     "paths": {
       "@near-wallet-selector/core": ["dist/packages/core"],
       "@near-wallet-selector/ledger": [
-        "packages/ledger-wallet/src/index.ts"
+        "packages/ledger/src/index.ts"
       ],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"

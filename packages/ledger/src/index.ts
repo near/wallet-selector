@@ -1,1 +1,1 @@
-export { setupLedger, LedgerParams } from "./lib/ledger-wallet";
+export { setupLedger, LedgerParams } from "./lib/ledger";

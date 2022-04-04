@@ -30,7 +30,7 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/ledger-wallet/assets/",
+            "input": "packages/ledger/assets/",
             "output": "assets/"
           },
           {
