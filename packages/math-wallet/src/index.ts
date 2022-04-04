@@ -1,1 +1,2 @@
-export { setupMathWallet, MathWalletParams } from "./lib/math-wallet";
+export { setupMathWallet } from "./lib/math-wallet";
+export type { MathWalletParams } from "./lib/math-wallet";

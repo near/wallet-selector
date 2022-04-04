@@ -53,11 +53,9 @@ const createNearWallet = () => {
     nearApiJs: require("near-api-js"),
     wallet: NearWallet({
       options: {
-        wallets: ["near-wallet"],
         network: networkId,
-        contract: {
-          contractId: "guest-book.testnet",
-        },
+        contractId: "guest-book.testnet",
+        wallets: ["near-wallet"],
       },
       network: resolveNetwork(networkId),
       provider: new Provider(config.nodeUrl),

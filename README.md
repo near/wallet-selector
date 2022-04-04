@@ -79,7 +79,7 @@ const selector = await NearWalletSelector.init({
 
 ## Known Issues
 
-At the time of writing, there is an issue with Sender Wallet where the signed in state is lost when navigating back to a dApp you had previously signed in to - this includes browser refreshes.
+At the time of writing, there is an issue with Sender where the signed in state is lost when navigating back to a dApp you had previously signed in to - this includes browser refreshes.
 
 ## Contributing
 

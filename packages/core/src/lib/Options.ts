@@ -5,9 +5,9 @@ export type NetworkId = "mainnet" | "testnet" | "betanet";
 export type Theme = "dark" | "light" | "auto";
 
 export interface Options {
-  wallets: Array<WalletModule>;
   network: NetworkId | NetworkConfiguration;
   contractId: string;
+  wallets: Array<WalletModule>;
   methodNames?: Array<string>;
   ui?: {
     theme?: Theme;

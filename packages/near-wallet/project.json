@@ -6,12 +6,21 @@
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
       "options": {
         "outputPath": "dist/packages/near-wallet",
         "main": "packages/near-wallet/src/index.ts",
         "tsConfig": "packages/near-wallet/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": ["packages/near-wallet/*.md"]
+        "assets": [
+          "packages/near-wallet/*.md",
+          "packages/near-wallet/assets/*"
+        ]
       }
     },
     "lint": {

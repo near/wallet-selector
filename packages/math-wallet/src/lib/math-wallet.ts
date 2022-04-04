@@ -16,11 +16,11 @@ declare global {
 }
 
 export interface MathWalletParams {
-  iconPath?: string;
+  iconUrl?: string;
 }
 
 export function setupMathWallet({
-  iconPath,
+  iconUrl,
 }: MathWalletParams = {}): WalletModule<InjectedWallet> {
   return function MathWallet({
     options,
@@ -75,7 +75,7 @@ export function setupMathWallet({
       type: "injected",
       name: "Math Wallet",
       description: null,
-      iconUrl: iconPath || "./assets/math-wallet-icon.png",
+      iconUrl: iconUrl || "./assets/math-wallet-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
 

@@ -21,9 +21,9 @@ import NearWalletSelector from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 const selector = await NearWalletSelector.init({
-  wallets: [setupNearWallet()],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [setupNearWallet()],
 });
 ```
 
@@ -34,13 +34,13 @@ const selector = await NearWalletSelector.init({
 **Parameters**
 
 - `options` (`object`)
-  - `wallets` (`Array<string | WalletModule>`): List of wallets you want to support in your dApp.
   - `network` (`string | object`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
     - `networkId` (`string`): Custom network ID (e.g. `localnet`).
     - `nodeUrl` (`string`): Custom URL for RPC requests.
     - `helperUrl` (`string`): Custom URL for creating accounts.
     - `explorerUrl` (`string`): Custom URL for 
-  - `contractId` (`string`): Account ID of the Smart Contract used for `.signIn` and `.signAndSendTransaction`.
+  - `contractId` (`string`): Account ID of the Smart Contract used for sign in and transactions.
+  - `wallets` (`Array<string | WalletModule>`): List of wallets you want to support in your dApp.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `ui`: (`object?`)
     - `theme` (`string?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
@@ -58,9 +58,9 @@ Initialises the selector using the configured options before rendering the UI. I
 
 ```ts
 await NearWalletSelector.init({
-  wallets: [/* Supported wallets in your dApp */],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [/* Supported wallets in your dApp */],
 });
 ```
 
@@ -308,7 +308,7 @@ console.log(contractId); // "guest-book.testnet"
 
 Signs one or more actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
-Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 
 Below are the 8 supported NEAR Actions:
 
@@ -417,7 +417,7 @@ await selector.signAndSendTransaction({
 
 Signs one or more transactions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
-Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 
 **Example**
 

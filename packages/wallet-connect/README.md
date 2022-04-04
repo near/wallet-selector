@@ -28,13 +28,13 @@ const walletConnect = setupWalletConnect({
     url: "https://github.com/near/wallet-selector",
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
   },
-  iconPath: "https://yourdomain.com/yourwallet-icon.png",
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png",
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [walletConnect],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [walletConnect],
 });
 ```
 
@@ -42,7 +42,20 @@ const selector = await NearWalletSelector.init({
 
 - `projectId` (`string`): Project ID required to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/api/project-id).
 - `metadata`: (`object`): Metadata used to provide context of the dApp to the connected wallet. More details can be found [here](https://docs.walletconnect.com/2.0/protocol/tech-spec#participant-metadata).
-- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
+
+## Assets
+
+Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
+
+```ts
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import walletConnectIconUrl from "@near-wallet-selector/wallet-connect/assets/wallet-connect-icon.png";
+
+const walletConnect = setupWalletConnect({
+  iconUrl: walletConnectIconUrl
+});
+```
 
 ## License
 
