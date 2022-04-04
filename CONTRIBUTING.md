@@ -18,7 +18,7 @@ yarn nx r [project][:target][:configuration] [options, ...]
 In order to run a specific example, make sure you build the UI library beforehand and on each modification by running:
 
 ```bash
-yarn build # build all packages
+yarn build # build core package
 
 yarn nx serve react # run the react example
 yarn nx serve angular # run the angular example
