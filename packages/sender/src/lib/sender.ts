@@ -5,6 +5,7 @@ import {
   FunctionCallAction,
   InjectedWallet,
   WalletModule,
+  AccountInfo,
   waitFor,
 } from "@near-wallet-selector/core";
 
@@ -21,6 +22,8 @@ export interface SenderParams {
 }
 
 // TODO: Temporary fix for Sender until the sign in flow is fixed on their end.
+// We defer calling `requestSignIn` until signing to avoid potentially
+// triggering the unlock flow.
 export const LOCAL_STORAGE_SIGNED_IN = `sender:signedIn`;
 
 export function setupSender({
@@ -36,7 +39,25 @@ export function setupSender({
   }) {
     let wallet: InjectedSender;
 
+    // TODO: Remove once Sender's sign in flow is fixed.
+    const getSavedAccounts = () => {
+      return storage.getItem<Array<AccountInfo>>(LOCAL_STORAGE_SIGNED_IN) || [];
+    };
+
+    // TODO: Remove once Sender's sign in flow is fixed.
+    const isSavedSignedIn = () => {
+      const savedAccounts = getSavedAccounts();
+
+      return !wallet.isSignedIn() && !!savedAccounts.length;
+    };
+
     const getAccounts = () => {
+      const savedAccounts = getSavedAccounts();
+
+      if (!wallet.isSignedIn() && savedAccounts.length) {
+        return savedAccounts;
+      }
+
       const accountId = wallet.getAccountId();
 
       if (!accountId) {
@@ -137,21 +158,14 @@ export function setupSender({
         });
 
         wallet.on("signIn", () => {
-          storage.setItem(LOCAL_STORAGE_SIGNED_IN, true);
+          const accounts = getAccounts();
+
+          storage.setItem(LOCAL_STORAGE_SIGNED_IN, accounts);
         });
 
         wallet.on("signOut", () => {
           storage.removeItem(LOCAL_STORAGE_SIGNED_IN);
         });
-
-        const prevState = storage.getItem<boolean>(LOCAL_STORAGE_SIGNED_IN);
-
-        if (!wallet.isSignedIn() && prevState) {
-          await wallet.requestSignIn({
-            contractId: options.contractId,
-            methodNames: options.methodNames,
-          });
-        }
       },
 
       async signIn() {
@@ -188,7 +202,11 @@ export function setupSender({
       },
 
       async isSignedIn() {
-        return wallet.isSignedIn();
+        if (wallet.isSignedIn()) {
+          return true;
+        }
+
+        return isSavedSignedIn();
       },
 
       async signOut() {
@@ -219,6 +237,13 @@ export function setupSender({
           actions,
         });
 
+        if (isSavedSignedIn()) {
+          await wallet.requestSignIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+          });
+        }
+
         return wallet
           .signAndSendTransaction({
             receiverId,
@@ -240,6 +265,13 @@ export function setupSender({
 
       async signAndSendTransactions({ transactions }) {
         logger.log("Sender:signAndSendTransactions", { transactions });
+
+        if (isSavedSignedIn()) {
+          await wallet.requestSignIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+          });
+        }
 
         return wallet
           .requestSignTransactions({
