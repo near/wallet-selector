@@ -6,6 +6,12 @@
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
       "options": {
         "outputPath": "dist/packages/math-wallet",
         "main": "packages/math-wallet/src/index.ts",

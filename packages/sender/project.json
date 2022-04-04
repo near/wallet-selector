@@ -6,6 +6,12 @@
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
       "options": {
         "outputPath": "dist/packages/sender",
         "main": "packages/sender/src/index.ts",
