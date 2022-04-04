@@ -57,7 +57,7 @@ export function setupSender({
 
       if (!validActions) {
         throw new Error(
-          "Only 'FunctionCall' actions types are supported by Sender Wallet"
+          "Only 'FunctionCall' actions types are supported by Sender"
         );
       }
 

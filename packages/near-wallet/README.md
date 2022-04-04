@@ -36,7 +36,21 @@ const selector = await NearWalletSelector.init({
 ## Options
 
 - `walletUrl` (`string?`): Wallet URL used to redirect when signing transactions. This parameter is required when using custom network configuration.
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/near-wallet-icon.png`.
+
+## Assets
+
+Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
+
+```ts
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import nearWalletIconUrl from "@near-wallet-selector/near-wallet/assets/near-wallet-icon.png";
+
+const nearWallet = setupNearWallet({
+  iconUrl: nearWalletIconUrl
+});
+```
+
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).

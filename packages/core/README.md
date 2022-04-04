@@ -308,7 +308,7 @@ console.log(contractId); // "guest-book.testnet"
 
 Signs one or more actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
-Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 
 Below are the 8 supported NEAR Actions:
 
@@ -417,7 +417,7 @@ await selector.signAndSendTransaction({
 
 Signs one or more transactions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
-Note: Sender Wallet only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 
 **Example**
 
