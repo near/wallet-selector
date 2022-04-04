@@ -1,1 +1,2 @@
-export { setupLedger, LedgerParams } from "./lib/ledger";
+export { setupLedger } from "./lib/ledger";
+export type { LedgerParams } from "./lib/ledger";
