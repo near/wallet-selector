@@ -11,7 +11,10 @@
         "main": "packages/math-wallet/src/index.ts",
         "tsConfig": "packages/math-wallet/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": ["packages/math-wallet/*.md"]
+        "assets": [
+          "packages/math-wallet/*.md",
+          "packages/math-wallet/assets/*"
+        ]
       }
     },
     "lint": {

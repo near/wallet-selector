@@ -11,7 +11,10 @@
         "main": "packages/sender/src/index.ts",
         "tsConfig": "packages/sender/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": ["packages/sender/*.md"]
+        "assets": [
+          "packages/sender/*.md",
+          "packages/sender/assets/*"
+        ]
       }
     },
     "lint": {

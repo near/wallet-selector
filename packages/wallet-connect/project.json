@@ -11,7 +11,10 @@
         "main": "packages/wallet-connect/src/index.ts",
         "tsConfig": "packages/wallet-connect/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": ["packages/wallet-connect/*.md"]
+        "assets": [
+          "packages/wallet-connect/*.md",
+          "packages/wallet-connect/assets/*"
+        ]
       }
     },
     "lint": {

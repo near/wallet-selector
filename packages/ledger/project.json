@@ -11,7 +11,10 @@
         "main": "packages/ledger/src/index.ts",
         "tsConfig": "packages/ledger/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": ["packages/ledger/*.md"]
+        "assets": [
+          "packages/ledger/*.md",
+          "packages/ledger/assets/*"
+        ]
       }
     },
     "lint": {
