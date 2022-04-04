@@ -25,7 +25,7 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/sender-wallet/assets/",
+            "input": "packages/sender/assets/",
             "output": "assets/"
           },
           {

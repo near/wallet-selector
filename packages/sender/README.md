@@ -8,10 +8,10 @@ The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/sender-wallet
+yarn add @near-wallet-selector/sender
 
 # Using NPM.
-npm install @near-wallet-selector/sender-wallet
+npm install @near-wallet-selector/sender
 ```
 
 Then use it in your dApp:
