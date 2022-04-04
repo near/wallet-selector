@@ -1,1 +1,1 @@
-export { setupSender, SenderParams } from "./lib/sender-wallet";
+export { setupSender, SenderParams } from "./lib/sender";

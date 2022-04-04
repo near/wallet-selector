@@ -8,7 +8,7 @@ import {
   waitFor,
 } from "@near-wallet-selector/core";
 
-import { InjectedSender } from "./injected-sender-wallet";
+import { InjectedSender } from "./injected-sender";
 
 declare global {
   interface Window {

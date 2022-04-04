@@ -1,7 +1,7 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import { providers } from "near-api-js";
 
 interface AccessKey {
   publicKey: {
@@ -73,7 +73,7 @@ export interface SignAndSendTransactionResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<FinalExecutionOutcome>;
+  response?: Array<providers.FinalExecutionOutcome>;
   type: "sender-wallet-extensionResult";
 }
 
@@ -82,7 +82,7 @@ export interface SignAndSendTransactionsResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<FinalExecutionOutcome>;
+  response?: Array<providers.FinalExecutionOutcome>;
   type: "sender-wallet-extensionResult";
 }
 
