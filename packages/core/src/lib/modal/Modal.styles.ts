@@ -110,6 +110,7 @@ export default `
   border-radius: 8px;
   border: 1px solid var(--dark-gray-op-30);
   display: flex;
+  text-align: center;
 }
 
 .Modal-option-list li div {
