@@ -1,1 +1,2 @@
-export { setupSender, SenderParams } from "./lib/sender";
+export { setupSender } from "./lib/sender";
+export type { SenderParams } from "./lib/sender";
