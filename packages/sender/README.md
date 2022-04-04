@@ -22,7 +22,7 @@ import { setupSender } from "@near-wallet-selector/sender";
 
 // Sender Wallet for Wallet Selector can be setup without any params or it can take one optional param.
 const sender = setupSender({
-  iconPath: "https://yourdomain.com/yourwallet-icon.png" //optional
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await NearWalletSelector.init({
@@ -34,7 +34,7 @@ const selector = await NearWalletSelector.init({
 
 ## Options
 
-- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image
 
 ## License
 

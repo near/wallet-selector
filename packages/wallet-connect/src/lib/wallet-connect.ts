@@ -11,13 +11,13 @@ import WalletConnectClient from "./wallet-connect-client";
 export interface WalletConnectParams {
   projectId: string;
   metadata: AppMetadata;
-  iconPath?: string;
+  iconUrl?: string;
 }
 
 export function setupWalletConnect({
   projectId,
   metadata,
-  iconPath,
+  iconUrl,
 }: WalletConnectParams): WalletModule<BridgeWallet> {
   return function WalletConnect({ network, emitter, logger, updateState }) {
     let subscriptions: Array<Subscription> = [];
@@ -102,7 +102,7 @@ export function setupWalletConnect({
       type: "bridge",
       name: "WalletConnect",
       description: null,
-      iconUrl: iconPath || "./assets/wallet-connect-icon.png",
+      iconUrl: iconUrl || "./assets/wallet-connect-icon.png",
 
       isAvailable() {
         return true;

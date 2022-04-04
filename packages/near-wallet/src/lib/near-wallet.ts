@@ -9,12 +9,12 @@ import {
 
 export interface NearWalletParams {
   walletUrl?: string;
-  iconPath?: string;
+  iconUrl?: string;
 }
 
 export function setupNearWallet({
   walletUrl,
-  iconPath,
+  iconUrl,
 }: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({
     options,
@@ -94,7 +94,7 @@ export function setupNearWallet({
       type: "browser",
       name: "NEAR Wallet",
       description: null,
-      iconUrl: iconPath || "./assets/near-wallet-icon.png",
+      iconUrl: iconUrl || "./assets/near-wallet-icon.png",
 
       isAvailable() {
         return true;

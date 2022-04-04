@@ -22,7 +22,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 
 // Ledger for Wallet Selector can be setup without any params or it can take one optional param.
 const ledger = setupLedger({
-  iconPath: "https://yourdomain.com/yourwallet-icon.png"
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
 const selector = await NearWalletSelector.init({
@@ -34,7 +34,7 @@ const selector = await NearWalletSelector.init({
 
 ## Options
 
-- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image.
 
 ## License
 

@@ -23,7 +23,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 // NEAR Wallet for Wallet Selector can be setup without any params or it can take two optional params.
 const nearWallet = setupNearWallet({
   walletUrl: "https://wallet.testnet.near.org",
-  iconPath: "https://yourdomain.com/yourwallet-icon.png"
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
 const selector = await NearWalletSelector.init({
@@ -36,7 +36,7 @@ const selector = await NearWalletSelector.init({
 ## Options
 
 - `walletUrl` (`string?`): Wallet URL used to redirect when signing transactions. This parameter is required when using custom network configuration.
-- `iconPath`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image.
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).

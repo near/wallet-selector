@@ -17,11 +17,11 @@ declare global {
 }
 
 export interface SenderParams {
-  iconPath?: string;
+  iconUrl?: string;
 }
 
 export function setupSender({
-  iconPath,
+  iconUrl,
 }: SenderParams = {}): WalletModule<InjectedWallet> {
   return function Sender({ options, network, emitter, logger, updateState }) {
     let wallet: InjectedSender;
@@ -78,7 +78,7 @@ export function setupSender({
       type: "injected",
       name: "Sender",
       description: null,
-      iconUrl: iconPath || "./assets/sender-icon.png",
+      iconUrl: iconUrl || "./assets/sender-icon.png",
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 
