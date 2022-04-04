@@ -23,8 +23,8 @@ jobs:
           node-version: "16.x"
       - name: Install NPM Dependencies
         run: yarn install
-      - name: Run Build
-        run: yarn build
+      - name: Run Build All
+        run: yarn build:all
       - name: Run Linting
         run: yarn lint
       - name: Run Unit & Integration Tests
