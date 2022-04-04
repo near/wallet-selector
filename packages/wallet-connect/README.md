@@ -32,9 +32,9 @@ const walletConnect = setupWalletConnect({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [walletConnect],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [walletConnect],
 });
 ```
 

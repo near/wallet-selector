@@ -26,9 +26,9 @@ const ledger = setupLedger({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [ledger],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [ledger],
 });
 ```
 

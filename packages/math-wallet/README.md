@@ -26,9 +26,9 @@ const mathWallet = setupMathWallet({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [mathWallet],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [mathWallet],
 });
 ```
 

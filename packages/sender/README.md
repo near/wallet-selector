@@ -26,9 +26,9 @@ const sender = setupSender({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [sender],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [sender],
 });
 ```
 

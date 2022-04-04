@@ -27,9 +27,9 @@ const nearWallet = setupNearWallet({
 });
 
 const selector = await NearWalletSelector.init({
-  wallets: [nearWallet],
   network: "testnet",
   contractId: "guest-book.testnet",
+  wallets: [nearWallet],
 });
 ```
 
