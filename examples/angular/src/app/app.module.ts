@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import {FormsModule} from "@angular/forms";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
 
-import { AppComponent } from './app.component';
-import { SignInComponent } from './components/sign-in/sign-in.component';
-import { MessagesComponent } from './components/messages/messages.component';
-import { FormComponent } from './components/form/form.component';
-import { ContentComponent } from './components/content/content.component';
+import { AppComponent } from "./app.component";
+import { SignInComponent } from "./components/sign-in/sign-in.component";
+import { MessagesComponent } from "./components/messages/messages.component";
+import { FormComponent } from "./components/form/form.component";
+import { ContentComponent } from "./components/content/content.component";
 
 @NgModule({
   declarations: [
@@ -14,13 +14,10 @@ import { ContentComponent } from './components/content/content.component';
     SignInComponent,
     MessagesComponent,
     FormComponent,
-    ContentComponent
+    ContentComponent,
   ],
-  imports: [
-    BrowserModule,
-    FormsModule
-  ],
+  imports: [BrowserModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

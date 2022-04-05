@@ -1,0 +1,43 @@
+{
+  "root": "packages/wallet-connect",
+  "sourceRoot": "packages/wallet-connect/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
+      "options": {
+        "outputPath": "dist/packages/wallet-connect",
+        "main": "packages/wallet-connect/src/index.ts",
+        "tsConfig": "packages/wallet-connect/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          "packages/wallet-connect/*.md",
+          "packages/wallet-connect/assets/*"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/wallet-connect/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/wallet-connect"],
+      "options": {
+        "jestConfig": "packages/wallet-connect/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["bridge-wallet"]
+}

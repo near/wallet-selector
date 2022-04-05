@@ -1,35 +1,63 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import NearWalletSelector, { AccountInfo, Subscription } from "near-wallet-selector"
-import { utils } from "near-api-js";
-import { Message } from "../../interfaces/message";
-import { Sumbitted } from '../form/form.component';
+import { providers, utils } from "near-api-js";
+import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
+import NearWalletSelector, {
+  AccountInfo,
+  Subscription,
+} from "@near-wallet-selector/core";
 
-const { parseNearAmount } = utils.format;
+import { Message } from "../../interfaces/message";
+import { Sumbitted } from "../form/form.component";
+import { Account } from "../../interfaces/account";
 
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = parseNearAmount("0.00000000003");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 @Component({
-  selector: 'near-wallet-selector-content',
-  templateUrl: './content.component.html',
-  styleUrls: ['./content.component.scss']
+  selector: "near-wallet-selector-content",
+  templateUrl: "./content.component.html",
+  styleUrls: ["./content.component.scss"],
 })
 export class ContentComponent implements OnInit, OnDestroy {
   @Input() selector: NearWalletSelector;
-  account: AccountInfo | null;
+  @Input() accounts: Array<AccountInfo>;
+  @Input() accountId: string | null;
+
+  account: Account | null;
   messages: Array<Message>;
-  subscriptions: Record<string, Subscription> = {};
+  subscription?: Subscription;
 
   async ngOnInit() {
-    const [ messages, account ] = await Promise.all([
+    const [messages, account] = await Promise.all([
       this.getMessages(),
-      this.selector.getAccount(),
+      this.getAccount(),
     ]);
 
     this.account = account;
     this.messages = messages;
 
     this.subscribeToEvents();
+  }
+
+  async getAccount() {
+    if (!this.accountId) {
+      return null;
+    }
+
+    const { nodeUrl } = this.selector.network;
+    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+
+    return provider
+      .query<AccountView>({
+        request_type: "view_account",
+        finality: "final",
+        account_id: this.accountId,
+      })
+      .then((data) => ({
+        ...data,
+        account_id: this.accountId,
+      }));
   }
 
   signIn() {
@@ -48,31 +76,113 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    return this.selector.contract.view<Array<Message>>({
-      methodName: "getMessages",
+    const provider = new providers.JsonRpcProvider({
+      url: this.selector.network.nodeUrl,
     });
-  };
+
+    return provider
+      .query<CodeResult>({
+        request_type: "call_function",
+        account_id: this.selector.getContractId(),
+        method_name: "getMessages",
+        args_base64: "",
+        finality: "optimistic",
+      })
+      .then((res) => JSON.parse(Buffer.from(res.result).toString()));
+  }
+
+  switchAccount() {
+    const currentIndex = this.accounts.findIndex(
+      (x) => x.accountId === this.accountId
+    );
+    const nextIndex =
+      currentIndex < this.accounts.length - 1 ? currentIndex + 1 : 0;
+
+    const nextAccountId = this.accounts[nextIndex].accountId;
+
+    this.accountId = nextAccountId;
+    alert("Switched account to " + nextAccountId);
+
+    this.account = null;
+    this.getAccount().then((account) => {
+      this.account = account;
+    });
+  }
+
+  onSendMultipleTransactions() {
+    this.selector.signAndSendTransactions({
+      transactions: [
+        {
+          // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
+          receiverId: "dev-1648806797290-14624341764914",
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "increment",
+                args: {},
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+        {
+          receiverId: this.selector.getContractId(),
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: "Hello World!" },
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount("0")!,
+              },
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  syncAccountState(
+    currentAccountId: string | null,
+    newAccounts: Array<AccountInfo>
+  ) {
+    if (!newAccounts.length) {
+      localStorage.removeItem("accountId");
+      this.accountId = null;
+      this.accounts = [];
+
+      return;
+    }
+
+    const validAccountId =
+      currentAccountId &&
+      newAccounts.some((x) => x.accountId === currentAccountId);
+    const newAccountId = validAccountId
+      ? currentAccountId
+      : newAccounts[0].accountId;
+
+    localStorage.setItem("accountId", newAccountId);
+    this.accountId = newAccountId;
+    this.accounts = newAccounts;
+  }
 
   subscribeToEvents() {
-    this.subscriptions['signIn'] = this.selector.on("signIn", () => {
-      console.log("'signIn' event triggered!");
+    this.subscription = this.selector.on("accountsChanged", (e) => {
+      const prevAccountId = this.accountId;
 
-      this.selector
-        .getAccount()
-        .then((data) => {
-          console.log("Account", data);
-          this.account = data;
-        })
-        .catch((err) => {
-          console.log("Failed to retrieve account info");
-          console.error(err);
+      this.syncAccountState(this.accountId, e.accounts);
+
+      if (prevAccountId !== this.accountId) {
+        this.getAccount().then((account) => {
+          this.account = account;
         });
+      }
     });
-
-    this.subscriptions['signOut'] = this.selector.on("signOut", () => {
-      console.log("'signOut' event triggered!");
-      this.account = null;
-    })
   }
 
   onSubmit(e: Sumbitted) {
@@ -83,17 +193,23 @@ export class ContentComponent implements OnInit, OnDestroy {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    this.selector.contract.signAndSendTransaction({
-      actions: [{
-        type: "FunctionCall",
-        params: {
-          methodName: "addMessage",
-          args: { text: message.value },
-          gas: BOATLOAD_OF_GAS as string,
-          deposit: utils.format.parseNearAmount(donation.value || "0") as string
-        }
-      }]
-    })
+    this.selector
+      .signAndSendTransaction({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        signerId: this.accountId!,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: { text: message.value },
+              gas: BOATLOAD_OF_GAS as string,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+            },
+          },
+        ],
+      })
       .catch((err) => {
         alert("Failed to add message");
         console.log("Failed to add message");
@@ -122,11 +238,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    for (const key in this.subscriptions) {
-      const subscription = this.subscriptions[key];
-
-      subscription.remove();
-    }
+    this.subscription?.remove();
   }
-
 }

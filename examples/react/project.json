@@ -11,13 +11,38 @@
         "compiler": "babel",
         "outputPath": "dist/examples/react",
         "index": "examples/react/src/index.html",
-        "baseHref": "/",
+        "baseHref": "/wallet-selector/",
         "main": "examples/react/src/main.tsx",
         "polyfills": "examples/react/src/polyfills.ts",
         "tsConfig": "examples/react/tsconfig.app.json",
         "assets": [
           "examples/react/src/favicon.ico",
-          "examples/react/src/assets"
+          "examples/react/src/assets",
+          {
+            "glob": "**/*",
+            "input": "packages/near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/math-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
+          }
         ],
         "styles": ["examples/react/src/styles.scss"],
         "scripts": [],
@@ -66,6 +91,12 @@
       "options": {
         "jestConfig": "examples/react/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-script",
+      "options": {
+        "script": "gh-pages -d dist/examples/react"
       }
     }
   },
