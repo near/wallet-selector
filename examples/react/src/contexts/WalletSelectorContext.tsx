@@ -1,13 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import {
+  setupWalletSelector,
+  WalletSelector,
+  AccountInfo,
+} from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+// import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+// import { setupLedger } from "@near-wallet-selector/ledger";
+// import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 interface WalletSelectorContextValue {
-  selector: NearWalletSelector;
+  selector: WalletSelector;
   accounts: Array<AccountInfo>;
   accountId: string | null;
   setAccountId: (accountId: string) => void;
@@ -17,7 +21,7 @@ const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
-  const [selector, setSelector] = useState<NearWalletSelector | null>(null);
+  const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
 
@@ -46,34 +50,34 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
-    NearWalletSelector.init({
+    setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
       wallets: [
         setupNearWallet(),
         setupSender(),
-        setupLedger(),
-        setupMathWallet(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
+        // setupLedger(),
+        // setupMathWallet(),
+        // setupWalletConnect({
+        //   projectId: "c4f79cc...",
+        //   metadata: {
+        //     name: "NEAR Wallet Selector",
+        //     description: "Example dApp used by NEAR Wallet Selector",
+        //     url: "https://github.com/near/wallet-selector",
+        //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
+        //   },
+        // }),
       ],
     })
       .then((instance) => {
-        return instance.getAccounts().then(async (newAccounts) => {
-          syncAccountState(localStorage.getItem("accountId"), newAccounts);
+        const state = instance.store.getState();
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-next-line
-          window.selector = instance;
-          setSelector(instance);
-        });
+        syncAccountState(localStorage.getItem("accountId"), state.accounts);
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore-next-line
+        window.selector = instance;
+        setSelector(instance);
       })
       .catch((err) => {
         console.error(err);
@@ -86,11 +90,11 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.on("accountsChanged", (e) => {
-      syncAccountState(accountId, e.accounts);
+    const subscription = selector.store.toObservable().subscribe((state) => {
+      syncAccountState(accountId, state.accounts);
     });
 
-    return () => subscription.remove();
+    return () => subscription.unsubscribe();
   }, [selector, accountId]);
 
   if (!selector) {

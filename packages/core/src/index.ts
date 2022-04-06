@@ -1,8 +1,12 @@
-import NearWalletSelector from "./lib/NearWalletSelector";
+export {
+  WalletSelector,
+  WalletSelectorOptions,
+} from "./lib/WalletSelector.types";
+export { setupWalletSelector } from "./lib/WalletSelector";
 
-export { NetworkId, Options } from "./lib/Options";
-export { NetworkConfiguration } from "./lib/network";
+export { Network, NetworkId } from "./lib/network";
 export { Subscription } from "./lib/services";
+export { Optional } from "./lib/Optional";
 
 export {
   Wallet,
@@ -28,5 +32,3 @@ export {
 
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
-
-export default NearWalletSelector;

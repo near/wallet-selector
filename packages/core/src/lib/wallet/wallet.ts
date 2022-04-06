@@ -1,24 +1,26 @@
-import { updateState } from "../state";
+import { providers } from "near-api-js";
+
 import { Provider, Logger, PersistentStorage, Emitter } from "../services";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
-import { Options } from "../Options";
-import { NetworkConfiguration } from "../network";
-import { providers } from "near-api-js";
+import { Network } from "../network";
+import { WalletSelectorStore, WalletSelectorState } from "../store.types";
+import { Optional } from "../Optional";
+import { WalletSelectorOptions } from "../WalletSelector.types";
 
-export interface HardwareWalletSignInParams {
+export interface HardwareWalletConnectParams {
   accountId: string;
   derivationPath: string;
 }
 
 export interface SignAndSendTransactionParams {
-  signerId: string;
-  receiverId: string;
+  signerId?: string;
+  receiverId?: string;
   actions: Array<Action>;
 }
 
 export interface SignAndSendTransactionsParams {
-  transactions: Array<Transaction>;
+  transactions: Array<Optional<Transaction, "signerId">>;
 }
 
 export interface AccountInfo {
@@ -26,9 +28,9 @@ export interface AccountInfo {
 }
 
 export type WalletEvents = {
-  signIn: { accounts: Array<AccountInfo> };
-  signOut: { accounts: Array<AccountInfo> };
-  accountsChanged: { accounts: Array<AccountInfo> };
+  connected: { id: string; pending?: boolean; accounts?: Array<AccountInfo> };
+  disconnected: { id: string };
+  accounts: { accounts: Array<AccountInfo> };
 };
 
 interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
@@ -46,16 +48,16 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).
-  signIn(params?: object): Promise<void>;
+  connect(params?: object): Promise<void>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
-  signOut(): Promise<void>;
+  disconnect(): Promise<void>;
 
   // Determines if we're signed in with the wallet.
-  isSignedIn(): Promise<boolean>;
+  // isSignedIn(): Promise<boolean>;
 
   // Retrieves all active accounts.
-  getAccounts(): Promise<Array<AccountInfo>>;
+  // getAccounts(): Promise<Array<AccountInfo>>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
@@ -79,7 +81,7 @@ export interface InjectedWallet extends BaseWallet {
 
 export interface HardwareWallet extends BaseWallet {
   type: "hardware";
-  signIn(params: HardwareWalletSignInParams): Promise<void>;
+  connect(params: HardwareWalletConnectParams): Promise<void>;
 }
 
 export interface BridgeWallet extends BaseWallet {
@@ -95,13 +97,13 @@ export type Wallet =
 export type WalletType = Wallet["type"];
 
 export interface WalletOptions {
-  options: Options;
-  network: NetworkConfiguration;
+  options: WalletSelectorOptions;
+  network: Network;
   provider: Provider;
   emitter: Emitter<WalletEvents>;
+  store: WalletSelectorStore<WalletSelectorState>;
   logger: Logger;
   storage: PersistentStorage;
-  updateState: typeof updateState;
 }
 
 export type WalletModule<WalletVariation extends Wallet = Wallet> = (

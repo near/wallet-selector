@@ -5,6 +5,7 @@ import {
   FunctionCallAction,
   InjectedWallet,
   WalletModule,
+  Optional,
   waitFor,
 } from "@near-wallet-selector/core";
 
@@ -23,7 +24,7 @@ export interface SenderParams {
 export function setupSender({
   iconUrl,
 }: SenderParams = {}): WalletModule<InjectedWallet> {
-  return function Sender({ options, network, emitter, logger, updateState }) {
+  return function Sender({ options, network, emitter, store, logger }) {
     let wallet: InjectedSender;
 
     const getAccounts = () => {
@@ -38,7 +39,7 @@ export function setupSender({
 
     const isInstalled = async () => {
       try {
-        return await waitFor(() => !!window.near?.isSender, {});
+        return await waitFor(() => !!window.near?.isSender);
       } catch (e) {
         logger.log("Sender:isInstalled:error", e);
 
@@ -64,7 +65,9 @@ export function setupSender({
       return actions.map((x) => x.params);
     };
 
-    const transformTransactions = (transactions: Array<Transaction>) => {
+    const transformTransactions = (
+      transactions: Array<Optional<Transaction, "signerId">>
+    ) => {
       return transactions.map((transaction) => {
         return {
           receiverId: transaction.receiverId,
@@ -105,35 +108,34 @@ export function setupSender({
         wallet.on("accountChanged", async (newAccountId) => {
           logger.log("Sender:onAccountChange", newAccountId);
 
-          try {
-            await this.signOut();
-            await this.signIn();
-          } catch (e) {
-            logger.log(
-              `Failed to change account ${(e as unknown as Error).message}`
-            );
-          }
+          await this.disconnect();
         });
 
         wallet.on("rpcChanged", (response) => {
           if (network.networkId !== response.rpc.networkId) {
-            updateState((prevState) => ({
-              ...prevState,
-              showModal: true,
-              showWalletOptions: false,
-              showSwitchNetwork: true,
-            }));
+            store.dispatch({
+              type: "UPDATE",
+              payload: {
+                showModal: true,
+                showWalletOptions: false,
+                showSwitchNetwork: true,
+              },
+            });
           }
         });
+
+        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
       },
 
-      async signIn() {
+      async connect() {
         if (!(await isInstalled())) {
-          return updateState((prevState) => ({
-            ...prevState,
-            showWalletOptions: false,
-            showWalletNotInstalled: this.id,
-          }));
+          return store.dispatch({
+            type: "UPDATE",
+            payload: {
+              showWalletOptions: false,
+              showWalletNotInstalled: this.id,
+            },
+          });
         }
 
         if (!wallet) {
@@ -149,36 +151,17 @@ export function setupSender({
           throw new Error("Failed to sign in");
         }
 
-        updateState((prevState) => ({
-          ...prevState,
-          showModal: false,
-          selectedWalletId: this.id,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("signIn", { accounts });
-        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
       },
 
-      async isSignedIn() {
-        return wallet.isSignedIn();
-      },
-
-      async signOut() {
+      async disconnect() {
         const res = wallet.signOut();
 
         if (!res) {
           throw new Error("Failed to sign out");
         }
 
-        updateState((prevState) => ({
-          ...prevState,
-          selectedWalletId: null,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("accountsChanged", { accounts });
-        emitter.emit("signOut", { accounts });
+        emitter.emit("disconnected", { id: this.id });
       },
 
       async getAccounts() {
@@ -194,7 +177,7 @@ export function setupSender({
 
         return wallet
           .signAndSendTransaction({
-            receiverId,
+            receiverId: receiverId || options.contractId,
             actions: transformActions(actions),
           })
           .then((res) => {

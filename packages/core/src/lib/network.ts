@@ -1,6 +1,6 @@
-import { NetworkId } from "./Options";
+export type NetworkId = "mainnet" | "testnet" | "betanet";
 
-export interface NetworkConfiguration {
+export interface Network {
   networkId: string;
   nodeUrl: string;
   helperUrl: string;
@@ -8,7 +8,7 @@ export interface NetworkConfiguration {
   restApiUrl: string;
 }
 
-export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
+export const getNetwork = (networkId: NetworkId): Network => {
   switch (networkId) {
     case "mainnet":
       return {
@@ -39,8 +39,6 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
   }
 };
 
-export const resolveNetwork = (
-  network: NetworkId | NetworkConfiguration
-): NetworkConfiguration => {
+export const resolveNetwork = (network: NetworkId | Network): Network => {
   return typeof network === "string" ? getNetwork(network) : network;
 };

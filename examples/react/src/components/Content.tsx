@@ -23,8 +23,8 @@ const Content: React.FC = () => {
       return null;
     }
 
-    const { nodeUrl } = selector.network;
-    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+    const { network } = selector.store.getState();
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<AccountView>({
@@ -36,17 +36,16 @@ const Content: React.FC = () => {
         ...data,
         account_id: accountId,
       }));
-  }, [accountId, selector.network]);
+  }, [accountId, selector.store]);
 
   const getMessages = useCallback(() => {
-    const provider = new providers.JsonRpcProvider({
-      url: selector.network.nodeUrl,
-    });
+    const { network, contractId } = selector.store.getState();
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: selector.getContractId(),
+        account_id: contractId,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -79,10 +78,13 @@ const Content: React.FC = () => {
   };
 
   const handleSignOut = () => {
-    selector.signOut().catch((err) => {
-      console.log("Failed to sign out");
-      console.error(err);
-    });
+    selector
+      .wallet()
+      .disconnect()
+      .catch((err) => {
+        console.log("Failed to sign out");
+        console.error(err);
+      });
   };
 
   const handleSwitchProvider = () => {
@@ -100,7 +102,9 @@ const Content: React.FC = () => {
   };
 
   const handleSendMultipleTransactions = () => {
-    selector.signAndSendTransactions({
+    const { contractId } = selector.store.getState();
+
+    selector.wallet().signAndSendTransactions({
       transactions: [
         {
           // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
@@ -118,7 +122,7 @@ const Content: React.FC = () => {
           ],
         },
         {
-          receiverId: selector.getContractId(),
+          receiverId: contractId,
           actions: [
             {
               type: "FunctionCall",
@@ -150,6 +154,7 @@ const Content: React.FC = () => {
       // update blockchain data in background
       // add uuid to each message, so we know which one is already known
       selector
+        .wallet()
         .signAndSendTransaction({
           signerId: accountId!,
           actions: [

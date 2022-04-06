@@ -4,6 +4,7 @@ import {
   WalletModule,
   BrowserWallet,
   Transaction,
+  Optional,
   transformActions,
 } from "@near-wallet-selector/core";
 
@@ -16,14 +17,7 @@ export function setupNearWallet({
   walletUrl,
   iconUrl,
 }: NearWalletParams = {}): WalletModule<BrowserWallet> {
-  return function NearWallet({
-    options,
-    network,
-    emitter,
-    logger,
-    storage,
-    updateState,
-  }) {
+  return function NearWallet({ options, network, emitter, logger }) {
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
 
@@ -54,7 +48,9 @@ export function setupNearWallet({
       }
     };
 
-    const transformTransactions = async (transactions: Array<Transaction>) => {
+    const transformTransactions = async (
+      transactions: Array<Optional<Transaction, "signerId">>
+    ) => {
       const account = wallet.account();
       const { networkId, signer, provider } = account.connection;
 
@@ -118,12 +114,11 @@ export function setupNearWallet({
         if (!wallet.isSignedIn()) {
           await localStorageKeyStore.clear();
         }
+
+        emitter.emit("accounts", { accounts: getAccounts() });
       },
 
-      // We don't emit "signIn" or update state as we can't guarantee the user will
-      // actually sign in. Best we can do is temporarily set it as selected and
-      // validate on initialise.
-      async signIn() {
+      async connect() {
         if (!wallet) {
           await this.init();
         }
@@ -133,11 +128,12 @@ export function setupNearWallet({
           methodNames: options.methodNames,
         });
 
-        // TODO: Find better way to do this without exposing 'LOCAL_STORAGE_SELECTED_WALLET_ID' in core.
-        storage.setItem("selectedWalletId", this.id);
+        // We use the pending flag because we can't guarantee the user will
+        // actually sign in. Best we can do is set in storage and validate on init.
+        emitter.emit("connected", { id: this.id, pending: true });
       },
 
-      async signOut() {
+      async disconnect() {
         if (!wallet) {
           return;
         }
@@ -145,26 +141,7 @@ export function setupNearWallet({
         wallet.signOut();
         await keyStore.clear();
 
-        updateState((prevState) => ({
-          ...prevState,
-          selectedWalletId: null,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("accountsChanged", { accounts });
-        emitter.emit("signOut", { accounts });
-      },
-
-      async isSignedIn() {
-        if (!wallet) {
-          return false;
-        }
-
-        return wallet.isSignedIn();
-      },
-
-      async getAccounts() {
-        return getAccounts();
+        emitter.emit("disconnected", { id: this.id });
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
