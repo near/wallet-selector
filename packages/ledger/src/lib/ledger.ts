@@ -5,9 +5,11 @@ import {
   HardwareWallet,
   WalletModule,
   transformActions,
+  Transaction,
 } from "@near-wallet-selector/core";
 
 import { LedgerClient, Subscription } from "./ledger-client";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 interface AuthData {
   accountId: string;
@@ -141,6 +143,66 @@ export function setupLedger({
       }
     };
 
+    const transformTransactions = async (
+      batchTransactions: Array<Transaction>
+    ) => {
+      logger.log("Ledger:signAndSendTransactions", {
+        batchTransactions,
+      });
+
+      if (!state.authData) {
+        throw new Error("Not signed in");
+      }
+
+      const { accountId, derivationPath, publicKey } = state.authData;
+      const ledgerClient = await getClient();
+
+      const [block, accessKey] = await Promise.all([
+        provider.block({ finality: "final" }),
+        provider.viewAccessKey({ accountId, publicKey }),
+      ]);
+
+      const signedTransactions: Array<SignedTransaction> = [];
+
+      for (let i = 0; i < batchTransactions.length; i++) {
+        const actions = transformActions(batchTransactions[i].actions);
+
+        const transaction = transactions.createTransaction(
+          accountId,
+          utils.PublicKey.from(publicKey),
+          batchTransactions[i].receiverId,
+          accessKey.nonce + i + 1,
+          actions,
+          utils.serialize.base_decode(block.header.hash)
+        );
+
+        const serializedTx = utils.serialize.serialize(
+          transactions.SCHEMA,
+          transaction
+        );
+
+        try {
+          const signature = await ledgerClient.sign({
+            data: serializedTx,
+            derivationPath,
+          });
+
+          const signedTx = new transactions.SignedTransaction({
+            transaction,
+            signature: new transactions.Signature({
+              keyType: transaction.publicKey.keyType,
+              data: signature,
+            }),
+          });
+
+          signedTransactions.push(signedTx);
+        } catch (err) {
+          logger.log("transformTransactions:sign:error", err);
+        }
+      }
+      return signedTransactions;
+    };
+
     return {
       id: "ledger",
       type: "hardware",
@@ -271,8 +333,15 @@ export function setupLedger({
         return provider.sendTransaction(signedTx);
       },
 
-      async signAndSendTransactions() {
-        throw new Error("Not implemented");
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      async signAndSendTransactions({ transactions }) {
+        const signedTransactions = await transformTransactions(transactions);
+
+        return Promise.all(
+          signedTransactions.map((signedTx) => {
+            return provider.sendTransaction(signedTx);
+          })
+        );
       },
     };
   };
