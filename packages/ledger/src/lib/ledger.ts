@@ -1,4 +1,4 @@
-import { transactions, utils } from "near-api-js";
+import { transactions as nearTransactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
 import {
@@ -164,7 +164,7 @@ export function setupLedger({
       for (let i = 0; i < batchTransactions.length; i++) {
         const actions = transformActions(batchTransactions[i].actions);
 
-        const transaction = transactions.createTransaction(
+        const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
           batchTransactions[i].receiverId,
@@ -174,7 +174,7 @@ export function setupLedger({
         );
 
         const serializedTx = utils.serialize.serialize(
-          transactions.SCHEMA,
+          nearTransactions.SCHEMA,
           transaction
         );
 
@@ -184,9 +184,9 @@ export function setupLedger({
             derivationPath,
           });
 
-          const signedTx = new transactions.SignedTransaction({
+          const signedTx = new nearTransactions.SignedTransaction({
             transaction,
-            signature: new transactions.Signature({
+            signature: new nearTransactions.Signature({
               keyType: transaction.publicKey.keyType,
               data: signature,
             }),
@@ -300,7 +300,7 @@ export function setupLedger({
         logger.log("Ledger:signAndSendTransaction:block", block);
         logger.log("Ledger:signAndSendTransaction:accessKey", accessKey);
 
-        const transaction = transactions.createTransaction(
+        const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
           receiverId,
@@ -310,7 +310,7 @@ export function setupLedger({
         );
 
         const serializedTx = utils.serialize.serialize(
-          transactions.SCHEMA,
+          nearTransactions.SCHEMA,
           transaction
         );
 
@@ -319,9 +319,9 @@ export function setupLedger({
           derivationPath,
         });
 
-        const signedTx = new transactions.SignedTransaction({
+        const signedTx = new nearTransactions.SignedTransaction({
           transaction,
-          signature: new transactions.Signature({
+          signature: new nearTransactions.Signature({
             keyType: transaction.publicKey.keyType,
             data: signature,
           }),
@@ -330,14 +330,13 @@ export function setupLedger({
         return provider.sendTransaction(signedTx);
       },
 
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       async signAndSendTransactions({ transactions }) {
         const signedTransactions = await signTransactions(transactions);
 
         return Promise.all(
-          signedTransactions.map((signedTx) => {
-            return provider.sendTransaction(signedTx);
-          })
+          signedTransactions.map((signedTx) =>
+            provider.sendTransaction(signedTx)
+          )
         );
       },
     };
