@@ -81,7 +81,6 @@ export function setupLedger({
       if (client) {
         return client;
       }
-
       const ledgerClient = new LedgerClient();
 
       await ledgerClient.connect();
