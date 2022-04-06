@@ -142,9 +142,7 @@ export function setupLedger({
       }
     };
 
-    const transformTransactions = async (
-      batchTransactions: Array<Transaction>
-    ) => {
+    const signTransactions = async (batchTransactions: Array<Transaction>) => {
       logger.log("Ledger:signAndSendTransactions", {
         batchTransactions,
       });
@@ -334,7 +332,7 @@ export function setupLedger({
 
       // eslint-disable-next-line @typescript-eslint/no-shadow
       async signAndSendTransactions({ transactions }) {
-        const signedTransactions = await transformTransactions(transactions);
+        const signedTransactions = await signTransactions(transactions);
 
         return Promise.all(
           signedTransactions.map((signedTx) => {
