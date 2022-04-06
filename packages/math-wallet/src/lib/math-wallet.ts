@@ -1,4 +1,4 @@
-import { transactions, utils } from "near-api-js";
+import { transactions as nearTransactions, utils } from "near-api-js";
 import isMobile from "is-mobile";
 import {
   InjectedWallet,
@@ -8,6 +8,7 @@ import {
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet, SignedInAccount } from "./injected-math-wallet";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 declare global {
   interface Window {
@@ -176,7 +177,7 @@ export function setupMathWallet({
         logger.log("MathWallet:signAndSendTransaction:block", block);
         logger.log("MathWallet:signAndSendTransaction:accessKey", accessKey);
 
-        const transaction = transactions.createTransaction(
+        const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
           receiverId,
@@ -185,7 +186,7 @@ export function setupMathWallet({
           utils.serialize.base_decode(block.header.hash)
         );
 
-        const [hash, signedTx] = await transactions.signTransaction(
+        const [hash, signedTx] = await nearTransactions.signTransaction(
           transaction,
           wallet.signer,
           accountId
@@ -196,8 +197,52 @@ export function setupMathWallet({
         return provider.sendTransaction(signedTx);
       },
 
-      async signAndSendTransactions() {
-        throw new Error("Not implemented");
+      async signAndSendTransactions({ transactions }) {
+        logger.log("MathWallet:signAndSendTransactions", { transactions });
+
+        const signerAccount = await getSignerAccount();
+        const { accountId, publicKey } = signerAccount as SignedInAccount;
+
+        const [block, accessKey] = await Promise.all([
+          provider.block({ finality: "final" }),
+          provider.viewAccessKey({ accountId, publicKey }),
+        ]);
+
+        logger.log("MathWallet:signAndSendTransactions:block", block);
+        logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
+
+        const signedTransactions: Array<SignedTransaction> = [];
+        let nonce = accessKey.nonce;
+
+        for (let i = 0; i < transactions.length; i++) {
+          const transaction = nearTransactions.createTransaction(
+            accountId,
+            utils.PublicKey.from(publicKey),
+            transactions[i].receiverId,
+            ++nonce,
+            transformActions(transactions[i].actions),
+            utils.serialize.base_decode(block.header.hash)
+          );
+
+          const [hash, signedTx] = await nearTransactions.signTransaction(
+            transaction,
+            wallet.signer,
+            accountId
+          );
+
+          logger.log("MathWallet:signAndSendTransactions:hash", hash);
+
+          signedTransactions.push(signedTx);
+        }
+
+        logger.log(
+          "MathWallet:signAndSendTransactions:signedTransactions",
+          signedTransactions
+        );
+
+        return Promise.all(
+          signedTransactions.map((tx) => provider.sendTransaction(tx))
+        );
       },
     };
   };
