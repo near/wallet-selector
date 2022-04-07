@@ -309,7 +309,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
                     type: "UPDATE",
                     payload: {
                       showWalletOptions: true,
-                      showSwitchNetwork: false,
+                      showSwitchNetwork: null,
                     },
                   });
                 }}
