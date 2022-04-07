@@ -6,6 +6,7 @@ import {
   WalletModule,
   transformActions,
   Transaction,
+  Optional,
 } from "@near-wallet-selector/core";
 
 import { LedgerClient, Subscription } from "./ledger-client";
@@ -34,10 +35,11 @@ export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 export function setupLedger({
   iconUrl,
 }: LedgerParams = {}): WalletModule<HardwareWallet> {
-  return function Ledger({ provider, emitter, logger, storage, updateState }) {
+  return function Ledger({ options, provider, emitter, logger, storage }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerState = { authData: null };
+    const walletId = "ledger";
 
     const debugMode = false;
 
@@ -51,7 +53,7 @@ export function setupLedger({
       return [{ accountId }];
     };
 
-    const signOut = async () => {
+    const disconnect = async () => {
       for (const key in subscriptions) {
         subscriptions[key].remove();
       }
@@ -63,17 +65,10 @@ export function setupLedger({
         await client.disconnect();
       }
 
-      updateState((prevState) => ({
-        ...prevState,
-        selectedWalletId: null,
-      }));
-
-      const accounts = getAccounts();
-      emitter.emit("accountsChanged", { accounts });
-      emitter.emit("signOut", { accounts });
-
       state.authData = null;
       client = null;
+
+      emitter.emit("disconnected", { id: walletId });
     };
 
     const getClient = async () => {
@@ -88,7 +83,7 @@ export function setupLedger({
       subscriptions["disconnect"] = ledgerClient.on("disconnect", (err) => {
         logger.error(err);
 
-        signOut();
+        disconnect();
       });
 
       if (debugMode) {
@@ -165,7 +160,9 @@ export function setupLedger({
       });
     };
 
-    const signTransactions = async (transactions: Array<Transaction>) => {
+    const signTransactions = async (
+      transactions: Array<Optional<Transaction, "signerId">>
+    ) => {
       if (!state.authData) {
         throw new Error("Not signed in");
       }
@@ -203,7 +200,7 @@ export function setupLedger({
     };
 
     return {
-      id: "ledger",
+      id: walletId,
       type: "hardware",
       name: "Ledger",
       description: null,
@@ -225,11 +222,7 @@ export function setupLedger({
         state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
       },
 
-      async signIn({ accountId, derivationPath }) {
-        if (await this.isSignedIn()) {
-          return;
-        }
-
+      async connect({ accountId, derivationPath }) {
         if (!accountId) {
           throw new Error("Invalid account id");
         }
@@ -256,29 +249,12 @@ export function setupLedger({
         };
 
         storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
-
         state.authData = authData;
 
-        updateState((prevState) => ({
-          ...prevState,
-          showModal: false,
-          selectedWalletId: this.id,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("signIn", { accounts });
-        emitter.emit("accountsChanged", { accounts });
+        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
       },
 
-      signOut,
-
-      async isSignedIn() {
-        return !!state.authData;
-      },
-
-      async getAccounts() {
-        return getAccounts();
-      },
+      disconnect,
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
         logger.log("Ledger:signAndSendTransaction", {
@@ -305,7 +281,7 @@ export function setupLedger({
         const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
-          receiverId,
+          receiverId || options.contractId,
           accessKey.nonce + 1,
           transformActions(actions),
           utils.serialize.base_decode(block.header.hash)
