@@ -24,6 +24,7 @@ export interface WalletSelector {
   show(): void;
   hide(): void;
 
+  connected: boolean;
   wallet<WalletVariation extends Wallet = Wallet>(
     walletId?: string
   ): WalletVariation;

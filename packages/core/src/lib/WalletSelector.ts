@@ -19,6 +19,11 @@ export const setupWalletSelector = async (
       getState: () => store.getState(),
       observable: store.observable.asObservable(),
     },
+    get connected() {
+      const { accounts } = store.getState();
+
+      return Boolean(accounts.length);
+    },
     show: () => {
       store.dispatch({
         type: "UPDATE",
