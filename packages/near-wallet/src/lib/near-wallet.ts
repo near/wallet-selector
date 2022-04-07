@@ -115,7 +115,7 @@ export function setupNearWallet({
           await localStorageKeyStore.clear();
         }
 
-        emitter.emit("accounts", { accounts: getAccounts() });
+        emitter.emit("init", { accounts: getAccounts() });
       },
 
       async connect() {

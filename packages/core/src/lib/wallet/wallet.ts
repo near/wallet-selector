@@ -28,6 +28,7 @@ export interface SignAndSendTransactionsParams {
 }
 
 export type WalletEvents = {
+  init: { accounts: Array<AccountState> };
   connected: { pending?: boolean; accounts?: Array<AccountState> };
   disconnected: null;
   accounts: { accounts: Array<AccountState> };

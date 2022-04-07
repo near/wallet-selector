@@ -220,7 +220,7 @@ export function setupLedger({
       async init() {
         state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
 
-        emitter.emit("accounts", { accounts: getAccounts() });
+        emitter.emit("init", { accounts: getAccounts() });
       },
 
       async connect({ accountId, derivationPath }) {

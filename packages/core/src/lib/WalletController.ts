@@ -45,7 +45,8 @@ class WalletController {
         storage,
       });
 
-      emitter.on("accounts", this.handleAccounts(wallet.id));
+      emitter.on("init", this.handleInitOrAccounts(wallet.id));
+      emitter.on("accounts", this.handleInitOrAccounts(wallet.id));
       emitter.on("connected", this.handleConnected(wallet.id));
       emitter.on("disconnected", this.handleDisconnected(wallet.id));
 
@@ -81,7 +82,7 @@ class WalletController {
     }
   }
 
-  private handleAccounts =
+  private handleInitOrAccounts =
     (walletId: string) =>
     ({ accounts }: WalletEvents["accounts"]) => {
       const { wallets } = this.store.getState();

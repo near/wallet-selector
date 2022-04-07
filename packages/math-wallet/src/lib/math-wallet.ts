@@ -92,7 +92,7 @@ export function setupMathWallet({
           await wallet.login({ contractId: options.contractId });
         }
 
-        emitter.emit("accounts", { accounts: getAccounts() });
+        emitter.emit("init", { accounts: getAccounts() });
       },
 
       async connect() {
