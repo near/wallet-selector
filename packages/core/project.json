@@ -51,7 +51,6 @@
         "syncVersions": true,
         "skipProjectChangelog": true,
         "baseBranch": "main",
-        "dryRun": true,
         "version": "3.0.0"
       },
       "configurations": {
