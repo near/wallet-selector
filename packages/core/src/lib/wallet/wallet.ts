@@ -26,7 +26,9 @@ export type WalletEvents = {
   init: { accounts: Array<AccountState> };
   connected: { pending?: boolean; accounts?: Array<AccountState> };
   disconnected: null;
-  accounts: { accounts: Array<AccountState> };
+  accountsChanged: { accounts: Array<AccountState> };
+  networkChanged: null;
+  uninstalled: null;
 };
 
 interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {

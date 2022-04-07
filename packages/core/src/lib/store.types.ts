@@ -29,7 +29,7 @@ export interface WalletSelectorState {
   showWalletOptions: boolean;
   showLedgerDerivationPath: boolean;
   showWalletNotInstalled: string | null;
-  showSwitchNetwork: boolean;
+  showSwitchNetwork: string | null;
 }
 
 export type WalletSelectorAction =

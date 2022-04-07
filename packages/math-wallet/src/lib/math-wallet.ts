@@ -22,7 +22,7 @@ export interface MathWalletParams {
 export function setupMathWallet({
   iconUrl,
 }: MathWalletParams = {}): WalletModule<InjectedWallet> {
-  return function MathWallet({ options, provider, emitter, store, logger }) {
+  return function MathWallet({ options, provider, emitter, logger }) {
     let wallet: InjectedMathWallet;
 
     const getAccounts = () => {
@@ -97,13 +97,7 @@ export function setupMathWallet({
 
       async connect() {
         if (!(await isInstalled())) {
-          return store.dispatch({
-            type: "UPDATE",
-            payload: {
-              showWalletOptions: false,
-              showWalletNotInstalled: this.id,
-            },
-          });
+          return emitter.emit("uninstalled", null);
         }
 
         if (!wallet) {

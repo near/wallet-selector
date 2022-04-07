@@ -17,7 +17,7 @@ export function setupNearWallet({
   walletUrl,
   iconUrl,
 }: NearWalletParams = {}): WalletModule<BrowserWallet> {
-  return function NearWallet({ options, network, emitter, logger }) {
+  return function NearWallet({ options, emitter, logger }) {
     let keyStore: keyStores.KeyStore;
     let wallet: WalletConnection;
 
@@ -36,7 +36,7 @@ export function setupNearWallet({
         return walletUrl;
       }
 
-      switch (network.networkId) {
+      switch (options.network.networkId) {
         case "mainnet":
           return "https://wallet.near.org";
         case "testnet":
@@ -103,7 +103,7 @@ export function setupNearWallet({
         const near = await connect({
           keyStore: localStorageKeyStore,
           walletUrl: getWalletUrl(),
-          ...network,
+          ...options.network,
           headers: {},
         });
 

@@ -34,10 +34,12 @@ class WalletController {
         storage,
       });
 
-      emitter.on("init", this.handleInitOrAccounts(wallet.id));
-      emitter.on("accounts", this.handleInitOrAccounts(wallet.id));
+      emitter.on("init", this.handleAccountsChanged(wallet.id));
       emitter.on("connected", this.handleConnected(wallet.id));
       emitter.on("disconnected", this.handleDisconnected(wallet.id));
+      emitter.on("accountsChanged", this.handleAccountsChanged(wallet.id));
+      emitter.on("networkChanged", this.handleNetworkChanged(wallet.id));
+      emitter.on("uninstalled", this.handleUninstalled(wallet.id));
 
       return wallet;
     });
@@ -71,24 +73,6 @@ class WalletController {
     }
   }
 
-  private handleInitOrAccounts =
-    (walletId: string) =>
-    ({ accounts }: WalletEvents["accounts"]) => {
-      const { wallets } = this.store.getState();
-      const selected = wallets.some((wallet) => {
-        return wallet.id === walletId && wallet.selected;
-      });
-
-      if (!selected) {
-        return;
-      }
-
-      this.store.dispatch({
-        type: "ACCOUNTS_CHANGED",
-        payload: { accounts },
-      });
-    };
-
   private handleConnected =
     (walletId: string) =>
     async ({ pending = false, accounts = [] }: WalletEvents["connected"]) => {
@@ -119,6 +103,45 @@ class WalletController {
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
+    });
+  };
+
+  private handleAccountsChanged =
+    (walletId: string) =>
+    ({ accounts }: WalletEvents["accountsChanged"]) => {
+      const { wallets } = this.store.getState();
+      const selected = wallets.some((wallet) => {
+        return wallet.id === walletId && wallet.selected;
+      });
+
+      if (!selected) {
+        return;
+      }
+
+      this.store.dispatch({
+        type: "ACCOUNTS_CHANGED",
+        payload: { accounts },
+      });
+    };
+
+  private handleNetworkChanged = (walletId: string) => () => {
+    this.store.dispatch({
+      type: "UPDATE",
+      payload: {
+        showModal: true,
+        showWalletOptions: false,
+        showSwitchNetwork: walletId,
+      },
+    });
+  };
+
+  private handleUninstalled = (walletId: string) => () => {
+    this.store.dispatch({
+      type: "UPDATE",
+      payload: {
+        showWalletOptions: false,
+        showWalletNotInstalled: walletId,
+      },
     });
   };
 

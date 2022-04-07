@@ -24,7 +24,7 @@ export interface SenderParams {
 export function setupSender({
   iconUrl,
 }: SenderParams = {}): WalletModule<InjectedWallet> {
-  return function Sender({ options, network, emitter, store, logger }) {
+  return function Sender({ options, emitter, logger }) {
     let wallet: InjectedSender;
 
     const getAccounts = () => {
@@ -112,15 +112,8 @@ export function setupSender({
         });
 
         wallet.on("rpcChanged", (response) => {
-          if (network.networkId !== response.rpc.networkId) {
-            store.dispatch({
-              type: "UPDATE",
-              payload: {
-                showModal: true,
-                showWalletOptions: false,
-                showSwitchNetwork: true,
-              },
-            });
+          if (options.network.networkId !== response.rpc.networkId) {
+            emitter.emit("networkChanged", null);
           }
         });
 
@@ -129,13 +122,7 @@ export function setupSender({
 
       async connect() {
         if (!(await isInstalled())) {
-          return store.dispatch({
-            type: "UPDATE",
-            payload: {
-              showWalletOptions: false,
-              showWalletNotInstalled: this.id,
-            },
-          });
+          return emitter.emit("uninstalled", null);
         }
 
         if (!wallet) {
