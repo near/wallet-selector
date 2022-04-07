@@ -50,19 +50,19 @@
         "commitMessageFormat": "chore(release): release version ${version}",
         "syncVersions": true,
         "skipProjectChangelog": true,
-        "baseBranch": "main"
+        "baseBranch": "main",
+        "dryRun": true,
+        "version": "3.0.0"
       },
       "configurations": {
-        "alpha": {
-          "dryRun": true,
+        "dev": {
           "releaseAs": "prerelease",
-          "preid": "alpha",
+          "preid": "dev",
           "skipRootChangelog": true
         },
-        "beta": {
-          "dryRun": true,
+        "alpha": {
           "releaseAs": "prerelease",
-          "preid": "beta",
+          "preid": "alpha",
           "skipRootChangelog": true
         }
       }
