@@ -164,7 +164,11 @@ export function setupSender({
         emitter.emit("disconnected", null);
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId = options.contractId,
+        actions,
+      }) {
         logger.log("Sender:signAndSendTransaction", {
           signerId,
           receiverId,
@@ -173,7 +177,7 @@ export function setupSender({
 
         return wallet
           .signAndSendTransaction({
-            receiverId: receiverId || options.contractId,
+            receiverId,
             actions: transformActions(actions),
           })
           .then((res) => {

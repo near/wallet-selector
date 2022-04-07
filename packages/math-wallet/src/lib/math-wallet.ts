@@ -131,7 +131,11 @@ export function setupMathWallet({
         emitter.emit("disconnected", null);
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId = options.contractId,
+        actions,
+      }) {
         logger.log("MathWallet:signAndSendTransaction", {
           signerId,
           receiverId,
@@ -150,7 +154,7 @@ export function setupMathWallet({
         const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
-          receiverId || options.contractId,
+          receiverId,
           accessKey.nonce + 1,
           transformActions(actions),
           utils.serialize.base_decode(block.header.hash)

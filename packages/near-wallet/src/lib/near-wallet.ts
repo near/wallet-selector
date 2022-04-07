@@ -144,7 +144,11 @@ export function setupNearWallet({
         emitter.emit("disconnected", null);
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId = options.contractId,
+        actions,
+      }) {
         logger.log("NearWallet:signAndSendTransaction", {
           signerId,
           receiverId,
