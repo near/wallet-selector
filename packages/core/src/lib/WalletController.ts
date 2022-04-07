@@ -109,9 +109,9 @@ class WalletController {
   }
 
   async init() {
-    this.emitter.on("accounts", this.handleAccounts);
-    this.emitter.on("connected", this.handleConnected);
-    this.emitter.on("disconnected", this.handleDisconnected);
+    this.emitter.on("accounts", this.handleAccounts.bind(this));
+    this.emitter.on("connected", this.handleConnected.bind(this));
+    this.emitter.on("disconnected", this.handleDisconnected.bind(this));
 
     this.setupWalletModules();
 
