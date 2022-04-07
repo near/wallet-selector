@@ -1,10 +1,11 @@
-import { transactions, utils } from "near-api-js";
+import { transactions as nearTransactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import isMobile from "is-mobile";
 import {
   HardwareWallet,
   WalletModule,
   transformActions,
+  Transaction,
 } from "@near-wallet-selector/core";
 
 import { LedgerClient, Subscription } from "./ledger-client";
@@ -140,6 +141,67 @@ export function setupLedger({
       }
     };
 
+    const signTransaction = async (
+      transaction: nearTransactions.Transaction,
+      ledgerClient: LedgerClient,
+      derivationPath: string
+    ) => {
+      const serializedTx = utils.serialize.serialize(
+        nearTransactions.SCHEMA,
+        transaction
+      );
+
+      const signature = await ledgerClient.sign({
+        data: serializedTx,
+        derivationPath,
+      });
+
+      return new nearTransactions.SignedTransaction({
+        transaction,
+        signature: new nearTransactions.Signature({
+          keyType: transaction.publicKey.keyType,
+          data: signature,
+        }),
+      });
+    };
+
+    const signTransactions = async (transactions: Array<Transaction>) => {
+      if (!state.authData) {
+        throw new Error("Not signed in");
+      }
+
+      const { accountId, derivationPath, publicKey } = state.authData;
+      const ledgerClient = await getClient();
+
+      const [block, accessKey] = await Promise.all([
+        provider.block({ finality: "final" }),
+        provider.viewAccessKey({ accountId, publicKey }),
+      ]);
+
+      const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
+
+      for (let i = 0; i < transactions.length; i++) {
+        const actions = transformActions(transactions[i].actions);
+
+        const transaction = nearTransactions.createTransaction(
+          accountId,
+          utils.PublicKey.from(publicKey),
+          transactions[i].receiverId,
+          accessKey.nonce + i + 1,
+          actions,
+          utils.serialize.base_decode(block.header.hash)
+        );
+
+        const signedTx = await signTransaction(
+          transaction,
+          ledgerClient,
+          derivationPath
+        );
+        signedTransactions.push(signedTx);
+      }
+      return signedTransactions;
+    };
+
     return {
       id: "ledger",
       type: "hardware",
@@ -240,7 +302,7 @@ export function setupLedger({
         logger.log("Ledger:signAndSendTransaction:block", block);
         logger.log("Ledger:signAndSendTransaction:accessKey", accessKey);
 
-        const transaction = transactions.createTransaction(
+        const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
           receiverId,
@@ -249,29 +311,23 @@ export function setupLedger({
           utils.serialize.base_decode(block.header.hash)
         );
 
-        const serializedTx = utils.serialize.serialize(
-          transactions.SCHEMA,
-          transaction
-        );
-
-        const signature = await ledgerClient.sign({
-          data: serializedTx,
-          derivationPath,
-        });
-
-        const signedTx = new transactions.SignedTransaction({
+        const signedTx = await signTransaction(
           transaction,
-          signature: new transactions.Signature({
-            keyType: transaction.publicKey.keyType,
-            data: signature,
-          }),
-        });
+          ledgerClient,
+          derivationPath
+        );
 
         return provider.sendTransaction(signedTx);
       },
 
-      async signAndSendTransactions() {
-        throw new Error("Not implemented");
+      async signAndSendTransactions({ transactions }) {
+        const signedTransactions = await signTransactions(transactions);
+
+        return Promise.all(
+          signedTransactions.map((signedTx) =>
+            provider.sendTransaction(signedTx)
+          )
+        );
       },
     };
   };
