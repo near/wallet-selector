@@ -8,7 +8,6 @@ import {
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet, SignedInAccount } from "./injected-math-wallet";
-import { SignedTransaction } from "near-api-js/lib/transaction";
 
 declare global {
   interface Window {
@@ -211,7 +210,8 @@ export function setupMathWallet({
         logger.log("MathWallet:signAndSendTransactions:block", block);
         logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
 
-        const signedTransactions: Array<SignedTransaction> = [];
+        const signedTransactions: Array<nearTransactions.SignedTransaction> =
+          [];
         let nonce = accessKey.nonce;
 
         for (let i = 0; i < transactions.length; i++) {
