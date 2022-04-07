@@ -42,6 +42,30 @@
         "jestConfig": "packages/core/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "angular",
+        "commitMessageFormat": "chore(release): release version ${version}",
+        "syncVersions": true,
+        "skipProjectChangelog": true,
+        "baseBranch": "main"
+      },
+      "configurations": {
+        "alpha": {
+          "dryRun": true,
+          "releaseAs": "prerelease",
+          "preid": "alpha",
+          "skipRootChangelog": true
+        },
+        "beta": {
+          "dryRun": true,
+          "releaseAs": "prerelease",
+          "preid": "beta",
+          "skipRootChangelog": true
+        }
+      }
     }
   }
 }
