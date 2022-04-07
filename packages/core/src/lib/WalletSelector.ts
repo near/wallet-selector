@@ -27,7 +27,7 @@ export const setupWalletSelector = async (
           showWalletOptions: true,
           showLedgerDerivationPath: false,
           showWalletNotInstalled: null,
-          showSwitchNetwork: false,
+          showSwitchNetwork: null,
         },
       });
     },
