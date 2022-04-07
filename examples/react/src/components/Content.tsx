@@ -39,13 +39,13 @@ const Content: React.FC = () => {
   }, [accountId, selector.store]);
 
   const getMessages = useCallback(() => {
-    const { network, contractId } = selector.store.getState();
+    const { network, contract } = selector.store.getState();
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: contractId,
+        account_id: contract.contractId,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -102,7 +102,7 @@ const Content: React.FC = () => {
   };
 
   const handleSendMultipleTransactions = () => {
-    const { contractId } = selector.store.getState();
+    const { contract } = selector.store.getState();
 
     selector.wallet().signAndSendTransactions({
       transactions: [
@@ -122,7 +122,7 @@ const Content: React.FC = () => {
           ],
         },
         {
-          receiverId: contractId,
+          receiverId: contract.contractId,
           actions: [
             {
               type: "FunctionCall",

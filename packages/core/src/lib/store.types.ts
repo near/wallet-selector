@@ -7,6 +7,11 @@ export interface AccountState {
   accountId: string;
 }
 
+export interface ContractState {
+  contractId: string;
+  methodNames: Array<string> | null;
+}
+
 export type WalletState<WalletVariation extends Wallet = Wallet> =
   WalletVariation & {
     selected: boolean;
@@ -14,8 +19,8 @@ export type WalletState<WalletVariation extends Wallet = Wallet> =
 
 export interface WalletSelectorState {
   network: Network;
-  contractId: string;
-  methodNames: Array<string> | null;
+  // TODO: Remove once Modal is decoupled from core.
+  contract: ContractState;
 
   wallets: Array<WalletState>;
   accounts: Array<AccountState>;

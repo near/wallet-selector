@@ -10,8 +10,10 @@ export const setupWalletSelector = async (
 ): Promise<WalletSelector> => {
   const store = createStore({
     network: resolveNetwork(options.network),
-    contractId: options.contractId,
-    methodNames: options.methodNames || null,
+    contract: {
+      contractId: options.contractId,
+      methodNames: options.methodNames || null,
+    },
   });
   const controller = new WalletController(options, store);
 
