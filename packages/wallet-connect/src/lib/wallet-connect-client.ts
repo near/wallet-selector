@@ -39,10 +39,6 @@ class WalletConnectClient {
     return this.client.session;
   }
 
-  isSignedIn() {
-    return Boolean(this.client.session.topics.length);
-  }
-
   on<Event extends keyof WalletConnectEvents>(
     event: Event,
     callback: WalletConnectEvents[Event]

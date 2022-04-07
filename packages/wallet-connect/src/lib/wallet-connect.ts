@@ -19,7 +19,7 @@ export function setupWalletConnect({
   metadata,
   iconUrl,
 }: WalletConnectParams): WalletModule<BridgeWallet> {
-  return function WalletConnect({ network, emitter, logger, updateState }) {
+  return function WalletConnect({ options, network, emitter, logger }) {
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
@@ -70,8 +70,7 @@ export function setupWalletConnect({
 
           if (updatedSession.topic === session?.topic) {
             session = updatedSession;
-            const accounts = getAccounts();
-            emitter.emit("accountsChanged", { accounts });
+            emitter.emit("accounts", { accounts: getAccounts() });
           }
         })
       );
@@ -82,14 +81,8 @@ export function setupWalletConnect({
 
           if (deletedSession.topic === session?.topic) {
             cleanup();
-            updateState((prevState) => ({
-              ...prevState,
-              selectedWalletId: null,
-            }));
 
-            const accounts = getAccounts();
-            emitter.emit("accountsChanged", { accounts });
-            emitter.emit("signOut", { accounts });
+            emitter.emit("disconnected", null);
           }
         })
       );
@@ -111,13 +104,15 @@ export function setupWalletConnect({
       async init() {
         await setupClient();
 
-        if (await this.isSignedIn()) {
+        if (client.session.topics.length) {
           logger.log("WalletConnect:init", "Found historic session");
           session = await client.session.get(client.session.topics[0]);
         }
+
+        emitter.emit("init", { accounts: getAccounts() });
       },
 
-      async signIn() {
+      async connect() {
         if (!client) {
           await setupClient();
         }
@@ -145,40 +140,34 @@ export function setupWalletConnect({
             },
           });
 
-          updateState((prevState) => ({
-            ...prevState,
-            showModal: false,
-            selectedWalletId: this.id,
-          }));
-
-          const accounts = getAccounts();
-          emitter.emit("signIn", { accounts });
-          emitter.emit("accountsChanged", { accounts });
+          emitter.emit("connected", { accounts: getAccounts() });
         } finally {
           subscription.remove();
           QRCodeModal.close();
         }
       },
 
-      async signOut() {
-        return client.disconnect({
-          topic: session!.topic,
+      async disconnect() {
+        if (!session) {
+          return;
+        }
+
+        await client.disconnect({
+          topic: session.topic,
           reason: {
             code: 5900,
             message: "User disconnected",
           },
         });
+
+        cleanup();
       },
 
-      async isSignedIn() {
-        return client.isSignedIn();
-      },
-
-      async getAccounts() {
-        return getAccounts();
-      },
-
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId = options.contractId,
+        actions,
+      }) {
         logger.log("WalletConnect:signAndSendTransaction", {
           topic: session!.topic,
           signerId,
