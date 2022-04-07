@@ -11,8 +11,6 @@ import {
 } from "../../../core/src/lib/services";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { getNetwork, resolveNetwork } from "../../../core/src/lib/network";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { updateState } from "../../../core/src/lib/state";
 
 const createNearWallet = () => {
   const walletConnection = mock<WalletConnection>();
@@ -62,7 +60,6 @@ const createNearWallet = () => {
       emitter: new EventEmitter(),
       logger,
       storage,
-      updateState,
     }),
     walletConnection,
     account,

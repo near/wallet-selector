@@ -1,12 +1,10 @@
 import { mock } from "jest-mock-extended";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { getNetwork } from "../../../core/src/lib/network";
+import { getNetworkPreset } from "../../../core/src/lib/options";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { logger } from "../../../core/src/lib/services/logger/logging.service";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Provider } from "../../../core/src/lib/services/provider/provider.service";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { updateState } from "../../../core/src/lib/state";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { EventEmitter } from "../../../core/src/lib/services/event-emitter/event-emitter.service";
 import { LedgerClient } from "./ledger-client";
@@ -60,14 +58,14 @@ const createLedgerWallet = () => {
     .spyOn(PersistentStorage.prototype, "getItem")
     .mockImplementation(() => authData);
 
-  const network = getNetwork(networkId);
+  const network = getNetworkPreset(networkId);
 
   return {
     nearApiJs: require("near-api-js"),
     wallet: LedgerWallet({
       options: {
         wallets: ["ledger-wallet"],
-        networkId: networkId,
+        network,
         contract: {
           contractId: "guest-book.testnet",
         },
@@ -76,7 +74,6 @@ const createLedgerWallet = () => {
       emitter: new EventEmitter(),
       logger,
       storage,
-      updateState,
     }),
     storage,
     ledgerClient,
