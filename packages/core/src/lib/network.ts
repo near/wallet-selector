@@ -35,7 +35,7 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
         restApiUrl: "https://rest.nearapi.org",
       };
     default:
-      throw Error(`Failed to find config for: '${networkId}'`);
+      throw Error(`Failed to find network configuration for: '${networkId}'`);
   }
 };
 

@@ -1,3 +1,4 @@
+import { NetworkId } from "@near-wallet-selector/core";
 import { getNetwork, NetworkConfiguration, resolveNetwork } from "./network";
 
 describe("getNetwork", () => {
@@ -41,10 +42,10 @@ describe("getNetwork", () => {
   });
 
   it("throws for 'customnet'", () => {
-    const networkId = "customnet";
+    const networkId = "customnet" as NetworkId;
 
     expect(() => getNetwork(networkId)).toThrowError(
-      new Error(`Failed to find network configuration for '${networkId}'`)
+      new Error(`Failed to find network configuration for: '${networkId}'`)
     );
   });
 });
@@ -58,21 +59,21 @@ describe("resolveNetwork", () => {
 
   it("resolves to custom network configuration for 'customnet'", () => {
     const network: NetworkConfiguration = {
-      networkId: "localnet",
+      networkId: "customnet",
       nodeUrl: "http://127.0.0.1:52993",
       helperUrl: "http://127.0.0.1:52997",
       explorerUrl: "http://127.0.0.1:53009",
       restApiUrl: "https://rest.nearapi.org",
     };
 
-    expect(resolveNetwork("customnet", network)).toEqual(network);
+    expect(resolveNetwork("customnet" as NetworkId)).toEqual(network);
   });
 
   it("throws if no custom network configuration is defined for 'customnet'", () => {
     const networkId = "customnet";
 
-    expect(() => resolveNetwork(networkId)).toThrowError(
-      new Error(`You must define network configuration for '${networkId}'`)
+    expect(() => resolveNetwork(networkId as NetworkId)).toThrowError(
+      new Error(`Failed to find network configuration for: '${networkId}'`)
     );
   });
 });
