@@ -1,8 +1,8 @@
 import { BehaviorSubject } from "rxjs";
 import {
+  Store,
   WalletSelectorState,
   WalletSelectorAction,
-  WalletSelectorStore,
 } from "./store.types";
 
 const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
@@ -82,7 +82,7 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
 export const createStore = (
   initialState: Partial<WalletSelectorState> &
     Pick<WalletSelectorState, "network" | "contract">
-): WalletSelectorStore<WalletSelectorState> => {
+): Store => {
   const subject = new BehaviorSubject<WalletSelectorState>({
     accounts: [],
     wallets: [],

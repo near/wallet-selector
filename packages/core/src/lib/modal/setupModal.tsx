@@ -4,13 +4,13 @@ import ReactDOM from "react-dom";
 import { WalletSelector } from "../WalletSelector.types";
 import { ModalOptions } from "./setupModal.types";
 import { Modal } from "./Modal";
-import { WalletSelectorState, WalletSelectorStore } from "../store.types";
+import { Store } from "../store.types";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 export const setupModal = (
   selector: WalletSelector,
-  store: WalletSelectorStore<WalletSelectorState>,
+  store: Store,
   options: ModalOptions = {}
 ) => {
   const el = document.createElement("div");

@@ -90,7 +90,9 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.store.toObservable().subscribe((state) => {
+    const subscription = selector.store.observable.subscribe((state) => {
+      console.log("State Update", state);
+
       syncAccountState(accountId, state.accounts);
     });
 

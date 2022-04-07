@@ -22,7 +22,7 @@ export const setupWalletSelector = async (
   const selector: WalletSelector = {
     store: {
       getState: () => store.getState(),
-      toObservable: () => store.observable,
+      observable: store.observable.asObservable(),
     },
     show: () => {
       store.dispatch({

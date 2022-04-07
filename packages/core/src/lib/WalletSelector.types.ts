@@ -14,11 +14,13 @@ export interface WalletSelectorOptions {
   ui?: ModalOptions;
 }
 
+export interface WalletSelectorStore {
+  getState: () => WalletSelectorState;
+  observable: Observable<WalletSelectorState>;
+}
+
 export interface WalletSelector {
-  store: {
-    getState: () => WalletSelectorState;
-    toObservable: () => Observable<WalletSelectorState>;
-  };
+  store: WalletSelectorStore;
 
   show(): void;
   hide(): void;

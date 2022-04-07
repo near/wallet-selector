@@ -3,21 +3,17 @@ import { Wallet, WalletEvents } from "./wallet";
 import { Network } from "./network";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 import { WalletSelectorOptions } from "./WalletSelector.types";
-import {
-  WalletSelectorState,
-  WalletSelectorStore,
-  WalletState,
-} from "./store.types";
+import { Store, WalletState } from "./store.types";
 
 class WalletController {
   private options: WalletSelectorOptions;
   private network: Network;
   private provider: Provider;
-  private store: WalletSelectorStore<WalletSelectorState>;
+  private store: Store;
 
   constructor(
     options: WalletSelectorOptions,
-    store: WalletSelectorStore<WalletSelectorState>
+    store: Store
   ) {
     const { network } = store.getState();
 

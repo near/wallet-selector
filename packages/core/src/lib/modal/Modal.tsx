@@ -4,7 +4,7 @@ import { logger } from "../services";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
 import { ModalOptions, Theme } from "./setupModal.types";
 import { WalletSelector } from "../WalletSelector.types";
-import { WalletSelectorState, WalletSelectorStore } from "../store.types";
+import { Store } from "../store.types";
 import styles from "./Modal.styles";
 
 const getThemeClass = (theme?: Theme) => {
@@ -20,7 +20,7 @@ const getThemeClass = (theme?: Theme) => {
 
 interface ModalProps {
   selector: WalletSelector;
-  store: WalletSelectorStore<WalletSelectorState>;
+  store: Store;
   options: ModalOptions;
 }
 
@@ -39,8 +39,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     null;
 
   useEffect(() => {
-    const observable = selector.store.toObservable();
-    const subscription = observable.subscribe(setState);
+    const subscription = selector.store.observable.subscribe(setState);
 
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps

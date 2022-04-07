@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { Network } from "./network";
 import { Wallet } from "./wallet";
@@ -67,8 +67,8 @@ export type WalletSelectorAction =
       payload: Partial<WalletSelectorState>;
     };
 
-export interface WalletSelectorStore<State> {
-  observable: Observable<State>;
-  getState(): State;
+export interface Store {
+  observable: BehaviorSubject<WalletSelectorState>;
+  getState(): WalletSelectorState;
   dispatch(action: WalletSelectorAction): void;
 }
