@@ -201,8 +201,18 @@ export function setupWalletConnect({
         });
       },
 
-      async signAndSendTransactions() {
-        throw new Error("Not implemented");
+      async signAndSendTransactions({ transactions }) {
+        logger.log("WalletConnect:signAndSendTransactions", { transactions });
+
+        return client.request({
+          timeout: 30 * 1000,
+          topic: session!.topic,
+          chainId: getChainId(),
+          request: {
+            method: "near_signAndSendTransactions",
+            params: { transactions },
+          },
+        });
       },
     };
   };
