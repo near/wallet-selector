@@ -7,6 +7,7 @@ import {
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -201,8 +202,35 @@ export function setupWalletConnect({
         });
       },
 
-      async signAndSendTransactions() {
-        throw new Error("Not implemented");
+      async signAndSendTransactions({ transactions }) {
+        logger.log("WalletConnect:signAndSendTransactions", { transactions });
+
+        const responses: Array<FinalExecutionOutcome> = [];
+
+        for (let i = 0; i < transactions.length; i++) {
+          const response = await client.request<FinalExecutionOutcome>({
+            timeout: 30 * 1000,
+            topic: session!.topic,
+            chainId: getChainId(),
+            request: {
+              method: "near_signAndSendTransaction",
+              params: {
+                signerId: transactions[i].signerId,
+                receiverId: transactions[i].receiverId,
+                actions: transactions[i].actions,
+              },
+            },
+          });
+
+          responses.push(response);
+        }
+
+        logger.log(
+          "WalletConnect:signAndSendTransactions:responses",
+          responses
+        );
+
+        return responses;
       },
     };
   };
