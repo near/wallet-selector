@@ -59,6 +59,7 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
             selected: false,
           };
         }),
+        accounts: [],
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -90,7 +91,7 @@ export const createStore = (
     showWalletOptions: true,
     showLedgerDerivationPath: false,
     showWalletNotInstalled: null,
-    showSwitchNetwork: false,
+    showSwitchNetwork: null,
     ...initialState,
   });
 
