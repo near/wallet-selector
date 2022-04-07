@@ -11,10 +11,7 @@ class WalletController {
   private provider: Provider;
   private store: Store;
 
-  constructor(
-    options: WalletSelectorOptions,
-    store: Store
-  ) {
+  constructor(options: WalletSelectorOptions, store: Store) {
     const { network } = store.getState();
 
     this.options = options;
@@ -36,7 +33,6 @@ class WalletController {
         network: this.network,
         provider: this.provider,
         emitter,
-        store: this.store,
         logger,
         storage,
       });

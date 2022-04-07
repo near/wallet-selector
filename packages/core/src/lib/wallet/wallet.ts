@@ -6,7 +6,7 @@ import { Transaction } from "./transactions";
 import { Action } from "./actions";
 import { Network } from "../network";
 import { Optional } from "../Optional";
-import { Store, AccountState } from "../store.types";
+import { AccountState } from "../store.types";
 
 export interface HardwareWalletConnectParams {
   accountId: string;
@@ -92,7 +92,6 @@ export interface WalletOptions {
   network: Network;
   provider: Provider;
   emitter: Emitter<WalletEvents>;
-  store: Store;
   logger: Logger;
   storage: PersistentStorage;
 }
