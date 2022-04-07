@@ -7,7 +7,6 @@ import {
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export interface WalletConnectParams {
   projectId: string;
