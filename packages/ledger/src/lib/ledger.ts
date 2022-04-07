@@ -39,7 +39,6 @@ export function setupLedger({
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerState = { authData: null };
-    const walletId = "ledger";
 
     const debugMode = false;
 
@@ -68,7 +67,7 @@ export function setupLedger({
       state.authData = null;
       client = null;
 
-      emitter.emit("disconnected", { id: walletId });
+      emitter.emit("disconnected", null);
     };
 
     const getClient = async () => {
@@ -200,7 +199,7 @@ export function setupLedger({
     };
 
     return {
-      id: walletId,
+      id: "ledger",
       type: "hardware",
       name: "Ledger",
       description: null,
@@ -220,6 +219,8 @@ export function setupLedger({
 
       async init() {
         state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
+
+        emitter.emit("accounts", { accounts: getAccounts() });
       },
 
       async connect({ accountId, derivationPath }) {
@@ -251,7 +252,7 @@ export function setupLedger({
         storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
         state.authData = authData;
 
-        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
+        emitter.emit("connected", { accounts: getAccounts() });
       },
 
       disconnect,

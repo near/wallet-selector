@@ -115,7 +115,7 @@ export function setupNearWallet({
           await localStorageKeyStore.clear();
         }
 
-        emitter.emit("init", { id: this.id, accounts: getAccounts() });
+        emitter.emit("accounts", { accounts: getAccounts() });
       },
 
       async connect() {
@@ -130,7 +130,7 @@ export function setupNearWallet({
 
         // We use the pending flag because we can't guarantee the user will
         // actually sign in. Best we can do is set in storage and validate on init.
-        emitter.emit("connected", { id: this.id, pending: true });
+        emitter.emit("connected", { pending: true });
       },
 
       async disconnect() {
@@ -141,7 +141,7 @@ export function setupNearWallet({
         wallet.signOut();
         await keyStore.clear();
 
-        emitter.emit("disconnected", { id: this.id });
+        emitter.emit("disconnected", null);
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

@@ -37,23 +37,30 @@ export interface WalletSelectorState {
 export type WalletSelectorAction =
   | {
       type: "SETUP_WALLET_MODULES";
-      payload: { wallets: Array<Wallet>; selectedWalletId: string | null };
-    }
-  | {
-      type: "WALLET_INIT";
-      payload: { id: string; accounts: Array<AccountState> };
+      payload: {
+        wallets: Array<Wallet>;
+        selectedWalletId: string | null;
+      };
     }
   | {
       type: "WALLET_CONNECTED";
-      payload: { id: string; pending: boolean; accounts: Array<AccountState> };
+      payload: {
+        walletId: string;
+        pending: boolean;
+        accounts: Array<AccountState>;
+      };
     }
   | {
       type: "WALLET_DISCONNECTED";
-      payload: { id: string };
+      payload: {
+        walletId: string;
+      };
     }
   | {
       type: "ACCOUNTS_CHANGED";
-      payload: { accounts: Array<AccountState> };
+      payload: {
+        accounts: Array<AccountState>;
+      };
     }
   | {
       type: "UPDATE";

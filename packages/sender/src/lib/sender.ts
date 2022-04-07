@@ -124,7 +124,7 @@ export function setupSender({
           }
         });
 
-        emitter.emit("init", { id: this.id, accounts: getAccounts() });
+        emitter.emit("accounts", { accounts: getAccounts() });
       },
 
       async connect() {
@@ -151,7 +151,7 @@ export function setupSender({
           throw new Error("Failed to sign in");
         }
 
-        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
+        emitter.emit("connected", { accounts: getAccounts() });
       },
 
       async disconnect() {
@@ -161,7 +161,7 @@ export function setupSender({
           throw new Error("Failed to sign out");
         }
 
-        emitter.emit("disconnected", { id: this.id });
+        emitter.emit("disconnected", null);
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {

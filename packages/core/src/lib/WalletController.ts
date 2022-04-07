@@ -1,4 +1,4 @@
-import { logger, storage, Provider, Emitter, EventEmitter } from "./services";
+import { logger, storage, Provider, EventEmitter } from "./services";
 import { Wallet, WalletEvents } from "./wallet";
 import { Network } from "./network";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
@@ -13,7 +13,6 @@ class WalletController {
   private options: WalletSelectorOptions;
   private network: Network;
   private provider: Provider;
-  private emitter: Emitter<WalletEvents>;
   private store: WalletSelectorStore<WalletSelectorState>;
 
   constructor(
@@ -25,7 +24,6 @@ class WalletController {
     this.options = options;
     this.network = network;
     this.provider = new Provider(network.nodeUrl);
-    this.emitter = new EventEmitter<WalletEvents>();
     this.store = store;
   }
 
@@ -35,15 +33,23 @@ class WalletController {
     );
 
     const wallets = this.options.wallets.map((module) => {
-      return module({
+      const emitter = new EventEmitter<WalletEvents>();
+
+      const wallet = module({
         options: this.options,
         network: this.network,
         provider: this.provider,
-        emitter: this.emitter,
+        emitter,
         store: this.store,
         logger,
         storage,
       });
+
+      emitter.on("accounts", this.handleAccounts(wallet.id));
+      emitter.on("connected", this.handleConnected(wallet.id));
+      emitter.on("disconnected", this.handleDisconnected(wallet.id));
+
+      return wallet;
     });
 
     // Discard invalid id in storage.
@@ -75,63 +81,59 @@ class WalletController {
     }
   }
 
-  private handleInit({ id, accounts }: WalletEvents["init"]) {
-    this.store.dispatch({
-      type: "WALLET_INIT",
-      payload: { id, accounts },
-    });
-  }
-
-  private handleAccounts({ accounts }: WalletEvents["accounts"]) {
-    this.store.dispatch({
-      type: "ACCOUNTS_CHANGED",
-      payload: { accounts },
-    });
-  }
-
-  private async handleConnected({
-    id,
-    pending = false,
-    accounts = [],
-  }: WalletEvents["connected"]) {
-    const selectedWallet = this.getWallet();
-
-    if (selectedWallet) {
-      await selectedWallet.disconnect().catch(() => {
-        logger.error("Failed to disconnect existing wallet");
-
-        // At least clean up state on our side.
-        this.handleDisconnected({ id: selectedWallet.id });
+  private handleAccounts =
+    (walletId: string) =>
+    ({ accounts }: WalletEvents["accounts"]) => {
+      const { wallets } = this.store.getState();
+      const selected = wallets.some((wallet) => {
+        return wallet.id === walletId && wallet.selected;
       });
-    }
 
-    if (pending || accounts.length) {
-      storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, id);
-    }
+      if (!selected) {
+        return;
+      }
 
-    this.store.dispatch({
-      type: "WALLET_CONNECTED",
-      payload: { id, pending, accounts },
-    });
-  }
+      this.store.dispatch({
+        type: "ACCOUNTS_CHANGED",
+        payload: { accounts },
+      });
+    };
 
-  private handleDisconnected({ id }: WalletEvents["disconnected"]) {
+  private handleConnected =
+    (walletId: string) =>
+    async ({ pending = false, accounts = [] }: WalletEvents["connected"]) => {
+      const selectedWallet = this.getWallet();
+
+      if (selectedWallet) {
+        await selectedWallet.disconnect().catch(() => {
+          logger.error("Failed to disconnect existing wallet");
+
+          // At least clean up state on our side.
+          this.handleDisconnected(selectedWallet.id)();
+        });
+      }
+
+      if (pending || accounts.length) {
+        storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
+      }
+
+      this.store.dispatch({
+        type: "WALLET_CONNECTED",
+        payload: { walletId, pending, accounts },
+      });
+    };
+
+  private handleDisconnected = (walletId: string) => () => {
     storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
 
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
-      payload: { id },
+      payload: { walletId },
     });
-  }
+  };
 
   async init() {
-    this.emitter.on("init", this.handleInit.bind(this));
-    this.emitter.on("accounts", this.handleAccounts.bind(this));
-    this.emitter.on("connected", this.handleConnected.bind(this));
-    this.emitter.on("disconnected", this.handleDisconnected.bind(this));
-
     this.setupWalletModules();
-
     await this.syncSelectedWallet();
   }
 
