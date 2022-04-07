@@ -142,11 +142,31 @@ export function setupLedger({
       }
     };
 
-    const signTransactions = async (batchTransactions: Array<Transaction>) => {
-      logger.log("Ledger:signAndSendTransactions", {
-        batchTransactions,
+    const signTransaction = async (
+      transaction: nearTransactions.Transaction,
+      ledgerClient: LedgerClient,
+      derivationPath: string
+    ) => {
+      const serializedTx = utils.serialize.serialize(
+        nearTransactions.SCHEMA,
+        transaction
+      );
+
+      const signature = await ledgerClient.sign({
+        data: serializedTx,
+        derivationPath,
       });
 
+      return new nearTransactions.SignedTransaction({
+        transaction,
+        signature: new nearTransactions.Signature({
+          keyType: transaction.publicKey.keyType,
+          data: signature,
+        }),
+      });
+    };
+
+    const signTransactions = async (transactions: Array<Transaction>) => {
       if (!state.authData) {
         throw new Error("Not signed in");
       }
@@ -161,37 +181,24 @@ export function setupLedger({
 
       const signedTransactions: Array<SignedTransaction> = [];
 
-      for (let i = 0; i < batchTransactions.length; i++) {
-        const actions = transformActions(batchTransactions[i].actions);
+      for (let i = 0; i < transactions.length; i++) {
+        const actions = transformActions(transactions[i].actions);
 
         const transaction = nearTransactions.createTransaction(
           accountId,
           utils.PublicKey.from(publicKey),
-          batchTransactions[i].receiverId,
+          transactions[i].receiverId,
           accessKey.nonce + i + 1,
           actions,
           utils.serialize.base_decode(block.header.hash)
         );
 
-        const serializedTx = utils.serialize.serialize(
-          nearTransactions.SCHEMA,
-          transaction
-        );
-
         try {
-          const signature = await ledgerClient.sign({
-            data: serializedTx,
-            derivationPath,
-          });
-
-          const signedTx = new nearTransactions.SignedTransaction({
+          const signedTx = await signTransaction(
             transaction,
-            signature: new nearTransactions.Signature({
-              keyType: transaction.publicKey.keyType,
-              data: signature,
-            }),
-          });
-
+            ledgerClient,
+            derivationPath
+          );
           signedTransactions.push(signedTx);
         } catch (err) {
           logger.log("transformTransactions:sign:error", err);
@@ -309,23 +316,11 @@ export function setupLedger({
           utils.serialize.base_decode(block.header.hash)
         );
 
-        const serializedTx = utils.serialize.serialize(
-          nearTransactions.SCHEMA,
-          transaction
-        );
-
-        const signature = await ledgerClient.sign({
-          data: serializedTx,
-          derivationPath,
-        });
-
-        const signedTx = new nearTransactions.SignedTransaction({
+        const signedTx = await signTransaction(
           transaction,
-          signature: new nearTransactions.Signature({
-            keyType: transaction.publicKey.keyType,
-            data: signature,
-          }),
-        });
+          ledgerClient,
+          derivationPath
+        );
 
         return provider.sendTransaction(signedTx);
       },
