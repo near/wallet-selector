@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { map, distinctUntilChanged } from "rxjs";
 import {
   setupWalletSelector,
   WalletSelector,
@@ -90,11 +91,16 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const subscription = selector.store.observable.subscribe((state) => {
-      console.log("State Update", state);
+    const subscription = selector.store.observable
+      .pipe(
+        map((state) => state.accounts),
+        distinctUntilChanged()
+      )
+      .subscribe((nextAccounts) => {
+        console.log("Accounts Update", nextAccounts);
 
-      syncAccountState(accountId, state.accounts);
-    });
+        syncAccountState(accountId, nextAccounts);
+      });
 
     return () => subscription.unsubscribe();
   }, [selector, accountId]);
