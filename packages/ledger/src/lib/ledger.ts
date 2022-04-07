@@ -192,16 +192,12 @@ export function setupLedger({
           utils.serialize.base_decode(block.header.hash)
         );
 
-        try {
-          const signedTx = await signTransaction(
-            transaction,
-            ledgerClient,
-            derivationPath
-          );
-          signedTransactions.push(signedTx);
-        } catch (err) {
-          logger.log("transformTransactions:sign:error", err);
-        }
+        const signedTx = await signTransaction(
+          transaction,
+          ledgerClient,
+          derivationPath
+        );
+        signedTransactions.push(signedTx);
       }
       return signedTransactions;
     };
