@@ -9,7 +9,6 @@ import {
 } from "@near-wallet-selector/core";
 
 import { LedgerClient, Subscription } from "./ledger-client";
-import { SignedTransaction } from "near-api-js/lib/transaction";
 
 interface AuthData {
   accountId: string;
@@ -179,7 +178,7 @@ export function setupLedger({
         provider.viewAccessKey({ accountId, publicKey }),
       ]);
 
-      const signedTransactions: Array<SignedTransaction> = [];
+      const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
       for (let i = 0; i < transactions.length; i++) {
         const actions = transformActions(transactions[i].actions);
