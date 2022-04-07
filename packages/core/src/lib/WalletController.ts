@@ -97,9 +97,12 @@ class WalletController {
     const selectedWallet = this.getWallet();
 
     if (selectedWallet) {
-      await selectedWallet
-        .disconnect()
-        .catch(() => logger.error("Failed to disconnect existing wallet"));
+      await selectedWallet.disconnect().catch(() => {
+        logger.error("Failed to disconnect existing wallet");
+
+        // At least clean up state on our side.
+        this.handleDisconnected({ id: selectedWallet.id });
+      });
     }
 
     if (pending || accounts.length) {
