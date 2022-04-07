@@ -11,22 +11,26 @@ import WalletConnectClient from "./wallet-connect-client";
 export interface WalletConnectParams {
   projectId: string;
   metadata: AppMetadata;
+  relayUrl?: string;
   iconUrl?: string;
 }
 
 export function setupWalletConnect({
   projectId,
   metadata,
-  iconUrl,
+  relayUrl = "wss://relay.walletconnect.com",
+  iconUrl = "./assets/wallet-connect-icon.png",
 }: WalletConnectParams): WalletModule<BridgeWallet> {
-  return function WalletConnect({ options, network, emitter, logger }) {
+  return function WalletConnect({ options, emitter, logger }) {
     let subscriptions: Array<Subscription> = [];
     let client: WalletConnectClient;
     let session: SessionTypes.Settled | null = null;
 
     const getChainId = () => {
-      if (["mainnet", "testnet", "betanet"].includes(network.networkId)) {
-        return `near:${network.networkId}`;
+      const { networkId } = options.network;
+
+      if (["mainnet", "testnet", "betanet"].includes(networkId)) {
+        return `near:${networkId}`;
       }
 
       return "near:testnet";
@@ -54,7 +58,7 @@ export function setupWalletConnect({
 
       await wcClient.init({
         projectId,
-        relayUrl: "wss://relay.walletconnect.com",
+        relayUrl,
         metadata,
       });
 
@@ -70,7 +74,7 @@ export function setupWalletConnect({
 
           if (updatedSession.topic === session?.topic) {
             session = updatedSession;
-            emitter.emit("accounts", { accounts: getAccounts() });
+            emitter.emit("accountsChanged", { accounts: getAccounts() });
           }
         })
       );
@@ -95,7 +99,7 @@ export function setupWalletConnect({
       type: "bridge",
       name: "WalletConnect",
       description: null,
-      iconUrl: iconUrl || "./assets/wallet-connect-icon.png",
+      iconUrl,
 
       isAvailable() {
         return true;

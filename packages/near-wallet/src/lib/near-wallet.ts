@@ -15,7 +15,7 @@ export interface NearWalletParams {
 
 export function setupNearWallet({
   walletUrl,
-  iconUrl,
+  iconUrl = "./assets/near-wallet-icon.png",
 }: NearWalletParams = {}): WalletModule<BrowserWallet> {
   return function NearWallet({ options, emitter, logger }) {
     let keyStore: keyStores.KeyStore;
@@ -90,7 +90,7 @@ export function setupNearWallet({
       type: "browser",
       name: "NEAR Wallet",
       description: null,
-      iconUrl: iconUrl || "./assets/near-wallet-icon.png",
+      iconUrl,
 
       isAvailable() {
         return true;

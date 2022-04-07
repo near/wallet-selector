@@ -22,7 +22,7 @@ export interface SenderParams {
 }
 
 export function setupSender({
-  iconUrl,
+  iconUrl = "./assets/sender-icon.png",
 }: SenderParams = {}): WalletModule<InjectedWallet> {
   return function Sender({ options, emitter, logger }) {
     let wallet: InjectedSender;
@@ -81,7 +81,7 @@ export function setupSender({
       type: "injected",
       name: "Sender",
       description: null,
-      iconUrl: iconUrl || "./assets/sender-icon.png",
+      iconUrl,
       downloadUrl:
         "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
 

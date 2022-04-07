@@ -33,7 +33,7 @@ export interface LedgerParams {
 export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 
 export function setupLedger({
-  iconUrl,
+  iconUrl = "./assets/ledger-icon.png",
 }: LedgerParams = {}): WalletModule<HardwareWallet> {
   return function Ledger({ options, provider, emitter, logger, storage }) {
     let client: LedgerClient | null;
@@ -203,7 +203,7 @@ export function setupLedger({
       type: "hardware",
       name: "Ledger",
       description: null,
-      iconUrl: iconUrl || "./assets/ledger-icon.png",
+      iconUrl,
 
       isAvailable() {
         if (!LedgerClient.isSupported()) {
