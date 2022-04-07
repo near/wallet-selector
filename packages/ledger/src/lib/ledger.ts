@@ -68,12 +68,12 @@ export function setupLedger({
         selectedWalletId: null,
       }));
 
+      state.authData = null;
+      client = null;
+
       const accounts = getAccounts();
       emitter.emit("accountsChanged", { accounts });
       emitter.emit("signOut", { accounts });
-
-      state.authData = null;
-      client = null;
     };
 
     const getClient = async () => {
