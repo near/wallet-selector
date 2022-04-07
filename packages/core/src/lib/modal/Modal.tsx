@@ -21,7 +21,7 @@ const getThemeClass = (theme?: Theme) => {
 interface ModalProps {
   selector: WalletSelector;
   store: Store;
-  options: ModalOptions;
+  options?: ModalOptions;
 }
 
 export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
@@ -290,7 +290,8 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${state.network.networkId}`}</strong> for this dApp.
+                <strong>{` ${state.options.network.networkId}`}</strong> for
+                this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not

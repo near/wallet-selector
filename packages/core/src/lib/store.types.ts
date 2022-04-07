@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Network } from "./network";
 import { Wallet } from "./wallet";
+import { Options } from "./options.types";
 
 export interface AccountState {
   accountId: string;
@@ -18,9 +18,7 @@ export type WalletState<WalletVariation extends Wallet = Wallet> =
   };
 
 export interface WalletSelectorState {
-  network: Network;
-  // TODO: Remove once Modal is decoupled from core.
-  contract: ContractState;
+  options: Options;
 
   wallets: Array<WalletState>;
   accounts: Array<AccountState>;

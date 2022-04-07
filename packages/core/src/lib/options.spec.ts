@@ -1,10 +1,10 @@
-import { NetworkId } from "@near-wallet-selector/core";
-import { getNetwork, NetworkConfiguration, resolveNetwork } from "./network";
+import { getNetworkPreset, resolveNetwork } from "./options";
+import { NetworkId, Network } from "./options.types";
 
-describe("getNetwork", () => {
+describe("getNetworkPreset", () => {
   it("returns the correct config for 'mainnet'", () => {
     const networkId: NetworkId = "mainnet";
-    const network = getNetwork(networkId);
+    const network = getNetworkPreset(networkId);
 
     expect(network).toEqual({
       networkId,
@@ -17,7 +17,7 @@ describe("getNetwork", () => {
 
   it("returns the correct config for 'testnet'", () => {
     const networkId: NetworkId = "testnet";
-    const network = getNetwork(networkId);
+    const network = getNetworkPreset(networkId);
 
     expect(network).toEqual({
       networkId,
@@ -30,7 +30,7 @@ describe("getNetwork", () => {
 
   it("returns the correct config for 'betanet'", () => {
     const networkId: NetworkId = "betanet";
-    const network = getNetwork(networkId);
+    const network = getNetworkPreset(networkId);
 
     expect(network).toEqual({
       networkId,
@@ -46,11 +46,11 @@ describe("resolveNetwork", () => {
   it("resolves network presets", () => {
     const networkId = "testnet";
 
-    expect(resolveNetwork(networkId)).toEqual(getNetwork(networkId));
+    expect(resolveNetwork(networkId)).toEqual(getNetworkPreset(networkId));
   });
 
   it("resolves custom network configuration", () => {
-    const network: NetworkConfiguration = {
+    const network: Network = {
       networkId: "localnet",
       nodeUrl: "http://127.0.0.1:52993",
       helperUrl: "http://127.0.0.1:52997",

@@ -1,10 +1,10 @@
 export {
   WalletSelector,
-  WalletSelectorOptions,
+  WalletSelectorParams,
 } from "./lib/WalletSelector.types";
 export { setupWalletSelector } from "./lib/WalletSelector";
 
-export { Network, NetworkId } from "./lib/network";
+export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
 export { Optional } from "./lib/Optional";
 

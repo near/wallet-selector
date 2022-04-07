@@ -11,7 +11,7 @@ const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 export const setupModal = (
   selector: WalletSelector,
   store: Store,
-  options: ModalOptions = {}
+  options?: ModalOptions
 ) => {
   const el = document.createElement("div");
 

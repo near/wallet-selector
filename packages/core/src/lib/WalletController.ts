@@ -1,22 +1,17 @@
 import { logger, storage, Provider, EventEmitter } from "./services";
-import { Wallet, WalletEvents } from "./wallet";
-import { Network } from "./network";
+import { Wallet, WalletEvents, WalletModule } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
-import { WalletSelectorOptions } from "./WalletSelector.types";
 import { Store, WalletState } from "./store.types";
+import { Options } from "./options.types";
 
 class WalletController {
-  private options: WalletSelectorOptions;
-  private network: Network;
-  private provider: Provider;
+  private options: Options;
+  private wallets: Array<WalletModule>;
   private store: Store;
 
-  constructor(options: WalletSelectorOptions, store: Store) {
-    const { network } = store.getState();
-
+  constructor(options: Options, wallets: Array<WalletModule>, store: Store) {
     this.options = options;
-    this.network = network;
-    this.provider = new Provider(network.nodeUrl);
+    this.wallets = wallets;
     this.store = store;
   }
 
@@ -25,15 +20,17 @@ class WalletController {
       LOCAL_STORAGE_SELECTED_WALLET_ID
     );
 
-    const wallets = this.options.wallets.map((module) => {
+    const wallets = this.wallets.map((module) => {
       const emitter = new EventEmitter<WalletEvents>();
+      const provider = new Provider(this.options.network.nodeUrl);
 
       const wallet = module({
         options: this.options,
-        network: this.network,
-        provider: this.provider,
+        provider,
         emitter,
+        // TODO: Make a scoped logger.
         logger,
+        // TODO: Make a scoped storage.
         storage,
       });
 

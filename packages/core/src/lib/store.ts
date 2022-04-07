@@ -81,7 +81,7 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
 
 export const createStore = (
   initialState: Partial<WalletSelectorState> &
-    Pick<WalletSelectorState, "network" | "contract">
+    Pick<WalletSelectorState, "options">
 ): Store => {
   const subject = new BehaviorSubject<WalletSelectorState>({
     accounts: [],

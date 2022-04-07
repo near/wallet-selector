@@ -1,21 +1,16 @@
 import WalletController from "./WalletController";
-import { resolveNetwork } from "./network";
+import { resolveOptions } from "./options";
 import { createStore } from "./store";
-import { WalletSelector, WalletSelectorOptions } from "./WalletSelector.types";
+import { WalletSelector, WalletSelectorParams } from "./WalletSelector.types";
 import { setupModal } from "./modal/setupModal";
 import { Wallet } from "./wallet";
 
 export const setupWalletSelector = async (
-  options: WalletSelectorOptions
+  params: WalletSelectorParams
 ): Promise<WalletSelector> => {
-  const store = createStore({
-    network: resolveNetwork(options.network),
-    contract: {
-      contractId: options.contractId,
-      methodNames: options.methodNames || null,
-    },
-  });
-  const controller = new WalletController(options, store);
+  const options = resolveOptions(params);
+  const store = createStore({ options });
+  const controller = new WalletController(options, params.wallets, store);
 
   await controller.init();
 
@@ -60,7 +55,7 @@ export const setupWalletSelector = async (
   };
 
   // TODO: Extract into separate package.
-  setupModal(selector, store, options.ui);
+  setupModal(selector, store, params.ui);
 
   return selector;
 };

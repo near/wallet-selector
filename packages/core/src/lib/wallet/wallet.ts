@@ -1,10 +1,9 @@
 import { providers } from "near-api-js";
 
 import { Provider, Logger, PersistentStorage, Emitter } from "../services";
-import { WalletSelectorOptions } from "../WalletSelector.types";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
-import { Network } from "../network";
+import { Options } from "../options.types";
 import { Optional } from "../Optional";
 import { AccountState } from "../store.types";
 
@@ -88,8 +87,7 @@ export type Wallet =
 export type WalletType = Wallet["type"];
 
 export interface WalletOptions {
-  options: WalletSelectorOptions;
-  network: Network;
+  options: Options;
   provider: Provider;
   emitter: Emitter<WalletEvents>;
   logger: Logger;

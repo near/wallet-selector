@@ -2,11 +2,10 @@ import { Observable } from "rxjs";
 
 import { WalletModule, Wallet } from "./wallet";
 import { WalletSelectorState } from "./store.types";
-
-import { Network, NetworkId } from "./network";
+import { Network, NetworkId } from "./options.types";
 import { ModalOptions } from "./modal/setupModal.types";
 
-export interface WalletSelectorOptions {
+export interface WalletSelectorParams {
   network: NetworkId | Network;
   contractId: string;
   methodNames?: Array<string>;
