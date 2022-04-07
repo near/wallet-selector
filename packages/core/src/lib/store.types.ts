@@ -40,6 +40,10 @@ export type WalletSelectorAction =
       payload: { wallets: Array<Wallet>; selectedWalletId: string | null };
     }
   | {
+      type: "WALLET_INIT";
+      payload: { id: string; accounts: Array<AccountState> };
+    }
+  | {
       type: "WALLET_CONNECTED";
       payload: { id: string; pending: boolean; accounts: Array<AccountState> };
     }

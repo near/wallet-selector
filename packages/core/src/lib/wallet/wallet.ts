@@ -28,6 +28,7 @@ export interface AccountInfo {
 }
 
 export type WalletEvents = {
+  init: { id: string; accounts: Array<AccountInfo> };
   connected: { id: string; pending?: boolean; accounts?: Array<AccountInfo> };
   disconnected: { id: string };
   accounts: { accounts: Array<AccountInfo> };

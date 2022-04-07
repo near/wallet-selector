@@ -20,12 +20,13 @@ class WalletController {
     options: WalletSelectorOptions,
     store: WalletSelectorStore<WalletSelectorState>
   ) {
+    const { network } = store.getState();
+
     this.options = options;
+    this.network = network;
+    this.provider = new Provider(network.nodeUrl);
     this.emitter = new EventEmitter<WalletEvents>();
     this.store = store;
-
-    const { network } = store.getState();
-    this.provider = new Provider(network.nodeUrl);
   }
 
   private setupWalletModules() {
@@ -45,30 +46,40 @@ class WalletController {
       });
     });
 
+    // Discard invalid id in storage.
+    if (!wallets.some((wallet) => wallet.id === selectedWalletId)) {
+      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+    }
+
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
       payload: { wallets, selectedWalletId },
     });
   }
 
-  private async synchroniseSelectedWallet() {
+  // Ensure our persistent state aligns with the selected wallet.
+  // For example a wallet is selected, but it returns no accounts (not connected).
+  private async syncSelectedWallet() {
     const selectedWallet = this.getWallet();
 
-    if (!selectedWallet) {
-      return;
+    if (selectedWallet) {
+      await selectedWallet.init();
+
+      const { accounts } = this.store.getState();
+
+      if (!accounts.length) {
+        await selectedWallet
+          .disconnect()
+          .catch(() => logger.error("Failed to disconnect invalid wallet"));
+      }
     }
+  }
 
-    await selectedWallet.init();
-    const { accounts } = this.store.getState();
-
-    if (!accounts.length) {
-      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
-
-      this.store.dispatch({
-        type: "WALLET_DISCONNECTED",
-        payload: { id: selectedWallet.id },
-      });
-    }
+  private handleInit({ id, accounts }: WalletEvents["init"]) {
+    this.store.dispatch({
+      type: "WALLET_INIT",
+      payload: { id, accounts },
+    });
   }
 
   private handleAccounts({ accounts }: WalletEvents["accounts"]) {
@@ -91,7 +102,9 @@ class WalletController {
         .catch(() => logger.error("Failed to disconnect existing wallet"));
     }
 
-    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, id);
+    if (pending || accounts.length) {
+      storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, id);
+    }
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
@@ -109,13 +122,14 @@ class WalletController {
   }
 
   async init() {
+    this.emitter.on("init", this.handleInit.bind(this));
     this.emitter.on("accounts", this.handleAccounts.bind(this));
     this.emitter.on("connected", this.handleConnected.bind(this));
     this.emitter.on("disconnected", this.handleDisconnected.bind(this));
 
     this.setupWalletModules();
 
-    return this.synchroniseSelectedWallet();
+    await this.syncSelectedWallet();
   }
 
   getWallet<WalletVariation extends Wallet = Wallet>(walletId?: string) {

@@ -20,6 +20,14 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
         }),
       };
     }
+    case "WALLET_INIT": {
+      const { accounts } = action.payload;
+
+      return {
+        ...state,
+        accounts,
+      };
+    }
     case "WALLET_CONNECTED": {
       const { id, pending, accounts } = action.payload;
 
@@ -30,7 +38,7 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
           if (wallet.id === id) {
             return {
               ...wallet,
-              selected: !pending,
+              selected: !pending && !!accounts.length,
             };
           }
 

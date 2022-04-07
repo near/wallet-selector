@@ -124,7 +124,7 @@ export function setupSender({
           }
         });
 
-        emitter.emit("connected", { id: this.id, accounts: getAccounts() });
+        emitter.emit("init", { id: this.id, accounts: getAccounts() });
       },
 
       async connect() {
@@ -162,10 +162,6 @@ export function setupSender({
         }
 
         emitter.emit("disconnected", { id: this.id });
-      },
-
-      async getAccounts() {
-        return getAccounts();
       },
 
       async signAndSendTransaction({ signerId, receiverId, actions }) {
