@@ -9,6 +9,12 @@ export { Subscription } from "./lib/services";
 export { Optional } from "./lib/Optional";
 
 export {
+  WalletSelectorState,
+  WalletState,
+  AccountState,
+} from "./lib/store.types";
+
+export {
   Wallet,
   WalletType,
   WalletModule,
@@ -16,7 +22,6 @@ export {
   InjectedWallet,
   HardwareWallet,
   BridgeWallet,
-  AccountInfo,
   Transaction,
   Action,
   ActionType,

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   setupWalletSelector,
   WalletSelector,
-  AccountInfo,
+  AccountState,
 } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
@@ -12,7 +12,7 @@ import { setupSender } from "@near-wallet-selector/sender";
 
 interface WalletSelectorContextValue {
   selector: WalletSelector;
-  accounts: Array<AccountInfo>;
+  accounts: Array<AccountState>;
   accountId: string | null;
   setAccountId: (accountId: string) => void;
 }
@@ -23,11 +23,11 @@ const WalletSelectorContext =
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
-  const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
+  const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const syncAccountState = (
     currentAccountId: string | null,
-    newAccounts: Array<AccountInfo>
+    newAccounts: Array<AccountState>
   ) => {
     if (!newAccounts.length) {
       localStorage.removeItem("accountId");

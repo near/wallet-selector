@@ -1,12 +1,16 @@
 import { providers } from "near-api-js";
 
 import { Provider, Logger, PersistentStorage, Emitter } from "../services";
+import { WalletSelectorOptions } from "../WalletSelector.types";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
 import { Network } from "../network";
-import { WalletSelectorStore, WalletSelectorState } from "../store.types";
 import { Optional } from "../Optional";
-import { WalletSelectorOptions } from "../WalletSelector.types";
+import {
+  WalletSelectorStore,
+  WalletSelectorState,
+  AccountState,
+} from "../store.types";
 
 export interface HardwareWalletConnectParams {
   accountId: string;
@@ -23,15 +27,11 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-export interface AccountInfo {
-  accountId: string;
-}
-
 export type WalletEvents = {
-  init: { id: string; accounts: Array<AccountInfo> };
-  connected: { id: string; pending?: boolean; accounts?: Array<AccountInfo> };
+  init: { id: string; accounts: Array<AccountState> };
+  connected: { id: string; pending?: boolean; accounts?: Array<AccountState> };
   disconnected: { id: string };
-  accounts: { accounts: Array<AccountInfo> };
+  accounts: { accounts: Array<AccountState> };
 };
 
 interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
@@ -53,12 +53,6 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
   disconnect(): Promise<void>;
-
-  // Determines if we're signed in with the wallet.
-  // isSignedIn(): Promise<boolean>;
-
-  // Retrieves all active accounts.
-  // getAccounts(): Promise<Array<AccountInfo>>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
