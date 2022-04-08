@@ -101,10 +101,12 @@ export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
   keyof WalletMetadata
 >;
 
+export type WalletBehaviourFactory<WalletVariation extends Wallet> = (
+  options: WalletOptions<WalletVariation>
+) => WalletBehaviour<WalletVariation>;
+
 export type WalletModule<WalletVariation extends Wallet = Wallet> =
   WalletMetadata & {
     type: WalletVariation["type"];
-    wallet(
-      options: WalletOptions<WalletVariation>
-    ): WalletBehaviour<WalletVariation>;
+    wallet: WalletBehaviourFactory<WalletVariation>;
   };

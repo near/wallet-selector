@@ -20,6 +20,7 @@ export {
   WalletMetadata,
   WalletBehaviour,
   WalletModule,
+  WalletBehaviourFactory,
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,
