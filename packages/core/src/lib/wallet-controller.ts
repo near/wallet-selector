@@ -1,7 +1,7 @@
 import { logger, storage, Provider, EventEmitter } from "./services";
 import { Wallet, WalletEvents, WalletModule } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
-import { Store, WalletState } from "./store.types";
+import { Store } from "./store.types";
 import { Options } from "./options.types";
 
 class WalletController {
@@ -33,12 +33,12 @@ class WalletController {
     const emitter = new EventEmitter<WalletEvents>();
     const provider = new Provider(this.options.network.nodeUrl);
 
-    emitter.on("init", this.handleAccountsChanged(module.id));
-    emitter.on("connected", this.handleConnected(module.id));
-    emitter.on("disconnected", this.handleDisconnected(module.id));
-    emitter.on("accountsChanged", this.handleAccountsChanged(module.id));
-    emitter.on("networkChanged", this.handleNetworkChanged(module.id));
-    emitter.on("uninstalled", this.handleUninstalled(module.id));
+    emitter.on("init", this.handleAccountsChanged(metadata.id));
+    emitter.on("connected", this.handleConnected(metadata.id));
+    emitter.on("disconnected", this.handleDisconnected(metadata.id));
+    emitter.on("accountsChanged", this.handleAccountsChanged(metadata.id));
+    emitter.on("networkChanged", this.handleNetworkChanged(metadata.id));
+    emitter.on("uninstalled", this.handleUninstalled(metadata.id));
 
     return {
       ...metadata,
