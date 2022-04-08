@@ -74,7 +74,7 @@ export interface BrowserWallet extends BaseWallet<void> {
 export interface InjectedWallet
   extends BaseWallet<providers.FinalExecutionOutcome> {
   type: "injected";
-  downloadUrl: string;
+  getDownloadUrl(): string;
 }
 
 export interface HardwareWallet

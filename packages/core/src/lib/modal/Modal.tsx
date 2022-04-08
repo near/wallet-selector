@@ -272,7 +272,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
                       return;
                     }
 
-                    window.open(notInstalledWallet.downloadUrl, "_blank");
+                    window.open(notInstalledWallet.getDownloadUrl(), "_blank");
                   }}
                 >
                   {`Open ${notInstalledWallet.name}`}

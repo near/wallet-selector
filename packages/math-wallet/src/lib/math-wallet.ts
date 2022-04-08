@@ -62,8 +62,10 @@ export function setupMathWallet({
       name: "Math Wallet",
       description: null,
       iconUrl,
-      downloadUrl:
-        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+
+      getDownloadUrl() {
+        return "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc";
+      },
 
       isAvailable() {
         if (!isInstalled()) {

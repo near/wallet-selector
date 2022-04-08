@@ -82,8 +82,10 @@ export function setupSender({
       name: "Sender",
       description: null,
       iconUrl,
-      downloadUrl:
-        "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+
+      getDownloadUrl() {
+        return "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg";
+      },
 
       isAvailable() {
         if (!isInstalled()) {
