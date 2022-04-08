@@ -31,16 +31,18 @@ export type WalletEvents = {
   uninstalled: null;
 };
 
-export interface WalletMetadata {
+export interface WalletMetadata<Type extends string = string> {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: string;
+  type: Type;
 }
 
-interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome>
-  extends WalletMetadata {
+interface BaseWallet<
+  Type extends string,
+  ExecutionOutcome = providers.FinalExecutionOutcome
+> extends WalletMetadata<Type> {
   // Initialise an SDK or load data from a source such as local storage.
   init(): Promise<void>;
 
@@ -65,23 +67,17 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome>
   ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
 }
 
-export interface BrowserWallet extends BaseWallet<void> {
-  type: "browser";
-}
+export type BrowserWallet = BaseWallet<"browser", void>;
 
-export interface InjectedWallet extends BaseWallet {
-  type: "injected";
+export interface InjectedWallet extends BaseWallet<"injected"> {
   getDownloadUrl(): string;
 }
 
-export interface HardwareWallet extends BaseWallet {
-  type: "hardware";
+export interface HardwareWallet extends BaseWallet<"hardware"> {
   connect(params: HardwareWalletConnectParams): Promise<void>;
 }
 
-export interface BridgeWallet extends BaseWallet {
-  type: "bridge";
-}
+export type BridgeWallet = BaseWallet<"bridge">;
 
 export type Wallet =
   | BrowserWallet
@@ -91,8 +87,9 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-export interface WalletOptions {
+export interface WalletOptions<WalletVariation extends Wallet = Wallet> {
   options: Options;
+  metadata: WalletMetadata<WalletVariation["type"]>;
   provider: Provider;
   emitter: Emitter<WalletEvents>;
   logger: Logger;
@@ -107,5 +104,7 @@ export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
 export type WalletModule<WalletVariation extends Wallet = Wallet> =
   WalletMetadata & {
     type: WalletVariation["type"];
-    wallet(options: WalletOptions): WalletBehaviour<WalletVariation>;
+    wallet(
+      options: WalletOptions<WalletVariation>
+    ): WalletBehaviour<WalletVariation>;
   };

@@ -15,7 +15,7 @@ class WalletController {
     this.store = store;
   }
 
-  private setupWalletModule(module: WalletModule) {
+  private setupWalletModule({ wallet, ...metadata }: WalletModule) {
     const emitter = new EventEmitter<WalletEvents>();
     const provider = new Provider(this.options.network.nodeUrl);
 
@@ -27,13 +27,10 @@ class WalletController {
     emitter.on("uninstalled", this.handleUninstalled(module.id));
 
     return {
-      id: module.id,
-      name: module.name,
-      description: module.description,
-      iconUrl: module.iconUrl,
-      type: module.type,
-      ...module.wallet({
+      ...metadata,
+      ...wallet({
         options: this.options,
+        metadata,
         provider,
         emitter,
         // TODO: Make a scoped logger.
