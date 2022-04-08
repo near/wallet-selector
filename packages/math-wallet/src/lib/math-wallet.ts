@@ -39,7 +39,7 @@ export function setupMathWallet({
       const accountId =
         "accountId" in wallet.signer.account
           ? wallet.signer.account.accountId
-          : wallet.signer.account.address;
+          : wallet.signer.account.name;
 
       return [{ accountId }];
     };
