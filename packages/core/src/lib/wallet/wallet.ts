@@ -77,7 +77,7 @@ export interface HardwareWallet extends BaseWallet<"hardware"> {
   connect(params: HardwareWalletConnectParams): Promise<void>;
 }
 
-export type BridgeWallet = BaseWallet<"bridge">;
+export type BridgeWallet = BaseWallet<"bridge", void>;
 
 export type Wallet =
   | BrowserWallet
@@ -101,15 +101,16 @@ export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
   keyof WalletMetadata
 >;
 
+export type WalletModule<WalletVariation extends Wallet = Wallet> =
+  WalletMetadata<WalletVariation["type"]> & {
+    wallet(
+      options: WalletOptions<WalletVariation>
+    ): WalletBehaviour<WalletVariation>;
+  };
+
 export type WalletBehaviourFactory<
   WalletVariation extends Wallet,
-  ExtraWalletOptions = object
+  ExtraWalletOptions extends object = object
 > = (
   options: WalletOptions<WalletVariation> & ExtraWalletOptions
 ) => WalletBehaviour<WalletVariation>;
-
-export type WalletModule<WalletVariation extends Wallet = Wallet> =
-  WalletMetadata & {
-    type: WalletVariation["type"];
-    wallet: WalletBehaviourFactory<WalletVariation>;
-  };

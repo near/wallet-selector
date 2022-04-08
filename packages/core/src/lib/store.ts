@@ -12,12 +12,14 @@ const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
 
       return {
         ...state,
-        wallets: wallets.map((wallet) => {
-          return {
-            ...wallet,
-            selected: wallet.id === selectedWalletId,
-          };
-        }),
+        wallets: wallets.map((wallet) => ({
+          id: wallet.id,
+          name: wallet.name,
+          description: wallet.description,
+          iconUrl: wallet.iconUrl,
+          type: wallet.type,
+          selected: wallet.id === selectedWalletId,
+        })),
       };
     }
     case "WALLET_CONNECTED": {

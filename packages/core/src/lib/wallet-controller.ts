@@ -6,13 +6,27 @@ import { Options } from "./options.types";
 
 class WalletController {
   private options: Options;
-  private wallets: Array<WalletModule>;
+  private modules: Array<WalletModule>;
+  private wallets: Array<Wallet>;
   private store: Store;
 
-  constructor(options: Options, wallets: Array<WalletModule>, store: Store) {
+  constructor(options: Options, modules: Array<WalletModule>, store: Store) {
     this.options = options;
-    this.wallets = wallets;
+    this.modules = modules;
     this.store = store;
+    this.wallets = [];
+  }
+
+  private getSelectedWalletId() {
+    return storage.getItem<string>(LOCAL_STORAGE_SELECTED_WALLET_ID);
+  }
+
+  private setSelectedWalletId(walletId: string) {
+    storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
+  }
+
+  private removeSelectedWalletId() {
+    return storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
   }
 
   private setupWalletModule({ wallet, ...metadata }: WalletModule) {
@@ -42,18 +56,18 @@ class WalletController {
   }
 
   private setupWalletModules() {
-    const selectedWalletId = storage.getItem<string>(
-      LOCAL_STORAGE_SELECTED_WALLET_ID
-    );
+    const selectedWalletId = this.getSelectedWalletId();
 
-    const wallets = this.wallets.map((module) => {
+    const wallets = this.modules.map((module) => {
       return this.setupWalletModule(module);
     });
 
     // Discard invalid id in storage.
     if (!wallets.some((wallet) => wallet.id === selectedWalletId)) {
-      storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+      this.removeSelectedWalletId();
     }
+
+    this.wallets = wallets;
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
@@ -94,7 +108,7 @@ class WalletController {
       }
 
       if (pending || accounts.length) {
-        storage.setItem(LOCAL_STORAGE_SELECTED_WALLET_ID, walletId);
+        this.setSelectedWalletId(walletId);
       }
 
       this.store.dispatch({
@@ -104,7 +118,7 @@ class WalletController {
     };
 
   private handleDisconnected = (walletId: string) => () => {
-    storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
+    this.removeSelectedWalletId();
 
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
@@ -157,12 +171,10 @@ class WalletController {
   }
 
   getWallet<WalletVariation extends Wallet = Wallet>(walletId?: string) {
-    const state = this.store.getState();
-    const wallet = walletId
-      ? state.wallets.find((x) => x.id === walletId)
-      : state.wallets.find((x) => x.selected);
+    const lookupWalletId = walletId || this.getSelectedWalletId();
+    const wallet = this.wallets.find((x) => x.id === lookupWalletId) || null;
 
-    return (wallet || null) as WalletState<WalletVariation> | null;
+    return wallet as WalletVariation | null;
   }
 }
 

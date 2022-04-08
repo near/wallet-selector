@@ -33,10 +33,9 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     DEFAULT_DERIVATION_PATH
   );
   const [isLoading, setIsLoading] = useState(false);
-  const notInstalledWallet =
-    (state.showWalletNotInstalled &&
-      state.wallets.find((x) => x.id === state.showWalletNotInstalled)) ||
-    null;
+  const notInstalledWallet = state.showWalletNotInstalled
+    ? selector.wallet(state.showWalletNotInstalled)
+    : null;
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe(setState);
@@ -154,12 +153,17 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
                 "Please select a wallet to connect to this dApp:"}
             </p>
             <ul className="Modal-option-list">
-              {state.wallets
-                .filter((wallet) => wallet.isAvailable())
-                .map((wallet) => {
-                  const { id, name, description, iconUrl, selected } = wallet;
+              {state.wallets.reduce<Array<JSX.Element>>(
+                (result, { id, selected }) => {
+                  const wallet = selector.wallet(id);
 
-                  return (
+                  if (!wallet.isAvailable()) {
+                    return result;
+                  }
+
+                  const { name, description, iconUrl } = wallet;
+
+                  result.push(
                     <li
                       key={id}
                       id={id}
@@ -179,7 +183,11 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
                       </div>
                     </li>
                   );
-                })}
+
+                  return result;
+                },
+                []
+              )}
             </ul>
           </div>
           <div

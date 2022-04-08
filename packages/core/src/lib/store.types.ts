@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Wallet } from "./wallet";
+import { Wallet, WalletMetadata } from "./wallet";
 import { Options } from "./options.types";
 
 export interface AccountState {
@@ -12,10 +12,9 @@ export interface ContractState {
   methodNames: Array<string> | null;
 }
 
-export type WalletState<WalletVariation extends Wallet = Wallet> =
-  WalletVariation & {
-    selected: boolean;
-  };
+export type WalletState = WalletMetadata & {
+  selected: boolean;
+};
 
 export interface WalletSelectorState {
   options: Options;
