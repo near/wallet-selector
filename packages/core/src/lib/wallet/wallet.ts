@@ -4,7 +4,7 @@ import { Provider, Logger, PersistentStorage, Emitter } from "../services";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
 import { Options } from "../options.types";
-import { Optional } from "../Optional";
+import { Optional } from "../utils.types";
 import { AccountState } from "../store.types";
 
 export interface HardwareWalletConnectParams {

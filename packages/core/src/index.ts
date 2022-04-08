@@ -6,7 +6,7 @@ export { setupWalletSelector } from "./lib/wallet-selector";
 
 export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
-export { Optional } from "./lib/Optional";
+export { Optional } from "./lib/utils.types";
 
 export {
   WalletSelectorState,
