@@ -103,7 +103,7 @@ export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
 
 export type WalletBehaviourFactory<
   WalletVariation extends Wallet,
-  ExtraWalletOptions extends object = object
+  ExtraWalletOptions = object
 > = (
   options: WalletOptions<WalletVariation> & ExtraWalletOptions
 ) => WalletBehaviour<WalletVariation>;
