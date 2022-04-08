@@ -31,13 +31,15 @@ export type WalletEvents = {
   uninstalled: null;
 };
 
-interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
+interface WalletMetadata {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
   type: string;
+}
 
+interface BaseWalletBehaviour<ExecutionOutcome> {
   // Initialise an SDK or load data from a source such as local storage.
   init(): Promise<void>;
 
@@ -62,21 +64,27 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
   ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
 }
 
+type BaseWallet<ExecutionOutcome> = WalletMetadata &
+  BaseWalletBehaviour<ExecutionOutcome>;
+
 export interface BrowserWallet extends BaseWallet<void> {
   type: "browser";
 }
 
-export interface InjectedWallet extends BaseWallet {
+export interface InjectedWallet
+  extends BaseWallet<providers.FinalExecutionOutcome> {
   type: "injected";
   downloadUrl: string;
 }
 
-export interface HardwareWallet extends BaseWallet {
+export interface HardwareWallet
+  extends BaseWallet<providers.FinalExecutionOutcome> {
   type: "hardware";
   connect(params: HardwareWalletConnectParams): Promise<void>;
 }
 
-export interface BridgeWallet extends BaseWallet {
+export interface BridgeWallet
+  extends BaseWallet<providers.FinalExecutionOutcome> {
   type: "bridge";
 }
 
