@@ -31,12 +31,12 @@ export type WalletEvents = {
   uninstalled: null;
 };
 
-interface WalletMetadata {
+interface WalletMetadata<Type extends string = string> {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: string;
+  type: Type;
 }
 
 interface BaseWalletBehaviour<ExecutionOutcome> {
@@ -64,29 +64,30 @@ interface BaseWalletBehaviour<ExecutionOutcome> {
   ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
 }
 
-type BaseWallet<ExecutionOutcome> = WalletMetadata &
-  BaseWalletBehaviour<ExecutionOutcome>;
+export type BrowserWalletBehaviour = BaseWalletBehaviour<void>;
 
-export interface BrowserWallet extends BaseWallet<void> {
-  type: "browser";
-}
+export type BrowserWallet = WalletMetadata<"browser"> & BrowserWalletBehaviour;
 
-export interface InjectedWallet
-  extends BaseWallet<providers.FinalExecutionOutcome> {
-  type: "injected";
+export interface InjectedWalletBehaviour
+  extends BaseWalletBehaviour<providers.FinalExecutionOutcome> {
   getDownloadUrl(): string;
 }
 
-export interface HardwareWallet
-  extends BaseWallet<providers.FinalExecutionOutcome> {
-  type: "hardware";
+export type InjectedWallet = WalletMetadata<"injected"> &
+  InjectedWalletBehaviour;
+
+export interface HardwareWalletBehaviour
+  extends BaseWalletBehaviour<providers.FinalExecutionOutcome> {
   connect(params: HardwareWalletConnectParams): Promise<void>;
 }
 
-export interface BridgeWallet
-  extends BaseWallet<providers.FinalExecutionOutcome> {
-  type: "bridge";
-}
+export type HardwareWallet = WalletMetadata<"hardware"> &
+  HardwareWalletBehaviour;
+
+export type BridgeWalletBehaviour =
+  BaseWalletBehaviour<providers.FinalExecutionOutcome>;
+
+export type BridgeWallet = WalletMetadata<"bridge"> & BridgeWalletBehaviour;
 
 export type Wallet =
   | BrowserWallet
@@ -104,6 +105,24 @@ export interface WalletOptions {
   storage: PersistentStorage;
 }
 
-export type WalletModule<WalletVariation extends Wallet = Wallet> = (
-  options: WalletOptions
-) => WalletVariation;
+export type BrowserWalletModule = WalletMetadata<"browser"> & {
+  wallet(options: WalletOptions): BrowserWalletBehaviour;
+};
+
+export type InjectedWalletModule = WalletMetadata<"injected"> & {
+  wallet(options: WalletOptions): InjectedWalletBehaviour;
+};
+
+export type HardwareWalletModule = WalletMetadata<"hardware"> & {
+  wallet(options: WalletOptions): HardwareWalletBehaviour;
+};
+
+export type BridgeWalletModule = WalletMetadata<"bridge"> & {
+  wallet(options: WalletOptions): BridgeWalletBehaviour;
+};
+
+export type WalletModule =
+  | BrowserWalletModule
+  | InjectedWalletModule
+  | HardwareWalletModule
+  | BridgeWalletModule;

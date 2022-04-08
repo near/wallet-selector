@@ -15,16 +15,24 @@ class WalletController {
     this.store = store;
   }
 
-  private setupWalletModules() {
-    const selectedWalletId = storage.getItem<string>(
-      LOCAL_STORAGE_SELECTED_WALLET_ID
-    );
+  private setupWalletModule(module: WalletModule) {
+    const emitter = new EventEmitter<WalletEvents>();
+    const provider = new Provider(this.options.network.nodeUrl);
 
-    const wallets = this.wallets.map((module) => {
-      const emitter = new EventEmitter<WalletEvents>();
-      const provider = new Provider(this.options.network.nodeUrl);
+    emitter.on("init", this.handleAccountsChanged(module.id));
+    emitter.on("connected", this.handleConnected(module.id));
+    emitter.on("disconnected", this.handleDisconnected(module.id));
+    emitter.on("accountsChanged", this.handleAccountsChanged(module.id));
+    emitter.on("networkChanged", this.handleNetworkChanged(module.id));
+    emitter.on("uninstalled", this.handleUninstalled(module.id));
 
-      const wallet = module({
+    return {
+      id: module.id,
+      name: module.name,
+      description: module.description,
+      iconUrl: module.iconUrl,
+      type: module.type,
+      ...module.wallet({
         options: this.options,
         provider,
         emitter,
@@ -32,16 +40,17 @@ class WalletController {
         logger,
         // TODO: Make a scoped storage.
         storage,
-      });
+      }),
+    } as Wallet;
+  }
 
-      emitter.on("init", this.handleAccountsChanged(wallet.id));
-      emitter.on("connected", this.handleConnected(wallet.id));
-      emitter.on("disconnected", this.handleDisconnected(wallet.id));
-      emitter.on("accountsChanged", this.handleAccountsChanged(wallet.id));
-      emitter.on("networkChanged", this.handleNetworkChanged(wallet.id));
-      emitter.on("uninstalled", this.handleUninstalled(wallet.id));
+  private setupWalletModules() {
+    const selectedWalletId = storage.getItem<string>(
+      LOCAL_STORAGE_SELECTED_WALLET_ID
+    );
 
-      return wallet;
+    const wallets = this.wallets.map((module) => {
+      return this.setupWalletModule(module);
     });
 
     // Discard invalid id in storage.
