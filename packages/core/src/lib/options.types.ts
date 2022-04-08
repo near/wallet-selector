@@ -1,5 +1,5 @@
 import { ModalOptions } from "./modal/setupModal.types";
-import { WalletSelectorParams } from "./WalletSelector.types";
+import { WalletSelectorParams } from "./wallet-selector.types";
 
 export type NetworkId = "mainnet" | "testnet" | "betanet";
 

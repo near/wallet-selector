@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { WalletSelector } from "../WalletSelector.types";
+import { WalletSelector } from "../wallet-selector.types";
 import { ModalOptions } from "./setupModal.types";
 import { Modal } from "./Modal";
 import { Store } from "../store.types";

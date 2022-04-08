@@ -3,7 +3,7 @@ import { Wallet } from "../wallet";
 import { logger } from "../services";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
 import { ModalOptions, Theme } from "./setupModal.types";
-import { WalletSelector } from "../WalletSelector.types";
+import { WalletSelector } from "../wallet-selector.types";
 import { Store } from "../store.types";
 import styles from "./Modal.styles";
 

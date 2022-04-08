@@ -1,7 +1,7 @@
 import WalletController from "./wallet-controller";
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
-import { WalletSelector, WalletSelectorParams } from "./WalletSelector.types";
+import { WalletSelector, WalletSelectorParams } from "./wallet-selector.types";
 import { setupModal } from "./modal/setupModal";
 import { Wallet } from "./wallet";
 

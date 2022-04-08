@@ -1,8 +1,8 @@
 export {
   WalletSelector,
   WalletSelectorParams,
-} from "./lib/WalletSelector.types";
-export { setupWalletSelector } from "./lib/WalletSelector";
+} from "./lib/wallet-selector.types";
+export { setupWalletSelector } from "./lib/wallet-selector";
 
 export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
