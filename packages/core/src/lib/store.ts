@@ -5,7 +5,10 @@ import {
   WalletSelectorAction,
 } from "./store.types";
 
-const reducer = (state: WalletSelectorState, action: WalletSelectorAction) => {
+const reducer = (
+  state: WalletSelectorState,
+  action: WalletSelectorAction
+): WalletSelectorState => {
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
       const { wallets, selectedWalletId } = action.payload;
