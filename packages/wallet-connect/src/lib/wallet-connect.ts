@@ -122,19 +122,22 @@ const WalletConnect: WalletBehaviourFactory<
         });
       });
 
-      try {
-        session = await client.connect({
-          metadata: appMetadata,
-          timeout: 30 * 1000,
-          permissions: {
-            blockchain: {
-              chains: [getChainId()],
+        try {
+          session = await client.connect({
+            metadata,
+            timeout: 30 * 1000,
+            permissions: {
+              blockchain: {
+                chains: [getChainId()],
+              },
+              jsonrpc: {
+                methods: [
+                  "near_signAndSendTransaction",
+                  "near_signAndSendTransactions",
+                ],
+              },
             },
-            jsonrpc: {
-              methods: ["near_signAndSendTransaction"],
-            },
-          },
-        });
+          });
 
         emitter.emit("connected", { accounts: getAccounts() });
       } finally {
