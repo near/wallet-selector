@@ -140,7 +140,10 @@ export function setupWalletConnect({
                 chains: [getChainId()],
               },
               jsonrpc: {
-                methods: ["near_signAndSendTransaction"],
+                methods: [
+                  "near_signAndSendTransaction",
+                  "near_signAndSendTransactions",
+                ],
               },
             },
           });
