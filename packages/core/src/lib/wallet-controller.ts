@@ -56,7 +56,7 @@ class WalletController {
   }
 
   private setupWalletModules() {
-    const selectedWalletId = this.getSelectedWalletId();
+    let selectedWalletId = this.getSelectedWalletId();
 
     const wallets = this.modules.map((module) => {
       return this.setupWalletModule(module);
@@ -65,6 +65,7 @@ class WalletController {
     // Discard invalid id in storage.
     if (!wallets.some((wallet) => wallet.id === selectedWalletId)) {
       this.removeSelectedWalletId();
+      selectedWalletId = null;
     }
 
     this.wallets = wallets;
