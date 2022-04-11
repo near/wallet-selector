@@ -149,6 +149,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       emitter.emit("disconnected", null);
     },
 
+    async getAccounts() {
+      return getAccounts();
+    },
+
     async signAndSendTransaction({
       signerId,
       receiverId = options.contractId,
