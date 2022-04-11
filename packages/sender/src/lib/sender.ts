@@ -10,6 +10,12 @@ import {
 
 import { InjectedSender } from "./injected-sender";
 
+const INJECTED_WALLET_LOADING_MS = 300;
+
+const wait = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 declare global {
   interface Window {
     near: InjectedSender | undefined;
@@ -98,6 +104,8 @@ export function setupSender({
         if (!(await isInstalled())) {
           throw new Error("Wallet not installed");
         }
+
+        await wait(INJECTED_WALLET_LOADING_MS);
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         wallet = window.near!;
