@@ -29,16 +29,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 }) => {
   let wallet: InjectedSender;
 
-  const getAccounts = () => {
-    const accountId = wallet.getAccountId();
-
-    if (!accountId) {
-      return [];
-    }
-
-    return [{ accountId }];
-  };
-
   const isInstalled = async () => {
     try {
       return await waitFor(() => !!window.near?.isSender);
@@ -47,6 +37,54 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
       return false;
     }
+  };
+
+  const disconnect = async () => {
+    const res = wallet.signOut();
+
+    if (!res) {
+      throw new Error("Failed to sign out");
+    }
+
+    emitter.emit("disconnected", null);
+  };
+
+  const setupWallet = async (): Promise<InjectedSender> => {
+    if (wallet) {
+      return wallet;
+    }
+
+    const installed = await isInstalled();
+
+    if (!installed) {
+      throw new Error("Wallet not installed");
+    }
+
+    wallet = window.near!;
+
+    wallet.on("accountChanged", async (newAccountId) => {
+      logger.log("Sender:onAccountChange", newAccountId);
+
+      await disconnect();
+    });
+
+    wallet.on("rpcChanged", (response) => {
+      if (options.network.networkId !== response.rpc.networkId) {
+        emitter.emit("networkChanged", null);
+      }
+    });
+
+    return wallet;
+  };
+
+  const getAccounts = () => {
+    const accountId = wallet.getAccountId();
+
+    if (!accountId) {
+      return [];
+    }
+
+    return [{ accountId }];
   };
 
   const isValidActions = (
@@ -96,35 +134,20 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     },
 
     async init() {
-      if (!(await isInstalled())) {
-        throw new Error("Wallet not installed");
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      wallet = window.near!;
-
-      wallet.on("accountChanged", async (newAccountId) => {
-        logger.log("Sender:onAccountChange", newAccountId);
-
-        await this.disconnect();
-      });
-
-      wallet.on("rpcChanged", (response) => {
-        if (options.network.networkId !== response.rpc.networkId) {
-          emitter.emit("networkChanged", null);
-        }
-      });
+      await setupWallet();
 
       emitter.emit("init", { accounts: getAccounts() });
     },
 
     async connect() {
-      if (!(await isInstalled())) {
+      const installed = await isInstalled();
+
+      if (!installed) {
         return emitter.emit("uninstalled", null);
       }
 
       if (!wallet) {
-        await this.init();
+        await setupWallet();
       }
 
       const { accessKey } = await wallet.requestSignIn({
@@ -139,15 +162,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       emitter.emit("connected", { accounts: getAccounts() });
     },
 
-    async disconnect() {
-      const res = wallet.signOut();
-
-      if (!res) {
-        throw new Error("Failed to sign out");
-      }
-
-      emitter.emit("disconnected", null);
-    },
+    disconnect,
 
     getAccounts,
 
