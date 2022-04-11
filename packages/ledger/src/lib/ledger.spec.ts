@@ -78,12 +78,12 @@ afterEach(() => {
   jest.resetModules();
 });
 
-// describe("isAvailable", () => {
-//   it("returns true", async () => {
-//     const { wallet } = createLedgerWallet();
-//     expect(wallet.isAvailable()).toEqual(true);
-//   });
-// });
+describe("isAvailable", () => {
+  it("returns true", async () => {
+    const { wallet } = createLedgerWallet();
+    expect(wallet.isAvailable()).toEqual(true);
+  });
+});
 
 describe("init", () => {
   it("connects to near and clears storage", async () => {

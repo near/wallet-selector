@@ -1,18 +1,15 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
 import { AccountView } from "near-api-js/lib/providers/provider";
 import { mock } from "jest-mock-extended";
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
-  Provider,
-  EventEmitter,
-  storage,
-  logger,
-} from "../../../core/src/lib/services";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { getNetwork, resolveNetwork } from "../../../core/src/lib/network";
+  mockWallet,
+  MockWalletDependencies,
+} from "../../../core/src/lib/testUtils";
+import { BrowserWallet } from "../../../core/src/lib/wallet";
 
-const createNearWallet = () => {
+const createNearWallet = (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>();
 
@@ -40,27 +37,12 @@ const createNearWallet = () => {
     })
   );
 
-  const networkId = "testnet";
-
   const { setupNearWallet } = require("./near-wallet");
-  const NearWallet = setupNearWallet();
-
-  const config = getNetwork(networkId);
+  const nearWallet = mockWallet<BrowserWallet>(setupNearWallet(), deps);
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: NearWallet({
-      options: {
-        network: networkId,
-        contractId: "guest-book.testnet",
-        wallets: ["near-wallet"],
-      },
-      network: resolveNetwork(networkId),
-      provider: new Provider(config.nodeUrl),
-      emitter: new EventEmitter(),
-      logger,
-      storage,
-    }),
+    wallet: nearWallet,
     walletConnection,
     account,
   };
@@ -89,7 +71,7 @@ describe("signIn", () => {
   it("sign into near wallet", async () => {
     const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
-    await wallet.signIn();
+    await wallet.connect();
     expect(walletConnection.requestSignIn).toHaveBeenCalled();
   });
 });
@@ -98,17 +80,8 @@ describe("signOut", () => {
   it("sign out of near wallet", async () => {
     const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
-    await wallet.signOut();
+    await wallet.disconnect();
     expect(walletConnection.signOut).toHaveBeenCalled();
-  });
-});
-
-describe("isSignedIn", () => {
-  it("isSignedIn returns false", async () => {
-    const { wallet } = createNearWallet();
-    await wallet.init();
-    const result = await wallet.isSignedIn();
-    expect(result).toEqual(true);
   });
 });
 
@@ -116,14 +89,10 @@ describe("getAccounts", () => {
   it("returns array of accounts", async () => {
     const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
-    await wallet.signIn();
+    await wallet.connect();
     const result = await wallet.getAccounts();
     expect(walletConnection.getAccountId).toHaveBeenCalled();
-    expect(result).toEqual([
-      {
-        accountId: "test-account.testnet",
-      },
-    ]);
+    expect(result).toEqual([{ accountId: "test-account.testnet" }]);
   });
 });
 
@@ -132,7 +101,7 @@ describe("signAndSendTransaction", () => {
   it.skip("signs and sends transaction", async () => {
     const { wallet, walletConnection, account } = createNearWallet();
     await wallet.init();
-    await wallet.signIn();
+    await wallet.connect();
     const result = await wallet.signAndSendTransaction({
       receiverId: "guest-book.testnet",
       actions: [],
