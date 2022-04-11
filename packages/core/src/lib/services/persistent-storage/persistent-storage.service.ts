@@ -1,7 +1,6 @@
 import { PACKAGE_NAME } from "../../constants";
 import { StorageService } from "./persistent-storage.service.types";
-console.log("Hello...");
-console.trace("test");
+
 export class PersistentStorage implements StorageService {
   private static instances = new Map<string, PersistentStorage>();
 
