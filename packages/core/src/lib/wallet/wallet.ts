@@ -1,6 +1,11 @@
 import { providers } from "near-api-js";
 
-import { Provider, Logger, PersistentStorage, Emitter } from "../services";
+import {
+  EventEmitterService,
+  ProviderService,
+  LoggerService,
+  StorageService,
+} from "../services";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
 import { Options } from "../options.types";
@@ -56,6 +61,9 @@ interface BaseWallet<
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
   disconnect(): Promise<void>;
 
+  // Retrieves all active accounts.
+  getAccounts(): Promise<Array<AccountState>>;
+
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
     params: SignAndSendTransactionParams
@@ -90,10 +98,10 @@ export type WalletType = Wallet["type"];
 export interface WalletOptions<WalletVariation extends Wallet = Wallet> {
   options: Options;
   metadata: WalletMetadata<WalletVariation["type"]>;
-  provider: Provider;
-  emitter: Emitter<WalletEvents>;
-  logger: Logger;
-  storage: PersistentStorage;
+  provider: ProviderService;
+  emitter: EventEmitterService<WalletEvents>;
+  logger: LoggerService;
+  storage: StorageService;
 }
 
 export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
