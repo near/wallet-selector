@@ -108,7 +108,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     // TODO: Can't assume "ledger" once we implement more hardware wallets.
     const wallet = selector.wallet("ledger");
 
-    if (wallet?.type !== "hardware") {
+    if (wallet.type !== "hardware") {
       return;
     }
 
