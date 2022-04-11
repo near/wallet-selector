@@ -50,6 +50,10 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
     };
   }, []);
 
+  useEffect(() => {
+    resetState();
+  }, [state.showModal]);
+
   const resetState = () => {
     setWalletInfoVisible(false);
     setLedgerError("");
@@ -67,8 +71,6 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
       ...prevState,
       showModal: false,
     }));
-
-    resetState();
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -114,9 +116,10 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
         accountId: ledgerAccountId,
         derivationPath: ledgerDerivationPath,
       })
-      .catch((err) => setLedgerError(`Error: ${err.message}`));
-
-    resetState();
+      .catch((err) => {
+        setLedgerError(`Error: ${err.message}`);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -194,6 +197,7 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
               <div className="account-id">
                 <input
                   type="text"
+                  className={ledgerError ? "input-error" : ""}
                   placeholder="Account ID"
                   autoFocus={true}
                   value={ledgerAccountId}
