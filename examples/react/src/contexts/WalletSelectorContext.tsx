@@ -46,39 +46,41 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
-    NearWalletSelector.init({
-      network: "testnet",
-      contractId: "guest-book.testnet",
-      wallets: [
-        setupNearWallet(),
-        setupSender(),
-        setupLedger(),
-        setupMathWallet(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
-      ],
-    })
-      .then((instance) => {
-        return instance.getAccounts().then(async (newAccounts) => {
-          syncAccountState(localStorage.getItem("accountId"), newAccounts);
-
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-next-line
-          window.selector = instance;
-          setSelector(instance);
-        });
+    setTimeout(() => {
+      NearWalletSelector.init({
+        network: "testnet",
+        contractId: "guest-book.testnet",
+        wallets: [
+          setupNearWallet(),
+          setupSender(),
+          setupLedger(),
+          setupMathWallet(),
+          setupWalletConnect({
+            projectId: "c4f79cc...",
+            metadata: {
+              name: "NEAR Wallet Selector",
+              description: "Example dApp used by NEAR Wallet Selector",
+              url: "https://github.com/near/wallet-selector",
+              icons: ["https://avatars.githubusercontent.com/u/37784886"],
+            },
+          }),
+        ],
       })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+        .then((instance) => {
+          return instance.getAccounts().then(async (newAccounts) => {
+            syncAccountState(localStorage.getItem("accountId"), newAccounts);
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore-next-line
+            window.selector = instance;
+            setSelector(instance);
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Failed to initialise wallet selector");
+        });
+    }, 500);
   }, []);
 
   useEffect(() => {
