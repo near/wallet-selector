@@ -1,19 +1,18 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { mock } from "jest-mock-extended";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { getNetworkPreset } from "../../../core/src/lib/options";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { logger } from "../../../core/src/lib/services/logger/logging.service";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Provider } from "../../../core/src/lib/services/provider/provider.service";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { EventEmitter } from "../../../core/src/lib/services/event-emitter/event-emitter.service";
-import { LedgerClient } from "./ledger-client";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersistentStorage } from "../../../core/src/lib/services/persistent-storage/persistent-storage.service";
-// import { LOCAL_STORAGE_AUTH_DATA } from "./ledger";
 
-const createLedgerWallet = () => {
-  const networkId = "testnet";
+import {
+  mockWallet,
+  MockWalletDependencies,
+} from "../../../core/src/lib/testUtils";
+import { HardwareWallet } from "../../../core/src/lib/wallet";
+import {
+  ProviderService,
+  StorageService,
+} from "../../../core/src/lib/services";
+import { LedgerClient } from "./ledger-client";
+
+const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
   const authData = {
     accountId: "amirsaran.testnet",
     derivationPath: "44'/397'/0'/0'/1'",
@@ -21,61 +20,55 @@ const createLedgerWallet = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const createLedgerWalletFn = require("./ledger").setupLedger;
-  const LedgerWallet = createLedgerWalletFn();
+  const { setupLedger, LOCAL_STORAGE_AUTH_DATA } = require("./ledger");
 
-  const storage = mock<PersistentStorage>();
-  const ledgerClient = mock<LedgerClient>();
+  const provider = mock<ProviderService>();
+  const storage = mock<StorageService>();
+  const ledgerWallet = mockWallet<HardwareWallet>(setupLedger(), {
+    storage,
+    provider,
+    ...deps,
+  });
+  const ledgerClient = mock<LedgerClient>({
+    getPublicKey: jest
+      .fn()
+      .mockResolvedValue("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
+    sign: jest
+      .fn()
+      .mockResolvedValue(
+        Buffer.from([
+          86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
+          124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
+          238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
+          250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53, 84,
+          218, 45, 220, 10, 4,
+        ])
+      ),
+  });
 
   jest.mock("./ledger-client", () => {
+    const module = jest.requireActual("./ledger-client");
+
     return {
-      LedgerClient: jest.fn().mockImplementation(() => {
-        return {
-          isSupported: jest.fn().mockReturnValue(true),
-          connect: jest.fn(),
-          setScrambleKey: jest.fn(),
-          on: jest.fn(),
-          getPublicKey: jest
-            .fn()
-            .mockResolvedValue("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
-          sign: jest
-            .fn()
-            .mockResolvedValue(
-              Buffer.from([
-                86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174,
-                173, 124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178,
-                98, 65, 70, 238, 108, 105, 122, 165, 249, 193, 70, 118, 194,
-                126, 218, 117, 100, 250, 124, 202, 161, 173, 12, 232, 146, 105,
-                194, 138, 35, 207, 53, 84, 218, 45, 220, 10, 4,
-              ])
-            ),
-        };
-      }),
+      ...module,
+      isSupported: jest.fn().mockReturnValue(true),
+      LedgerClient: jest.fn().mockImplementation(() => ledgerClient),
     };
   });
 
-  jest
-    .spyOn(PersistentStorage.prototype, "getItem")
-    .mockImplementation(() => authData);
+  storage.getItem.calledWith(LOCAL_STORAGE_AUTH_DATA).mockReturnValue(authData);
 
-  const network = getNetworkPreset(networkId);
+  provider.viewAccessKey.mockResolvedValue({
+    nonce: 0,
+    permission: "FullAccess",
+    block_height: 0,
+    block_hash: "block_hash",
+  });
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: LedgerWallet({
-      options: {
-        wallets: ["ledger-wallet"],
-        network,
-        contract: {
-          contractId: "guest-book.testnet",
-        },
-      },
-      provider: new Provider(network.nodeUrl),
-      emitter: new EventEmitter(),
-      logger,
-      storage,
-    }),
-    storage,
+    wallet: ledgerWallet,
+    storage: deps.storage || storage,
     ledgerClient,
     authData,
   };
@@ -96,60 +89,36 @@ describe("init", () => {
   it("connects to near and clears storage", async () => {
     const { wallet, storage } = createLedgerWallet();
     await wallet.init();
+
     expect(storage.getItem).toHaveBeenCalled();
   });
 });
 
-// describe("signIn", () => {
-//   it("sign into near wallet", async () => {
-//     const { wallet, ledgerClient, storage, authData } = createLedgerWallet();
-//     await wallet.init();
-//     await wallet.signIn({
-//       accountId: authData.accountId,
-//       derivationPath: authData.derivationPath,
-//     });
-//     expect(storage.setItem).toHaveBeenCalledWith(
-//       LOCAL_STORAGE_AUTH_DATA,
-//       authData
-//     );
-//     expect(ledgerClient.connect).toHaveBeenCalled();
-//     expect(ledgerClient.setScrambleKey).toHaveBeenCalled();
-//     expect(ledgerClient.on).toHaveBeenCalled();
-//   });
-// });
-
-describe("isSignedIn", () => {
-  it("returns true", async () => {
-    const { wallet, authData } = createLedgerWallet();
+describe("connect", () => {
+  it("signs in", async () => {
+    const { wallet, ledgerClient, storage, authData } = createLedgerWallet();
     await wallet.init();
-    await wallet.signIn({
+    await wallet.connect({
       accountId: authData.accountId,
       derivationPath: authData.derivationPath,
     });
-    const result = await wallet.isSignedIn();
-    expect(result).toEqual(true);
-  });
-  it("returns false", async () => {
-    const { wallet } = createLedgerWallet();
-    const result = await wallet.isSignedIn();
-    expect(result).toEqual(false);
+    expect(storage.setItem).toHaveBeenCalledWith("ledger:authData", authData);
+    expect(ledgerClient.connect).toHaveBeenCalled();
+    expect(ledgerClient.setScrambleKey).toHaveBeenCalled();
+    expect(ledgerClient.on).toHaveBeenCalled();
   });
 });
 
-describe("getAccount", () => {
-  it("returns account object", async () => {
+describe("getAccounts", () => {
+  it("returns account objects", async () => {
     const { wallet, authData } = createLedgerWallet();
     await wallet.init();
-    await wallet.signIn({
+    await wallet.connect({
       accountId: authData.accountId,
       derivationPath: authData.derivationPath,
     });
     const result = await wallet.getAccounts();
-    expect(result).toEqual([
-      {
-        accountId: "amirsaran.testnet",
-      },
-    ]);
+    expect(result).toEqual([{ accountId: "amirsaran.testnet" }]);
   });
 });
 
@@ -157,7 +126,7 @@ describe("getAccount", () => {
 //   it("signs and sends transaction", async () => {
 //     const { wallet, authData } = createLedgerWallet();
 //     await wallet.init();
-//     await wallet.signIn({
+//     await wallet.connect({
 //       accountId: authData.accountId,
 //       derivationPath: authData.derivationPath,
 //     });

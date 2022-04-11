@@ -10,7 +10,7 @@ import {
   Optional,
 } from "@near-wallet-selector/core";
 
-import { LedgerClient, Subscription } from "./ledger-client";
+import { isSupported, LedgerClient, Subscription } from "./ledger-client";
 
 interface AuthData {
   accountId: string;
@@ -204,7 +204,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
   return {
     isAvailable() {
-      if (!LedgerClient.isSupported()) {
+      if (!isSupported()) {
         return false;
       }
 
@@ -254,6 +254,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     },
 
     disconnect,
+
+    async getAccounts() {
+      return getAccounts();
+    },
 
     async signAndSendTransaction({
       signerId,

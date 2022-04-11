@@ -59,14 +59,14 @@ export interface Subscription {
   remove: () => void;
 }
 
+// Not using TransportWebHID.isSupported as it's chosen to use a Promise...
+export const isSupported = () => {
+  return !!window.navigator?.hid;
+};
+
 // TODO: Needs a method to assert whether we're connected.
 export class LedgerClient {
   private transport: Transport;
-
-  // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
-  static isSupported = () => {
-    return !!window.navigator?.hid;
-  };
 
   connect = async () => {
     this.transport = await TransportWebHID.create();
