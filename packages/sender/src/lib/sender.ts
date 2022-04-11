@@ -105,6 +105,7 @@ export function setupSender({
           throw new Error("Wallet not installed");
         }
 
+        // Add extra wait to ensure `window.near.isSignedIn()` login status is updated from background
         await wait(INJECTED_WALLET_LOADING_MS);
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
