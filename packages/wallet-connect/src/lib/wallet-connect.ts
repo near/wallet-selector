@@ -162,9 +162,7 @@ const WalletConnect: WalletBehaviourFactory<
       cleanup();
     },
 
-    async getAccounts() {
-      return getAccounts();
-    },
+    getAccounts,
 
     async signAndSendTransaction({
       signerId,

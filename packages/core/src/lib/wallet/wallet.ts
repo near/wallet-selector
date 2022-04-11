@@ -62,7 +62,7 @@ interface BaseWallet<
   disconnect(): Promise<void>;
 
   // Retrieves all active accounts.
-  getAccounts(): Promise<Array<AccountState>>;
+  getAccounts(): Array<AccountState>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(

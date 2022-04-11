@@ -90,7 +90,7 @@ describe("getAccounts", () => {
     const { wallet, walletConnection } = createNearWallet();
     await wallet.init();
     await wallet.connect();
-    const result = await wallet.getAccounts();
+    const result = wallet.getAccounts();
     expect(walletConnection.getAccountId).toHaveBeenCalled();
     expect(result).toEqual([{ accountId: "test-account.testnet" }]);
   });

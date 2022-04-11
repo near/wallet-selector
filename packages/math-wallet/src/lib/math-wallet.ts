@@ -124,9 +124,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       emitter.emit("disconnected", null);
     },
 
-    async getAccounts() {
-      return getAccounts();
-    },
+    getAccounts,
 
     async signAndSendTransaction({
       signerId,

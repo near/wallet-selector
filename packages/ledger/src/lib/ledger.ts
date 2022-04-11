@@ -255,9 +255,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
     disconnect,
 
-    async getAccounts() {
-      return getAccounts();
-    },
+    getAccounts,
 
     async signAndSendTransaction({
       signerId,

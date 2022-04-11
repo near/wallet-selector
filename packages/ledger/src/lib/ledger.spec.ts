@@ -117,7 +117,7 @@ describe("getAccounts", () => {
       accountId: authData.accountId,
       derivationPath: authData.derivationPath,
     });
-    const result = await wallet.getAccounts();
+    const result = wallet.getAccounts();
     expect(result).toEqual([{ accountId: "amirsaran.testnet" }]);
   });
 });
