@@ -20,6 +20,7 @@ const getThemeClass = (theme?: Theme) => {
 
 interface ModalProps {
   selector: WalletSelector;
+  // TODO: Remove once UI state is localised to this component.
   store: Store;
   options?: ModalOptions;
 }
