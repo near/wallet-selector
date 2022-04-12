@@ -33,7 +33,6 @@ class WalletController {
     const emitter = new EventEmitter<WalletEvents>();
     const provider = new Provider(this.options.network.nodeUrl);
 
-    emitter.on("init", this.handleAccountsChanged(metadata.id));
     emitter.on("connected", this.handleConnected(metadata.id));
     emitter.on("disconnected", this.handleDisconnected(metadata.id));
     emitter.on("accountsChanged", this.handleAccountsChanged(metadata.id));
