@@ -58,16 +58,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   const disconnect = async () => {
+    if (!_wallet) {
+      return;
+    }
+
     for (const key in _subscriptions) {
       _subscriptions[key].remove();
     }
 
     storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
 
-    // Only close if we've already connected.
-    if (_wallet) {
-      await _wallet.disconnect();
-    }
+    await _wallet.disconnect();
 
     _wallet = null;
     _subscriptions = {};
