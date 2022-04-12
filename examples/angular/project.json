@@ -1,0 +1,120 @@
+{
+  "projectType": "application",
+  "root": "examples/angular",
+  "sourceRoot": "examples/angular/src",
+  "prefix": "near-wallet-selector",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/examples/angular",
+        "index": "examples/angular/src/index.html",
+        "baseHref": "/wallet-selector/",
+        "main": "examples/angular/src/main.ts",
+        "polyfills": "examples/angular/src/polyfills.ts",
+        "tsConfig": "examples/angular/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "examples/angular/src/favicon.ico",
+          "examples/angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "packages/near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/math-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
+          }
+        ],
+        "styles": ["examples/angular/src/styles.scss"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "examples/angular/src/environments/environment.ts",
+              "with": "examples/angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "angular:build:production"
+        },
+        "development": {
+          "browserTarget": "angular:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "angular:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "examples/angular/src/**/*.ts",
+          "examples/angular/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/examples/angular"],
+      "options": {
+        "jestConfig": "examples/angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

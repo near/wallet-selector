@@ -1,0 +1,38 @@
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   release:
+#     name: Release
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v2
+#     - name: Setup Node.js
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: 16.x
+#     - name: Install dependencies
+#       run: yarn install --frozen-lockfile
+#     - name: Release
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#       run: yarn exec semantic-release
+#     - name: set env
+#       run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+#     # Drafts your next Release notes as Pull Requests are merged into "main"
+#     - name: Draft Release notes
+#       id: draft-release-notes
+#       uses: release-drafter/release-drafter@v5
+#       if: github.ref == 'refs/heads/main'
+#       with:
+#         config-name: release-drafter.yml
+#         publish: true
+#         tag: ${{ env.TAG }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

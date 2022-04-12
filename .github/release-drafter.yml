@@ -1,0 +1,24 @@
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feat'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+  - title: '🧰 Maintenance'
+    labels:
+      - 'chore'
+      - 'ci'
+  - title: '📝 Documentation & Styling'
+    labels:
+      - 'docs'
+      - 'style'
+  - title: '📚 Workflow & Infrastructure'
+    labels:
+      - 'refactor'
+      - 'perf'
+      - 'test'
+      - 'build'
+template: |
+  ## Changelog
+  $CHANGES

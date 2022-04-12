@@ -1,0 +1,43 @@
+{
+  "root": "packages/near-wallet",
+  "sourceRoot": "packages/near-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
+      "options": {
+        "outputPath": "dist/packages/near-wallet",
+        "main": "packages/near-wallet/src/index.ts",
+        "tsConfig": "packages/near-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          "packages/near-wallet/*.md",
+          "packages/near-wallet/assets/*"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/near-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/near-wallet"],
+      "options": {
+        "jestConfig": "packages/near-wallet/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["browser-wallet"]
+}

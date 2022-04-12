@@ -1,0 +1,43 @@
+{
+  "root": "packages/math-wallet",
+  "sourceRoot": "packages/math-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
+      "options": {
+        "outputPath": "dist/packages/math-wallet",
+        "main": "packages/math-wallet/src/index.ts",
+        "tsConfig": "packages/math-wallet/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          "packages/math-wallet/*.md",
+          "packages/math-wallet/assets/*"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/math-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/math-wallet"],
+      "options": {
+        "jestConfig": "packages/math-wallet/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}

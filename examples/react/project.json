@@ -1,0 +1,104 @@
+{
+  "root": "examples/react",
+  "sourceRoot": "examples/react/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/examples/react",
+        "index": "examples/react/src/index.html",
+        "baseHref": "/wallet-selector/",
+        "main": "examples/react/src/main.tsx",
+        "polyfills": "examples/react/src/polyfills.ts",
+        "tsConfig": "examples/react/tsconfig.app.json",
+        "assets": [
+          "examples/react/src/favicon.ico",
+          "examples/react/src/assets",
+          {
+            "glob": "**/*",
+            "input": "packages/near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/math-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
+          }
+        ],
+        "styles": ["examples/react/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "examples/react/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "examples/react/src/environments/environment.ts",
+              "with": "examples/react/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "react:build",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "react:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/examples/react"],
+      "options": {
+        "jestConfig": "examples/react/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-script",
+      "options": {
+        "script": "gh-pages -d dist/examples/react"
+      }
+    }
+  },
+  "tags": []
+}

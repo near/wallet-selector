@@ -1,0 +1,43 @@
+{
+  "root": "packages/ledger",
+  "sourceRoot": "packages/ledger/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
+      "options": {
+        "outputPath": "dist/packages/ledger",
+        "main": "packages/ledger/src/index.ts",
+        "tsConfig": "packages/ledger/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          "packages/ledger/*.md",
+          "packages/ledger/assets/*"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/ledger/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/ledger"],
+      "options": {
+        "jestConfig": "packages/ledger/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["hardware-wallet"]
+}
