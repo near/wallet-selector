@@ -93,6 +93,13 @@ class WalletController {
       const selectedWallet = this.getWallet();
 
       if (selectedWallet) {
+        if (selectedWallet.id === walletId) {
+          return this.store.dispatch({
+            type: "ACCOUNTS_CHANGED",
+            payload: { accounts },
+          });
+        }
+
         await selectedWallet.disconnect().catch(() => {
           logger.error("Failed to disconnect existing wallet");
 
