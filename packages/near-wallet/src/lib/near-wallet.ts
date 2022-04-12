@@ -17,19 +17,9 @@ export interface NearWalletParams {
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   Pick<NearWalletParams, "walletUrl">
-> = ({ options, walletUrl, emitter, logger }) => {
-  let keyStore: keyStores.KeyStore;
-  let wallet: WalletConnection;
-
-  const getAccounts = () => {
-    const accountId: string | null = wallet.getAccountId();
-
-    if (!accountId) {
-      return [];
-    }
-
-    return [{ accountId }];
-  };
+> = ({ options, metadata, walletUrl, emitter, logger }) => {
+  let _keyStore: keyStores.KeyStore;
+  let _wallet: WalletConnection;
 
   const getWalletUrl = () => {
     if (walletUrl) {
@@ -48,9 +38,57 @@ const NearWallet: WalletBehaviourFactory<
     }
   };
 
+  const getAccounts = () => {
+    if (!_wallet) {
+      return [];
+    }
+
+    const accountId: string | null = _wallet.getAccountId();
+
+    if (!accountId) {
+      return [];
+    }
+
+    return [{ accountId }];
+  };
+
+  const setupWallet = async (): Promise<WalletConnection> => {
+    if (_wallet) {
+      return _wallet;
+    }
+
+    const localStorageKeyStore = new keyStores.BrowserLocalStorageKeyStore();
+
+    const near = await connect({
+      keyStore: localStorageKeyStore,
+      walletUrl: getWalletUrl(),
+      ...options.network,
+      headers: {},
+    });
+
+    _wallet = new WalletConnection(near, "near_app");
+    _keyStore = localStorageKeyStore;
+
+    // Cleanup up any pending keys (cancelled logins).
+    if (!_wallet.isSignedIn()) {
+      await localStorageKeyStore.clear();
+    }
+
+    return _wallet;
+  };
+
+  const getWallet = (): WalletConnection => {
+    if (!_wallet) {
+      throw new Error(`${metadata.name} not connected`);
+    }
+
+    return _wallet;
+  };
+
   const transformTransactions = async (
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
+    const wallet = getWallet();
     const account = wallet.account();
     const { networkId, signer, provider } = account.connection;
 
@@ -91,30 +129,18 @@ const NearWallet: WalletBehaviourFactory<
     },
 
     async init() {
-      const localStorageKeyStore = new keyStores.BrowserLocalStorageKeyStore();
-
-      const near = await connect({
-        keyStore: localStorageKeyStore,
-        walletUrl: getWalletUrl(),
-        ...options.network,
-        headers: {},
-      });
-
-      wallet = new WalletConnection(near, "near_app");
-      keyStore = localStorageKeyStore;
-
-      // Cleanup up any pending keys (cancelled logins).
-      if (!wallet.isSignedIn()) {
-        await localStorageKeyStore.clear();
+      if (_wallet) {
+        return;
       }
+
+      await setupWallet();
 
       emitter.emit("init", { accounts: getAccounts() });
     },
 
     async connect() {
-      if (!wallet) {
-        await this.init();
-      }
+      await this.init();
+      const wallet = getWallet();
 
       await wallet.requestSignIn({
         contractId: options.contractId,
@@ -127,12 +153,12 @@ const NearWallet: WalletBehaviourFactory<
     },
 
     async disconnect() {
-      if (!wallet) {
+      if (!_wallet) {
         return;
       }
 
-      wallet.signOut();
-      await keyStore.clear();
+      _wallet.signOut();
+      await _keyStore.clear();
 
       emitter.emit("disconnected", null);
     },
@@ -150,6 +176,7 @@ const NearWallet: WalletBehaviourFactory<
         actions,
       });
 
+      const wallet = getWallet();
       const account = wallet.account();
 
       return account["signAndSendTransaction"]({
@@ -163,6 +190,8 @@ const NearWallet: WalletBehaviourFactory<
 
     async signAndSendTransactions({ transactions }) {
       logger.log("NearWallet:signAndSendTransactions", { transactions });
+
+      const wallet = getWallet();
 
       return wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),
