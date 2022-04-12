@@ -27,7 +27,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   emitter,
   logger,
 }) => {
-  let wallet: InjectedSender;
+  let _wallet: InjectedSender | undefined;
 
   const isInstalled = async () => {
     try {
@@ -40,18 +40,36 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   };
 
   const disconnect = async () => {
-    const res = wallet.signOut();
+    if (!_wallet) {
+      return;
+    }
+
+    const res = _wallet.signOut();
 
     if (!res) {
-      throw new Error("Failed to sign out");
+      throw new Error("Failed to disconnect");
     }
 
     emitter.emit("disconnected", null);
   };
 
+  const getAccounts = () => {
+    if (!_wallet) {
+      return [];
+    }
+
+    const accountId = _wallet.getAccountId();
+
+    if (!accountId) {
+      return [];
+    }
+
+    return [{ accountId }];
+  };
+
   const setupWallet = async (): Promise<InjectedSender> => {
-    if (wallet) {
-      return wallet;
+    if (_wallet) {
+      return _wallet;
     }
 
     const installed = await isInstalled();
@@ -60,31 +78,29 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       throw new Error("Wallet not installed");
     }
 
-    wallet = window.near!;
+    _wallet = window.near!;
 
-    wallet.on("accountChanged", async (newAccountId) => {
+    _wallet.on("accountChanged", async (newAccountId) => {
       logger.log("Sender:onAccountChange", newAccountId);
 
       await disconnect();
     });
 
-    wallet.on("rpcChanged", (response) => {
+    _wallet.on("rpcChanged", (response) => {
       if (options.network.networkId !== response.rpc.networkId) {
         emitter.emit("networkChanged", null);
       }
     });
 
-    return wallet;
+    return _wallet;
   };
 
-  const getAccounts = () => {
-    const accountId = wallet.getAccountId();
-
-    if (!accountId) {
-      return [];
+  const getWallet = (): InjectedSender => {
+    if (!_wallet) {
+      throw new Error("Sender not connected");
     }
 
-    return [{ accountId }];
+    return _wallet;
   };
 
   const isValidActions = (
@@ -122,18 +138,14 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     },
 
     isAvailable() {
-      if (!isInstalled()) {
-        return false;
-      }
-
-      if (isMobile()) {
-        return false;
-      }
-
-      return true;
+      return !isMobile();
     },
 
     async init() {
+      if (_wallet) {
+        return;
+      }
+
       await setupWallet();
 
       emitter.emit("init", { accounts: getAccounts() });
@@ -146,9 +158,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         return emitter.emit("uninstalled", null);
       }
 
-      if (!wallet) {
-        await setupWallet();
-      }
+      const wallet = await setupWallet();
 
       const { accessKey } = await wallet.requestSignIn({
         contractId: options.contractId,
@@ -177,6 +187,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         actions,
       });
 
+      const wallet = getWallet();
+
       return wallet
         .signAndSendTransaction({
           receiverId,
@@ -198,6 +210,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
     async signAndSendTransactions({ transactions }) {
       logger.log("Sender:signAndSendTransactions", { transactions });
+
+      const wallet = getWallet();
 
       return wallet
         .requestSignTransactions({
