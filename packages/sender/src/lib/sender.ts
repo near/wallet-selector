@@ -12,10 +12,6 @@ import { InjectedSender } from "./injected-sender";
 
 const INJECTED_WALLET_LOADING_MS = 300;
 
-const wait = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
 declare global {
   interface Window {
     near: InjectedSender | undefined;
@@ -105,11 +101,17 @@ export function setupSender({
           throw new Error("Wallet not installed");
         }
 
-        // Add extra wait to ensure `window.near.isSignedIn()` login status is updated from background
-        await wait(INJECTED_WALLET_LOADING_MS);
-
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         wallet = window.near!;
+
+        try {
+          // Add extra wait to ensure Sender signin status be read from browser extension background env
+          await waitFor(() => wallet?.isSignedIn(), {
+            timeout: INJECTED_WALLET_LOADING_MS,
+          });
+        } catch (e) {
+          logger.log("Sender:init: haven't signed in yet", e);
+        }
 
         wallet.on("accountChanged", async (newAccountId) => {
           logger.log("Sender:onAccountChange", newAccountId);
