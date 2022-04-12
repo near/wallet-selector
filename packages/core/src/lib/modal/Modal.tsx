@@ -45,6 +45,10 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    resetState();
+  }, [state.showModal]);
+
   const resetState = () => {
     setWalletInfoVisible(false);
     setLedgerError("");
@@ -64,8 +68,6 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
         showModal: false,
       },
     });
-
-    resetState();
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -117,9 +119,10 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
         accountId: ledgerAccountId,
         derivationPath: ledgerDerivationPath,
       })
-      .catch((err) => setLedgerError(`Error: ${err.message}`));
-
-    resetState();
+      .catch((err) => {
+        setLedgerError(`Error: ${err.message}`);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -205,6 +208,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
               <div className="account-id">
                 <input
                   type="text"
+                  className={ledgerError ? "input-error" : ""}
                   placeholder="Account ID"
                   autoFocus={true}
                   value={ledgerAccountId}

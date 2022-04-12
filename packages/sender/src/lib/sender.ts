@@ -12,6 +12,8 @@ import {
 
 import { InjectedSender } from "./injected-sender";
 
+const INJECTED_WALLET_LOADING_MS = 300;
+
 declare global {
   interface Window {
     near: InjectedSender | undefined;
@@ -80,6 +82,14 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     }
 
     _wallet = window.near!;
+
+    try {
+      // Add extra wait to ensure Sender's sign in status is read from the
+      // browser extension background env.
+      await waitFor(() => !!_wallet?.isSignedIn(), { timeout: 300 });
+    } catch (e) {
+      logger.log("Sender:init: haven't signed in yet", e);
+    }
 
     _wallet.on("accountChanged", async (newAccountId) => {
       logger.log("Sender:onAccountChange", newAccountId);
