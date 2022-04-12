@@ -24,6 +24,7 @@ export {
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,
+  HardwareWalletConnectParams,
   BridgeWallet,
   Transaction,
   Action,
