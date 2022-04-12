@@ -23,6 +23,7 @@
     "prepublishOnly": "yarn build:all",
     "build": "nx run-many --target=build --projects=core --configuration=production",
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
+    "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",

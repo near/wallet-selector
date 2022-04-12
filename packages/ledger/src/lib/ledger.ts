@@ -5,6 +5,7 @@ import {
   WalletModule,
   WalletBehaviourFactory,
   HardwareWallet,
+  HardwareWalletConnectParams,
   transformActions,
   Transaction,
   Optional,
@@ -16,11 +17,6 @@ interface AuthData {
   accountId: string;
   derivationPath: string;
   publicKey: string;
-}
-
-interface ValidateParams {
-  accountId: string;
-  derivationPath: string;
 }
 
 interface LedgerState {
@@ -47,8 +43,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
   const debugMode = false;
 
-  const getAccounts = () => {
-    const accountId = _state.authData?.accountId;
+  const getAccounts = (authData: AuthData | null = _state.authData) => {
+    const accountId = authData?.accountId;
 
     if (!accountId) {
       return [];
@@ -58,27 +54,23 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   const disconnect = async () => {
-    if (!_wallet) {
-      return;
-    }
-
     for (const key in _subscriptions) {
       _subscriptions[key].remove();
     }
 
-    storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
-
-    await _wallet.disconnect();
-
-    _wallet = null;
     _subscriptions = {};
     _state.authData = null;
+    storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
 
-    emitter.emit("disconnected", null);
-  };
+    if (_wallet) {
+      await _wallet.disconnect().catch((err) => {
+        logger.log("Failed to disconnect");
+        logger.error(err);
+      });
 
-  const loadState = () => {
-    _state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
+      emitter.emit("disconnected", null);
+      _wallet = null;
+    }
   };
 
   const setupWallet = async (): Promise<LedgerClient> => {
@@ -116,8 +108,19 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     return _wallet;
   };
 
-  const validate = async ({ accountId, derivationPath }: ValidateParams) => {
+  const validate = async ({
+    accountId,
+    derivationPath,
+  }: HardwareWalletConnectParams) => {
     logger.log("Ledger:validate", { accountId, derivationPath });
+
+    if (!accountId) {
+      throw new Error("Invalid account id");
+    }
+
+    if (!derivationPath) {
+      throw new Error("Invalid derivation path");
+    }
 
     const wallet = getWallet();
     const publicKey = await wallet.getPublicKey({
@@ -126,32 +129,33 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
     logger.log("Ledger:validate:publicKey", { publicKey });
 
-    try {
-      const accessKey = await provider.viewAccessKey({
+    return provider
+      .viewAccessKey({
         accountId,
         publicKey,
-      });
+      })
+      .then((accessKey) => {
+        logger.log("Ledger:validate:accessKey", { accessKey });
 
-      logger.log("Ledger:validate:accessKey", { accessKey });
+        if (accessKey.permission !== "FullAccess") {
+          throw new Error("Public key requires 'FullAccess' permission");
+        }
 
-      if (accessKey.permission !== "FullAccess") {
-        throw new Error("Public key requires 'FullAccess' permission");
-      }
-
-      return {
-        publicKey,
-        accessKey,
-      };
-    } catch (err) {
-      if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
         return {
           publicKey,
-          accessKey: null,
+          accessKey,
         };
-      }
+      })
+      .catch((err) => {
+        if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
+          return {
+            publicKey,
+            accessKey: null,
+          };
+        }
 
-      throw err;
-    }
+        throw err;
+      });
   };
 
   const signTransaction = async (
@@ -216,63 +220,62 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       return !isMobile() && isLedgerSupported();
     },
 
-    async init() {
-      if (_wallet) {
-        return;
+    async connect(params) {
+      if (!_state.authData) {
+        // Only load previous state to avoid prompting connection via USB.
+        // Connection must be triggered by user interaction.
+        const authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
+        const accounts = getAccounts(authData);
+
+        if (!params && accounts.length) {
+          return emitter.emit("connected", { accounts });
+        }
       }
-
-      // Only load previous state to avoid prompting connection via USB.
-      // Connection must be triggered by user interaction.
-      loadState();
-
-      emitter.emit("init", { accounts: getAccounts() });
-    },
-
-    async connect({ accountId, derivationPath }) {
-      if (!accountId) {
-        throw new Error("Invalid account id");
-      }
-
-      if (!derivationPath) {
-        throw new Error("Invalid derivation path");
-      }
-
-      await this.init();
 
       const accounts = getAccounts();
 
       if (accounts.length) {
-        return emitter.emit("connected", { accounts });
+        throw new Error(`${metadata.name} already connected`);
       }
 
-      await setupWallet();
-
-      const { publicKey, accessKey } = await validate({
-        accountId,
-        derivationPath,
-      });
-
-      if (!accessKey) {
-        throw new Error(
-          `Public key is not registered with the account '${accountId}'.`
-        );
+      if (!params) {
+        throw new Error("Invalid account id and derivation path");
       }
 
-      const authData: AuthData = {
-        accountId,
-        derivationPath,
-        publicKey,
-      };
+      const { accountId, derivationPath } = params;
 
-      storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
-      _state.authData = authData;
+      return setupWallet()
+        .then(() => validate(params))
+        .then(({ publicKey, accessKey }) => {
+          if (!accessKey) {
+            throw new Error(
+              `Public key is not registered with the account '${accountId}'.`
+            );
+          }
 
-      emitter.emit("connected", { accounts: getAccounts() });
+          const authData: AuthData = {
+            accountId,
+            derivationPath,
+            publicKey,
+          };
+
+          storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
+          _state.authData = authData;
+
+          emitter.emit("connected", { accounts: getAccounts() });
+        })
+        .catch(async (err) => {
+          await disconnect();
+
+          throw err;
+        });
     },
 
     disconnect,
 
-    getAccounts,
+    getAccounts() {
+      return getAccounts();
+    },
 
     async signAndSendTransaction({
       signerId,
