@@ -68,8 +68,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         logger.error(err);
       });
 
-      emitter.emit("disconnected", null);
       _wallet = null;
+      emitter.emit("disconnected", null);
     }
   };
 
