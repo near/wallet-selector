@@ -51,7 +51,7 @@ const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
 
     return {
       ...module,
-      isSupported: jest.fn().mockReturnValue(true),
+      isLedgerSupported: jest.fn().mockReturnValue(true),
       LedgerClient: jest.fn().mockImplementation(() => ledgerClient),
     };
   });

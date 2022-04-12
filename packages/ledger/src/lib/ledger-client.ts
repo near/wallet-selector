@@ -60,7 +60,7 @@ export interface Subscription {
 }
 
 // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
-export const isSupported = () => {
+export const isLedgerSupported = () => {
   return !!window.navigator?.hid;
 };
 

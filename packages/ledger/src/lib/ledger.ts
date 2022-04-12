@@ -10,7 +10,7 @@ import {
   Optional,
 } from "@near-wallet-selector/core";
 
-import { isSupported, LedgerClient, Subscription } from "./ledger-client";
+import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
 
 interface AuthData {
   accountId: string;
@@ -35,19 +35,20 @@ export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 
 const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   options,
+  metadata,
   provider,
   emitter,
   logger,
   storage,
 }) => {
-  let client: LedgerClient | null;
-  const subscriptions: Record<string, Subscription> = {};
-  const state: LedgerState = { authData: null };
+  let _wallet: LedgerClient | null;
+  let _subscriptions: Record<string, Subscription> = {};
+  const _state: LedgerState = { authData: null };
 
   const debugMode = false;
 
   const getAccounts = () => {
-    const accountId = state.authData?.accountId;
+    const accountId = _state.authData?.accountId;
 
     if (!accountId) {
       return [];
@@ -57,55 +58,68 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   const disconnect = async () => {
-    for (const key in subscriptions) {
-      subscriptions[key].remove();
+    for (const key in _subscriptions) {
+      _subscriptions[key].remove();
     }
 
     storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
 
     // Only close if we've already connected.
-    if (client) {
-      await client.disconnect();
+    if (_wallet) {
+      await _wallet.disconnect();
     }
 
-    state.authData = null;
-    client = null;
+    _wallet = null;
+    _subscriptions = {};
+    _state.authData = null;
 
     emitter.emit("disconnected", null);
   };
 
-  const getClient = async () => {
-    if (client) {
-      return client;
+  const loadState = () => {
+    _state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
+  };
+
+  const setupWallet = async (): Promise<LedgerClient> => {
+    if (_wallet) {
+      return _wallet;
     }
+
     const ledgerClient = new LedgerClient();
 
     await ledgerClient.connect();
     ledgerClient.setScrambleKey("NEAR");
 
-    subscriptions["disconnect"] = ledgerClient.on("disconnect", (err) => {
+    _subscriptions["disconnect"] = ledgerClient.on("disconnect", (err) => {
       logger.error(err);
 
       disconnect();
     });
 
     if (debugMode) {
-      subscriptions["logs"] = ledgerClient.listen((data) => {
+      _subscriptions["logs"] = ledgerClient.listen((data) => {
         logger.log("Ledger:init:logs", data);
       });
     }
 
-    client = ledgerClient;
+    _wallet = ledgerClient;
 
     return ledgerClient;
+  };
+
+  const getWallet = (): LedgerClient => {
+    if (!_wallet) {
+      throw new Error(`${metadata.name} not connected`);
+    }
+
+    return _wallet;
   };
 
   const validate = async ({ accountId, derivationPath }: ValidateParams) => {
     logger.log("Ledger:validate", { accountId, derivationPath });
 
-    const ledgerClient = await getClient();
-
-    const publicKey = await ledgerClient.getPublicKey({
+    const wallet = getWallet();
+    const publicKey = await wallet.getPublicKey({
       derivationPath: derivationPath,
     });
 
@@ -141,15 +155,14 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
   const signTransaction = async (
     transaction: nearTransactions.Transaction,
-    ledgerClient: LedgerClient,
     derivationPath: string
   ) => {
+    const wallet = getWallet();
     const serializedTx = utils.serialize.serialize(
       nearTransactions.SCHEMA,
       transaction
     );
-
-    const signature = await ledgerClient.sign({
+    const signature = await wallet.sign({
       data: serializedTx,
       derivationPath,
     });
@@ -166,12 +179,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   const signTransactions = async (
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
-    if (!state.authData) {
-      throw new Error("Not signed in");
+    if (!_state.authData) {
+      throw new Error(`${metadata.name} not connected`);
     }
 
-    const { accountId, derivationPath, publicKey } = state.authData;
-    const ledgerClient = await getClient();
+    const { accountId, derivationPath, publicKey } = _state.authData;
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -192,11 +204,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         utils.serialize.base_decode(block.header.hash)
       );
 
-      const signedTx = await signTransaction(
-        transaction,
-        ledgerClient,
-        derivationPath
-      );
+      const signedTx = await signTransaction(transaction, derivationPath);
       signedTransactions.push(signedTx);
     }
     return signedTransactions;
@@ -204,19 +212,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
   return {
     isAvailable() {
-      if (!isSupported()) {
-        return false;
-      }
-
-      if (isMobile()) {
-        return false;
-      }
-
-      return true;
+      return !isMobile() && isLedgerSupported();
     },
 
     async init() {
-      state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
+      if (_wallet) {
+        return;
+      }
+
+      // Only load previous state to avoid prompting connection via USB.
+      // Connection must be triggered by user interaction.
+      loadState();
 
       emitter.emit("init", { accounts: getAccounts() });
     },
@@ -229,6 +235,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       if (!derivationPath) {
         throw new Error("Invalid derivation path");
       }
+
+      await this.init();
+      await setupWallet();
 
       const { publicKey, accessKey } = await validate({
         accountId,
@@ -248,7 +257,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       };
 
       storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
-      state.authData = authData;
+      _state.authData = authData;
 
       emitter.emit("connected", { accounts: getAccounts() });
     },
@@ -268,12 +277,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         actions,
       });
 
-      if (!state.authData) {
-        throw new Error("Not signed in");
+      if (!_state.authData) {
+        throw new Error(`${metadata.name} not connected`);
       }
 
-      const { accountId, derivationPath, publicKey } = state.authData;
-      const ledgerClient = await getClient();
+      const { accountId, derivationPath, publicKey } = _state.authData;
 
       const [block, accessKey] = await Promise.all([
         provider.block({ finality: "final" }),
@@ -292,11 +300,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         utils.serialize.base_decode(block.header.hash)
       );
 
-      const signedTx = await signTransaction(
-        transaction,
-        ledgerClient,
-        derivationPath
-      );
+      const signedTx = await signTransaction(transaction, derivationPath);
 
       return provider.sendTransaction(signedTx);
     },
