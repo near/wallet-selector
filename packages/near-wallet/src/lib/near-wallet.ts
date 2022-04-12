@@ -140,7 +140,13 @@ const NearWallet: WalletBehaviourFactory<
 
     async connect() {
       await this.init();
+
       const wallet = getWallet();
+      const accounts = getAccounts();
+
+      if (accounts.length) {
+        return emitter.emit("connected", { accounts });
+      }
 
       await wallet.requestSignIn({
         contractId: options.contractId,

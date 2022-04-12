@@ -238,6 +238,13 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       }
 
       await this.init();
+
+      const accounts = getAccounts();
+
+      if (accounts.length) {
+        return emitter.emit("connected", { accounts });
+      }
+
       await setupWallet();
 
       const { publicKey, accessKey } = await validate({

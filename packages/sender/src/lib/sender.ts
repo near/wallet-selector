@@ -160,7 +160,13 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       }
 
       await this.init();
+
       const wallet = getWallet();
+      const accounts = getAccounts();
+
+      if (accounts.length) {
+        return emitter.emit("connected", { accounts });
+      }
 
       const { accessKey } = await wallet.requestSignIn({
         contractId: options.contractId,

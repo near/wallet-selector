@@ -119,7 +119,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       }
 
       await this.init();
+
       const wallet = getWallet();
+      const accounts = getAccounts();
+
+      if (accounts.length) {
+        return emitter.emit("connected", { accounts });
+      }
 
       const account = await wallet.login({
         contractId: options.contractId,
