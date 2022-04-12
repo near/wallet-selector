@@ -82,15 +82,9 @@ class WalletController {
     const selectedWallet = this.getWallet();
 
     if (selectedWallet) {
-      await selectedWallet.init();
-
-      const { accounts } = this.store.getState();
-
-      if (!accounts.length) {
-        await selectedWallet
-          .disconnect()
-          .catch(() => logger.error("Failed to disconnect invalid wallet"));
-      }
+      await selectedWallet.connect().catch(() => {
+        this.removeSelectedWalletId();
+      });
     }
   }
 

@@ -48,9 +48,6 @@ interface BaseWallet<
   Type extends string,
   ExecutionOutcome = providers.FinalExecutionOutcome
 > extends WalletMetadata<Type> {
-  // Initialise an SDK or load data from a source such as local storage.
-  init(): Promise<void>;
-
   // Determines if the wallet is available for selection.
   isAvailable(): boolean;
 
@@ -82,7 +79,7 @@ export interface InjectedWallet extends BaseWallet<"injected"> {
 }
 
 export interface HardwareWallet extends BaseWallet<"hardware"> {
-  connect(params: HardwareWalletConnectParams): Promise<void>;
+  connect(params?: HardwareWalletConnectParams): Promise<void>;
 }
 
 export type BridgeWallet = BaseWallet<"bridge", void>;
