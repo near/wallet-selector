@@ -12,8 +12,6 @@ import {
 
 import { InjectedSender } from "./injected-sender";
 
-const INJECTED_WALLET_LOADING_MS = 300;
-
 declare global {
   interface Window {
     near: InjectedSender | undefined;
@@ -30,7 +28,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   emitter,
   logger,
 }) => {
-  let _wallet: InjectedSender | undefined;
+  let _wallet: InjectedSender | null = null;
 
   const isInstalled = async () => {
     try {
@@ -42,17 +40,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     }
   };
 
+  // TODO: Remove event listeners.
   const disconnect = async () => {
     if (!_wallet) {
       return;
     }
 
-    const res = _wallet.signOut();
+    _wallet.signOut();
 
-    if (!res) {
-      throw new Error("Failed to disconnect");
-    }
-
+    _wallet = null;
     emitter.emit("disconnected", null);
   };
 
@@ -152,16 +148,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       return !isMobile();
     },
 
-    async init() {
-      if (_wallet) {
-        return;
-      }
-
-      await setupWallet();
-
-      emitter.emit("init", { accounts: getAccounts() });
-    },
-
     async connect() {
       const installed = await isInstalled();
 
@@ -169,22 +155,26 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         return emitter.emit("uninstalled", null);
       }
 
-      await this.init();
-
-      const wallet = getWallet();
+      const wallet = await setupWallet();
       const accounts = getAccounts();
 
+      // TODO: Sender returns no accounts when locked.
+      //  We should wait until they've fixed this on their end.
       if (accounts.length) {
         return emitter.emit("connected", { accounts });
       }
 
-      const { accessKey } = await wallet.requestSignIn({
+      const { accessKey, error } = await wallet.requestSignIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
       });
 
-      if (!accessKey) {
-        throw new Error("Failed to connect");
+      if (!accessKey || error) {
+        await disconnect();
+
+        throw new Error(
+          (typeof error === "string" && error) || "Failed to connect"
+        );
       }
 
       emitter.emit("connected", { accounts: getAccounts() });

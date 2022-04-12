@@ -13,7 +13,7 @@ interface AccessKey {
 
 export interface RequestSignInResponse {
   accessKey: AccessKey;
-  error: string;
+  error: string | { type: string };
   notificationId: number;
   type: "sender-wallet-result";
 }
