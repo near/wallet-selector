@@ -24,6 +24,7 @@ export interface SenderParams {
 
 const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   options,
+  metadata,
   emitter,
   logger,
 }) => {
@@ -75,7 +76,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     const installed = await isInstalled();
 
     if (!installed) {
-      throw new Error("Wallet not installed");
+      throw new Error(`${metadata.name} not installed`);
     }
 
     _wallet = window.near!;
@@ -97,7 +98,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
   const getWallet = (): InjectedSender => {
     if (!_wallet) {
-      throw new Error("Sender not connected");
+      throw new Error(`${metadata.name} not connected`);
     }
 
     return _wallet;
@@ -114,7 +115,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
     if (!validActions) {
       throw new Error(
-        "Only 'FunctionCall' actions types are supported by Sender"
+        `Only 'FunctionCall' actions types are supported by ${metadata.name}`
       );
     }
 
@@ -167,7 +168,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       });
 
       if (!accessKey) {
-        throw new Error("Failed to sign in");
+        throw new Error("Failed to connect");
       }
 
       emitter.emit("connected", { accounts: getAccounts() });
