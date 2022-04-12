@@ -158,7 +158,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         return emitter.emit("uninstalled", null);
       }
 
-      const wallet = await setupWallet();
+      await this.init();
+      const wallet = getWallet();
 
       const { accessKey } = await wallet.requestSignIn({
         contractId: options.contractId,
