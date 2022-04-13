@@ -1,7 +1,7 @@
 import { logger, storage, Provider, EventEmitter } from "./services";
 import { Wallet, WalletEvents, WalletModule } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
-import { Store } from "./store.types";
+import { AccountState, Store } from "./store.types";
 import { Options } from "./options.types";
 
 class WalletController {
@@ -54,15 +54,28 @@ class WalletController {
     } as Wallet;
   }
 
-  private setupWalletModules() {
+  private async setupWalletModules() {
     let selectedWalletId = this.getSelectedWalletId();
+    let accounts: Array<AccountState> = [];
 
     const wallets = this.modules.map((module) => {
       return this.setupWalletModule(module);
     });
 
-    // Discard invalid id in storage.
-    if (!wallets.some((wallet) => wallet.id === selectedWalletId)) {
+    const selectedWallet = wallets.find((x) => x.id === selectedWalletId);
+
+    if (selectedWallet) {
+      // Ensure our persistent state aligns with the selected wallet.
+      // For example a wallet is selected, but it returns no accounts (not connected).
+      accounts = await selectedWallet.connect().catch((err) => {
+        logger.log(`Failed to connect to ${selectedWallet.id} during setup`);
+        logger.error(err);
+
+        return [];
+      });
+    }
+
+    if (!accounts.length) {
       this.removeSelectedWalletId();
       selectedWalletId = null;
     }
@@ -71,40 +84,22 @@ class WalletController {
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
-      payload: { wallets, selectedWalletId },
+      payload: { wallets, selectedWalletId, accounts },
     });
-  }
-
-  // Ensure our persistent state aligns with the selected wallet.
-  // For example a wallet is selected, but it returns no accounts (not connected).
-  private async syncSelectedWallet() {
-    const selectedWallet = this.getWallet();
-
-    if (selectedWallet) {
-      await selectedWallet.connect().catch(() => {
-        this.removeSelectedWalletId();
-      });
-    }
   }
 
   private handleConnected =
     (walletId: string) =>
     async ({ pending = false, accounts = [] }: WalletEvents["connected"]) => {
-      const selectedWallet = this.getWallet();
+      const existingWallet = this.getWallet();
 
-      if (selectedWallet) {
-        if (selectedWallet.id === walletId) {
-          return this.store.dispatch({
-            type: "ACCOUNTS_CHANGED",
-            payload: { accounts },
-          });
-        }
-
-        await selectedWallet.disconnect().catch(() => {
-          logger.error("Failed to disconnect existing wallet");
+      if (existingWallet && existingWallet.id !== walletId) {
+        await existingWallet.disconnect().catch((err) => {
+          logger.log("Failed to disconnect existing wallet");
+          logger.error(err);
 
           // At least clean up state on our side.
-          this.handleDisconnected(selectedWallet.id)();
+          this.handleDisconnected(existingWallet.id)();
         });
       }
 
@@ -167,8 +162,7 @@ class WalletController {
   };
 
   async init() {
-    this.setupWalletModules();
-    await this.syncSelectedWallet();
+    await this.setupWalletModules();
   }
 
   getWallet<WalletVariation extends Wallet = Wallet>(walletId?: string) {

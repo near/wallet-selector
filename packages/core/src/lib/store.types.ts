@@ -37,6 +37,7 @@ export type WalletSelectorAction =
       payload: {
         wallets: Array<Wallet>;
         selectedWalletId: string | null;
+        accounts: Array<AccountState>;
       };
     }
   | {
