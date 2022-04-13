@@ -1,5 +1,4 @@
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
-import QRCodeModal from "@walletconnect/qrcode-modal";
 import {
   WalletModule,
   WalletBehaviourFactory,
@@ -154,49 +153,32 @@ const WalletConnect: WalletBehaviourFactory<
         return existingAccounts;
       }
 
-      return new Promise((resolve, reject) => {
-        wallet.once("pairing_proposal", (proposal) => {
-          logger.log("Pairing Proposal", proposal);
-          const { uri } = proposal.signal.params;
-
-          QRCodeModal.open(uri, () => {
-            this.disconnect()
-              .then(() => reject(new Error("User cancelled pairing")))
-              .catch(reject);
-          });
+      try {
+        _session = await wallet.connect({
+          metadata: appMetadata,
+          timeout: 30 * 1000,
+          permissions: {
+            blockchain: {
+              chains: [getChainId()],
+            },
+            jsonrpc: {
+              methods: [
+                "near_signAndSendTransaction",
+                "near_signAndSendTransactions",
+              ],
+            },
+          },
         });
 
-        (async () => {
-          try {
-            _session = await wallet.connect({
-              metadata: appMetadata,
-              timeout: 30 * 1000,
-              permissions: {
-                blockchain: {
-                  chains: [getChainId()],
-                },
-                jsonrpc: {
-                  methods: [
-                    "near_signAndSendTransaction",
-                    "near_signAndSendTransactions",
-                  ],
-                },
-              },
-            });
+        const newAccounts = getAccounts();
+        emitter.emit("connected", { accounts: newAccounts });
 
-            const newAccounts = getAccounts();
-            emitter.emit("connected", { accounts: newAccounts });
+        return newAccounts;
+      } catch (err) {
+        await this.disconnect();
 
-            return newAccounts;
-          } catch (err) {
-            await this.disconnect();
-
-            throw err;
-          } finally {
-            QRCodeModal.close();
-          }
-        })().catch(reject);
-      });
+        throw err;
+      }
     },
 
     disconnect,

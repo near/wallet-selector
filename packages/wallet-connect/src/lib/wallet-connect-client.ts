@@ -10,6 +10,7 @@ import {
   ClientTypes,
   ClientOptions,
 } from "@walletconnect/types";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 export type ConnectParams = ClientTypes.ConnectParams & {
   metadata: AppMetadata;
@@ -61,30 +62,47 @@ class WalletConnectClient {
     const relay = params.relay || { protocol: RELAYER_DEFAULT_PROTOCOL };
     const timeout = params.timeout || 30 * 1000;
 
-    try {
-      const pairing = await this.client.pairing.create({ relay, timeout });
+    return new Promise<SessionTypes.Settled>((resolve, reject) => {
+      this.once("pairing_proposal", (proposal) => {
+        const { uri } = proposal.signal.params;
 
-      return this.client.session.create({
-        signal: {
-          method: SESSION_SIGNAL_METHOD_PAIRING,
-          params: { topic: pairing.topic },
-        },
-        relay,
-        timeout,
-        metadata: params.metadata,
-        permissions: {
-          ...SESSION_EMPTY_PERMISSIONS,
-          ...params.permissions,
-        },
+        QRCodeModal.open(uri, () => {
+          reject(new Error("User cancelled pairing"));
+        });
       });
-    } catch (err) {
-      // WalletConnect sadly throws strings.
-      if (typeof err === "string") {
-        throw new Error(err);
-      }
 
-      throw err;
-    }
+      (async () => {
+        try {
+          const pairing = await this.client.pairing.create({
+            relay,
+            timeout,
+          });
+
+          return this.client.session.create({
+            signal: {
+              method: SESSION_SIGNAL_METHOD_PAIRING,
+              params: { topic: pairing.topic },
+            },
+            relay,
+            timeout,
+            metadata: params.metadata,
+            permissions: {
+              ...SESSION_EMPTY_PERMISSIONS,
+              ...params.permissions,
+            },
+          });
+        } catch (err) {
+          // WalletConnect sadly throws strings.
+          if (typeof err === "string") {
+            throw new Error(err);
+          }
+
+          throw err;
+        }
+      })()
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   async request<Response>(
