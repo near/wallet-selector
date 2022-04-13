@@ -51,7 +51,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       return;
     }
 
-    if (_wallet.isSignedIn()) {
+    if (!_wallet.isSignedIn()) {
       return cleanup();
     }
 
