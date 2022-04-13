@@ -37,6 +37,7 @@ const createNearWallet = (deps: MockWalletDependencies = {}) => {
     })
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { setupNearWallet } = require("./near-wallet");
   const nearWallet = mockWallet<BrowserWallet>(setupNearWallet(), deps);
 
