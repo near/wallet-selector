@@ -37,7 +37,6 @@ class WalletController {
     emitter.on("disconnected", this.handleDisconnected(metadata.id));
     emitter.on("accountsChanged", this.handleAccountsChanged(metadata.id));
     emitter.on("networkChanged", this.handleNetworkChanged(metadata.id));
-    emitter.on("uninstalled", this.handleUninstalled(metadata.id));
 
     return {
       ...metadata,
@@ -147,16 +146,6 @@ class WalletController {
         showModal: true,
         showWalletOptions: false,
         showSwitchNetwork: walletId,
-      },
-    });
-  };
-
-  private handleUninstalled = (walletId: string) => () => {
-    this.store.dispatch({
-      type: "UPDATE",
-      payload: {
-        showWalletOptions: false,
-        showWalletNotInstalled: walletId,
       },
     });
   };

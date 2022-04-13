@@ -103,15 +103,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
     },
 
     async connect() {
-      const installed = await isInstalled();
-
-      if (!installed) {
-        emitter.emit("uninstalled", null);
-
-        // TODO: Throw error once we stop coupling this case to state.
-        return [];
-      }
-
       const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 

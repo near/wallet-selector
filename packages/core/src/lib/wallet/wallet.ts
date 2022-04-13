@@ -32,7 +32,6 @@ export type WalletEvents = {
   disconnected: null;
   accountsChanged: { accounts: Array<AccountState> };
   networkChanged: null;
-  uninstalled: null;
 };
 
 export interface WalletMetadata<Type extends string = string> {

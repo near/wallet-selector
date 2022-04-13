@@ -94,8 +94,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       await disconnect();
     });
 
-    _wallet.on("rpcChanged", (response) => {
+    _wallet.on("rpcChanged", async (response) => {
       if (options.network.networkId !== response.rpc.networkId) {
+        await disconnect();
+
+        // TODO: Remove this as it's a concern for the dApp not the modal.
         emitter.emit("networkChanged", null);
       }
     });
@@ -150,15 +153,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     },
 
     async connect() {
-      const installed = await isInstalled();
-
-      if (!installed) {
-        emitter.emit("uninstalled", null);
-
-        // TODO: Throw error once we stop coupling this case to state.
-        return [];
-      }
-
       const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 
