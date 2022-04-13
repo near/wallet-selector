@@ -151,13 +151,13 @@ export function setupSender({
           await this.init();
         }
 
-        const { accessKey } = await wallet.requestSignIn({
+        const { accessKey, error } = await wallet.requestSignIn({
           contractId: options.contractId,
           methodNames: options.methodNames,
         });
 
-        if (!accessKey) {
-          throw new Error("Failed to sign in");
+        if (!accessKey || error) {
+          throw new Error(`Failed to sign in: ${error.type}`);
         }
 
         updateState((prevState) => ({
