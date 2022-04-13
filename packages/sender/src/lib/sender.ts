@@ -40,15 +40,23 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     }
   };
 
+  const cleanup = () => {
+    _wallet = null;
+  };
+
   // TODO: Remove event listeners.
+  // Must only trigger "disconnected" if we were connected.
   const disconnect = async () => {
     if (!_wallet) {
       return;
     }
 
-    _wallet.signOut();
+    if (_wallet.isSignedIn()) {
+      return cleanup();
+    }
 
-    _wallet = null;
+    _wallet.signOut();
+    cleanup();
 
     emitter.emit("disconnected", null);
   };
@@ -85,7 +93,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       // browser extension background env.
       await waitFor(() => !!_wallet?.isSignedIn(), { timeout: 300 });
     } catch (e) {
-      logger.log("Sender:init: haven't signed in yet", e);
+      logger.log("Sender:setupWallet: Not signed in yet");
     }
 
     _wallet.on("accountChanged", async (newAccountId) => {

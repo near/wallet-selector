@@ -40,6 +40,10 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
     }
   };
 
+  const cleanup = () => {
+    _wallet = null;
+  };
+
   const getAccounts = (): Array<AccountState> => {
     if (!_wallet?.signer.account) {
       return [];
@@ -72,17 +76,19 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       throw new Error(`${metadata.name} not installed`);
     }
 
-    _wallet = window.nearWalletApi!;
+    const wallet = window.nearWalletApi!;
 
     // This wallet currently has weird behaviour regarding signer.account.
     // - When you initially sign in, you get a SignedInAccount interface.
     // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
     // This method normalises the behaviour to only return the SignedInAccount interface.
-    if (_wallet.signer.account && "address" in _wallet.signer.account) {
-      await _wallet.login({ contractId: options.contractId });
+    if (wallet.signer.account && "address" in wallet.signer.account) {
+      await wallet.login({ contractId: options.contractId });
     }
 
-    return _wallet;
+    _wallet = wallet;
+
+    return wallet;
   };
 
   const getWallet = (): InjectedMathWallet => {
@@ -110,13 +116,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
         return existingAccounts;
       }
 
-      const account = await wallet.login({
-        contractId: options.contractId,
-      });
+      console.log("Before login");
 
-      if (!account) {
-        throw new Error("Failed to connect");
-      }
+      await wallet.login({ contractId: options.contractId }).catch((err) => {
+        this.disconnect();
+
+        throw err;
+      });
 
       const newAccounts = getAccounts();
       emitter.emit("connected", { accounts: newAccounts });
@@ -124,15 +130,19 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       return newAccounts;
     },
 
+    // Must only trigger "disconnected" if we were connected.
     async disconnect() {
       if (!_wallet) {
         return;
       }
 
+      if (!_wallet.signer.account) {
+        return cleanup();
+      }
+
       // Ignore if unsuccessful (returns false).
       await _wallet.logout();
-
-      _wallet = null;
+      cleanup();
 
       emitter.emit("disconnected", null);
     },
