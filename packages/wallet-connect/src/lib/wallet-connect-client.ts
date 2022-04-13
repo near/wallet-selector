@@ -78,7 +78,7 @@ class WalletConnectClient {
             timeout,
           });
 
-          return this.client.session.create({
+          const session = this.client.session.create({
             signal: {
               method: SESSION_SIGNAL_METHOD_PAIRING,
               params: { topic: pairing.topic },
@@ -91,7 +91,13 @@ class WalletConnectClient {
               ...params.permissions,
             },
           });
+
+          QRCodeModal.close();
+
+          return session;
         } catch (err) {
+          QRCodeModal.close();
+
           // WalletConnect sadly throws strings.
           if (typeof err === "string") {
             throw new Error(err);
@@ -102,10 +108,6 @@ class WalletConnectClient {
       })()
         .then(resolve)
         .catch(reject);
-    }).catch((err) => {
-      QRCodeModal.close();
-
-      throw err;
     });
   }
 
