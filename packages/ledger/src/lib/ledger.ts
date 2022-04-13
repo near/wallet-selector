@@ -112,12 +112,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     return ledgerClient;
   };
 
-  const getWallet = (): LedgerClient => {
-    if (!_wallet) {
+  const getWallet = (): Promise<LedgerClient> => {
+    if (!_state.authData) {
       throw new Error(`${metadata.name} not connected`);
     }
 
-    return _wallet;
+    return setupWallet();
   };
 
   const validate = async ({
@@ -134,7 +134,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       throw new Error("Invalid derivation path");
     }
 
-    const wallet = getWallet();
+    const wallet = await getWallet();
     const publicKey = await wallet.getPublicKey({
       derivationPath: derivationPath,
     });
@@ -174,7 +174,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     transaction: nearTransactions.Transaction,
     derivationPath: string
   ) => {
-    const wallet = getWallet();
+    const wallet = await getWallet();
     const serializedTx = utils.serialize.serialize(
       nearTransactions.SCHEMA,
       transaction
