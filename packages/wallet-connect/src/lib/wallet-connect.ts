@@ -52,12 +52,22 @@ const WalletConnect: WalletBehaviourFactory<
     }));
   };
 
+  const cleanup = () => {
+    _subscriptions.forEach((subscription) => subscription.remove());
+
+    _wallet = null;
+    _subscriptions = [];
+    _session = null;
+  };
+
   const disconnect = async () => {
-    if (!_wallet || !_session) {
+    if (!_wallet) {
       return;
     }
 
-    _subscriptions.forEach((subscription) => subscription.remove());
+    if (!_session) {
+      return cleanup();
+    }
 
     await _wallet.disconnect({
       topic: _session.topic,
@@ -66,10 +76,7 @@ const WalletConnect: WalletBehaviourFactory<
         message: "User disconnected",
       },
     });
-
-    _wallet = null;
-    _subscriptions = [];
-    _session = null;
+    cleanup();
 
     emitter.emit("disconnected", null);
   };
@@ -177,6 +184,10 @@ const WalletConnect: WalletBehaviourFactory<
         emitter.emit("connected", { accounts: newAccounts });
 
         return newAccounts;
+      } catch (err) {
+        await this.disconnect();
+
+        throw err;
       } finally {
         subscription.remove();
         QRCodeModal.close();

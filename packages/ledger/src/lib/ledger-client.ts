@@ -64,9 +64,12 @@ export const isLedgerSupported = () => {
   return !!window.navigator?.hid;
 };
 
-// TODO: Needs a method to assert whether we're connected.
 export class LedgerClient {
   private transport: Transport;
+
+  isConnected = () => {
+    return Boolean(this.transport);
+  };
 
   connect = async () => {
     this.transport = await TransportWebHID.create();

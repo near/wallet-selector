@@ -56,7 +56,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     return [{ accountId }];
   };
 
-  const disconnect = async () => {
+  const cleanup = () => {
     for (const key in _subscriptions) {
       _subscriptions[key].remove();
     }
@@ -64,16 +64,25 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     _subscriptions = {};
     _state.authData = null;
     storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
+    _wallet = null;
+  };
 
-    if (_wallet) {
-      await _wallet.disconnect().catch((err) => {
-        logger.log("Failed to disconnect");
-        logger.error(err);
-      });
-
-      _wallet = null;
-      emitter.emit("disconnected", null);
+  const disconnect = async () => {
+    if (!_wallet) {
+      return;
     }
+
+    if (!_wallet.isConnected()) {
+      return cleanup();
+    }
+
+    await _wallet.disconnect().catch((err) => {
+      logger.log("Failed to disconnect");
+      logger.error(err);
+    });
+    cleanup();
+
+    emitter.emit("disconnected", null);
   };
 
   const setupWallet = async (): Promise<LedgerClient> => {

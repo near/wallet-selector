@@ -38,6 +38,15 @@ const NearWallet: WalletBehaviourFactory<
     }
   };
 
+  const cleanup = async () => {
+    if (_keyStore) {
+      await _keyStore.clear();
+      _keyStore = null;
+    }
+
+    _wallet = null;
+  };
+
   const getAccounts = () => {
     if (!_wallet) {
       return [];
@@ -154,11 +163,12 @@ const NearWallet: WalletBehaviourFactory<
         return;
       }
 
-      _wallet.signOut();
-      await _keyStore.clear();
+      if (!_wallet.isSignedIn()) {
+        return cleanup();
+      }
 
-      _wallet = null;
-      _keyStore = null;
+      _wallet.signOut();
+      await cleanup();
 
       emitter.emit("disconnected", null);
     },
