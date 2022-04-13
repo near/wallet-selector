@@ -47,6 +47,7 @@ interface BaseWallet<
   ExecutionOutcome = providers.FinalExecutionOutcome
 > extends WalletMetadata<Type> {
   // Determines if the wallet is available for selection.
+  // TODO: Make this async to support checking if an injected wallet is installed.
   isAvailable(): boolean;
 
   // Requests sign in for the given wallet.
