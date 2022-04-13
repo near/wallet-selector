@@ -18,7 +18,11 @@ interface AuthData {
 
 interface ValidateParams {
   accountId: string;
-  derivationPath: string;
+  publicKey: string;
+}
+
+interface GetAccountIdFromPublicKeyParams {
+  publicKey: string;
 }
 
 interface LedgerState {
@@ -102,14 +106,8 @@ export function setupLedger({
       return ledgerClient;
     };
 
-    const validate = async ({ accountId, derivationPath }: ValidateParams) => {
-      logger.log("Ledger:validate", { accountId, derivationPath });
-
-      const ledgerClient = await getClient();
-
-      const publicKey = await ledgerClient.getPublicKey({
-        derivationPath: derivationPath,
-      });
+    const validate = async ({ accountId, publicKey }: ValidateParams) => {
+      logger.log("Ledger:validate", { accountId, publicKey });
 
       logger.log("Ledger:validate:publicKey", { publicKey });
 
@@ -139,6 +137,41 @@ export function setupLedger({
 
         throw err;
       }
+    };
+
+    const getAccountIdFromPublicKey = async ({
+      publicKey,
+    }: GetAccountIdFromPublicKeyParams): Promise<string> => {
+      const response = await fetch("https://rest.nearapi.org/explorer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: "public_readonly",
+          host: "testnet.db.explorer.indexer.near.dev",
+          database: "testnet_explorer",
+          password: "nearprotocol",
+          port: 5432,
+          parameters: [`ed25519:${publicKey}`],
+          query:
+            "SELECT signer_account_id FROM transactions WHERE signer_public_key = $1 LIMIT 1",
+        }),
+      });
+
+      const accountIds = await response.json();
+
+      if (accountIds.error) {
+        throw new Error(accountIds.error);
+      }
+
+      if (Array.isArray(accountIds) && accountIds.length === 0) {
+        throw new Error("No account found");
+      }
+
+      const accountId = accountIds[0].signer_account_id;
+
+      return accountId;
     };
 
     const signTransaction = async (
@@ -224,23 +257,26 @@ export function setupLedger({
       async init() {
         state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
       },
-
-      async signIn({ accountId, derivationPath }) {
+      async signIn({ derivationPath }) {
         if (await this.isSignedIn()) {
           return;
-        }
-
-        if (!accountId) {
-          throw new Error("Invalid account id");
         }
 
         if (!derivationPath) {
           throw new Error("Invalid derivation path");
         }
 
-        const { publicKey, accessKey } = await validate({
+        const ledgerClient = await getClient();
+
+        const publicKey = await ledgerClient.getPublicKey({
+          derivationPath: derivationPath,
+        });
+
+        const accountId = await getAccountIdFromPublicKey({ publicKey });
+
+        const { accessKey } = await validate({
           accountId,
-          derivationPath,
+          publicKey,
         });
 
         if (!accessKey) {
