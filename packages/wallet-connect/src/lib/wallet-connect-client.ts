@@ -50,6 +50,13 @@ class WalletConnectClient {
     };
   }
 
+  once<Event extends keyof WalletConnectEvents>(
+    event: Event,
+    callback: WalletConnectEvents[Event]
+  ) {
+    this.client.once(event, callback);
+  }
+
   async connect(params: ConnectParams) {
     const relay = params.relay || { protocol: RELAYER_DEFAULT_PROTOCOL };
     const timeout = params.timeout || 30 * 1000;

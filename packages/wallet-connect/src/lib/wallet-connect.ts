@@ -154,44 +154,49 @@ const WalletConnect: WalletBehaviourFactory<
         return existingAccounts;
       }
 
-      const subscription = wallet.on("pairing_proposal", (proposal) => {
-        logger.log("Pairing Proposal", proposal);
-        const { uri } = proposal.signal.params;
+      return new Promise((resolve, reject) => {
+        wallet.once("pairing_proposal", (proposal) => {
+          logger.log("Pairing Proposal", proposal);
+          const { uri } = proposal.signal.params;
 
-        QRCodeModal.open(uri, () => {
-          subscription.remove();
+          QRCodeModal.open(uri, () => {
+            this.disconnect()
+              .then(() => reject(new Error("User cancelled pairing")))
+              .catch(reject);
+          });
         });
+
+        (async () => {
+          try {
+            _session = await wallet.connect({
+              metadata: appMetadata,
+              timeout: 30 * 1000,
+              permissions: {
+                blockchain: {
+                  chains: [getChainId()],
+                },
+                jsonrpc: {
+                  methods: [
+                    "near_signAndSendTransaction",
+                    "near_signAndSendTransactions",
+                  ],
+                },
+              },
+            });
+
+            const newAccounts = getAccounts();
+            emitter.emit("connected", { accounts: newAccounts });
+
+            return newAccounts;
+          } catch (err) {
+            await this.disconnect();
+
+            throw err;
+          } finally {
+            QRCodeModal.close();
+          }
+        })().catch(reject);
       });
-
-      try {
-        _session = await wallet.connect({
-          metadata: appMetadata,
-          timeout: 30 * 1000,
-          permissions: {
-            blockchain: {
-              chains: [getChainId()],
-            },
-            jsonrpc: {
-              methods: [
-                "near_signAndSendTransaction",
-                "near_signAndSendTransactions",
-              ],
-            },
-          },
-        });
-
-        const newAccounts = getAccounts();
-        emitter.emit("connected", { accounts: newAccounts });
-
-        return newAccounts;
-      } catch (err) {
-        await this.disconnect();
-
-        throw err;
-      } finally {
-        subscription.remove();
-        QRCodeModal.close();
-      }
     },
 
     disconnect,
