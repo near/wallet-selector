@@ -15,7 +15,7 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { wallets, selectedWalletId } = action.payload;
+      const { wallets, selectedWalletId, accounts } = action.payload;
 
       return {
         ...state,
@@ -27,6 +27,7 @@ const reducer = (
           type: wallet.type,
           selected: wallet.id === selectedWalletId,
         })),
+        accounts,
       };
     }
     case "WALLET_CONNECTED": {
