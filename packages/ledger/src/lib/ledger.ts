@@ -231,6 +231,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         const existingAccounts = getAccounts(authData);
 
         if (!params && existingAccounts.length) {
+          _state.authData = authData;
+
           return existingAccounts;
         }
       }
