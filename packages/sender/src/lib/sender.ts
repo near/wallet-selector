@@ -173,7 +173,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         await disconnect();
 
         throw new Error(
-          (typeof error === "string" && error) || "Failed to connect"
+          (typeof error === "string" ? error : error.type) ||
+            "Failed to connect"
         );
       }
 
