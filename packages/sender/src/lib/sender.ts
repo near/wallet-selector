@@ -49,6 +49,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     _wallet.signOut();
 
     _wallet = null;
+
     emitter.emit("disconnected", null);
   };
 
