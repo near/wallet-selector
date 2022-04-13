@@ -157,7 +157,10 @@ export function setupSender({
         });
 
         if (!accessKey || error) {
-          throw new Error(`Failed to sign in: ${error.type}`);
+          throw new Error(
+            (typeof error === "string" ? error : error.type) ||
+              "Failed to sign in"
+          );
         }
 
         updateState((prevState) => ({
