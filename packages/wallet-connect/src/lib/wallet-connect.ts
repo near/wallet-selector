@@ -183,7 +183,9 @@ const WalletConnect: WalletBehaviourFactory<
 
     disconnect,
 
-    getAccounts,
+    async getAccounts() {
+      return getAccounts();
+    },
 
     async signAndSendTransaction({
       signerId,

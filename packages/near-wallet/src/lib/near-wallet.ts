@@ -181,7 +181,9 @@ const NearWallet: WalletBehaviourFactory<
       emitter.emit("disconnected", null);
     },
 
-    getAccounts,
+    async getAccounts() {
+      return getAccounts();
+    },
 
     async signAndSendTransaction({
       signerId,

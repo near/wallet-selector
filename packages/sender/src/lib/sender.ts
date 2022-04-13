@@ -192,7 +192,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
     disconnect,
 
-    getAccounts,
+    async getAccounts() {
+      return getAccounts();
+    },
 
     async signAndSendTransaction({
       signerId,
