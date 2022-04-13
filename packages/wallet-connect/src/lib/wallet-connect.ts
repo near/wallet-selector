@@ -139,20 +139,8 @@ const WalletConnect: WalletBehaviourFactory<
       return true;
     },
 
-    async init() {
-      if (_wallet) {
-        return;
-      }
-
-      await setupWallet();
-
-      emitter.emit("init", { accounts: getAccounts() });
-    },
-
     async connect() {
-      await this.init();
-
-      const { wallet } = getWallet();
+      const wallet = await setupWallet();
       const accounts = getAccounts();
 
       if (accounts.length) {
