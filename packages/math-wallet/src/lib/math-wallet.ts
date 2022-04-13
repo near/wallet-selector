@@ -107,8 +107,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
-        emitter.emit("connected", { accounts: existingAccounts });
-
         return existingAccounts;
       }
 

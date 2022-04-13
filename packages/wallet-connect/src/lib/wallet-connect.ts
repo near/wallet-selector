@@ -144,8 +144,6 @@ const WalletConnect: WalletBehaviourFactory<
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
-        emitter.emit("connected", { accounts: existingAccounts });
-
         return existingAccounts;
       }
 

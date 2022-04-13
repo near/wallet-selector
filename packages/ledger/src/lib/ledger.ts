@@ -231,8 +231,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         const existingAccounts = getAccounts(authData);
 
         if (!params && existingAccounts.length) {
-          emitter.emit("connected", { accounts: existingAccounts });
-
           return existingAccounts;
         }
       }
@@ -240,8 +238,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
-        emitter.emit("connected", { accounts: existingAccounts });
-
         return existingAccounts;
       }
 
