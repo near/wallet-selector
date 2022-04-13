@@ -102,6 +102,10 @@ class WalletConnectClient {
       })()
         .then(resolve)
         .catch(reject);
+    }).catch((err) => {
+      QRCodeModal.close();
+
+      throw err;
     });
   }
 
