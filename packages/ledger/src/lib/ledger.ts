@@ -4,6 +4,7 @@ import isMobile from "is-mobile";
 import {
   WalletModule,
   WalletBehaviourFactory,
+  AccountState,
   HardwareWallet,
   HardwareWalletConnectParams,
   transformActions,
@@ -43,7 +44,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
   const debugMode = false;
 
-  const getAccounts = (authData: AuthData | null = _state.authData) => {
+  const getAccounts = (
+    authData: AuthData | null = _state.authData
+  ): Array<AccountState> => {
     const accountId = authData?.accountId;
 
     if (!accountId) {
@@ -225,17 +228,21 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         // Only load previous state to avoid prompting connection via USB.
         // Connection must be triggered by user interaction.
         const authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
-        const accounts = getAccounts(authData);
+        const existingAccounts = getAccounts(authData);
 
-        if (!params && accounts.length) {
-          return emitter.emit("connected", { accounts });
+        if (!params && existingAccounts.length) {
+          emitter.emit("connected", { accounts: existingAccounts });
+
+          return existingAccounts;
         }
       }
 
-      const accounts = getAccounts();
+      const existingAccounts = getAccounts();
 
-      if (accounts.length) {
-        throw new Error(`${metadata.name} already connected`);
+      if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
+
+        return existingAccounts;
       }
 
       if (!params) {
@@ -262,7 +269,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
           storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
           _state.authData = authData;
 
-          emitter.emit("connected", { accounts: getAccounts() });
+          const newAccounts = getAccounts();
+          emitter.emit("connected", { accounts: newAccounts });
+
+          return newAccounts;
         })
         .catch(async (err) => {
           await disconnect();

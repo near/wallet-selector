@@ -141,10 +141,12 @@ const WalletConnect: WalletBehaviourFactory<
 
     async connect() {
       const wallet = await setupWallet();
-      const accounts = getAccounts();
+      const existingAccounts = getAccounts();
 
-      if (accounts.length) {
-        return emitter.emit("connected", { accounts });
+      if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
+
+        return existingAccounts;
       }
 
       const subscription = wallet.on("pairing_proposal", (proposal) => {
@@ -173,7 +175,10 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        emitter.emit("connected", { accounts: getAccounts() });
+        const newAccounts = getAccounts();
+        emitter.emit("connected", { accounts: newAccounts });
+
+        return newAccounts;
       } finally {
         subscription.remove();
         QRCodeModal.close();

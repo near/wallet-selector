@@ -130,10 +130,12 @@ const NearWallet: WalletBehaviourFactory<
 
     async connect() {
       const wallet = await setupWallet();
-      const accounts = getAccounts();
+      const existingAccounts = getAccounts();
 
-      if (accounts.length) {
-        return emitter.emit("connected", { accounts });
+      if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
+
+        return existingAccounts;
       }
 
       await wallet.requestSignIn({
@@ -143,7 +145,10 @@ const NearWallet: WalletBehaviourFactory<
 
       // We use the pending flag because we can't guarantee the user will
       // actually sign in. Best we can do is set in storage and validate on init.
-      emitter.emit("connected", { pending: true });
+      const newAccounts = getAccounts();
+      emitter.emit("connected", { pending: true, accounts: newAccounts });
+
+      return newAccounts;
     },
 
     async disconnect() {

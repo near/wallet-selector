@@ -153,16 +153,21 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       const installed = await isInstalled();
 
       if (!installed) {
-        return emitter.emit("uninstalled", null);
+        emitter.emit("uninstalled", null);
+
+        // TODO: Throw error once we stop coupling this case to state.
+        return [];
       }
 
       const wallet = await setupWallet();
-      const accounts = getAccounts();
+      const existingAccounts = getAccounts();
 
       // TODO: Sender returns no accounts when locked.
       //  We should wait until they've fixed this on their end.
-      if (accounts.length) {
-        return emitter.emit("connected", { accounts });
+      if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
+
+        return existingAccounts;
       }
 
       const { accessKey, error } = await wallet.requestSignIn({
@@ -179,7 +184,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         );
       }
 
-      emitter.emit("connected", { accounts: getAccounts() });
+      const newAccounts = getAccounts();
+      emitter.emit("connected", { accounts: newAccounts });
+
+      return newAccounts;
     },
 
     disconnect,

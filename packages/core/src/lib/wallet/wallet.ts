@@ -52,7 +52,7 @@ interface BaseWallet<
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).
-  connect(params?: object): Promise<void>;
+  connect(params?: object): Promise<Array<AccountState>>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
   disconnect(): Promise<void>;
@@ -78,7 +78,7 @@ export interface InjectedWallet extends BaseWallet<"injected"> {
 }
 
 export interface HardwareWallet extends BaseWallet<"hardware"> {
-  connect(params?: HardwareWalletConnectParams): Promise<void>;
+  connect(params?: HardwareWalletConnectParams): Promise<Array<AccountState>>;
 }
 
 export type BridgeWallet = BaseWallet<"bridge", void>;

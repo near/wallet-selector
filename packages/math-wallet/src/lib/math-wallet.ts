@@ -3,6 +3,7 @@ import isMobile from "is-mobile";
 import {
   WalletModule,
   WalletBehaviourFactory,
+  AccountState,
   InjectedWallet,
   transformActions,
   waitFor,
@@ -39,7 +40,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
     }
   };
 
-  const getAccounts = () => {
+  const getAccounts = (): Array<AccountState> => {
     if (!_wallet?.signer.account) {
       return [];
     }
@@ -105,14 +106,19 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       const installed = await isInstalled();
 
       if (!installed) {
-        return emitter.emit("uninstalled", null);
+        emitter.emit("uninstalled", null);
+
+        // TODO: Throw error once we stop coupling this case to state.
+        return [];
       }
 
       const wallet = await setupWallet();
-      const accounts = getAccounts();
+      const existingAccounts = getAccounts();
 
-      if (accounts.length) {
-        return emitter.emit("connected", { accounts });
+      if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
+
+        return existingAccounts;
       }
 
       const account = await wallet.login({
@@ -123,7 +129,10 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
         throw new Error("Failed to connect");
       }
 
-      emitter.emit("connected", { accounts: getAccounts() });
+      const newAccounts = getAccounts();
+      emitter.emit("connected", { accounts: newAccounts });
+
+      return newAccounts;
     },
 
     async disconnect() {
