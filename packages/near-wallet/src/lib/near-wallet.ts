@@ -18,8 +18,8 @@ const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   Pick<NearWalletParams, "walletUrl">
 > = ({ options, metadata, walletUrl, emitter, logger }) => {
-  let _keyStore: keyStores.KeyStore;
-  let _wallet: WalletConnection;
+  let _keyStore: keyStores.KeyStore | null = null;
+  let _wallet: WalletConnection | null = null;
 
   const getWalletUrl = () => {
     if (walletUrl) {
@@ -128,20 +128,8 @@ const NearWallet: WalletBehaviourFactory<
       return true;
     },
 
-    async init() {
-      if (_wallet) {
-        return;
-      }
-
-      await setupWallet();
-
-      emitter.emit("init", { accounts: getAccounts() });
-    },
-
     async connect() {
-      await this.init();
-
-      const wallet = getWallet();
+      const wallet = await setupWallet();
       const accounts = getAccounts();
 
       if (accounts.length) {
@@ -159,12 +147,15 @@ const NearWallet: WalletBehaviourFactory<
     },
 
     async disconnect() {
-      if (!_wallet) {
+      if (!_wallet || !_keyStore) {
         return;
       }
 
       _wallet.signOut();
       await _keyStore.clear();
+
+      _wallet = null;
+      _keyStore = null;
 
       emitter.emit("disconnected", null);
     },
