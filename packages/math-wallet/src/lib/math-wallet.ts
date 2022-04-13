@@ -27,7 +27,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
   emitter,
   logger,
 }) => {
-  let _wallet: InjectedMathWallet | undefined;
+  let _wallet: InjectedMathWallet | null = null;
 
   const isInstalled = async () => {
     try {
@@ -101,16 +101,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       return !isMobile();
     },
 
-    async init() {
-      if (_wallet) {
-        return;
-      }
-
-      await setupWallet();
-
-      emitter.emit("init", { accounts: getAccounts() });
-    },
-
     async connect() {
       const installed = await isInstalled();
 
@@ -118,9 +108,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
         return emitter.emit("uninstalled", null);
       }
 
-      await this.init();
-
-      const wallet = getWallet();
+      const wallet = await setupWallet();
       const accounts = getAccounts();
 
       if (accounts.length) {
@@ -143,11 +131,10 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
         return;
       }
 
-      const res = await _wallet.logout();
+      // Ignore if unsuccessful (returns false).
+      await _wallet.logout();
 
-      if (!res) {
-        throw new Error("Failed to disconnect");
-      }
+      _wallet = null;
 
       emitter.emit("disconnected", null);
     },
