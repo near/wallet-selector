@@ -116,8 +116,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
         return existingAccounts;
       }
 
-      console.log("Before login");
-
       await wallet.login({ contractId: options.contractId }).catch((err) => {
         this.disconnect();
 
