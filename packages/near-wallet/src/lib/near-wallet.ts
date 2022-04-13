@@ -14,11 +14,13 @@ export interface NearWalletParams {
   iconUrl?: string;
 }
 
+export const LOCAL_STORAGE_PENDING = `near-wallet:pending`;
+
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   Pick<NearWalletParams, "walletUrl">
-> = ({ options, metadata, walletUrl, emitter, logger }) => {
-  let _keyStore: keyStores.KeyStore | null = null;
+> = ({ options, metadata, walletUrl, emitter, logger, storage }) => {
+  let _keyStore: keyStores.BrowserLocalStorageKeyStore | null = null;
   let _wallet: WalletConnection | null = null;
 
   const getWalletUrl = () => {
@@ -139,9 +141,14 @@ const NearWallet: WalletBehaviourFactory<
 
     async connect() {
       const wallet = await setupWallet();
+      const pending = storage.getItem<boolean>(LOCAL_STORAGE_PENDING);
       const existingAccounts = getAccounts();
 
-      if (existingAccounts.length) {
+      if (pending) {
+        storage.removeItem(LOCAL_STORAGE_PENDING);
+      }
+
+      if (pending || existingAccounts.length) {
         return existingAccounts;
       }
 
@@ -153,6 +160,7 @@ const NearWallet: WalletBehaviourFactory<
       // We use the pending flag because we can't guarantee the user will
       // actually sign in. Best we can do is set in storage and validate on init.
       const newAccounts = getAccounts();
+      storage.setItem(LOCAL_STORAGE_PENDING, true);
       emitter.emit("connected", { pending: true, accounts: newAccounts });
 
       return newAccounts;
