@@ -1,4 +1,6 @@
 import { BehaviorSubject } from "rxjs";
+
+import { logger } from "./services";
 import {
   Store,
   WalletSelectorState,
@@ -9,6 +11,8 @@ const reducer = (
   state: WalletSelectorState,
   action: WalletSelectorAction
 ): WalletSelectorState => {
+  logger.log("Store Action", action);
+
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
       const { wallets, selectedWalletId } = action.payload;
