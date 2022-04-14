@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
   "keywords": [
     "near",
