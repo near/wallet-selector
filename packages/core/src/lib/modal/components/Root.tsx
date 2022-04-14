@@ -1,7 +1,7 @@
 import React from "react";
-import { WalletSelector } from "../wallet-selector.types";
-import { Store } from "../store.types";
-import { ModalOptions } from "./setupModal.types";
+import { WalletSelector } from "../../wallet-selector.types";
+import { Store } from "../../store.types";
+import { ModalOptions } from "../modal.types";
 import { Modal } from "./Modal";
 
 interface RootProps {

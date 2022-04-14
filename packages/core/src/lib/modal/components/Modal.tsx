@@ -5,12 +5,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Wallet } from "../wallet";
-import { logger } from "../services";
-import { DEFAULT_DERIVATION_PATH } from "../constants";
-import { ModalOptions, Theme } from "./setupModal.types";
-import { WalletSelector } from "../wallet-selector.types";
-import { WalletSelectorError, ErrorCode, ErrorCodes } from "../errors";
+import { Wallet } from "../../wallet";
+import { logger } from "../../services";
+import { DEFAULT_DERIVATION_PATH } from "../../constants";
+import { ModalOptions, Theme } from "../modal.types";
+import { WalletSelector } from "../../wallet-selector.types";
+import { WalletSelectorError, ErrorCode, ErrorCodes } from "../../errors";
 import styles from "./Modal.styles";
 
 interface ModalProps {

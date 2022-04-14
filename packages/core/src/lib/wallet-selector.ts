@@ -6,7 +6,7 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { setupModal } from "./modal/setupModal";
+import { setupModal } from "./modal/modal";
 import { Wallet } from "./wallet";
 import { EventEmitter } from "./services";
 

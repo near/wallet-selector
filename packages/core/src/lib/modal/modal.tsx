@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { WalletSelector } from "../wallet-selector.types";
-import { WalletSelectorModal, ModalOptions } from "./setupModal.types";
-import { Root } from "./Root";
+import { WalletSelectorModal, ModalOptions } from "./modal.types";
+import { Root } from "./components/Root";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
