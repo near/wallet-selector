@@ -134,7 +134,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
       throw new Error("Invalid derivation path");
     }
 
-    const wallet = await getWallet();
+    const wallet = await setupWallet();
     const publicKey = await wallet.getPublicKey({
       derivationPath: derivationPath,
     });
@@ -239,9 +239,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         const authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
         const existingAccounts = getAccounts(authData);
 
-        if (!params && existingAccounts.length) {
-          _state.authData = authData;
+        _state.authData = authData;
 
+        if (!params) {
           return existingAccounts;
         }
       }
@@ -258,8 +258,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
       const { accountId, derivationPath } = params;
 
-      return setupWallet()
-        .then(() => validate(params))
+      return validate(params)
         .then(({ publicKey, accessKey }) => {
           if (!accessKey) {
             throw new Error(

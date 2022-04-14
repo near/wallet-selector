@@ -13,26 +13,27 @@ import {
 import { LedgerClient } from "./ledger-client";
 
 const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
-  const authData = {
-    accountId: "amirsaran.testnet",
-    derivationPath: "44'/397'/0'/0'/1'",
-    publicKey: "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC",
-  };
+  const storageState: Record<string, never> = {};
+  const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { setupLedger, LOCAL_STORAGE_AUTH_DATA } = require("./ledger");
+  const { setupLedger } = require("./ledger");
 
   const provider = mock<ProviderService>();
-  const storage = mock<StorageService>();
+  const storage = mock<StorageService>({
+    getItem: jest.fn((key) => storageState[key] || null),
+    setItem: jest.fn((key, value) => {
+      // @ts-ignore
+      storageState[key] = value;
+    }),
+  });
   const ledgerWallet = mockWallet<HardwareWallet>(setupLedger(), {
     storage,
     provider,
     ...deps,
   });
   const ledgerClient = mock<LedgerClient>({
-    getPublicKey: jest
-      .fn()
-      .mockResolvedValue("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
+    getPublicKey: jest.fn().mockResolvedValue(publicKey),
     sign: jest
       .fn()
       .mockResolvedValue(
@@ -56,8 +57,6 @@ const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
     };
   });
 
-  storage.getItem.calledWith(LOCAL_STORAGE_AUTH_DATA).mockReturnValue(authData);
-
   provider.viewAccessKey.mockResolvedValue({
     nonce: 0,
     permission: "FullAccess",
@@ -70,7 +69,7 @@ const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
     wallet: ledgerWallet,
     storage: deps.storage || storage,
     ledgerClient,
-    authData,
+    publicKey,
   };
 };
 
@@ -85,24 +84,20 @@ describe("isAvailable", () => {
   });
 });
 
-describe("init", () => {
-  it("connects to near and clears storage", async () => {
-    const { wallet, storage } = createLedgerWallet();
-    await wallet.init();
-
-    expect(storage.getItem).toHaveBeenCalled();
-  });
-});
-
 describe("connect", () => {
   it("signs in", async () => {
-    const { wallet, ledgerClient, storage, authData } = createLedgerWallet();
-    await wallet.init();
+    const accountId = "accountId";
+    const derivationPath = "derivationPath";
+    const { wallet, ledgerClient, storage, publicKey } = createLedgerWallet();
     await wallet.connect({
-      accountId: authData.accountId,
-      derivationPath: authData.derivationPath,
+      accountId: "accountId",
+      derivationPath: "derivationPath",
     });
-    expect(storage.setItem).toHaveBeenCalledWith("ledger:authData", authData);
+    expect(storage.setItem).toHaveBeenCalledWith("ledger:authData", {
+      accountId,
+      derivationPath,
+      publicKey,
+    });
     expect(ledgerClient.connect).toHaveBeenCalled();
     expect(ledgerClient.setScrambleKey).toHaveBeenCalled();
     expect(ledgerClient.on).toHaveBeenCalled();
@@ -111,21 +106,20 @@ describe("connect", () => {
 
 describe("getAccounts", () => {
   it("returns account objects", async () => {
-    const { wallet, authData } = createLedgerWallet();
-    await wallet.init();
+    const accountId = "accountId";
+    const { wallet } = createLedgerWallet();
     await wallet.connect({
-      accountId: authData.accountId,
-      derivationPath: authData.derivationPath,
+      accountId,
+      derivationPath: "derivationPath",
     });
-    const result = wallet.getAccounts();
-    expect(result).toEqual([{ accountId: "amirsaran.testnet" }]);
+    const result = await wallet.getAccounts();
+    expect(result).toEqual([{ accountId }]);
   });
 });
 
 // describe("signAndSendTransaction", () => {
 //   it("signs and sends transaction", async () => {
 //     const { wallet, authData } = createLedgerWallet();
-//     await wallet.init();
 //     await wallet.connect({
 //       accountId: authData.accountId,
 //       derivationPath: authData.derivationPath,
