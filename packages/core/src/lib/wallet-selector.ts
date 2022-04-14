@@ -36,6 +36,7 @@ export const setupWalletSelector = async (
 
       return Boolean(accounts.length);
     },
+    options,
     wallet: <WalletVariation extends Wallet = Wallet>(walletId?: string) => {
       const wallet = controller.getWallet<WalletVariation>(walletId);
 

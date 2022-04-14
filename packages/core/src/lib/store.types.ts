@@ -1,7 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
 import { Wallet, WalletMetadata } from "./wallet";
-import { Options } from "./options.types";
 
 export interface AccountState {
   accountId: string;
@@ -12,8 +11,6 @@ export type WalletState = WalletMetadata & {
 };
 
 export interface WalletSelectorState {
-  options: Options;
-
   wallets: Array<WalletState>;
   accounts: Array<AccountState>;
 }

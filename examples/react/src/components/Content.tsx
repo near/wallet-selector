@@ -23,10 +23,8 @@ const Content: React.FC = () => {
       return null;
     }
 
-    const { options } = selector.store.getState();
-    const provider = new providers.JsonRpcProvider({
-      url: options.network.nodeUrl,
-    });
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<AccountView>({
@@ -38,18 +36,17 @@ const Content: React.FC = () => {
         ...data,
         account_id: accountId,
       }));
-  }, [accountId, selector.store]);
+  }, [accountId, selector.options]);
 
   const getMessages = useCallback(() => {
-    const { options } = selector.store.getState();
-    const provider = new providers.JsonRpcProvider({
-      url: options.network.nodeUrl,
-    });
+    const { network, contractId } = selector.options;
+
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: options.contractId,
+        account_id: contractId,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -106,7 +103,7 @@ const Content: React.FC = () => {
   };
 
   const handleSendMultipleTransactions = () => {
-    const { options } = selector.store.getState();
+    const { contractId } = selector.options;
 
     selector.wallet().signAndSendTransactions({
       transactions: [
@@ -126,7 +123,7 @@ const Content: React.FC = () => {
           ],
         },
         {
-          receiverId: options.contractId,
+          receiverId: contractId,
           actions: [
             {
               type: "FunctionCall",
