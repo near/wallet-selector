@@ -1,14 +1,7 @@
-import { NetworkId } from "./Options";
+import { WalletSelectorParams } from "./wallet-selector.types";
+import { Options, Network, NetworkId } from "./options.types";
 
-export interface NetworkConfiguration {
-  networkId: string;
-  nodeUrl: string;
-  helperUrl: string;
-  explorerUrl: string;
-  restApiUrl: string;
-}
-
-export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
+export const getNetworkPreset = (networkId: NetworkId): Network => {
   switch (networkId) {
     case "mainnet":
       return {
@@ -39,8 +32,14 @@ export const getNetwork = (networkId: NetworkId): NetworkConfiguration => {
   }
 };
 
-export const resolveNetwork = (
-  network: NetworkId | NetworkConfiguration
-): NetworkConfiguration => {
-  return typeof network === "string" ? getNetwork(network) : network;
+export const resolveNetwork = (network: NetworkId | Network): Network => {
+  return typeof network === "string" ? getNetworkPreset(network) : network;
+};
+
+export const resolveOptions = (params: WalletSelectorParams): Options => {
+  return {
+    network: resolveNetwork(params.network),
+    contractId: params.contractId,
+    methodNames: params.methodNames,
+  };
 };

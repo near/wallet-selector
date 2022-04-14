@@ -1,60 +1,63 @@
-import { updateState } from "../state";
-import { Provider, Logger, PersistentStorage, Emitter } from "../services";
-import { Transaction } from "./transactions";
-import { Action } from "./actions";
-import { Options } from "../Options";
-import { NetworkConfiguration } from "../network";
 import { providers } from "near-api-js";
 
-export interface HardwareWalletSignInParams {
+import {
+  EventEmitterService,
+  ProviderService,
+  LoggerService,
+  StorageService,
+} from "../services";
+import { Transaction } from "./transactions";
+import { Action } from "./actions";
+import { Options } from "../options.types";
+import { Optional } from "../utils.types";
+import { AccountState } from "../store.types";
+
+export interface HardwareWalletConnectParams {
   derivationPath: string;
 }
 
 export interface SignAndSendTransactionParams {
-  signerId: string;
-  receiverId: string;
+  signerId?: string;
+  receiverId?: string;
   actions: Array<Action>;
 }
 
 export interface SignAndSendTransactionsParams {
-  transactions: Array<Transaction>;
-}
-
-export interface AccountInfo {
-  accountId: string;
+  transactions: Array<Optional<Transaction, "signerId">>;
 }
 
 export type WalletEvents = {
-  signIn: { accounts: Array<AccountInfo> };
-  signOut: { accounts: Array<AccountInfo> };
-  accountsChanged: { accounts: Array<AccountInfo> };
+  connected: { pending?: boolean; accounts?: Array<AccountState> };
+  disconnected: null;
+  accountsChanged: { accounts: Array<AccountState> };
+  networkChanged: null;
 };
 
-interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
+export interface WalletMetadata<Type extends string = string> {
   id: string;
   name: string;
   description: string | null;
   iconUrl: string;
-  type: string;
+  type: Type;
+}
 
-  // Initialise an SDK or load data from a source such as local storage.
-  init(): Promise<void>;
-
+interface BaseWallet<
+  Type extends string,
+  ExecutionOutcome = providers.FinalExecutionOutcome
+> extends WalletMetadata<Type> {
   // Determines if the wallet is available for selection.
+  // TODO: Make this async to support checking if an injected wallet is installed.
   isAvailable(): boolean;
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).
-  signIn(params?: object): Promise<void>;
+  connect(params?: object): Promise<Array<AccountState>>;
 
   // Removes connection to the wallet and triggers a cleanup of subscriptions etc.
-  signOut(): Promise<void>;
-
-  // Determines if we're signed in with the wallet.
-  isSignedIn(): Promise<boolean>;
+  disconnect(): Promise<void>;
 
   // Retrieves all active accounts.
-  getAccounts(): Promise<Array<AccountInfo>>;
+  getAccounts(): Promise<Array<AccountState>>;
 
   // Signs a list of actions before sending them via an RPC endpoint.
   signAndSendTransaction(
@@ -67,23 +70,17 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
   ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
 }
 
-export interface BrowserWallet extends BaseWallet<void> {
-  type: "browser";
+export type BrowserWallet = BaseWallet<"browser", void>;
+
+export interface InjectedWallet extends BaseWallet<"injected"> {
+  getDownloadUrl(): string;
 }
 
-export interface InjectedWallet extends BaseWallet {
-  type: "injected";
-  downloadUrl: string;
+export interface HardwareWallet extends BaseWallet<"hardware"> {
+  connect(params?: HardwareWalletConnectParams): Promise<Array<AccountState>>;
 }
 
-export interface HardwareWallet extends BaseWallet {
-  type: "hardware";
-  signIn(params: HardwareWalletSignInParams): Promise<void>;
-}
-
-export interface BridgeWallet extends BaseWallet {
-  type: "bridge";
-}
+export type BridgeWallet = BaseWallet<"bridge", void>;
 
 export type Wallet =
   | BrowserWallet
@@ -93,16 +90,30 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-export interface WalletOptions {
+export interface WalletOptions<WalletVariation extends Wallet = Wallet> {
   options: Options;
-  network: NetworkConfiguration;
-  provider: Provider;
-  emitter: Emitter<WalletEvents>;
-  logger: Logger;
-  storage: PersistentStorage;
-  updateState: typeof updateState;
+  metadata: WalletMetadata<WalletVariation["type"]>;
+  provider: ProviderService;
+  emitter: EventEmitterService<WalletEvents>;
+  logger: LoggerService;
+  storage: StorageService;
 }
 
-export type WalletModule<WalletVariation extends Wallet = Wallet> = (
-  options: WalletOptions
-) => WalletVariation;
+export type WalletBehaviour<WalletVariation extends Wallet = Wallet> = Omit<
+  WalletVariation,
+  keyof WalletMetadata
+>;
+
+export type WalletModule<WalletVariation extends Wallet = Wallet> =
+  WalletMetadata<WalletVariation["type"]> & {
+    wallet(
+      options: WalletOptions<WalletVariation>
+    ): WalletBehaviour<WalletVariation>;
+  };
+
+export type WalletBehaviourFactory<
+  WalletVariation extends Wallet,
+  ExtraWalletOptions extends object = object
+> = (
+  options: WalletOptions<WalletVariation> & ExtraWalletOptions
+) => WalletBehaviour<WalletVariation>;

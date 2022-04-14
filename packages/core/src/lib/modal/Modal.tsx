@@ -1,18 +1,11 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
-import styles from "./Modal.styles";
-import { getState, State, updateState } from "../state";
-import { Options, Theme } from "../Options";
-import { NetworkConfiguration } from "../network";
-import { HardwareWallet, Wallet } from "../wallet";
+import { Wallet } from "../wallet";
 import { logger } from "../services";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
-
-declare global {
-  // tslint:disable-next-line
-  interface Window {
-    updateWalletSelector: (state: State) => void;
-  }
-}
+import { ModalOptions, Theme } from "./setupModal.types";
+import { WalletSelector } from "../wallet-selector.types";
+import { Store } from "../store.types";
+import styles from "./Modal.styles";
 
 const getThemeClass = (theme?: Theme) => {
   switch (theme) {
@@ -26,27 +19,29 @@ const getThemeClass = (theme?: Theme) => {
 };
 
 interface ModalProps {
-  options: Options;
-  network: NetworkConfiguration;
-  wallets: Array<Wallet>;
+  selector: WalletSelector;
+  // TODO: Remove once UI state is localised to this component.
+  store: Store;
+  options?: ModalOptions;
 }
 
-const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
-  const [state, setState] = useState(getState());
+export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
+  const [state, setState] = useState(selector.store.getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
   );
   const [isLoading, setIsLoading] = useState(false);
-  const notInstalledWallet = wallets.find(
-    (wallet) => wallet.id === state.showWalletNotInstalled
-  );
+  const notInstalledWallet = state.showWalletNotInstalled
+    ? selector.wallet(state.showWalletNotInstalled)
+    : null;
 
   useEffect(() => {
-    window.updateWalletSelector = (nextState) => {
-      setState(nextState);
-    };
+    const subscription = selector.store.observable.subscribe(setState);
+
+    return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -65,10 +60,12 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
       return;
     }
 
-    updateState((prevState) => ({
-      ...prevState,
-      showModal: false,
-    }));
+    store.dispatch({
+      type: "UPDATE",
+      payload: {
+        showModal: false,
+      },
+    });
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -85,14 +82,16 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
 
   const handleWalletClick = (wallet: Wallet) => () => {
     if (wallet.type === "hardware") {
-      return updateState((prevState) => ({
-        ...prevState,
-        showWalletOptions: false,
-        showLedgerDerivationPath: true,
-      }));
+      return store.dispatch({
+        type: "UPDATE",
+        payload: {
+          showWalletOptions: false,
+          showLedgerDerivationPath: true,
+        },
+      });
     }
 
-    wallet.signIn().catch((err) => {
+    wallet.connect().catch((err) => {
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
 
@@ -103,10 +102,14 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
   const handleConnectClick = async () => {
     setIsLoading(true);
     // TODO: Can't assume "ledger" once we implement more hardware wallets.
-    const wallet = wallets.find((x) => x.id === "ledger") as HardwareWallet;
+    const wallet = selector.wallet("ledger");
+
+    if (wallet.type !== "hardware") {
+      return;
+    }
 
     await wallet
-      .signIn({ derivationPath: ledgerDerivationPath })
+      .connect({ derivationPath: ledgerDerivationPath })
       .catch((err) => {
         setLedgerError(`Error: ${err.message}`);
         setIsLoading(false);
@@ -117,7 +120,7 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
     <div style={{ display: state.showModal ? "block" : "none" }}>
       <style>{styles}</style>
       <div
-        className={`Modal ${getThemeClass(options.ui?.theme)}`}
+        className={`Modal ${getThemeClass(options?.theme)}`}
         onClick={handleDismissOutsideClick}
       >
         <div className="Modal-content">
@@ -141,17 +144,21 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
             className="Modal-body Modal-select-wallet-option"
           >
             <p className="Modal-description">
-              {options.ui?.description ||
+              {options?.description ||
                 "Please select a wallet to connect to this dApp:"}
             </p>
             <ul className="Modal-option-list">
-              {wallets
-                .filter((wallet) => wallet.isAvailable())
-                .map((wallet) => {
-                  const { id, name, description, iconUrl } = wallet;
-                  const selected = state.selectedWalletId === id;
+              {state.wallets.reduce<Array<JSX.Element>>(
+                (result, { id, selected }) => {
+                  const wallet = selector.wallet(id);
 
-                  return (
+                  if (!wallet.isAvailable()) {
+                    return result;
+                  }
+
+                  const { name, description, iconUrl } = wallet;
+
+                  result.push(
                     <li
                       key={id}
                       id={id}
@@ -171,7 +178,11 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
                       </div>
                     </li>
                   );
-                })}
+
+                  return result;
+                },
+                []
+              )}
             </ul>
           </div>
           <div
@@ -181,8 +192,8 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then enter an account id and
-              derivation path to connect:
+              Make sure your Ledger is plugged in, then enter an account id to
+              connect:
             </p>
             <div className="derivation-paths-list">
               <input
@@ -212,55 +223,56 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
               </button>
             </div>
           </div>
-          <div
-            style={{
-              display: state.showWalletNotInstalled ? "block" : "none",
-            }}
-            className="Modal-body Modal-wallet-not-installed"
-          >
-            <div className={`icon-display ${notInstalledWallet?.id}`}>
-              <img
-                src={notInstalledWallet?.iconUrl}
-                alt={notInstalledWallet?.name}
-              />
-              <p>{notInstalledWallet?.name}</p>
+          {notInstalledWallet && (
+            <div className="Modal-body Modal-wallet-not-installed">
+              <div className={`icon-display ${notInstalledWallet.id}`}>
+                <img
+                  src={notInstalledWallet.iconUrl}
+                  alt={notInstalledWallet.name}
+                />
+                <p>{notInstalledWallet.name}</p>
+              </div>
+              <p>
+                {`You'll need to install ${notInstalledWallet.name} to continue. After installing`}
+                <span
+                  className="refresh-link"
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  &nbsp;refresh the page.
+                </span>
+              </p>
+              <div className="action-buttons">
+                <button
+                  className="left-button"
+                  onClick={() => {
+                    store.dispatch({
+                      type: "UPDATE",
+                      payload: {
+                        showWalletOptions: true,
+                        showWalletNotInstalled: null,
+                      },
+                    });
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  className="right-button"
+                  onClick={() => {
+                    if (notInstalledWallet.type !== "injected") {
+                      return;
+                    }
+
+                    window.open(notInstalledWallet.getDownloadUrl(), "_blank");
+                  }}
+                >
+                  {`Open ${notInstalledWallet.name}`}
+                </button>
+              </div>
             </div>
-            <p>
-              {`You'll need to install ${notInstalledWallet?.name} to continue. After installing`}
-              <span
-                className="refresh-link"
-                onClick={() => {
-                  window.location.reload();
-                }}
-              >
-                &nbsp;refresh the page.
-              </span>
-            </p>
-            <div className="action-buttons">
-              <button
-                className="left-button"
-                onClick={() => {
-                  updateState((prevState) => ({
-                    ...prevState,
-                    showWalletOptions: true,
-                    showWalletNotInstalled: null,
-                  }));
-                }}
-              >
-                Back
-              </button>
-              <button
-                className="right-button"
-                onClick={() => {
-                  if ("downloadUrl" in notInstalledWallet!) {
-                    window.open(notInstalledWallet.downloadUrl, "_blank");
-                  }
-                }}
-              >
-                {`Open ${notInstalledWallet?.name}`}
-              </button>
-            </div>
-          </div>
+          )}
           <div
             style={{ display: state.showSwitchNetwork ? "block" : "none" }}
             className="Modal-body Modal-switch-network-message"
@@ -271,7 +283,8 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
             <div className="content">
               <p>
                 We've detected that you need to change your wallet's network to
-                <strong>{` ${network.networkId}`}</strong> for this dApp.
+                <strong>{` ${state.options.network.networkId}`}</strong> for
+                this dApp.
               </p>
               <p>
                 Some wallets may not support changing networks. If you can not
@@ -285,11 +298,13 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
               <button
                 className="right-button"
                 onClick={() => {
-                  updateState((prevState) => ({
-                    ...prevState,
-                    showWalletOptions: true,
-                    showSwitchNetwork: false,
-                  }));
+                  store.dispatch({
+                    type: "UPDATE",
+                    payload: {
+                      showWalletOptions: true,
+                      showSwitchNetwork: null,
+                    },
+                  });
                 }}
               >
                 Switch Wallet
@@ -322,5 +337,3 @@ const Modal: React.FC<ModalProps> = ({ options, network, wallets }) => {
     </div>
   );
 };
-
-export default Modal;
