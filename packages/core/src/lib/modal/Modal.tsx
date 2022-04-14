@@ -29,7 +29,6 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
   const [state, setState] = useState(selector.store.getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
-  const [ledgerAccountId, setLedgerAccountId] = useState("");
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
   );
@@ -52,7 +51,6 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
   const resetState = () => {
     setWalletInfoVisible(false);
     setLedgerError("");
-    setLedgerAccountId("");
     setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
     setIsLoading(false);
   };
@@ -80,10 +78,6 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
 
   const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLedgerDerivationPath(e.target.value);
-  };
-
-  const handleAccountIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLedgerAccountId(e.target.value);
   };
 
   const handleWalletClick = (wallet: Wallet) => () => {
@@ -115,10 +109,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     }
 
     await wallet
-      .connect({
-        accountId: ledgerAccountId,
-        derivationPath: ledgerDerivationPath,
-      })
+      .connect({ derivationPath: ledgerDerivationPath })
       .catch((err) => {
         setLedgerError(`Error: ${err.message}`);
         setIsLoading(false);
@@ -205,17 +196,6 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
               derivation path to connect:
             </p>
             <div className="derivation-paths-list">
-              <div className="account-id">
-                <input
-                  type="text"
-                  className={ledgerError ? "input-error" : ""}
-                  placeholder="Account ID"
-                  autoFocus={true}
-                  value={ledgerAccountId}
-                  onChange={handleAccountIdChange}
-                  readOnly={isLoading}
-                />
-              </div>
               <input
                 type="text"
                 className={ledgerError ? "input-error" : ""}

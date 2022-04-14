@@ -13,7 +13,6 @@ import { Optional } from "../utils.types";
 import { AccountState } from "../store.types";
 
 export interface HardwareWalletConnectParams {
-  accountId: string;
   derivationPath: string;
 }
 
