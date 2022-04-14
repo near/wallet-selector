@@ -7,7 +7,6 @@ import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 
 export interface SignInParams {
   walletId: Wallet["id"];
-  accountId?: string;
   derivationPath?: string;
 }
 
@@ -114,7 +113,7 @@ class WalletController {
     return this.wallets;
   }
 
-  async signIn({ walletId, accountId, derivationPath }: SignInParams) {
+  async signIn({ walletId, derivationPath }: SignInParams) {
     const wallet = this.getWallet(walletId);
 
     if (!wallet) {
@@ -122,15 +121,11 @@ class WalletController {
     }
 
     if (wallet.type === "hardware") {
-      if (!accountId) {
-        throw new Error("Invalid account id");
-      }
-
       if (!derivationPath) {
         throw new Error("Invalid derivation path");
       }
 
-      return wallet.signIn({ accountId, derivationPath });
+      return wallet.signIn({ derivationPath });
     }
 
     return wallet.signIn();
