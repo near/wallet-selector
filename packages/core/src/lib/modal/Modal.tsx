@@ -10,18 +10,8 @@ import { logger } from "../services";
 import { DEFAULT_DERIVATION_PATH } from "../constants";
 import { ModalOptions, Theme } from "./setupModal.types";
 import { WalletSelector } from "../wallet-selector.types";
+import { WalletSelectorError, ErrorCode, ErrorCodes } from "../errors";
 import styles from "./Modal.styles";
-
-const getThemeClass = (theme?: Theme) => {
-  switch (theme) {
-    case "dark":
-      return "Modal-dark-theme";
-    case "light":
-      return "Modal-light-theme";
-    default:
-      return "";
-  }
-};
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
@@ -35,6 +25,24 @@ type ModalRouteName =
   | "LedgerDerivationPath"
   | "WalletNotInstalled"
   | "WalletNetworkChanged";
+
+const getThemeClass = (theme?: Theme) => {
+  switch (theme) {
+    case "dark":
+      return "Modal-dark-theme";
+    case "light":
+      return "Modal-light-theme";
+    default:
+      return "";
+  }
+};
+
+const isWalletSelectorError = (
+  err: unknown,
+  code: ErrorCode
+): err is WalletSelectorError => {
+  return err instanceof WalletSelectorError && err.name === code;
+};
 
 export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
   const [state, setState] = useState(selector.store.getState());
@@ -100,6 +108,11 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
     }
 
     wallet.connect().catch((err) => {
+      if (isWalletSelectorError(err, ErrorCodes.WalletNotInstalled)) {
+        setNotInstalledWallet(wallet);
+        return setRouteName("WalletNotInstalled");
+      }
+
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
 
