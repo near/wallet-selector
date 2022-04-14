@@ -5,9 +5,9 @@ export type NetworkId = "mainnet" | "testnet" | "betanet";
 export interface Network {
   networkId: string;
   nodeUrl: string;
-  // helperUrl: string;
-  // explorerUrl: string;
-  // restApiUrl: string;
+  helperUrl: string;
+  explorerUrl: string;
+  restApiUrl: string;
 }
 
 export type Options = Pick<

@@ -66,9 +66,9 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
   }, []);
 
   useEffect(() => {
-    const subscription = selector.on("networkChanged", ({ network }) => {
+    const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
-      if (network.networkId === state.options.network.networkId) {
+      if (networkId === state.options.network.networkId) {
         return hide();
       }
 

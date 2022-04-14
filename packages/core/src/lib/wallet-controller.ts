@@ -149,8 +149,8 @@ class WalletController {
 
   private handleNetworkChanged =
     (walletId: string) =>
-    ({ network }: WalletEvents["networkChanged"]) => {
-      this.emitter.emit("networkChanged", { walletId, network });
+    ({ networkId }: WalletEvents["networkChanged"]) => {
+      this.emitter.emit("networkChanged", { walletId, networkId });
     };
 
   async init() {

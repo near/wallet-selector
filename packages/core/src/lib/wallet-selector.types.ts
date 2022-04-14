@@ -20,7 +20,7 @@ export interface WalletSelectorStore {
 }
 
 export type WalletSelectorEvents = {
-  networkChanged: { walletId: string; network: Network };
+  networkChanged: { walletId: string; networkId: string };
 };
 
 // TODO: Remove extending once modal is a separate package.

@@ -31,7 +31,7 @@ export type WalletEvents = {
   connected: { pending?: boolean; accounts?: Array<AccountState> };
   disconnected: null;
   accountsChanged: { accounts: Array<AccountState> };
-  networkChanged: { network: Network };
+  networkChanged: { networkId: string };
 };
 
 export interface WalletMetadata<Type extends string = string> {
