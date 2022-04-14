@@ -7,7 +7,6 @@ import { NetworkConfiguration } from "../network";
 import { providers } from "near-api-js";
 
 export interface HardwareWalletSignInParams {
-  accountId: string;
   derivationPath: string;
 }
 

@@ -18,7 +18,11 @@ interface AuthData {
 
 interface ValidateParams {
   accountId: string;
-  derivationPath: string;
+  publicKey: string;
+}
+
+interface GetAccountIdFromPublicKeyParams {
+  publicKey: string;
 }
 
 interface LedgerState {
@@ -34,7 +38,14 @@ export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 export function setupLedger({
   iconUrl,
 }: LedgerParams = {}): WalletModule<HardwareWallet> {
-  return function Ledger({ provider, emitter, logger, storage, updateState }) {
+  return function Ledger({
+    provider,
+    network,
+    emitter,
+    logger,
+    storage,
+    updateState,
+  }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerState = { authData: null };
@@ -102,14 +113,8 @@ export function setupLedger({
       return ledgerClient;
     };
 
-    const validate = async ({ accountId, derivationPath }: ValidateParams) => {
-      logger.log("Ledger:validate", { accountId, derivationPath });
-
-      const ledgerClient = await getClient();
-
-      const publicKey = await ledgerClient.getPublicKey({
-        derivationPath: derivationPath,
-      });
+    const validate = async ({ accountId, publicKey }: ValidateParams) => {
+      logger.log("Ledger:validate", { accountId, publicKey });
 
       logger.log("Ledger:validate:publicKey", { publicKey });
 
@@ -139,6 +144,30 @@ export function setupLedger({
 
         throw err;
       }
+    };
+
+    const getAccountIdFromPublicKey = async ({
+      publicKey,
+    }: GetAccountIdFromPublicKeyParams): Promise<string> => {
+      const response = await fetch(
+        `${network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to get accountId from public key: ${response.statusText}`
+        );
+      }
+
+      const accountIds = await response.json();
+
+      if (Array.isArray(accountIds) && accountIds.length === 0) {
+        throw new Error("No account found");
+      }
+
+      const accountId = accountIds[0];
+
+      return accountId;
     };
 
     const signTransaction = async (
@@ -224,23 +253,26 @@ export function setupLedger({
       async init() {
         state.authData = storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA);
       },
-
-      async signIn({ accountId, derivationPath }) {
+      async signIn({ derivationPath }) {
         if (await this.isSignedIn()) {
           return;
-        }
-
-        if (!accountId) {
-          throw new Error("Invalid account id");
         }
 
         if (!derivationPath) {
           throw new Error("Invalid derivation path");
         }
 
-        const { publicKey, accessKey } = await validate({
+        const ledgerClient = await getClient();
+
+        const publicKey = await ledgerClient.getPublicKey({
+          derivationPath: derivationPath,
+        });
+
+        const accountId = await getAccountIdFromPublicKey({ publicKey });
+
+        const { accessKey } = await validate({
           accountId,
-          derivationPath,
+          publicKey,
         });
 
         if (!accessKey) {

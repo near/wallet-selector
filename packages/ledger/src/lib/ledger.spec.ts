@@ -74,6 +74,7 @@ const createLedgerWallet = () => {
       },
       provider: new Provider(network.nodeUrl),
       emitter: new EventEmitter(),
+      network,
       logger,
       storage,
       updateState,
