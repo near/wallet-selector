@@ -15,7 +15,7 @@ export const setupWalletSelector = async (
 ): Promise<WalletSelector> => {
   const options = resolveOptions(params);
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = createStore({ options });
+  const store = createStore();
   const controller = new WalletController(
     options,
     params.wallets,
