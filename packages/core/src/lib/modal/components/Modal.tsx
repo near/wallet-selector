@@ -146,6 +146,8 @@ export const Modal: React.FC<ModalProps> = ({
       return;
     }
 
+    setIsLoading(true);
+
     await wallet
       .connect({
         accountId: ledgerAccountId,
