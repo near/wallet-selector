@@ -192,8 +192,8 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
             className="Modal-body Modal-choose-ledger-derivation-path"
           >
             <p>
-              Make sure your Ledger is plugged in, then enter an account id and
-              derivation path to connect:
+              Make sure your Ledger is plugged in, then enter an account id to
+              connect:
             </p>
             <div className="derivation-paths-list">
               <input
