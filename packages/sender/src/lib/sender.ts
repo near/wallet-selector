@@ -8,6 +8,7 @@ import {
   FunctionCallAction,
   Optional,
   waitFor,
+  errors,
 } from "@near-wallet-selector/core";
 
 import { InjectedSender } from "./injected-sender";
@@ -83,7 +84,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     const installed = await isInstalled();
 
     if (!installed) {
-      throw new Error(`${metadata.name} not installed`);
+      throw errors.createWalletNotInstalledError(metadata);
     }
 
     _wallet = window.near!;

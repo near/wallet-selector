@@ -1,11 +1,11 @@
-export enum ErrorCodes {
+import { WalletMetadata } from "./wallet";
+
+enum ErrorCodes {
   WalletNotInstalled = "WalletNotInstalled",
 }
 
-export type ErrorCode = `${ErrorCodes}`;
-
-export class WalletSelectorError extends Error {
-  constructor(name: ErrorCode, message: string) {
+class WalletSelectorError extends Error {
+  constructor(name: ErrorCodes, message: string) {
     super(message);
 
     this.name = name;
@@ -13,3 +13,23 @@ export class WalletSelectorError extends Error {
     Object.setPrototypeOf(this, WalletSelectorError.prototype);
   }
 }
+
+const isError = (err: unknown, code?: ErrorCodes) => {
+  if (!(err instanceof WalletSelectorError)) {
+    return false;
+  }
+
+  return code ? err.name === code : true;
+};
+
+export const errors = {
+  isWalletNotInstalledError: (err: unknown) => {
+    return isError(err, ErrorCodes.WalletNotInstalled);
+  },
+  createWalletNotInstalledError: (metadata: WalletMetadata) => {
+    return new WalletSelectorError(
+      ErrorCodes.WalletNotInstalled,
+      `${metadata.name} not installed`
+    );
+  },
+};

@@ -10,7 +10,7 @@ import { logger } from "../../services";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
-import { WalletSelectorError, ErrorCode, ErrorCodes } from "../../errors";
+import { errors } from "../../errors";
 import styles from "./Modal.styles";
 
 interface ModalProps {
@@ -36,13 +36,6 @@ const getThemeClass = (theme?: Theme) => {
     default:
       return "";
   }
-};
-
-const isWalletSelectorError = (
-  err: unknown,
-  code: ErrorCode
-): err is WalletSelectorError => {
-  return err instanceof WalletSelectorError && err.name === code;
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -125,7 +118,7 @@ export const Modal: React.FC<ModalProps> = ({
     }
 
     wallet.connect().catch((err) => {
-      if (isWalletSelectorError(err, ErrorCodes.WalletNotInstalled)) {
+      if (errors.isWalletNotInstalledError(err)) {
         setNotInstalledWallet(wallet);
         return setRouteName("WalletNotInstalled");
       }

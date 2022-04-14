@@ -39,7 +39,7 @@ export {
   DeleteAccountAction,
 } from "./lib/wallet";
 
-export { ErrorCode, ErrorCodes } from "./lib/errors";
+export { errors } from "./lib/errors";
 
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
