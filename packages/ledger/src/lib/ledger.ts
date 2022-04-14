@@ -153,11 +153,13 @@ export function setupLedger({
         `${network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
       );
 
-      const accountIds = await response.json();
-
-      if (accountIds.error) {
-        throw new Error(accountIds.error);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to get accountId from public key: ${response.statusText}`
+        );
       }
+
+      const accountIds = await response.json();
 
       if (Array.isArray(accountIds) && accountIds.length === 0) {
         throw new Error("No account found");
