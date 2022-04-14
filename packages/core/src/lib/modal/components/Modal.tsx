@@ -86,7 +86,8 @@ export const Modal: React.FC<ModalProps> = ({
     });
 
     return () => subscription.remove();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDismissClick = () => {
     if (isLoading) {
