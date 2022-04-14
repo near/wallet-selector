@@ -7,11 +7,6 @@ export interface AccountState {
   accountId: string;
 }
 
-export interface ContractState {
-  contractId: string;
-  methodNames: Array<string> | null;
-}
-
 export type WalletState = WalletMetadata & {
   selected: boolean;
 };
@@ -21,13 +16,6 @@ export interface WalletSelectorState {
 
   wallets: Array<WalletState>;
   accounts: Array<AccountState>;
-
-  // Modal related state.
-  // TODO: Remove once Modal is decoupled from core.
-  showWalletOptions: boolean;
-  showLedgerDerivationPath: boolean;
-  showWalletNotInstalled: string | null;
-  showSwitchNetwork: string | null;
 }
 
 export type WalletSelectorAction =
@@ -58,10 +46,6 @@ export type WalletSelectorAction =
       payload: {
         accounts: Array<AccountState>;
       };
-    }
-  | {
-      type: "UPDATE";
-      payload: Partial<WalletSelectorState>;
     };
 
 export interface Store {

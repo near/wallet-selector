@@ -8,7 +8,7 @@ import {
 } from "../services";
 import { Transaction } from "./transactions";
 import { Action } from "./actions";
-import { Options } from "../options.types";
+import { Network, Options } from "../options.types";
 import { Optional } from "../utils.types";
 import { AccountState } from "../store.types";
 
@@ -31,7 +31,7 @@ export type WalletEvents = {
   connected: { pending?: boolean; accounts?: Array<AccountState> };
   disconnected: null;
   accountsChanged: { accounts: Array<AccountState> };
-  networkChanged: null;
+  networkChanged: { network: Network };
 };
 
 export interface WalletMetadata<Type extends string = string> {

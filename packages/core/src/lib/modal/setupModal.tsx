@@ -4,14 +4,12 @@ import ReactDOM from "react-dom";
 import { WalletSelector } from "../wallet-selector.types";
 import { WalletSelectorModal, ModalOptions } from "./setupModal.types";
 import { Root } from "./Root";
-import { Store } from "../store.types";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 export const setupModal = (
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, "show" | "hide">,
-  store: Store,
   options?: ModalOptions
 ): WalletSelectorModal => {
   const el = document.createElement("div");
@@ -22,7 +20,6 @@ export const setupModal = (
     ReactDOM.render(
       <Root
         selector={selector}
-        store={store}
         options={options}
         visible={visible}
         hide={() => render(false)}

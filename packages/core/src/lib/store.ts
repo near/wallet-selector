@@ -79,11 +79,6 @@ const reducer = (
         accounts,
       };
     }
-    case "UPDATE":
-      return {
-        ...state,
-        ...action.payload,
-      };
     default:
       return state;
   }
@@ -96,10 +91,6 @@ export const createStore = (
   const subject = new BehaviorSubject<WalletSelectorState>({
     accounts: [],
     wallets: [],
-    showWalletOptions: true,
-    showLedgerDerivationPath: false,
-    showWalletNotInstalled: null,
-    showSwitchNetwork: null,
     ...initialState,
   });
 

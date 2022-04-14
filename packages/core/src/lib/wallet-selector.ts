@@ -1,16 +1,27 @@
 import WalletController from "./wallet-controller";
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
-import { WalletSelector, WalletSelectorParams } from "./wallet-selector.types";
+import {
+  WalletSelector,
+  WalletSelectorEvents,
+  WalletSelectorParams,
+} from "./wallet-selector.types";
 import { setupModal } from "./modal/setupModal";
 import { Wallet } from "./wallet";
+import { EventEmitter } from "./services";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {
   const options = resolveOptions(params);
+  const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = createStore({ options });
-  const controller = new WalletController(options, params.wallets, store);
+  const controller = new WalletController(
+    options,
+    params.wallets,
+    store,
+    emitter
+  );
 
   await controller.init();
 
@@ -38,10 +49,16 @@ export const setupWalletSelector = async (
 
       return wallet;
     },
+    on: (eventName, callback) => {
+      return emitter.on(eventName, callback);
+    },
+    off: (eventName, callback) => {
+      emitter.off(eventName, callback);
+    },
   };
 
   // TODO: Extract into separate package.
-  const modal = setupModal(selector, store, params.ui);
+  const modal = setupModal(selector, params.ui);
 
   return {
     ...selector,

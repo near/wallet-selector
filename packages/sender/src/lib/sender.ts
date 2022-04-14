@@ -102,12 +102,16 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       await disconnect();
     });
 
-    _wallet.on("rpcChanged", async (response) => {
-      if (options.network.networkId !== response.rpc.networkId) {
+    _wallet.on("rpcChanged", async ({ rpc }) => {
+      if (options.network.networkId !== rpc.networkId) {
         await disconnect();
 
-        // TODO: Remove this as it's a concern for the dApp not the modal.
-        emitter.emit("networkChanged", null);
+        emitter.emit("networkChanged", {
+          network: {
+            networkId: rpc.networkId,
+            nodeUrl: rpc.nodeUrl,
+          },
+        });
       }
     });
 

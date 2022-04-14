@@ -3,17 +3,25 @@ import { Wallet, WalletEvents, WalletModule } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 import { AccountState, Store } from "./store.types";
 import { Options } from "./options.types";
+import { WalletSelectorEvents } from "./wallet-selector.types";
 
 class WalletController {
   private options: Options;
   private modules: Array<WalletModule>;
   private wallets: Array<Wallet>;
   private store: Store;
+  private emitter: EventEmitter<WalletSelectorEvents>;
 
-  constructor(options: Options, modules: Array<WalletModule>, store: Store) {
+  constructor(
+    options: Options,
+    modules: Array<WalletModule>,
+    store: Store,
+    emitter: EventEmitter<WalletSelectorEvents>
+  ) {
     this.options = options;
     this.modules = modules;
     this.store = store;
+    this.emitter = emitter;
     this.wallets = [];
   }
 
@@ -139,16 +147,11 @@ class WalletController {
       });
     };
 
-  private handleNetworkChanged = (walletId: string) => () => {
-    this.store.dispatch({
-      type: "UPDATE",
-      payload: {
-        // showModal: true,
-        showWalletOptions: false,
-        showSwitchNetwork: walletId,
-      },
-    });
-  };
+  private handleNetworkChanged =
+    (walletId: string) =>
+    ({ network }: WalletEvents["networkChanged"]) => {
+      this.emitter.emit("networkChanged", { walletId, network });
+    };
 
   async init() {
     await this.setupWalletModules();
