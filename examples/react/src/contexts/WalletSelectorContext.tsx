@@ -11,6 +11,12 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
+declare global {
+  interface Window {
+    selector: WalletSelector;
+  }
+}
+
 interface WalletSelectorContextValue {
   selector: WalletSelector;
   accounts: Array<AccountState>;
@@ -75,8 +81,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
 
         syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore-next-line
         window.selector = instance;
         setSelector(instance);
       })

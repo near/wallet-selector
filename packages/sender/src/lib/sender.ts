@@ -8,6 +8,7 @@ import {
   FunctionCallAction,
   Optional,
   waitFor,
+  errors,
 } from "@near-wallet-selector/core";
 
 import { InjectedSender } from "./injected-sender";
@@ -83,7 +84,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     const installed = await isInstalled();
 
     if (!installed) {
-      throw new Error(`${metadata.name} not installed`);
+      throw errors.createWalletNotInstalledError(metadata);
     }
 
     _wallet = window.near!;
@@ -102,12 +103,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       await disconnect();
     });
 
-    _wallet.on("rpcChanged", async (response) => {
-      if (options.network.networkId !== response.rpc.networkId) {
+    _wallet.on("rpcChanged", async ({ rpc }) => {
+      if (options.network.networkId !== rpc.networkId) {
         await disconnect();
 
-        // TODO: Remove this as it's a concern for the dApp not the modal.
-        emitter.emit("networkChanged", null);
+        emitter.emit("networkChanged", { networkId: rpc.networkId });
       }
     });
 
