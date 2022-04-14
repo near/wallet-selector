@@ -8,7 +8,7 @@ import React, {
 import { Wallet } from "../../wallet";
 import { logger } from "../../services";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
-import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
+import { WalletSelectorModal, ModalOptions, Theme } from "../setupModal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { errors } from "../../errors";
 import styles from "./Modal.styles";
@@ -47,7 +47,6 @@ export const Modal: React.FC<ModalProps> = ({
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
-  const [ledgerAccountId, setLedgerAccountId] = useState("");
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
   );
@@ -61,7 +60,6 @@ export const Modal: React.FC<ModalProps> = ({
     setRouteName("WalletOptions");
     setWalletInfoVisible(false);
     setLedgerError("");
-    setLedgerAccountId("");
     setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
     setIsLoading(false);
   }, [visible]);
@@ -109,10 +107,6 @@ export const Modal: React.FC<ModalProps> = ({
     setLedgerDerivationPath(e.target.value);
   };
 
-  const handleAccountIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLedgerAccountId(e.target.value);
-  };
-
   const handleWalletClick = (wallet: Wallet) => () => {
     if (wallet.type === "hardware") {
       return setRouteName("LedgerDerivationPath");
@@ -143,10 +137,7 @@ export const Modal: React.FC<ModalProps> = ({
     setIsLoading(true);
 
     await wallet
-      .connect({
-        accountId: ledgerAccountId,
-        derivationPath: ledgerDerivationPath,
-      })
+      .connect({ derivationPath: ledgerDerivationPath })
       .catch((err) => {
         setLedgerError(`Error: ${err.message}`);
         setIsLoading(false);
@@ -258,17 +249,6 @@ export const Modal: React.FC<ModalProps> = ({
                 and derivation path to connect:
               </p>
               <div className="derivation-paths-list">
-                <div className="account-id">
-                  <input
-                    type="text"
-                    className={ledgerError ? "input-error" : ""}
-                    placeholder="Account ID"
-                    autoFocus={true}
-                    value={ledgerAccountId}
-                    onChange={handleAccountIdChange}
-                    readOnly={isLoading}
-                  />
-                </div>
                 <input
                   type="text"
                   className={ledgerError ? "input-error" : ""}
@@ -285,7 +265,6 @@ export const Modal: React.FC<ModalProps> = ({
                   disabled={isLoading}
                   onClick={() => {
                     setLedgerError("");
-                    setLedgerAccountId("");
                     setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
                     setRouteName("WalletOptions");
                   }}

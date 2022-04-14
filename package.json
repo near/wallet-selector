@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
   "keywords": [
     "near",
@@ -20,8 +20,7 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "prepublishOnly": "yarn build:all",
-    "build": "yarn build:core",
+    "prepublishOnly": "yarn build:core && yarn build:all",
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",
     "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
@@ -31,9 +30,11 @@
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
-    "prepack": "yarn build",
+    "serve:react": "nx serve react",
+    "serve:angular": "nx serve angular",
+    "prepack": "yarn build:core && yarn build:all",
     "test": "nx run-many --target=test --all",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build:core",
     "ng": "nx"
   },
   "dependencies": {

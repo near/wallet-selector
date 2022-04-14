@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { WalletModule, Wallet } from "./wallet";
 import { WalletSelectorState } from "./store.types";
 import { Network, NetworkId, Options } from "./options.types";
-import { ModalOptions, WalletSelectorModal } from "./modal/modal.types";
+import { ModalOptions, WalletSelectorModal } from "./modal/setupModal.types";
 import { Subscription } from "./services";
 
 export interface WalletSelectorParams {
