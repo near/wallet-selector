@@ -40,7 +40,6 @@ const Content: React.FC = () => {
 
   const getMessages = useCallback(() => {
     const { network, contractId } = selector.options;
-
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
