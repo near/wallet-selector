@@ -56,32 +56,28 @@ afterEach(() => {
 describe("isAvailable", () => {
   it("returns true", async () => {
     const { wallet } = createNearWallet();
-    expect(wallet.isAvailable()).toBe(true);
+
+    expect(wallet.isAvailable()).toEqual(true);
   });
 });
 
-describe("init", () => {
-  it("connects to near and clears storage", async () => {
-    const { wallet, nearApiJs } = createNearWallet();
-    await wallet.init();
+describe("connect", () => {
+  it("sign into near wallet", async () => {
+    const { wallet, nearApiJs, walletConnection } = createNearWallet();
+
+    await wallet.connect();
+
     expect(nearApiJs.connect).toHaveBeenCalled();
   });
 });
 
-describe("signIn", () => {
-  it("sign into near wallet", async () => {
-    const { wallet, walletConnection } = createNearWallet();
-    await wallet.init();
-    await wallet.connect();
-    expect(walletConnection.requestSignIn).toHaveBeenCalled();
-  });
-});
-
-describe("signOut", () => {
+describe("disconnect", () => {
   it("sign out of near wallet", async () => {
     const { wallet, walletConnection } = createNearWallet();
-    await wallet.init();
+
+    await wallet.connect();
     await wallet.disconnect();
+
     expect(walletConnection.signOut).toHaveBeenCalled();
   });
 });
@@ -89,9 +85,10 @@ describe("signOut", () => {
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
     const { wallet, walletConnection } = createNearWallet();
-    await wallet.init();
+
     await wallet.connect();
-    const result = wallet.getAccounts();
+    const result = await wallet.getAccounts();
+
     expect(walletConnection.getAccountId).toHaveBeenCalled();
     expect(result).toEqual([{ accountId: "test-account.testnet" }]);
   });
@@ -101,12 +98,13 @@ describe("signAndSendTransaction", () => {
   // TODO: Figure out why imports to core are returning undefined.
   it.skip("signs and sends transaction", async () => {
     const { wallet, walletConnection, account } = createNearWallet();
-    await wallet.init();
+
     await wallet.connect();
     const result = await wallet.signAndSendTransaction({
       receiverId: "guest-book.testnet",
       actions: [],
     });
+
     expect(walletConnection.account).toHaveBeenCalled();
     // near-api-js marks this method as protected.
     // @ts-ignore
