@@ -8,7 +8,7 @@ import React, {
 import { Wallet } from "../../wallet";
 import { logger } from "../../services";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
-import { WalletSelectorModal, ModalOptions, Theme } from "../setupModal.types";
+import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { errors } from "../../errors";
 import styles from "./Modal.styles";
