@@ -76,9 +76,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   const disconnect = async () => {
-    if (!_wallet && !_state.authData) {
-      return;
-    }
+    const connected = Boolean(_state.authData);
 
     if (_wallet && _wallet.isConnected()) {
       await _wallet.disconnect().catch((err) => {
@@ -89,7 +87,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
 
     cleanup();
 
-    emitter.emit("disconnected", null);
+    if (connected) {
+      emitter.emit("disconnected", null);
+    }
   };
 
   const setupWallet = async (): Promise<LedgerClient> => {
