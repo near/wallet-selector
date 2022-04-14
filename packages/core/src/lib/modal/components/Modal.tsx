@@ -288,10 +288,15 @@ export const Modal: React.FC<ModalProps> = ({
               <div className="derivation-paths--actions">
                 <button
                   className="left-button"
-                  onClick={handleDismissClick}
                   disabled={isLoading}
+                  onClick={() => {
+                    setLedgerError("");
+                    setLedgerAccountId("");
+                    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+                    setRouteName("WalletOptions");
+                  }}
                 >
-                  Dismiss
+                  Back
                 </button>
                 <button
                   className="right-button"
