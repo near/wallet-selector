@@ -13,4 +13,5 @@ export interface Options {
     theme?: Theme;
     description?: string;
   };
+  debug?: boolean;
 }

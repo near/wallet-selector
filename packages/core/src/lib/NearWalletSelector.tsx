@@ -7,7 +7,7 @@ import { Action, Transaction, WalletEvents } from "./wallet";
 import { Options } from "./Options";
 import { NetworkConfiguration, resolveNetwork } from "./network";
 import { updateState } from "./state";
-import { Emitter, EventEmitter } from "./services";
+import { Emitter, EventEmitter, Logger } from "./services";
 import { MODAL_ELEMENT_ID } from "./constants";
 import { Optional } from "./Optional";
 
@@ -38,6 +38,8 @@ export default class NearWalletSelector {
   }
 
   private constructor(options: Options) {
+    Logger.debug = options.debug || false;
+
     const network = resolveNetwork(options.network);
     const emitter = new EventEmitter<WalletEvents>();
     const controller = new WalletController(options, network, emitter);
