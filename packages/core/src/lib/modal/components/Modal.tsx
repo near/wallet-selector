@@ -17,6 +17,7 @@ interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, "show" | "hide">;
   options?: ModalOptions;
+  visible: boolean;
   hide: () => void;
 }
 
@@ -44,8 +45,13 @@ const isWalletSelectorError = (
   return err instanceof WalletSelectorError && err.name === code;
 };
 
-export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
-  const [state, setState] = useState(selector.store.getState());
+export const Modal: React.FC<ModalProps> = ({
+  selector,
+  options,
+  visible,
+  hide,
+}) => {
+  const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
   const [ledgerAccountId, setLedgerAccountId] = useState("");
@@ -59,7 +65,18 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
   );
 
   useEffect(() => {
-    const subscription = selector.store.observable.subscribe(setState);
+    setRouteName("WalletOptions");
+    setWalletInfoVisible(false);
+    setLedgerError("");
+    setLedgerAccountId("");
+    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
+    setIsLoading(false);
+  }, [visible]);
+
+  useEffect(() => {
+    const subscription = selector.store.observable.subscribe((state) => {
+      setWallets(state.wallets);
+    });
 
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
   useEffect(() => {
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
-      if (networkId === state.options.network.networkId) {
+      if (networkId === selector.options.network.networkId) {
         return hide();
       }
 
@@ -140,6 +157,10 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
       });
   };
 
+  if (!visible) {
+    return null;
+  }
+
   return (
     <div>
       <style>{styles}</style>
@@ -171,7 +192,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
                     "Please select a wallet to connect to this dApp:"}
                 </p>
                 <ul className="Modal-option-list">
-                  {state.wallets.reduce<Array<JSX.Element>>(
+                  {wallets.reduce<Array<JSX.Element>>(
                     (result, { id, selected }) => {
                       const wallet = selector.wallet(id);
 
@@ -334,8 +355,8 @@ export const Modal: React.FC<ModalProps> = ({ selector, options, hide }) => {
                 <p>
                   We've detected that you need to change your wallet's network
                   to
-                  <strong>{` ${state.options.network.networkId}`}</strong> for
-                  this dApp.
+                  <strong>{` ${selector.options.network.networkId}`}</strong>{" "}
+                  for this dApp.
                 </p>
                 <p>
                   Some wallets may not support changing networks. If you can not

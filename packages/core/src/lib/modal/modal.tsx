@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import { WalletSelector } from "../wallet-selector.types";
 import { WalletSelectorModal, ModalOptions } from "./modal.types";
-import { Root } from "./components/Root";
+import { Modal } from "./components/Modal";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
@@ -18,7 +18,7 @@ export const setupModal = (
 
   const render = (visible = false) => {
     ReactDOM.render(
-      <Root
+      <Modal
         selector={selector}
         options={options}
         visible={visible}
