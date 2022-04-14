@@ -30,6 +30,8 @@
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
+    "serve:react": "nx serve react",
+    "serve:angular": "nx serve angular",
     "prepack": "yarn build:core && yarn build:all",
     "test": "nx run-many --target=test --all",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build:core",
