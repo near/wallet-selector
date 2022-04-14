@@ -6,7 +6,6 @@ import {
   WalletBehaviourFactory,
   AccountState,
   HardwareWallet,
-  HardwareWalletConnectParams,
   transformActions,
   Transaction,
   Optional,
@@ -20,7 +19,7 @@ interface AuthData {
   publicKey: string;
 }
 
-interface ValidateParams {
+interface ValidateAccessKeyParams {
   accountId: string;
   publicKey: string;
 }
@@ -129,111 +128,50 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     return setupWallet();
   };
 
-  const validate = async ({ accountId, publicKey }: ValidateParams) => {
-    logger.log("Ledger:validate", { accountId, publicKey });
-
-    logger.log("Ledger:validate:publicKey", { publicKey });
-
-    try {
-      const accessKey = await provider.viewAccessKey({
-        accountId,
-        publicKey,
-      });
-
-      logger.log("Ledger:validate:accessKey", { accessKey });
-
-      if (accessKey.permission !== "FullAccess") {
-        throw new Error("Public key requires 'FullAccess' permission");
-      }
-
-      return {
-        publicKey,
-        accessKey,
-      };
-    } catch (err) {
-      if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
-        return {
-          publicKey,
-          accessKey: null,
-        };
-      }
-
-      throw err;
-    }
-  };
-
-  const validate2 = async ({
+  const validateAccessKey = ({
     accountId,
-    derivationPath,
-  }: HardwareWalletConnectParams) => {
-    logger.log("Ledger:validate", { accountId, derivationPath });
-
-    if (!accountId) {
-      throw new Error("Invalid account id");
-    }
-
-    if (!derivationPath) {
-      throw new Error("Invalid derivation path");
-    }
-
-    const wallet = await setupWallet();
-    const publicKey = await wallet.getPublicKey({
-      derivationPath: derivationPath,
-    });
-
-    logger.log("Ledger:validate:publicKey", { publicKey });
+    publicKey,
+  }: ValidateAccessKeyParams) => {
+    logger.log("Ledger:validateAccessKey", { accountId, publicKey });
 
     return provider
-      .viewAccessKey({
-        accountId,
-        publicKey,
-      })
+      .viewAccessKey({ accountId, publicKey })
       .then((accessKey) => {
-        logger.log("Ledger:validate:accessKey", { accessKey });
+        logger.log("Ledger:validateAccessKey:accessKey", { accessKey });
 
         if (accessKey.permission !== "FullAccess") {
           throw new Error("Public key requires 'FullAccess' permission");
         }
 
-        return {
-          publicKey,
-          accessKey,
-        };
+        return accessKey;
       })
       .catch((err) => {
         if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
-          return {
-            publicKey,
-            accessKey: null,
-          };
+          return null;
         }
 
         throw err;
       });
-    };
+  };
 
   const getAccountIdFromPublicKey = async ({
     publicKey,
   }: GetAccountIdFromPublicKeyParams): Promise<string> => {
     const response = await fetch(
-      `${network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
+      `${options.network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to get accountId from public key: ${response.statusText}`
-      );
+      throw new Error("Failed to get account id from public key");
     }
 
     const accountIds = await response.json();
 
-    if (Array.isArray(accountIds) && accountIds.length === 0) {
-      throw new Error("No account found");
+    if (!Array.isArray(accountIds) || !accountIds.length) {
+      throw new Error("Failed to find account linked to public key");
     }
 
-    const accountId = accountIds[0];
-
-    return accountId;
+    return accountIds[0];
   };
 
   const signTransaction = async (
@@ -324,14 +262,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         throw new Error("Invalid derivation path");
       }
 
-      const publicKey = await ledgerClient.getPublicKey({
-        derivationPath: derivationPath,
-      });
-
+      const wallet = await setupWallet();
+      const publicKey = await wallet.getPublicKey({ derivationPath });
       const accountId = await getAccountIdFromPublicKey({ publicKey });
 
-      return validate({ accountId, publicKey })
-        .then(({ publicKey, accessKey }) => {
+      return validateAccessKey({ accountId, publicKey })
+        .then((accessKey) => {
           if (!accessKey) {
             throw new Error(
               `Public key is not registered with the account '${accountId}'.`
