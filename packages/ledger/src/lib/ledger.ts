@@ -76,18 +76,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   const disconnect = async () => {
-    if (!_wallet) {
+    if (!_wallet && !_state.authData) {
       return;
     }
 
-    if (!_wallet.isConnected()) {
-      return cleanup();
+    if (_wallet && _wallet.isConnected()) {
+      await _wallet.disconnect().catch((err) => {
+        logger.log("Failed to disconnect");
+        logger.error(err);
+      });
     }
 
-    await _wallet.disconnect().catch((err) => {
-      logger.log("Failed to disconnect");
-      logger.error(err);
-    });
     cleanup();
 
     emitter.emit("disconnected", null);
