@@ -1,5 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import {
+  setupWalletSelector,
+  WalletSelector,
+  AccountState,
+} from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -8,7 +12,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 declare global {
   interface Window {
-    selector: NearWalletSelector;
+    selector: WalletSelector;
   }
 }
 
@@ -18,9 +22,9 @@ declare global {
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  selector: NearWalletSelector;
+  selector: WalletSelector;
   accountId: string | null;
-  accounts: Array<AccountInfo> = [];
+  accounts: Array<AccountState> = [];
 
   async ngOnInit() {
     await this.initialize();
@@ -28,7 +32,7 @@ export class AppComponent implements OnInit {
 
   syncAccountState(
     currentAccountId: string | null,
-    newAccounts: Array<AccountInfo>
+    newAccounts: Array<AccountState>
   ) {
     if (!newAccounts.length) {
       localStorage.removeItem("accountId");
@@ -51,7 +55,7 @@ export class AppComponent implements OnInit {
   }
 
   async initialize() {
-    NearWalletSelector.init({
+    setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
       wallets: [
@@ -61,7 +65,7 @@ export class AppComponent implements OnInit {
         setupMathWallet(),
         setupWalletConnect({
           projectId: "d43d7d0e46eea5ee28e1f75e1131f984",
-          metadata: {
+          appMetadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
             url: "https://github.com/near/wallet-selector",
@@ -71,12 +75,15 @@ export class AppComponent implements OnInit {
       ],
     })
       .then((instance) => {
-        return instance.getAccounts().then(async (newAccounts) => {
-          this.syncAccountState(localStorage.getItem("accountId"), newAccounts);
+        const state = instance.store.getState();
 
-          window.selector = instance;
-          this.selector = instance;
-        });
+        this.syncAccountState(
+          localStorage.getItem("accountId"),
+          state.accounts
+        );
+
+        window.selector = instance;
+        this.selector = instance;
       })
       .catch((err) => {
         console.error(err);

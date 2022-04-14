@@ -7,6 +7,7 @@ import {
   InjectedWallet,
   transformActions,
   waitFor,
+  errors,
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet } from "./injected-math-wallet";
@@ -73,7 +74,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
     const installed = await isInstalled();
 
     if (!installed) {
-      throw new Error(`${metadata.name} not installed`);
+      throw errors.createWalletNotInstalledError(metadata);
     }
 
     const wallet = window.nearWalletApi!;

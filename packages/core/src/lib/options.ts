@@ -9,7 +9,6 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         nodeUrl: "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.near.org",
-        restApiUrl: "https://rest.nearapi.org",
       };
     case "testnet":
       return {
@@ -17,7 +16,6 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         nodeUrl: "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
-        restApiUrl: "https://rest.nearapi.org",
       };
     case "betanet":
       return {
@@ -25,7 +23,6 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         nodeUrl: "https://rpc.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
         explorerUrl: "https://explorer.betanet.near.org",
-        restApiUrl: "https://rest.nearapi.org",
       };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);

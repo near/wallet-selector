@@ -1,14 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { providers, utils } from "near-api-js";
 import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
-import NearWalletSelector, {
-  AccountInfo,
-  Subscription,
-} from "@near-wallet-selector/core";
+import { WalletSelector, AccountState } from "@near-wallet-selector/core";
 
 import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";
 import { Account } from "../../interfaces/account";
+import { distinctUntilChanged, map, Subscription } from "rxjs";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -20,8 +18,8 @@ const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
   styleUrls: ["./content.component.scss"],
 })
 export class ContentComponent implements OnInit, OnDestroy {
-  @Input() selector: NearWalletSelector;
-  @Input() accounts: Array<AccountInfo>;
+  @Input() selector: WalletSelector;
+  @Input() accounts: Array<AccountState>;
   @Input() accountId: string | null;
 
   account: Account | null;
@@ -45,8 +43,8 @@ export class ContentComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    const { nodeUrl } = this.selector.network;
-    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+    const { network } = this.selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<AccountView>({
@@ -65,10 +63,13 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   signOut() {
-    this.selector.signOut().catch((err) => {
-      console.log("Failed to sign out");
-      console.error(err);
-    });
+    this.selector
+      .wallet()
+      .disconnect()
+      .catch((err) => {
+        console.log("Failed to disconnect");
+        console.error(err);
+      });
   }
 
   switchProvider() {
@@ -76,14 +77,13 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    const provider = new providers.JsonRpcProvider({
-      url: this.selector.network.nodeUrl,
-    });
+    const { network, contractId } = this.selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: this.selector.getContractId(),
+        account_id: contractId,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -110,7 +110,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   onSendMultipleTransactions() {
-    this.selector.signAndSendTransactions({
+    const { contractId } = this.selector.options;
+
+    this.selector.wallet().signAndSendTransactions({
       transactions: [
         {
           // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
@@ -129,7 +131,7 @@ export class ContentComponent implements OnInit, OnDestroy {
           ],
         },
         {
-          receiverId: this.selector.getContractId(),
+          receiverId: contractId,
           actions: [
             {
               type: "FunctionCall",
@@ -149,7 +151,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   syncAccountState(
     currentAccountId: string | null,
-    newAccounts: Array<AccountInfo>
+    newAccounts: Array<AccountState>
   ) {
     if (!newAccounts.length) {
       localStorage.removeItem("accountId");
@@ -172,17 +174,24 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   subscribeToEvents() {
-    this.subscription = this.selector.on("accountsChanged", (e) => {
-      const prevAccountId = this.accountId;
+    this.subscription = this.selector.store.observable
+      .pipe(
+        map((state) => state.accounts),
+        distinctUntilChanged()
+      )
+      .subscribe((nextAccounts) => {
+        console.log("Accounts Update", nextAccounts);
 
-      this.syncAccountState(this.accountId, e.accounts);
+        const prevAccountId = this.accountId;
 
-      if (prevAccountId !== this.accountId) {
-        this.getAccount().then((account) => {
-          this.account = account;
-        });
-      }
-    });
+        this.syncAccountState(this.accountId, nextAccounts);
+
+        if (prevAccountId !== this.accountId) {
+          this.getAccount().then((account) => {
+            this.account = account;
+          });
+        }
+      });
   }
 
   onSubmit(e: Sumbitted) {
@@ -194,6 +203,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
     this.selector
+      .wallet()
       .signAndSendTransaction({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,
@@ -238,6 +248,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription?.remove();
+    this.subscription?.unsubscribe();
   }
 }

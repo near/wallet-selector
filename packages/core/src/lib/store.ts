@@ -35,7 +35,6 @@ const reducer = (
 
       return {
         ...state,
-        showModal: pending,
         wallets: state.wallets.map((wallet) => {
           if (wallet.id === walletId) {
             return {
@@ -80,29 +79,15 @@ const reducer = (
         accounts,
       };
     }
-    case "UPDATE":
-      return {
-        ...state,
-        ...action.payload,
-      };
     default:
       return state;
   }
 };
 
-export const createStore = (
-  initialState: Partial<WalletSelectorState> &
-    Pick<WalletSelectorState, "options">
-): Store => {
+export const createStore = (): Store => {
   const subject = new BehaviorSubject<WalletSelectorState>({
     accounts: [],
     wallets: [],
-    showModal: false,
-    showWalletOptions: true,
-    showLedgerDerivationPath: false,
-    showWalletNotInstalled: null,
-    showSwitchNetwork: null,
-    ...initialState,
   });
 
   return {
