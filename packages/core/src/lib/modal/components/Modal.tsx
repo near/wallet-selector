@@ -8,14 +8,14 @@ import React, {
 import { Wallet } from "../../wallet";
 import { logger } from "../../services";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
-import { ModalOptions, Theme } from "../modal.types";
+import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { WalletSelectorError, ErrorCode, ErrorCodes } from "../../errors";
 import styles from "./Modal.styles";
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, "show" | "hide">;
+  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
   visible: boolean;
   hide: () => void;

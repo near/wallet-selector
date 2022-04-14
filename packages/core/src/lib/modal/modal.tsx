@@ -9,7 +9,7 @@ const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 export const setupModal = (
   // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, "show" | "hide">,
+  selector: Omit<WalletSelector, keyof WalletSelectorModal>,
   options?: ModalOptions
 ): WalletSelectorModal => {
   const el = document.createElement("div");

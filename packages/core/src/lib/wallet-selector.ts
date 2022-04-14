@@ -6,6 +6,7 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
+import { WalletSelectorModal } from "./modal/modal.types";
 import { setupModal } from "./modal/modal";
 import { Wallet } from "./wallet";
 import { EventEmitter } from "./services";
@@ -26,7 +27,7 @@ export const setupWalletSelector = async (
   await controller.init();
 
   // TODO: Remove omit once modal is a separate package.
-  const selector: Omit<WalletSelector, "show" | "hide"> = {
+  const selector: Omit<WalletSelector, keyof WalletSelectorModal> = {
     store: {
       getState: () => store.getState(),
       observable: store.observable.asObservable(),
