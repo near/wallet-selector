@@ -38,7 +38,14 @@ export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
 export function setupLedger({
   iconUrl,
 }: LedgerParams = {}): WalletModule<HardwareWallet> {
-  return function Ledger({ provider, emitter, logger, storage, updateState }) {
+  return function Ledger({
+    provider,
+    network,
+    emitter,
+    logger,
+    storage,
+    updateState,
+  }) {
     let client: LedgerClient | null;
     const subscriptions: Record<string, Subscription> = {};
     const state: LedgerState = { authData: null };
@@ -142,22 +149,9 @@ export function setupLedger({
     const getAccountIdFromPublicKey = async ({
       publicKey,
     }: GetAccountIdFromPublicKeyParams): Promise<string> => {
-      const response = await fetch("https://rest.nearapi.org/explorer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user: "public_readonly",
-          host: "testnet.db.explorer.indexer.near.dev",
-          database: "testnet_explorer",
-          password: "nearprotocol",
-          port: 5432,
-          parameters: [`ed25519:${publicKey}`],
-          query:
-            "SELECT signer_account_id FROM transactions WHERE signer_public_key = $1 LIMIT 1",
-        }),
-      });
+      const response = await fetch(
+        `${network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
+      );
 
       const accountIds = await response.json();
 
@@ -169,7 +163,7 @@ export function setupLedger({
         throw new Error("No account found");
       }
 
-      const accountId = accountIds[0].signer_account_id;
+      const accountId = accountIds[0];
 
       return accountId;
     };
