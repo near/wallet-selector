@@ -1,18 +1,31 @@
-import NearWalletSelector from "./lib/NearWalletSelector";
+export {
+  WalletSelector,
+  WalletSelectorParams,
+} from "./lib/wallet-selector.types";
+export { setupWalletSelector } from "./lib/wallet-selector";
 
-export { NetworkId, Options } from "./lib/Options";
-export { NetworkConfiguration } from "./lib/network";
+export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
+export { Optional } from "./lib/utils.types";
+
+export {
+  WalletSelectorState,
+  WalletState,
+  AccountState,
+} from "./lib/store.types";
 
 export {
   Wallet,
   WalletType,
+  WalletMetadata,
+  WalletBehaviour,
   WalletModule,
+  WalletBehaviourFactory,
   BrowserWallet,
   InjectedWallet,
   HardwareWallet,
+  HardwareWalletConnectParams,
   BridgeWallet,
-  AccountInfo,
   Transaction,
   Action,
   ActionType,
@@ -28,5 +41,3 @@ export {
 
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
-
-export default NearWalletSelector;

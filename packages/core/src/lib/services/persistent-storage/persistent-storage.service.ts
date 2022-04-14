@@ -1,6 +1,7 @@
 import { PACKAGE_NAME } from "../../constants";
+import { StorageService } from "./persistent-storage.service.types";
 
-export class PersistentStorage {
+export class PersistentStorage implements StorageService {
   private static instances = new Map<string, PersistentStorage>();
 
   private readonly map = new Map<string, string>();
