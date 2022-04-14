@@ -63,7 +63,7 @@ describe("isAvailable", () => {
 
 describe("connect", () => {
   it("sign into near wallet", async () => {
-    const { wallet, nearApiJs, walletConnection } = createNearWallet();
+    const { wallet, nearApiJs } = createNearWallet();
 
     await wallet.connect();
 
