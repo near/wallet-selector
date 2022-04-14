@@ -35,7 +35,6 @@ const reducer = (
 
       return {
         ...state,
-        showModal: pending,
         wallets: state.wallets.map((wallet) => {
           if (wallet.id === walletId) {
             return {
@@ -97,7 +96,6 @@ export const createStore = (
   const subject = new BehaviorSubject<WalletSelectorState>({
     accounts: [],
     wallets: [],
-    showModal: false,
     showWalletOptions: true,
     showLedgerDerivationPath: false,
     showWalletNotInstalled: null,

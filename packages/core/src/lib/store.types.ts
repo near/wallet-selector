@@ -24,7 +24,6 @@ export interface WalletSelectorState {
 
   // Modal related state.
   // TODO: Remove once Modal is decoupled from core.
-  showModal: boolean;
   showWalletOptions: boolean;
   showLedgerDerivationPath: boolean;
   showWalletNotInstalled: string | null;

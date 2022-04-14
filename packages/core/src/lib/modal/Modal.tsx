@@ -19,13 +19,20 @@ const getThemeClass = (theme?: Theme) => {
 };
 
 interface ModalProps {
-  selector: WalletSelector;
+  // TODO: Remove omit once modal is a separate package.
+  selector: Omit<WalletSelector, "show" | "hide">;
   // TODO: Remove once UI state is localised to this component.
   store: Store;
   options?: ModalOptions;
+  hide: () => void;
 }
 
-export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
+export const Modal: React.FC<ModalProps> = ({
+  selector,
+  store,
+  options,
+  hide,
+}) => {
   const [state, setState] = useState(selector.store.getState());
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -45,29 +52,12 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    resetState();
-  }, [state.showModal]);
-
-  const resetState = () => {
-    setWalletInfoVisible(false);
-    setLedgerError("");
-    setLedgerAccountId("");
-    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-    setIsLoading(false);
-  };
-
   const handleDismissClick = () => {
     if (isLoading) {
       return;
     }
 
-    store.dispatch({
-      type: "UPDATE",
-      payload: {
-        showModal: false,
-      },
-    });
+    hide();
   };
 
   const handleDismissOutsideClick = (e: MouseEvent) => {
@@ -126,7 +116,7 @@ export const Modal: React.FC<ModalProps> = ({ selector, store, options }) => {
   };
 
   return (
-    <div style={{ display: state.showModal ? "block" : "none" }}>
+    <div>
       <style>{styles}</style>
       <div
         className={`Modal ${getThemeClass(options?.theme)}`}

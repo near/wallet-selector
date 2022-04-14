@@ -14,7 +14,8 @@ export const setupWalletSelector = async (
 
   await controller.init();
 
-  const selector: WalletSelector = {
+  // TODO: Remove omit once modal is a separate package.
+  const selector: Omit<WalletSelector, "show" | "hide"> = {
     store: {
       getState: () => store.getState(),
       observable: store.observable.asObservable(),
@@ -23,26 +24,6 @@ export const setupWalletSelector = async (
       const { accounts } = store.getState();
 
       return Boolean(accounts.length);
-    },
-    show: () => {
-      store.dispatch({
-        type: "UPDATE",
-        payload: {
-          showModal: true,
-          showWalletOptions: true,
-          showLedgerDerivationPath: false,
-          showWalletNotInstalled: null,
-          showSwitchNetwork: null,
-        },
-      });
-    },
-    hide: () => {
-      store.dispatch({
-        type: "UPDATE",
-        payload: {
-          showModal: false,
-        },
-      });
     },
     wallet: <WalletVariation extends Wallet = Wallet>(walletId?: string) => {
       const wallet = controller.getWallet<WalletVariation>(walletId);
@@ -60,7 +41,10 @@ export const setupWalletSelector = async (
   };
 
   // TODO: Extract into separate package.
-  setupModal(selector, store, params.ui);
+  const modal = setupModal(selector, store, params.ui);
 
-  return selector;
+  return {
+    ...selector,
+    ...modal,
+  };
 };

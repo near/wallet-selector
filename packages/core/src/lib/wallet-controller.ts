@@ -143,7 +143,7 @@ class WalletController {
     this.store.dispatch({
       type: "UPDATE",
       payload: {
-        showModal: true,
+        // showModal: true,
         showWalletOptions: false,
         showSwitchNetwork: walletId,
       },
