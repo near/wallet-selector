@@ -7,7 +7,6 @@ export interface Network {
   nodeUrl: string;
   helperUrl: string;
   explorerUrl: string;
-  restApiUrl: string;
 }
 
 export type Options = Pick<
