@@ -21,7 +21,6 @@
   "types": "./lib/esm/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn build:all",
-    "build": "yarn build:core",
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",
     "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
@@ -33,7 +32,7 @@
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build",
     "test": "nx run-many --target=test --all",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn build:core",
     "ng": "nx"
   },
   "dependencies": {
