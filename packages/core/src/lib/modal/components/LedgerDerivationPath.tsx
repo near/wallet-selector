@@ -10,6 +10,7 @@ interface LedgerDerivationPathProps {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setRouteName: (routeName: ModalRouteName) => void;
+  hide: () => void;
 }
 
 export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
@@ -17,6 +18,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   isLoading,
   setIsLoading,
   setRouteName,
+  hide,
 }) => {
   const [ledgerError, setLedgerError] = useState("");
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
@@ -38,12 +40,16 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
 
     setIsLoading(true);
 
-    await wallet
+    const response = await wallet
       .connect({ derivationPath: ledgerDerivationPath })
       .catch((err) => {
         setLedgerError(`Error: ${err.message}`);
         setIsLoading(false);
       });
+
+    if (response) {
+      hide();
+    }
   };
 
   return (

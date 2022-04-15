@@ -1,11 +1,12 @@
-import React, { Fragment, MouseEvent, useEffect, useState } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import { Wallet } from "../../wallet";
-import { logger } from "../../services";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
-import { errors } from "../../errors";
 import styles from "./Modal.styles";
 import { LedgerDerivationPath } from "./LedgerDerivationPath";
+import { WalletNotInstalled } from "./WalletNotInstalled";
+import { WalletNetworkChanged } from "./WalletNetworkChanged";
+import { WalletOptions } from "./WalletOptions";
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
@@ -38,28 +39,12 @@ export const Modal: React.FC<ModalProps> = ({
   visible,
   hide,
 }) => {
-  const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [routeName, setRouteName] = useState<ModalRouteName>("WalletOptions");
   const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
     null
   );
-
-  useEffect(() => {
-    setRouteName("WalletOptions");
-    setWalletInfoVisible(false);
-    setIsLoading(false);
-  }, [visible]);
-
-  useEffect(() => {
-    const subscription = selector.store.observable.subscribe((state) => {
-      setWallets(state.wallets);
-    });
-
-    return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const subscription = selector.on("networkChanged", ({ networkId }) => {
@@ -91,24 +76,6 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  const handleWalletClick = (wallet: Wallet) => () => {
-    if (wallet.type === "hardware") {
-      return setRouteName("LedgerDerivationPath");
-    }
-
-    wallet.connect().catch((err) => {
-      if (errors.isWalletNotInstalledError(err)) {
-        setNotInstalledWallet(wallet);
-        return setRouteName("WalletNotInstalled");
-      }
-
-      logger.log(`Failed to select ${wallet.name}`);
-      logger.error(err);
-
-      alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
-    });
-  };
-
   if (!visible) {
     return null;
   }
@@ -137,75 +104,14 @@ export const Modal: React.FC<ModalProps> = ({
             </button>
           </div>
           {routeName === "WalletOptions" && (
-            <Fragment>
-              <div className="Modal-body Modal-select-wallet-option">
-                <p className="Modal-description">
-                  {options?.description ||
-                    "Please select a wallet to connect to this dApp:"}
-                </p>
-                <ul className="Modal-option-list">
-                  {wallets.reduce<Array<JSX.Element>>(
-                    (result, { id, selected }) => {
-                      const wallet = selector.wallet(id);
-
-                      if (!wallet.isAvailable()) {
-                        return result;
-                      }
-
-                      const { name, description, iconUrl } = wallet;
-
-                      result.push(
-                        <li
-                          key={id}
-                          id={id}
-                          className={selected ? "selected-wallet" : ""}
-                          onClick={
-                            selected ? undefined : handleWalletClick(wallet)
-                          }
-                        >
-                          <div title={description || ""}>
-                            <img src={iconUrl} alt={name} />
-                            <div>
-                              <span>{name}</span>
-                            </div>
-                            {selected && (
-                              <div className="selected-wallet-text">
-                                <span>selected</span>
-                              </div>
-                            )}
-                          </div>
-                        </li>
-                      );
-
-                      return result;
-                    },
-                    []
-                  )}
-                </ul>
-              </div>
-              <div className="info">
-                <span
-                  onClick={() => {
-                    setWalletInfoVisible(!walletInfoVisible);
-                  }}
-                >
-                  What is a Wallet?
-                </span>
-                <div
-                  className={`info-description ${
-                    walletInfoVisible ? "show" : "hide"
-                  }-explanation`}
-                >
-                  <p>
-                    Wallets are used to send, receive and store digital assets.
-                    There are different types of wallets. They can be an
-                    extension added to your browser, a hardware device plugged
-                    into your computer, web-based or an app on your mobile
-                    device.
-                  </p>
-                </div>
-              </div>
-            </Fragment>
+            <WalletOptions
+              selector={selector}
+              options={options}
+              walletInfoVisible={walletInfoVisible}
+              setWalletInfoVisible={setWalletInfoVisible}
+              setRouteName={setRouteName}
+              setNotInstalledWallet={setNotInstalledWallet}
+            />
           )}
           {routeName === "LedgerDerivationPath" && (
             <LedgerDerivationPath
@@ -213,82 +119,22 @@ export const Modal: React.FC<ModalProps> = ({
               isLoading={isLoading}
               setIsLoading={setIsLoading}
               setRouteName={setRouteName}
+              hide={hide}
             />
           )}
           {routeName === "WalletNotInstalled" && notInstalledWallet && (
-            <div className="Modal-body Modal-wallet-not-installed">
-              <div className={`icon-display ${notInstalledWallet.id}`}>
-                <img
-                  src={notInstalledWallet.iconUrl}
-                  alt={notInstalledWallet.name}
-                />
-                <p>{notInstalledWallet.name}</p>
-              </div>
-              <p>
-                {`You'll need to install ${notInstalledWallet.name} to continue. After installing`}
-                <span
-                  className="refresh-link"
-                  onClick={() => {
-                    window.location.reload();
-                  }}
-                >
-                  &nbsp;refresh the page.
-                </span>
-              </p>
-              <div className="action-buttons">
-                <button
-                  className="left-button"
-                  onClick={() => {
-                    setNotInstalledWallet(null);
-                    setRouteName("WalletOptions");
-                  }}
-                >
-                  Back
-                </button>
-                <button
-                  className="right-button"
-                  onClick={() => {
-                    if (notInstalledWallet.type !== "injected") {
-                      return;
-                    }
-
-                    window.open(notInstalledWallet.getDownloadUrl(), "_blank");
-                  }}
-                >
-                  {`Open ${notInstalledWallet.name}`}
-                </button>
-              </div>
-            </div>
+            <WalletNotInstalled
+              notInstalledWallet={notInstalledWallet}
+              setNotInstalledWallet={setNotInstalledWallet}
+              setRouteName={setRouteName}
+            />
           )}
           {routeName === "WalletNetworkChanged" && (
-            <div className="Modal-body Modal-switch-network-message">
-              <div className="header">
-                <h2>You Must Change Networks</h2>
-              </div>
-              <div className="content">
-                <p>
-                  We've detected that you need to change your wallet's network
-                  to
-                  <strong>{` ${selector.options.network.networkId}`}</strong>{" "}
-                  for this dApp.
-                </p>
-                <p>
-                  Some wallets may not support changing networks. If you can not
-                  change networks you may consider switching to another wallet.
-                </p>
-              </div>
-              <div className="actions">
-                <button className="left-button" onClick={handleDismissClick}>
-                  Dismiss
-                </button>
-                <button
-                  className="right-button"
-                  onClick={() => setRouteName("WalletOptions")}
-                >
-                  Switch Wallet
-                </button>
-              </div>
-            </div>
+            <WalletNetworkChanged
+              selector={selector}
+              setRouteName={setRouteName}
+              handleDismissClick={handleDismissClick}
+            />
           )}
         </div>
       </div>
