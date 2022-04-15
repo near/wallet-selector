@@ -12,6 +12,7 @@ export interface WalletSelectorParams {
   methodNames?: Array<string>;
   wallets: Array<WalletModule>;
   ui?: ModalOptions;
+  debug?: boolean;
 }
 
 export interface WalletSelectorStore {
