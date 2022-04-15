@@ -9,7 +9,7 @@ import {
 import { WalletSelectorModal } from "./modal/modal.types";
 import { setupModal } from "./modal/modal";
 import { Wallet } from "./wallet";
-import { EventEmitter } from "./services";
+import { EventEmitter, Logger } from "./services";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
@@ -23,6 +23,8 @@ export const setupWalletSelector = async (
     store,
     emitter
   );
+
+  Logger.debug = options.debug || false;
 
   await controller.init();
 
