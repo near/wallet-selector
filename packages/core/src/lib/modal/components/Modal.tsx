@@ -65,6 +65,7 @@ export const Modal: React.FC<ModalProps> = ({
       return;
     }
 
+    setRouteName("WalletOptions");
     hide();
   };
 
@@ -111,6 +112,7 @@ export const Modal: React.FC<ModalProps> = ({
               setWalletInfoVisible={setWalletInfoVisible}
               setRouteName={setRouteName}
               setNotInstalledWallet={setNotInstalledWallet}
+              hide={hide}
             />
           )}
           {routeName === "LedgerDerivationPath" && (

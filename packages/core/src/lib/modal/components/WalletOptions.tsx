@@ -14,6 +14,7 @@ interface WalletOptionsProps {
   setWalletInfoVisible: (visible: boolean) => void;
   setRouteName: (routeName: ModalRouteName) => void;
   setNotInstalledWallet: (wallet: Wallet | null) => void;
+  hide: () => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
@@ -23,6 +24,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   setWalletInfoVisible,
   setRouteName,
   setNotInstalledWallet,
+  hide,
 }) => {
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
 
@@ -35,12 +37,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (wallet: Wallet) => () => {
+  const handleWalletClick = (wallet: Wallet) => async () => {
     if (wallet.type === "hardware") {
       return setRouteName("LedgerDerivationPath");
     }
 
-    wallet.connect().catch((err) => {
+    const response = await wallet.connect().catch((err) => {
       if (errors.isWalletNotInstalledError(err)) {
         setNotInstalledWallet(wallet);
         return setRouteName("WalletNotInstalled");
@@ -51,6 +53,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
       alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
     });
+
+    if (response) {
+      hide();
+    }
   };
 
   return (
