@@ -1,17 +1,11 @@
-import React, {
-  ChangeEvent,
-  Fragment,
-  MouseEvent,
-  useEffect,
-  useState,
-} from "react";
+import React, { Fragment, MouseEvent, useEffect, useState } from "react";
 import { Wallet } from "../../wallet";
 import { logger } from "../../services";
-import { DEFAULT_DERIVATION_PATH } from "../../constants";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { errors } from "../../errors";
 import styles from "./Modal.styles";
+import { LedgerDerivationPath } from "./LedgerDerivationPath";
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
@@ -21,7 +15,7 @@ interface ModalProps {
   hide: () => void;
 }
 
-type ModalRouteName =
+export type ModalRouteName =
   | "WalletOptions"
   | "LedgerDerivationPath"
   | "WalletNotInstalled"
@@ -46,10 +40,6 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [ledgerError, setLedgerError] = useState("");
-  const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
-    DEFAULT_DERIVATION_PATH
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [routeName, setRouteName] = useState<ModalRouteName>("WalletOptions");
   const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
@@ -59,8 +49,6 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     setRouteName("WalletOptions");
     setWalletInfoVisible(false);
-    setLedgerError("");
-    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
     setIsLoading(false);
   }, [visible]);
 
@@ -103,10 +91,6 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLedgerDerivationPath(e.target.value);
-  };
-
   const handleWalletClick = (wallet: Wallet) => () => {
     if (wallet.type === "hardware") {
       return setRouteName("LedgerDerivationPath");
@@ -123,25 +107,6 @@ export const Modal: React.FC<ModalProps> = ({
 
       alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
     });
-  };
-
-  const handleConnectClick = async () => {
-    setIsLoading(true);
-    // TODO: Can't assume "ledger" once we implement more hardware wallets.
-    const wallet = selector.wallet("ledger");
-
-    if (wallet.type !== "hardware") {
-      return;
-    }
-
-    setIsLoading(true);
-
-    await wallet
-      .connect({ derivationPath: ledgerDerivationPath })
-      .catch((err) => {
-        setLedgerError(`Error: ${err.message}`);
-        setIsLoading(false);
-      });
   };
 
   if (!visible) {
@@ -243,43 +208,12 @@ export const Modal: React.FC<ModalProps> = ({
             </Fragment>
           )}
           {routeName === "LedgerDerivationPath" && (
-            <div className="Modal-body Modal-choose-ledger-derivation-path">
-              <p>
-                Make sure your Ledger is plugged in, then enter an account id to
-                connect:
-              </p>
-              <div className="derivation-paths-list">
-                <input
-                  type="text"
-                  className={ledgerError ? "input-error" : ""}
-                  placeholder="Derivation Path"
-                  value={ledgerDerivationPath}
-                  onChange={handleDerivationPathChange}
-                  readOnly={isLoading}
-                />
-                {ledgerError && <p className="error">{ledgerError}</p>}
-              </div>
-              <div className="derivation-paths--actions">
-                <button
-                  className="left-button"
-                  disabled={isLoading}
-                  onClick={() => {
-                    setLedgerError("");
-                    setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-                    setRouteName("WalletOptions");
-                  }}
-                >
-                  Back
-                </button>
-                <button
-                  className="right-button"
-                  onClick={handleConnectClick}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Connecting..." : "Connect"}
-                </button>
-              </div>
-            </div>
+            <LedgerDerivationPath
+              selector={selector}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              setRouteName={setRouteName}
+            />
           )}
           {routeName === "WalletNotInstalled" && notInstalledWallet && (
             <div className="Modal-body Modal-wallet-not-installed">
