@@ -10,6 +10,7 @@
     "angular": "examples/angular",
     "angular-e2e": "examples/angular-e2e",
     "react": "examples/react",
-    "react-e2e": "examples/react-e2e"
+    "react-e2e": "examples/react-e2e",
+    "utils": "packages/utils"
   }
 }

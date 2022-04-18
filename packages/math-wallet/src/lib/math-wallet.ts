@@ -1,5 +1,5 @@
 import { transactions as nearTransactions, utils } from "near-api-js";
-import isMobile from "is-mobile";
+import { isMobile } from "@near-wallet-selector/utils";
 import {
   WalletModule,
   WalletBehaviourFactory,

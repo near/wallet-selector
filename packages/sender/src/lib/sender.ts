@@ -1,4 +1,4 @@
-import isMobile from "is-mobile";
+import { isMobile } from "@near-wallet-selector/utils";
 import {
   WalletModule,
   WalletBehaviourFactory,

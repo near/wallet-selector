@@ -31,6 +31,9 @@
       ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
+      ],
+      "@near-wallet-selector/utils": [
+        "packages/utils/src/index.ts"
       ]
     }
   },
