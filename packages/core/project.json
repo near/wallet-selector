@@ -50,20 +50,21 @@
         "commitMessageFormat": "chore(release): release version ${version}",
         "syncVersions": true,
         "skipProjectChangelog": true,
-        "baseBranch": "main",
-        "version": "3.0.0"
+        "skipRootChangelog": true,
+        "baseBranch": "main"
       },
       "configurations": {
         "dev": {
           "releaseAs": "prerelease",
           "preid": "dev",
           "skipRootChangelog": true
-        },
-        "alpha": {
-          "releaseAs": "prerelease",
-          "preid": "alpha",
-          "skipRootChangelog": true
         }
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
       }
     }
   }
