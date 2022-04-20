@@ -179,8 +179,7 @@ export function setupSender({
       },
 
       async signOut() {
-        const res = wallet.signOut();
-
+        const res = await wallet.signOut();
         if (!res) {
           throw new Error("Failed to sign out");
         }
