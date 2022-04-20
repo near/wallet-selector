@@ -1,5 +1,5 @@
 import { transactions, utils } from "near-api-js";
-import { BN } from "bn.js";
+import { parseBigNumber } from "@near-wallet-selector/utils";
 
 export interface CreateAccountAction {
   type: "CreateAccount";
@@ -89,7 +89,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 
   const { receiverId, methodNames = [] } = permission;
   const allowance = permission.allowance
-    ? new BN(permission.allowance)
+    ? parseBigNumber(permission.allowance)
     : undefined;
 
   return transactions.functionCallAccessKey(receiverId, methodNames, allowance);
@@ -111,20 +111,20 @@ export const transformActions = (actions: Array<Action>) => {
         return transactions.functionCall(
           methodName,
           args,
-          new BN(gas),
-          new BN(deposit)
+          parseBigNumber(gas),
+          parseBigNumber(deposit)
         );
       }
       case "Transfer": {
         const { deposit } = action.params;
 
-        return transactions.transfer(new BN(deposit));
+        return transactions.transfer(parseBigNumber(deposit));
       }
       case "Stake": {
         const { stake, publicKey } = action.params;
 
         return transactions.stake(
-          new BN(stake),
+          parseBigNumber(stake),
           utils.PublicKey.from(publicKey)
         );
       }

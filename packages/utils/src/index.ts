@@ -1,1 +1,1 @@
-export { isMobile } from "./lib/utils";
+export { isMobile, parseNearAmount, parseBigNumber } from "./lib/utils";

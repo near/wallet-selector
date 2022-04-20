@@ -1,6 +1,6 @@
 import { transformActions } from "./actions";
 import { transactions, utils } from "near-api-js";
-import { BN } from "bn.js";
+import { parseBigNumber } from "@near-wallet-selector/utils";
 
 describe("actions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
@@ -43,7 +43,12 @@ describe("actions", () => {
     ]);
 
     expect(actions).toEqual([
-      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit)),
+      transactions.functionCall(
+        methodName,
+        args,
+        parseBigNumber(gas),
+        parseBigNumber(deposit)
+      ),
     ]);
   });
 
@@ -58,7 +63,7 @@ describe("actions", () => {
       },
     ]);
 
-    expect(actions).toEqual([transactions.transfer(new BN(deposit))]);
+    expect(actions).toEqual([transactions.transfer(parseBigNumber(deposit))]);
   });
 
   it("correctly transforms 'Stake' action", () => {
@@ -76,7 +81,10 @@ describe("actions", () => {
     ]);
 
     expect(actions).toEqual([
-      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey)),
+      transactions.stake(
+        parseBigNumber(stake),
+        utils.PublicKey.from(publicKey)
+      ),
     ]);
   });
 
@@ -130,7 +138,7 @@ describe("actions", () => {
         transactions.functionCallAccessKey(
           receiverId,
           methodNames,
-          new BN(allowance)
+          parseBigNumber(allowance)
         )
       ),
     ]);
