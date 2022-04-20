@@ -113,7 +113,7 @@ export interface InjectedSender {
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => boolean;
+  signOut: () => Promise<boolean>;
   isSignedIn: () => boolean;
   on: <Event extends keyof SenderEvents>(
     event: Event,
