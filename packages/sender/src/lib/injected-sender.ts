@@ -22,6 +22,8 @@ export interface RequestSignInResponse {
   type: "sender-wallet-result";
 }
 
+export type SignOutResponse = boolean | { error: string | { type: string } };
+
 export interface RpcInfo {
   explorerUrl: string;
   helperUrl: string;
@@ -113,7 +115,7 @@ export interface InjectedSender {
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
-  signOut: () => Promise<boolean>;
+  signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
   on: <Event extends keyof SenderEvents>(
     event: Event,

@@ -180,8 +180,12 @@ export function setupSender({
 
       async signOut() {
         const res = await wallet.signOut();
-        if (!res) {
-          throw new Error("Failed to sign out");
+
+        if (typeof res !== "boolean" && res.error) {
+          throw new Error(
+            (typeof res.error === "string" ? res.error : res.error.type) ||
+              "Failed to connect"
+          );
         }
 
         updateState((prevState) => ({
