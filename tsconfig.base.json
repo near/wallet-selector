@@ -17,18 +17,16 @@
     "strictPropertyInitialization": false,
     "paths": {
       "@near-wallet-selector/core": ["dist/packages/core"],
-      "@near-wallet-selector/ledger": [
-        "packages/ledger/src/index.ts"
-      ],
+      "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
       ],
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/sender": [
-        "packages/sender/src/index.ts"
-      ],
+      "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
+      "@near-wallet-selector/ui": ["dist/packages/ui"],
+      "@near-wallet-selector/ui/loader": ["dist/packages/ui/loader"],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ]
