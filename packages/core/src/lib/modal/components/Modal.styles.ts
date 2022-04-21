@@ -325,17 +325,31 @@ export default `
 }
 
 .Modal-alert-window {
-  width: 500px;
+  width: 80%;
+  max-width: 500px;
   margin: 0 auto;
   margin-top: 2em;
   background: white;
   border-radius: 5px;
-  padding: 2em;
+  padding: 1.5em;
   box-shadow: 0 2px 10px 0 #626263;
 }
 
+.Modal-alert-close {
+  text-align: right;
+}
+
+.Modal-alert-close button {
+  border: 0;
+  cursor: pointer;
+  height: 24px;
+  padding: 0px;
+  background-color: transparent;
+}
+
 .Modal-alert-message {
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
+  font-size: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
