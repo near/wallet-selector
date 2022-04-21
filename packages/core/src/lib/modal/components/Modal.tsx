@@ -90,15 +90,12 @@ export const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <div>
+    <div className={getThemeClass(options?.theme)}>
       <style>{styles}</style>
       {alertMessage !== null && (
         <AlertModal message={alertMessage} setAlertMessage={setAlertMessage} />
       )}
-      <div
-        className={`Modal ${getThemeClass(options?.theme)}`}
-        onClick={handleDismissOutsideClick}
-      >
+      <div className="Modal" onClick={handleDismissOutsideClick}>
         <div className="Modal-content">
           <div className="Modal-header">
             <h2>Connect Wallet</h2>
