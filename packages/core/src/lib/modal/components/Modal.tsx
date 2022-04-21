@@ -7,6 +7,7 @@ import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
+import { AlertModal } from "./AlertModal";
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
@@ -45,6 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
   const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
     null
   );
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setRouteName("WalletOptions");
@@ -90,6 +92,9 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <div>
       <style>{styles}</style>
+      {alertMessage !== null && (
+        <AlertModal message={alertMessage} setAlertMessage={setAlertMessage} />
+      )}
       <div
         className={`Modal ${getThemeClass(options?.theme)}`}
         onClick={handleDismissOutsideClick}
@@ -119,6 +124,7 @@ export const Modal: React.FC<ModalProps> = ({
               setRouteName={setRouteName}
               setNotInstalledWallet={setNotInstalledWallet}
               hide={hide}
+              setAlertMessage={setAlertMessage}
             />
           )}
           {routeName === "LedgerDerivationPath" && (

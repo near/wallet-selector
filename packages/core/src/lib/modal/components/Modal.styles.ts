@@ -315,6 +315,29 @@ export default `
     border-color: var(--black);
 }
 
+.Modal-alert {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.Modal-alert-window {
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 2em;
+  background: white;
+  border-radius: 5px;
+  padding: 2em;
+  box-shadow: 0 2px 10px 0 #626263;
+}
+
+.Modal-alert-message {
+  margin-bottom: 1em;
+}
+
 @media (prefers-color-scheme: dark) {
   .Modal .Modal-content {
     background-color: var(--dark-gray);

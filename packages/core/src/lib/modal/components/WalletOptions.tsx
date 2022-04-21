@@ -15,6 +15,7 @@ interface WalletOptionsProps {
   setRouteName: (routeName: ModalRouteName) => void;
   setNotInstalledWallet: (wallet: Wallet | null) => void;
   hide: () => void;
+  setAlertMessage: (message: string | null) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
@@ -25,6 +26,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   setRouteName,
   setNotInstalledWallet,
   hide,
+  setAlertMessage,
 }) => {
   const [disabled, setDisabled] = useState(false);
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
@@ -58,7 +60,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
 
-      alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
+      setAlertMessage(`Failed to sign in with ${wallet.name}: ${err.message}`);
     });
 
     if (response) {
