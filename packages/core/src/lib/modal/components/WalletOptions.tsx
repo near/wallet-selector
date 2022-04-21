@@ -26,6 +26,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   setNotInstalledWallet,
   hide,
 }) => {
+  const [disabled, setDisabled] = useState(false);
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
 
   useEffect(() => {
@@ -38,9 +39,15 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   }, []);
 
   const handleWalletClick = (wallet: Wallet) => async () => {
+    if (disabled) {
+      return;
+    }
+
     if (wallet.type === "hardware") {
       return setRouteName("LedgerDerivationPath");
     }
+
+    setDisabled(true);
 
     const response = await wallet.connect().catch((err) => {
       if (errors.isWalletNotInstalledError(err)) {
@@ -57,6 +64,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     if (response) {
       hide();
     }
+
+    setDisabled(false);
   };
 
   return (
@@ -66,7 +75,11 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           {options?.description ||
             "Please select a wallet to connect to this dApp:"}
         </p>
-        <ul className="Modal-option-list">
+        <ul
+          className={
+            "Modal-option-list " + (disabled ? "selection-process" : "")
+          }
+        >
           {wallets.reduce<Array<JSX.Element>>((result, { id, selected }) => {
             const wallet = selector.wallet(id);
 

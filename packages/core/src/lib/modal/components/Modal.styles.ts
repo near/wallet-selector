@@ -116,7 +116,7 @@ export default `
   margin: auto;
 }
 
-.Modal-option-list li:hover {
+.Modal-option-list:not(.selection-process) li:hover {
   box-shadow: 0 2px 10px 0 var(--backdrop-bg);
 }
 
