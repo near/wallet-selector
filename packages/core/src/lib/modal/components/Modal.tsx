@@ -47,6 +47,12 @@ export const Modal: React.FC<ModalProps> = ({
   );
 
   useEffect(() => {
+    setRouteName("WalletOptions");
+    setWalletInfoVisible(false);
+    setIsLoading(false);
+  }, [visible]);
+
+  useEffect(() => {
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       if (networkId === selector.options.network.networkId) {
