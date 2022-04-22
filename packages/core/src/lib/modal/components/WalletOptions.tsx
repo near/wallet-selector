@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { errors } from "../../errors";
 import { logger } from "../../services";
+import { WalletState } from "../../store.types";
 import { Wallet } from "../../wallet";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
@@ -15,6 +16,7 @@ interface WalletOptionsProps {
   setRouteName: (routeName: ModalRouteName) => void;
   setNotInstalledWallet: (wallet: Wallet | null) => void;
   hide: () => void;
+  setAlertMessage: (message: string | null) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
@@ -25,9 +27,22 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   setRouteName,
   setNotInstalledWallet,
   hide,
+  setAlertMessage,
 }) => {
   const [disabled, setDisabled] = useState(false);
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
+  const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
+    []
+  );
+
+  useEffect(() => {
+    const filteredWallets = wallets.filter(async ({ id }) => {
+      const wallet = selector.wallet(id);
+      return wallet.isAvailable();
+    });
+    setAvailableWallets(filteredWallets);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallets]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -58,7 +73,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       logger.log(`Failed to select ${wallet.name}`);
       logger.error(err);
 
-      alert(`Failed to sign in with ${wallet.name}: ${err.message}`);
+      setAlertMessage(`Failed to sign in with ${wallet.name}: ${err.message}`);
     });
 
     if (response) {
@@ -80,38 +95,37 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             "Modal-option-list " + (disabled ? "selection-process" : "")
           }
         >
-          {wallets.reduce<Array<JSX.Element>>((result, { id, selected }) => {
-            const wallet = selector.wallet(id);
+          {availableWallets.reduce<Array<JSX.Element>>(
+            (result, { id, selected }) => {
+              const wallet = selector.wallet(id);
 
-            if (!wallet.isAvailable()) {
-              return result;
-            }
+              const { name, description, iconUrl } = wallet;
 
-            const { name, description, iconUrl } = wallet;
-
-            result.push(
-              <li
-                key={id}
-                id={id}
-                className={selected ? "selected-wallet" : ""}
-                onClick={selected ? undefined : handleWalletClick(wallet)}
-              >
-                <div title={description || ""}>
-                  <img src={iconUrl} alt={name} />
-                  <div>
-                    <span>{name}</span>
-                  </div>
-                  {selected && (
-                    <div className="selected-wallet-text">
-                      <span>selected</span>
+              result.push(
+                <li
+                  key={id}
+                  id={id}
+                  className={selected ? "selected-wallet" : ""}
+                  onClick={selected ? undefined : handleWalletClick(wallet)}
+                >
+                  <div title={description || ""}>
+                    <img src={iconUrl} alt={name} />
+                    <div>
+                      <span>{name}</span>
                     </div>
-                  )}
-                </div>
-              </li>
-            );
+                    {selected && (
+                      <div className="selected-wallet-text">
+                        <span>selected</span>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              );
 
-            return result;
-          }, [])}
+              return result;
+            },
+            []
+          )}
         </ul>
       </div>
       <div className="info">

@@ -7,6 +7,7 @@ import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
+import { AlertModal } from "./AlertModal";
 
 interface ModalProps {
   // TODO: Remove omit once modal is a separate package.
@@ -45,6 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
   const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
     null
   );
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setRouteName("WalletOptions");
@@ -64,6 +66,16 @@ export const Modal: React.FC<ModalProps> = ({
 
     return () => subscription.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleDismissClick();
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
   }, []);
 
   const handleDismissClick = () => {
@@ -88,12 +100,12 @@ export const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <div>
+    <div className={getThemeClass(options?.theme)}>
       <style>{styles}</style>
-      <div
-        className={`Modal ${getThemeClass(options?.theme)}`}
-        onClick={handleDismissOutsideClick}
-      >
+      {alertMessage !== null && (
+        <AlertModal message={alertMessage} setAlertMessage={setAlertMessage} />
+      )}
+      <div className="Modal" onClick={handleDismissOutsideClick}>
         <div className="Modal-content">
           <div className="Modal-header">
             <h2>Connect Wallet</h2>
@@ -119,6 +131,7 @@ export const Modal: React.FC<ModalProps> = ({
               setRouteName={setRouteName}
               setNotInstalledWallet={setNotInstalledWallet}
               hide={hide}
+              setAlertMessage={setAlertMessage}
             />
           )}
           {routeName === "LedgerDerivationPath" && (

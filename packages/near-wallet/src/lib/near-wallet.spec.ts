@@ -57,7 +57,7 @@ describe("isAvailable", () => {
   it("returns true", async () => {
     const { wallet } = createNearWallet();
 
-    expect(wallet.isAvailable()).toEqual(true);
+    expect(await wallet.isAvailable()).toEqual(true);
   });
 });
 
