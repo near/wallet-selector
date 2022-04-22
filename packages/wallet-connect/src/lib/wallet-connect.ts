@@ -141,7 +141,7 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   return {
-    isAvailable() {
+    async isAvailable() {
       return true;
     },
 

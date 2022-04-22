@@ -164,7 +164,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       return "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg";
     },
 
-    isAvailable() {
+    async isAvailable() {
       return !isMobile();
     },
 

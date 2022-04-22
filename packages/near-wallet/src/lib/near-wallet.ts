@@ -135,7 +135,7 @@ const NearWallet: WalletBehaviourFactory<
   };
 
   return {
-    isAvailable() {
+    async isAvailable() {
       return true;
     },
 
