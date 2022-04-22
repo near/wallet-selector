@@ -52,6 +52,12 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     }
   };
 
+  const handleEnterClick = async (e: unknown) => {
+    if ((e as KeyboardEvent).key === "Enter") {
+      await handleConnectClick();
+    }
+  };
+
   return (
     <div className="Modal-body Modal-choose-ledger-derivation-path">
       <p>
@@ -66,6 +72,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
           value={ledgerDerivationPath}
           onChange={handleDerivationPathChange}
           readOnly={isLoading}
+          onKeyPress={handleEnterClick}
         />
         {ledgerError && <p className="error">{ledgerError}</p>}
       </div>
