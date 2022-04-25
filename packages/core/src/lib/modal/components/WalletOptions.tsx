@@ -4,7 +4,6 @@ import { WalletState } from "../../store.types";
 import { Wallet } from "../../wallet";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
-import { ModalRouteName } from "./Modal.types";
 import { logger } from "../../services";
 import { errors } from "../../errors";
 
@@ -12,19 +11,19 @@ interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  setRouteName: (routeName: ModalRouteName) => void;
-  setNotInstalledWallet: (wallet: Wallet | null) => void;
-  setAlertMessage: (message: string | null) => void;
-  hide: () => void;
+  onWalletNotInstalled: (wallet: Wallet) => void;
+  onConnectHardwareWallet: () => void;
+  onConnected: () => void;
+  onError: (message: string) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
-  setRouteName,
-  setNotInstalledWallet,
-  setAlertMessage,
-  hide,
+  onWalletNotInstalled,
+  onError,
+  onConnectHardwareWallet,
+  onConnected,
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
@@ -61,26 +60,23 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     }
 
     if (wallet.type === "hardware") {
-      return setRouteName("LedgerDerivationPath");
+      return onConnectHardwareWallet();
     }
 
     setConnecting(true);
 
     wallet
       .connect()
-      .then(() => hide())
+      .then(() => onConnected())
       .catch((err) => {
         if (errors.isWalletNotInstalledError(err)) {
-          setNotInstalledWallet(wallet);
-          return setRouteName("WalletNotInstalled");
+          return onWalletNotInstalled(wallet);
         }
 
         logger.log(`Failed to select ${wallet.name}`);
         logger.error(err);
 
-        setAlertMessage(
-          `Failed to connect with ${wallet.name}: ${err.message}`
-        );
+        onError(`Failed to connect with ${wallet.name}: ${err.message}`);
       })
       .finally(() => setConnecting(false));
   };

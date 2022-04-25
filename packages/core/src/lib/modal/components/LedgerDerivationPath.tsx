@@ -2,19 +2,18 @@ import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
 import { WalletSelectorModal } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
-import { ModalRouteName } from "./Modal.types";
 
 interface LedgerDerivationPathProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
-  setRouteName: (routeName: ModalRouteName) => void;
-  hide: () => void;
+  onBack: () => void;
+  onConnected: () => void;
 }
 
 export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   selector,
-  setRouteName,
-  hide,
+  onBack,
+  onConnected,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
@@ -39,7 +38,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
 
     wallet
       .connect({ derivationPath: ledgerDerivationPath })
-      .then(() => hide())
+      .then(() => onConnected())
       .catch((err) => setLedgerError(`Error: ${err.message}`))
       .finally(() => setIsLoading(false));
   };
@@ -69,11 +68,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
         {ledgerError && <p className="error">{ledgerError}</p>}
       </div>
       <div className="derivation-paths--actions">
-        <button
-          className="left-button"
-          disabled={isLoading}
-          onClick={() => setRouteName("WalletOptions")}
-        >
+        <button className="left-button" disabled={isLoading} onClick={onBack}>
           Back
         </button>
         <button

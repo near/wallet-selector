@@ -1,18 +1,15 @@
 import React from "react";
 
 import { Wallet } from "../../wallet";
-import { ModalRouteName } from "./Modal.types";
 
 interface WalletNotInstalledProps {
   notInstalledWallet: Wallet;
-  setNotInstalledWallet: (wallet: Wallet | null) => void;
-  setRouteName: (routeName: ModalRouteName) => void;
+  onBack: () => void;
 }
 
 export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
   notInstalledWallet,
-  setNotInstalledWallet,
-  setRouteName,
+  onBack,
 }) => {
   return (
     <div className="Modal-body Modal-wallet-not-installed">
@@ -27,13 +24,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
         </span>
       </p>
       <div className="action-buttons">
-        <button
-          className="left-button"
-          onClick={() => {
-            setNotInstalledWallet(null);
-            setRouteName("WalletOptions");
-          }}
-        >
+        <button className="left-button" onClick={onBack}>
           Back
         </button>
         <button

@@ -8,7 +8,7 @@ import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
-import { AlertModal } from "./AlertModal";
+import { AlertMessage } from "./AlertMessage";
 import { CloseButton } from "./CloseButton";
 import styles from "./Modal.styles";
 
@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       if (networkId === selector.options.network.networkId) {
-        return hide();
+        return handleDismissClick();
       }
 
       setRouteName("WalletNetworkChanged");
@@ -62,6 +62,8 @@ export const Modal: React.FC<ModalProps> = ({
   }, []);
 
   const handleDismissClick = useCallback(() => {
+    setAlertMessage(null);
+    setNotInstalledWallet(null);
     setRouteName("WalletOptions");
     hide();
   }, [hide]);
@@ -92,47 +94,60 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <div className={getThemeClass(options?.theme)}>
       <style>{styles}</style>
-      {alertMessage && (
-        <AlertModal
-          message={alertMessage}
-          onClose={() => setAlertMessage(null)}
-        />
-      )}
       <div className="Modal" onClick={handleDismissOutsideClick}>
         <div className="Modal-content">
           <div className="Modal-header">
             <h2>Connect Wallet</h2>
             <CloseButton onClick={handleDismissClick} />
           </div>
+          {routeName === "AlertMessage" && alertMessage && (
+            <AlertMessage
+              message={alertMessage}
+              onBack={() => {
+                setAlertMessage(null);
+                setRouteName("WalletOptions");
+              }}
+            />
+          )}
           {routeName === "WalletOptions" && (
             <WalletOptions
               selector={selector}
               options={options}
-              setRouteName={setRouteName}
-              setNotInstalledWallet={setNotInstalledWallet}
-              setAlertMessage={setAlertMessage}
-              hide={hide}
+              onWalletNotInstalled={(wallet) => {
+                setNotInstalledWallet(wallet);
+                return setRouteName("WalletNotInstalled");
+              }}
+              onConnectHardwareWallet={() => {
+                setRouteName("LedgerDerivationPath");
+              }}
+              onConnected={handleDismissClick}
+              onError={(message) => {
+                setAlertMessage(message);
+                setRouteName("AlertMessage");
+              }}
             />
           )}
           {routeName === "LedgerDerivationPath" && (
             <LedgerDerivationPath
               selector={selector}
-              setRouteName={setRouteName}
-              hide={hide}
+              onConnected={handleDismissClick}
+              onBack={() => setRouteName("WalletOptions")}
             />
           )}
           {routeName === "WalletNotInstalled" && notInstalledWallet && (
             <WalletNotInstalled
               notInstalledWallet={notInstalledWallet}
-              setNotInstalledWallet={setNotInstalledWallet}
-              setRouteName={setRouteName}
+              onBack={() => {
+                setNotInstalledWallet(null);
+                setRouteName("WalletOptions");
+              }}
             />
           )}
           {routeName === "WalletNetworkChanged" && (
             <WalletNetworkChanged
               selector={selector}
-              setRouteName={setRouteName}
-              handleDismissClick={handleDismissClick}
+              onSwitchWallet={() => setRouteName("WalletOptions")}
+              onDismiss={handleDismissClick}
             />
           )}
         </div>
