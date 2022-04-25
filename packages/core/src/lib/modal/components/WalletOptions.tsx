@@ -26,7 +26,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   setAlertMessage,
   hide,
 }) => {
-  const [disabled, setDisabled] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
@@ -51,8 +51,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (wallet: Wallet) => async () => {
-    if (disabled) {
+  const handleWalletClick = (wallet: Wallet) => () => {
+    if (connecting) {
       return;
     }
 
@@ -60,25 +60,25 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       return setRouteName("LedgerDerivationPath");
     }
 
-    setDisabled(true);
+    setConnecting(true);
 
-    const response = await wallet.connect().catch((err) => {
-      if (errors.isWalletNotInstalledError(err)) {
-        setNotInstalledWallet(wallet);
-        return setRouteName("WalletNotInstalled");
-      }
+    wallet
+      .connect()
+      .then(() => hide())
+      .catch((err) => {
+        if (errors.isWalletNotInstalledError(err)) {
+          setNotInstalledWallet(wallet);
+          return setRouteName("WalletNotInstalled");
+        }
 
-      logger.log(`Failed to select ${wallet.name}`);
-      logger.error(err);
+        logger.log(`Failed to select ${wallet.name}`);
+        logger.error(err);
 
-      setAlertMessage(`Failed to sign in with ${wallet.name}: ${err.message}`);
-    });
-
-    if (response) {
-      hide();
-    }
-
-    setDisabled(false);
+        setAlertMessage(
+          `Failed to connect with ${wallet.name}: ${err.message}`
+        );
+      })
+      .finally(() => setConnecting(false));
   };
 
   return (
@@ -90,7 +90,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         </p>
         <ul
           className={
-            "Modal-option-list " + (disabled ? "selection-process" : "")
+            "Modal-option-list " + (connecting ? "selection-process" : "")
           }
         >
           {availableWallets.reduce<Array<JSX.Element>>(
