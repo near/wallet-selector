@@ -58,10 +58,14 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
     const res = await _wallet.signOut();
 
-    if (typeof res !== "boolean" && res.error) {
+    if (!res) {
+      throw new Error("Failed to disconnect");
+    }
+
+    if (typeof res === "object") {
       throw new Error(
         (typeof res.error === "string" ? res.error : res.error.type) ||
-          "Failed to connect"
+          "Failed to disconnect"
       );
     }
 
