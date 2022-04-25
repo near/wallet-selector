@@ -25,6 +25,7 @@ export const mockWallet = <WalletVariation extends Wallet>(
   const options = deps.options || {
     network: getNetworkPreset("testnet"),
     contractId: "test.testnet",
+    debug: false,
   };
 
   return wallet({
