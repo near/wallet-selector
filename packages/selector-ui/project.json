@@ -1,0 +1,66 @@
+{
+  "root": "packages/selector-ui",
+  "sourceRoot": "packages/selector-ui/src",
+  "projectType": "library",
+  "generators": {
+    "@nxext/stencil:component": {
+      "style": "css"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nxext/stencil:test",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "projectType": "library",
+        "tsConfig": "packages/selector-ui/tsconfig.lib.json",
+        "configPath": "packages/selector-ui/stencil.config.ts",
+        "outputPath": "dist/packages/selector-ui"
+      }
+    },
+    "build": {
+      "executor": "@nxext/stencil:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "projectType": "library",
+        "tsConfig": "packages/selector-ui/tsconfig.lib.json",
+        "configPath": "packages/selector-ui/stencil.config.ts",
+        "outputPath": "dist/packages/selector-ui"
+      },
+      "configurations": {
+        "production": {
+          "dev": false,
+          "prod": true
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nxext/stencil:serve",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "projectType": "library",
+        "tsConfig": "packages/selector-ui/tsconfig.lib.json",
+        "configPath": "packages/selector-ui/stencil.config.ts",
+        "outputPath": "dist/packages/selector-ui"
+      }
+    },
+    "e2e": {
+      "executor": "@nxext/stencil:e2e",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "projectType": "library",
+        "tsConfig": "packages/selector-ui/tsconfig.lib.json",
+        "configPath": "packages/selector-ui/stencil.config.ts",
+        "outputPath": "dist/packages/selector-ui"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": "packages/selector-ui/**/*.{ts,tsx}"
+      }
+    }
+  }
+}

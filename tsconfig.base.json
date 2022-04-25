@@ -24,6 +24,10 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/selector-ui": ["dist/packages/selector-ui"],
+      "@near-wallet-selector/selector-ui/loader": [
+        "dist/packages/selector-ui/loader"
+      ],
       "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"

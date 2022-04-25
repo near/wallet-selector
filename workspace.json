@@ -9,6 +9,7 @@
     "near-wallet": "packages/near-wallet",
     "react": "examples/react",
     "react-e2e": "examples/react-e2e",
+    "selector-ui": "packages/selector-ui",
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect"
   }
