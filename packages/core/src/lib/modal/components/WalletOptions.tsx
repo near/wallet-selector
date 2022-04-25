@@ -28,23 +28,27 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
     []
   );
 
-  useEffect(() => {
-    const filteredWallets = wallets.filter(async ({ id }) => {
-      const wallet = selector.wallet(id);
-      return wallet.isAvailable();
-    });
-    setAvailableWallets(filteredWallets);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets]);
+  const getAvailableWallets = async (wallets: Array<WalletState>) => {
+    const result: Array<WalletState> = [];
+
+    for (let i = 0; i < wallets.length; i += 1) {
+      const wallet = selector.wallet(wallets[i].id);
+
+      if (await wallet.isAvailable()) {
+        result.push(wallets[i]);
+      }
+    }
+
+    return result;
+  };
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      setWallets(state.wallets);
+      getAvailableWallets(state.wallets).then(setAvailableWallets);
     });
 
     return () => subscription.unsubscribe();
