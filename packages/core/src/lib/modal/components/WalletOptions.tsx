@@ -23,8 +23,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   options,
   setRouteName,
   setNotInstalledWallet,
-  hide,
   setAlertMessage,
+  hide,
 }) => {
   const [disabled, setDisabled] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
