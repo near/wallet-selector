@@ -10,7 +10,6 @@
     "react": "examples/react",
     "react-e2e": "examples/react-e2e",
     "sender": "packages/sender",
-    "ui": "packages/ui",
     "wallet-connect": "packages/wallet-connect"
   }
 }
