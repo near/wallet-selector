@@ -1,7 +1,8 @@
 import React from "react";
+
 import { WalletSelector } from "../../wallet-selector.types";
 import { WalletSelectorModal } from "../modal.types";
-import { ModalRouteName } from "./Modal";
+import { ModalRouteName } from "./Modal.types";
 
 interface WalletNetworkChangedProps {
   // TODO: Remove omit once modal is a separate package.

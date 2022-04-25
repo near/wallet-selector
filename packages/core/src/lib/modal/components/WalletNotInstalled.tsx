@@ -1,6 +1,7 @@
 import React from "react";
-import { ModalRouteName } from "./Modal";
+
 import { Wallet } from "../../wallet";
+import { ModalRouteName } from "./Modal.types";
 
 interface WalletNotInstalledProps {
   notInstalledWallet: Wallet;
@@ -21,12 +22,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
       </div>
       <p>
         {`You'll need to install ${notInstalledWallet.name} to continue. After installing`}
-        <span
-          className="refresh-link"
-          onClick={() => {
-            window.location.reload();
-          }}
-        >
+        <span className="refresh-link" onClick={() => window.location.reload()}>
           &nbsp;refresh the page.
         </span>
       </p>

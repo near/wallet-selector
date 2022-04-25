@@ -1,25 +1,22 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import { DEFAULT_DERIVATION_PATH } from "../../constants";
 import { WalletSelectorModal } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
-import { ModalRouteName } from "./Modal";
+import { ModalRouteName } from "./Modal.types";
 
 interface LedgerDerivationPathProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
-  isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
   setRouteName: (routeName: ModalRouteName) => void;
   hide: () => void;
 }
 
 export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   selector,
-  isLoading,
-  setIsLoading,
   setRouteName,
   hide,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [ledgerError, setLedgerError] = useState("");
   const [ledgerDerivationPath, setLedgerDerivationPath] = useState(
     DEFAULT_DERIVATION_PATH
@@ -29,7 +26,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     setLedgerDerivationPath(e.target.value);
   };
 
-  const handleConnectClick = async () => {
+  const handleConnectClick = () => {
     setIsLoading(true);
     // TODO: Can't assume "ledger" once we implement more hardware wallets.
     const wallet = selector.wallet("ledger");
@@ -40,21 +37,16 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
 
     setIsLoading(true);
 
-    const response = await wallet
+    wallet
       .connect({ derivationPath: ledgerDerivationPath })
-      .catch((err) => {
-        setLedgerError(`Error: ${err.message}`);
-        setIsLoading(false);
-      });
-
-    if (response) {
-      hide();
-    }
+      .then(() => hide())
+      .catch((err) => setLedgerError(`Error: ${err.message}`))
+      .finally(() => setIsLoading(false));
   };
 
-  const handleEnterClick = async (e: unknown) => {
-    if ((e as KeyboardEvent).key === "Enter") {
-      await handleConnectClick();
+  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      handleConnectClick();
     }
   };
 
@@ -80,11 +72,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
         <button
           className="left-button"
           disabled={isLoading}
-          onClick={() => {
-            setLedgerError("");
-            setLedgerDerivationPath(DEFAULT_DERIVATION_PATH);
-            setRouteName("WalletOptions");
-          }}
+          onClick={() => setRouteName("WalletOptions")}
         >
           Back
         </button>

@@ -1,35 +1,33 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { errors } from "../../errors";
-import { logger } from "../../services";
+
 import { WalletState } from "../../store.types";
 import { Wallet } from "../../wallet";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
-import { ModalRouteName } from "./Modal";
+import { ModalRouteName } from "./Modal.types";
+import { logger } from "../../services";
+import { errors } from "../../errors";
 
 interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  walletInfoVisible: boolean;
-  setWalletInfoVisible: (visible: boolean) => void;
   setRouteName: (routeName: ModalRouteName) => void;
   setNotInstalledWallet: (wallet: Wallet | null) => void;
-  hide: () => void;
   setAlertMessage: (message: string | null) => void;
+  hide: () => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
-  walletInfoVisible,
-  setWalletInfoVisible,
   setRouteName,
   setNotInstalledWallet,
   hide,
   setAlertMessage,
 }) => {
   const [disabled, setDisabled] = useState(false);
+  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [wallets, setWallets] = useState(selector.store.getState().wallets);
   const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
     []
