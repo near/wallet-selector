@@ -231,7 +231,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
   };
 
   return {
-    isAvailable() {
+    async isAvailable() {
       return !isMobile() && isLedgerSupported();
     },
 

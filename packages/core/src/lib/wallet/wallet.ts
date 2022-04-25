@@ -47,7 +47,7 @@ interface BaseWallet<
 > extends WalletMetadata<Type> {
   // Determines if the wallet is available for selection.
   // TODO: Make this async to support checking if an injected wallet is installed.
-  isAvailable(): boolean;
+  isAvailable(): Promise<boolean>;
 
   // Requests sign in for the given wallet.
   // Note: Hardware wallets should defer HID connection until user input is required (e.g. public key or signing).

@@ -56,7 +56,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       return cleanup();
     }
 
-    _wallet.signOut();
+    const res = await _wallet.signOut();
+
+    if (typeof res !== "boolean" && res.error) {
+      throw new Error(
+        (typeof res.error === "string" ? res.error : res.error.type) ||
+          "Failed to connect"
+      );
+    }
+
     cleanup();
 
     emitter.emit("disconnected", null);
@@ -156,7 +164,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       return "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg";
     },
 
-    isAvailable() {
+    async isAvailable() {
       return !isMobile();
     },
 

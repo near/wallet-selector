@@ -105,7 +105,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       return "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc";
     },
 
-    isAvailable() {
+    async isAvailable() {
       return !isMobile();
     },
 
