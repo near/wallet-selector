@@ -272,43 +272,6 @@ export default `
   align-items: center;
 }
 
-.Modal-alert {
-  z-index: 100;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-}
-
-.Modal-alert-window {
-  width: 80%;
-  max-width: 500px;
-  margin: 0 auto;
-  margin-top: 2em;
-  background: white;
-  border-radius: 5px;
-  padding: 1.5em;
-  box-shadow: 0 2px 10px 0 var(--backdrop-bg);
-}
-
-.Modal-alert-close {
-  text-align: right;
-}
-
-.Modal-alert-close button {
-  border: 0;
-  cursor: pointer;
-  height: 24px;
-  padding: 0px;
-  background-color: transparent;
-}
-
-.Modal-alert-message {
-  margin-bottom: 1.5em;
-  font-size: 16px;
-}
-
 .Modal-dark-theme .Modal-content {
   background-color: var(--dark-gray);
   color: var(--white);

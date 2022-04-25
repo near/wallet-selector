@@ -1,86 +1,84 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { errors } from "../../errors";
-import { logger } from "../../services";
+
 import { WalletState } from "../../store.types";
 import { Wallet } from "../../wallet";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
-import { ModalRouteName } from "./Modal";
+import { logger } from "../../services";
+import { errors } from "../../errors";
 
 interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  walletInfoVisible: boolean;
-  setWalletInfoVisible: (visible: boolean) => void;
-  setRouteName: (routeName: ModalRouteName) => void;
-  setNotInstalledWallet: (wallet: Wallet | null) => void;
-  hide: () => void;
-  setAlertMessage: (message: string | null) => void;
+  onWalletNotInstalled: (wallet: Wallet) => void;
+  onConnectHardwareWallet: () => void;
+  onConnected: () => void;
+  onError: (message: string) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
-  walletInfoVisible,
-  setWalletInfoVisible,
-  setRouteName,
-  setNotInstalledWallet,
-  hide,
-  setAlertMessage,
+  onWalletNotInstalled,
+  onError,
+  onConnectHardwareWallet,
+  onConnected,
 }) => {
-  const [disabled, setDisabled] = useState(false);
-  const [wallets, setWallets] = useState(selector.store.getState().wallets);
+  const [connecting, setConnecting] = useState(false);
+  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
     []
   );
 
-  useEffect(() => {
-    const filteredWallets = wallets.filter(async ({ id }) => {
-      const wallet = selector.wallet(id);
-      return wallet.isAvailable();
-    });
-    setAvailableWallets(filteredWallets);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets]);
+  const getAvailableWallets = async (wallets: Array<WalletState>) => {
+    const result: Array<WalletState> = [];
+
+    for (let i = 0; i < wallets.length; i += 1) {
+      const wallet = selector.wallet(wallets[i].id);
+
+      if (await wallet.isAvailable()) {
+        result.push(wallets[i]);
+      }
+    }
+
+    return result;
+  };
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      setWallets(state.wallets);
+      getAvailableWallets(state.wallets).then(setAvailableWallets);
     });
 
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (wallet: Wallet) => async () => {
-    if (disabled) {
+  const handleWalletClick = (wallet: Wallet) => () => {
+    if (connecting) {
       return;
     }
 
     if (wallet.type === "hardware") {
-      return setRouteName("LedgerDerivationPath");
+      return onConnectHardwareWallet();
     }
 
-    setDisabled(true);
+    setConnecting(true);
 
-    const response = await wallet.connect().catch((err) => {
-      if (errors.isWalletNotInstalledError(err)) {
-        setNotInstalledWallet(wallet);
-        return setRouteName("WalletNotInstalled");
-      }
+    wallet
+      .connect()
+      .then(() => onConnected())
+      .catch((err) => {
+        if (errors.isWalletNotInstalledError(err)) {
+          return onWalletNotInstalled(wallet);
+        }
 
-      logger.log(`Failed to select ${wallet.name}`);
-      logger.error(err);
+        logger.log(`Failed to select ${wallet.name}`);
+        logger.error(err);
 
-      setAlertMessage(`Failed to sign in with ${wallet.name}: ${err.message}`);
-    });
-
-    if (response) {
-      hide();
-    }
-
-    setDisabled(false);
+        onError(`Failed to connect with ${wallet.name}: ${err.message}`);
+      })
+      .finally(() => setConnecting(false));
   };
 
   return (
@@ -92,7 +90,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         </p>
         <ul
           className={
-            "Modal-option-list " + (disabled ? "selection-process" : "")
+            "Modal-option-list " + (connecting ? "selection-process" : "")
           }
         >
           {availableWallets.reduce<Array<JSX.Element>>(
