@@ -1,6 +1,6 @@
 # Custom Wallets
 
-Wallet Selector has been designed with custom wallet integrations in mind. Our existing set of support wallets work in exactly the same way as this guide, so you might find them useful as a reference for your own integration.
+Wallet Selector has been designed with custom wallet integrations in mind. Our existing set of supported wallets work in exactly the same way as this guide, so you might find them useful as a reference for your own integration.
 
 ## Getting Started
 
@@ -19,7 +19,7 @@ export interface MyWalletParams {
   iconUrl?: string;
 }
 
-const MyWallet: WalletBehaviourFactory<InjectedWallet> = ({
+const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   options,
   emitter,
   provider,
