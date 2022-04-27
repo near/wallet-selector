@@ -180,9 +180,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 
-      // TODO: Sender returns no accounts when locked.
-      //  We should wait until they've fixed this on their end.
       if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
         return existingAccounts;
       }
 
