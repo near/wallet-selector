@@ -116,7 +116,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     _state.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("Sender:onAccountChange", newAccountId);
 
-      await disconnect();
+      cleanup();
+
+      emitter.emit("disconnected", null);
     });
 
     _state.wallet.on("rpcChanged", async ({ rpc }) => {
