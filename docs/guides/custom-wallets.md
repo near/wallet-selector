@@ -108,8 +108,9 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 ### `isAvailable`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method is used to determine whether the wallet is available for connecting. Injected wallets such as Sender are unavailable on mobile where browser extensions are not supported.
+
+> Note: Injected wallets should be considered available if they aren't installed. The modal handles this case by displaying a download link (using `getDownloadUrl`) when attempting to connect.
 
 ### `connect`
 
