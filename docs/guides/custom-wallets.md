@@ -79,7 +79,7 @@ const MyWallet: WalletBehaviourFactory<InjectedWallet> = ({
 
 export function setupMyWallet({
   iconUrl = "./assets/my-wallet-icon.png",
-}: SenderParams = {}): WalletModule<BrowserWallet> {
+}: MyWalletParams = {}): WalletModule<BrowserWallet> {
   return {
     id: "my-wallet",
     type: "browser",
@@ -90,3 +90,53 @@ export function setupMyWallet({
   };
 }
 ```
+
+`WalletModule` is made up of two main parts:
+- Behaviour: `wallet`.
+- Metadata: `id`, `type`, `name`, `description` and `iconUrl`.
+
+The metadata of a wallet is accessible as part of the selector's `wallets` state. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModule` and `WalletBehaviourFactory`.
+
+Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
+
+- `BrowserWallet`: NEAR Wallet
+- `InjectedWallet`: Sender & Math Wallet
+- `HardwareWallet`: Ledger
+- `BridgeWallet`: WalletConnect
+
+## Methods
+
+### `isAvailable`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `connect`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `disconnect`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `getAccounts`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `signAndSendTransaction`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `signAndSendTransactions`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
+
+### `getDownloadUrl`
+
+- TODO: What is the purpose of this method?
+- TODO: What should occur in this method?
