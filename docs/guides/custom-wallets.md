@@ -116,7 +116,9 @@ This method is used to determine whether a wallet is available for connecting. F
 
 This method handles wallet setup (e.g. initialising wallet-specific libraries) and requesting access to accounts via `FunctionCall` access keys. It's important that `connected` is emitted only when we successfully gain access to at least one account.
 
-> Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters. 
+> Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters.
+
+> Note: The combination of setup and connecting is still under review.
 
 ### `disconnect`
 
