@@ -125,8 +125,7 @@ This method handles disconnecting from accounts and cleanup such as event listen
 
 ### `getAccounts`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method returns the current list of accounts we have access to. When no accounts are returned, the wallet is considered to be in a disconnected state.
 
 ### `signAndSendTransaction`
 
