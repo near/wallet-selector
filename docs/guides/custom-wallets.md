@@ -114,8 +114,9 @@ This method is used to determine whether a wallet is available for connecting. F
 
 ### `connect`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method handles wallet setup (e.g. initialising wallet-specific libraries) and requesting access to accounts via `FunctionCall` access keys. It's important that `connected` is emitted only when we successfully gain access to at least one account.
+
+> Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters. 
 
 ### `disconnect`
 
