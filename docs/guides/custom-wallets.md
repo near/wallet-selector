@@ -108,7 +108,7 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 ### `isAvailable`
 
-This method is used to determine whether the wallet is available for connecting. Injected wallets such as Sender are unavailable on mobile where browser extensions are not supported.
+This method is used to determine whether a wallet is available for connecting. For example, injected wallets such as Sender are unavailable on mobile where browser extensions are not supported. The UI will hide the wallet when `false` is returned.
 
 > Note: Injected wallets should be considered available if they aren't installed. The modal handles this case by displaying a download link (using `getDownloadUrl`) when attempting to connect.
 
@@ -119,8 +119,9 @@ This method is used to determine whether the wallet is available for connecting.
 
 ### `disconnect`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet. It's important that `disconnected` is emitted regardless of exceptions.
+
+> Note: The requirement to emit "disconnected" is still under review and may be removed in favour of accepting the Promise settling as a signal that this method has completed. 
 
 ### `getAccounts`
 
