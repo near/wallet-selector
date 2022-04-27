@@ -143,5 +143,6 @@ This method is similar to `signAndSendTransaction` but instead sends a batch of 
 
 ### `getDownloadUrl`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method returns the download link for users who haven't installed the wallet. This is usually the Chrome Web Store but ideally this should be browser aware to give the best experience for the user.
+
+> Note: This method is only applicable to injected wallets.
