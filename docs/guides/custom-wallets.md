@@ -129,8 +129,11 @@ This method returns the current list of accounts we have access to. When no acco
 
 ### `signAndSendTransaction`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method signs a list of NEAR Actions before sending via an RPC endpoint. The implementation can differ widely based on how much the wallet you're integrating does for you. At a minimum the wallet must be able to sign a message.
+
+Where you might have to construct NEAR Transactions and send them yourself, you can import `near-api-js` and make use of the injected `provider` that's configured based on `options.network`.
+
+> Note: Browser wallets (i.e. NEAR Wallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
 
 ### `signAndSendTransactions`
 
