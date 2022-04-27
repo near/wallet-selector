@@ -137,8 +137,9 @@ Where you might have to construct NEAR Transactions and send them yourself, you 
 
 ### `signAndSendTransactions`
 
-- TODO: What is the purpose of this method?
-- TODO: What should occur in this method?
+This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
+
+Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. NEAR Wallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
 
 ### `getDownloadUrl`
 
