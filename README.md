@@ -30,20 +30,10 @@ Next, you'll need to install the wallets you want to support:
 
 ```bash
 # Using Yarn
-yarn add \
-  @near-wallet-selector/near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect
+yarn add @near-wallet-selector/{near-wallet,sender,math-wallet,ledger,wallet-connect}
 
 # Using NPM.
-npm install \
-  @near-wallet-selector/near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect
+npm install @near-wallet-selector/{near-wallet,sender,math-wallet,ledger,wallet-connect}
 ```
 
 Then them in your dApp:
