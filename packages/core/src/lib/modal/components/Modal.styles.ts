@@ -1,7 +1,7 @@
 export default `
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
 
-.Modal {
+#near-wallet-selector-modal {
   --backdrop-bg: #26262630;
   --black: #262626;
   --black-rgb: 38, 38, 38;
@@ -116,7 +116,7 @@ export default `
   margin: auto;
 }
 
-.Modal-option-list li:hover {
+.Modal-option-list:not(.selection-process) li:hover {
   box-shadow: 0 2px 10px 0 var(--backdrop-bg);
 }
 
@@ -315,6 +315,11 @@ export default `
     border-color: var(--black);
 }
 
+.Modal-dark-theme .Modal-alert-window {
+  background-color: var(--dark-gray);
+  color: white;
+}
+
 @media (prefers-color-scheme: dark) {
   .Modal .Modal-content {
     background-color: var(--dark-gray);
@@ -358,6 +363,11 @@ export default `
   .Modal .Modal-content .left-button:hover {
       background-color: rgba(var(--black-rgb), 0.8);
       border-color: var(--black);
+  }
+
+  .Modal-alert-window {
+    background-color: var(--dark-gray);
+    color: white;
   }
 }
 
