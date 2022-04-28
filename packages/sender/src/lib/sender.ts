@@ -23,13 +23,17 @@ export interface SenderParams {
   iconUrl?: string;
 }
 
+interface SenderState {
+  wallet: InjectedSender | null;
+}
+
 const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   options,
   metadata,
   emitter,
   logger,
 }) => {
-  let _wallet: InjectedSender | null = null;
+  const _state: SenderState = { wallet: null };
 
   const isInstalled = async () => {
     try {
@@ -42,21 +46,21 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   };
 
   const cleanup = () => {
-    _wallet = null;
+    _state.wallet = null;
   };
 
   // TODO: Remove event listeners.
   // Must only trigger "disconnected" if we were connected.
   const disconnect = async () => {
-    if (!_wallet) {
+    if (!_state.wallet) {
       return;
     }
 
-    if (!_wallet.isSignedIn()) {
+    if (!_state.wallet.isSignedIn()) {
       return cleanup();
     }
 
-    const res = await _wallet.signOut();
+    const res = await _state.wallet.signOut();
 
     if (!res) {
       throw new Error("Failed to disconnect");
@@ -75,11 +79,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   };
 
   const getAccounts = () => {
-    if (!_wallet) {
+    if (!_state.wallet) {
       return [];
     }
 
-    const accountId = _wallet.getAccountId();
+    const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
       return [];
@@ -89,8 +93,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
   };
 
   const setupWallet = async (): Promise<InjectedSender> => {
-    if (_wallet) {
-      return _wallet;
+    if (_state.wallet) {
+      return _state.wallet;
     }
 
     const installed = await isInstalled();
@@ -99,23 +103,25 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       throw errors.createWalletNotInstalledError(metadata);
     }
 
-    _wallet = window.near!;
+    _state.wallet = window.near!;
 
     try {
       // Add extra wait to ensure Sender's sign in status is read from the
       // browser extension background env.
-      await waitFor(() => !!_wallet?.isSignedIn(), { timeout: 300 });
+      await waitFor(() => !!_state.wallet?.isSignedIn(), { timeout: 300 });
     } catch (e) {
       logger.log("Sender:setupWallet: Not signed in yet");
     }
 
-    _wallet.on("accountChanged", async (newAccountId) => {
+    _state.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("Sender:onAccountChange", newAccountId);
 
-      await disconnect();
+      cleanup();
+
+      emitter.emit("disconnected", null);
     });
 
-    _wallet.on("rpcChanged", async ({ rpc }) => {
+    _state.wallet.on("rpcChanged", async ({ rpc }) => {
       if (options.network.networkId !== rpc.networkId) {
         await disconnect();
 
@@ -123,15 +129,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       }
     });
 
-    return _wallet;
+    return _state.wallet;
   };
 
   const getWallet = (): InjectedSender => {
-    if (!_wallet) {
+    if (!_state.wallet) {
       throw new Error(`${metadata.name} not connected`);
     }
 
-    return _wallet;
+    return _state.wallet;
   };
 
   const isValidActions = (
@@ -176,9 +182,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
       const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 
-      // TODO: Sender returns no accounts when locked.
-      //  We should wait until they've fixed this on their end.
       if (existingAccounts.length) {
+        emitter.emit("connected", { accounts: existingAccounts });
         return existingAccounts;
       }
 
