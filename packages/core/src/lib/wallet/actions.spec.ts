@@ -1,10 +1,10 @@
-import { transformActions } from "./actions";
+import { createAction } from "@near-wallet-selector/utils";
 import { transactions, utils } from "near-api-js";
 import { parseBigNumber } from "@near-wallet-selector/utils";
 
 describe("actions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
-    const actions = transformActions([{ type: "CreateAccount" }]);
+    const actions = createAction([{ type: "CreateAccount" }]);
 
     expect(actions).toEqual([transactions.createAccount()]);
   });
@@ -12,7 +12,7 @@ describe("actions", () => {
   it("correctly transforms 'DeployContract' action", () => {
     const code = Buffer.from("{}");
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "DeployContract",
         params: {
@@ -30,7 +30,7 @@ describe("actions", () => {
     const deposit = "2";
     const methodName = "methodName";
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "FunctionCall",
         params: {
@@ -54,7 +54,7 @@ describe("actions", () => {
 
   it("correctly transforms 'Transfer' action", () => {
     const deposit = "1";
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "Transfer",
         params: {
@@ -70,7 +70,7 @@ describe("actions", () => {
     const stake = "1";
     const publicKey = "";
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "Stake",
         params: {
@@ -90,7 +90,7 @@ describe("actions", () => {
 
   it("correctly transforms 'AddKey' action with 'FullAccess' permission", () => {
     const publicKey = "";
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "AddKey",
         params: {
@@ -116,7 +116,7 @@ describe("actions", () => {
     const allowance = "1";
     const methodNames = ["methodName"];
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "AddKey",
         params: {
@@ -147,7 +147,7 @@ describe("actions", () => {
   it("correctly transforms 'DeleteKey' action", () => {
     const publicKey = "";
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "DeleteKey",
         params: {
@@ -164,7 +164,7 @@ describe("actions", () => {
   it("correctly transforms 'DeleteAccount' action", () => {
     const beneficiaryId = "test.testnet";
 
-    const actions = transformActions([
+    const actions = createAction([
       {
         type: "DeleteAccount",
         params: {

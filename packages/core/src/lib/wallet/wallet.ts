@@ -7,7 +7,7 @@ import {
   StorageService,
 } from "../services";
 import { Transaction } from "./transactions";
-import { Action } from "./actions";
+import { Action } from "./actions.types";
 import { Options } from "../options.types";
 import { Optional } from "../utils.types";
 import { AccountState } from "../store.types";

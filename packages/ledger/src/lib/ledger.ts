@@ -1,12 +1,11 @@
 import { transactions as nearTransactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
-import { isMobile } from "@near-wallet-selector/utils";
+import { isMobile, createTransaction } from "@near-wallet-selector/utils";
 import {
   WalletModule,
   WalletBehaviourFactory,
   AccountState,
   HardwareWallet,
-  transformActions,
   Transaction,
   Optional,
 } from "@near-wallet-selector/core";
@@ -213,16 +212,14 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
     const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
     for (let i = 0; i < transactions.length; i++) {
-      const actions = transformActions(transactions[i].actions);
-
-      const transaction = nearTransactions.createTransaction(
+      const transaction = createTransaction({
         accountId,
-        utils.PublicKey.from(publicKey),
-        transactions[i].receiverId,
-        accessKey.nonce + i + 1,
-        actions,
-        utils.serialize.base_decode(block.header.hash)
-      );
+        publicKey,
+        receiverId: transactions[i].receiverId,
+        nonce: accessKey.nonce + i + 1,
+        actions: transactions[i].actions,
+        hash: block.header.hash,
+      });
 
       const signedTx = await signTransaction(transaction, derivationPath);
       signedTransactions.push(signedTx);
@@ -322,17 +319,14 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = ({
         provider.viewAccessKey({ accountId, publicKey }),
       ]);
 
-      logger.log("Ledger:signAndSendTransaction:block", block);
-      logger.log("Ledger:signAndSendTransaction:accessKey", accessKey);
-
-      const transaction = nearTransactions.createTransaction(
+      const transaction = createTransaction({
         accountId,
-        utils.PublicKey.from(publicKey),
-        receiverId,
-        accessKey.nonce + 1,
-        transformActions(actions),
-        utils.serialize.base_decode(block.header.hash)
-      );
+        publicKey,
+        receiverId: receiverId,
+        nonce: accessKey.nonce + 1,
+        actions,
+        hash: block.header.hash,
+      });
 
       const signedTx = await signTransaction(transaction, derivationPath);
 

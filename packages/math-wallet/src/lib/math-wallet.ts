@@ -1,11 +1,10 @@
-import { transactions as nearTransactions, utils } from "near-api-js";
-import { isMobile } from "@near-wallet-selector/utils";
+import { transactions as nearTransactions } from "near-api-js";
+import { isMobile, createTransaction } from "@near-wallet-selector/utils";
 import {
   WalletModule,
   WalletBehaviourFactory,
   AccountState,
   InjectedWallet,
-  transformActions,
   waitFor,
   errors,
 } from "@near-wallet-selector/core";
@@ -171,14 +170,14 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       logger.log("MathWallet:signAndSendTransaction:block", block);
       logger.log("MathWallet:signAndSendTransaction:accessKey", accessKey);
 
-      const transaction = nearTransactions.createTransaction(
+      const transaction = createTransaction({
         accountId,
-        utils.PublicKey.from(publicKey),
-        receiverId,
-        accessKey.nonce + 1,
-        transformActions(actions),
-        utils.serialize.base_decode(block.header.hash)
-      );
+        publicKey,
+        receiverId: receiverId,
+        nonce: accessKey.nonce + 1,
+        actions,
+        hash: block.header.hash,
+      });
 
       const [hash, signedTx] = await nearTransactions.signTransaction(
         transaction,
@@ -205,17 +204,16 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
 
       const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
-      let nonce = accessKey.nonce;
 
       for (let i = 0; i < transactions.length; i++) {
-        const transaction = nearTransactions.createTransaction(
+        const transaction = createTransaction({
           accountId,
-          utils.PublicKey.from(publicKey),
-          transactions[i].receiverId,
-          ++nonce,
-          transformActions(transactions[i].actions),
-          utils.serialize.base_decode(block.header.hash)
-        );
+          publicKey,
+          receiverId: transactions[i].receiverId,
+          nonce: accessKey.nonce + i + 1,
+          actions: transactions[i].actions,
+          hash: block.header.hash,
+        });
 
         const [hash, signedTx] = await nearTransactions.signTransaction(
           transaction,

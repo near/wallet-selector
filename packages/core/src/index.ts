@@ -41,5 +41,4 @@ export {
 
 export { errors } from "./lib/errors";
 
-export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";

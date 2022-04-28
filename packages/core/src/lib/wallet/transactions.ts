@@ -1,4 +1,4 @@
-import { Action } from "./actions";
+import { Action } from "./actions.types";
 
 export interface Transaction {
   signerId: string;
