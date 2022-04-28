@@ -24,7 +24,7 @@ export const setupWalletSelector = async (
     emitter
   );
 
-  Logger.debug = options.debug || false;
+  Logger.debug = options.debug;
 
   await controller.init();
 

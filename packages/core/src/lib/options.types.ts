@@ -14,5 +14,5 @@ export type Options = Pick<
   "contractId" | "methodNames"
 > & {
   network: Network;
-  debug?: boolean;
+  debug: boolean;
 };
