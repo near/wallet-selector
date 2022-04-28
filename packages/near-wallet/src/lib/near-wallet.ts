@@ -1,13 +1,12 @@
-import { WalletConnection, connect, keyStores, utils } from "near-api-js";
-import * as nearApi from "near-api-js";
+import { WalletConnection, connect, keyStores } from "near-api-js";
 import {
   WalletModule,
   WalletBehaviourFactory,
   BrowserWallet,
   Transaction,
   Optional,
-  transformActions,
 } from "@near-wallet-selector/core";
+import { createAction, createTransaction } from "@near-wallet-selector/utils";
 
 export interface NearWalletParams {
   walletUrl?: string;
@@ -107,10 +106,9 @@ const NearWallet: WalletBehaviourFactory<
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
-        const actions = transformActions(transaction.actions);
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
-          actions,
+          createAction(transaction.actions),
           localKey
         );
 
@@ -122,14 +120,14 @@ const NearWallet: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
-        return nearApi.transactions.createTransaction(
-          account.accountId,
-          utils.PublicKey.from(accessKey.public_key),
-          transaction.receiverId,
-          accessKey.access_key.nonce + index + 1,
-          actions,
-          utils.serialize.base_decode(block.header.hash)
-        );
+        return createTransaction({
+          accountId: account.accountId,
+          publicKey: accessKey.public_key,
+          receiverId: transaction.receiverId,
+          nonce: accessKey.access_key.nonce + index + 1,
+          actions: transaction.actions,
+          hash: block.header.hash,
+        });
       })
     );
   };
@@ -201,7 +199,7 @@ const NearWallet: WalletBehaviourFactory<
 
       return account["signAndSendTransaction"]({
         receiverId,
-        actions: transformActions(actions),
+        actions: createAction(actions),
       }).then(() => {
         // Suppress response since transactions with deposits won't actually
         // return FinalExecutionOutcome.
