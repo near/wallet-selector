@@ -9,9 +9,16 @@ import {
   HardwareWalletConnectParams,
   SignAndSendTransactionParams,
   SignAndSendTransactionsParams,
-  WalletOptions,
+  WalletEvents,
 } from "./wallet";
 import isMobile from "is-mobile";
+import { Options } from "../options.types";
+import {
+  EventEmitterService,
+  LoggerService,
+  ProviderService,
+  StorageService,
+} from "../services";
 
 interface BaseWalletMetadata<Type extends string> {
   id: string;
@@ -21,9 +28,28 @@ interface BaseWalletMetadata<Type extends string> {
   iconUrl: string;
 }
 
+export interface WalletOptions<Metadata extends BaseWalletMetadata<string>> {
+  options: Options;
+  metadata: Metadata;
+  provider: ProviderService;
+  emitter: EventEmitterService<WalletEvents>;
+  logger: LoggerService;
+  storage: StorageService;
+}
+
+type BaseWalletModule<
+  Metadata extends BaseWalletMetadata<string>,
+  Behaviour
+> = () => Promise<
+  | (Metadata & {
+      init: (options: WalletOptions<Metadata>) => Promise<Behaviour>;
+    })
+  | null
+>;
+
 // ----- Browser Wallet ----- //
 
-type BrowserWalletMetadata = BaseWalletMetadata<"browser">;
+export type BrowserWalletMetadata = BaseWalletMetadata<"browser">;
 
 export interface BrowserWalletBehaviour {
   connect(): Promise<Array<AccountState>>;
@@ -35,27 +61,19 @@ export interface BrowserWalletBehaviour {
 
 export type BrowserWallet = BrowserWalletMetadata & BrowserWalletBehaviour;
 
-export type BrowserWalletModule<
-  Variation extends
-    | BrowserWallet
-    | BrowserWalletBehaviour = BrowserWalletBehaviour,
-  Init = Variation extends BrowserWallet
-    ? () => Promise<BrowserWallet>
-    : (options: WalletOptions) => Promise<BrowserWalletBehaviour>
-> = () => Promise<
-  | (BrowserWalletMetadata & {
-      init: Init;
-    })
-  | null
+export type BrowserWalletModule = BaseWalletModule<
+  BrowserWalletMetadata,
+  BrowserWalletBehaviour
 >;
 
+// TODO: Move to store types.
 export type BrowserWalletModuleState = BrowserWalletMetadata & {
   init: () => Promise<BrowserWallet>;
 };
 
 // ----- Injected Wallet ----- //
 
-type InjectedWalletMetadata = BaseWalletMetadata<"injected"> & {
+export type InjectedWalletMetadata = BaseWalletMetadata<"injected"> & {
   downloadUrl: string;
 };
 
@@ -73,27 +91,19 @@ export interface InjectedWalletBehaviour {
 
 export type InjectedWallet = InjectedWalletMetadata & InjectedWalletBehaviour;
 
-export type InjectedWalletModule<
-  Variation extends
-    | InjectedWallet
-    | InjectedWalletBehaviour = InjectedWalletBehaviour,
-  Init = Variation extends InjectedWallet
-    ? () => Promise<InjectedWallet>
-    : (options: WalletOptions) => Promise<InjectedWalletBehaviour>
-> = () => Promise<
-  | (InjectedWalletMetadata & {
-      init: Init;
-    })
-  | null
+export type InjectedWalletModule = BaseWalletModule<
+  InjectedWalletMetadata,
+  InjectedWalletBehaviour
 >;
 
+// TODO: Move to store types.
 export type InjectedWalletModuleState = InjectedWalletMetadata & {
   init: () => Promise<InjectedWallet>;
 };
 
 // ----- Hardware Wallet ----- //
 
-type HardwareWalletMetadata = BaseWalletMetadata<"hardware">;
+export type HardwareWalletMetadata = BaseWalletMetadata<"hardware">;
 
 export interface HardwareWalletBehaviour {
   connect(params: HardwareWalletConnectParams): Promise<Array<AccountState>>;
@@ -107,29 +117,21 @@ export interface HardwareWalletBehaviour {
   ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
-type HardwareWallet = HardwareWalletMetadata & HardwareWalletBehaviour;
+export type HardwareWallet = HardwareWalletMetadata & HardwareWalletBehaviour;
 
-export type HardwareWalletModule<
-  Variation extends
-    | HardwareWallet
-    | HardwareWalletBehaviour = HardwareWalletBehaviour,
-  Init = Variation extends HardwareWallet
-    ? () => Promise<HardwareWallet>
-    : (options: WalletOptions) => Promise<HardwareWalletBehaviour>
-> = () => Promise<
-  | (HardwareWalletMetadata & {
-      init: Init;
-    })
-  | null
+export type HardwareWalletModule = BaseWalletModule<
+  HardwareWalletMetadata,
+  HardwareWalletBehaviour
 >;
 
+// TODO: Move to store types.
 export type HardwareWalletModuleState = HardwareWalletMetadata & {
   init: () => Promise<HardwareWallet>;
 };
 
 // ----- Bridge Wallet ----- //
 
-type BridgeWalletMetadata = BaseWalletMetadata<"bridge">;
+export type BridgeWalletMetadata = BaseWalletMetadata<"bridge">;
 
 export interface BridgeWalletBehaviour {
   connect(): Promise<Array<AccountState>>;
@@ -143,39 +145,40 @@ export interface BridgeWalletBehaviour {
   ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
-type BridgeWallet = BridgeWalletMetadata & BridgeWalletBehaviour;
+export type BridgeWallet = BridgeWalletMetadata & BridgeWalletBehaviour;
 
-export type BridgeWalletModule<
-  Variation extends
-    | BridgeWallet
-    | BridgeWalletBehaviour = BridgeWalletBehaviour,
-  Init = Variation extends BridgeWallet
-    ? () => Promise<BridgeWallet>
-    : (options: WalletOptions) => Promise<BridgeWalletBehaviour>
-> = () => Promise<
-  | (BridgeWalletMetadata & {
-      init: Init;
-    })
-  | null
+export type BridgeWalletModule = BaseWalletModule<
+  BridgeWalletMetadata,
+  BridgeWalletBehaviour
 >;
 
+// TODO: Move to store types.
 export type BridgeWalletModuleState = BridgeWalletMetadata & {
   init: () => Promise<BridgeWallet>;
 };
 
-type WalletModule =
+// ----- Misc ----- //
+
+export type WalletModule =
   | BrowserWalletModule
   | InjectedWalletModule
   | HardwareWalletModule
   | BridgeWalletModule;
 
-type Wallet = BrowserWallet | InjectedWallet | HardwareWallet | BridgeWallet;
+export type Wallet =
+  | BrowserWallet
+  | InjectedWallet
+  | HardwareWallet
+  | BridgeWallet;
 
-type WalletModuleState =
+// TODO: Move to store types.
+export type WalletModuleState =
   | BrowserWalletModuleState
   | InjectedWalletModuleState
   | HardwareWalletModuleState
   | BridgeWalletModuleState;
+
+// ----- Implementation Tests ----- //
 
 const MathWallet = async (): Promise<InjectedWalletBehaviour> => {
   return {
