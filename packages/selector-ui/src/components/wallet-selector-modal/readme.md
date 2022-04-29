@@ -24,6 +24,16 @@ Type: `Promise<void>`
 
 
 
+### `setSelector(selector: unknown) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `show() => Promise<void>`
 
 Method to show the modal.
@@ -39,11 +49,13 @@ Type: `Promise<void>`
 
 ### Depends on
 
+- [wallet-selector](../wallet-selector)
 - [close-button](close-button)
 
 ### Graph
 ```mermaid
 graph TD;
+  wallet-selector-modal --> wallet-selector
   wallet-selector-modal --> close-button
   style wallet-selector-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```

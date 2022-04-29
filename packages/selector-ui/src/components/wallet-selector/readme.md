@@ -5,14 +5,31 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
+## Methods
 
-| Property | Attribute | Description     | Type     | Default     |
-| -------- | --------- | --------------- | -------- | ----------- |
-| `first`  | `first`   | The first name  | `string` | `undefined` |
-| `last`   | `last`    | The last name   | `string` | `undefined` |
-| `middle` | `middle`  | The middle name | `string` | `undefined` |
+### `setSelector(selector: unknown) => Promise<void>`
 
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
+## Dependencies
+
+### Used by
+
+ - [wallet-selector-modal](../wallet-selector-modal)
+
+### Graph
+```mermaid
+graph TD;
+  wallet-selector-modal --> wallet-selector
+  style wallet-selector fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

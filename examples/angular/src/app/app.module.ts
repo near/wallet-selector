@@ -7,6 +7,7 @@ import { SignInComponent } from "./components/sign-in/sign-in.component";
 import { MessagesComponent } from "./components/messages/messages.component";
 import { FormComponent } from "./components/form/form.component";
 import { ContentComponent } from "./components/content/content.component";
+import { SelectorUiAngularModule } from "@near-wallet-selector/angular-selector-ui";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { ContentComponent } from "./components/content/content.component";
     FormComponent,
     ContentComponent,
   ],
-  imports: [BrowserModule, FormsModule],
+  imports: [BrowserModule, FormsModule, SelectorUiAngularModule],
   providers: [],
   bootstrap: [AppComponent],
 })

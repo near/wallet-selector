@@ -1,4 +1,6 @@
-import { Component, h, Listen, Method, Prop, State } from "@stencil/core";
+// import type { WalletSelector, WalletSelectorUIComponent } from "@near-wallet-selector/core";
+import { Component, Element, h, Listen, Method, Prop, State } from "@stencil/core";
+import { Components } from "../../components";
 
 export type Theme = 'auto' | 'dark' | 'light';
 @Component({
@@ -7,6 +9,9 @@ export type Theme = 'auto' | 'dark' | 'light';
   shadow: true,
 })
 export class WalletSelectorModal {
+
+  @Element() el: HTMLWalletSelectorModalElement;
+
   @State()
   opened: boolean = true;
 
@@ -36,68 +41,20 @@ export class WalletSelectorModal {
     return this.theme ? `Modal-${this.theme}-theme` : '';
   }
 
+  @Method()
+  async setSelector(selector: unknown): Promise<void> {
+    console.log('setSelector', selector);
+    const component = this.el.shadowRoot.querySelector('wallet-selector');
+    component.setSelector(selector as unknown as Components.WalletSelector);
+  }
+
   render() {
-    if(!this.opened) return null;
-    return  <div class={this.getThemeClass()}>
+    if (!this.opened) return null;
+    return <div class={this.getThemeClass()}>
       <div class="Modal">
-        <div class="Modal-content">
-          <div class="Modal-header">
-            <slot name="title">
-              <h2>Connect Wallet</h2>
-            </slot>
-            <close-button></close-button>
-          </div>
-          {/* {routeName === "AlertMessage" && alertMessage && (
-            <AlertMessage
-              message={alertMessage}
-              onBack={() => {
-                setAlertMessage(null);
-                setRouteName("WalletOptions");
-              }}
-            />
-          )} */}
-          {/* {routeName === "WalletOptions" && (
-            <WalletOptions
-              selector={selector}
-              options={options}
-              onWalletNotInstalled={(wallet) => {
-                setNotInstalledWallet(wallet);
-                return setRouteName("WalletNotInstalled");
-              }}
-              onConnectHardwareWallet={() => {
-                setRouteName("LedgerDerivationPath");
-              }}
-              onConnected={handleDismissClick}
-              onError={(message) => {
-                setAlertMessage(message);
-                setRouteName("AlertMessage");
-              }}
-            />
-          )} */}
-          {/* {routeName === "LedgerDerivationPath" && (
-            <LedgerDerivationPath
-              selector={selector}
-              onConnected={handleDismissClick}
-              onBack={() => setRouteName("WalletOptions")}
-            />
-          )} */}
-          {/* {routeName === "WalletNotInstalled" && notInstalledWallet && (
-            <WalletNotInstalled
-              notInstalledWallet={notInstalledWallet}
-              onBack={() => {
-                setNotInstalledWallet(null);
-                setRouteName("WalletOptions");
-              }}
-            />
-          )} */}
-          {/* {routeName === "WalletNetworkChanged" && (
-            <WalletNetworkChanged
-              selector={selector}
-              onSwitchWallet={() => setRouteName("WalletOptions")}
-              onDismiss={handleDismissClick}
-            />
-          )} */}
-        </div>
+        <wallet-selector>
+          <close-button slot="close-btn"></close-button>
+        </wallet-selector>
       </div>
     </div>
 

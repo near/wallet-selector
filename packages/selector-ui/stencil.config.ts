@@ -16,7 +16,6 @@ export const config: Config = {
   namespace: "selector-ui",
   taskQueue: "async",
   plugins: [sass()],
-
   outputTargets: [
     {
       type: "dist",
@@ -24,6 +23,7 @@ export const config: Config = {
     },
     {
       type: "dist-custom-elements",
+      autoDefineCustomElements: true
     },
     {
       type: "docs-readme",
@@ -37,6 +37,7 @@ export const config: Config = {
       componentCorePackage: "@near-wallet-selector/selector-ui",
       directivesProxyFile:
         "../../../packages/selector-ui-angular/src/generated/directives/proxies.ts",
+      directivesArrayFile: "../../../packages/selector-ui-angular/src/generated/directives/directives.ts",
       valueAccessorConfigs: angularValueAccessorBindings,
     }),
 

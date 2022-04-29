@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { WalletModule, Wallet } from "./wallet";
 import { WalletSelectorState } from "./store.types";
 import { Network, NetworkId, Options } from "./options.types";
-import { WalletSelectorUIComponent } from "./modal";
+import type { WalletSelectorUIComponent } from "./modal";
 // import {
 //   ModalOptions,
 //   WalletSelectorModal,
@@ -15,7 +15,7 @@ export interface WalletSelectorParams {
   contractId: string;
   methodNames?: Array<string>;
   wallets: Array<WalletModule>;
-  ui?: () => Promise<WalletSelectorUIComponent>;
+  ui?: () => Promise<WalletSelectorUIComponent & HTMLElement>;
   debug?: boolean;
 }
 

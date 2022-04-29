@@ -6,6 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Theme } from "./components/wallet-selector-modal/wallet-selector-modal";
+import { Components } from "./components";
 export namespace Components {
     interface AlertMessage {
         "message": string;
@@ -13,24 +14,14 @@ export namespace Components {
     interface CloseButton {
     }
     interface WalletSelector {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+        "setSelector": (selector: unknown) => Promise<void>;
     }
     interface WalletSelectorModal {
         /**
           * Method to hide the modal
          */
         "hide": () => Promise<void>;
+        "setSelector": (selector: unknown) => Promise<void>;
         /**
           * Method to show the modal.
          */
@@ -82,18 +73,6 @@ declare namespace LocalJSX {
         "onNearModalCloseEvent"?: (event: CustomEvent<MouseEvent>) => void;
     }
     interface WalletSelector {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
     }
     interface WalletSelectorModal {
         /**

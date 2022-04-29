@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   setupWalletSelector,
   WalletSelector,
@@ -9,6 +9,8 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+
+import { WalletSelectorModal } from "@near-wallet-selector/angular-selector-ui";
 
 declare global {
   interface Window {
@@ -25,6 +27,9 @@ export class AppComponent implements OnInit {
   selector: WalletSelector;
   accountId: string | null;
   accounts: Array<AccountState> = [];
+
+  @ViewChild(WalletSelectorModal, { static: true })
+  walletSelectorModal: WalletSelectorModal;
 
   async ngOnInit() {
     await this.initialize();
@@ -84,6 +89,7 @@ export class AppComponent implements OnInit {
 
         window.selector = instance;
         this.selector = instance;
+        return this.walletSelectorModal.setSelector(this.selector);
       })
       .catch((err) => {
         console.error(err);

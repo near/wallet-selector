@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import {
   setupWalletSelector,
@@ -27,7 +27,9 @@ interface WalletSelectorContextValue {
 const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
-export const WalletSelectorContextProvider: React.FC = ({ children }) => {
+export const WalletSelectorContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);

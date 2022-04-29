@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { providers, utils } from "near-api-js";
 import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
 
@@ -7,6 +13,8 @@ import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
+import { WalletSelectorModal } from "@near-wallet-selector/react-selector-ui";
+import { Components } from "@near-wallet-selector/selector-ui/loader";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -17,6 +25,7 @@ const Content: React.FC = () => {
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const modalRef = useRef<HTMLWalletSelectorModalElement>(null);
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {
@@ -73,8 +82,22 @@ const Content: React.FC = () => {
     });
   }, [accountId, getAccount]);
 
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) {
+      return;
+    }
+    modal.setSelector(selector as unknown as Components.WalletSelector);
+  }, [modalRef, selector]);
+
+  useEffect(() => {
+    if (!selector) {
+      return;
+    }
+  }, [selector]);
+
   const handleSignIn = () => {
-    selector.show();
+    modalRef.current!.show();
   };
 
   const handleSignOut = () => {
@@ -88,7 +111,7 @@ const Content: React.FC = () => {
   };
 
   const handleSwitchProvider = () => {
-    selector.show();
+    modalRef.current!.show();
   };
 
   const handleSwitchAccount = () => {
@@ -233,6 +256,7 @@ const Content: React.FC = () => {
         onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
       />
       <Messages messages={messages} />
+      <WalletSelectorModal ref={modalRef}></WalletSelectorModal>
     </Fragment>
   );
 };

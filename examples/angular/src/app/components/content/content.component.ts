@@ -59,7 +59,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   signIn() {
-    this.selector.show();
+    // this.selector.show();
   }
 
   signOut() {
@@ -73,7 +73,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   switchProvider() {
-    this.selector.show();
+    // this.selector.show();
   }
 
   getMessages() {

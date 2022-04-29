@@ -13,5 +13,11 @@
   </head>
   <body>
     <wallet-selector-modal></wallet-selector-modal>
+    <script>
+      window.addEventListener('appload', () => {
+        console.log('app load');
+        document.querySelector('wallet-selector-modal').setSelector({ selector: 'test' });
+      });
+    </script>
   </body>
 </html>
