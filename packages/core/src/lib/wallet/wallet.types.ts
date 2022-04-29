@@ -49,6 +49,10 @@ export type BrowserWalletModule<
   | null
 >;
 
+export type BrowserWalletModuleState = BrowserWalletMetadata & {
+  init: () => Promise<BrowserWallet>;
+};
+
 // ----- Injected Wallet ----- //
 
 type InjectedWalletMetadata = BaseWalletMetadata<"injected"> & {
@@ -83,6 +87,10 @@ export type InjectedWalletModule<
   | null
 >;
 
+export type InjectedWalletModuleState = InjectedWalletMetadata & {
+  init: () => Promise<InjectedWallet>;
+};
+
 // ----- Hardware Wallet ----- //
 
 type HardwareWalletMetadata = BaseWalletMetadata<"hardware">;
@@ -114,6 +122,10 @@ export type HardwareWalletModule<
     })
   | null
 >;
+
+export type HardwareWalletModuleState = HardwareWalletMetadata & {
+  init: () => Promise<HardwareWallet>;
+};
 
 // ----- Bridge Wallet ----- //
 
@@ -147,6 +159,10 @@ export type BridgeWalletModule<
   | null
 >;
 
+export type BridgeWalletModuleState = BridgeWalletMetadata & {
+  init: () => Promise<BridgeWallet>;
+};
+
 type WalletModule =
   | BrowserWalletModule
   | InjectedWalletModule
@@ -156,10 +172,10 @@ type WalletModule =
 type Wallet = BrowserWallet | InjectedWallet | HardwareWallet | BridgeWallet;
 
 type WalletModuleState =
-  | BrowserWalletModule<BrowserWallet>
-  | InjectedWalletModule<InjectedWallet>
-  | HardwareWalletModule<HardwareWallet>
-  | BridgeWalletModule<BridgeWallet>;
+  | BrowserWalletModuleState
+  | InjectedWalletModuleState
+  | HardwareWalletModuleState
+  | BridgeWalletModuleState;
 
 const MathWallet = async (): Promise<InjectedWalletBehaviour> => {
   return {
@@ -203,7 +219,24 @@ const setupWalletModules = async (modules: Array<WalletModule>) => {
     if (!module) {
       continue;
     }
+
+    results.push({
+      ...module,
+      init: () => {
+        return module.init({} as any);
+      },
+    } as WalletModuleState);
   }
 
   return results;
 };
+
+(async () => {
+  const modules: Array<WalletModule> = [];
+  const walletModules = await setupWalletModules(modules);
+  const walletModule = walletModules[0];
+
+  if (walletModule.type === "browser") {
+    const wallet = await walletModule.init();
+  }
+})();
