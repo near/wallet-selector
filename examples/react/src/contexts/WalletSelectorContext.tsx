@@ -61,7 +61,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       network: "testnet",
       contractId: "guest-book.testnet",
       debug: true,
-      modules: [
+      wallets: [
         // setupNearWallet(),
         // setupSender(),
         setupMathWallet(),

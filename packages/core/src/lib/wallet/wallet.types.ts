@@ -44,15 +44,14 @@ type BaseWalletBehaviourFactory<
   Behaviour
 > = (options: WalletOptions<Metadata>) => Promise<Behaviour>;
 
+type BaseWalletModuleFactory<WalletModule> = () => Promise<WalletModule | null>;
+
 type BaseWalletModule<
   Metadata extends BaseWalletMetadata<string>,
   Behaviour
-> = () => Promise<
-  | (Metadata & {
-      init: BaseWalletBehaviourFactory<Metadata, Behaviour>;
-    })
-  | null
->;
+> = Metadata & {
+  init: BaseWalletBehaviourFactory<Metadata, Behaviour>;
+};
 
 // ----- Browser Wallet ----- //
 
@@ -75,6 +74,9 @@ export type BrowserWalletModule = BaseWalletModule<
   BrowserWalletMetadata,
   BrowserWalletBehaviour
 >;
+
+export type BrowserWalletModuleFactory =
+  BaseWalletModuleFactory<BrowserWalletModule>;
 
 export type BrowserWallet = BrowserWalletMetadata & BrowserWalletBehaviour;
 
@@ -106,6 +108,9 @@ export type InjectedWalletModule = BaseWalletModule<
   InjectedWalletBehaviour
 >;
 
+export type InjectedWalletModuleFactory =
+  BaseWalletModuleFactory<InjectedWalletModule>;
+
 export type InjectedWallet = InjectedWalletMetadata & InjectedWalletBehaviour;
 
 // ----- Hardware Wallet ----- //
@@ -133,6 +138,9 @@ export type HardwareWalletModule = BaseWalletModule<
   HardwareWalletMetadata,
   HardwareWalletBehaviour
 >;
+
+export type HardwareWalletModuleFactory =
+  BaseWalletModuleFactory<HardwareWalletModule>;
 
 export type HardwareWallet = HardwareWalletMetadata & HardwareWalletBehaviour;
 
@@ -162,6 +170,9 @@ export type BridgeWalletModule = BaseWalletModule<
   BridgeWalletBehaviour
 >;
 
+export type BridgetWalletModuleFactory =
+  BaseWalletModuleFactory<BridgeWalletModule>;
+
 export type BridgeWallet = BridgeWalletMetadata & BridgeWalletBehaviour;
 
 // ----- Misc ----- //
@@ -177,6 +188,12 @@ export type WalletModule =
   | InjectedWalletModule
   | HardwareWalletModule
   | BridgeWalletModule;
+
+export type WalletModuleFactory =
+  | BrowserWalletModuleFactory
+  | InjectedWalletModuleFactory
+  | HardwareWalletModuleFactory
+  | BridgetWalletModuleFactory;
 
 export type Wallet =
   | BrowserWallet
@@ -202,7 +219,9 @@ interface MathWalletParams {
   iconUrl: string;
 }
 
-const setupMathWallet = (params: MathWalletParams): InjectedWalletModule => {
+const setupMathWallet = (
+  params: MathWalletParams
+): InjectedWalletModuleFactory => {
   return async () => {
     if (isMobile()) {
       return null;

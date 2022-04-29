@@ -6,6 +6,8 @@ import {
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
+import { omit } from "./utils";
+import { WalletMetadata } from "./wallet/wallet.types";
 
 const reducer = (
   state: WalletSelectorState,
@@ -19,7 +21,9 @@ const reducer = (
 
       return {
         ...state,
-        modules,
+        modules: modules.map((module) => {
+          return omit(module, ["init"]) as WalletMetadata;
+        }),
         accounts,
         selectedWalletId,
       };
