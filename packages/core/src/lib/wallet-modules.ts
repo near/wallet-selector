@@ -42,8 +42,10 @@ export const setupWalletModules = async ({
         return {
           id: module.id,
           type: module.type,
-          metadata: module.metadata,
+          metadata: module.metadata as never,
           ...(await module.init({
+            id: module.id,
+            metadata: module.metadata as never,
             options,
             provider: new Provider(options.network.nodeUrl),
             emitter: new EventEmitter<WalletEvents>(),

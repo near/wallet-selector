@@ -1,4 +1,4 @@
-import { WalletMetadata } from "./wallet";
+import { WalletMetadata } from "./wallet/wallet.types";
 
 enum ErrorCodes {
   WalletNotInstalled = "WalletNotInstalled",

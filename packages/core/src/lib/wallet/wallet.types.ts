@@ -27,7 +27,9 @@ interface BaseWalletMetadata {
   iconUrl: string;
 }
 
-export interface WalletOptions {
+export interface WalletOptions<Metadata extends BaseWalletMetadata> {
+  id: string;
+  metadata: Metadata;
   options: Options;
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
@@ -49,7 +51,7 @@ type BaseWallet<
 type BaseWalletBehaviourFactory<
   Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
 > = (
-  options: WalletOptions
+  options: WalletOptions<Wallet["metadata"]>
 ) => Promise<Omit<Wallet, "id" | "type" | "metadata">>;
 
 // Type to handle definition of wallet module.
