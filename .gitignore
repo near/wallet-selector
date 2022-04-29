@@ -43,3 +43,6 @@ testem.log
 Thumbs.db
 
 .angular
+packages/selector-ui-angular/**/generated
+packages/selector-ui-react/**/generated
+packages/selector-ui-svelte/**/generated

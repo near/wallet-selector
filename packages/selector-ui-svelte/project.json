@@ -1,0 +1,52 @@
+{
+  "root": "packages/selector-ui-svelte",
+  "sourceRoot": "packages/selector-ui-svelte/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/selector-ui-svelte/**/*.{ts,svelte,spec.ts}"
+        ]
+      }
+    },
+    "check": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "svelte-check",
+        "cwd": "packages/selector-ui-svelte"
+      }
+    },
+    "build": {
+      "executor": "@nxext/vite:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "entryFile": "src/index.ts",
+        "frameworkConfigFile": "@nxext/svelte/plugins/vite",
+        "outputPath": "dist/packages/selector-ui-svelte",
+        "assets": [
+          {
+            "glob": "/*",
+            "input": "./public/**",
+            "output": "./"
+          }
+        ],
+        "tsConfig": "packages/selector-ui-svelte/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/selector-ui-svelte"],
+      "options": {
+        "jestConfig": "packages/selector-ui-svelte/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

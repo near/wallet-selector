@@ -10,6 +10,9 @@
     "react": "examples/react",
     "react-e2e": "examples/react-e2e",
     "selector-ui": "packages/selector-ui",
+    "selector-ui-angular": "packages/selector-ui-angular",
+    "selector-ui-react": "packages/selector-ui-react",
+    "selector-ui-svelte": "packages/selector-ui-svelte",
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect"
   }

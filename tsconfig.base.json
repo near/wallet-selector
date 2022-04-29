@@ -16,7 +16,10 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-wallet-selector/core": ["dist/packages/core"],
+      "@near-wallet-selector/angular-selector-ui": [
+        "packages/selector-ui-angular/src/index.ts"
+      ],
+      "@near-wallet-selector/core": ["packages/core/src/index.ts"],
       "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
@@ -24,11 +27,17 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/react-selector-ui": [
+        "packages/selector-ui-react/src/index.ts"
+      ],
       "@near-wallet-selector/selector-ui": ["dist/packages/selector-ui"],
       "@near-wallet-selector/selector-ui/loader": [
         "dist/packages/selector-ui/loader"
       ],
       "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
+      "@near-wallet-selector/svelte-selector-ui": [
+        "packages/selector-ui-svelte/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ]

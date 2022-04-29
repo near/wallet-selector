@@ -1,8 +1,0 @@
-:host {
-  // --background: red;
-  --default-background: red;
-}
-
-.mydiv {
-  background: var(--background, --default-background);
-}

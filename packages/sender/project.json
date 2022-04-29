@@ -7,20 +7,19 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
+        "build": [
+          {
+            "target": "build",
+            "projects": "dependencies"
+          }
+        ]
       },
       "options": {
         "outputPath": "dist/packages/sender",
         "main": "packages/sender/src/index.ts",
         "tsConfig": "packages/sender/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": [
-          "packages/sender/*.md",
-          "packages/sender/assets/*"
-        ]
+        "assets": ["packages/sender/*.md", "packages/sender/assets/*"]
       }
     },
     "lint": {

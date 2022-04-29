@@ -7,10 +7,12 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
+        "build": [
+          {
+            "target": "build",
+            "projects": "dependencies"
+          }
+        ]
       },
       "options": {
         "outputPath": "dist/packages/wallet-connect",

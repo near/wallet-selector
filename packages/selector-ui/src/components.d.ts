@@ -5,8 +5,14 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { Theme } from "./components/wallet-selector-modal/wallet-selector-modal";
 export namespace Components {
-    interface MyComponent {
+    interface AlertMessage {
+        "message": string;
+    }
+    interface CloseButton {
+    }
+    interface WalletSelector {
         /**
           * The first name
          */
@@ -20,20 +26,62 @@ export namespace Components {
          */
         "middle": string;
     }
+    interface WalletSelectorModal {
+        /**
+          * Method to hide the modal
+         */
+        "hide": () => Promise<void>;
+        /**
+          * Method to show the modal.
+         */
+        "show": () => Promise<void>;
+        /**
+          * The prefered theme for the modal.
+         */
+        "theme": Theme;
+    }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLAlertMessageElement extends Components.AlertMessage, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLAlertMessageElement: {
+        prototype: HTMLAlertMessageElement;
+        new (): HTMLAlertMessageElement;
+    };
+    interface HTMLCloseButtonElement extends Components.CloseButton, HTMLStencilElement {
+    }
+    var HTMLCloseButtonElement: {
+        prototype: HTMLCloseButtonElement;
+        new (): HTMLCloseButtonElement;
+    };
+    interface HTMLWalletSelectorElement extends Components.WalletSelector, HTMLStencilElement {
+    }
+    var HTMLWalletSelectorElement: {
+        prototype: HTMLWalletSelectorElement;
+        new (): HTMLWalletSelectorElement;
+    };
+    interface HTMLWalletSelectorModalElement extends Components.WalletSelectorModal, HTMLStencilElement {
+    }
+    var HTMLWalletSelectorModalElement: {
+        prototype: HTMLWalletSelectorModalElement;
+        new (): HTMLWalletSelectorModalElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "alert-message": HTMLAlertMessageElement;
+        "close-button": HTMLCloseButtonElement;
+        "wallet-selector": HTMLWalletSelectorElement;
+        "wallet-selector-modal": HTMLWalletSelectorModalElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface AlertMessage {
+        "message": string;
+        "onNearBackEvent"?: (event: CustomEvent<MouseEvent>) => void;
+    }
+    interface CloseButton {
+        "onNearModalCloseEvent"?: (event: CustomEvent<MouseEvent>) => void;
+    }
+    interface WalletSelector {
         /**
           * The first name
          */
@@ -47,15 +95,27 @@ declare namespace LocalJSX {
          */
         "middle"?: string;
     }
+    interface WalletSelectorModal {
+        /**
+          * The prefered theme for the modal.
+         */
+        "theme"?: Theme;
+    }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "alert-message": AlertMessage;
+        "close-button": CloseButton;
+        "wallet-selector": WalletSelector;
+        "wallet-selector-modal": WalletSelectorModal;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "alert-message": LocalJSX.AlertMessage & JSXBase.HTMLAttributes<HTMLAlertMessageElement>;
+            "close-button": LocalJSX.CloseButton & JSXBase.HTMLAttributes<HTMLCloseButtonElement>;
+            "wallet-selector": LocalJSX.WalletSelector & JSXBase.HTMLAttributes<HTMLWalletSelectorElement>;
+            "wallet-selector-modal": LocalJSX.WalletSelectorModal & JSXBase.HTMLAttributes<HTMLWalletSelectorModalElement>;
         }
     }
 }

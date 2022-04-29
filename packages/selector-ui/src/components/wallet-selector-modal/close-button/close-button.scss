@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  height: 24px;
+  padding: 4px;
+  background-color: transparent;
+}
+
+button:active {
+  background: transparent;
+}
+
+button svg {
+  pointer-events: none;
+}
+
+button:hover svg {
+  fill: var(--black);
+  transition: all 0.2s ease-in;
+}

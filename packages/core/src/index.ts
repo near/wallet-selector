@@ -41,5 +41,7 @@ export {
 
 export { errors } from "./lib/errors";
 
+export { WalletSelectorUIComponent } from "./lib/modal";
+
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";

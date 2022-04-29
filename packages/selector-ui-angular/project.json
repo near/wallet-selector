@@ -1,0 +1,42 @@
+{
+  "projectType": "library",
+  "root": "packages/selector-ui-angular",
+  "sourceRoot": "packages/selector-ui-angular/src",
+  "prefix": "near-wallet-selector",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/packages/selector-ui-angular"],
+      "options": {
+        "project": "packages/selector-ui-angular/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "packages/selector-ui-angular/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "packages/selector-ui-angular/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/selector-ui-angular"],
+      "options": {
+        "jestConfig": "packages/selector-ui-angular/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/selector-ui-angular/**/*.ts",
+          "packages/selector-ui-angular/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

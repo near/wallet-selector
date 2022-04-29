@@ -7,20 +7,19 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
+        "build": [
+          {
+            "target": "build",
+            "projects": "dependencies"
+          }
+        ]
       },
       "options": {
         "outputPath": "dist/packages/math-wallet",
         "main": "packages/math-wallet/src/index.ts",
         "tsConfig": "packages/math-wallet/tsconfig.lib.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "assets": [
-          "packages/math-wallet/*.md",
-          "packages/math-wallet/assets/*"
-        ]
+        "assets": ["packages/math-wallet/*.md", "packages/math-wallet/assets/*"]
       }
     },
     "lint": {

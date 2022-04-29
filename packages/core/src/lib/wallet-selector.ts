@@ -6,8 +6,8 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { WalletSelectorModal } from "./modal/modal.types";
-import { setupModal } from "./modal/modal";
+// import { WalletSelectorModal } from "../../../../oldmodal/modal.types";
+// import { setupModal } from "../../../../oldmodal/modal";
 import { Wallet } from "./wallet";
 import { EventEmitter, Logger } from "./services";
 
@@ -25,11 +25,11 @@ export const setupWalletSelector = async (
   );
 
   Logger.debug = options.debug;
-
+  const logger = new Logger();
   await controller.init();
 
   // TODO: Remove omit once modal is a separate package.
-  const selector: Omit<WalletSelector, keyof WalletSelectorModal> = {
+  const selector: WalletSelector = {
     store: {
       getState: () => store.getState(),
       observable: store.observable.asObservable(),
@@ -61,11 +61,17 @@ export const setupWalletSelector = async (
     },
   };
 
-  // TODO: Extract into separate package.
-  const modal = setupModal(selector, params.ui);
+  if (params.ui) {
+    params
+      .ui()
+      .then((ui) => {
+        ui.setSelector(selector);
+      })
+      .catch((err) => {
+        logger.log("Could not set up the UI");
+        logger.error(err);
+      });
+  }
 
-  return {
-    ...selector,
-    ...modal,
-  };
+  return selector;
 };
