@@ -1,10 +1,9 @@
 import { transactions as nearTransactions, utils } from "near-api-js";
 import isMobile from "is-mobile";
 import {
-  WalletModule,
-  WalletBehaviourFactory,
+  InjectedWalletModule,
+  InjectedWalletBehaviourFactory,
   AccountState,
-  InjectedWallet,
   transformActions,
   waitFor,
   errors,
@@ -22,7 +21,7 @@ export interface MathWalletParams {
   iconUrl?: string;
 }
 
-const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
+const MathWallet: InjectedWalletBehaviourFactory = async ({
   options,
   metadata,
   provider,
@@ -101,14 +100,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   return {
-    getDownloadUrl() {
-      return "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc";
-    },
-
-    async isAvailable() {
-      return !isMobile();
-    },
-
     async connect() {
       const wallet = await setupWallet();
       const existingAccounts = getAccounts();
@@ -240,15 +231,23 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 };
 
-export function setupMathWallet({
+export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
-}: MathWalletParams = {}): WalletModule<InjectedWallet> {
-  return {
-    id: "math-wallet",
-    type: "injected",
-    name: "Math Wallet",
-    description: null,
-    iconUrl,
-    wallet: MathWallet,
+}: MathWalletParams = {}): InjectedWalletModule => {
+  return async () => {
+    if (!isMobile()) {
+      return null;
+    }
+
+    return {
+      id: "math-wallet",
+      type: "injected",
+      name: "Math Wallet",
+      description: null,
+      iconUrl,
+      downloadUrl:
+        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+      wallet: MathWallet,
+    };
   };
-}
+};
