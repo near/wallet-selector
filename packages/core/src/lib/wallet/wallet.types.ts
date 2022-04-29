@@ -29,6 +29,7 @@ interface BaseWalletMetadata {
 
 export interface WalletOptions<Metadata extends BaseWalletMetadata> {
   id: string;
+  type: WalletType;
   metadata: Metadata;
   options: Options;
   provider: ProviderService;
