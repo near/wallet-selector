@@ -15,19 +15,13 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { wallets, selectedWalletId, accounts } = action.payload;
+      const { modules, selectedWalletId, accounts } = action.payload;
 
       return {
         ...state,
-        wallets: wallets.map((wallet) => ({
-          id: wallet.id,
-          name: wallet.name,
-          description: wallet.description,
-          iconUrl: wallet.iconUrl,
-          type: wallet.type,
-          selected: wallet.id === selectedWalletId,
-        })),
+        modules,
         accounts,
+        selectedWalletId,
       };
     }
     case "WALLET_CONNECTED": {
@@ -35,40 +29,15 @@ const reducer = (
 
       return {
         ...state,
-        wallets: state.wallets.map((wallet) => {
-          if (wallet.id === walletId) {
-            return {
-              ...wallet,
-              selected: !pending && !!accounts.length,
-            };
-          }
-
-          if (wallet.selected) {
-            return {
-              ...wallet,
-              selected: false,
-            };
-          }
-
-          return wallet;
-        }),
         accounts,
+        selectedWalletId: !pending && accounts.length ? walletId : null,
       };
     }
     case "WALLET_DISCONNECTED": {
       return {
         ...state,
-        wallets: state.wallets.map((wallet) => {
-          if (!wallet.selected) {
-            return wallet;
-          }
-
-          return {
-            ...wallet,
-            selected: false,
-          };
-        }),
         accounts: [],
+        selectedWalletId: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -86,8 +55,9 @@ const reducer = (
 
 export const createStore = (): Store => {
   const subject = new BehaviorSubject<WalletSelectorState>({
+    modules: [],
     accounts: [],
-    wallets: [],
+    selectedWalletId: null,
   });
 
   return {

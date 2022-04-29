@@ -1,27 +1,29 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Wallet, WalletMetadata } from "./wallet";
+import { Wallet, WalletBehaviour, WalletMetadata } from "./wallet";
 
 export interface AccountState {
   accountId: string;
 }
 
-export type WalletState = WalletMetadata & {
-  selected: boolean;
-};
+export type WalletModuleState<WalletVariation extends Wallet = Wallet> =
+  WalletMetadata<WalletVariation["type"]> & {
+    wallet(): WalletBehaviour<WalletVariation>;
+  };
 
 export interface WalletSelectorState {
-  wallets: Array<WalletState>;
+  modules: Array<WalletModuleState>;
   accounts: Array<AccountState>;
+  selectedWalletId: string | null;
 }
 
 export type WalletSelectorAction =
   | {
       type: "SETUP_WALLET_MODULES";
       payload: {
-        wallets: Array<Wallet>;
-        selectedWalletId: string | null;
+        modules: Array<WalletModuleState>;
         accounts: Array<AccountState>;
+        selectedWalletId: string | null;
       };
     }
   | {
