@@ -1,6 +1,6 @@
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 
-import { Wallet } from "../../wallet";
+import { WalletMetadata } from "../../wallet/wallet.types";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalRouteName } from "./Modal.types";
@@ -38,9 +38,8 @@ export const Modal: React.FC<ModalProps> = ({
   hide,
 }) => {
   const [routeName, setRouteName] = useState<ModalRouteName>("WalletOptions");
-  const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
-    null
-  );
+  const [notInstalledWallet, setNotInstalledWallet] =
+    useState<WalletMetadata | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {

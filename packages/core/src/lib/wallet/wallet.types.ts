@@ -184,6 +184,8 @@ export type Wallet =
   | HardwareWallet
   | BridgeWallet;
 
+export type WalletType = Wallet["type"];
+
 // ----- Implementation Tests ----- //
 
 const MathWallet = async (): Promise<InjectedWalletBehaviour> => {

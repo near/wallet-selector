@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Wallet } from "../../wallet";
+import { WalletMetadata } from "../../wallet/wallet.types";
 
 interface WalletNotInstalledProps {
-  notInstalledWallet: Wallet;
+  notInstalledWallet: WalletMetadata;
   onBack: () => void;
 }
 
@@ -34,7 +34,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
               return;
             }
 
-            window.open(notInstalledWallet.getDownloadUrl(), "_blank");
+            window.open(notInstalledWallet.downloadUrl, "_blank");
           }}
         >
           {`Open ${notInstalledWallet.name}`}

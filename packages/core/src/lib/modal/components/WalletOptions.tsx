@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { WalletModuleState } from "../../store.types";
+import { WalletMetadata } from "../../wallet/wallet.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
 import { logger } from "../../services";
@@ -10,7 +10,7 @@ interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  onWalletNotInstalled: (module: WalletModuleState) => void;
+  onWalletNotInstalled: (module: WalletMetadata) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onError: (message: string) => void;
@@ -26,7 +26,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [modules, setModules] = useState<Array<WalletModuleState>>([]);
+  const [modules, setModules] = useState<Array<WalletMetadata>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -37,7 +37,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (module: WalletModuleState) => () => {
+  const handleWalletClick = (module: WalletMetadata) => () => {
     if (connecting) {
       return;
     }
