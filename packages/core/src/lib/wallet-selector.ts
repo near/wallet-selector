@@ -1,4 +1,3 @@
-import WalletController from "./wallet-controller";
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
 import {
@@ -9,7 +8,6 @@ import {
 import { WalletSelectorModal } from "./modal/modal.types";
 import { setupModal } from "./modal/modal";
 import { EventEmitter, Logger } from "./services";
-import { Wallet, WalletBehaviour } from "./wallet";
 import { setupWalletModules } from "./wallet-modules";
 
 export const setupWalletSelector = async (
@@ -20,7 +18,8 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = createStore();
-  const modules = await setupWalletModules({
+
+  await setupWalletModules({
     factories: params.modules,
     options,
     store,

@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { WalletModule, WalletMetadata } from "./wallet/wallet.types";
+import { WalletMetadata } from "./wallet/wallet.types";
 
 export interface AccountState {
   accountId: string;
@@ -16,7 +16,7 @@ export type WalletSelectorAction =
   | {
       type: "SETUP_WALLET_MODULES";
       payload: {
-        modules: Array<WalletModule>;
+        modules: Array<WalletMetadata>;
         accounts: Array<AccountState>;
         selectedWalletId: string | null;
       };
