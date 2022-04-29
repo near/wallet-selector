@@ -5,11 +5,11 @@ import {
   WalletSelector,
   AccountState,
 } from "@near-wallet-selector/core";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupSender } from "@near-wallet-selector/sender";
+// import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+// import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+// import { setupLedger } from "@near-wallet-selector/ledger";
+// import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 declare global {
   interface Window {
@@ -60,20 +60,21 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
-      wallets: [
-        setupNearWallet(),
-        setupSender(),
+      debug: true,
+      modules: [
+        // setupNearWallet(),
+        // setupSender(),
         setupMathWallet(),
-        setupLedger(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          appMetadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
+        // setupLedger(),
+        // setupWalletConnect({
+        //   projectId: "c4f79cc...",
+        //   appMetadata: {
+        //     name: "NEAR Wallet Selector",
+        //     description: "Example dApp used by NEAR Wallet Selector",
+        //     url: "https://github.com/near/wallet-selector",
+        //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
+        //   },
+        // }),
       ],
     })
       .then((instance) => {

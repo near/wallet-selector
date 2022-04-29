@@ -35,6 +35,7 @@ class WalletController {
     return storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
   }
 
+  // TODO: Add "cache" for "wallet" call.
   private setupWalletModule(module: WalletModule): WalletModuleState {
     const emitter = new EventEmitter<WalletEvents>();
     const provider = new Provider(this.options.network.nodeUrl);
@@ -67,6 +68,7 @@ class WalletController {
     };
   }
 
+  // TODO: Move isAvailable to module level and filter out here.
   private async setupWalletModules() {
     let selectedWalletId = this.getSelectedWalletId();
     let accounts: Array<AccountState> = [];

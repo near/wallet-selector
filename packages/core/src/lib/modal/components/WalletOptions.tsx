@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { WalletState } from "../../store.types";
-import { Wallet } from "../../wallet";
+import { WalletModuleState } from "../../store.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
 import { logger } from "../../services";
@@ -11,7 +10,7 @@ interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  onWalletNotInstalled: (wallet: Wallet) => void;
+  onWalletNotInstalled: (module: WalletModuleState) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onError: (message: string) => void;
@@ -27,56 +26,42 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [availableWallets, setAvailableWallets] = useState<Array<WalletState>>(
-    []
-  );
-
-  const getAvailableWallets = async (wallets: Array<WalletState>) => {
-    const result: Array<WalletState> = [];
-
-    for (let i = 0; i < wallets.length; i += 1) {
-      const wallet = selector.wallet(wallets[i].id);
-
-      if (await wallet.isAvailable()) {
-        result.push(wallets[i]);
-      }
-    }
-
-    return result;
-  };
+  const [modules, setModules] = useState<Array<WalletModuleState>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      getAvailableWallets(state.wallets).then(setAvailableWallets);
+      setModules(state.modules);
     });
 
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (wallet: Wallet) => () => {
+  const handleWalletClick = (module: WalletModuleState) => () => {
     if (connecting) {
       return;
     }
 
-    if (wallet.type === "hardware") {
+    if (module.type === "hardware") {
       return onConnectHardwareWallet();
     }
 
     setConnecting(true);
+
+    const wallet = module.wallet();
 
     wallet
       .connect()
       .then(() => onConnected())
       .catch((err) => {
         if (errors.isWalletNotInstalledError(err)) {
-          return onWalletNotInstalled(wallet);
+          return onWalletNotInstalled(module);
         }
 
-        logger.log(`Failed to select ${wallet.name}`);
+        logger.log(`Failed to select ${module.name}`);
         logger.error(err);
 
-        onError(`Failed to connect with ${wallet.name}: ${err.message}`);
+        onError(`Failed to connect with ${module.name}: ${err.message}`);
       })
       .finally(() => setConnecting(false));
   };
@@ -93,37 +78,34 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             "Modal-option-list " + (connecting ? "selection-process" : "")
           }
         >
-          {availableWallets.reduce<Array<JSX.Element>>(
-            (result, { id, selected }) => {
-              const wallet = selector.wallet(id);
+          {modules.reduce<Array<JSX.Element>>((result, module) => {
+            const { selectedWalletId } = selector.store.getState();
+            const { id, name, description, iconUrl } = module;
+            const selected = module.id === selectedWalletId;
 
-              const { name, description, iconUrl } = wallet;
-
-              result.push(
-                <li
-                  key={id}
-                  id={id}
-                  className={selected ? "selected-wallet" : ""}
-                  onClick={selected ? undefined : handleWalletClick(wallet)}
-                >
-                  <div title={description || ""}>
-                    <img src={iconUrl} alt={name} />
-                    <div>
-                      <span>{name}</span>
-                    </div>
-                    {selected && (
-                      <div className="selected-wallet-text">
-                        <span>selected</span>
-                      </div>
-                    )}
+            result.push(
+              <li
+                key={id}
+                id={id}
+                className={selected ? "selected-wallet" : ""}
+                onClick={selected ? undefined : handleWalletClick(module)}
+              >
+                <div title={description || ""}>
+                  <img src={iconUrl} alt={name} />
+                  <div>
+                    <span>{name}</span>
                   </div>
-                </li>
-              );
+                  {selected && (
+                    <div className="selected-wallet-text">
+                      <span>selected</span>
+                    </div>
+                  )}
+                </div>
+              </li>
+            );
 
-              return result;
-            },
-            []
-          )}
+            return result;
+          }, [])}
         </ul>
       </div>
       <div className="info">
