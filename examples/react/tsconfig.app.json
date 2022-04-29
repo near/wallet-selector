@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc"
+    "outDir": "../../dist/out-tsc",
+    "skipLibCheck": true,
   },
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",

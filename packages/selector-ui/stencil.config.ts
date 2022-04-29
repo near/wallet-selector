@@ -38,7 +38,7 @@ export const config: Config = {
       directivesProxyFile:
         "../../../packages/selector-ui-angular/src/generated/directives/proxies.ts",
       directivesArrayFile: "../../../packages/selector-ui-angular/src/generated/directives/directives.ts",
-      valueAccessorConfigs: angularValueAccessorBindings,
+      valueAccessorConfigs: angularValueAccessorBindings
     }),
 
     reactOutputTarget({

@@ -88,7 +88,7 @@ const Content: React.FC = () => {
       return;
     }
     modal.setSelector(selector as unknown as Components.WalletSelector);
-  }, [modalRef, selector]);
+  }, [selector]);
 
   useEffect(() => {
     if (!selector) {
@@ -97,7 +97,7 @@ const Content: React.FC = () => {
   }, [selector]);
 
   const handleSignIn = () => {
-    modalRef.current!.show();
+    // modalRef.current!.show();
   };
 
   const handleSignOut = () => {
@@ -111,7 +111,7 @@ const Content: React.FC = () => {
   };
 
   const handleSwitchProvider = () => {
-    modalRef.current!.show();
+    // modalRef.current!.show();
   };
 
   const handleSwitchAccount = () => {

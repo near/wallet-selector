@@ -1,6 +1,14 @@
-import React, { Fragment } from "react";
+import { WalletSelectorModal } from "@near-wallet-selector/react-selector-ui";
+import React, { Fragment, useEffect, useRef } from "react";
 
 const SignIn: React.FC = () => {
+  const modalRef = useRef<HTMLWalletSelectorModalElement>(null);
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (modalRef.current && modalRef.current) {
+      modal?.show();
+    }
+  }, []);
   return (
     <Fragment>
       <p>
@@ -15,6 +23,7 @@ const SignIn: React.FC = () => {
         with sending money to this app.
       </p>
       <p>Go ahead and sign in to try it out!</p>
+      <WalletSelectorModal ref={modalRef}></WalletSelectorModal>
     </Fragment>
   );
 };
