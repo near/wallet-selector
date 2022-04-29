@@ -108,7 +108,7 @@ export type WalletModule<WalletVariation extends Wallet = Wallet> =
   WalletMetadata<WalletVariation["type"]> & {
     wallet(
       options: WalletOptions<WalletVariation>
-    ): WalletBehaviour<WalletVariation>;
+    ): Promise<WalletBehaviour<WalletVariation>>;
   };
 
 export type WalletBehaviourFactory<
@@ -116,4 +116,4 @@ export type WalletBehaviourFactory<
   ExtraWalletOptions extends object = object
 > = (
   options: WalletOptions<WalletVariation> & ExtraWalletOptions
-) => WalletBehaviour<WalletVariation>;
+) => Promise<WalletBehaviour<WalletVariation>>;

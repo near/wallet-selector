@@ -6,9 +6,10 @@ export interface AccountState {
   accountId: string;
 }
 
+// TODO: Make this WalletModule without "wallet" and "isAvailable"?
 export type WalletModuleState<WalletVariation extends Wallet = Wallet> =
   WalletMetadata<WalletVariation["type"]> & {
-    wallet(): WalletBehaviour<WalletVariation>;
+    wallet(): Promise<WalletBehaviour<WalletVariation>>;
   };
 
 export interface WalletSelectorState {

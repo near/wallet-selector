@@ -48,9 +48,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
     setConnecting(true);
 
-    const wallet = module.wallet();
-
-    wallet
+    selector
+      .wallet(module.id)
       .connect()
       .then(() => onConnected())
       .catch((err) => {

@@ -22,7 +22,7 @@ export interface MathWalletParams {
   iconUrl?: string;
 }
 
-const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
+const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   provider,
@@ -118,7 +118,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = ({
       }
 
       await wallet.login({ contractId: options.contractId }).catch((err) => {
-        this.disconnect();
+        cleanup();
 
         throw err;
       });
