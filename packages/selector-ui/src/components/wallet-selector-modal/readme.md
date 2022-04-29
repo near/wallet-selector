@@ -45,6 +45,13 @@ Type: `Promise<void>`
 
 
 
+## CSS Custom Properties
+
+| Name            | Description                |
+| --------------- | -------------------------- |
+| `--backdrop-bg` | Background of the backdrop |
+
+
 ## Dependencies
 
 ### Depends on
@@ -57,6 +64,7 @@ Type: `Promise<void>`
 graph TD;
   wallet-selector-modal --> wallet-selector
   wallet-selector-modal --> close-button
+  wallet-selector --> alert-message
   style wallet-selector-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

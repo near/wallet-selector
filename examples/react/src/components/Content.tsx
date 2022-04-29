@@ -13,7 +13,6 @@ import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import { WalletSelectorModal } from "@near-wallet-selector/react-selector-ui";
 import { Components } from "@near-wallet-selector/selector-ui/loader";
 
 const SUGGESTED_DONATION = "0";

@@ -23,6 +23,7 @@ export class WalletSelectorComponen {
             </slot>
             <slot name="close-btn" />
           </div>
+          <alert-message message="This is a message"></alert-message>
           {/* {routeName === "AlertMessage" && alertMessage && (
             <AlertMessage
               message={alertMessage}

@@ -1,11 +1,8 @@
+/**
+ * @prop --backdrop-bg: Background of the backdrop
+ */
 :host {
   display: block;
-}
-
-
-// @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
-
-#near-wallet-selector-modal {
   --backdrop-bg: #26262630;
   --black: #262626;
   --black-rgb: 38, 38, 38;

@@ -24,9 +24,14 @@ Type: `Promise<void>`
 
  - [wallet-selector-modal](../wallet-selector-modal)
 
+### Depends on
+
+- [alert-message](alert-message)
+
 ### Graph
 ```mermaid
 graph TD;
+  wallet-selector --> alert-message
   wallet-selector-modal --> wallet-selector
   style wallet-selector fill:#f9f,stroke:#333,stroke-width:4px
 ```
