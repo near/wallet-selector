@@ -256,7 +256,6 @@ const Content: React.FC = () => {
         onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
       />
       <Messages messages={messages} />
-      <WalletSelectorModal ref={modalRef}></WalletSelectorModal>
     </Fragment>
   );
 };
