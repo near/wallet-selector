@@ -20,9 +20,8 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = createStore();
-
-  await setupWalletModules({
-    factories: params.wallets,
+  const modules = await setupWalletModules({
+    factories: params.modules,
     options,
     store,
     emitter,

@@ -1,7 +1,7 @@
 import { transactions as nearTransactions, utils } from "near-api-js";
 import isMobile from "is-mobile";
 import {
-  InjectedWalletModule,
+  InjectedWalletModuleFactory,
   InjectedWalletBehaviourFactory,
   AccountState,
   transformActions,
@@ -233,9 +233,9 @@ const MathWallet: InjectedWalletBehaviourFactory = async ({
 
 export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
-}: MathWalletParams = {}): InjectedWalletModule => {
+}: MathWalletParams = {}): InjectedWalletModuleFactory => {
   return async () => {
-    if (!isMobile()) {
+    if (isMobile()) {
       return null;
     }
 
@@ -247,7 +247,7 @@ export const setupMathWallet = ({
       iconUrl,
       downloadUrl:
         "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-      wallet: MathWallet,
+      init: MathWallet,
     };
   };
 };

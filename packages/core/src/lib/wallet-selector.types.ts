@@ -11,7 +11,7 @@ export interface WalletSelectorParams {
   network: NetworkId | Network;
   contractId: string;
   methodNames?: Array<string>;
-  wallets: Array<WalletModuleFactory>;
+  modules: Array<WalletModuleFactory>;
   ui?: ModalOptions;
   debug?: boolean;
 }

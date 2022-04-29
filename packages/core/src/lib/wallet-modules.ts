@@ -38,4 +38,6 @@ export const setupWalletModules = async ({
       selectedWalletId: null,
     },
   });
+
+  return modules;
 };
