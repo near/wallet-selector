@@ -8,7 +8,6 @@ import {
 } from "./wallet-selector.types";
 import { WalletSelectorModal } from "./modal/modal.types";
 import { setupModal } from "./modal/modal";
-import { Wallet } from "./wallet";
 import { EventEmitter, Logger } from "./services";
 
 export const setupWalletSelector = async (
@@ -19,7 +18,7 @@ export const setupWalletSelector = async (
   const store = createStore();
   const controller = new WalletController(
     options,
-    params.wallets,
+    params.modules,
     store,
     emitter
   );
@@ -40,19 +39,6 @@ export const setupWalletSelector = async (
       return Boolean(accounts.length);
     },
     options,
-    wallet: <WalletVariation extends Wallet = Wallet>(walletId?: string) => {
-      const wallet = controller.getWallet<WalletVariation>(walletId);
-
-      if (!wallet) {
-        if (walletId) {
-          throw new Error("Invalid wallet id");
-        }
-
-        throw new Error("No wallet selected");
-      }
-
-      return wallet;
-    },
     on: (eventName, callback) => {
       return emitter.on(eventName, callback);
     },
