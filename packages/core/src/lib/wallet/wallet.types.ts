@@ -2,6 +2,7 @@
 // - Shouldn't initialise the wallet until we want to connect or already connected.
 // - We need the type alongside the methods to help with type checking.
 // - We need getDownloadUrl and isAvailable outside the initialisation of a wallet.
+// - selector.wallet can remain sync and handle rejecting signing for unselected wallets.
 
 import { providers } from "near-api-js";
 import { AccountState } from "../store.types";
