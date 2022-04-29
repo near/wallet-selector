@@ -219,6 +219,7 @@ const setupWalletModules = async (modules: Array<WalletModule>) => {
   for (let i = 0; i < modules.length; i += 1) {
     const module = await modules[i]();
 
+    // Filter out wallets that aren't available.
     if (!module) {
       continue;
     }
