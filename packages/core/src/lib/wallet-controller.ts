@@ -1,14 +1,13 @@
 import { logger, storage, Provider, EventEmitter } from "./services";
 import { Wallet, WalletEvents, WalletModule } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
-import { AccountState, Store } from "./store.types";
+import { AccountState, Store, WalletModuleState } from "./store.types";
 import { Options } from "./options.types";
 import { WalletSelectorEvents } from "./wallet-selector.types";
 
 class WalletController {
   private options: Options;
   private modules: Array<WalletModule>;
-  private wallets: Array<Wallet>;
   private store: Store;
   private emitter: EventEmitter<WalletSelectorEvents>;
 
@@ -22,7 +21,6 @@ class WalletController {
     this.modules = modules;
     this.store = store;
     this.emitter = emitter;
-    this.wallets = [];
   }
 
   private getSelectedWalletId() {
@@ -37,45 +35,57 @@ class WalletController {
     return storage.removeItem(LOCAL_STORAGE_SELECTED_WALLET_ID);
   }
 
-  private setupWalletModule({ wallet, ...metadata }: WalletModule) {
+  private setupWalletModule(module: WalletModule): WalletModuleState {
     const emitter = new EventEmitter<WalletEvents>();
     const provider = new Provider(this.options.network.nodeUrl);
 
-    emitter.on("connected", this.handleConnected(metadata.id));
-    emitter.on("disconnected", this.handleDisconnected(metadata.id));
-    emitter.on("accountsChanged", this.handleAccountsChanged(metadata.id));
-    emitter.on("networkChanged", this.handleNetworkChanged(metadata.id));
+    emitter.on("connected", this.handleConnected(module.id));
+    emitter.on("disconnected", this.handleDisconnected(module.id));
+    emitter.on("accountsChanged", this.handleAccountsChanged(module.id));
+    emitter.on("networkChanged", this.handleNetworkChanged(module.id));
 
     return {
-      ...metadata,
-      ...wallet({
-        options: this.options,
-        metadata,
-        provider,
-        emitter,
-        // TODO: Make a scoped logger.
-        logger,
-        // TODO: Make a scoped storage.
-        storage,
-      }),
-    } as Wallet;
+      ...module,
+      wallet: () => {
+        return module.wallet({
+          options: this.options,
+          metadata: {
+            id: module.id,
+            name: module.name,
+            description: module.description,
+            iconUrl: module.iconUrl,
+            type: module.type,
+          },
+          provider,
+          emitter,
+          // TODO: Make a scoped logger.
+          logger,
+          // TODO: Make a scoped storage.
+          storage,
+        });
+      },
+    };
   }
 
   private async setupWalletModules() {
     let selectedWalletId = this.getSelectedWalletId();
     let accounts: Array<AccountState> = [];
 
-    const wallets = this.modules.map((module) => {
+    const modules = this.modules.map((module) => {
       return this.setupWalletModule(module);
     });
 
-    const selectedWallet = wallets.find((x) => x.id === selectedWalletId);
+    const selectedModule = modules.find((x) => x.id === selectedWalletId);
 
-    if (selectedWallet) {
+    if (selectedModule) {
       // Ensure our persistent state aligns with the selected wallet.
       // For example a wallet is selected, but it returns no accounts (not connected).
-      accounts = await selectedWallet.connect().catch((err) => {
-        logger.log(`Failed to connect to ${selectedWallet.id} during setup`);
+      const wallet = await selectedModule.wallet();
+
+      accounts = await wallet.getAccounts().catch((err) => {
+        logger.log(
+          `Failed to get accounts for ${selectedModule.id} during setup`
+        );
         logger.error(err);
 
         return [];
@@ -87,26 +97,26 @@ class WalletController {
       selectedWalletId = null;
     }
 
-    this.wallets = wallets;
-
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
-      payload: { wallets, selectedWalletId, accounts },
+      payload: { modules, accounts, selectedWalletId },
     });
   }
 
   private handleConnected =
     (walletId: string) =>
     async ({ pending = false, accounts = [] }: WalletEvents["connected"]) => {
-      const existingWallet = this.getWallet();
+      const existingModule = this.getModule();
 
-      if (existingWallet && existingWallet.id !== walletId) {
-        await existingWallet.disconnect().catch((err) => {
+      if (existingModule && existingModule.id !== walletId) {
+        const wallet = await existingModule.wallet();
+
+        await wallet.disconnect().catch((err) => {
           logger.log("Failed to disconnect existing wallet");
           logger.error(err);
 
           // At least clean up state on our side.
-          this.handleDisconnected(existingWallet.id)();
+          this.handleDisconnected(existingModule.id)();
         });
       }
 
@@ -132,12 +142,10 @@ class WalletController {
   private handleAccountsChanged =
     (walletId: string) =>
     ({ accounts }: WalletEvents["accountsChanged"]) => {
-      const { wallets } = this.store.getState();
-      const selected = wallets.some((wallet) => {
-        return wallet.id === walletId && wallet.selected;
-      });
+      const { selectedWalletId } = this.store.getState();
 
-      if (!selected) {
+      // TODO: Move this check into the store.
+      if (walletId !== selectedWalletId) {
         return;
       }
 
@@ -157,11 +165,11 @@ class WalletController {
     await this.setupWalletModules();
   }
 
-  getWallet<WalletVariation extends Wallet = Wallet>(walletId?: string) {
+  getModule<WalletVariation extends Wallet = Wallet>(walletId?: string) {
     const lookupWalletId = walletId || this.getSelectedWalletId();
-    const wallet = this.wallets.find((x) => x.id === lookupWalletId) || null;
+    const module = this.modules.find((x) => x.id === lookupWalletId) || null;
 
-    return wallet as WalletVariation | null;
+    return module as WalletModuleState<WalletVariation> | null;
   }
 }
 
