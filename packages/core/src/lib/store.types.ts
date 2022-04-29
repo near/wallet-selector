@@ -1,19 +1,13 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Wallet, WalletBehaviour, WalletMetadata } from "./wallet";
+import { WalletMetadata } from "./wallet/wallet.types";
 
 export interface AccountState {
   accountId: string;
 }
 
-// TODO: Make this WalletModule without "wallet" and "isAvailable"?
-export type WalletModuleState<WalletVariation extends Wallet = Wallet> =
-  WalletMetadata<WalletVariation["type"]> & {
-    wallet(): Promise<WalletBehaviour<WalletVariation>>;
-  };
-
 export interface WalletSelectorState {
-  modules: Array<WalletModuleState>;
+  modules: Array<WalletMetadata>;
   accounts: Array<AccountState>;
   selectedWalletId: string | null;
 }
@@ -22,7 +16,7 @@ export type WalletSelectorAction =
   | {
       type: "SETUP_WALLET_MODULES";
       payload: {
-        modules: Array<WalletModuleState>;
+        modules: Array<WalletMetadata>;
         accounts: Array<AccountState>;
         selectedWalletId: string | null;
       };

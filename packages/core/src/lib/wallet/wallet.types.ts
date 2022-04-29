@@ -20,6 +20,7 @@ import {
   ProviderService,
   StorageService,
 } from "../services";
+import { omit } from "../utils";
 
 interface BaseWalletMetadata<Type extends string> {
   id: string;
@@ -77,11 +78,6 @@ export type BrowserWalletModule = BaseWalletModule<
 
 export type BrowserWallet = BrowserWalletMetadata & BrowserWalletBehaviour;
 
-// TODO: Move to store types.
-export type BrowserWalletModuleState = BrowserWalletMetadata & {
-  init: () => Promise<BrowserWallet>;
-};
-
 // ----- Injected Wallet ----- //
 
 export type InjectedWalletMetadata = BaseWalletMetadata<"injected"> & {
@@ -112,11 +108,6 @@ export type InjectedWalletModule = BaseWalletModule<
 
 export type InjectedWallet = InjectedWalletMetadata & InjectedWalletBehaviour;
 
-// TODO: Move to store types.
-export type InjectedWalletModuleState = InjectedWalletMetadata & {
-  init: () => Promise<InjectedWallet>;
-};
-
 // ----- Hardware Wallet ----- //
 
 export type HardwareWalletMetadata = BaseWalletMetadata<"hardware">;
@@ -144,11 +135,6 @@ export type HardwareWalletModule = BaseWalletModule<
 >;
 
 export type HardwareWallet = HardwareWalletMetadata & HardwareWalletBehaviour;
-
-// TODO: Move to store types.
-export type HardwareWalletModuleState = HardwareWalletMetadata & {
-  init: () => Promise<HardwareWallet>;
-};
 
 // ----- Bridge Wallet ----- //
 
@@ -178,12 +164,13 @@ export type BridgeWalletModule = BaseWalletModule<
 
 export type BridgeWallet = BridgeWalletMetadata & BridgeWalletBehaviour;
 
-// TODO: Move to store types.
-export type BridgeWalletModuleState = BridgeWalletMetadata & {
-  init: () => Promise<BridgeWallet>;
-};
-
 // ----- Misc ----- //
+
+export type WalletMetadata =
+  | BrowserWalletMetadata
+  | InjectedWalletMetadata
+  | HardwareWalletMetadata
+  | BridgeWalletMetadata;
 
 export type WalletModule =
   | BrowserWalletModule
@@ -196,13 +183,6 @@ export type Wallet =
   | InjectedWallet
   | HardwareWallet
   | BridgeWallet;
-
-// TODO: Move to store types.
-export type WalletModuleState =
-  | BrowserWalletModuleState
-  | InjectedWalletModuleState
-  | HardwareWalletModuleState
-  | BridgeWalletModuleState;
 
 // ----- Implementation Tests ----- //
 
@@ -240,7 +220,7 @@ const setupMathWallet = (params: MathWalletParams): InjectedWalletModule => {
 };
 
 const setupWalletModules = async (modules: Array<WalletModule>) => {
-  const results: Array<WalletModuleState> = [];
+  const results: Array<WalletMetadata> = [];
 
   for (let i = 0; i < modules.length; i += 1) {
     const module = await modules[i]();
@@ -250,12 +230,7 @@ const setupWalletModules = async (modules: Array<WalletModule>) => {
       continue;
     }
 
-    results.push({
-      ...module,
-      init: () => {
-        return module.init({} as any);
-      },
-    } as WalletModuleState);
+    results.push(omit(module, ["init"]) as WalletMetadata);
   }
 
   return results;
@@ -266,7 +241,7 @@ const setupWalletModules = async (modules: Array<WalletModule>) => {
   const walletModules = await setupWalletModules(modules);
   const walletModule = walletModules[0];
 
-  if (walletModule.type === "browser") {
-    const wallet = await walletModule.init();
+  if (walletModule.type === "injected") {
+    console.log(walletModule.downloadUrl);
   }
 })();
