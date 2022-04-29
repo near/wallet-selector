@@ -4,11 +4,9 @@ import { logger, storage, Provider, EventEmitter } from "./services";
 import { WalletSelectorEvents } from "./wallet-selector.types";
 import {
   Wallet,
-  WalletMetadata,
   WalletModule,
   WalletModuleFactory,
 } from "./wallet/wallet.types";
-import { omit } from "./utils";
 import { WalletEvents } from "./wallet";
 
 interface WalletModulesParams {
@@ -35,7 +33,26 @@ export const setupWalletModules = async ({
       continue;
     }
 
-    modules.push(module);
+    modules.push({
+      id: module.id,
+      type: module.type,
+      metadata: module.metadata,
+      // @ts-ignore: TypeScript is struggling with the module.init type.
+      init: async () => {
+        return {
+          id: module.id,
+          type: module.type,
+          metadata: module.metadata,
+          ...(await module.init({
+            options,
+            provider: new Provider(options.network.nodeUrl),
+            emitter: new EventEmitter<WalletEvents>(),
+            logger,
+            storage,
+          })),
+        };
+      },
+    });
   }
 
   const getWallet = async (id: string) => {
@@ -51,21 +68,7 @@ export const setupWalletModules = async ({
       return null;
     }
 
-    const metadata = omit(module, ["init"]) as WalletMetadata;
-    const walletEmitter = new EventEmitter<WalletEvents>();
-    const provider = new Provider(options.network.nodeUrl);
-
-    instance = {
-      ...metadata,
-      ...(await module.init({
-        options,
-        metadata: metadata as never,
-        provider,
-        emitter: walletEmitter,
-        logger,
-        storage,
-      })),
-    } as Wallet;
+    instance = await module.init();
 
     instances[id] = instance;
 
@@ -75,9 +78,7 @@ export const setupWalletModules = async ({
   store.dispatch({
     type: "SETUP_WALLET_MODULES",
     payload: {
-      modules: modules.map((module) => {
-        return omit(module, ["init"]) as WalletMetadata;
-      }),
+      modules,
       accounts: [],
       selectedWalletId: null,
     },

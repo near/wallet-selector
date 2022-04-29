@@ -1,8 +1,9 @@
-// - WalletModules -> Wallet
+// - WalletModules -> Wallets
 // - Shouldn't initialise the wallet until we want to connect or already connected.
 // - We need the type alongside the methods to help with type checking.
 // - We need getDownloadUrl and isAvailable outside the initialisation of a wallet.
 // - selector.wallet can remain sync and handle rejecting signing for unselected wallets.
+// - WalletModule
 
 import { providers } from "near-api-js";
 import { AccountState } from "../store.types";
@@ -12,7 +13,6 @@ import {
   SignAndSendTransactionsParams,
   WalletEvents,
 } from "./wallet";
-import isMobile from "is-mobile";
 import { Options } from "../options.types";
 import {
   EventEmitterService,
@@ -20,42 +20,60 @@ import {
   ProviderService,
   StorageService,
 } from "../services";
-import { omit } from "../utils";
 
-interface BaseWalletMetadata<Type extends string> {
-  id: string;
-  type: Type;
+interface BaseWalletMetadata {
   name: string;
   description: string | null;
   iconUrl: string;
 }
 
-export interface WalletOptions<Metadata extends BaseWalletMetadata<string>> {
+export interface WalletOptions {
   options: Options;
-  metadata: Metadata;
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;
   storage: StorageService;
 }
 
-type BaseWalletBehaviourFactory<
-  Metadata extends BaseWalletMetadata<string>,
+type BaseWallet<
+  Type extends string,
+  Metadata extends BaseWalletMetadata,
   Behaviour
-> = (options: WalletOptions<Metadata>) => Promise<Behaviour>;
+> = {
+  id: string;
+  type: Type;
+  metadata: Metadata;
+} & Behaviour;
 
-type BaseWalletModuleFactory<WalletModule> = () => Promise<WalletModule | null>;
+// Type to handle definition of wallet behaviour
+type BaseWalletBehaviourFactory<
+  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
+> = (
+  options: WalletOptions
+) => Promise<Omit<Wallet, "id" | "type" | "metadata">>;
+
+// Type to handle definition of wallet module.
+type BaseWalletModuleFactory<
+  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
+> = () => Promise<{
+  id: Wallet["id"];
+  type: Wallet["type"];
+  metadata: Wallet["metadata"];
+  init: BaseWalletBehaviourFactory<Wallet>;
+} | null>;
 
 type BaseWalletModule<
-  Metadata extends BaseWalletMetadata<string>,
-  Behaviour
-> = Metadata & {
-  init: BaseWalletBehaviourFactory<Metadata, Behaviour>;
+  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
+> = {
+  id: Wallet["id"];
+  type: Wallet["type"];
+  metadata: Wallet["metadata"];
+  init: () => Promise<Wallet>;
 };
 
 // ----- Browser Wallet ----- //
 
-export type BrowserWalletMetadata = BaseWalletMetadata<"browser">;
+export type BrowserWalletMetadata = BaseWalletMetadata;
 
 export interface BrowserWalletBehaviour {
   connect(): Promise<Array<AccountState>>;
@@ -65,24 +83,20 @@ export interface BrowserWalletBehaviour {
   signAndSendTransactions(params: SignAndSendTransactionsParams): Promise<void>;
 }
 
-export type BrowserWalletBehaviourFactory = BaseWalletBehaviourFactory<
+export type BrowserWallet = BaseWallet<
+  "browser",
   BrowserWalletMetadata,
   BrowserWalletBehaviour
 >;
 
-export type BrowserWalletModule = BaseWalletModule<
-  BrowserWalletMetadata,
-  BrowserWalletBehaviour
->;
-
-export type BrowserWalletModuleFactory =
-  BaseWalletModuleFactory<BrowserWalletModule>;
-
-export type BrowserWallet = BrowserWalletMetadata & BrowserWalletBehaviour;
+export type BrowserWalletModule = BaseWalletModule<BrowserWallet>;
+export type BrowserWalletModuleFactory = BaseWalletModuleFactory<BrowserWallet>;
+export type BrowserWalletBehaviourFactory =
+  BaseWalletBehaviourFactory<BrowserWallet>;
 
 // ----- Injected Wallet ----- //
 
-export type InjectedWalletMetadata = BaseWalletMetadata<"injected"> & {
+export type InjectedWalletMetadata = BaseWalletMetadata & {
   downloadUrl: string;
 };
 
@@ -98,24 +112,21 @@ export interface InjectedWalletBehaviour {
   ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
-export type InjectedWalletBehaviourFactory = BaseWalletBehaviourFactory<
+export type InjectedWallet = BaseWallet<
+  "injected",
   InjectedWalletMetadata,
   InjectedWalletBehaviour
 >;
 
-export type InjectedWalletModule = BaseWalletModule<
-  InjectedWalletMetadata,
-  InjectedWalletBehaviour
->;
-
+export type InjectedWalletModule = BaseWalletModule<InjectedWallet>;
 export type InjectedWalletModuleFactory =
-  BaseWalletModuleFactory<InjectedWalletModule>;
-
-export type InjectedWallet = InjectedWalletMetadata & InjectedWalletBehaviour;
+  BaseWalletModuleFactory<InjectedWallet>;
+export type InjectedWalletBehaviourFactory =
+  BaseWalletBehaviourFactory<InjectedWallet>;
 
 // ----- Hardware Wallet ----- //
 
-export type HardwareWalletMetadata = BaseWalletMetadata<"hardware">;
+export type HardwareWalletMetadata = BaseWalletMetadata;
 
 export interface HardwareWalletBehaviour {
   connect(params: HardwareWalletConnectParams): Promise<Array<AccountState>>;
@@ -129,24 +140,21 @@ export interface HardwareWalletBehaviour {
   ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
-export type HardwareWalletBehaviourFactory = BaseWalletBehaviourFactory<
+export type HardwareWallet = BaseWallet<
+  "hardware",
   HardwareWalletMetadata,
   HardwareWalletBehaviour
 >;
 
-export type HardwareWalletModule = BaseWalletModule<
-  HardwareWalletMetadata,
-  HardwareWalletBehaviour
->;
-
+export type HardwareWalletModule = BaseWalletModule<HardwareWallet>;
 export type HardwareWalletModuleFactory =
-  BaseWalletModuleFactory<HardwareWalletModule>;
-
-export type HardwareWallet = HardwareWalletMetadata & HardwareWalletBehaviour;
+  BaseWalletModuleFactory<HardwareWallet>;
+export type HardwareWalletBehaviourFactory =
+  BaseWalletBehaviourFactory<HardwareWallet>;
 
 // ----- Bridge Wallet ----- //
 
-export type BridgeWalletMetadata = BaseWalletMetadata<"bridge">;
+export type BridgeWalletMetadata = BaseWalletMetadata;
 
 export interface BridgeWalletBehaviour {
   connect(): Promise<Array<AccountState>>;
@@ -160,20 +168,16 @@ export interface BridgeWalletBehaviour {
   ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
-export type BridgeWalletBehaviourFactory = BaseWalletBehaviourFactory<
+export type BridgeWallet = BaseWallet<
+  "bridge",
   BridgeWalletMetadata,
   BridgeWalletBehaviour
 >;
 
-export type BridgeWalletModule = BaseWalletModule<
-  BridgeWalletMetadata,
-  BridgeWalletBehaviour
->;
-
-export type BridgetWalletModuleFactory =
-  BaseWalletModuleFactory<BridgeWalletModule>;
-
-export type BridgeWallet = BridgeWalletMetadata & BridgeWalletBehaviour;
+export type BridgeWalletModule = BaseWalletModule<BridgeWallet>;
+export type BridgetWalletModuleFactory = BaseWalletModuleFactory<BridgeWallet>;
+export type BridgeWalletBehaviourFactory =
+  BaseWalletBehaviourFactory<BridgeWallet>;
 
 // ----- Misc ----- //
 
@@ -203,66 +207,23 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-// ----- Implementation Tests ----- //
-
-const MathWallet = async (): Promise<InjectedWalletBehaviour> => {
-  return {
-    connect: async () => [],
-    disconnect: async () => {},
-    getAccounts: async () => [],
-    signAndSendTransaction: async (): any => {},
-    signAndSendTransactions: async (): any => {},
-  };
-};
-
-interface MathWalletParams {
-  iconUrl: string;
-}
-
-const setupMathWallet = (
-  params: MathWalletParams
-): InjectedWalletModuleFactory => {
-  return async () => {
-    if (isMobile()) {
-      return null;
-    }
-
-    return {
-      id: "math-wallet",
-      type: "injected",
-      name: "Math Wallet",
-      description: null,
-      iconUrl: "",
-      downloadUrl: "https://example.com",
-
-      init: MathWallet,
-    };
-  };
-};
-
-const setupWalletModules = async (modules: Array<WalletModule>) => {
-  const results: Array<WalletMetadata> = [];
-
-  for (let i = 0; i < modules.length; i += 1) {
-    const module = await modules[i]();
-
-    // Filter out wallets that aren't available.
-    if (!module) {
-      continue;
-    }
-
-    results.push(omit(module, ["init"]) as WalletMetadata);
-  }
-
-  return results;
-};
-
-(async () => {
-  const modules: Array<WalletModule> = [];
-  const walletModules = await setupWalletModules(modules);
-  const walletModule = walletModules[0];
-
-  if (walletModule.type === "injected") {
-    console.log(walletModule.downloadUrl);
-  }
-})();
+// export const setupMathWallet = (): InjectedWalletModuleFactory => {
+//   return async () => {
+//     if (isMobile()) {
+//       return null;
+//     }
+//
+//     return {
+//       id: "math-wallet",
+//       type: "injected",
+//       metadata: {
+//         name: "Math Wallet",
+//         description: null,
+//         iconUrl,
+//         downloadUrl:
+//           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+//       },
+//       init: (): any => {},
+//     };
+//   };
+// };

@@ -242,11 +242,13 @@ export const setupMathWallet = ({
     return {
       id: "math-wallet",
       type: "injected",
-      name: "Math Wallet",
-      description: null,
-      iconUrl,
-      downloadUrl:
-        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+      metadata: {
+        name: "Math Wallet",
+        description: null,
+        iconUrl,
+        downloadUrl:
+          "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+      },
       init: MathWallet,
     };
   };
