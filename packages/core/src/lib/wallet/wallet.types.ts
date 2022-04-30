@@ -27,17 +27,6 @@ interface BaseWalletMetadata {
   iconUrl: string;
 }
 
-export interface WalletOptions<Metadata extends BaseWalletMetadata> {
-  id: string;
-  type: WalletType;
-  metadata: Metadata;
-  options: Options;
-  provider: ProviderService;
-  emitter: EventEmitterService<WalletEvents>;
-  logger: LoggerService;
-  storage: StorageService;
-}
-
 type BaseWallet<
   Type extends string,
   Metadata extends BaseWalletMetadata,
@@ -47,32 +36,6 @@ type BaseWallet<
   type: Type;
   metadata: Metadata;
 } & Behaviour;
-
-// Type to handle definition of wallet behaviour
-type BaseWalletBehaviourFactory<
-  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
-> = (
-  options: WalletOptions<Wallet["metadata"]>
-) => Promise<Omit<Wallet, "id" | "type" | "metadata">>;
-
-// Type to handle definition of wallet module.
-type BaseWalletModuleFactory<
-  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
-> = () => Promise<{
-  id: Wallet["id"];
-  type: Wallet["type"];
-  metadata: Wallet["metadata"];
-  init: BaseWalletBehaviourFactory<Wallet>;
-} | null>;
-
-type BaseWalletModule<
-  Wallet extends BaseWallet<string, BaseWalletMetadata, unknown>
-> = {
-  id: Wallet["id"];
-  type: Wallet["type"];
-  metadata: Wallet["metadata"];
-  init: () => Promise<Wallet>;
-};
 
 // ----- Browser Wallet ----- //
 
@@ -91,11 +54,6 @@ export type BrowserWallet = BaseWallet<
   BrowserWalletMetadata,
   BrowserWalletBehaviour
 >;
-
-export type BrowserWalletModule = BaseWalletModule<BrowserWallet>;
-export type BrowserWalletModuleFactory = BaseWalletModuleFactory<BrowserWallet>;
-export type BrowserWalletBehaviourFactory =
-  BaseWalletBehaviourFactory<BrowserWallet>;
 
 // ----- Injected Wallet ----- //
 
@@ -121,12 +79,6 @@ export type InjectedWallet = BaseWallet<
   InjectedWalletBehaviour
 >;
 
-export type InjectedWalletModule = BaseWalletModule<InjectedWallet>;
-export type InjectedWalletModuleFactory =
-  BaseWalletModuleFactory<InjectedWallet>;
-export type InjectedWalletBehaviourFactory =
-  BaseWalletBehaviourFactory<InjectedWallet>;
-
 // ----- Hardware Wallet ----- //
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
@@ -148,12 +100,6 @@ export type HardwareWallet = BaseWallet<
   HardwareWalletMetadata,
   HardwareWalletBehaviour
 >;
-
-export type HardwareWalletModule = BaseWalletModule<HardwareWallet>;
-export type HardwareWalletModuleFactory =
-  BaseWalletModuleFactory<HardwareWallet>;
-export type HardwareWalletBehaviourFactory =
-  BaseWalletBehaviourFactory<HardwareWallet>;
 
 // ----- Bridge Wallet ----- //
 
@@ -177,11 +123,6 @@ export type BridgeWallet = BaseWallet<
   BridgeWalletBehaviour
 >;
 
-export type BridgeWalletModule = BaseWalletModule<BridgeWallet>;
-export type BridgetWalletModuleFactory = BaseWalletModuleFactory<BridgeWallet>;
-export type BridgeWalletBehaviourFactory =
-  BaseWalletBehaviourFactory<BridgeWallet>;
-
 // ----- Misc ----- //
 
 export type WalletMetadata =
@@ -189,18 +130,6 @@ export type WalletMetadata =
   | InjectedWalletMetadata
   | HardwareWalletMetadata
   | BridgeWalletMetadata;
-
-export type WalletModule =
-  | BrowserWalletModule
-  | InjectedWalletModule
-  | HardwareWalletModule
-  | BridgeWalletModule;
-
-export type WalletModuleFactory =
-  | BrowserWalletModuleFactory
-  | InjectedWalletModuleFactory
-  | HardwareWalletModuleFactory
-  | BridgetWalletModuleFactory;
 
 export type Wallet =
   | BrowserWallet
@@ -210,23 +139,32 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-// export const setupMathWallet = (): InjectedWalletModuleFactory => {
-//   return async () => {
-//     if (isMobile()) {
-//       return null;
-//     }
-//
-//     return {
-//       id: "math-wallet",
-//       type: "injected",
-//       metadata: {
-//         name: "Math Wallet",
-//         description: null,
-//         iconUrl,
-//         downloadUrl:
-//           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-//       },
-//       init: (): any => {},
-//     };
-//   };
-// };
+export type WalletModule<Variation extends Wallet = Wallet> = {
+  id: Variation["id"];
+  type: Variation["type"];
+  metadata: Variation["metadata"];
+  init: () => Promise<Variation>;
+};
+
+export interface WalletOptions<Variation extends Wallet> {
+  id: Variation["id"];
+  type: Variation["type"];
+  metadata: Variation["metadata"];
+  options: Options;
+  provider: ProviderService;
+  emitter: EventEmitterService<WalletEvents>;
+  logger: LoggerService;
+  storage: StorageService;
+}
+
+export type WalletBehaviourFactory<Variation extends Wallet = Wallet> = (
+  options: WalletOptions<Variation>
+) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
+
+export type WalletModuleFactory<Variation extends Wallet = Wallet> =
+  () => Promise<{
+    id: Variation["id"];
+    type: Variation["type"];
+    metadata: Variation["metadata"];
+    init: WalletBehaviourFactory<Variation>;
+  } | null>;

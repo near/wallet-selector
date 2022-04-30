@@ -37,23 +37,22 @@ export const setupWalletModules = async ({
       id: module.id,
       type: module.type,
       metadata: module.metadata,
-      // @ts-ignore: TypeScript is struggling with the module.init type.
       init: async () => {
         return {
           id: module.id,
           type: module.type,
-          metadata: module.metadata as never,
+          metadata: module.metadata,
           ...(await module.init({
             id: module.id,
             type: module.type,
-            metadata: module.metadata as never,
+            metadata: module.metadata,
             options,
             provider: new Provider(options.network.nodeUrl),
             emitter: new EventEmitter<WalletEvents>(),
             logger,
             storage,
           })),
-        };
+        } as Wallet;
       },
     });
   }

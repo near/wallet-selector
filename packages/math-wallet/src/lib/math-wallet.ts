@@ -1,8 +1,9 @@
 import { transactions as nearTransactions, utils } from "near-api-js";
 import isMobile from "is-mobile";
 import {
-  InjectedWalletModuleFactory,
-  InjectedWalletBehaviourFactory,
+  WalletModuleFactory,
+  WalletBehaviourFactory,
+  InjectedWallet,
   AccountState,
   transformActions,
   waitFor,
@@ -21,7 +22,7 @@ export interface MathWalletParams {
   iconUrl?: string;
 }
 
-const MathWallet: InjectedWalletBehaviourFactory = async ({
+const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   provider,
@@ -233,7 +234,7 @@ const MathWallet: InjectedWalletBehaviourFactory = async ({
 
 export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
-}: MathWalletParams = {}): InjectedWalletModuleFactory => {
+}: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     if (isMobile()) {
       return null;
