@@ -143,10 +143,10 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
   type: Variation["type"];
   metadata: Variation["metadata"];
-  wallet: () => Promise<Variation>;
+  wallet(): Promise<Variation>;
 };
 
-export interface WalletOptions<Variation extends Wallet = Wallet> {
+export interface WalletBehaviourOptions<Variation extends Wallet> {
   id: Variation["id"];
   type: Variation["type"];
   metadata: Variation["metadata"];
@@ -157,8 +157,9 @@ export interface WalletOptions<Variation extends Wallet = Wallet> {
   storage: StorageService;
 }
 
-export type WalletBehaviourFactory<Variation extends Wallet = Wallet> = (
-  options: WalletOptions<Variation>
+// Note: TypeScript doesn't seem to like reusing this in WalletModuleFactory.
+export type WalletBehaviourFactory<Variation extends Wallet> = (
+  options: WalletBehaviourOptions<Variation>
 ) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
 
 export type WalletModuleFactory<Variation extends Wallet = Wallet> =
@@ -166,5 +167,7 @@ export type WalletModuleFactory<Variation extends Wallet = Wallet> =
     id: Variation["id"];
     type: Variation["type"];
     metadata: Variation["metadata"];
-    init: WalletBehaviourFactory<Variation>;
+    init(
+      options: WalletBehaviourOptions<Variation>
+    ): Promise<Omit<Variation, "id" | "type" | "metadata">>;
   } | null>;

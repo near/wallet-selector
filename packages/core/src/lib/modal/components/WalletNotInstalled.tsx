@@ -1,9 +1,9 @@
 import React from "react";
 
-import { WalletMetadata } from "../../wallet/wallet.types";
+import { Wallet } from "../../wallet/wallet.types";
 
 interface WalletNotInstalledProps {
-  notInstalledWallet: WalletMetadata;
+  notInstalledWallet: Wallet;
   onBack: () => void;
 }
 
@@ -14,11 +14,14 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
   return (
     <div className="Modal-body Modal-wallet-not-installed">
       <div className={`icon-display ${notInstalledWallet.id}`}>
-        <img src={notInstalledWallet.iconUrl} alt={notInstalledWallet.name} />
-        <p>{notInstalledWallet.name}</p>
+        <img
+          src={notInstalledWallet.metadata.iconUrl}
+          alt={notInstalledWallet.metadata.name}
+        />
+        <p>{notInstalledWallet.metadata.name}</p>
       </div>
       <p>
-        {`You'll need to install ${notInstalledWallet.name} to continue. After installing`}
+        {`You'll need to install ${notInstalledWallet.metadata.name} to continue. After installing`}
         <span className="refresh-link" onClick={() => window.location.reload()}>
           &nbsp;refresh the page.
         </span>
@@ -34,10 +37,10 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
               return;
             }
 
-            window.open(notInstalledWallet.downloadUrl, "_blank");
+            window.open(notInstalledWallet.metadata.downloadUrl, "_blank");
           }}
         >
-          {`Open ${notInstalledWallet.name}`}
+          {`Open ${notInstalledWallet.metadata.name}`}
         </button>
       </div>
     </div>

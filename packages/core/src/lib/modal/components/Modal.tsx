@@ -1,6 +1,6 @@
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 
-import { WalletMetadata } from "../../wallet/wallet.types";
+import { Wallet } from "../../wallet/wallet.types";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalRouteName } from "./Modal.types";
@@ -38,8 +38,9 @@ export const Modal: React.FC<ModalProps> = ({
   hide,
 }) => {
   const [routeName, setRouteName] = useState<ModalRouteName>("WalletOptions");
-  const [notInstalledWallet, setNotInstalledWallet] =
-    useState<WalletMetadata | null>(null);
+  const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
+    null
+  );
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -120,8 +121,8 @@ export const Modal: React.FC<ModalProps> = ({
                 setRouteName("LedgerDerivationPath");
               }}
               onConnected={handleDismissClick}
-              onError={(message) => {
-                setAlertMessage(message);
+              onError={(err) => {
+                setAlertMessage(err.message);
                 setRouteName("AlertMessage");
               }}
             />

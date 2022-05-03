@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { WalletMetadata } from "../../wallet/wallet.types";
+import { Wallet, WalletModule } from "../../wallet/wallet.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
 import { logger } from "../../services";
@@ -10,10 +10,10 @@ interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  onWalletNotInstalled: (module: WalletMetadata) => void;
+  onWalletNotInstalled: (wallet: Wallet) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
-  onError: (message: string) => void;
+  onError: (error: Error) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
@@ -26,7 +26,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [modules, setModules] = useState<Array<WalletMetadata>>([]);
+  const [modules, setModules] = useState<Array<WalletModule>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -37,30 +37,33 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (module: WalletMetadata) => () => {
+  const handleWalletClick = (module: WalletModule) => async () => {
     if (connecting) {
       return;
     }
 
-    if (module.type === "hardware") {
+    setConnecting(true);
+
+    const wallet = await module.wallet();
+
+    if (wallet.type === "hardware") {
       return onConnectHardwareWallet();
     }
 
-    setConnecting(true);
-
-    selector
-      .wallet(module.id)
+    wallet
       .connect()
       .then(() => onConnected())
       .catch((err) => {
         if (errors.isWalletNotInstalledError(err)) {
-          return onWalletNotInstalled(module);
+          return onWalletNotInstalled(wallet);
         }
 
-        logger.log(`Failed to select ${module.name}`);
+        const { name } = wallet.metadata;
+
+        logger.log(`Failed to select ${name}`);
         logger.error(err);
 
-        onError(`Failed to connect with ${module.name}: ${err.message}`);
+        onError(new Error(`Failed to connect with ${name}: ${err.message}`));
       })
       .finally(() => setConnecting(false));
   };
@@ -79,13 +82,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         >
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
-            const { id, name, description, iconUrl } = module;
+            const { name, description, iconUrl } = module.metadata;
             const selected = module.id === selectedWalletId;
 
             result.push(
               <li
-                key={id}
-                id={id}
+                key={module.id}
+                id={module.id}
                 className={selected ? "selected-wallet" : ""}
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
