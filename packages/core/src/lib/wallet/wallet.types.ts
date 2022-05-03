@@ -160,9 +160,9 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
 // Note: TypeScript doesn't seem to like reusing this in WalletModuleFactory.
 export type WalletBehaviourFactory<
   Variation extends Wallet,
-  ExtraWalletOptions extends object = object
+  ExtraOptions extends object = object
 > = (
-  options: WalletBehaviourOptions<Variation> & ExtraWalletOptions
+  options: WalletBehaviourOptions<Variation> & ExtraOptions
 ) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
 
 export type WalletModuleFactory<Variation extends Wallet = Wallet> =

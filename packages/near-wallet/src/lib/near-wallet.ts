@@ -20,6 +20,8 @@ interface NearWalletState {
   keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
+type NearWalletExtraOptions = Pick<NearWalletParams, "walletUrl">;
+
 const getWalletUrl = (network: Network, walletUrl?: string) => {
   if (walletUrl) {
     return walletUrl;
@@ -33,19 +35,19 @@ const getWalletUrl = (network: Network, walletUrl?: string) => {
     case "betanet":
       return "https://wallet.betanet.near.org";
     default:
-      throw new Error("Invalid wallet URL");
+      throw new Error("Invalid wallet url");
   }
 };
 
 const setupWalletState = async (
-  network: Network,
-  walletUrl?: string
+  params: NearWalletExtraOptions,
+  network: Network
 ): Promise<NearWalletState> => {
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
   const near = await connect({
     keyStore,
-    walletUrl: getWalletUrl(network, walletUrl),
+    walletUrl: getWalletUrl(network, params.walletUrl),
     ...network,
     headers: {},
   });
@@ -65,9 +67,9 @@ const setupWalletState = async (
 
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
-  Pick<NearWalletParams, "walletUrl">
-> = async ({ options, walletUrl, logger }) => {
-  const _state = await setupWalletState(options.network, walletUrl);
+  { params: NearWalletExtraOptions }
+> = async ({ options, params, logger }) => {
+  const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
     _state.keyStore.clear();
@@ -193,7 +195,14 @@ export function setupNearWallet({
         description: null,
         iconUrl,
       },
-      init: (options) => NearWallet({ ...options, walletUrl }),
+      init: (options) => {
+        return NearWallet({
+          ...options,
+          params: {
+            walletUrl,
+          },
+        });
+      },
     };
   };
 }
