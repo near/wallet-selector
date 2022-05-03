@@ -33,25 +33,30 @@ const isInstalled = async () => {
   }
 };
 
-const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
-  options,
-  provider,
-  logger,
-}) => {
-  const _state: MathWalletState = {
-    wallet: window.nearWalletApi!,
-  };
+const setupMathWalletState = async (
+  contractId: string
+): Promise<MathWalletState> => {
+  const wallet = window.nearWalletApi!;
 
   // This wallet currently has weird behaviour regarding signer.account.
   // - When you initially sign in, you get a SignedInAccount interface.
   // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
   // This method normalises the behaviour to only return the SignedInAccount interface.
-  if (
-    _state.wallet.signer.account &&
-    "address" in _state.wallet.signer.account
-  ) {
-    await _state.wallet.login({ contractId: options.contractId });
+  if (wallet.signer.account && "address" in wallet.signer.account) {
+    await wallet.login({ contractId });
   }
+
+  return {
+    wallet,
+  };
+};
+
+const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
+  options,
+  provider,
+  logger,
+}) => {
+  const _state = await setupMathWalletState(options.contractId);
 
   const getAccounts = (): Array<AccountState> => {
     if (!_state.wallet.signer.account) {

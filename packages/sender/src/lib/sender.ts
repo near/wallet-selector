@@ -34,15 +34,21 @@ const isInstalled = async () => {
   }
 };
 
+const setupSenderState = (): SenderState => {
+  const wallet = window.near!;
+
+  return {
+    wallet,
+  };
+};
+
 const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   emitter,
   logger,
 }) => {
-  const _state: SenderState = {
-    wallet: window.near!,
-  };
+  const _state = setupSenderState();
 
   const cleanup = () => {
     for (const key in _state.wallet.callbacks) {
