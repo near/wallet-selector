@@ -67,7 +67,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupMathWallet(),
         setupLedger(),
         setupWalletConnect({
-          projectId: "d43d7d0e46eea5ee28e1f75e1131f984",
+          projectId: "c4f79cc...",
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
