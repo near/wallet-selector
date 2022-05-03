@@ -1,17 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Wallet, WalletModule } from "../../wallet";
 import { ModuleState } from "../../store.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
 import { logger } from "../../services";
-import { errors } from "../../errors";
 
 interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
   selector: Omit<WalletSelector, keyof WalletSelectorModal>;
   options?: ModalOptions;
-  onWalletNotInstalled: (wallet: Wallet) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onError: (error: Error) => void;
@@ -20,7 +17,6 @@ interface WalletOptionsProps {
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
-  onWalletNotInstalled,
   onError,
   onConnectHardwareWallet,
   onConnected,
@@ -55,10 +51,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       .connect()
       .then(() => onConnected())
       .catch((err) => {
-        if (errors.isWalletNotInstalledError(err)) {
-          return onWalletNotInstalled(wallet);
-        }
-
         const { name } = wallet.metadata;
 
         logger.log(`Failed to select ${name}`);
