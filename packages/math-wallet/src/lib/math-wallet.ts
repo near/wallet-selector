@@ -21,10 +21,14 @@ export interface MathWalletParams {
   iconUrl?: string;
 }
 
+interface MathWalletState {
+  wallet: InjectedMathWallet;
+}
+
 const isInstalled = async () => {
   try {
-    return await waitFor(() => !!window.nearWalletApi);
-  } catch (e) {
+    return waitFor(() => !!window.nearWalletApi);
+  } catch (err) {
     return false;
   }
 };
@@ -34,32 +38,40 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   logger,
 }) => {
-  const _wallet = window.nearWalletApi!;
+  const _state: MathWalletState = {
+    wallet: window.nearWalletApi!,
+  };
 
   // This wallet currently has weird behaviour regarding signer.account.
   // - When you initially sign in, you get a SignedInAccount interface.
   // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
   // This method normalises the behaviour to only return the SignedInAccount interface.
-  if (_wallet.signer.account && "address" in _wallet.signer.account) {
-    await _wallet.login({ contractId: options.contractId });
+  if (
+    _state.wallet.signer.account &&
+    "address" in _state.wallet.signer.account
+  ) {
+    await _state.wallet.login({ contractId: options.contractId });
   }
 
   const getAccounts = (): Array<AccountState> => {
-    if (!_wallet?.signer.account) {
+    if (!_state.wallet.signer.account) {
       return [];
     }
 
     const accountId =
-      "accountId" in _wallet.signer.account
-        ? _wallet.signer.account.accountId
-        : _wallet.signer.account.name;
+      "accountId" in _state.wallet.signer.account
+        ? _state.wallet.signer.account.accountId
+        : _state.wallet.signer.account.name;
 
     return [{ accountId }];
   };
 
   const getSignedInAccount = () => {
-    if (_wallet?.signer.account && "accountId" in _wallet.signer.account) {
-      return _wallet.signer.account;
+    if (
+      _state.wallet.signer.account &&
+      "accountId" in _state.wallet.signer.account
+    ) {
+      return _state.wallet.signer.account;
     }
 
     return null;
@@ -73,14 +85,14 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _wallet.login({ contractId: options.contractId });
+      await _state.wallet.login({ contractId: options.contractId });
 
       return getAccounts();
     },
 
     async disconnect() {
       // Ignore if unsuccessful (returns false).
-      await _wallet.logout();
+      await _state.wallet.logout();
     },
 
     async getAccounts() {
@@ -118,7 +130,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const [hash, signedTx] = await nearTransactions.signTransaction(
         transaction,
-        _wallet.signer,
+        _state.wallet.signer,
         accountId
       );
 
@@ -154,7 +166,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
         const [hash, signedTx] = await nearTransactions.signTransaction(
           transaction,
-          _wallet.signer,
+          _state.wallet.signer,
           accountId
         );
 

@@ -6,7 +6,7 @@ import {
   AccountState,
 } from "@near-wallet-selector/core";
 // import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-// import { setupSender } from "@near-wallet-selector/sender";
+import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 // import { setupLedger } from "@near-wallet-selector/ledger";
 // import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -63,7 +63,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       debug: true,
       modules: [
         // setupNearWallet(),
-        // setupSender(),
+        setupSender(),
         setupMathWallet(),
         // setupLedger(),
         // setupWalletConnect({
