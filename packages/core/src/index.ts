@@ -18,6 +18,7 @@ export {
   WalletModule,
   WalletModuleFactory,
   WalletBehaviourFactory,
+  WalletBehaviourOptions,
   Wallet,
   WalletType,
   BrowserWalletMetadata,
