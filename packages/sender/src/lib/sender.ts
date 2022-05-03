@@ -78,9 +78,12 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     });
 
     _state.wallet.on("rpcChanged", async ({ rpc }) => {
+      logger.log("Sender:onNetworkChange", rpc);
+
       if (options.network.networkId !== rpc.networkId) {
         await disconnect();
 
+        emitter.emit("disconnected", null);
         emitter.emit("networkChanged", { networkId: rpc.networkId });
       }
     });
