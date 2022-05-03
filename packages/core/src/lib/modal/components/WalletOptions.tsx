@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Wallet, WalletModule } from "../../wallet/wallet.types";
+import { Wallet, WalletModule } from "../../wallet";
+import { ModuleState } from "../../store.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
 import { logger } from "../../services";
@@ -26,7 +27,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
-  const [modules, setModules] = useState<Array<WalletModule>>([]);
+  const [modules, setModules] = useState<Array<ModuleState>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -37,7 +38,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (module: WalletModule) => async () => {
+  const handleWalletClick = (module: ModuleState) => async () => {
     if (connecting) {
       return;
     }

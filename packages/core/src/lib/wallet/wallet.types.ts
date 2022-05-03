@@ -1,18 +1,5 @@
-// - WalletModules -> Wallets
-// - Shouldn't initialise the wallet until we want to connect or already connected.
-// - We need the type alongside the methods to help with type checking.
-// - We need getDownloadUrl and isAvailable outside the initialisation of a wallet.
-// - selector.wallet can remain sync and handle rejecting signing for unselected wallets.
-// - WalletModule
-
 import { providers } from "near-api-js";
 import { AccountState } from "../store.types";
-import {
-  HardwareWalletConnectParams,
-  SignAndSendTransactionParams,
-  SignAndSendTransactionsParams,
-  WalletEvents,
-} from "./wallet";
 import { Options } from "../options.types";
 import {
   EventEmitterService,
@@ -20,6 +7,9 @@ import {
   ProviderService,
   StorageService,
 } from "../services";
+import { Action } from "./transactions.types";
+import { Optional } from "../utils.types";
+import { Transaction } from "./transactions.types";
 
 interface BaseWalletMetadata {
   name: string;
@@ -36,6 +26,23 @@ type BaseWallet<
   type: Type;
   metadata: Metadata;
 } & Behaviour;
+
+export interface SignAndSendTransactionParams {
+  signerId?: string;
+  receiverId?: string;
+  actions: Array<Action>;
+}
+
+export interface SignAndSendTransactionsParams {
+  transactions: Array<Optional<Transaction, "signerId">>;
+}
+
+export type WalletEvents = {
+  connected: { accounts: Array<AccountState> };
+  disconnected: null;
+  accountsChanged: { accounts: Array<AccountState> };
+  networkChanged: { networkId: string };
+};
 
 // ----- Browser Wallet ----- //
 
@@ -82,6 +89,10 @@ export type InjectedWallet = BaseWallet<
 // ----- Hardware Wallet ----- //
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
+
+export interface HardwareWalletConnectParams {
+  derivationPath: string;
+}
 
 export interface HardwareWalletBehaviour {
   connect(params: HardwareWalletConnectParams): Promise<Array<AccountState>>;

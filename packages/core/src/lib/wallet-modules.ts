@@ -1,13 +1,8 @@
 import { Options } from "./options.types";
-import { AccountState, Store } from "./store.types";
+import { AccountState, ModuleState, Store } from "./store.types";
 import { logger, storage, Provider, EventEmitter } from "./services";
 import { WalletSelectorEvents } from "./wallet-selector.types";
-import {
-  Wallet,
-  WalletModule,
-  WalletModuleFactory,
-} from "./wallet/wallet.types";
-import { WalletEvents } from "./wallet";
+import { WalletModuleFactory, Wallet, WalletEvents } from "./wallet";
 import { LOCAL_STORAGE_SELECTED_WALLET_ID } from "./constants";
 
 interface WalletModulesParams {
@@ -35,7 +30,7 @@ export const setupWalletModules = async ({
   store,
   emitter,
 }: WalletModulesParams) => {
-  const modules: Array<WalletModule> = [];
+  const modules: Array<ModuleState> = [];
   const instances: Record<string, Wallet> = {};
 
   const getWallet = async <Variation extends Wallet = Wallet>(

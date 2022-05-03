@@ -10,7 +10,7 @@ export { Optional } from "./lib/utils.types";
 
 export {
   WalletSelectorState,
-  // WalletModuleState,
+  ModuleState,
   AccountState,
 } from "./lib/store.types";
 
@@ -28,25 +28,12 @@ export {
   InjectedWalletBehaviour,
   InjectedWallet,
   HardwareWalletMetadata,
+  HardwareWalletConnectParams,
   HardwareWalletBehaviour,
   HardwareWallet,
   BridgeWalletMetadata,
   BridgeWalletBehaviour,
   BridgeWallet,
-} from "./lib/wallet/wallet.types";
-
-export {
-  // Wallet,
-  // WalletType,
-  // WalletMetadata,
-  // WalletBehaviour,
-  // WalletModule,
-  // WalletBehaviourFactory,
-  // BrowserWallet,
-  // InjectedWallet,
-  // HardwareWallet,
-  HardwareWalletConnectParams,
-  // BridgeWallet,
   Transaction,
   Action,
   ActionType,
