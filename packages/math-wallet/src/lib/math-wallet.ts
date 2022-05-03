@@ -58,19 +58,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = await setupMathWalletState(options.contractId);
 
-  const getAccounts = (): Array<AccountState> => {
-    if (!_state.wallet.signer.account) {
-      return [];
-    }
-
-    const accountId =
-      "accountId" in _state.wallet.signer.account
-        ? _state.wallet.signer.account.accountId
-        : _state.wallet.signer.account.name;
-
-    return [{ accountId }];
-  };
-
   const getSignedInAccount = () => {
     if (
       _state.wallet.signer.account &&
@@ -80,6 +67,16 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
 
     return null;
+  };
+
+  const getAccounts = (): Array<AccountState> => {
+    const account = getSignedInAccount();
+
+    if (!account) {
+      return [];
+    }
+
+    return [{ accountId: account.accountId }];
   };
 
   return {
@@ -115,7 +112,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         actions,
       });
 
-      const { accountId, publicKey } = getSignedInAccount()!;
+      const account = getSignedInAccount();
+
+      if (!account) {
+        throw new Error("Wallet not connected");
+      }
+
+      const { accountId, publicKey } = account;
       const [block, accessKey] = await Promise.all([
         provider.block({ finality: "final" }),
         provider.viewAccessKey({ accountId, publicKey }),
@@ -147,7 +150,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransactions({ transactions }) {
       logger.log("MathWallet:signAndSendTransactions", { transactions });
 
-      const { accountId, publicKey } = getSignedInAccount()!;
+      const account = getSignedInAccount();
+
+      if (!account) {
+        throw new Error("Wallet not connected");
+      }
+
+      const { accountId, publicKey } = account;
       const [block, accessKey] = await Promise.all([
         provider.block({ finality: "final" }),
         provider.viewAccessKey({ accountId, publicKey }),

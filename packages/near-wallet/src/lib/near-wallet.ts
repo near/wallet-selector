@@ -161,6 +161,10 @@ const NearWallet: WalletBehaviourFactory<
         actions,
       });
 
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
+
       const account = _state.wallet.account();
 
       return account["signAndSendTransaction"]({
@@ -174,6 +178,10 @@ const NearWallet: WalletBehaviourFactory<
 
     async signAndSendTransactions({ transactions }) {
       logger.log("NearWallet:signAndSendTransactions", { transactions });
+
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
 
       return _state.wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),

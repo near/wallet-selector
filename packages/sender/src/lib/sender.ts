@@ -182,6 +182,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         actions,
       });
 
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
+
       return _state.wallet
         .signAndSendTransaction({
           receiverId,
@@ -203,6 +207,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async signAndSendTransactions({ transactions }) {
       logger.log("Sender:signAndSendTransactions", { transactions });
+
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
 
       return _state.wallet
         .requestSignTransactions({

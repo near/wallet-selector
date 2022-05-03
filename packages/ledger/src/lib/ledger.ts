@@ -285,6 +285,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         actions,
       });
 
+      if (!_state.authData) {
+        throw new Error("Wallet not connected");
+      }
+
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
@@ -300,6 +304,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
     async signAndSendTransactions({ transactions }) {
       logger.log("Ledger:signAndSendTransactions", { transactions });
+
+      if (!_state.authData) {
+        throw new Error("Wallet not connected");
+      }
 
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();

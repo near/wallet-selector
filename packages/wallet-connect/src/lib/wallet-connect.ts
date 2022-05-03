@@ -177,9 +177,13 @@ const WalletConnect: WalletBehaviourFactory<
         actions,
       });
 
+      if (!_state.session) {
+        throw new Error("Wallet not connected");
+      }
+
       return _state.client.request({
         timeout: 30 * 1000,
-        topic: _state.session!.topic,
+        topic: _state.session.topic,
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransaction",
@@ -195,9 +199,13 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("WalletConnect:signAndSendTransactions", { transactions });
 
+      if (!_state.session) {
+        throw new Error("Wallet not connected");
+      }
+
       return _state.client.request({
         timeout: 30 * 1000,
-        topic: _state.session!.topic,
+        topic: _state.session.topic,
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransactions",
