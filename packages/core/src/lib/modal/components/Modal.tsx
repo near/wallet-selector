@@ -1,6 +1,5 @@
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 
-import { Wallet } from "../../wallet/wallet.types";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../wallet-selector.types";
 import { ModalRouteName } from "./Modal.types";
