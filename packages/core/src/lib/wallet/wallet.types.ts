@@ -143,7 +143,7 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
   type: Variation["type"];
   metadata: Variation["metadata"];
-  init: () => Promise<Variation>;
+  wallet: () => Promise<Variation>;
 };
 
 export interface WalletOptions<Variation extends Wallet = Wallet> {

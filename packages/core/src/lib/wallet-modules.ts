@@ -37,8 +37,14 @@ export const setupWalletModules = async ({
       id: module.id,
       type: module.type,
       metadata: module.metadata,
-      init: async () => {
-        return {
+      wallet: async () => {
+        let instance = instances[module.id];
+
+        if (instance) {
+          return instance;
+        }
+
+        instance = {
           id: module.id,
           type: module.type,
           metadata: module.metadata,
@@ -53,28 +59,22 @@ export const setupWalletModules = async ({
             storage,
           })),
         } as Wallet;
+
+        instances[module.id] = instance;
+
+        return instance;
       },
     });
   }
 
   const getWallet = async (id: string) => {
-    let instance = instances[id];
-
-    if (instance) {
-      return instances[id];
-    }
-
     const module = modules.find((x) => x.id === id);
 
     if (!module) {
       return null;
     }
 
-    instance = await module.init();
-
-    instances[id] = instance;
-
-    return instance;
+    return module.wallet();
   };
 
   store.dispatch({
