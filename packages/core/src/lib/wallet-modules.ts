@@ -84,9 +84,13 @@ export const setupWalletModules = async ({
 
         const handleConnected = async (
           walletId: string,
-          { pending = false, accounts = [] }: WalletEvents["connected"]
+          { accounts = [] }: WalletEvents["connected"]
         ) => {
           const { selectedWalletId } = store.getState();
+
+          // We use the pending flag because we can't guarantee the user will
+          // actually sign in. Best we can do is set in storage and validate on init.
+          const pending = module.type === "browser";
 
           if (selectedWalletId && selectedWalletId !== walletId) {
             const wallet = (await getWallet(selectedWalletId))!;
