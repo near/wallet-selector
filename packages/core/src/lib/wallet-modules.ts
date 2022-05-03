@@ -114,16 +114,9 @@ export const setupWalletModules = async ({
           walletId: string,
           { accounts }: WalletEvents["accountsChanged"]
         ) => {
-          const { selectedWalletId } = store.getState();
-
-          // TODO: Move this check into the store.
-          if (walletId !== selectedWalletId) {
-            return;
-          }
-
           store.dispatch({
             type: "ACCOUNTS_CHANGED",
-            payload: { accounts },
+            payload: { walletId, accounts },
           });
         };
 

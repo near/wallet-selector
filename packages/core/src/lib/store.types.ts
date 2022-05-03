@@ -38,6 +38,7 @@ export type WalletSelectorAction =
   | {
       type: "ACCOUNTS_CHANGED";
       payload: {
+        walletId: string;
         accounts: Array<AccountState>;
       };
     };

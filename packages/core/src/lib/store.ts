@@ -34,6 +34,12 @@ const reducer = (
       };
     }
     case "WALLET_DISCONNECTED": {
+      const { walletId } = action.payload;
+
+      if (walletId !== state.selectedWalletId) {
+        return state;
+      }
+
       return {
         ...state,
         accounts: [],
@@ -41,7 +47,11 @@ const reducer = (
       };
     }
     case "ACCOUNTS_CHANGED": {
-      const { accounts } = action.payload;
+      const { walletId, accounts } = action.payload;
+
+      if (walletId !== state.selectedWalletId) {
+        return state;
+      }
 
       return {
         ...state,
