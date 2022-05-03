@@ -165,31 +165,14 @@ export const setupWalletModules = async ({
         wallet.connect = async (params: never) => {
           const accounts = await _connect(params);
 
-          setSelectedWalletId(wallet.id);
-
-          store.dispatch({
-            type: "WALLET_CONNECTED",
-            payload: {
-              walletId: wallet.id,
-              pending: false,
-              accounts,
-            },
-          });
-
+          await handleConnected(wallet.id, { accounts });
           return accounts;
         };
 
         wallet.disconnect = async () => {
           await _disconnect();
 
-          removeSelectedWalletId();
-
-          store.dispatch({
-            type: "WALLET_DISCONNECTED",
-            payload: {
-              walletId: wallet.id,
-            },
-          });
+          handleDisconnected(wallet.id);
         };
 
         instances[module.id] = wallet;
