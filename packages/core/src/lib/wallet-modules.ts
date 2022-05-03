@@ -51,13 +51,13 @@ export const setupWalletModules = async ({
       type: module.type,
       metadata: module.metadata,
       wallet: async () => {
-        let instance = instances[module.id];
+        const instance = instances[module.id];
 
         if (instance) {
           return instance;
         }
 
-        instance = {
+        const wallet = {
           id: module.id,
           type: module.type,
           metadata: module.metadata,
@@ -73,9 +73,42 @@ export const setupWalletModules = async ({
           })),
         } as Wallet;
 
-        instances[module.id] = instance;
+        const _connect = wallet.connect;
+        const _disconnect = wallet.disconnect;
 
-        return instance;
+        wallet.connect = async (params: never) => {
+          const accounts = await _connect(params);
+
+          setSelectedWalletId(wallet.id);
+
+          store.dispatch({
+            type: "WALLET_CONNECTED",
+            payload: {
+              walletId: wallet.id,
+              pending: false,
+              accounts,
+            },
+          });
+
+          return accounts;
+        };
+
+        wallet.disconnect = async () => {
+          await _disconnect();
+
+          removeSelectedWalletId();
+
+          store.dispatch({
+            type: "WALLET_DISCONNECTED",
+            payload: {
+              walletId: wallet.id,
+            },
+          });
+        };
+
+        instances[module.id] = wallet;
+
+        return wallet;
       },
     });
   }
