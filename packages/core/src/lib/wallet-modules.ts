@@ -38,6 +38,20 @@ export const setupWalletModules = async ({
   const modules: Array<WalletModule> = [];
   const instances: Record<string, Wallet> = {};
 
+  const getWallet = async <Variation extends Wallet = Wallet>(
+    id: string | null
+  ) => {
+    const module = modules.find((x) => x.id === id);
+
+    if (!module) {
+      return null;
+    }
+
+    const wallet = await module.wallet();
+
+    return wallet as Variation;
+  };
+
   for (let i = 0; i < factories.length; i += 1) {
     const module = await factories[i]();
 
@@ -57,6 +71,85 @@ export const setupWalletModules = async ({
           return instance;
         }
 
+        const walletEmitter = new EventEmitter<WalletEvents>();
+
+        const handleDisconnected = (walletId: string) => {
+          removeSelectedWalletId();
+
+          store.dispatch({
+            type: "WALLET_DISCONNECTED",
+            payload: { walletId },
+          });
+        };
+
+        const handleConnected = async (
+          walletId: string,
+          { pending = false, accounts = [] }: WalletEvents["connected"]
+        ) => {
+          const { selectedWalletId } = store.getState();
+
+          if (selectedWalletId && selectedWalletId !== walletId) {
+            const wallet = (await getWallet(selectedWalletId))!;
+
+            await wallet.disconnect().catch((err) => {
+              logger.log("Failed to disconnect existing wallet");
+              logger.error(err);
+
+              // At least clean up state on our side.
+              handleDisconnected(wallet.id);
+            });
+          }
+
+          if (pending || accounts.length) {
+            setSelectedWalletId(walletId);
+          }
+
+          store.dispatch({
+            type: "WALLET_CONNECTED",
+            payload: { walletId, pending, accounts },
+          });
+        };
+
+        const handleAccountsChanged = (
+          walletId: string,
+          { accounts }: WalletEvents["accountsChanged"]
+        ) => {
+          const { selectedWalletId } = store.getState();
+
+          // TODO: Move this check into the store.
+          if (walletId !== selectedWalletId) {
+            return;
+          }
+
+          store.dispatch({
+            type: "ACCOUNTS_CHANGED",
+            payload: { accounts },
+          });
+        };
+
+        const handleNetworkChanged = (
+          walletId: string,
+          { networkId }: WalletEvents["networkChanged"]
+        ) => {
+          emitter.emit("networkChanged", { walletId, networkId });
+        };
+
+        walletEmitter.on("disconnected", () => {
+          handleDisconnected(module.id);
+        });
+
+        walletEmitter.on("connected", (event) => {
+          handleConnected(module.id, event);
+        });
+
+        walletEmitter.on("accountsChanged", (event) => {
+          handleAccountsChanged(module.id, event);
+        });
+
+        walletEmitter.on("networkChanged", (event) => {
+          handleNetworkChanged(module.id, event);
+        });
+
         const wallet = {
           id: module.id,
           type: module.type,
@@ -67,7 +160,7 @@ export const setupWalletModules = async ({
             metadata: module.metadata,
             options,
             provider: new Provider(options.network.nodeUrl),
-            emitter: new EventEmitter<WalletEvents>(),
+            emitter: walletEmitter,
             logger,
             storage,
           })),
@@ -112,20 +205,6 @@ export const setupWalletModules = async ({
       },
     });
   }
-
-  const getWallet = async <Variation extends Wallet = Wallet>(
-    id: string | null
-  ) => {
-    const module = modules.find((x) => x.id === id);
-
-    if (!module) {
-      return null;
-    }
-
-    const wallet = await module.wallet();
-
-    return wallet as Variation;
-  };
 
   let selectedWalletId = getSelectedWalletId();
   let accounts: Array<AccountState> = [];
