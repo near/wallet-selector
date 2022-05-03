@@ -1,5 +1,3 @@
-enum ErrorCodes {}
-
 export class WalletSelectorError extends Error {
   constructor(name: string, message: string) {
     super(message);
