@@ -8,7 +8,7 @@ import {
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-// import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 declare global {
@@ -65,7 +65,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNearWallet(),
         setupSender(),
         setupMathWallet(),
-        // setupLedger(),
+        setupLedger(),
         setupWalletConnect({
           projectId: "d43d7d0e46eea5ee28e1f75e1131f984",
           metadata: {

@@ -21,7 +21,7 @@
   "types": "./lib/esm/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn build:core && yarn build:all",
-    "build:all": "nx run-many --target=build --all --exclude=react,angular,ledger --configuration=production",
+    "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",
     "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
     "build:math-wallet": "nx run-many --target=build --projects=math-wallet --configuration=production",
