@@ -47,7 +47,5 @@ export {
   DeleteAccountAction,
 } from "./lib/wallet";
 
-export { WalletSelectorError } from "./lib/errors";
-
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
