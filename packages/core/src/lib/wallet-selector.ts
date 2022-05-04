@@ -40,11 +40,13 @@ export const setupWalletSelector = async (
     },
     options,
     wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
-      const walletId = id || store.getState().selectedWalletId;
-      const wallet = await walletModules.getWallet<Variation>(walletId);
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet<Variation>(
+        id || selectedWalletId
+      );
 
       if (!wallet) {
-        if (walletId) {
+        if (id) {
           throw new Error("Invalid wallet id");
         }
 
