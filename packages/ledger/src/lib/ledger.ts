@@ -60,8 +60,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 }) => {
   const _state = setupLedgerState(storage);
 
-  const debugMode = false;
-
   const getAccounts = (
     authData: AuthData | null = _state.authData
   ): Array<AccountState> => {
@@ -92,24 +90,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     }
 
     cleanup();
-  };
-
-  const setupEvents = () => {
-    _state.subscriptions.push(
-      _state.client.on("disconnect", (err) => {
-        logger.error(err);
-
-        disconnect();
-      })
-    );
-
-    if (debugMode) {
-      _state.subscriptions.push(
-        _state.client.listen((data) => {
-          logger.log("Ledger:init:logs", data);
-        })
-      );
-    }
   };
 
   const connectLedgerDevice = async () => {
@@ -218,10 +198,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     return signedTransactions;
   };
 
-  if (_state.authData) {
-    setupEvents();
-  }
-
   return {
     async connect({ derivationPath }) {
       const existingAccounts = getAccounts();
@@ -256,8 +232,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
           storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
           _state.authData = authData;
-
-          setupEvents();
 
           return getAccounts();
         })
