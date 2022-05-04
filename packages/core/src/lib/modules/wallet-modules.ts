@@ -52,6 +52,43 @@ export const setupWalletModules = async ({
     return accounts;
   };
 
+  const getSelectedWallet = async () => {
+    const pendingSelectedWalletId = storage.getItem<string>(
+      PENDING_SELECTED_WALLET_ID
+    );
+
+    if (pendingSelectedWalletId) {
+      const accounts = await validateWallet(pendingSelectedWalletId);
+
+      storage.removeItem(PENDING_SELECTED_WALLET_ID);
+
+      if (accounts.length) {
+        const { selectedWalletId } = store.getState();
+        const selectedWallet = await getWallet(selectedWalletId);
+
+        if (selectedWallet) {
+          await selectedWallet.disconnect().catch((err) => {
+            logger.log("Failed to disconnect existing wallet");
+            logger.error(err);
+          });
+        }
+
+        return {
+          accounts,
+          selectedWalletId: pendingSelectedWalletId,
+        };
+      }
+    }
+
+    const { selectedWalletId } = store.getState();
+    const accounts = await validateWallet(selectedWalletId);
+
+    return {
+      accounts,
+      selectedWalletId: accounts.length ? selectedWalletId : null,
+    };
+  };
+
   for (let i = 0; i < factories.length; i += 1) {
     const module = await factories[i]();
 
@@ -86,35 +123,7 @@ export const setupWalletModules = async ({
     });
   }
 
-  let selectedWalletId = store.getState().selectedWalletId;
-  const pendingSelectedWalletId = storage.getItem<string>(
-    PENDING_SELECTED_WALLET_ID
-  );
-
-  if (pendingSelectedWalletId) {
-    const accounts = await validateWallet(pendingSelectedWalletId);
-
-    if (accounts.length) {
-      const selectedWallet = await getWallet(selectedWalletId);
-
-      if (selectedWallet) {
-        await selectedWallet.disconnect().catch((err) => {
-          logger.log("Failed to disconnect existing wallet");
-          logger.error(err);
-        });
-
-        selectedWalletId = pendingSelectedWalletId;
-      }
-    }
-
-    storage.removeItem(PENDING_SELECTED_WALLET_ID);
-  }
-
-  const accounts = await validateWallet(selectedWalletId);
-
-  if (!accounts.length) {
-    selectedWalletId = null;
-  }
+  const { accounts, selectedWalletId } = await getSelectedWallet();
 
   store.dispatch({
     type: "SETUP_WALLET_MODULES",
