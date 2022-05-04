@@ -39,8 +39,19 @@ export const setupWalletSelector = async (
       return Boolean(accounts.length);
     },
     options,
-    wallet: <Variation extends Wallet = Wallet>(id?: string) => {
-      return walletModules.getWallet<Variation>(id);
+    wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const walletId = id || store.getState().selectedWalletId;
+      const wallet = await walletModules.getWallet<Variation>(walletId);
+
+      if (!wallet) {
+        if (walletId) {
+          throw new Error("Invalid wallet id");
+        }
+
+        throw new Error("No wallet selected");
+      }
+
+      return wallet;
     },
     on: (eventName, callback) => {
       return emitter.on(eventName, callback);

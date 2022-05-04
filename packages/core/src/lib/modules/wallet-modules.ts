@@ -31,9 +31,7 @@ export const setupWalletModules = async ({
       return null;
     }
 
-    const wallet = await module.wallet();
-
-    return wallet as Variation;
+    return (await module.wallet()) as Variation;
   };
 
   const validateWallet = async (id: string | null) => {
@@ -128,19 +126,6 @@ export const setupWalletModules = async ({
   });
 
   return {
-    getWallet: async <Variation extends Wallet = Wallet>(id?: string) => {
-      const walletId = id || store.getState().selectedWalletId;
-      const wallet = await getWallet<Variation>(walletId);
-
-      if (!wallet) {
-        if (walletId) {
-          throw new Error("Invalid wallet id");
-        }
-
-        throw new Error("No wallet selected");
-      }
-
-      return wallet;
-    },
+    getWallet,
   };
 };
