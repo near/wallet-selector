@@ -64,10 +64,23 @@ export const setupWalletInstance = async ({
     });
   };
 
-  const handleAccountsChanged = (
+  const handleAccountsChanged = async (
     walletId: string,
     { accounts }: WalletEvents["accountsChanged"]
   ) => {
+    if (!accounts.length) {
+      const walletModule = modules.find((x) => x.id === walletId)!;
+      const wallet = await walletModule.wallet();
+
+      return wallet.disconnect().catch((err) => {
+        logger.log("Failed to disconnect existing wallet");
+        logger.error(err);
+
+        // At least clean up state on our side.
+        handleDisconnected(walletId);
+      });
+    }
+
     store.dispatch({
       type: "ACCOUNTS_CHANGED",
       payload: { walletId, accounts },
