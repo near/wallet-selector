@@ -78,11 +78,13 @@ export function setupMyWallet({
 }
 ```
 
-`WalletModule` is made up of two main parts:
-- Behaviour: `wallet`.
-- Metadata: `id`, `type`, `name`, `description` and `iconUrl`.
+`WalletModule` (return type of `WalletModuleFactory`) is made up of four properties:
+- `id`: Unique identifier for the wallet.
+- `type`: Type of wallet to infer the behaviour and metadata.
+- `metadata`: Metadata for displaying information to the user.
+- `init`: The implementation (behaviour) of the wallet.
 
-The metadata of a wallet is accessible as part of the selector's `wallets` state. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModule` and `WalletBehaviourFactory`.
+A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and used by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
 
 Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
 
@@ -95,17 +97,13 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 ### `connect`
 
-This method handles wallet setup (e.g. initialising wallet-specific libraries) and requesting access to accounts via `FunctionCall` access keys. It's important that `connected` is emitted only when we successfully gain access to at least one account.
+This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a connected state.
 
 > Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters.
 
-> Note: The combination of setup and connecting is still under review.
-
 ### `disconnect`
 
-This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet. It's important that `disconnected` is emitted regardless of exceptions.
-
-> Note: The requirement to emit "disconnected" is still under review and may be removed in favour of accepting the Promise settling as a signal that this method has completed. 
+This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet.
 
 ### `getAccounts`
 
