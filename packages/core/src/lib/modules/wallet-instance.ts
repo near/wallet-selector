@@ -68,27 +68,6 @@ export const setupWalletInstance = async ({
     });
   };
 
-  const handleAccountsChanged = async (
-    walletId: string,
-    { accounts }: WalletEvents["accountsChanged"]
-  ) => {
-    if (!accounts.length) {
-      return disconnect(walletId);
-    }
-
-    store.dispatch({
-      type: "ACCOUNTS_CHANGED",
-      payload: { walletId, accounts },
-    });
-  };
-
-  const handleNetworkChanged = (
-    walletId: string,
-    { networkId }: WalletEvents["networkChanged"]
-  ) => {
-    emitter.emit("networkChanged", { walletId, networkId });
-  };
-
   walletEmitter.on("disconnected", () => {
     handleDisconnected(module.id);
   });
@@ -97,12 +76,19 @@ export const setupWalletInstance = async ({
     handleConnected(module.id, event);
   });
 
-  walletEmitter.on("accountsChanged", (event) => {
-    handleAccountsChanged(module.id, event);
+  walletEmitter.on("accountsChanged", async ({ accounts }) => {
+    if (!accounts.length) {
+      return disconnect(module.id);
+    }
+
+    store.dispatch({
+      type: "ACCOUNTS_CHANGED",
+      payload: { walletId: module.id, accounts },
+    });
   });
 
-  walletEmitter.on("networkChanged", (event) => {
-    handleNetworkChanged(module.id, event);
+  walletEmitter.on("networkChanged", ({ networkId }) => {
+    emitter.emit("networkChanged", { walletId: module.id, networkId });
   });
 
   const wallet = {
