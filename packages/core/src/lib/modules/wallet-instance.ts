@@ -29,6 +29,19 @@ export const setupWalletInstance = async ({
     });
   };
 
+  const disconnect = async (walletId: string) => {
+    const walletModule = modules.find((x) => x.id === walletId)!;
+    const wallet = await walletModule.wallet();
+
+    await wallet.disconnect().catch((err) => {
+      logger.log(`Failed to disconnect ${walletId}`);
+      logger.error(err);
+
+      // At least clean up state on our side.
+      handleDisconnected(walletId);
+    });
+  };
+
   const handleConnected = async (
     walletId: string,
     { accounts = [] }: WalletEvents["connected"]
@@ -46,16 +59,7 @@ export const setupWalletInstance = async ({
     }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
-      const selectedModule = modules.find((x) => x.id === selectedWalletId)!;
-      const selectedWallet = await selectedModule.wallet();
-
-      await selectedWallet.disconnect().catch((err) => {
-        logger.log("Failed to disconnect existing wallet");
-        logger.error(err);
-
-        // At least clean up state on our side.
-        handleDisconnected(selectedWallet.id);
-      });
+      await disconnect(selectedWalletId);
     }
 
     store.dispatch({
@@ -69,16 +73,7 @@ export const setupWalletInstance = async ({
     { accounts }: WalletEvents["accountsChanged"]
   ) => {
     if (!accounts.length) {
-      const walletModule = modules.find((x) => x.id === walletId)!;
-      const wallet = await walletModule.wallet();
-
-      return wallet.disconnect().catch((err) => {
-        logger.log("Failed to disconnect existing wallet");
-        logger.error(err);
-
-        // At least clean up state on our side.
-        handleDisconnected(walletId);
-      });
+      return disconnect(walletId);
     }
 
     store.dispatch({
