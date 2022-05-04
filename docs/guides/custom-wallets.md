@@ -21,9 +21,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   options,
   provider,
 }) => {
+  // Initialise wallet-sepecific client(s) here.
+  
   return {
     async connect() {
       // Connect to My Wallet for access to account(s).
+      
       return [];
     },
 
@@ -33,6 +36,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
 
     async getAccounts() {
       // Return list of connected accounts.
+      
       return [];
     },
 
@@ -43,12 +47,14 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
     }) {
       // Sign a list of NEAR Actions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
+      
       return provider.sendTransaction(signedTx);
     },
 
     async signAndSendTransactions({ transactions }) {
       // Sign a list of Transactions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
+      
       const signedTxs = [];
         
       return Promise.all(
