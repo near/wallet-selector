@@ -3,7 +3,7 @@ import { AccountState, ModuleState, Store } from "../store.types";
 import { logger, EventEmitter, storage } from "../services";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { WalletModuleFactory, Wallet } from "../wallet";
-import { setupWalletInstance } from "./wallet-instances";
+import { setupWalletInstance } from "./wallet-instance";
 import { PENDING_SELECTED_WALLET_ID } from "../constants";
 
 interface WalletModulesParams {
