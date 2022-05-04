@@ -6,10 +6,10 @@ import {
   WalletSelectorParams,
 } from "./wallet-selector.types";
 import { WalletSelectorModal } from "./modal/modal.types";
-import { setupModal } from "./modal/modal";
 import { EventEmitter, Logger } from "./services";
-import { setupWalletModules } from "./wallet-modules";
-import { Wallet } from "./wallet/wallet.types";
+import { Wallet } from "./wallet";
+import { setupWalletModules } from "./modules/wallet-modules";
+import { setupModal } from "./modal/modal";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams

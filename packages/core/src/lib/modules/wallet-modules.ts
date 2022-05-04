@@ -1,0 +1,146 @@
+import { Options } from "../options.types";
+import { AccountState, ModuleState, Store } from "../store.types";
+import { logger, EventEmitter, storage } from "../services";
+import { WalletSelectorEvents } from "../wallet-selector.types";
+import { WalletModuleFactory, Wallet } from "../wallet";
+import { setupWalletInstance } from "./wallet-instances";
+import { PENDING_SELECTED_WALLET_ID, SELECTED_WALLET_ID } from "../constants";
+
+interface WalletModulesParams {
+  factories: Array<WalletModuleFactory>;
+  options: Options;
+  store: Store;
+  emitter: EventEmitter<WalletSelectorEvents>;
+}
+
+export const setupWalletModules = async ({
+  factories,
+  options,
+  store,
+  emitter,
+}: WalletModulesParams) => {
+  const modules: Array<ModuleState> = [];
+  const instances: Record<string, Wallet> = {};
+
+  const getWallet = async <Variation extends Wallet = Wallet>(
+    id: string | null
+  ) => {
+    const module = modules.find((x) => x.id === id);
+
+    if (!module) {
+      return null;
+    }
+
+    const wallet = await module.wallet();
+
+    return wallet as Variation;
+  };
+
+  const validateWallet = async (id: string | null) => {
+    let accounts: Array<AccountState> = [];
+    const wallet = await getWallet(id);
+
+    if (wallet) {
+      // Ensure our persistent state aligns with the selected wallet.
+      // For example a wallet is selected, but it returns no accounts (not connected).
+      accounts = await wallet.getAccounts().catch((err) => {
+        logger.log(`Failed to validate ${wallet.id} during setup`);
+        logger.error(err);
+
+        return [];
+      });
+    }
+
+    return accounts;
+  };
+
+  for (let i = 0; i < factories.length; i += 1) {
+    const module = await factories[i]();
+
+    // Filter out wallets that aren't available.
+    if (!module) {
+      continue;
+    }
+
+    modules.push({
+      id: module.id,
+      type: module.type,
+      metadata: module.metadata,
+      wallet: async () => {
+        let instance = instances[module.id];
+
+        if (instance) {
+          return instance;
+        }
+
+        instance = await setupWalletInstance({
+          module,
+          getWallet,
+          store,
+          options,
+          emitter,
+        });
+
+        instances[module.id] = instance;
+
+        return instance;
+      },
+    });
+  }
+
+  let selectedWalletId = store.getState().selectedWalletId;
+  const pendingSelectedWalletId = storage.getItem<string>(
+    PENDING_SELECTED_WALLET_ID
+  );
+
+  if (pendingSelectedWalletId) {
+    const accounts = await validateWallet(pendingSelectedWalletId);
+
+    if (accounts.length) {
+      const selectedWallet = await getWallet(selectedWalletId);
+
+      if (selectedWallet) {
+        await selectedWallet.disconnect().catch((err) => {
+          logger.log("Failed to disconnect existing wallet");
+          logger.error(err);
+        });
+
+        selectedWalletId = pendingSelectedWalletId;
+      }
+    }
+
+    storage.removeItem(PENDING_SELECTED_WALLET_ID);
+  }
+
+  const accounts = await validateWallet(selectedWalletId);
+
+  if (!accounts.length) {
+    selectedWalletId = null;
+  }
+
+  store.dispatch({
+    type: "SETUP_WALLET_MODULES",
+    payload: {
+      modules,
+      accounts,
+      selectedWalletId,
+    },
+  });
+
+  return {
+    getWallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const walletId = id || store.getState().selectedWalletId;
+      const wallet = await getWallet<Variation>(walletId);
+
+      if (!wallet) {
+        if (walletId) {
+          throw new Error("Invalid wallet id");
+        }
+
+        throw new Error("No wallet selected");
+      }
+
+      return wallet;
+    },
+  };
+};

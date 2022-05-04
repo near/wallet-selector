@@ -15,7 +15,6 @@ export {
 } from "./lib/store.types";
 
 export {
-  WalletModule,
   WalletModuleFactory,
   WalletBehaviourFactory,
   WalletBehaviourOptions,

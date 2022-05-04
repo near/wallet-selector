@@ -1,11 +1,12 @@
 import { BehaviorSubject } from "rxjs";
 
-import { logger } from "./services";
+import { logger, storage } from "./services";
 import {
   Store,
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
+import { SELECTED_WALLET_ID } from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -25,12 +26,16 @@ const reducer = (
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, pending, accounts } = action.payload;
+      const { walletId, accounts } = action.payload;
+
+      if (!accounts.length) {
+        return state;
+      }
 
       return {
         ...state,
         accounts,
-        selectedWalletId: !pending && accounts.length ? walletId : null,
+        selectedWalletId: walletId,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -63,11 +68,33 @@ const reducer = (
   }
 };
 
+const syncStorage = (
+  prevState: WalletSelectorState,
+  state: WalletSelectorState
+) => {
+  if (state.selectedWalletId === prevState.selectedWalletId) {
+    return;
+  }
+
+  if (state.selectedWalletId) {
+    storage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+    return;
+  }
+
+  storage.removeItem(SELECTED_WALLET_ID);
+};
+
 export const createStore = (): Store => {
   const subject = new BehaviorSubject<WalletSelectorState>({
     modules: [],
     accounts: [],
-    selectedWalletId: null,
+    selectedWalletId: storage.getItem(SELECTED_WALLET_ID),
+  });
+
+  let prevState = subject.getValue();
+  subject.subscribe((state) => {
+    syncStorage(prevState, state);
+    prevState = state;
   });
 
   return {

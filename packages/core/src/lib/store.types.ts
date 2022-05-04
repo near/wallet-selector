@@ -1,8 +1,13 @@
 import { BehaviorSubject } from "rxjs";
 
-import { WalletModule } from "./wallet";
+import { Wallet } from "./wallet";
 
-export type ModuleState = WalletModule;
+export type ModuleState<Variation extends Wallet = Wallet> = {
+  id: Variation["id"];
+  type: Variation["type"];
+  metadata: Variation["metadata"];
+  wallet(): Promise<Variation>;
+};
 
 export interface AccountState {
   accountId: string;
@@ -27,7 +32,6 @@ export type WalletSelectorAction =
       type: "WALLET_CONNECTED";
       payload: {
         walletId: string;
-        pending: boolean;
         accounts: Array<AccountState>;
       };
     }
