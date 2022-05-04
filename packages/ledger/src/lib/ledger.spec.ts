@@ -12,7 +12,7 @@ import {
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
 
-const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
+const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const storageState: Record<string, never> = {};
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
 
@@ -27,7 +27,7 @@ const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
       storageState[key] = value;
     }),
   });
-  const ledgerWallet = mockWallet<HardwareWallet>(setupLedger(), {
+  const ledgerWallet = await mockWallet<HardwareWallet>(setupLedger(), {
     storage,
     provider,
     ...deps,
@@ -66,7 +66,7 @@ const createLedgerWallet = (deps: MockWalletDependencies = {}) => {
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: ledgerWallet,
+    wallet: ledgerWallet!,
     storage: deps.storage || storage,
     ledgerClient,
     publicKey,
@@ -77,19 +77,13 @@ afterEach(() => {
   jest.resetModules();
 });
 
-describe("isAvailable", () => {
-  it("returns true", async () => {
-    const { wallet } = createLedgerWallet();
-    expect(await wallet.isAvailable()).toEqual(true);
-  });
-});
-
 describe("connect", () => {
   // TODO: Need to mock fetching for account id.
   it.skip("signs in", async () => {
     const accountId = "accountId";
     const derivationPath = "derivationPath";
-    const { wallet, ledgerClient, storage, publicKey } = createLedgerWallet();
+    const { wallet, ledgerClient, storage, publicKey } =
+      await createLedgerWallet();
     await wallet.connect({ derivationPath });
     expect(storage.setItem).toHaveBeenCalledWith("ledger:authData", {
       accountId,
@@ -106,7 +100,7 @@ describe("getAccounts", () => {
   // TODO: Need to mock fetching for account id.
   it.skip("returns account objects", async () => {
     const accountId = "accountId";
-    const { wallet } = createLedgerWallet();
+    const { wallet } = await createLedgerWallet();
     await wallet.connect({
       derivationPath: "derivationPath",
     });
@@ -117,7 +111,7 @@ describe("getAccounts", () => {
 
 // describe("signAndSendTransaction", () => {
 //   it("signs and sends transaction", async () => {
-//     const { wallet, authData } = createLedgerWallet();
+//     const { wallet, authData } = await createLedgerWallet();
 //     await wallet.connect({
 //       accountId: authData.accountId,
 //       derivationPath: authData.derivationPath,

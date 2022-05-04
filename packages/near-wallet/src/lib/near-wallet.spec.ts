@@ -9,7 +9,7 @@ import {
 } from "../../../core/src/lib/testUtils";
 import { BrowserWallet } from "../../../core/src/lib/wallet";
 
-const createNearWallet = (deps: MockWalletDependencies = {}) => {
+const createNearWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>();
 
@@ -39,11 +39,11 @@ const createNearWallet = (deps: MockWalletDependencies = {}) => {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { setupNearWallet } = require("./near-wallet");
-  const nearWallet = mockWallet<BrowserWallet>(setupNearWallet(), deps);
+  const nearWallet = await mockWallet<BrowserWallet>(setupNearWallet(), deps);
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: nearWallet,
+    wallet: nearWallet!,
     walletConnection,
     account,
   };
@@ -53,17 +53,9 @@ afterEach(() => {
   jest.resetModules();
 });
 
-describe("isAvailable", () => {
-  it("returns true", async () => {
-    const { wallet } = createNearWallet();
-
-    expect(await wallet.isAvailable()).toEqual(true);
-  });
-});
-
 describe("connect", () => {
   it("sign into near wallet", async () => {
-    const { wallet, nearApiJs } = createNearWallet();
+    const { wallet, nearApiJs } = await createNearWallet();
 
     await wallet.connect();
 
@@ -73,7 +65,7 @@ describe("connect", () => {
 
 describe("disconnect", () => {
   it("sign out of near wallet", async () => {
-    const { wallet, walletConnection } = createNearWallet();
+    const { wallet, walletConnection } = await createNearWallet();
 
     await wallet.connect();
     await wallet.disconnect();
@@ -84,7 +76,7 @@ describe("disconnect", () => {
 
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
-    const { wallet, walletConnection } = createNearWallet();
+    const { wallet, walletConnection } = await createNearWallet();
 
     await wallet.connect();
     const result = await wallet.getAccounts();
@@ -97,7 +89,7 @@ describe("getAccounts", () => {
 describe("signAndSendTransaction", () => {
   // TODO: Figure out why imports to core are returning undefined.
   it.skip("signs and sends transaction", async () => {
-    const { wallet, walletConnection, account } = createNearWallet();
+    const { wallet, walletConnection, account } = await createNearWallet();
 
     await wallet.connect();
     const result = await wallet.signAndSendTransaction({
