@@ -1,6 +1,5 @@
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import Transport from "@ledgerhq/hw-transport";
-import { listen, Log } from "@ledgerhq/logs";
 import { utils } from "near-api-js";
 
 // Further reading regarding APDU Ledger API:
@@ -65,7 +64,7 @@ export const isLedgerSupported = () => {
 };
 
 export class LedgerClient {
-  private transport: Transport;
+  private transport: Transport | null = null;
 
   isConnected = () => {
     return Boolean(this.transport);
@@ -73,21 +72,29 @@ export class LedgerClient {
 
   connect = async () => {
     this.transport = await TransportWebHID.create();
-  };
 
-  disconnect = () => {
-    return this.transport.close();
-  };
-
-  listen = (callback: (data: Log) => void) => {
-    const unsubscribe = listen(callback);
-
-    return {
-      remove: () => unsubscribe(),
+    const handleDisconnect = () => {
+      this.transport?.off("disconnect", handleDisconnect);
+      this.transport = null;
     };
+
+    this.transport.on("disconnect", handleDisconnect);
+  };
+
+  disconnect = async () => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
+    await this.transport.close();
+    this.transport = null;
   };
 
   setScrambleKey = (key: string) => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     this.transport.setScrambleKey(key);
   };
 
@@ -95,18 +102,30 @@ export class LedgerClient {
     event: Event,
     callback: (data: EventMap[Event]) => void
   ): Subscription => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     this.transport.on(event, callback);
 
     return {
-      remove: () => this.transport.off(event, callback),
+      remove: () => this.transport?.off(event, callback),
     };
   };
 
   off = (event: keyof EventMap, callback: () => void) => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     this.transport.off(event, callback);
   };
 
   getVersion = async () => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     const res = await this.transport.send(
       CLA,
       INS_GET_APP_VERSION,
@@ -120,6 +139,10 @@ export class LedgerClient {
   };
 
   getPublicKey = async ({ derivationPath }: GetPublicKeyParams) => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     const res = await this.transport.send(
       CLA,
       INS_GET_PUBLIC_KEY,
@@ -132,6 +155,10 @@ export class LedgerClient {
   };
 
   sign = async ({ data, derivationPath }: SignParams) => {
+    if (!this.transport) {
+      throw new Error("Device not connected");
+    }
+
     // NOTE: getVersion call resets state to avoid starting from partially filled buffer
     await this.getVersion();
 
