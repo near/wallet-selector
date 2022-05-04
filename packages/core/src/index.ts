@@ -16,6 +16,7 @@ export {
 
 export {
   WalletModuleFactory,
+  WalletModule,
   WalletBehaviourFactory,
   WalletBehaviourOptions,
   Wallet,

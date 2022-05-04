@@ -4,7 +4,7 @@ import { logger, EventEmitter, storage } from "../services";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { WalletModuleFactory, Wallet } from "../wallet";
 import { setupWalletInstance } from "./wallet-instances";
-import { PENDING_SELECTED_WALLET_ID, SELECTED_WALLET_ID } from "../constants";
+import { PENDING_SELECTED_WALLET_ID } from "../constants";
 
 interface WalletModulesParams {
   factories: Array<WalletModuleFactory>;
@@ -74,8 +74,8 @@ export const setupWalletModules = async ({
         }
 
         instance = await setupWalletInstance({
+          modules,
           module,
-          getWallet,
           store,
           options,
           emitter,

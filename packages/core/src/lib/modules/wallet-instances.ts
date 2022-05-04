@@ -1,21 +1,21 @@
 import { EventEmitter, logger, Provider, storage } from "../services";
-import { Wallet, WalletEvents, WalletModuleFactory } from "../wallet";
-import { Store } from "../store.types";
+import { Wallet, WalletEvents, WalletModule } from "../wallet";
+import { ModuleState, Store } from "../store.types";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { PENDING_SELECTED_WALLET_ID } from "../constants";
 import { Options } from "../options.types";
 
 interface WalletInstanceParams {
-  module: NonNullable<Awaited<ReturnType<WalletModuleFactory>>>;
-  getWallet: (id: string | null) => Promise<Wallet | null>;
+  modules: Array<ModuleState>;
+  module: WalletModule;
   store: Store;
   options: Options;
   emitter: EventEmitter<WalletSelectorEvents>;
 }
 
 export const setupWalletInstance = async ({
+  modules,
   module,
-  getWallet,
   store,
   options,
   emitter,
@@ -46,14 +46,15 @@ export const setupWalletInstance = async ({
     }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
-      const wallet = (await getWallet(selectedWalletId))!;
+      const selectedModule = modules.find((x) => x.id === selectedWalletId)!;
+      const selectedWallet = await selectedModule.wallet();
 
-      await wallet.disconnect().catch((err) => {
+      await selectedWallet.disconnect().catch((err) => {
         logger.log("Failed to disconnect existing wallet");
         logger.error(err);
 
         // At least clean up state on our side.
-        handleDisconnected(wallet.id);
+        handleDisconnected(selectedWallet.id);
       });
     }
 
