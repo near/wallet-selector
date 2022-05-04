@@ -84,7 +84,7 @@ export function setupMyWallet({
 - `metadata`: Metadata for displaying information to the user.
 - `init`: The implementation (behaviour) of the wallet.
 
-A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and used by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
+A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and accessed by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
 
 Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
 
