@@ -29,12 +29,12 @@ const setupWalletConnectState = async (
   params: WalletConnectExtraOptions
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
-  const session: SessionTypes.Settled | null = null;
+  let session: SessionTypes.Settled | null = null;
 
   await client.init(params);
 
   if (client.session.topics.length) {
-    await client.session.get(client.session.topics[0]);
+    session = await client.session.get(client.session.topics[0]);
   }
 
   return {
