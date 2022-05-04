@@ -78,6 +78,7 @@ const WalletConnect: WalletBehaviourFactory<
     _state.subscriptions.forEach((subscription) => subscription.remove());
 
     _state.subscriptions = [];
+    _state.session = null;
   };
 
   const disconnect = async () => {
@@ -151,6 +152,8 @@ const WalletConnect: WalletBehaviourFactory<
             },
           },
         });
+
+        setupEvents();
 
         return getAccounts();
       } catch (err) {
