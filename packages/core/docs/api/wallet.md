@@ -15,7 +15,6 @@ TODO: Description here.
 ```ts
 (async () => {
   const wallet = await selector.wallet("near-wallet");
-  
   console.log(wallet.id); // "near-wallet"
 })();
 ```
@@ -35,7 +34,6 @@ TODO: Description here.
 ```ts
 (async () => {
   const wallet = await selector.wallet("math-wallet");
-  
   console.log(wallet.type); // "injected"
 })();
 ```
@@ -55,7 +53,6 @@ TODO: Description here.
 ```ts
 (async () => {
   const wallet = await selector.wallet("sender");
-  
   console.log(wallet.metadata); // { name: "Sender", ... }
 })();
 ```
@@ -154,7 +151,6 @@ Returns one or more accounts when connected. This method can be useful for walle
 (async () => {
   const wallet = await selector.wallet("sender");
   const accounts = await wallet.getAccounts();
-  
   console.log(accounts); // [{ accountId: "test.testnet" }]
 })();
 ```
@@ -183,7 +179,6 @@ Signs one or more NEAR Actions before sending to the network. The user must be c
 ```ts
 (async () => {
   const wallet = await selector.wallet("sender");
-  
   await wallet.signAndSendTransaction({
     actions: [{
       type: "FunctionCall",
@@ -220,7 +215,6 @@ Signs one or more transactions before sending to the network. The user must be c
 ```ts
 (async () => {
   const wallet = await selector.wallet("sender");
-
   await wallet.signAndSendTransactions({
     transactions: [{
       receiverId: "guest-book.testnet",

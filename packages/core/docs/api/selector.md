@@ -51,12 +51,13 @@ console.log(selector.connected); // true
 
 **Description**
 
-TODO: Description here.
+Retrieve the current state of the selector. See [State](./state.md) for more information about `WalletSelectorState`.
 
 **Example**
 
 ```ts
-selector.store.getState();
+const state = selector.store.getState();
+console.log(state); // { modules: [{ id: "near-wallet", ... }], ... }
 ```
 
 ### `.store.observable`
