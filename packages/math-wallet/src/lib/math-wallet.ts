@@ -25,12 +25,8 @@ interface MathWalletState {
   wallet: InjectedMathWallet;
 }
 
-const isInstalled = async () => {
-  try {
-    return waitFor(() => !!window.nearWalletApi);
-  } catch (err) {
-    return false;
-  }
+const isInstalled = () => {
+  return waitFor(() => !!window.nearWalletApi).catch(() => false);
 };
 
 const setupMathWalletState = async (

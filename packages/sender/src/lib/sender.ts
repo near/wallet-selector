@@ -26,12 +26,8 @@ interface SenderState {
   wallet: InjectedSender;
 }
 
-const isInstalled = async () => {
-  try {
-    return waitFor(() => !!window.near?.isSender);
-  } catch (err) {
-    return false;
-  }
+const isInstalled = () => {
+  return waitFor(() => !!window.near?.isSender).catch(() => false);
 };
 
 const setupSenderState = (): SenderState => {

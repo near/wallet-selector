@@ -2,11 +2,11 @@ const wait = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const poll = (
+const poll = async (
   cb: () => boolean,
   interval: number,
   remaining: number
-): Promise<unknown> | boolean | undefined => {
+): Promise<boolean> => {
   const result = cb();
 
   if (result) {
@@ -14,7 +14,7 @@ const poll = (
   }
 
   if (!remaining) {
-    return;
+    throw new Error("Exceeded timeout");
   }
 
   return wait(interval).then(() => poll(cb, interval, remaining - 1));
