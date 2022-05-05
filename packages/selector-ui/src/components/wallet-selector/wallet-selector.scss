@@ -1,3 +1,32 @@
 :host {
   display: block;
 }
+
+.Modal-content {
+  max-width: 700px;
+  max-height: 70vh;
+  width: 400px;
+  background-color: var(--white);
+  margin: 10px;
+  border-radius: 16px;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.Modal-content {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.Modal-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.Modal-header h2 {
+  color: var(--black);
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}

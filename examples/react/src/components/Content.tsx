@@ -14,6 +14,7 @@ import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
 import { Components } from "@near-wallet-selector/selector-ui/loader";
+import { WalletSelectorModal } from "@near-wallet-selector/react-selector-ui";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -24,7 +25,14 @@ const Content: React.FC = () => {
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   const modalRef = useRef<HTMLWalletSelectorModalElement>(null);
+  // useEffect(() => {
+  //   const modal = modalRef.current;
+  //   if (modalRef.current && modalRef.current) {
+  //     modal?.show();
+  //   }
+  // }, []);
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {
@@ -87,7 +95,7 @@ const Content: React.FC = () => {
       return;
     }
     modal.setSelector(selector as unknown as Components.WalletSelector);
-  }, [selector]);
+  }, [selector, account]);
 
   useEffect(() => {
     if (!selector) {
@@ -96,7 +104,7 @@ const Content: React.FC = () => {
   }, [selector]);
 
   const handleSignIn = () => {
-    // modalRef.current!.show();
+    modalRef.current!.show();
   };
 
   const handleSignOut = () => {
@@ -110,7 +118,7 @@ const Content: React.FC = () => {
   };
 
   const handleSwitchProvider = () => {
-    // modalRef.current!.show();
+    modalRef.current!.show();
   };
 
   const handleSwitchAccount = () => {
@@ -233,6 +241,7 @@ const Content: React.FC = () => {
         <div>
           <button onClick={handleSignIn}>Log in</button>
         </div>
+        <WalletSelectorModal ref={modalRef} />
         <SignIn />
       </Fragment>
     );
@@ -240,6 +249,7 @@ const Content: React.FC = () => {
 
   return (
     <Fragment>
+      <WalletSelectorModal ref={modalRef} />
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchProvider}>Switch Provider</button>

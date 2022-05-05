@@ -13,7 +13,7 @@ export class WalletSelectorModal {
   @Element() el: HTMLWalletSelectorModalElement;
 
   @State()
-  opened: boolean = true;
+  opened: boolean = false;
 
   /**
    * The prefered theme for the modal.
@@ -49,11 +49,11 @@ export class WalletSelectorModal {
   }
 
   render() {
-    if (!this.opened) return null;
-    return <div class={this.getThemeClass()}>
+    // if (!this.opened) return null;
+    return <div class={this.getThemeClass()} style={{display: this.opened ? "block": "none"}}>
       <div class="Modal">
         <wallet-selector>
-          <close-button slot="close-btn"></close-button>
+          <close-button slot="close-btn" />
         </wallet-selector>
       </div>
     </div>

@@ -65,6 +65,8 @@ graph TD;
   wallet-selector-modal --> wallet-selector
   wallet-selector-modal --> close-button
   wallet-selector --> alert-message
+  wallet-selector --> wallet-options
+  wallet-selector --> ledger-derivation-path
   style wallet-selector-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
