@@ -27,7 +27,7 @@ console.log(selector.options); // { contractId: "guest-book.testnet", ... }
 
 **Returns**
 
-- `boolean`: TODO.
+- `boolean`
 
 **Description**
 
@@ -47,9 +47,7 @@ console.log(selector.connected); // true
 
 **Returns**
 
-- `modules` (`Array<ModuleState>`): TODO.
-- `accounts` (`Array<AccountState>`): TODO.
-- `selectedWalletId` (`string | null`): TODO.
+- `WalletSelectorState`
 
 **Description**
 
@@ -69,7 +67,7 @@ selector.store.getState();
 
 **Returns**
 
-- `Observable<WalletSelectorState>`: TODO.
+- `Observable<WalletSelectorState>`
 
 **Description**
 
@@ -91,7 +89,7 @@ selector.store.observable.subscribe((state) => {
 
 **Returns**
 
-- `Promise<Wallet>`: TODO.
+- `Promise<Wallet>`
 
 **Description**
 
@@ -100,14 +98,17 @@ Removes the event handler attached to the given `event`.
 **Example**
 
 ```ts
-const handleNetworkChanged = ({
-  networkId
-}: WalletSelectorEvents["networkChanged"]) => {
-  console.log(`Network changed to ${networkId}`);
-}
+// Selected wallet.
+(async () => {
+  const wallet = await selector.wallet();
+  const accounts = await wallet.getAccounts();
+})();
 
-selector.on("networkChanged", handleNetworkChanged);
-selector.off("networkChanged", handleNetworkChanged);
+// Specific wallet.
+(async () => {
+  const wallet = await selector.wallet("near-wallet");
+  const accounts = await wallet.connect();
+})();
 ```
 
 ### `.show()`
@@ -159,7 +160,7 @@ selector.hide();
 
 **Returns**
 
-- `remove` (`Function`): Removes the event handler.
+- `Subscription`
 
 **Description**
 

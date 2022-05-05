@@ -50,5 +50,7 @@ export {
   DeleteAccountAction,
 } from "./lib/wallet";
 
+export { FinalExecutionOutcome } from "near-api-js/lib/providers";
+
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
