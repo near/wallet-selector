@@ -49,17 +49,17 @@ npm install \
 Then them in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
   contractId: "guest-book.testnet",
-  wallets: [
+  modules: [
     setupNearWallet(),
     setupSender(),
     setupLedger(),
