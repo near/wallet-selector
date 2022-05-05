@@ -51,7 +51,7 @@ console.log(selector.connected); // true
 
 **Description**
 
-Retrieve the current state. See [State](./state.md) for more information about `WalletSelectorState`.
+Retrieve the current state. You can find more information on `WalletSelectorState` [here](./state.md).
 
 **Example**
 
@@ -68,7 +68,7 @@ console.log(state); // { modules: [{ id: "near-wallet", ... }], ... }
 
 **Description**
 
-Subscribe to state changes using the (RxJS) Observable pattern. See [State](./state.md) for more information about `WalletSelectorState`.
+Subscribe to state changes using the (RxJS) Observable pattern. You can find more information on `WalletSelectorState` [here](./state.md).
 
 **Example**
 
@@ -103,7 +103,7 @@ selector.store.observable
 
 **Description**
 
-Programmatically access wallets and call their methods. It's advised to use `state.modules` if you only need access to `id`, `type` or `metadata` as it avoids initialising. See [Wallet](./wallet.md) for more information about `Wallet`.
+Programmatically access wallets and call their methods. It's advised to use `state.modules` if you only need access to `id`, `type` or `metadata` as it avoids initialising. You can find more information on `Wallet` [here](./wallet.md).
 
 > Note: This function will throw when calling without an ID and there is no selected wallet.  
 

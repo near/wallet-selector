@@ -178,7 +178,7 @@ Returns one or more accounts when connected. This method can be useful for walle
 - `params` (`object`)
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
   - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
-  - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). See [Transactions](./transactions.md) for more information.
+  - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
 
 **Returns**
 
@@ -214,7 +214,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be c
 **Parameters**
 
 - `params` (`object`)
-  - `transactions` (`Array<Transaction>`): NEAR Transactions(s) to sign and send to the network. See [Transactions](./transactions.md) for more information.
+  - `transactions` (`Array<Transaction>`): NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` [here](./transactions.md).
 
 **Returns**
 
