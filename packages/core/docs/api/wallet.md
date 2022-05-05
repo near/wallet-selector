@@ -1,5 +1,65 @@
 ## API Reference (Wallet)
 
+### `.id`
+
+**Returns**
+
+- `string`
+
+**Description**
+
+TODO: Description here.
+
+**Example**
+
+```ts
+(async () => {
+  const wallet = await selector.wallet("near-wallet");
+  
+  console.log(wallet.id); // "near-wallet"
+})();
+```
+
+### `.type`
+
+**Returns**
+
+- `WalletType`
+
+**Description**
+
+TODO: Description here.
+
+**Example**
+
+```ts
+(async () => {
+  const wallet = await selector.wallet("math-wallet");
+  
+  console.log(wallet.type); // "injected"
+})();
+```
+
+### `.metadata`
+
+**Returns**
+
+- `WalletMetadata`
+
+**Description**
+
+TODO: Description here.
+
+**Example**
+
+```ts
+(async () => {
+  const wallet = await selector.wallet("sender");
+  
+  console.log(wallet.metadata); // { name: "Sender", ... }
+})();
+```
+
 ### `.connect(params)`
 
 **Parameters**
