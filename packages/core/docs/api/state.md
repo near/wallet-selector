@@ -5,14 +5,14 @@
 **Returns**
 
 - `Array<ModuleState>`
-  - `id` (`string`): TODO.
-  - `type` (`string`): TODO.
-  - `metadata` (`string`): TODO.
-  - `wallet` (`Function<Promise<Wallet>>`): TODO.
+  - `id` (`string`): Unique identifier for the wallet
+  - `type` (`string`): Type of the wallet.
+  - `metadata` (`string`): Meta information about the wallet.
+  - `wallet` (`Function<Promise<Wallet>>`): Access functionality of the wallet.
 
 **Description**
 
-TODO: Description here.
+Returns the list of available modules.
 
 **Example**
 
@@ -26,11 +26,11 @@ console.log(modules); // [{ id: "near-wallet", ... }]
 **Returns**
 
 - `Array<AccountState>`
-  - `accountId` (`string`): TODO.
+  - `accountId` (`string`): NEAR account identifier.
 
 **Description**
 
-TODO: Description here.
+Returns the list of connected accounts.
 
 **Example**
 
@@ -47,7 +47,7 @@ console.log(accounts); // [{ accountId: "test.testnet" }]
 
 **Description**
 
-TODO: Description here.
+Returns the ID of the selected wallet.
 
 **Example**
 
