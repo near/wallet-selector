@@ -30,7 +30,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `network` (`string | object`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
+- `network` (`NetworkId | Network`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
   - `networkId` (`string`): Custom network ID (e.g. `localnet`).
   - `nodeUrl` (`string`): Custom URL for RPC requests.
   - `helperUrl` (`string`): Custom URL for creating accounts.
@@ -39,8 +39,8 @@ const selector = await setupWalletSelector({
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `debug`: (`boolean?`): Enable internal logging for debugging purposes.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
-- `ui`: (`object?`)
-  - `theme` (`string?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
+- `ui`: (`ModalOptions?`)
+  - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
   - `description` (`string?`): Define a custom description in the UI.
 
 ## API Reference

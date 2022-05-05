@@ -83,7 +83,7 @@ selector.store.observable.subscribe((state) => {
 });
 ```
 
-### `.wallet()`
+### `.wallet(id)`
 
 **Parameters**
 
