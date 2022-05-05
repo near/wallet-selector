@@ -15,7 +15,7 @@
 
 **Description**
 
-TODO: Description here.
+Resolved variation of the options passed to `setupWalletSelector`.
 
 **Example**
 
@@ -31,7 +31,7 @@ console.log(selector.options); // { contractId: "guest-book.testnet", ... }
 
 **Description**
 
-TODO: Description here.
+Determines whether we're connected to one or more accounts.
 
 **Example**
 
@@ -51,7 +51,7 @@ console.log(selector.connected); // true
 
 **Description**
 
-Retrieve the current state of the selector. See [State](./state.md) for more information about `WalletSelectorState`.
+Retrieve the current state. See [State](./state.md) for more information about `WalletSelectorState`.
 
 **Example**
 
@@ -62,31 +62,40 @@ console.log(state); // { modules: [{ id: "near-wallet", ... }], ... }
 
 ### `.store.observable`
 
-****Parameters****
-
-- N/A
-
 **Returns**
 
 - `Observable<WalletSelectorState>`
 
 **Description**
 
-TODO: Description here.
+Subscribe to state changes using the (RxJS) Observable pattern.
 
 **Example**
 
 ```ts
+import { map, distinctUntilChanged } from "rxjs";
+
+// Subscribe to all state changes.
 selector.store.observable.subscribe((state) => {
   console.log("State changed:", state);
 });
+
+// Subscribe to account state changes.
+selector.store.observable
+  .pipe(
+    map((state) => state.accounts),
+    distinctUntilChanged()
+  )
+  .subscribe((accounts) => {
+    console.log("Accounts changed", accounts);
+  });
 ```
 
 ### `.wallet(id)`
 
 **Parameters**
 
-- `id` (`string?`): TODO.
+- `id` (`string?`): ID of wallet. Defaults to the selected wallet.
 
 **Returns**
 
@@ -94,7 +103,9 @@ selector.store.observable.subscribe((state) => {
 
 **Description**
 
-Removes the event handler attached to the given `event`.
+Programmatically access wallets and call their methods. It's advised to use `state.modules` if you only need access to `id`, `type` or `metadata` as it avoids initialising.
+
+> Note: This function will throw when calling without an ID and there is no selected wallet.  
 
 **Example**
 
