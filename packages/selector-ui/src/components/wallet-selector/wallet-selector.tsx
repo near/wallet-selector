@@ -34,11 +34,16 @@ export class WalletSelectorComponent {
           this.routeName === "WalletOptions" &&
           <wallet-options
             selector={this.selector}
-            onOnConnectHardwareWallet={() => {
+            onNearConnectHardwareWallet={() => {
               this.routeName = "LedgerDerivationPath"
             }}
           />}
-        {this.routeName === "LedgerDerivationPath" && <ledger-derivation-path  />}
+        {this.routeName === "LedgerDerivationPath" &&
+        <ledger-derivation-path
+          selector={this.selector}
+          onNearBackEventLedger={() => {{ this.routeName = "WalletOptions"; }}}
+        />
+        }
           {/* {routeName === "AlertMessage" && alertMessage && (
             <AlertMessage
               message={alertMessage}

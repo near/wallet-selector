@@ -29,7 +29,7 @@ export class WalletOptions {
   @State() connecting = false;
   @State() walletInfoVisible = false;
 
-  @Event() onConnectHardwareWallet: EventEmitter<MouseEvent>;
+  @Event() nearConnectHardwareWallet: EventEmitter<MouseEvent>;
 
   async getAvailableWallets (wallets: Array<WalletState>)  {
     const result: Array<WalletState> = [];
@@ -51,7 +51,7 @@ export class WalletOptions {
     }
 
     if (wallet.type === "hardware") {
-      return this.onConnectHardwareWallet.emit();
+      return this.nearConnectHardwareWallet.emit();
     }
 
     this.connecting = true;

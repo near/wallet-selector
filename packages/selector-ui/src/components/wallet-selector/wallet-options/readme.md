@@ -15,9 +15,9 @@
 
 ## Events
 
-| Event                     | Description | Type                      |
-| ------------------------- | ----------- | ------------------------- |
-| `onConnectHardwareWallet` |             | `CustomEvent<MouseEvent>` |
+| Event                       | Description | Type                      |
+| --------------------------- | ----------- | ------------------------- |
+| `nearConnectHardwareWallet` |             | `CustomEvent<MouseEvent>` |
 
 
 ## Dependencies

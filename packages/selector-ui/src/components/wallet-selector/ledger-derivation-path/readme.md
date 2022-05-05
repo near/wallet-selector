@@ -5,6 +5,20 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property   | Attribute  | Description | Type  | Default     |
+| ---------- | ---------- | ----------- | ----- | ----------- |
+| `selector` | `selector` |             | `any` | `undefined` |
+
+
+## Events
+
+| Event                 | Description | Type                      |
+| --------------------- | ----------- | ------------------------- |
+| `nearBackEventLedger` |             | `CustomEvent<MouseEvent>` |
+
+
 ## Dependencies
 
 ### Used by

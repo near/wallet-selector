@@ -15,6 +15,7 @@ export namespace Components {
     interface CloseButton {
     }
     interface LedgerDerivationPath {
+        "selector": any;
     }
     interface WalletOptions {
         "options"?: ModalOptions;
@@ -94,9 +95,11 @@ declare namespace LocalJSX {
         "onNearModalCloseEvent"?: (event: CustomEvent<MouseEvent>) => void;
     }
     interface LedgerDerivationPath {
+        "onNearBackEventLedger"?: (event: CustomEvent<MouseEvent>) => void;
+        "selector"?: any;
     }
     interface WalletOptions {
-        "onOnConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
+        "onNearConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
         "options"?: ModalOptions;
         "selector"?: any;
     }

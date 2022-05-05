@@ -1,3 +1,74 @@
 :host {
   display: block;
 }
+
+.derivation-paths-list {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+input, button {
+  background: inherit;
+  font-size: 14.2px;
+  font-family: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-color: inherit;
+  border-radius: 40px;
+  margin-top: 8px;
+  padding: 0.55em 1.4em;
+  text-align: center;
+  color: inherit;
+  font-family: inherit;
+  transition: background 150ms ease-in-out;
+  line-height: 1.15;
+  cursor: pointer;
+}
+
+input:focus {
+  border: 2px solid rgb(64, 153, 255);
+}
+
+.derivation-paths--actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.path-option-highlighted {
+  border-color: var(--blue)!important;
+}
+
+.error {
+  font-family: inherit;
+  color: var(--red);
+}
+.info {
+  margin-top: 20px;
+}
+
+.info span {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.left-button {
+  border: 0.5px solid var(--light-gray);
+}
+.left-button:hover {
+  background-color: var(--dark-gray-op-30);
+}
+
+.right-button {
+  color: var(--white);
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
+}
+
+.right-button:hover {
+  background-color: rgb(89 166 255);
+}
