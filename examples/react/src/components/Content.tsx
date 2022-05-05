@@ -235,36 +235,37 @@ const Content: React.FC = () => {
     return null;
   }
 
-  if (!account) {
-    return (
-      <Fragment>
-        <div>
-          <button onClick={handleSignIn}>Log in</button>
-        </div>
-        <WalletSelectorModal ref={modalRef} />
-        <SignIn />
-      </Fragment>
-    );
-  }
-
   return (
     <Fragment>
       <WalletSelectorModal ref={modalRef} />
-      <div>
-        <button onClick={handleSignOut}>Log out</button>
-        <button onClick={handleSwitchProvider}>Switch Provider</button>
-        <button onClick={handleSendMultipleTransactions}>
-          Send Multiple Transactions
-        </button>
-        {accounts.length > 1 && (
-          <button onClick={handleSwitchAccount}>Switch Account</button>
-        )}
-      </div>
-      <Form
-        account={account}
-        onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
-      />
-      <Messages messages={messages} />
+      {!account && (
+        <div>
+          <div>
+            <button onClick={handleSignIn}>Log in</button>
+          </div>
+          <WalletSelectorModal ref={modalRef} />
+          <SignIn />
+        </div>
+      )}
+      {account && (
+        <div>
+          <div>
+            <button onClick={handleSignOut}>Log out</button>
+            <button onClick={handleSwitchProvider}>Switch Provider</button>
+            <button onClick={handleSendMultipleTransactions}>
+              Send Multiple Transactions
+            </button>
+            {accounts.length > 1 && (
+              <button onClick={handleSwitchAccount}>Switch Account</button>
+            )}
+          </div>
+          <Form
+            account={account}
+            onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
+          />
+          <Messages messages={messages} />
+        </div>
+      )}
     </Fragment>
   );
 };

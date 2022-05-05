@@ -15,6 +15,16 @@ export class WalletSelectorComponent {
   @Method()
   async setSelector(selector: unknown): Promise<void> {
     this.selector = selector;
+    // @ts-ignore
+    this.selector.on("networkChanged", ({ networkId }) => {
+      // Switched back to the correct network.
+      // @ts-ignore
+      if (networkId === selector.options.network.networkId) {
+        return this.handleDismissClick();
+      }
+
+      this.routeName = "WalletNetworkChanged";
+    });
   }
 
   handleDismissClick() {
