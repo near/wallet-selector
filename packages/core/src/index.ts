@@ -1,6 +1,7 @@
 export {
   WalletSelector,
   WalletSelectorParams,
+  WalletSelectorEvents,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
