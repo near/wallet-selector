@@ -9,6 +9,7 @@ import { Component, Method, h, State } from "@stencil/core";
 export class WalletSelectorComponent {
   @State() selector: unknown;
   @State() routeName = "WalletOptions";
+  @State() errorMessage: string;
 
   @Method()
   async setSelector(selector: unknown): Promise<void> {
@@ -26,8 +27,11 @@ export class WalletSelectorComponent {
         </div>
         {this.routeName === "AlertMessage" &&
           <alert-message
-            message="This is a message"
-            onNearBackEvent={() => { this.routeName = "WalletOptions"; } }
+            message={this.errorMessage}
+            onNearBackEvent={() => {
+              this.errorMessage = null;
+              this.routeName = "WalletOptions";
+            } }
           />
         }
         {
@@ -36,6 +40,10 @@ export class WalletSelectorComponent {
             selector={this.selector}
             onNearConnectHardwareWallet={() => {
               this.routeName = "LedgerDerivationPath"
+            }}
+            onNearErrorWalletOptions={(e) => {
+              this.errorMessage = e.detail;
+              this.routeName = "AlertMessage";
             }}
           />}
         {this.routeName === "LedgerDerivationPath" &&

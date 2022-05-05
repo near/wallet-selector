@@ -100,6 +100,7 @@ declare namespace LocalJSX {
     }
     interface WalletOptions {
         "onNearConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
+        "onNearErrorWalletOptions"?: (event: CustomEvent<string>) => void;
         "options"?: ModalOptions;
         "selector"?: any;
     }

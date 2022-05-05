@@ -30,6 +30,7 @@ export class WalletOptions {
   @State() walletInfoVisible = false;
 
   @Event() nearConnectHardwareWallet: EventEmitter<MouseEvent>;
+  @Event() nearErrorWalletOptions: EventEmitter<string>;
 
   async getAvailableWallets (wallets: Array<WalletState>)  {
     const result: Array<WalletState> = [];
@@ -69,7 +70,7 @@ export class WalletOptions {
         // logger.log(`Failed to select ${wallet.name}`);
         // logger.error(err);
 
-        // onError(`Failed to connect with ${wallet.name}: ${err.message}`);
+        this.nearErrorWalletOptions.emit(`Failed to connect with ${wallet.name}: ${err.message}`);
       })
       .finally(() => this.connecting = false);
   };

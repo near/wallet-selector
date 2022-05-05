@@ -18,6 +18,7 @@
 | Event                       | Description | Type                      |
 | --------------------------- | ----------- | ------------------------- |
 | `nearConnectHardwareWallet` |             | `CustomEvent<MouseEvent>` |
+| `nearErrorWalletOptions`    |             | `CustomEvent<string>`     |
 
 
 ## Dependencies
