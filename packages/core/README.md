@@ -37,9 +37,9 @@ const selector = await setupWalletSelector({
   - `explorerUrl` (`string`): Custom URL for the NEAR explorer.
 - `contractId` (`string`): Account ID of the Smart Contract used for `connect` and signing transactions.
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
-- `debug`: (`boolean?`): Enable internal logging for debugging purposes.
+- `debug` (`boolean?`): Enable internal logging for debugging purposes.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
-- `ui`: (`ModalOptions?`)
+- `ui` (`ModalOptions?`)
   - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
   - `description` (`string?`): Define a custom description in the UI.
 
