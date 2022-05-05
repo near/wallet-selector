@@ -1,15 +1,14 @@
 import { providers } from "near-api-js";
-import { AccountState } from "../store.types";
-import { Options } from "../options.types";
+
 import {
   EventEmitterService,
   LoggerService,
   ProviderService,
   StorageService,
 } from "../services";
-import { Action } from "./transactions.types";
+import { Options } from "../options.types";
+import { Transaction, Action } from "./transactions.types";
 import { Optional } from "../utils.types";
-import { Transaction } from "./transactions.types";
 
 interface BaseWalletMetadata {
   name: string;
@@ -27,6 +26,10 @@ type BaseWallet<
   metadata: Metadata;
 } & Behaviour;
 
+export interface Account {
+  accountId: string;
+}
+
 export interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
@@ -38,9 +41,9 @@ export interface SignAndSendTransactionsParams {
 }
 
 export type WalletEvents = {
-  connected: { accounts: Array<AccountState> };
+  connected: { accounts: Array<Account> };
   disconnected: null;
-  accountsChanged: { accounts: Array<AccountState> };
+  accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
 };
 
@@ -49,9 +52,9 @@ export type WalletEvents = {
 export type BrowserWalletMetadata = BaseWalletMetadata;
 
 export interface BrowserWalletBehaviour {
-  connect(): Promise<Array<AccountState>>;
+  connect(): Promise<Array<Account>>;
   disconnect(): Promise<void>;
-  getAccounts(): Promise<Array<AccountState>>;
+  getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(params: SignAndSendTransactionParams): Promise<void>;
   signAndSendTransactions(params: SignAndSendTransactionsParams): Promise<void>;
 }
@@ -69,9 +72,9 @@ export type InjectedWalletMetadata = BaseWalletMetadata & {
 };
 
 export interface InjectedWalletBehaviour {
-  connect(): Promise<Array<AccountState>>;
+  connect(): Promise<Array<Account>>;
   disconnect(): Promise<void>;
-  getAccounts(): Promise<Array<AccountState>>;
+  getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;
@@ -95,9 +98,9 @@ export interface HardwareWalletConnectParams {
 }
 
 export interface HardwareWalletBehaviour {
-  connect(params: HardwareWalletConnectParams): Promise<Array<AccountState>>;
+  connect(params: HardwareWalletConnectParams): Promise<Array<Account>>;
   disconnect(): Promise<void>;
-  getAccounts(): Promise<Array<AccountState>>;
+  getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;
@@ -117,9 +120,9 @@ export type HardwareWallet = BaseWallet<
 export type BridgeWalletMetadata = BaseWalletMetadata;
 
 export interface BridgeWalletBehaviour {
-  connect(): Promise<Array<AccountState>>;
+  connect(): Promise<Array<Account>>;
   disconnect(): Promise<void>;
-  getAccounts(): Promise<Array<AccountState>>;
+  getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;

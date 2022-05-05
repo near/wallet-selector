@@ -82,7 +82,7 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 
 **Returns**
 
-- `Promise<Array<AccountState>>`
+- `Promise<Array<Account>>`
 
 **Description**
 
@@ -155,7 +155,7 @@ Disconnects from the wallet.
 
 **Returns**
 
-- `Promise<Array<AccountState>>`
+- `Promise<Array<Account>>`
 
 **Description**
 

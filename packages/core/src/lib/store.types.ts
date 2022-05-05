@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Wallet } from "./wallet";
+import { Wallet, Account } from "./wallet";
 
 export type ModuleState<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
@@ -9,9 +9,7 @@ export type ModuleState<Variation extends Wallet = Wallet> = {
   wallet(): Promise<Variation>;
 };
 
-export interface AccountState {
-  accountId: string;
-}
+export type AccountState = Account;
 
 export interface WalletSelectorState {
   modules: Array<ModuleState>;
