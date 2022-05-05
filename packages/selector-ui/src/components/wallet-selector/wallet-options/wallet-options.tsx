@@ -31,6 +31,7 @@ export class WalletOptions {
 
   @Event() nearConnectHardwareWallet: EventEmitter<MouseEvent>;
   @Event() nearErrorWalletOptions: EventEmitter<string>;
+  @Event() nearConnected: EventEmitter<void>;
 
   async getAvailableWallets (wallets: Array<WalletState>)  {
     const result: Array<WalletState> = [];
@@ -59,7 +60,7 @@ export class WalletOptions {
 
     wallet
       .connect()
-      .then(() => console.log("connected"))
+      .then(() => this.nearConnected.emit())
       .catch((err) => {
         // if (errors.isWalletNotInstalledError(err)) {
         //   return onWalletNotInstalled(wallet);

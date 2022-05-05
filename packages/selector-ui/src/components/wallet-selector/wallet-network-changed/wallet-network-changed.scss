@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+button {
+  background: inherit;
+  font-size: 14.2px;
+  font-family: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-color: inherit;
+  border-radius: 40px;
+  margin-top: 8px;
+  padding: 0.55em 1.4em;
+  text-align: center;
+  color: inherit;
+  font-family: inherit;
+  transition: background 150ms ease-in-out;
+  line-height: 1.15;
+  cursor: pointer;
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-button {
+  border: 0.5px solid var(--light-gray);
+}
+.left-button:hover {
+  background-color: var(--dark-gray-op-30);
+}
+
+.right-button {
+  color: var(--white);
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
+}
+
+.right-button:hover {
+  background-color: rgb(89 166 255);
+}
+
+.Modal-switch-network-message .header h2 {
+  font-size: 18px;
+  margin-top: 0px;
+  color: var(--black);
+}
+
+.Modal-switch-network-message .content p {
+  font-size: 14.25px;
+}
+
+.Modal-switch-network-message .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+

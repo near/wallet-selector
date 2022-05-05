@@ -7,6 +7,7 @@ import { Component, Method, h, State } from "@stencil/core";
   shadow: true,
 })
 export class WalletSelectorComponent {
+
   @State() selector: unknown;
   @State() routeName = "WalletOptions";
   @State() errorMessage: string;
@@ -14,6 +15,13 @@ export class WalletSelectorComponent {
   @Method()
   async setSelector(selector: unknown): Promise<void> {
     this.selector = selector;
+  }
+
+  handleDismissClick() {
+    const component = document.querySelector('wallet-selector-modal');
+    component.hide();
+    this.routeName = "WalletOptions";
+    this.errorMessage = null;
   }
 
   render() {
@@ -25,14 +33,15 @@ export class WalletSelectorComponent {
           </slot>
           <slot name="close-btn" />
         </div>
-        {this.routeName === "AlertMessage" &&
-          <alert-message
-            message={this.errorMessage}
-            onNearBackEvent={() => {
-              this.errorMessage = null;
-              this.routeName = "WalletOptions";
-            } }
-          />
+        {
+          this.routeName === "AlertMessage" &&
+            <alert-message
+              message={this.errorMessage}
+              onNearBackEvent={() => {
+                this.errorMessage = null;
+                this.routeName = "WalletOptions";
+              } }
+            />
         }
         {
           this.routeName === "WalletOptions" &&
@@ -45,22 +54,28 @@ export class WalletSelectorComponent {
               this.errorMessage = e.detail;
               this.routeName = "AlertMessage";
             }}
-          />}
-        {this.routeName === "LedgerDerivationPath" &&
-        <ledger-derivation-path
-          selector={this.selector}
-          onNearBackEventLedger={() => {{ this.routeName = "WalletOptions"; }}}
-        />
+            onNearConnected={this.handleDismissClick}
+          />
         }
-          {/* {routeName === "AlertMessage" && alertMessage && (
-            <AlertMessage
-              message={alertMessage}
-              onBack={() => {
-                setAlertMessage(null);
-                setRouteName("WalletOptions");
+        {
+          this.routeName === "LedgerDerivationPath" &&
+          <ledger-derivation-path
+            selector={this.selector}
+            onNearBackEventLedger={() => {{ this.routeName = "WalletOptions"; }}}
+          />
+        }
+
+        {
+          this.routeName === "WalletNetworkChanged" &&
+            <wallet-network-changed
+              selector={this.selector}
+              onNearSwitchWallet={() => {
+                this.routeName = "WalletOptions";
               }}
+              onNearWalletNetworkDismiss={this.handleDismissClick}
             />
-          )} */}
+        }
+
           {/* {routeName === "WalletOptions" && (
             <WalletOptions
               selector={selector}

@@ -17,6 +17,9 @@ export namespace Components {
     interface LedgerDerivationPath {
         "selector": any;
     }
+    interface WalletNetworkChanged {
+        "selector": any;
+    }
     interface WalletOptions {
         "options"?: ModalOptions;
         "selector": any;
@@ -59,6 +62,12 @@ declare global {
         prototype: HTMLLedgerDerivationPathElement;
         new (): HTMLLedgerDerivationPathElement;
     };
+    interface HTMLWalletNetworkChangedElement extends Components.WalletNetworkChanged, HTMLStencilElement {
+    }
+    var HTMLWalletNetworkChangedElement: {
+        prototype: HTMLWalletNetworkChangedElement;
+        new (): HTMLWalletNetworkChangedElement;
+    };
     interface HTMLWalletOptionsElement extends Components.WalletOptions, HTMLStencilElement {
     }
     var HTMLWalletOptionsElement: {
@@ -81,6 +90,7 @@ declare global {
         "alert-message": HTMLAlertMessageElement;
         "close-button": HTMLCloseButtonElement;
         "ledger-derivation-path": HTMLLedgerDerivationPathElement;
+        "wallet-network-changed": HTMLWalletNetworkChangedElement;
         "wallet-options": HTMLWalletOptionsElement;
         "wallet-selector": HTMLWalletSelectorElement;
         "wallet-selector-modal": HTMLWalletSelectorModalElement;
@@ -98,8 +108,14 @@ declare namespace LocalJSX {
         "onNearBackEventLedger"?: (event: CustomEvent<MouseEvent>) => void;
         "selector"?: any;
     }
+    interface WalletNetworkChanged {
+        "onNearSwitchWallet"?: (event: CustomEvent<string>) => void;
+        "onNearWalletNetworkDismiss"?: (event: CustomEvent<string>) => void;
+        "selector"?: any;
+    }
     interface WalletOptions {
         "onNearConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
+        "onNearConnected"?: (event: CustomEvent<void>) => void;
         "onNearErrorWalletOptions"?: (event: CustomEvent<string>) => void;
         "options"?: ModalOptions;
         "selector"?: any;
@@ -116,6 +132,7 @@ declare namespace LocalJSX {
         "alert-message": AlertMessage;
         "close-button": CloseButton;
         "ledger-derivation-path": LedgerDerivationPath;
+        "wallet-network-changed": WalletNetworkChanged;
         "wallet-options": WalletOptions;
         "wallet-selector": WalletSelector;
         "wallet-selector-modal": WalletSelectorModal;
@@ -128,6 +145,7 @@ declare module "@stencil/core" {
             "alert-message": LocalJSX.AlertMessage & JSXBase.HTMLAttributes<HTMLAlertMessageElement>;
             "close-button": LocalJSX.CloseButton & JSXBase.HTMLAttributes<HTMLCloseButtonElement>;
             "ledger-derivation-path": LocalJSX.LedgerDerivationPath & JSXBase.HTMLAttributes<HTMLLedgerDerivationPathElement>;
+            "wallet-network-changed": LocalJSX.WalletNetworkChanged & JSXBase.HTMLAttributes<HTMLWalletNetworkChangedElement>;
             "wallet-options": LocalJSX.WalletOptions & JSXBase.HTMLAttributes<HTMLWalletOptionsElement>;
             "wallet-selector": LocalJSX.WalletSelector & JSXBase.HTMLAttributes<HTMLWalletSelectorElement>;
             "wallet-selector-modal": LocalJSX.WalletSelectorModal & JSXBase.HTMLAttributes<HTMLWalletSelectorModalElement>;

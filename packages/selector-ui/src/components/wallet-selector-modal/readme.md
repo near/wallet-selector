@@ -67,6 +67,7 @@ graph TD;
   wallet-selector --> alert-message
   wallet-selector --> wallet-options
   wallet-selector --> ledger-derivation-path
+  wallet-selector --> wallet-network-changed
   style wallet-selector-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

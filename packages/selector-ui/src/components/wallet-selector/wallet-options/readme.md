@@ -17,6 +17,7 @@
 
 | Event                       | Description | Type                      |
 | --------------------------- | ----------- | ------------------------- |
+| `nearConnected`             |             | `CustomEvent<void>`       |
 | `nearConnectHardwareWallet` |             | `CustomEvent<MouseEvent>` |
 | `nearErrorWalletOptions`    |             | `CustomEvent<string>`     |
 
