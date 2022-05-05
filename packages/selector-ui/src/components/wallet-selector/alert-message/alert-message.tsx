@@ -15,7 +15,7 @@ export class AlertMessage {
       <div class="Modal-body Modal-alert-message">
         <p>{this.message}</p>
         <div class="action-buttons">
-          <button class="left" onClick={e => this.nearBackEvent.emit(e)}>
+          <button class="left" onClick={(e) => this.nearBackEvent.emit(e)}>
             OK
           </button>
         </div>

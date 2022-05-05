@@ -1,5 +1,12 @@
-import { Component, Event, EventEmitter, h, Prop, State, Watch } from "@stencil/core";
-import { DEFAULT_DERIVATION_PATH } from "../../../../../core/src/lib/constants";
+import {
+  Component,
+  Event,
+  EventEmitter,
+  h,
+  Prop,
+  State,
+  Watch,
+} from "@stencil/core";
 import { ChangeEvent } from "react";
 
 @Component({
@@ -15,13 +22,13 @@ export class LedgerDerivationPath {
   }
   @State() isLoading: boolean;
   @State() ledgerError: string;
-  @State() ledgerDerivationPath = DEFAULT_DERIVATION_PATH;
+  @State() ledgerDerivationPath = "44'/397'/0'/0'/1'";
 
   @Event() nearBackEventLedger: EventEmitter<MouseEvent>;
 
-  handleDerivationPathChange (e: ChangeEvent<HTMLInputElement>) {
+  handleDerivationPathChange(e: ChangeEvent<HTMLInputElement>) {
     this.ledgerDerivationPath = e.target.value;
-  };
+  }
 
   handleConnectClick() {
     this.isLoading = true;
@@ -39,15 +46,15 @@ export class LedgerDerivationPath {
       .then(() => {
         // onConnected();
       })
-      .catch((err) => this.ledgerError =`Error: ${err.message}`)
-      .finally(() => this.isLoading = false)
-  };
+      .catch((err) => (this.ledgerError = `Error: ${err.message}`))
+      .finally(() => (this.isLoading = false));
+  }
 
-  handleEnterClick(e){
+  handleEnterClick(e) {
     if (e.key === "Enter") {
       this.handleConnectClick();
     }
-  };
+  }
 
   componentWillLoad() {
     this.watchSelector(this.selector);
@@ -73,7 +80,13 @@ export class LedgerDerivationPath {
           {this.ledgerError && <p class="error">{this.ledgerError}</p>}
         </div>
         <div class="derivation-paths--actions">
-          <button class="left-button" disabled={this.isLoading} onClick={(e) => {this.nearBackEventLedger.emit(e)}}>
+          <button
+            class="left-button"
+            disabled={this.isLoading}
+            onClick={(e) => {
+              this.nearBackEventLedger.emit(e);
+            }}
+          >
             Back
           </button>
           <button

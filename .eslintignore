@@ -1,3 +1,6 @@
 node_modules
 examples/react/out/
 examples/react/dist/
+packages/selector-ui-angular/src/generated/
+packages/selector-ui-react/src/generated/
+packages/selector-ui-svelte/src/generated/

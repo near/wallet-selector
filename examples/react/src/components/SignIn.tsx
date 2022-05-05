@@ -1,5 +1,4 @@
-import { WalletSelectorModal } from "@near-wallet-selector/react-selector-ui";
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment } from "react";
 
 const SignIn: React.FC = () => {
   return (

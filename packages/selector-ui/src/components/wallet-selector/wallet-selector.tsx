@@ -7,7 +7,6 @@ import { Component, Method, h, State } from "@stencil/core";
   shadow: true,
 })
 export class WalletSelectorComponent {
-
   @State() selector: unknown;
   @State() routeName = "WalletOptions";
   @State() errorMessage: string;
@@ -28,7 +27,7 @@ export class WalletSelectorComponent {
   }
 
   handleDismissClick() {
-    const component = document.querySelector('wallet-selector-modal');
+    const component = document.querySelector("wallet-selector-modal");
     component.hide();
     this.routeName = "WalletOptions";
     this.errorMessage = null;
@@ -43,22 +42,20 @@ export class WalletSelectorComponent {
           </slot>
           <slot name="close-btn" />
         </div>
-        {
-          this.routeName === "AlertMessage" &&
-            <alert-message
-              message={this.errorMessage}
-              onNearBackEvent={() => {
-                this.errorMessage = null;
-                this.routeName = "WalletOptions";
-              } }
-            />
-        }
-        {
-          this.routeName === "WalletOptions" &&
+        {this.routeName === "AlertMessage" && (
+          <alert-message
+            message={this.errorMessage}
+            onNearBackEvent={() => {
+              this.errorMessage = null;
+              this.routeName = "WalletOptions";
+            }}
+          />
+        )}
+        {this.routeName === "WalletOptions" && (
           <wallet-options
             selector={this.selector}
             onNearConnectHardwareWallet={() => {
-              this.routeName = "LedgerDerivationPath"
+              this.routeName = "LedgerDerivationPath";
             }}
             onNearErrorWalletOptions={(e) => {
               this.errorMessage = e.detail;
@@ -66,27 +63,29 @@ export class WalletSelectorComponent {
             }}
             onNearConnected={this.handleDismissClick}
           />
-        }
-        {
-          this.routeName === "LedgerDerivationPath" &&
+        )}
+        {this.routeName === "LedgerDerivationPath" && (
           <ledger-derivation-path
             selector={this.selector}
-            onNearBackEventLedger={() => {{ this.routeName = "WalletOptions"; }}}
-          />
-        }
-
-        {
-          this.routeName === "WalletNetworkChanged" &&
-            <wallet-network-changed
-              selector={this.selector}
-              onNearSwitchWallet={() => {
+            onNearBackEventLedger={() => {
+              {
                 this.routeName = "WalletOptions";
-              }}
-              onNearWalletNetworkDismiss={this.handleDismissClick}
-            />
-        }
+              }
+            }}
+          />
+        )}
 
-          {/* {routeName === "WalletOptions" && (
+        {this.routeName === "WalletNetworkChanged" && (
+          <wallet-network-changed
+            selector={this.selector}
+            onNearSwitchWallet={() => {
+              this.routeName = "WalletOptions";
+            }}
+            onNearWalletNetworkDismiss={this.handleDismissClick}
+          />
+        )}
+
+        {/* {routeName === "WalletOptions" && (
             <WalletOptions
               selector={selector}
               options={options}
@@ -104,14 +103,14 @@ export class WalletSelectorComponent {
               }}
             />
           )} */}
-          {/* {routeName === "LedgerDerivationPath" && (
+        {/* {routeName === "LedgerDerivationPath" && (
             <LedgerDerivationPath
               selector={selector}
               onConnected={handleDismissClick}
               onBack={() => setRouteName("WalletOptions")}
             />
           )} */}
-          {/* {routeName === "WalletNotInstalled" && notInstalledWallet && (
+        {/* {routeName === "WalletNotInstalled" && notInstalledWallet && (
             <WalletNotInstalled
               notInstalledWallet={notInstalledWallet}
               onBack={() => {
@@ -120,14 +119,14 @@ export class WalletSelectorComponent {
               }}
             />
           )} */}
-          {/* {routeName === "WalletNetworkChanged" && (
+        {/* {routeName === "WalletNetworkChanged" && (
             <WalletNetworkChanged
               selector={selector}
               onSwitchWallet={() => setRouteName("WalletOptions")}
               onDismiss={handleDismissClick}
             />
           )} */}
-        </div>
+      </div>
     );
   }
 }

@@ -9,7 +9,7 @@
 
 | Property | Attribute | Description                       | Type                          | Default  |
 | -------- | --------- | --------------------------------- | ----------------------------- | -------- |
-| `theme`  | `theme`   | The prefered theme for the modal. | `"auto" \| "dark" \| "light"` | `'auto'` |
+| `theme`  | `theme`   | The prefered theme for the modal. | `"auto" \| "dark" \| "light"` | `"auto"` |
 
 
 ## Methods

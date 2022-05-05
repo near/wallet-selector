@@ -1,4 +1,12 @@
-import { Component, h, Prop, Watch, State, Event, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  h,
+  Prop,
+  Watch,
+  State,
+  Event,
+  EventEmitter,
+} from "@stencil/core";
 import { Wallet, WalletState } from "@near-wallet-selector/core";
 import { ModalOptions } from "../modal.types";
 
@@ -14,7 +22,9 @@ export class WalletOptions {
     this.selector = newValue;
     if (this.selector) {
       this.selector.store.observable.subscribe((state) => {
-        this.getAvailableWallets(state.wallets).then(availableWallets => this.availableWallets = availableWallets);
+        this.getAvailableWallets(state.wallets).then(
+          (availableWallets) => (this.availableWallets = availableWallets)
+        );
       });
     }
   }
@@ -25,7 +35,7 @@ export class WalletOptions {
     this.options = newValue;
   }
 
-  @State() availableWallets:Array<WalletState> = [];
+  @State() availableWallets: Array<WalletState> = [];
   @State() connecting = false;
   @State() walletInfoVisible = false;
 
@@ -33,7 +43,7 @@ export class WalletOptions {
   @Event() nearErrorWalletOptions: EventEmitter<string>;
   @Event() nearConnected: EventEmitter<void>;
 
-  async getAvailableWallets (wallets: Array<WalletState>)  {
+  async getAvailableWallets(wallets: Array<WalletState>) {
     const result: Array<WalletState> = [];
 
     for (let i = 0; i < wallets.length; i += 1) {
@@ -45,9 +55,9 @@ export class WalletOptions {
     }
 
     return result;
-  };
+  }
 
-  handleWalletClick (wallet: Wallet) {
+  handleWalletClick(wallet: Wallet) {
     if (this.connecting) {
       return;
     }
@@ -71,10 +81,12 @@ export class WalletOptions {
         // logger.log(`Failed to select ${wallet.name}`);
         // logger.error(err);
 
-        this.nearErrorWalletOptions.emit(`Failed to connect with ${wallet.name}: ${err.message}`);
+        this.nearErrorWalletOptions.emit(
+          `Failed to connect with ${wallet.name}: ${err.message}`
+        );
       })
-      .finally(() => this.connecting = false);
-  };
+      .finally(() => (this.connecting = false));
+  }
 
   componentWillLoad() {
     this.watchSelector(this.selector);
@@ -83,17 +95,16 @@ export class WalletOptions {
   render() {
     return [
       <div class="Modal-body Modal-select-wallet-option">
-      <p class="Modal-description">
-        {this.options?.description ||
-        "Please select a wallet to connect to this dApp:"}
-      </p>
-      <ul
-        class={
-          "Modal-option-list " + (this.connecting ? "selection-process" : "")
-        }
-      >
-        {this.availableWallets.reduce(
-          (result, { id, selected }) => {
+        <p class="Modal-description">
+          {this.options?.description ||
+            "Please select a wallet to connect to this dApp:"}
+        </p>
+        <ul
+          class={
+            "Modal-option-list " + (this.connecting ? "selection-process" : "")
+          }
+        >
+          {this.availableWallets.reduce((result, { id, selected }) => {
             const wallet = this.selector.wallet(id);
 
             const { name, description, iconUrl } = wallet;
@@ -103,7 +114,11 @@ export class WalletOptions {
                 key={id}
                 id={id}
                 class={selected ? "selected-wallet" : ""}
-                onClick={selected ? undefined : this.handleWalletClick.bind(this, wallet)}
+                onClick={
+                  selected
+                    ? undefined
+                    : this.handleWalletClick.bind(this, wallet)
+                }
               >
                 <div title={description || ""}>
                   <img src={iconUrl} alt={name} />
@@ -120,11 +135,9 @@ export class WalletOptions {
             );
 
             return result;
-          },
-          []
-        )}
-      </ul>
-    </div>,
+          }, [])}
+        </ul>
+      </div>,
       <div class="info">
         <span
           onClick={() => {
@@ -145,7 +158,7 @@ export class WalletOptions {
             web-based or an app on your mobile device.
           </p>
         </div>
-      </div>
+      </div>,
     ];
   }
 }

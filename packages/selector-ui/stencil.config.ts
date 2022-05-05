@@ -1,7 +1,7 @@
 import { Config } from "@stencil/core";
 import { sass } from "@stencil/sass";
 
-const angularValueAccessorBindings: ValueAccessorConfig[] = [];
+const angularValueAccessorBindings: Array<ValueAccessorConfig> = [];
 
 import {
   angularOutputTarget,
@@ -23,7 +23,7 @@ export const config: Config = {
     },
     {
       type: "dist-custom-elements",
-      autoDefineCustomElements: true
+      autoDefineCustomElements: true,
     },
     {
       type: "docs-readme",
@@ -37,8 +37,9 @@ export const config: Config = {
       componentCorePackage: "@near-wallet-selector/selector-ui",
       directivesProxyFile:
         "../../../packages/selector-ui-angular/src/generated/directives/proxies.ts",
-      directivesArrayFile: "../../../packages/selector-ui-angular/src/generated/directives/directives.ts",
-      valueAccessorConfigs: angularValueAccessorBindings
+      directivesArrayFile:
+        "../../../packages/selector-ui-angular/src/generated/directives/directives.ts",
+      valueAccessorConfigs: angularValueAccessorBindings,
     }),
 
     reactOutputTarget({
