@@ -106,6 +106,7 @@ export interface SenderEvents {
 
 export interface InjectedSender {
   isSender: boolean;
+  callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
@@ -113,6 +114,7 @@ export interface InjectedSender {
   ) => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
+  remove: (event: string) => void;
   on: <Event extends keyof SenderEvents>(
     event: Event,
     callback: SenderEvents[Event]

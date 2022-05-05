@@ -1,3 +1,3 @@
-export * from "./wallet";
+export * from "./wallet.types";
+export * from "./transactions.types";
 export * from "./transactions";
-export * from "./actions";

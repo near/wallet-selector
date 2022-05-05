@@ -10,21 +10,29 @@ export { Optional } from "./lib/utils.types";
 
 export {
   WalletSelectorState,
-  WalletState,
+  ModuleState,
   AccountState,
 } from "./lib/store.types";
 
 export {
-  Wallet,
-  WalletType,
-  WalletMetadata,
-  WalletBehaviour,
+  WalletModuleFactory,
   WalletModule,
   WalletBehaviourFactory,
+  WalletBehaviourOptions,
+  Wallet,
+  WalletType,
+  BrowserWalletMetadata,
+  BrowserWalletBehaviour,
   BrowserWallet,
+  InjectedWalletMetadata,
+  InjectedWalletBehaviour,
   InjectedWallet,
-  HardwareWallet,
+  HardwareWalletMetadata,
   HardwareWalletConnectParams,
+  HardwareWalletBehaviour,
+  HardwareWallet,
+  BridgeWalletMetadata,
+  BridgeWalletBehaviour,
   BridgeWallet,
   Transaction,
   Action,
@@ -38,8 +46,6 @@ export {
   DeleteKeyAction,
   DeleteAccountAction,
 } from "./lib/wallet";
-
-export { errors } from "./lib/errors";
 
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
