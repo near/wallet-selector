@@ -8,7 +8,7 @@
 
 **Description**
 
-TODO: Description here.
+Unique identifier of the wallet.
 
 **Example**
 
@@ -27,7 +27,14 @@ TODO: Description here.
 
 **Description**
 
-TODO: Description here.
+Returns the type of wallet. This is particular useful when using functionality that's wallet specific (see hardware wallet example).
+
+There are four wallet types: 
+
+- "browser" (`BrowserWallet`)
+- "injected" (`InjectedWallet`)
+- "hardware" (`HardwareWallet`)
+- "bridge" (`BridgeWallet`)
 
 **Example**
 
@@ -35,6 +42,15 @@ TODO: Description here.
 (async () => {
   const wallet = await selector.wallet("math-wallet");
   console.log(wallet.type); // "injected"
+})();
+
+// Using functionality specific to hardware wallets.
+(async () => {
+  const wallet = await selector.wallet("ledger");
+  
+  if (wallet.type === "hardware") {
+    await wallet.connect({ derviationPath: "44'/397'/0'/0'/1'" });
+  }
 })();
 ```
 
@@ -46,7 +62,7 @@ TODO: Description here.
 
 **Description**
 
-TODO: Description here.
+Returns meta information about the wallet such as `name`, `description` and `iconUrl` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
 
 **Example**
 
