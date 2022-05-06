@@ -90,7 +90,12 @@ export const setupWalletModules = async ({
   };
 
   for (let i = 0; i < factories.length; i += 1) {
-    const module = await factories[i]();
+    const module = await factories[i]().catch((err) => {
+      logger.log("Failed to setup module");
+      logger.error(err);
+
+      return null;
+    });
 
     // Filter out wallets that aren't available.
     if (!module) {
