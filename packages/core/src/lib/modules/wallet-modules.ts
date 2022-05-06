@@ -102,6 +102,10 @@ export const setupWalletModules = async ({
       continue;
     }
 
+    if (modules.some((x) => x.id === module.id)) {
+      throw new Error("Duplicate module id detected: " + module.id);
+    }
+
     modules.push({
       id: module.id,
       type: module.type,
