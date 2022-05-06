@@ -57,6 +57,13 @@ export class WalletSelectorModal {
     component.setSelector(selector as unknown as Components.WalletSelector);
   }
 
+  @Listen("keydown", { target: "document" })
+  handleKeyDownEvent(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      this.hide().then();
+    }
+  }
+
   handleDismissOutsideClick(e: MouseEvent) {
     e.preventDefault();
 
@@ -70,7 +77,7 @@ export class WalletSelectorModal {
     return (
       <div
         class={this.getThemeClass()}
-        style={{ display: this.opened ? "block" : "none" }}
+        // style={{ display: this.opened ? "block" : "none" }}
       >
         <div class="Modal" onClick={this.handleDismissOutsideClick.bind(this)}>
           <wallet-selector>
