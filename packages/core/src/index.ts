@@ -1,8 +1,11 @@
 export {
   WalletSelector,
   WalletSelectorParams,
+  WalletSelectorEvents,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
+
+export { ModalOptions, Theme } from "./lib/modal/modal.types";
 
 export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
@@ -21,6 +24,8 @@ export {
   WalletBehaviourOptions,
   Wallet,
   WalletType,
+  WalletMetadata,
+  WalletEvents,
   BrowserWalletMetadata,
   BrowserWalletBehaviour,
   BrowserWallet,
@@ -34,6 +39,7 @@ export {
   BridgeWalletMetadata,
   BridgeWalletBehaviour,
   BridgeWallet,
+  Account,
   Transaction,
   Action,
   ActionType,
@@ -46,6 +52,8 @@ export {
   DeleteKeyAction,
   DeleteAccountAction,
 } from "./lib/wallet";
+
+export { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";

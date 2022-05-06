@@ -17,7 +17,7 @@ npm install @near-wallet-selector/wallet-connect
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
 const walletConnect = setupWalletConnect({
@@ -28,21 +28,23 @@ const walletConnect = setupWalletConnect({
     url: "https://github.com/near/wallet-selector",
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
   },
+  chainId: "near:testnet",
   iconUrl: "https://yourdomain.com/yourwallet-icon.png",
 });
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
   contractId: "guest-book.testnet",
-  wallets: [walletConnect],
+  modules: [walletConnect],
 });
 ```
 
 ## Options
 
 - `projectId` (`string`): Project ID required to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/api/project-id).
-- `metadata`: (`object`): Metadata used to provide context of the dApp to the connected wallet. More details can be found [here](https://docs.walletconnect.com/2.0/protocol/tech-spec#participant-metadata).
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
+- `metadata` (`object`): Metadata used to provide context of the dApp to the connected wallet. More details can be found [here](https://docs.walletconnect.com/2.0/protocol/tech-spec#participant-metadata).
+- `chainId` (`string?`): Chain ID for requests. Defaults to `"near:<networkId>` unless using custom network configuration.
+- `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
 
 ## Assets
 

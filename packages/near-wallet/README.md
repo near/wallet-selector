@@ -17,7 +17,7 @@ npm install @near-wallet-selector/near-wallet
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 // NEAR Wallet for Wallet Selector can be setup without any params or it can take two optional params.
@@ -26,10 +26,10 @@ const nearWallet = setupNearWallet({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
   contractId: "guest-book.testnet",
-  wallets: [nearWallet],
+  modules: [nearWallet],
 });
 ```
 
