@@ -39,26 +39,29 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       return;
     }
 
-    setConnecting(true);
+    try {
+      setConnecting(true);
+      const wallet = await module.wallet();
 
-    const wallet = await module.wallet();
+      if (wallet.type === "hardware") {
+        return onConnectHardwareWallet();
+      }
 
-    if (wallet.type === "hardware") {
-      return onConnectHardwareWallet();
+      await wallet.connect();
+      onConnected();
+    } catch (err) {
+      const { name } = module.metadata;
+
+      logger.log(`Failed to select ${name}`);
+      logger.error(err);
+
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+
+      onError(new Error(`Failed to connect with ${name}: ${message}`));
+    } finally {
+      setConnecting(false);
     }
-
-    wallet
-      .connect()
-      .then(() => onConnected())
-      .catch((err) => {
-        const { name } = wallet.metadata;
-
-        logger.log(`Failed to select ${name}`);
-        logger.error(err);
-
-        onError(new Error(`Failed to connect with ${name}: ${err.message}`));
-      })
-      .finally(() => setConnecting(false));
   };
 
   return (

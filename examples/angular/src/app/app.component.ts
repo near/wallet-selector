@@ -58,14 +58,15 @@ export class AppComponent implements OnInit {
     setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
-      wallets: [
+      debug: true,
+      modules: [
         setupNearWallet(),
         setupSender(),
         setupLedger(),
         setupMathWallet(),
         setupWalletConnect({
           projectId: "d43d7d0e46eea5ee28e1f75e1131f984",
-          appMetadata: {
+          metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
             url: "https://github.com/near/wallet-selector",

@@ -26,12 +26,8 @@ interface SenderState {
   wallet: InjectedSender;
 }
 
-const isInstalled = async () => {
-  try {
-    return waitFor(() => !!window.near?.isSender);
-  } catch (err) {
-    return false;
-  }
+const isInstalled = () => {
+  return waitFor(() => !!window.near?.isSender).catch(() => false);
 };
 
 const setupSenderState = (): SenderState => {
@@ -65,16 +61,22 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     const res = await _state.wallet.signOut();
 
-    if (!res) {
-      throw new Error("Failed to disconnect");
+    if (res === true) {
+      return;
     }
 
-    if (typeof res === "object") {
-      throw new Error(
-        (typeof res.error === "string" ? res.error : res.error.type) ||
-          "Failed to disconnect"
-      );
+    const error = new Error(
+      typeof res.error === "string" ? res.error : res.error.type
+    );
+
+    // Prevent disconnecting by throwing.
+    if (error.message === "User reject") {
+      throw error;
     }
+
+    // Continue disconnecting but log out the issue.
+    logger.log("Failed to disconnect");
+    logger.error(error);
   };
 
   const setupEvents = () => {
