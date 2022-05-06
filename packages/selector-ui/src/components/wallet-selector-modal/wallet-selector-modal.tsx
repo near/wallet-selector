@@ -10,6 +10,7 @@ import {
   State,
 } from "@stencil/core";
 import { Components } from "../../components";
+import { MouseEvent } from "react";
 
 export type Theme = "auto" | "dark" | "light";
 @Component({
@@ -56,6 +57,14 @@ export class WalletSelectorModal {
     component.setSelector(selector as unknown as Components.WalletSelector);
   }
 
+  handleDismissOutsideClick(e: MouseEvent) {
+    e.preventDefault();
+
+    if (e.target === e.currentTarget) {
+      this.hide().then();
+    }
+  }
+
   render() {
     // if (!this.opened) return null;
     return (
@@ -63,7 +72,7 @@ export class WalletSelectorModal {
         class={this.getThemeClass()}
         style={{ display: this.opened ? "block" : "none" }}
       >
-        <div class="Modal">
+        <div class="Modal" onClick={this.handleDismissOutsideClick.bind(this)}>
           <wallet-selector>
             <close-button slot="close-btn" />
           </wallet-selector>
