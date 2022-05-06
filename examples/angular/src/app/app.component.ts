@@ -58,6 +58,7 @@ export class AppComponent implements OnInit {
     setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
+      debug: true,
       modules: [
         setupNearWallet(),
         setupSender(),
