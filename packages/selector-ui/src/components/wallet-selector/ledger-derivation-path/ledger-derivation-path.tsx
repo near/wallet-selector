@@ -8,6 +8,7 @@ import {
   Watch,
 } from "@stencil/core";
 import { ChangeEvent } from "react";
+import { DEFAULT_DERIVATION_PATH } from "../../../constants";
 
 @Component({
   tag: "ledger-derivation-path",
@@ -22,7 +23,7 @@ export class LedgerDerivationPath {
   }
   @State() isLoading: boolean;
   @State() ledgerError: string;
-  @State() ledgerDerivationPath = "44'/397'/0'/0'/1'";
+  @State() ledgerDerivationPath = DEFAULT_DERIVATION_PATH;
 
   @Event() nearBackEventLedger: EventEmitter<MouseEvent>;
 
