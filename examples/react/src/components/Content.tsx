@@ -243,7 +243,6 @@ const Content: React.FC = () => {
           <div>
             <button onClick={handleSignIn}>Log in</button>
           </div>
-          <WalletSelectorModal ref={modalRef} />
           <SignIn />
         </div>
       )}
