@@ -77,7 +77,7 @@ export class WalletSelectorModal {
     return (
       <div
         class={this.getThemeClass()}
-        // style={{ display: this.opened ? "block" : "none" }}
+        style={{ display: this.opened ? "block" : "none" }}
       >
         <div class="Modal" onClick={this.handleDismissOutsideClick.bind(this)}>
           <wallet-selector>
