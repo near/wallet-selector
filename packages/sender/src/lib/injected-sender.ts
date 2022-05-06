@@ -18,7 +18,7 @@ export interface RequestSignInResponse {
   type: "sender-wallet-result";
 }
 
-export type SignOutResponse = boolean | { error: string | { type: string } };
+export type SignOutResponse = true | { error: string | { type: string } };
 
 export interface RpcInfo {
   explorerUrl: string;
