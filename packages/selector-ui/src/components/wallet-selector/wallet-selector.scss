@@ -30,3 +30,15 @@
   margin-top: 0;
   margin-bottom: 20px;
 }
+
+@media (prefers-color-scheme: dark) {
+  .Modal-content {
+    background-color: var(--dark-gray);
+    color: var(--white);
+  }
+
+  .Modal-content .Modal-header h2 {
+    color: var(--white);
+  }
+}
+

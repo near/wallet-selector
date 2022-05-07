@@ -13,7 +13,6 @@ button {
   padding: 0.55em 1.4em;
   text-align: center;
   color: inherit;
-  font-family: inherit;
   transition: background 150ms ease-in-out;
   line-height: 1.15;
   cursor: pointer;
@@ -55,5 +54,17 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .Modal-switch-network-message .header h2 {
+    color: var(--white);
+  }
+
+  .left-button:hover {
+    background-color: rgba(var(--black-rgb), 0.8);
+    border-color: var(--black);
+  }
+
 }
 

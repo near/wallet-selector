@@ -2,6 +2,11 @@
   display: block;
 }
 
+.Modal-description {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
 .Modal-option-list li span {
   font-size: 14px;
 }
@@ -129,53 +134,27 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .Modal .Modal-content {
-    background-color: var(--dark-gray);
-    color: var(--white);
-  }
 
-  .Modal-content .Modal-header h2 {
-    color: var(--white);
-  }
-
-  .Modal-header button:hover svg {
-    fill: var(--light-gray);
-  }
-
-  .Modal-content .Modal-option-list li {
+  .Modal-option-list li {
     border-color: var(--dark-gray-op-30);
     transition: background-color 0.2s ease-in-out;
   }
 
-  .Modal-content .Modal-option-list li:first-child img,
-  .Modal-content .Modal-option-list #math-wallet img,
-  .Modal-content .Modal-wallet-not-installed .math-wallet img,
-  .Modal-content .Modal-option-list #wallet-connect img {
+  .Modal-option-list li:first-child img,
+  .Modal-option-list #math-wallet img,
+  .Modal-wallet-not-installed .math-wallet img,
+  .Modal-option-list #wallet-connect img {
     filter: invert(1);
   }
 
-  .Modal-content .Modal-option-list li:hover,
-  .Modal-content .Modal-option-list li.selected-wallet {
+  .Modal-option-list li:hover,
+  .Modal-option-list li.selected-wallet {
     background-color: rgba(var(--black-rgb), 0.8);
   }
 
-  .Modal-switch-network-message .header h2 {
-    color: var(--white);
-  }
-
-  .Modal-content .info span:hover {
+  .info span:hover {
     color: var(--light-gray);
     transition: all 200ms ease-in;
-  }
-
-  .Modal .Modal-content .left-button:hover {
-    background-color: rgba(var(--black-rgb), 0.8);
-    border-color: var(--black);
-  }
-
-  .Modal-alert-window {
-    background-color: var(--dark-gray);
-    color: white;
   }
 }
 

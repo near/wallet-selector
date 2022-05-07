@@ -22,7 +22,6 @@ input, button {
   padding: 0.55em 1.4em;
   text-align: center;
   color: inherit;
-  font-family: inherit;
   transition: background 150ms ease-in-out;
   line-height: 1.15;
   cursor: pointer;
@@ -30,6 +29,15 @@ input, button {
 
 input:focus {
   border: 2px solid rgb(64, 153, 255);
+}
+
+input:focus-visible {
+  border: none;
+  outline: 2px solid rgb(64, 153, 255);
+}
+
+.input-error {
+  border-color: var(--red)!important;
 }
 
 .derivation-paths--actions {
@@ -44,16 +52,6 @@ input:focus {
 .error {
   font-family: inherit;
   color: var(--red);
-}
-.info {
-  margin-top: 20px;
-}
-
-.info span {
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 200ms ease-out;
 }
 
 .left-button {
@@ -71,4 +69,11 @@ input:focus {
 
 .right-button:hover {
   background-color: rgb(89 166 255);
+}
+
+@media (prefers-color-scheme: dark) {
+  .left-button:hover {
+    background-color: rgba(var(--black-rgb), 0.8);
+    border-color: var(--black);
+  }
 }

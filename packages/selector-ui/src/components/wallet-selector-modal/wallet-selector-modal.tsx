@@ -72,8 +72,26 @@ export class WalletSelectorModal {
     }
   }
 
+  //TODO: Check for other solutions.
+  attachFontsUrlToHead() {
+    // Add custom font to page DOM since font-face doesn't work within Shadow DOM.
+    const fontCssUrl =
+      "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap";
+    let element = document.querySelector(`link[href="${fontCssUrl}"]`);
+
+    if (!element) {
+      element = document.createElement("link");
+      element.setAttribute("rel", "stylesheet");
+      element.setAttribute("href", fontCssUrl);
+      document.head.appendChild(element);
+    }
+  }
+
+  componentDidLoad() {
+    this.attachFontsUrlToHead();
+  }
+
   render() {
-    // if (!this.opened) return null;
     return (
       <div
         class={this.getThemeClass()}
