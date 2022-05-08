@@ -2,7 +2,7 @@
   display: block;
 }
 
-.derivation-paths-list {
+.derivation-path-list {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -40,13 +40,9 @@ input:focus-visible {
   border-color: var(--red)!important;
 }
 
-.derivation-paths--actions {
+.derivation-path-actions {
   display: flex;
   justify-content: space-between;
-}
-
-.path-option-highlighted {
-  border-color: var(--blue)!important;
 }
 
 .error {
@@ -69,6 +65,20 @@ input:focus-visible {
 
 .right-button:hover {
   background-color: rgb(89 166 255);
+}
+
+:host-context(wallet-selector-modal[theme="light"]) {
+  .left-button:hover {
+    background-color: var(--dark-gray-op-30);
+    border-color: var(--light-gray);
+  }
+}
+
+:host-context(wallet-selector-modal[theme="dark"]) {
+  .left-button:hover {
+    background-color: rgba(var(--black-rgb), 0.8);
+    border-color: var(--black);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

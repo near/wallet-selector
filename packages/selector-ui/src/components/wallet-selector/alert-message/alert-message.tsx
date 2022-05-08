@@ -12,7 +12,7 @@ export class AlertMessage {
 
   render() {
     return (
-      <div class="Modal-body Modal-alert-message">
+      <div class="alert-message-wrapper">
         <p>{this.message}</p>
         <div class="action-buttons">
           <button class="left" onClick={(e) => this.nearBackEvent.emit(e)}>

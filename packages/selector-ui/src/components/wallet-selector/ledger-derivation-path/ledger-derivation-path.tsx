@@ -63,12 +63,12 @@ export class LedgerDerivationPath {
 
   render() {
     return (
-      <div class="Modal-body Modal-choose-ledger-derivation-path">
+      <div class="ledger-derivation-path-wrapper">
         <p>
           Make sure your Ledger is plugged in, then enter an account id to
           connect:
         </p>
-        <div class="derivation-paths-list">
+        <div class="derivation-path-list">
           <input
             type="text"
             class={this.ledgerError ? "input-error" : ""}
@@ -80,7 +80,7 @@ export class LedgerDerivationPath {
           />
           {this.ledgerError && <p class="error">{this.ledgerError}</p>}
         </div>
-        <div class="derivation-paths--actions">
+        <div class="derivation-path-actions">
           <button
             class="left-button"
             disabled={this.isLoading}

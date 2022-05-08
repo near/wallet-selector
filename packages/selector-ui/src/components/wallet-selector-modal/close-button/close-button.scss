@@ -8,19 +8,28 @@ button {
   height: 24px;
   padding: 4px;
   background-color: transparent;
+
+  &:active {
+    background: transparent;
+  }
+
+  svg {
+    pointer-events: none;
+  }
+
+  &:hover {
+    svg {
+      fill: var(--black);
+      transition: all 0.2s ease-in;
+    }
+  }
+
 }
 
-button:active {
-  background: transparent;
-}
-
-button svg {
-  pointer-events: none;
-}
-
-button:hover svg {
-  fill: var(--black);
-  transition: all 0.2s ease-in;
+:host-context(wallet-selector-modal[theme="dark"]) {
+  button:hover svg {
+    fill: var(--light-gray);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

@@ -15,75 +15,22 @@
   --red: #DB5555;
 }
 
-.Modal {
+.modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   background-color: var(--backdrop-bg);
+  color: var(--text-color);
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: Manrope, sans-serif;
   font-weight: 500;
   z-index: 100;
+
+  * {
+    box-sizing: content-box;
+  }
 }
-
-.Modal * {
-  box-sizing: content-box;
-}
-
-.Modal, .Modal.Modal-light-theme {
-  color: var(--text-color);
-}
-
-//TODO: Check how to switch light/dark modes via css classes in stenciljs.
-
-//.Modal-dark-theme .Modal-content {
-//  background-color: var(--dark-gray);
-//  color: var(--white);
-//}
-//
-//.Modal-dark-theme .Modal-content .Modal-header h2 {
-//  color: var(--white);
-//}
-//
-//.Modal-dark-theme .Modal-header button:hover svg {
-//  fill: var(--light-gray);
-//}
-//
-//.Modal-dark-theme .Modal-content .Modal-option-list li {
-//  border-color: var(--dark-gray-op-30);
-//  transition: background-color 0.2s ease-in-out;
-//}
-//
-//.Modal-dark-theme .Modal-content .Modal-option-list li:first-child img,
-//.Modal-dark-theme .Modal-content .Modal-option-list #math-wallet img,
-//.Modal-dark-theme .Modal-wallet-not-installed .math-wallet img {
-//  filter: invert(1);
-//}
-//
-//.Modal-dark-theme .Modal-content .Modal-option-list li:hover,
-//.Modal-dark-theme .Modal-content .Modal-option-list li.selected-wallet {
-//  background-color: rgba(var(--black-rgb), 0.8);
-//}
-//
-//.Modal-dark-theme .Modal-switch-network-message .header h2 {
-//  color: var(--white);
-//}
-//
-//.Modal-dark-theme .Modal-content .info span:hover {
-//  color: var(--light-gray);
-//  transition: all 200ms ease-in;
-//}
-//
-//.Modal-dark-theme .Modal-content .left-button:hover {
-//    background-color: rgba(var(--black-rgb), 0.8);
-//    border-color: var(--black);
-//}
-//
-//.Modal-dark-theme .Modal-alert-window {
-//  background-color: var(--dark-gray);
-//  color: white;
-//}

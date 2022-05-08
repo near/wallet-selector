@@ -47,7 +47,7 @@ export class WalletSelectorModal {
   }
 
   getThemeClass() {
-    return this.theme ? `Modal-${this.theme}-theme` : "";
+    return this.theme ? `${this.theme}-theme` : "";
   }
 
   @Method()
@@ -97,7 +97,7 @@ export class WalletSelectorModal {
         class={this.getThemeClass()}
         style={{ display: this.opened ? "block" : "none" }}
       >
-        <div class="Modal" onClick={this.handleDismissOutsideClick.bind(this)}>
+        <div class="modal" onClick={this.handleDismissOutsideClick.bind(this)}>
           <wallet-selector>
             <close-button slot="close-btn" />
           </wallet-selector>

@@ -94,15 +94,13 @@ export class WalletOptions {
   }
   render() {
     return [
-      <div class="Modal-body Modal-select-wallet-option">
-        <p class="Modal-description">
+      <div class="wallet-options-wrapper">
+        <p class="description">
           {this.options?.description ||
             "Please select a wallet to connect to this dApp:"}
         </p>
         <ul
-          class={
-            "Modal-option-list " + (this.connecting ? "selection-process" : "")
-          }
+          class={"options-list " + (this.connecting ? "selection-process" : "")}
         >
           {this.availableWallets.reduce((result, { id, selected }) => {
             const wallet = this.selector.wallet(id);

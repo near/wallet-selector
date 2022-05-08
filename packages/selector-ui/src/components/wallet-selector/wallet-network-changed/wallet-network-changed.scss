@@ -1,6 +1,31 @@
 :host {
   display: block;
 }
+
+.switch-network-message-wrapper {
+  .header {
+    h2 {
+      font-size: 18px;
+      margin-top: 0;
+      color: var(--black);
+    }
+  }
+
+  .content {
+    p {
+      font-size: 14.25px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+//TODO: remove css duplication for buttons and inputs.
+
 button {
   background: inherit;
   font-size: 14.2px;
@@ -40,31 +65,46 @@ button {
   background-color: rgb(89 166 255);
 }
 
-.Modal-switch-network-message .header h2 {
-  font-size: 18px;
-  margin-top: 0px;
-  color: var(--black);
+
+:host-context(wallet-selector-modal[theme="light"]) {
+  .switch-network-message-wrapper {
+    .header {
+      h2 {
+        color: var(--black);
+      }
+    }
+
+    .left-button:hover {
+      background-color: var(--dark-gray-op-30);
+      border-color: var(--light-gray);
+    }
+  }
 }
 
-.Modal-switch-network-message .content p {
-  font-size: 14.25px;
-}
-
-.Modal-switch-network-message .actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+:host-context(wallet-selector-modal[theme="dark"]) {
+  .switch-network-message-wrapper {
+    .header {
+      h2 {
+        color: var(--white);
+      }
+    }
+    .left-button:hover {
+      background-color: rgba(var(--black-rgb), 0.8);
+      border-color: var(--black);
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-  .Modal-switch-network-message .header h2 {
-    color: var(--white);
+  .switch-network-message-wrapper {
+    .header {
+      h2 {
+        color: var(--white);
+      }
+    }
+    .left-button:hover {
+      background-color: rgba(var(--black-rgb), 0.8);
+      border-color: var(--black);
+    }
   }
-
-  .left-button:hover {
-    background-color: rgba(var(--black-rgb), 0.8);
-    border-color: var(--black);
-  }
-
 }
-

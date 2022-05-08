@@ -35,8 +35,8 @@ export class WalletSelectorComponent {
 
   render() {
     return (
-      <div class="Modal-content">
-        <div class="Modal-header">
+      <div class="modal-content">
+        <div class="modal-header">
           <slot name="title">
             <h2>Connect Wallet</h2>
           </slot>

@@ -13,7 +13,7 @@ export class WalletNetworkChanged {
 
   render() {
     return (
-      <div class="Modal-body Modal-switch-network-message">
+      <div class="switch-network-message-wrapper">
         <div class="header">
           <h2>You Must Change Networks</h2>
         </div>
