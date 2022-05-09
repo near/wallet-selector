@@ -7,6 +7,16 @@
 
 ## Methods
 
+### `setRouteName(route: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setSelector(selector: unknown) => Promise<void>`
 
 

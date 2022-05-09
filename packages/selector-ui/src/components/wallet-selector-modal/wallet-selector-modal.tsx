@@ -44,6 +44,8 @@ export class WalletSelectorModal {
   @Listen("nearModalCloseEvent")
   async hide() {
     this.opened = false;
+    const component = this.el.shadowRoot.querySelector("wallet-selector");
+    component.setRouteName("WalletOptions");
   }
 
   getThemeClass() {

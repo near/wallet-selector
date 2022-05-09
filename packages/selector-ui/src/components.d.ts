@@ -25,6 +25,7 @@ export namespace Components {
         "selector": any;
     }
     interface WalletSelector {
+        "setRouteName": (route: string) => Promise<void>;
         "setSelector": (selector: unknown) => Promise<void>;
     }
     interface WalletSelectorModal {

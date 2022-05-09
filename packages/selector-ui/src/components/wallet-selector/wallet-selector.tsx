@@ -26,6 +26,11 @@ export class WalletSelectorComponent {
     });
   }
 
+  @Method()
+  async setRouteName(route: string) {
+    this.routeName = route;
+  }
+
   handleDismissClick() {
     const component = document.querySelector("wallet-selector-modal");
     component.hide();
