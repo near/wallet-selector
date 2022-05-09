@@ -67,6 +67,7 @@ export class WalletSelectorComponent {
         {this.routeName === "LedgerDerivationPath" && (
           <ledger-derivation-path
             selector={this.selector}
+            onNearConnected={this.handleDismissClick}
             onNearBackEventLedger={() => {
               {
                 this.routeName = "WalletOptions";

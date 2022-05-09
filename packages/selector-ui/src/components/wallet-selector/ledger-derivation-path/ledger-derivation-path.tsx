@@ -26,6 +26,7 @@ export class LedgerDerivationPath {
   @State() ledgerDerivationPath = DEFAULT_DERIVATION_PATH;
 
   @Event() nearBackEventLedger: EventEmitter<MouseEvent>;
+  @Event() nearConnected: EventEmitter<MouseEvent>;
 
   handleDerivationPathChange(e: ChangeEvent<HTMLInputElement>) {
     this.ledgerDerivationPath = e.target.value;
@@ -45,7 +46,7 @@ export class LedgerDerivationPath {
     wallet
       .connect({ derivationPath: this.ledgerDerivationPath })
       .then(() => {
-        // onConnected();
+        this.nearConnected.emit();
       })
       .catch((err) => (this.ledgerError = `Error: ${err.message}`))
       .finally(() => (this.isLoading = false));

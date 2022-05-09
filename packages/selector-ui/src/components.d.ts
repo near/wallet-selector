@@ -106,6 +106,7 @@ declare namespace LocalJSX {
     }
     interface LedgerDerivationPath {
         "onNearBackEventLedger"?: (event: CustomEvent<MouseEvent>) => void;
+        "onNearConnected"?: (event: CustomEvent<MouseEvent>) => void;
         "selector"?: any;
     }
     interface WalletNetworkChanged {

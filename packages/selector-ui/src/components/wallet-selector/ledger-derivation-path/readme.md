@@ -17,6 +17,7 @@
 | Event                 | Description | Type                      |
 | --------------------- | ----------- | ------------------------- |
 | `nearBackEventLedger` |             | `CustomEvent<MouseEvent>` |
+| `nearConnected`       |             | `CustomEvent<MouseEvent>` |
 
 
 ## Dependencies
