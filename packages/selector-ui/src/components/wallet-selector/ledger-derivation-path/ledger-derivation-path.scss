@@ -28,12 +28,12 @@ input, button {
 }
 
 input:focus {
-  border: 2px solid var(--near-input--focus-border-color);
+  border: 2px solid var(--near-input-border-color-focus);
 }
 
 input:focus-visible {
   border: none;
-  outline: 2px solid var(--near-input--focus-border-color);
+  outline: 2px solid var(--near-input-border-color-focus);
 }
 
 .input-error {
@@ -52,8 +52,8 @@ input:focus-visible {
 
 
 .left-button:hover {
-  background-color: var(--near-dismiss-button-hover-bg);
-  border-color: var(--near-dismiss-button-hover-border-color);
+  background-color: var(--near-dismiss-button-bg-hover);
+  border-color: var(--near-dismiss-button-border-color-hover);
 }
 
 .right-button {
@@ -63,5 +63,5 @@ input:focus-visible {
 }
 
 .right-button:hover {
-  background-color: var(--near-confirm-button-color-bg-hover);
+  background-color: var(--near-confirm-button-bg-hover);
 }
