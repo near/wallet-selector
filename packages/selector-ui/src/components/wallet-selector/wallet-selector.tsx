@@ -90,48 +90,6 @@ export class WalletSelectorComponent {
             onNearWalletNetworkDismiss={this.handleDismissClick}
           />
         )}
-
-        {/* {routeName === "WalletOptions" && (
-            <WalletOptions
-              selector={selector}
-              options={options}
-              onWalletNotInstalled={(wallet) => {
-                setNotInstalledWallet(wallet);
-                return setRouteName("WalletNotInstalled");
-              }}
-              onConnectHardwareWallet={() => {
-                setRouteName("LedgerDerivationPath");
-              }}
-              onConnected={handleDismissClick}
-              onError={(message) => {
-                setAlertMessage(message);
-                setRouteName("AlertMessage");
-              }}
-            />
-          )} */}
-        {/* {routeName === "LedgerDerivationPath" && (
-            <LedgerDerivationPath
-              selector={selector}
-              onConnected={handleDismissClick}
-              onBack={() => setRouteName("WalletOptions")}
-            />
-          )} */}
-        {/* {routeName === "WalletNotInstalled" && notInstalledWallet && (
-            <WalletNotInstalled
-              notInstalledWallet={notInstalledWallet}
-              onBack={() => {
-                setNotInstalledWallet(null);
-                setRouteName("WalletOptions");
-              }}
-            />
-          )} */}
-        {/* {routeName === "WalletNetworkChanged" && (
-            <WalletNetworkChanged
-              selector={selector}
-              onSwitchWallet={() => setRouteName("WalletOptions")}
-              onDismiss={handleDismissClick}
-            />
-          )} */}
       </div>
     );
   }
