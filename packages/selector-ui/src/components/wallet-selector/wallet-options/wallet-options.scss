@@ -24,8 +24,9 @@
       padding: 1em;
       cursor: pointer;
       border-radius: 8px;
-      border: 1px solid var(--dark-gray-op-30);
+      border: 1px solid var(--near-wallet-option-border-color);
       display: flex;
+      transition: background-color 0.2s ease-in-out;
 
       div {
         margin: auto;
@@ -37,8 +38,11 @@
         max-width: 50px;
       }
 
+      &:hover {
+        background-color: var(--near-selected-wallet-bg-hover);
+      }
       &.selected-wallet {
-        background-color: var(--dark-gray-op-30);
+        background-color: var(--near-selected-wallet-bg);
       }
 
       .selected-wallet-text {
@@ -53,7 +57,7 @@
 
     &:not(.selection-process) {
       li:hover {
-        box-shadow: 0 2px 10px 0 var(--backdrop-bg);
+        box-shadow: 0 2px 10px 0 var(--near-box-shadow-color);
       }
     }
   }
@@ -91,76 +95,28 @@
   }
 }
 
-:host-context(wallet-selector-modal[theme="light"]) {
-  .wallet-options-wrapper {
-    .options-list {
-      li {
-        border-color: var(--dark-gray-op-30);
-        &:hover {
-          background-color: transparent;
-        }
-        &.selected-wallet {
-          background-color: var(--dark-gray-op-30);
-        }
-      }
-      #near-wallet img,
-      #math-wallet img,
-      #wallet-connect img {
-        filter: none;
-      }
-    }
-  }
-}
 
 :host-context(wallet-selector-modal[theme="dark"]) {
   .wallet-options-wrapper {
     .options-list {
-      li {
-        border-color: var(--dark-gray-op-30);
-        transition: background-color 0.2s ease-in-out;
-
-        &:hover,
-        &.selected-wallet {
-          background-color: rgba(var(--black-rgb), 0.8);
-        }
-      }
       #near-wallet img,
       #math-wallet img,
       #wallet-connect img {
         filter: invert(1);
       }
     }
-  }
-
-  .info span:hover {
-    color: var(--light-gray);
-    transition: all 200ms ease-in;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .wallet-options-wrapper {
     .options-list {
-      li {
-        border-color: var(--dark-gray-op-30);
-        transition: background-color 0.2s ease-in-out;
-
-        &:hover,
-        &.selected-wallet {
-          background-color: rgba(var(--black-rgb), 0.8);
-        }
-      }
       #near-wallet img,
       #math-wallet img,
       #wallet-connect img {
         filter: invert(1);
       }
     }
-  }
-
-  .info span:hover {
-    color: var(--light-gray);
-    transition: all 200ms ease-in;
   }
 }
 

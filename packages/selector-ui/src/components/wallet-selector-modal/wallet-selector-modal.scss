@@ -1,18 +1,68 @@
 /**
- * @prop --backdrop-bg: Background of the backdrop
+ * @prop --near-backdrop-bg: Background of the backdrop
  */
 :host {
   display: block;
-  --backdrop-bg: #26262630;
-  --black: #262626;
-  --black-rgb: 38, 38, 38;
-  --dark-gray: #3F4246;
-  --dark-gray-op-30: #A7A7A730;
-  --light-gray: #A7A7A7;
-  --text-color: #676767;
-  --white: #FFFFFF;
-  --blue: #5F8AFA;
-  --red: #DB5555;
+  --near-backdrop-bg: #26262630;
+  --near-heading-color: #262626;
+  --near-text-color: #676767;
+  --near-selected-wallet-bg: #A7A7A730;
+  --near-selected-wallet-bg-hover: transparent;
+  --near-wallet-option-border-color: #A7A7A730;
+  --near-content-bg: #FFFFFF;
+  --near-input--focus-border-color: #5F8AFA;
+  --near-box-shadow-color: #26262630;
+  --near-dismiss-button-hover-bg: #A7A7A730;
+  --near-dismiss-button-hover-border-color: inherit;
+  --near-confirm-button-color: #FFFFFF;
+  --near-confirm-button-bg: #5F8AFA;
+  --near-confirm-button-color-bg-hover: #5AA6FF;
+  --near-confirm-button-border-color: #5F8AFA;
+  --near-error: #DB5555;
+  --near-modal-close-button-color: #262626;;
+}
+
+
+:host-context(wallet-selector-modal[theme="dark"]) {
+  --near-backdrop-bg: #26262630;
+  --near-heading-color: #FFFFFF;
+  --near-text-color: #FFFFFF;
+  --near-selected-wallet-bg: #262626CC;
+  --near-selected-wallet-bg-hover: #262626CC;
+  --near-wallet-option-border-color: #A7A7A730;
+  --near-content-bg: #3F4246;
+  --near-input--focus-border-color: #5F8AFA;
+  --near-box-shadow-color: #26262630;
+  --near-dismiss-button-hover-bg: #262626CC;
+  --near-dismiss-button-hover-border-color: #262626;;
+  --near-confirm-button-color: #FFFFFF;
+  --near-confirm-button-bg: #5F8AFA;
+  --near-confirm-button-color-bg-hover: #5AA6FF;
+  --near-confirm-button-border-color: #5F8AFA;
+  --near-error: #DB5555;
+  --near-modal-close-button-color: #A7A7A7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --near-backdrop-bg: #26262630;
+    --near-heading-color: #FFFFFF;
+    --near-text-color: #FFFFFF;
+    --near-selected-wallet-bg: #262626CC;
+    --near-selected-wallet-bg-hover: #262626CC;
+    --near-wallet-option-border-color: #A7A7A730;
+    --near-content-bg: #3F4246;
+    --near-input--focus-border-color: #5F8AFA;
+    --near-box-shadow-color: #26262630;
+    --near-dismiss-button-hover-bg: #262626CC;
+    --near-dismiss-button-hover-border-color: #262626;;
+    --near-confirm-button-color: #FFFFFF;
+    --near-confirm-button-bg: #5F8AFA;
+    --near-confirm-button-color-bg-hover: #5AA6FF;
+    --near-confirm-button-border-color: #5F8AFA;
+    --near-error: #DB5555;
+    --near-modal-close-button-color: #A7A7A7;
+  }
 }
 
 .modal {
@@ -21,8 +71,8 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--backdrop-bg);
-  color: var(--text-color);
+  background-color: var(--near-backdrop-bg);
+  color: var(--near-text-color);
   display: flex;
   justify-content: center;
   align-items: center;

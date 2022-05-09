@@ -47,9 +47,9 @@ Type: `Promise<void>`
 
 ## CSS Custom Properties
 
-| Name            | Description                |
-| --------------- | -------------------------- |
-| `--backdrop-bg` | Background of the backdrop |
+| Name                 | Description                |
+| -------------------- | -------------------------- |
+| `--near-backdrop-bg` | Background of the backdrop |
 
 
 ## Dependencies

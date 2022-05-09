@@ -19,21 +19,9 @@ button {
 
   &:hover {
     svg {
-      fill: var(--black);
+      fill: var(--near-modal-close-button-color);
       transition: all 0.2s ease-in;
     }
   }
 
-}
-
-:host-context(wallet-selector-modal[theme="dark"]) {
-  button:hover svg {
-    fill: var(--light-gray);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-   button:hover svg {
-    fill: var(--light-gray);
-  }
 }

@@ -6,7 +6,7 @@
   max-width: 700px;
   max-height: 70vh;
   width: 400px;
-  background-color: var(--white);
+  background-color: var(--near-content-bg);
   margin: 10px;
   border-radius: 16px;
   padding: 32px;
@@ -20,49 +20,10 @@
     justify-content: space-between;
 
     h2 {
-      color: var(--black);
+      color: var(--near-heading-color);
       font-size: 22px;
       margin-top: 0;
       margin-bottom: 20px;
-    }
-  }
-}
-
-:host-context(wallet-selector-modal[theme="light"]) {
-  .modal-content {
-    background-color: var(--white);
-    color: var(--text-color);
-
-    .modal-header {
-      h2 {
-        color: var(--black);
-      }
-    }
-  }
-}
-
-:host-context(wallet-selector-modal[theme="dark"]) {
-  .modal-content {
-    background-color: var(--dark-gray);
-    color: var(--white);
-
-    .modal-header {
-      h2 {
-        color: var(--white);
-      }
-    }
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .modal-content {
-    background-color: var(--dark-gray);
-    color: var(--white);
-
-    .modal-header {
-      h2 {
-        color: var(--white);
-      }
     }
   }
 }
