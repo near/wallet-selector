@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { Subject, BehaviorSubject, scan } from "rxjs";
 
 import { logger, storage } from "./services";
 import {
@@ -85,25 +85,26 @@ const syncStorage = (
 };
 
 export const createStore = (): Store => {
-  const subject = new BehaviorSubject<WalletSelectorState>({
+  const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
     selectedWalletId: storage.getItem(SELECTED_WALLET_ID),
-  });
+  };
 
-  let prevState = subject.getValue();
-  subject.subscribe((state) => {
+  const state$ = new BehaviorSubject(initialState);
+  const actions$ = new Subject<WalletSelectorAction>();
+
+  actions$.pipe(scan(reducer, initialState)).subscribe(state$);
+
+  let prevState = state$.getValue();
+  state$.subscribe((state) => {
     syncStorage(prevState, state);
     prevState = state;
   });
 
   return {
-    observable: subject,
-    getState: () => subject.getValue(),
-    dispatch: (action) => {
-      const state = subject.getValue();
-
-      subject.next(reducer(state, action));
-    },
+    observable: state$,
+    getState: () => state$.getValue(),
+    dispatch: (action) => actions$.next(action),
   };
 };
