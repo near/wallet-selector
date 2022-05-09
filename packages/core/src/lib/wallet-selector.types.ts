@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { WalletModule, Wallet } from "./wallet";
+import { Wallet, WalletModuleFactory } from "./wallet/wallet.types";
 import { WalletSelectorState } from "./store.types";
 import { Network, NetworkId, Options } from "./options.types";
 import { ModalOptions, WalletSelectorModal } from "./modal/modal.types";
@@ -10,7 +10,7 @@ export interface WalletSelectorParams {
   network: NetworkId | Network;
   contractId: string;
   methodNames?: Array<string>;
-  wallets: Array<WalletModule>;
+  modules: Array<WalletModuleFactory>;
   ui?: ModalOptions;
   debug?: boolean;
 }
@@ -26,13 +26,12 @@ export type WalletSelectorEvents = {
 
 // TODO: Remove extending once modal is a separate package.
 export interface WalletSelector extends WalletSelectorModal {
-  store: WalletSelectorStore;
   options: Options;
   connected: boolean;
 
-  wallet<WalletVariation extends Wallet = Wallet>(
-    walletId?: string
-  ): WalletVariation;
+  store: WalletSelectorStore;
+
+  wallet<Variation extends Wallet = Wallet>(id?: string): Promise<Variation>;
 
   on<EventName extends keyof WalletSelectorEvents>(
     eventName: EventName,

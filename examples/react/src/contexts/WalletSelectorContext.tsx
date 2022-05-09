@@ -60,14 +60,15 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     setupWalletSelector({
       network: "testnet",
       contractId: "guest-book.testnet",
-      wallets: [
+      debug: true,
+      modules: [
         setupNearWallet(),
         setupSender(),
         setupMathWallet(),
         setupLedger(),
         setupWalletConnect({
           projectId: "c4f79cc...",
-          appMetadata: {
+          metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
             url: "https://github.com/near/wallet-selector",

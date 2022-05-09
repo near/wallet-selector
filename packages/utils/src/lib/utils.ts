@@ -4,7 +4,7 @@ import { utils, transactions } from "near-api-js";
 import {
   Action,
   AddKeyPermission,
-} from "../../../../packages/core/src/lib/wallet/actions.types";
+} from "../../../../packages/core/src/lib/wallet/transactions.types";
 
 interface CreateTransactionParams {
   accountId: string;

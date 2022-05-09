@@ -17,7 +17,7 @@ npm install @near-wallet-selector/sender
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupSender } from "@near-wallet-selector/sender";
 
 // Sender for Wallet Selector can be setup without any params or it can take one optional param.
@@ -25,10 +25,10 @@ const sender = setupSender({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
   contractId: "guest-book.testnet",
-  wallets: [sender],
+  modules: [sender],
 });
 ```
 

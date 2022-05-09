@@ -2,7 +2,7 @@ import { createAction } from "@near-wallet-selector/utils";
 import { transactions, utils } from "near-api-js";
 import { parseBigNumber } from "@near-wallet-selector/utils";
 
-describe("actions", () => {
+describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
     const actions = createAction([{ type: "CreateAccount" }]);
 

@@ -1,4 +1,3 @@
-import WalletController from "./wallet-controller";
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
 import {
@@ -7,26 +6,26 @@ import {
   WalletSelectorParams,
 } from "./wallet-selector.types";
 import { WalletSelectorModal } from "./modal/modal.types";
-import { setupModal } from "./modal/modal";
-import { Wallet } from "./wallet";
 import { EventEmitter, Logger } from "./services";
+import { Wallet } from "./wallet";
+import { setupWalletModules } from "./modules/wallet-modules";
+import { setupModal } from "./modal/modal";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {
   const options = resolveOptions(params);
-  const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = createStore();
-  const controller = new WalletController(
-    options,
-    params.wallets,
-    store,
-    emitter
-  );
-
   Logger.debug = options.debug;
 
-  await controller.init();
+  const emitter = new EventEmitter<WalletSelectorEvents>();
+  const store = createStore();
+
+  const walletModules = await setupWalletModules({
+    factories: params.modules,
+    options,
+    store,
+    emitter,
+  });
 
   // TODO: Remove omit once modal is a separate package.
   const selector: Omit<WalletSelector, keyof WalletSelectorModal> = {
@@ -40,11 +39,14 @@ export const setupWalletSelector = async (
       return Boolean(accounts.length);
     },
     options,
-    wallet: <WalletVariation extends Wallet = Wallet>(walletId?: string) => {
-      const wallet = controller.getWallet<WalletVariation>(walletId);
+    wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet<Variation>(
+        id || selectedWalletId
+      );
 
       if (!wallet) {
-        if (walletId) {
+        if (id) {
           throw new Error("Invalid wallet id");
         }
 

@@ -8,11 +8,9 @@ The basic structure of a (browser) wallet should look like:
 
 ```ts
 import {
-  WalletModule,
+  WalletModuleFactory,
   WalletBehaviourFactory,
   BrowserWallet,
-  Action,
-  Transaction,
 } from "@near-wallet-selector/core";
 
 export interface MyWalletParams {
@@ -21,30 +19,19 @@ export interface MyWalletParams {
 
 const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   options,
-  emitter,
   provider,
 }) => {
+  // Initialise wallet-sepecific client(s) here.
+  
   return {
-    async isAvailable() {
-      // Determine whether My Wallet is available.
-      // For example, some wallets aren't supported on mobile.
-      
-      return true;
-    },
-
     async connect() {
       // Connect to My Wallet for access to account(s).
       
-      const accounts = [];
-      emitter.emit("connected", { accounts });
-
-      return accounts;
+      return [];
     },
 
     async disconnect() {
       // Disconnect from accounts and cleanup (e.g. listeners).
-
-      emitter.emit("disconnected", null);
     },
 
     async getAccounts() {
@@ -79,23 +66,31 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
 
 export function setupMyWallet({
   iconUrl = "./assets/my-wallet-icon.png",
-}: MyWalletParams = {}): WalletModule<BrowserWallet> {
-  return {
-    id: "my-wallet",
-    type: "browser",
-    name: "My Wallet",
-    description: null,
-    iconUrl,
-    wallet: MyWallet,
+}: MyWalletParams = {}): WalletModuleFactory<BrowserWallet> {
+  return async () => {
+    // Return null here when wallet is unavailable.
+    
+    return {
+      id: "my-wallet",
+      type: "browser",
+      metadata: {
+        name: "My Wallet",
+        description: null,
+        iconUrl,
+      },
+      init: MyWallet,
+    };
   };
 }
 ```
 
-`WalletModule` is made up of two main parts:
-- Behaviour: `wallet`.
-- Metadata: `id`, `type`, `name`, `description` and `iconUrl`.
+`WalletModule` (return type of `WalletModuleFactory`) is made up of four properties:
+- `id`: Unique identifier for the wallet.
+- `type`: Type of wallet to infer the behaviour and metadata.
+- `metadata`: Metadata for displaying information to the user.
+- `init`: The implementation (behaviour) of the wallet.
 
-The metadata of a wallet is accessible as part of the selector's `wallets` state. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModule` and `WalletBehaviourFactory`.
+A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and accessed by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
 
 Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
 
@@ -106,25 +101,15 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 ## Methods
 
-### `isAvailable`
-
-This method is used to determine whether a wallet is available for connecting. For example, injected wallets such as Sender are unavailable on mobile where browser extensions are not supported. The UI will hide the wallet when `false` is returned.
-
-> Note: Injected wallets should be considered available if they aren't installed. The modal handles this case by displaying a download link (using `getDownloadUrl`) when attempting to connect.
-
 ### `connect`
 
-This method handles wallet setup (e.g. initialising wallet-specific libraries) and requesting access to accounts via `FunctionCall` access keys. It's important that `connected` is emitted only when we successfully gain access to at least one account.
+This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a connected state.
 
 > Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters.
 
-> Note: The combination of setup and connecting is still under review.
-
 ### `disconnect`
 
-This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet. It's important that `disconnected` is emitted regardless of exceptions.
-
-> Note: The requirement to emit "disconnected" is still under review and may be removed in favour of accepting the Promise settling as a signal that this method has completed. 
+This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet.
 
 ### `getAccounts`
 
@@ -143,9 +128,3 @@ Where you might have to construct NEAR Transactions and send them yourself, you 
 This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
 
 > Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. NEAR Wallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
-
-### `getDownloadUrl`
-
-This method returns the download link for users who haven't installed the wallet. This is usually the Chrome Web Store but ideally this should be browser aware to give the best experience for the user.
-
-> Note: This method is only applicable to injected wallets.

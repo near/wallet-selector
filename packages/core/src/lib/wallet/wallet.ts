@@ -1,4 +1,4 @@
-import { providers } from "near-api-js";
+import { transactions, providers } from "near-api-js";
 
 import {
   EventEmitterService,
@@ -6,8 +6,7 @@ import {
   LoggerService,
   StorageService,
 } from "../services";
-import { Transaction } from "./transactions";
-import { Action } from "./actions.types";
+import { Action } from "./transactions.types";
 import { Options } from "../options.types";
 import { Optional } from "../utils.types";
 import { AccountState } from "../store.types";
@@ -23,7 +22,7 @@ export interface SignAndSendTransactionParams {
 }
 
 export interface SignAndSendTransactionsParams {
-  transactions: Array<Optional<Transaction, "signerId">>;
+  transactions: Array<Optional<transactions.Transaction, "signerId">>;
 }
 
 export type WalletEvents = {

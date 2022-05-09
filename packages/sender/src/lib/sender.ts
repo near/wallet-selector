@@ -1,6 +1,6 @@
 import { isMobile } from "@near-wallet-selector/utils";
 import {
-  WalletModule,
+  WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
   Action,
@@ -8,7 +8,6 @@ import {
   FunctionCallAction,
   Optional,
   waitFor,
-  errors,
 } from "@near-wallet-selector/core";
 
 import { InjectedSender } from "./injected-sender";
@@ -24,65 +23,81 @@ export interface SenderParams {
 }
 
 interface SenderState {
-  wallet: InjectedSender | null;
+  wallet: InjectedSender;
 }
 
-const Sender: WalletBehaviourFactory<InjectedWallet> = ({
+const isInstalled = () => {
+  return waitFor(() => !!window.near?.isSender).catch(() => false);
+};
+
+const setupSenderState = (): SenderState => {
+  const wallet = window.near!;
+
+  return {
+    wallet,
+  };
+};
+
+const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   emitter,
   logger,
 }) => {
-  const _state: SenderState = { wallet: null };
-
-  const isInstalled = async () => {
-    try {
-      return await waitFor(() => !!window.near?.isSender);
-    } catch (e) {
-      logger.log("Sender:isInstalled:error", e);
-
-      return false;
-    }
-  };
+  const _state = setupSenderState();
 
   const cleanup = () => {
-    _state.wallet = null;
+    for (const key in _state.wallet.callbacks) {
+      _state.wallet.remove(key);
+    }
   };
 
-  // TODO: Remove event listeners.
-  // Must only trigger "disconnected" if we were connected.
   const disconnect = async () => {
-    if (!_state.wallet) {
-      return;
-    }
-
     if (!_state.wallet.isSignedIn()) {
-      return cleanup();
-    }
-
-    const res = await _state.wallet.signOut();
-
-    if (!res) {
-      throw new Error("Failed to disconnect");
-    }
-
-    if (typeof res === "object") {
-      throw new Error(
-        (typeof res.error === "string" ? res.error : res.error.type) ||
-          "Failed to disconnect"
-      );
+      return;
     }
 
     cleanup();
 
-    emitter.emit("disconnected", null);
+    const res = await _state.wallet.signOut();
+
+    if (res === true) {
+      return;
+    }
+
+    const error = new Error(
+      typeof res.error === "string" ? res.error : res.error.type
+    );
+
+    // Prevent disconnecting by throwing.
+    if (error.message === "User reject") {
+      throw error;
+    }
+
+    // Continue disconnecting but log out the issue.
+    logger.log("Failed to disconnect");
+    logger.error(error);
+  };
+
+  const setupEvents = () => {
+    _state.wallet.on("accountChanged", async (newAccountId) => {
+      logger.log("Sender:onAccountChange", newAccountId);
+      emitter.emit("disconnected", null);
+    });
+
+    _state.wallet.on("rpcChanged", async ({ rpc }) => {
+      logger.log("Sender:onNetworkChange", rpc);
+
+      if (options.network.networkId !== rpc.networkId) {
+        await disconnect();
+
+        emitter.emit("disconnected", null);
+        emitter.emit("networkChanged", { networkId: rpc.networkId });
+      }
+    });
   };
 
   const getAccounts = () => {
-    if (!_state.wallet) {
-      return [];
-    }
-
     const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
@@ -90,54 +105,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     }
 
     return [{ accountId }];
-  };
-
-  const setupWallet = async (): Promise<InjectedSender> => {
-    if (_state.wallet) {
-      return _state.wallet;
-    }
-
-    const installed = await isInstalled();
-
-    if (!installed) {
-      throw errors.createWalletNotInstalledError(metadata);
-    }
-
-    _state.wallet = window.near!;
-
-    try {
-      // Add extra wait to ensure Sender's sign in status is read from the
-      // browser extension background env.
-      await waitFor(() => !!_state.wallet?.isSignedIn(), { timeout: 300 });
-    } catch (e) {
-      logger.log("Sender:setupWallet: Not signed in yet");
-    }
-
-    _state.wallet.on("accountChanged", async (newAccountId) => {
-      logger.log("Sender:onAccountChange", newAccountId);
-
-      cleanup();
-
-      emitter.emit("disconnected", null);
-    });
-
-    _state.wallet.on("rpcChanged", async ({ rpc }) => {
-      if (options.network.networkId !== rpc.networkId) {
-        await disconnect();
-
-        emitter.emit("networkChanged", { networkId: rpc.networkId });
-      }
-    });
-
-    return _state.wallet;
-  };
-
-  const getWallet = (): InjectedSender => {
-    if (!_state.wallet) {
-      throw new Error(`${metadata.name} not connected`);
-    }
-
-    return _state.wallet;
   };
 
   const isValidActions = (
@@ -169,25 +136,19 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     });
   };
 
+  if (_state.wallet.isSignedIn()) {
+    setupEvents();
+  }
+
   return {
-    getDownloadUrl() {
-      return "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg";
-    },
-
-    async isAvailable() {
-      return !isMobile();
-    },
-
     async connect() {
-      const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
-        emitter.emit("connected", { accounts: existingAccounts });
         return existingAccounts;
       }
 
-      const { accessKey, error } = await wallet.requestSignIn({
+      const { accessKey, error } = await _state.wallet.requestSignIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
       });
@@ -201,10 +162,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         );
       }
 
-      const newAccounts = getAccounts();
-      emitter.emit("connected", { accounts: newAccounts });
+      setupEvents();
 
-      return newAccounts;
+      return getAccounts();
     },
 
     disconnect,
@@ -224,9 +184,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
         actions,
       });
 
-      const wallet = getWallet();
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
 
-      return wallet
+      return _state.wallet
         .signAndSendTransaction({
           receiverId,
           actions: transformActions(actions),
@@ -248,9 +210,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
     async signAndSendTransactions({ transactions }) {
       logger.log("Sender:signAndSendTransactions", { transactions });
 
-      const wallet = getWallet();
+      if (!_state.wallet.isSignedIn()) {
+        throw new Error("Wallet not connected");
+      }
 
-      return wallet
+      return _state.wallet
         .requestSignTransactions({
           transactions: transformTransactions(transactions),
         })
@@ -272,13 +236,32 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = ({
 
 export function setupSender({
   iconUrl = "./assets/sender-icon.png",
-}: SenderParams = {}): WalletModule<InjectedWallet> {
-  return {
-    id: "sender",
-    type: "injected",
-    name: "Sender",
-    description: null,
-    iconUrl,
-    wallet: Sender,
+}: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
+  return async () => {
+    const mobile = isMobile();
+    const installed = await isInstalled();
+
+    if (mobile || !installed) {
+      return null;
+    }
+
+    // Add extra wait to ensure Sender's sign in status is read from the
+    // browser extension background env.
+    await waitFor(() => !!window.near?.isSignedIn(), { timeout: 300 }).catch(
+      () => false
+    );
+
+    return {
+      id: "sender",
+      type: "injected",
+      metadata: {
+        name: "Sender",
+        description: null,
+        iconUrl,
+        downloadUrl:
+          "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+      },
+      init: Sender,
+    };
   };
 }

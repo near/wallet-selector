@@ -1,8 +1,11 @@
 export {
   WalletSelector,
   WalletSelectorParams,
+  WalletSelectorEvents,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
+
+export { ModalOptions, Theme } from "./lib/modal/modal.types";
 
 export { Network, NetworkId } from "./lib/options.types";
 export { Subscription } from "./lib/services";
@@ -10,22 +13,33 @@ export { Optional } from "./lib/utils.types";
 
 export {
   WalletSelectorState,
-  WalletState,
+  ModuleState,
   AccountState,
 } from "./lib/store.types";
 
 export {
+  WalletModuleFactory,
+  WalletModule,
+  WalletBehaviourFactory,
+  WalletBehaviourOptions,
   Wallet,
   WalletType,
   WalletMetadata,
-  WalletBehaviour,
-  WalletModule,
-  WalletBehaviourFactory,
+  WalletEvents,
+  BrowserWalletMetadata,
+  BrowserWalletBehaviour,
   BrowserWallet,
+  InjectedWalletMetadata,
+  InjectedWalletBehaviour,
   InjectedWallet,
-  HardwareWallet,
+  HardwareWalletMetadata,
   HardwareWalletConnectParams,
+  HardwareWalletBehaviour,
+  HardwareWallet,
+  BridgeWalletMetadata,
+  BridgeWalletBehaviour,
   BridgeWallet,
+  Account,
   Transaction,
   Action,
   ActionType,
@@ -39,6 +53,6 @@ export {
   DeleteAccountAction,
 } from "./lib/wallet";
 
-export { errors } from "./lib/errors";
+export { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export { waitFor } from "./lib/helpers";

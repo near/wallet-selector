@@ -78,3 +78,9 @@ export type Action =
   | DeleteAccountAction;
 
 export type ActionType = Action["type"];
+
+export interface Transaction {
+  signerId: string;
+  receiverId: string;
+  actions: Array<Action>;
+}
