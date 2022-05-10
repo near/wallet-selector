@@ -37,7 +37,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     setIsLoading(true);
 
     return wallet
-      .connect({ derivationPath: ledgerDerivationPath })
+      .connect({ derivationPaths: [ledgerDerivationPath] })
       .then(() => onConnected())
       .catch((err) => setLedgerError(`Error: ${err.message}`))
       .finally(() => setIsLoading(false));
