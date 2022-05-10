@@ -62,14 +62,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     // this.selector.show();
   }
 
-  signOut() {
-    this.selector
-      .wallet()
-      .disconnect()
-      .catch((err) => {
-        console.log("Failed to disconnect");
-        console.error(err);
-      });
+  async signOut() {
+    const wallet = await this.selector.wallet();
+
+    wallet.disconnect().catch((err) => {
+      console.log("Failed to disconnect");
+      console.error(err);
+    });
   }
 
   switchProvider() {
@@ -109,10 +108,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSendMultipleTransactions() {
+  async onSendMultipleTransactions() {
     const { contractId } = this.selector.options;
+    const wallet = await this.selector.wallet();
 
-    this.selector.wallet().signAndSendTransactions({
+    wallet.signAndSendTransactions({
       transactions: [
         {
           // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
@@ -194,7 +194,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSubmit(e: Sumbitted) {
+  async onSubmit(e: Sumbitted) {
     const { fieldset, message, donation } = e.target.elements;
 
     fieldset.disabled = true;
@@ -202,8 +202,10 @@ export class ContentComponent implements OnInit, OnDestroy {
     // TODO: optimistically update page with new message,
     // update blockchain data in background
     // add uuid to each message, so we know which one is already known
-    this.selector
-      .wallet()
+
+    const wallet = await this.selector.wallet();
+
+    wallet
       .signAndSendTransaction({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,

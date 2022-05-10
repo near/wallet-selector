@@ -39,6 +39,12 @@
         "jestConfig": "packages/wallet-connect/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
   "tags": ["bridge-wallet"]

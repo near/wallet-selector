@@ -1,11 +1,9 @@
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 
-import { Wallet } from "../../packages/core/src/lib/wallet";
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
 import { WalletSelector } from "../../packages/core/src/lib/wallet-selector.types";
 import { ModalRouteName } from "./Modal.types";
 import { LedgerDerivationPath } from "./LedgerDerivationPath";
-import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
@@ -38,9 +36,6 @@ export const Modal: React.FC<ModalProps> = ({
   hide,
 }) => {
   const [routeName, setRouteName] = useState<ModalRouteName>("WalletOptions");
-  const [notInstalledWallet, setNotInstalledWallet] = useState<Wallet | null>(
-    null
-  );
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,7 +58,6 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleDismissClick = useCallback(() => {
     setAlertMessage(null);
-    setNotInstalledWallet(null);
     setRouteName("WalletOptions");
     hide();
   }, [hide]);
@@ -113,16 +107,12 @@ export const Modal: React.FC<ModalProps> = ({
             <WalletOptions
               selector={selector}
               options={options}
-              onWalletNotInstalled={(wallet) => {
-                setNotInstalledWallet(wallet);
-                return setRouteName("WalletNotInstalled");
-              }}
               onConnectHardwareWallet={() => {
                 setRouteName("LedgerDerivationPath");
               }}
               onConnected={handleDismissClick}
-              onError={(message) => {
-                setAlertMessage(message);
+              onError={(err) => {
+                setAlertMessage(err.message);
                 setRouteName("AlertMessage");
               }}
             />
@@ -132,15 +122,6 @@ export const Modal: React.FC<ModalProps> = ({
               selector={selector}
               onConnected={handleDismissClick}
               onBack={() => setRouteName("WalletOptions")}
-            />
-          )}
-          {routeName === "WalletNotInstalled" && notInstalledWallet && (
-            <WalletNotInstalled
-              notInstalledWallet={notInstalledWallet}
-              onBack={() => {
-                setNotInstalledWallet(null);
-                setRouteName("WalletOptions");
-              }}
             />
           )}
           {routeName === "WalletNetworkChanged" && (

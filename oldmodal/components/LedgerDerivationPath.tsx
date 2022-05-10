@@ -25,10 +25,10 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     setLedgerDerivationPath(e.target.value);
   };
 
-  const handleConnectClick = () => {
+  const handleConnectClick = async () => {
     setIsLoading(true);
     // TODO: Can't assume "ledger" once we implement more hardware wallets.
-    const wallet = selector.wallet("ledger");
+    const wallet = await selector.wallet("ledger");
 
     if (wallet.type !== "hardware") {
       return;
@@ -36,16 +36,18 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
 
     setIsLoading(true);
 
-    wallet
+    return wallet
       .connect({ derivationPath: ledgerDerivationPath })
       .then(() => onConnected())
       .catch((err) => setLedgerError(`Error: ${err.message}`))
       .finally(() => setIsLoading(false));
   };
 
-  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = (e) => {
+  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
+    e
+  ) => {
     if (e.key === "Enter") {
-      handleConnectClick();
+      await handleConnectClick();
     }
   };
 

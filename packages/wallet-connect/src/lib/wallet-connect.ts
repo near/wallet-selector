@@ -1,6 +1,6 @@
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
 import {
-  WalletModule,
+  WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
   Subscription,
@@ -10,143 +10,126 @@ import WalletConnectClient from "./wallet-connect-client";
 
 export interface WalletConnectParams {
   projectId: string;
-  appMetadata: AppMetadata;
+  metadata: AppMetadata;
   relayUrl?: string;
   iconUrl?: string;
+  chainId?: string;
 }
+
+type WalletConnectExtraOptions = Pick<WalletConnectParams, "chainId"> &
+  Required<Pick<WalletConnectParams, "projectId" | "metadata" | "relayUrl">>;
+
+interface WalletConnectState {
+  client: WalletConnectClient;
+  session: SessionTypes.Settled | null;
+  subscriptions: Array<Subscription>;
+}
+
+const setupWalletConnectState = async (
+  params: WalletConnectExtraOptions
+): Promise<WalletConnectState> => {
+  const client = new WalletConnectClient();
+  let session: SessionTypes.Settled | null = null;
+
+  await client.init(params);
+
+  if (client.session.topics.length) {
+    session = await client.session.get(client.session.topics[0]);
+  }
+
+  return {
+    client,
+    session,
+    subscriptions: [],
+  };
+};
 
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
-  Pick<WalletConnectParams, "projectId" | "appMetadata" | "relayUrl">
-> = ({
-  options,
-  metadata,
-  projectId,
-  appMetadata,
-  relayUrl,
-  emitter,
-  logger,
-}) => {
-  let _wallet: WalletConnectClient | null = null;
-  let _subscriptions: Array<Subscription> = [];
-  let _session: SessionTypes.Settled | null = null;
+  { params: WalletConnectExtraOptions }
+> = async ({ options, params, emitter, logger }) => {
+  const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
+    if (params.chainId) {
+      return params.chainId;
+    }
+
     const { networkId } = options.network;
 
     if (["mainnet", "testnet", "betanet"].includes(networkId)) {
       return `near:${networkId}`;
     }
 
-    return "near:testnet";
+    throw new Error("Invalid chain id");
   };
 
   const getAccounts = () => {
-    if (!_session) {
+    if (!_state.session) {
       return [];
     }
 
-    return _session.state.accounts.map((wcAccountId) => ({
+    return _state.session.state.accounts.map((wcAccountId) => ({
       accountId: wcAccountId.split(":")[2],
     }));
   };
 
   const cleanup = () => {
-    _subscriptions.forEach((subscription) => subscription.remove());
+    _state.subscriptions.forEach((subscription) => subscription.remove());
 
-    _wallet = null;
-    _subscriptions = [];
-    _session = null;
+    _state.subscriptions = [];
+    _state.session = null;
   };
 
   const disconnect = async () => {
-    if (!_wallet) {
-      return;
+    if (_state.session) {
+      await _state.client.disconnect({
+        topic: _state.session.topic,
+        reason: {
+          code: 5900,
+          message: "User disconnected",
+        },
+      });
     }
 
-    if (!_session) {
-      return cleanup();
-    }
-
-    await _wallet.disconnect({
-      topic: _session.topic,
-      reason: {
-        code: 5900,
-        message: "User disconnected",
-      },
-    });
     cleanup();
-
-    emitter.emit("disconnected", null);
   };
 
-  const setupWallet = async (): Promise<WalletConnectClient> => {
-    if (_wallet) {
-      return _wallet;
-    }
-
-    const client = new WalletConnectClient();
-
-    await client.init({
-      projectId,
-      relayUrl,
-      metadata: appMetadata,
-    });
-
-    _subscriptions.push(
-      client.on("pairing_created", (pairing) => {
+  const setupEvents = () => {
+    _state.subscriptions.push(
+      _state.client.on("pairing_created", (pairing) => {
         logger.log("Pairing Created", pairing);
       })
     );
 
-    _subscriptions.push(
-      client.on("session_updated", (updatedSession) => {
+    _state.subscriptions.push(
+      _state.client.on("session_updated", (updatedSession) => {
         logger.log("Session Updated", updatedSession);
 
-        if (updatedSession.topic === _session?.topic) {
-          _session = updatedSession;
+        if (updatedSession.topic === _state.session?.topic) {
+          _state.session = updatedSession;
           emitter.emit("accountsChanged", { accounts: getAccounts() });
         }
       })
     );
 
-    _subscriptions.push(
-      client.on("session_deleted", (deletedSession) => {
+    _state.subscriptions.push(
+      _state.client.on("session_deleted", async (deletedSession) => {
         logger.log("Session Deleted", deletedSession);
 
-        if (deletedSession.topic === _session?.topic) {
-          disconnect();
+        if (deletedSession.topic === _state.session?.topic) {
+          await disconnect();
         }
       })
     );
-
-    if (client.session.topics.length) {
-      _session = await client.session.get(client.session.topics[0]);
-    }
-
-    _wallet = client;
-
-    return client;
   };
 
-  const getWallet = () => {
-    if (!_wallet || !_session) {
-      throw new Error(`${metadata.name} not connected`);
-    }
-
-    return {
-      wallet: _wallet,
-      session: _session,
-    };
-  };
+  if (_state.session) {
+    setupEvents();
+  }
 
   return {
-    async isAvailable() {
-      return true;
-    },
-
     async connect() {
-      const wallet = await setupWallet();
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -154,8 +137,8 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
-        _session = await wallet.connect({
-          metadata: appMetadata,
+        _state.session = await _state.client.connect({
+          metadata: params.metadata,
           timeout: 30 * 1000,
           permissions: {
             blockchain: {
@@ -170,12 +153,11 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        const newAccounts = getAccounts();
-        emitter.emit("connected", { accounts: newAccounts });
+        setupEvents();
 
-        return newAccounts;
+        return getAccounts();
       } catch (err) {
-        await this.disconnect();
+        await disconnect();
 
         throw err;
       }
@@ -198,11 +180,13 @@ const WalletConnect: WalletBehaviourFactory<
         actions,
       });
 
-      const { wallet, session } = getWallet();
+      if (!_state.session) {
+        throw new Error("Wallet not connected");
+      }
 
-      return wallet.request({
+      return _state.client.request({
         timeout: 30 * 1000,
-        topic: session.topic,
+        topic: _state.session.topic,
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransaction",
@@ -218,11 +202,13 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("WalletConnect:signAndSendTransactions", { transactions });
 
-      const { wallet, session } = getWallet();
+      if (!_state.session) {
+        throw new Error("Wallet not connected");
+      }
 
-      return wallet.request({
+      return _state.client.request({
         timeout: 30 * 1000,
-        topic: session.topic,
+        topic: _state.session.topic,
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransactions",
@@ -235,23 +221,31 @@ const WalletConnect: WalletBehaviourFactory<
 
 export function setupWalletConnect({
   projectId,
-  appMetadata,
+  metadata,
+  chainId,
   relayUrl = "wss://relay.walletconnect.com",
   iconUrl = "./assets/wallet-connect-icon.png",
-}: WalletConnectParams): WalletModule<BridgeWallet> {
-  return {
-    id: "wallet-connect",
-    type: "bridge",
-    name: "WalletConnect",
-    description: null,
-    iconUrl,
-    wallet: (options) => {
-      return WalletConnect({
-        ...options,
-        projectId,
-        appMetadata,
-        relayUrl,
-      });
-    },
+}: WalletConnectParams): WalletModuleFactory<BridgeWallet> {
+  return async () => {
+    return {
+      id: "wallet-connect",
+      type: "bridge",
+      metadata: {
+        name: "WalletConnect",
+        description: null,
+        iconUrl,
+      },
+      init: (options) => {
+        return WalletConnect({
+          ...options,
+          params: {
+            projectId,
+            metadata,
+            relayUrl,
+            chainId,
+          },
+        });
+      },
+    };
   };
 }

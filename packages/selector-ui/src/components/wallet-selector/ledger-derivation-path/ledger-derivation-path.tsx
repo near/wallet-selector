@@ -32,10 +32,10 @@ export class LedgerDerivationPath {
     this.ledgerDerivationPath = e.target.value;
   }
 
-  handleConnectClick() {
+  async handleConnectClick() {
     this.isLoading = true;
     // TODO: Can't assume "ledger" once we implement more hardware wallets.
-    const wallet = this.selector.wallet("ledger");
+    const wallet = await this.selector.wallet("ledger");
 
     if (wallet.type !== "hardware") {
       return;
@@ -43,18 +43,16 @@ export class LedgerDerivationPath {
 
     this.isLoading = true;
 
-    wallet
+    return wallet
       .connect({ derivationPath: this.ledgerDerivationPath })
-      .then(() => {
-        this.nearConnected.emit();
-      })
+      .then(() => this.nearConnected.emit())
       .catch((err) => (this.ledgerError = `Error: ${err.message}`))
       .finally(() => (this.isLoading = false));
   }
 
-  handleEnterClick(e) {
+  async handleEnterClick(e) {
     if (e.key === "Enter") {
-      this.handleConnectClick();
+      await this.handleConnectClick();
     }
   }
 

@@ -7,7 +7,7 @@ import {
   Event,
   EventEmitter,
 } from "@stencil/core";
-import { Wallet, WalletState } from "@near-wallet-selector/core";
+import { ModuleState } from "@near-wallet-selector/core";
 
 @Component({
   tag: "wallet-options",
@@ -21,14 +21,12 @@ export class WalletOptions {
     this.selector = newValue;
     if (this.selector) {
       this.selector.store.observable.subscribe((state) => {
-        this.getAvailableWallets(state.wallets).then(
-          (availableWallets) => (this.availableWallets = availableWallets)
-        );
+        this.modules = state.modules;
       });
     }
   }
 
-  @State() availableWallets: Array<WalletState> = [];
+  @State() modules: Array<ModuleState> = [];
   @State() connecting = false;
   @State() walletInfoVisible = false;
 
@@ -36,51 +34,39 @@ export class WalletOptions {
   @Event() nearErrorWalletOptions: EventEmitter<string>;
   @Event() nearConnected: EventEmitter<void>;
 
-  async getAvailableWallets(wallets: Array<WalletState>) {
-    const result: Array<WalletState> = [];
-
-    for (let i = 0; i < wallets.length; i += 1) {
-      const wallet = this.selector.wallet(wallets[i].id);
-
-      if (await wallet.isAvailable()) {
-        result.push(wallets[i]);
-      }
-    }
-
-    return result;
-  }
-
-  handleWalletClick(wallet: Wallet) {
+  async handleWalletClick(module: ModuleState) {
     if (this.connecting) {
       return;
     }
 
-    if (wallet.type === "hardware") {
-      return this.nearConnectHardwareWallet.emit();
+    try {
+      this.connecting = true;
+      const wallet = await module.wallet();
+
+      if (wallet.type === "hardware") {
+        return this.nearConnectHardwareWallet.emit();
+      }
+
+      await wallet.connect();
+      this.nearConnected.emit();
+    } catch (err) {
+      const { name } = module.metadata;
+
+      // logger.log(`Failed to select ${name}`);
+      // logger.error(err);
+      console.log(`Failed to select ${name}`);
+      console.error(err);
+
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+
+      this.nearErrorWalletOptions.emit(
+        `Failed to connect with ${name}: ${message}`
+      );
+    } finally {
+      this.connecting = false;
     }
-
-    this.connecting = true;
-
-    wallet
-      .connect()
-      .then(() => this.nearConnected.emit())
-      .catch((err) => {
-        // if (errors.isWalletNotInstalledError(err)) {
-        //   return onWalletNotInstalled(wallet);
-        // }
-
-        console.log(`Failed to select ${wallet.name}`);
-        console.log(err);
-        // logger.log(`Failed to select ${wallet.name}`);
-        // logger.error(err);
-
-        this.nearErrorWalletOptions.emit(
-          `Failed to connect with ${wallet.name}: ${err.message}`
-        );
-      })
-      .finally(() => (this.connecting = false));
   }
-
   componentWillLoad() {
     this.watchSelector(this.selector);
   }
@@ -93,20 +79,20 @@ export class WalletOptions {
         <ul
           class={"options-list " + (this.connecting ? "selection-process" : "")}
         >
-          {this.availableWallets.reduce((result, { id, selected }) => {
-            const wallet = this.selector.wallet(id);
-
-            const { name, description, iconUrl } = wallet;
+          {this.modules.reduce((result, module) => {
+            const { selectedWalletId } = this.selector.store.getState();
+            const { name, description, iconUrl } = module.metadata;
+            const selected = module.id === selectedWalletId;
 
             result.push(
               <li
-                key={id}
-                id={id}
+                key={module.id}
+                id={module.id}
                 class={selected ? "selected-wallet" : ""}
                 onClick={
                   selected
                     ? undefined
-                    : this.handleWalletClick.bind(this, wallet)
+                    : this.handleWalletClick.bind(this, module)
                 }
               >
                 <div title={description || ""}>

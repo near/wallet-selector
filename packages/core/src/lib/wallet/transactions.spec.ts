@@ -1,8 +1,8 @@
-import { transformActions } from "./actions";
+import { transformActions } from "./transactions";
 import { transactions, utils } from "near-api-js";
 import { BN } from "bn.js";
 
-describe("actions", () => {
+describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
     const actions = transformActions([{ type: "CreateAccount" }]);
 

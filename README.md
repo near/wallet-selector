@@ -2,9 +2,9 @@
 
 The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
 
-- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
-- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Browser extension wallet.
-- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
+- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
@@ -39,17 +39,17 @@ npm install @near-wallet-selector/{near-wallet,sender,math-wallet,ledger,wallet-
 Then them in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
   contractId: "guest-book.testnet",
-  wallets: [
+  modules: [
     setupNearWallet(),
     setupSender(),
     setupLedger(),

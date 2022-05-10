@@ -1,11 +1,12 @@
-import { BehaviorSubject } from "rxjs";
+import { Subject, BehaviorSubject, scan } from "rxjs";
 
-import { logger } from "./services";
+import { logger, storage } from "./services";
 import {
   Store,
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
+import { SELECTED_WALLET_ID } from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -15,64 +16,47 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { wallets, selectedWalletId, accounts } = action.payload;
+      const { modules, selectedWalletId, accounts } = action.payload;
 
       return {
         ...state,
-        wallets: wallets.map((wallet) => ({
-          id: wallet.id,
-          name: wallet.name,
-          description: wallet.description,
-          iconUrl: wallet.iconUrl,
-          type: wallet.type,
-          selected: wallet.id === selectedWalletId,
-        })),
+        modules,
         accounts,
+        selectedWalletId,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, pending, accounts } = action.payload;
+      const { walletId, accounts } = action.payload;
+
+      if (!accounts.length) {
+        return state;
+      }
 
       return {
         ...state,
-        wallets: state.wallets.map((wallet) => {
-          if (wallet.id === walletId) {
-            return {
-              ...wallet,
-              selected: !pending && !!accounts.length,
-            };
-          }
-
-          if (wallet.selected) {
-            return {
-              ...wallet,
-              selected: false,
-            };
-          }
-
-          return wallet;
-        }),
         accounts,
+        selectedWalletId: walletId,
       };
     }
     case "WALLET_DISCONNECTED": {
+      const { walletId } = action.payload;
+
+      if (walletId !== state.selectedWalletId) {
+        return state;
+      }
+
       return {
         ...state,
-        wallets: state.wallets.map((wallet) => {
-          if (!wallet.selected) {
-            return wallet;
-          }
-
-          return {
-            ...wallet,
-            selected: false,
-          };
-        }),
         accounts: [],
+        selectedWalletId: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
-      const { accounts } = action.payload;
+      const { walletId, accounts } = action.payload;
+
+      if (walletId !== state.selectedWalletId) {
+        return state;
+      }
 
       return {
         ...state,
@@ -84,19 +68,43 @@ const reducer = (
   }
 };
 
+const syncStorage = (
+  prevState: WalletSelectorState,
+  state: WalletSelectorState
+) => {
+  if (state.selectedWalletId === prevState.selectedWalletId) {
+    return;
+  }
+
+  if (state.selectedWalletId) {
+    storage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+    return;
+  }
+
+  storage.removeItem(SELECTED_WALLET_ID);
+};
+
 export const createStore = (): Store => {
-  const subject = new BehaviorSubject<WalletSelectorState>({
+  const initialState: WalletSelectorState = {
+    modules: [],
     accounts: [],
-    wallets: [],
+    selectedWalletId: storage.getItem(SELECTED_WALLET_ID),
+  };
+
+  const state$ = new BehaviorSubject(initialState);
+  const actions$ = new Subject<WalletSelectorAction>();
+
+  actions$.pipe(scan(reducer, initialState)).subscribe(state$);
+
+  let prevState = state$.getValue();
+  state$.subscribe((state) => {
+    syncStorage(prevState, state);
+    prevState = state;
   });
 
   return {
-    observable: subject,
-    getState: () => subject.getValue(),
-    dispatch: (action) => {
-      const state = subject.getValue();
-
-      subject.next(reducer(state, action));
-    },
+    observable: state$,
+    getState: () => state$.getValue(),
+    dispatch: (action) => actions$.next(action),
   };
 };

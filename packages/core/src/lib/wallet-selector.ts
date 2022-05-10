@@ -1,4 +1,3 @@
-import WalletController from "./wallet-controller";
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
 import {
@@ -6,27 +5,25 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-// import { WalletSelectorModal } from "../../../../oldmodal/modal.types";
-// import { setupModal } from "../../../../oldmodal/modal";
-import { Wallet } from "./wallet";
 import { EventEmitter, Logger } from "./services";
+import { Wallet } from "./wallet";
+import { setupWalletModules } from "./modules/wallet-modules";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {
   const options = resolveOptions(params);
+  Logger.debug = options.debug;
+
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = createStore();
-  const controller = new WalletController(
-    options,
-    params.wallets,
-    store,
-    emitter
-  );
 
-  Logger.debug = options.debug;
-  const logger = new Logger();
-  await controller.init();
+  const walletModules = await setupWalletModules({
+    factories: params.modules,
+    options,
+    store,
+    emitter,
+  });
 
   // TODO: Remove omit once modal is a separate package.
   const selector: WalletSelector = {
@@ -40,11 +37,14 @@ export const setupWalletSelector = async (
       return Boolean(accounts.length);
     },
     options,
-    wallet: <WalletVariation extends Wallet = Wallet>(walletId?: string) => {
-      const wallet = controller.getWallet<WalletVariation>(walletId);
+    wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet<Variation>(
+        id || selectedWalletId
+      );
 
       if (!wallet) {
-        if (walletId) {
+        if (id) {
           throw new Error("Invalid wallet id");
         }
 
@@ -68,6 +68,7 @@ export const setupWalletSelector = async (
         ui.setSelector(selector);
       })
       .catch((err) => {
+        const logger = new Logger();
         logger.log("Could not set up the UI");
         logger.error(err);
       });

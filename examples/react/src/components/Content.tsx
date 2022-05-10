@@ -101,14 +101,13 @@ const Content: React.FC = () => {
     modalRef.current!.show();
   };
 
-  const handleSignOut = () => {
-    selector
-      .wallet()
-      .disconnect()
-      .catch((err) => {
-        console.log("Failed to sign out");
-        console.error(err);
-      });
+  const handleSignOut = async () => {
+    const wallet = await selector.wallet();
+
+    wallet.disconnect().catch((err) => {
+      console.log("Failed to sign out");
+      console.error(err);
+    });
   };
 
   const handleSwitchProvider = () => {
@@ -125,10 +124,11 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
-  const handleSendMultipleTransactions = () => {
+  const handleSendMultipleTransactions = async () => {
     const { contractId } = selector.options;
+    const wallet = await selector.wallet();
 
-    selector.wallet().signAndSendTransactions({
+    await wallet.signAndSendTransactions({
       transactions: [
         {
           // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
@@ -164,7 +164,7 @@ const Content: React.FC = () => {
   };
 
   const handleSubmit = useCallback(
-    (e: SubmitEvent) => {
+    async (e: SubmitEvent) => {
       e.preventDefault();
 
       // TODO: Fix the typing so that target.elements exists..
@@ -177,8 +177,10 @@ const Content: React.FC = () => {
       // TODO: optimistically update page with new message,
       // update blockchain data in background
       // add uuid to each message, so we know which one is already known
-      selector
-        .wallet()
+
+      const wallet = await selector.wallet();
+
+      wallet
         .signAndSendTransaction({
           signerId: accountId!,
           actions: [
