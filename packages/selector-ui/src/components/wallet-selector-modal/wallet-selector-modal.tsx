@@ -10,7 +10,6 @@ import {
   State,
 } from "@stencil/core";
 import { Components } from "../../components";
-import { MouseEvent } from "react";
 
 export type Theme = "auto" | "dark" | "light";
 @Component({
@@ -66,14 +65,6 @@ export class WalletSelectorModal {
     }
   }
 
-  handleDismissOutsideClick(e: MouseEvent) {
-    e.preventDefault();
-
-    if (e.target === e.currentTarget) {
-      this.hide().then();
-    }
-  }
-
   //TODO: Check for other solutions.
   attachFontsUrlToHead() {
     // Add custom font to page DOM since font-face doesn't work within Shadow DOM.
@@ -96,13 +87,22 @@ export class WalletSelectorModal {
   render() {
     return (
       <div
-        class={this.getThemeClass()}
-        style={{ display: this.opened ? "block" : "none" }}
+        class={`modal-wrapper ${this.getThemeClass()} ${
+          this.opened ? "open" : ""
+        }`}
       >
-        <div class="modal" onClick={this.handleDismissOutsideClick.bind(this)}>
-          <wallet-selector>
+        <div class="modal-overlay" onClick={this.hide.bind(this)} />
+        <div class="modal">
+          <div class="modal-header">
+            <slot name="title">
+              <h2>Connect Wallet</h2>
+            </slot>
             <close-button slot="close-btn" />
-          </wallet-selector>
+          </div>
+          <div class="modal-body">
+            <wallet-selector />
+          </div>
+          <div class="modal-footer" />
         </div>
       </div>
     );

@@ -40,13 +40,7 @@ export class WalletSelectorComponent {
 
   render() {
     return (
-      <div class="modal-content">
-        <div class="modal-header">
-          <slot name="title">
-            <h2>Connect Wallet</h2>
-          </slot>
-          <slot name="close-btn" />
-        </div>
+      <div class="wallet-selector-wrapper">
         {this.routeName === "AlertMessage" && (
           <alert-message
             message={this.errorMessage}

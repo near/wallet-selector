@@ -56,14 +56,14 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [wallet-selector](../wallet-selector)
 - [close-button](close-button)
+- [wallet-selector](../wallet-selector)
 
 ### Graph
 ```mermaid
 graph TD;
-  wallet-selector-modal --> wallet-selector
   wallet-selector-modal --> close-button
+  wallet-selector-modal --> wallet-selector
   wallet-selector --> alert-message
   wallet-selector --> wallet-options
   wallet-selector --> ledger-derivation-path
