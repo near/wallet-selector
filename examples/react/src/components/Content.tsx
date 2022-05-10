@@ -27,12 +27,6 @@ const Content: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const modalRef = useRef<HTMLWalletSelectorModalElement>(null);
-  // useEffect(() => {
-  //   const modal = modalRef.current;
-  //   if (modalRef.current && modalRef.current) {
-  //     modal?.show();
-  //   }
-  // }, []);
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {

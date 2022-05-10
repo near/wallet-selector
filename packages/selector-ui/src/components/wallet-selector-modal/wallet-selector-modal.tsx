@@ -1,5 +1,3 @@
-// import type { WalletSelector, WalletSelectorUIComponent } from "@near-wallet-selector/core";
-
 import {
   Component,
   Element,
@@ -10,8 +8,8 @@ import {
   State,
 } from "@stencil/core";
 import { Components } from "../../components";
+import { Theme } from "../../modal.types";
 
-export type Theme = "auto" | "dark" | "light";
 @Component({
   tag: "wallet-selector-modal",
   styleUrl: "wallet-selector-modal.scss",
@@ -94,10 +92,8 @@ export class WalletSelectorModal {
         <div class="modal-overlay" onClick={this.hide.bind(this)} />
         <div class="modal">
           <div class="modal-header">
-            <slot name="title">
-              <h2>Connect Wallet</h2>
-            </slot>
-            <close-button slot="close-btn" />
+            <h2>Connect Wallet</h2>
+            <close-button />
           </div>
           <div class="modal-body">
             <wallet-selector />

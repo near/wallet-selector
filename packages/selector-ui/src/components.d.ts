@@ -5,8 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ModalOptions } from "./components/wallet-selector/modal.types";
-import { Theme } from "./components/wallet-selector-modal/wallet-selector-modal";
+import { Theme } from "./modal.types";
 import { Components } from "./components";
 export namespace Components {
     interface AlertMessage {
@@ -21,7 +20,6 @@ export namespace Components {
         "selector": any;
     }
     interface WalletOptions {
-        "options"?: ModalOptions;
         "selector": any;
     }
     interface WalletSelector {
@@ -119,7 +117,6 @@ declare namespace LocalJSX {
         "onNearConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
         "onNearConnected"?: (event: CustomEvent<void>) => void;
         "onNearErrorWalletOptions"?: (event: CustomEvent<string>) => void;
-        "options"?: ModalOptions;
         "selector"?: any;
     }
     interface WalletSelector {

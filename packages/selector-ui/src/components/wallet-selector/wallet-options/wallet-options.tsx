@@ -8,7 +8,6 @@ import {
   EventEmitter,
 } from "@stencil/core";
 import { Wallet, WalletState } from "@near-wallet-selector/core";
-import { ModalOptions } from "../modal.types";
 
 @Component({
   tag: "wallet-options",
@@ -27,12 +26,6 @@ export class WalletOptions {
         );
       });
     }
-  }
-
-  @Prop() options?: ModalOptions;
-  @Watch("options")
-  watchOptions(newValue: ModalOptions) {
-    this.options = newValue;
   }
 
   @State() availableWallets: Array<WalletState> = [];
@@ -90,14 +83,12 @@ export class WalletOptions {
 
   componentWillLoad() {
     this.watchSelector(this.selector);
-    this.watchOptions(this.options);
   }
   render() {
     return [
       <div class="wallet-options-wrapper">
         <p class="description">
-          {this.options?.description ||
-            "Please select a wallet to connect to this dApp:"}
+          Please select a wallet to connect to this dApp:
         </p>
         <ul
           class={"options-list " + (this.connecting ? "selection-process" : "")}

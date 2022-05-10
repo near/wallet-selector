@@ -1,4 +1,3 @@
-// import type { WalletSelector, WalletSelectorUIComponent } from "@near-wallet-selector/core";
 import { Component, Method, h, State } from "@stencil/core";
 
 @Component({

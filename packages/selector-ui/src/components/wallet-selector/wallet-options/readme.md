@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type           | Default     |
-| ---------- | ---------- | ----------- | -------------- | ----------- |
-| `options`  | --         |             | `ModalOptions` | `undefined` |
-| `selector` | `selector` |             | `any`          | `undefined` |
+| Property   | Attribute  | Description | Type  | Default     |
+| ---------- | ---------- | ----------- | ----- | ----------- |
+| `selector` | `selector` |             | `any` | `undefined` |
 
 
 ## Events
