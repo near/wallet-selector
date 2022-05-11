@@ -1,7 +1,7 @@
 import { Action } from "./transactions.types";
 import { AddKeyPermission } from "./transactions.types";
 import { transactions, utils } from "near-api-js";
-import { parseBigNumber } from "@near-wallet-selector/utils";
+import BN from "bn.js";
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
@@ -10,7 +10,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 
   const { receiverId, methodNames = [] } = permission;
   const allowance = permission.allowance
-    ? parseBigNumber(permission.allowance)
+    ? new BN(permission.allowance)
     : undefined;
 
   return transactions.functionCallAccessKey(receiverId, methodNames, allowance);
@@ -32,20 +32,20 @@ export const transformActions = (actions: Array<Action>) => {
         return transactions.functionCall(
           methodName,
           args,
-          parseBigNumber(gas),
-          parseBigNumber(deposit)
+          new BN(gas),
+          new BN(deposit)
         );
       }
       case "Transfer": {
         const { deposit } = action.params;
 
-        return transactions.transfer(parseBigNumber(deposit));
+        return transactions.transfer(new BN(deposit));
       }
       case "Stake": {
         const { stake, publicKey } = action.params;
 
         return transactions.stake(
-          parseBigNumber(stake),
+          new BN(stake),
           utils.PublicKey.from(publicKey)
         );
       }

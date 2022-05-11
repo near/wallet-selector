@@ -1,4 +1,5 @@
-import { Provider, QueryParams, ViewAccessKeyParams } from "./provider.service";
+import { Provider } from "./provider.service";
+import { QueryParams, ViewAccessKeyParams } from "./provider.service.types";
 import { mock } from "jest-mock-extended";
 import {
   FinalExecutionOutcome,

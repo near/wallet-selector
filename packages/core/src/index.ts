@@ -51,6 +51,7 @@ export {
   AddKeyAction,
   DeleteKeyAction,
   DeleteAccountAction,
+  AddKeyPermission,
 } from "./lib/wallet";
 
 export { FinalExecutionOutcome } from "near-api-js/lib/providers";

@@ -1,6 +1,1 @@
-export {
-  isMobile,
-  parseNearAmount,
-  parseBigNumber,
-  createTransaction,
-} from "./lib/utils";
+export { isMobile, createTransaction } from "./lib/utils";

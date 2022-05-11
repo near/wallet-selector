@@ -1,16 +1,12 @@
 import { utils, transactions as nearTransactions, Signer } from "near-api-js";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { AddKeyPermission } from "../../../core/src/lib/wallet/transactions.types";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
   Transaction,
   Action,
   ProviderService,
   Optional,
-} from "../../../core/src";
+  AddKeyPermission,
+} from "@near-wallet-selector/core";
 import * as BN from "bn.js";
-
-const parseBigNumber = (value: string) => new BN(value);
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
@@ -19,7 +15,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 
   const { receiverId, methodNames = [] } = permission;
   const allowance = permission.allowance
-    ? parseBigNumber(permission.allowance)
+    ? new BN(permission.allowance)
     : undefined;
 
   return nearTransactions.functionCallAccessKey(
@@ -45,20 +41,20 @@ const createAction = (actions: Array<Action>) => {
         return nearTransactions.functionCall(
           methodName,
           args,
-          parseBigNumber(gas),
-          parseBigNumber(deposit)
+          new BN(gas),
+          new BN(deposit)
         );
       }
       case "Transfer": {
         const { deposit } = action.params;
 
-        return nearTransactions.transfer(parseBigNumber(deposit));
+        return nearTransactions.transfer(new BN(deposit));
       }
       case "Stake": {
         const { stake, publicKey } = action.params;
 
         return nearTransactions.stake(
-          parseBigNumber(stake),
+          new BN(stake),
           utils.PublicKey.from(publicKey)
         );
       }

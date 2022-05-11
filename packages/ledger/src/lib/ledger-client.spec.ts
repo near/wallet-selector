@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import { transactions, utils } from "near-api-js";
-import { parseBigNumber, parseNearAmount } from "@near-wallet-selector/utils";
+import { BN } from "bn.js";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
@@ -28,9 +28,9 @@ const createTransactionMock = () => {
       "addMessage",
       { text: "test" },
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      parseBigNumber(parseNearAmount("0.00000000003")!),
+      new BN(utils.format.parseNearAmount("0.00000000003")!),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      parseBigNumber(parseNearAmount("0")!)
+      new BN(utils.format.parseNearAmount("0")!)
     ),
   ];
 

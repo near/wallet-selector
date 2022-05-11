@@ -1,7 +1,6 @@
 import { createAction } from "./wallet-utils";
 import { transactions, utils } from "near-api-js";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { parseBigNumber } from "../../../utils/src";
+import BN = require("bn.js");
 
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
@@ -44,12 +43,7 @@ describe("transformActions", () => {
     ]);
 
     expect(actions).toEqual([
-      transactions.functionCall(
-        methodName,
-        args,
-        parseBigNumber(gas),
-        parseBigNumber(deposit)
-      ),
+      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit)),
     ]);
   });
 
@@ -64,7 +58,7 @@ describe("transformActions", () => {
       },
     ]);
 
-    expect(actions).toEqual([transactions.transfer(parseBigNumber(deposit))]);
+    expect(actions).toEqual([transactions.transfer(new BN(deposit))]);
   });
 
   it("correctly transforms 'Stake' action", () => {
@@ -82,10 +76,7 @@ describe("transformActions", () => {
     ]);
 
     expect(actions).toEqual([
-      transactions.stake(
-        parseBigNumber(stake),
-        utils.PublicKey.from(publicKey)
-      ),
+      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey)),
     ]);
   });
 
@@ -139,7 +130,7 @@ describe("transformActions", () => {
         transactions.functionCallAccessKey(
           receiverId,
           methodNames,
-          parseBigNumber(allowance)
+          new BN(allowance)
         )
       ),
     ]);
