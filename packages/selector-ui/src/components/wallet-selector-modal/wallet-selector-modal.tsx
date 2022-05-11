@@ -7,6 +7,7 @@ import {
   Prop,
   State,
 } from "@stencil/core";
+import { WalletSelector } from "@near-wallet-selector/core";
 import { Components } from "../../components";
 import { Theme } from "../../modal.types";
 import appState from "../../store";
@@ -54,7 +55,7 @@ export class WalletSelectorModal {
   }
 
   @Method()
-  async setSelector(selector: unknown): Promise<void> {
+  async setSelector(selector: WalletSelector): Promise<void> {
     console.log("setSelector", selector);
     appState.selector = selector;
     const component = this.el.shadowRoot.querySelector("wallet-selector");

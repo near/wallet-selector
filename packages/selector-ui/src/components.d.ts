@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { WalletSelector } from "@near-wallet-selector/core";
 import { Theme } from "./modal.types";
 import { Components } from "./components";
 export namespace Components {
@@ -12,14 +13,14 @@ export namespace Components {
     }
     interface WalletSelector {
         "setRouteName": (route: string) => Promise<void>;
-        "setSelector": (selector: unknown) => Promise<void>;
+        "setSelector": (selector: WalletSelector) => Promise<void>;
     }
     interface WalletSelectorModal {
         /**
           * Method to hide the modal
          */
         "hide": () => Promise<void>;
-        "setSelector": (selector: unknown) => Promise<void>;
+        "setSelector": (selector: WalletSelector) => Promise<void>;
         /**
           * Method to show the modal.
          */

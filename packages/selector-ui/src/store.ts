@@ -1,9 +1,9 @@
 import { createStore } from "@stencil/store";
+import { ModuleState, WalletSelector } from "@near-wallet-selector/core";
 import { DEFAULT_DERIVATION_PATH } from "./constants";
-import { ModuleState } from "@near-wallet-selector/core";
 
 type StoreState = {
-  selector: any;
+  selector: WalletSelector;
   //ledger-derivation-path-component
   ledgerIsLoading: boolean;
   ledgerError: string;

@@ -3,6 +3,7 @@ import { AlertMessage } from "./alert-message/alert-message";
 import { WalletNetworkChanged } from "./wallet-network-changed/wallet-network-changed";
 import { LedgerDerivationPath } from "./ledger-derivation-path/ledger-derivation-path";
 import { WalletOptions } from "./wallet-options/wallet-options";
+import { WalletSelector } from "@near-wallet-selector/core";
 import appState from "../../store";
 
 @Component({
@@ -15,14 +16,12 @@ export class WalletSelectorComponent {
   @State() errorMessage: string;
 
   @Method()
-  async setSelector(selector: unknown): Promise<void> {
+  async setSelector(selector: WalletSelector): Promise<void> {
     if (!appState.selector) {
       appState.selector = selector;
     }
-    // @ts-ignore
+
     appState.selector.on("networkChanged", ({ networkId }) => {
-      // Switched back to the correct network.
-      // @ts-ignore
       if (networkId === appState.selector.options.network.networkId) {
         return this.handleDismissClick();
       }

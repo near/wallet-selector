@@ -17,7 +17,7 @@ Type: `Promise<void>`
 
 
 
-### `setSelector(selector: unknown) => Promise<void>`
+### `setSelector(selector: WalletSelector) => Promise<void>`
 
 
 
