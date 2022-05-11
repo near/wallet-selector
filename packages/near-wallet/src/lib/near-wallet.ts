@@ -5,10 +5,10 @@ import {
   BrowserWallet,
   Transaction,
   Optional,
-  transformActions,
   Network,
 } from "@near-wallet-selector/core";
-import { createAction, createTransaction } from "@near-wallet-selector/utils";
+import { createTransaction } from "@near-wallet-selector/utils";
+import { createAction } from "@near-wallet-selector/wallet-utils";
 
 export interface NearWalletParams {
   walletUrl?: string;

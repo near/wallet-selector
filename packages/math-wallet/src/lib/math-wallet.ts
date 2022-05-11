@@ -5,11 +5,11 @@ import {
   WalletBehaviourFactory,
   InjectedWallet,
   AccountState,
-  transformActions,
   waitFor,
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet } from "./injected-math-wallet";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 declare global {
   interface Window {
@@ -161,28 +161,12 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("MathWallet:signAndSendTransactions:block", block);
       logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
 
-      const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
-
-      for (let i = 0; i < transactions.length; i++) {
-        const transaction = createTransaction({
-          accountId,
-          publicKey,
-          receiverId: transactions[i].receiverId,
-          nonce: accessKey.nonce + i + 1,
-          actions: transactions[i].actions,
-          hash: block.header.hash,
-        });
-
-        const [hash, signedTx] = await nearTransactions.signTransaction(
-          transaction,
-          _state.wallet.signer,
-          accountId
-        );
-
-        logger.log("MathWallet:signAndSendTransactions:hash", hash);
-
-        signedTransactions.push(signedTx);
-      }
+      const signedTransactions = await signTransactions(
+        transactions,
+        _state.wallet.signer,
+        provider,
+        accountId
+      );
 
       logger.log(
         "MathWallet:signAndSendTransactions:signedTransactions",

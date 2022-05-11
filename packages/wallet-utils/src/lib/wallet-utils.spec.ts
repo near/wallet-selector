@@ -1,6 +1,7 @@
-import { createAction } from "@near-wallet-selector/utils";
+import { createAction } from "./wallet-utils";
 import { transactions, utils } from "near-api-js";
-import { parseBigNumber } from "@near-wallet-selector/utils";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { parseBigNumber } from "../../../utils/src";
 
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {

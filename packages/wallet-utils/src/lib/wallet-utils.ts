@@ -1,12 +1,15 @@
-import isMobile from "is-mobile";
-import { BN } from "bn.js";
-import { utils, transactions as nearTransactions } from "near-api-js";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Action } from "../../../core/src";
+import { utils, transactions as nearTransactions, Signer } from "near-api-js";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AddKeyPermission } from "../../../core/src/lib/wallet/transactions.types";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {
+  Transaction,
+  Action,
+  ProviderService,
+  Optional,
+} from "../../../core/src";
+import * as BN from "bn.js";
 
-const parseNearAmount = utils.format.parseNearAmount;
 const parseBigNumber = (value: string) => new BN(value);
 
 const getAccessKey = (permission: AddKeyPermission) => {
@@ -83,33 +86,44 @@ const createAction = (actions: Array<Action>) => {
     }
   });
 };
-interface CreateTransactionParams {
-  accountId: string;
-  publicKey: string;
-  receiverId: string;
-  nonce: number;
-  actions: Array<Action>;
-  hash: string;
-}
 
-const createTransaction = ({
-  accountId,
-  publicKey,
-  receiverId,
-  nonce,
-  actions,
-  hash,
-}: CreateTransactionParams) => {
-  const tx = nearTransactions.createTransaction(
-    accountId,
-    utils.PublicKey.from(publicKey),
-    receiverId,
-    nonce,
-    createAction(actions),
-    utils.serialize.base_decode(hash)
-  );
+const signTransactions = async (
+  transactions: Array<Optional<Transaction, "signerId">>,
+  signer: Signer,
+  provider: ProviderService,
+  accountId: string
+) => {
+  const publicKey = await signer.getPublicKey();
 
-  return tx;
+  const [block, accessKey] = await Promise.all([
+    provider.block({ finality: "final" }),
+    provider.viewAccessKey({ accountId, publicKey: publicKey.toString() }),
+  ]);
+
+  const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
+
+  for (let i = 0; i < transactions.length; i++) {
+    const actions = createAction(transactions[i].actions);
+
+    const transaction = nearTransactions.createTransaction(
+      accountId,
+      utils.PublicKey.from(publicKey),
+      transactions[i].receiverId,
+      accessKey.nonce + i + 1,
+      actions,
+      utils.serialize.base_decode(block.header.hash)
+    );
+
+    const response = await nearTransactions.signTransaction(
+      transaction,
+      signer,
+      accountId
+    );
+
+    signedTransactions.push(response[1]);
+  }
+
+  return signedTransactions;
 };
 
-export { isMobile, parseNearAmount, parseBigNumber, createTransaction };
+export { createAction, signTransactions, Action };

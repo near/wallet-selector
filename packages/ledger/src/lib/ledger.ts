@@ -1,17 +1,16 @@
-import { transactions as nearTransactions, utils } from "near-api-js";
 import { TypedError } from "near-api-js/lib/utils/errors";
-import { isMobile, createTransaction } from "@near-wallet-selector/utils";
+import { isMobile } from "@near-wallet-selector/utils";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   WalletBehaviourOptions,
   AccountState,
   HardwareWallet,
-  Transaction,
-  Optional,
 } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
+import { Signer, utils } from "near-api-js";
 
 interface AuthData {
   accountId: string;
@@ -58,6 +57,34 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   storage,
 }) => {
   const _state = setupLedgerState(storage);
+
+  const signer: Signer = {
+    createKey: () => {
+      throw Error("Not implemented");
+    },
+    getPublicKey: async () => {
+      if (!_state.authData) {
+        throw new Error(`${metadata.name} not connected`);
+      }
+
+      return utils.PublicKey.from(_state.authData.publicKey);
+    },
+    signMessage: async (message: Uint8Array) => {
+      if (!_state.authData) {
+        throw new Error(`${metadata.name} not connected`);
+      }
+
+      const signature = await _state.client.sign({
+        data: message,
+        derivationPath: _state.authData.derivationPath,
+      });
+
+      return {
+        signature,
+        publicKey: utils.PublicKey.from(_state.authData.publicKey),
+      };
+    },
+  };
 
   const getAccounts = (
     authData: AuthData | null = _state.authData
@@ -145,56 +172,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     return accountIds[0];
   };
 
-  const signTransactions = async (
-    transactions: Array<Optional<Transaction, "signerId">>
-  ) => {
-    if (!_state.authData) {
-      throw new Error(`${metadata.name} not connected`);
-    }
-
-    const { accountId, derivationPath, publicKey } = _state.authData;
-
-    const [block, accessKey] = await Promise.all([
-      provider.block({ finality: "final" }),
-      provider.viewAccessKey({ accountId, publicKey }),
-    ]);
-
-    const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
-
-    for (let i = 0; i < transactions.length; i++) {
-      const transaction = createTransaction({
-        accountId,
-        publicKey,
-        receiverId: transactions[i].receiverId,
-        nonce: accessKey.nonce + i + 1,
-        actions: transactions[i].actions,
-        hash: block.header.hash,
-      });
-
-      const serializedTx = utils.serialize.serialize(
-        nearTransactions.SCHEMA,
-        transaction
-      );
-
-      const signature = await _state.client.sign({
-        data: serializedTx,
-        derivationPath,
-      });
-
-      const signedTx = new nearTransactions.SignedTransaction({
-        transaction,
-        signature: new nearTransactions.Signature({
-          keyType: transaction.publicKey.keyType,
-          data: signature,
-        }),
-      });
-
-      signedTransactions.push(signedTx);
-    }
-
-    return signedTransactions;
-  };
-
   return {
     async connect({ derivationPath }) {
       const existingAccounts = getAccounts();
@@ -263,12 +240,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const [signedTx] = await signTransactions([
-        {
-          receiverId,
-          actions,
-        },
-      ]);
+      const [signedTx] = await signTransactions(
+        [
+          {
+            receiverId,
+            actions,
+          },
+        ],
+        signer,
+        provider,
+        _state.authData.accountId
+      );
 
       return provider.sendTransaction(signedTx);
     },
@@ -283,7 +265,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const signedTransactions = await signTransactions(transactions);
+      const signedTransactions = await signTransactions(
+        transactions,
+        signer,
+        provider,
+        _state.authData.accountId
+      );
 
       return Promise.all(
         signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))

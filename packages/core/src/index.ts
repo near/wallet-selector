@@ -8,7 +8,7 @@ export { setupWalletSelector } from "./lib/wallet-selector";
 export { ModalOptions, Theme } from "./lib/modal/modal.types";
 
 export { Network, NetworkId } from "./lib/options.types";
-export { Subscription } from "./lib/services";
+export { Subscription, ProviderService } from "./lib/services";
 export { Optional } from "./lib/utils.types";
 
 export {
