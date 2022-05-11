@@ -138,7 +138,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     const accountIds = await response.json();
 
     if (!Array.isArray(accountIds) || !accountIds.length) {
-      throw new Error("Failed to find account linked to public key");
+      throw new Error(
+        "Failed to find account linked for public key: " + publicKey
+      );
     }
 
     return accountIds[0];
