@@ -278,6 +278,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       const [signedTx] = await signTransactions([
         {
+          signerId,
           receiverId,
           actions,
         },
