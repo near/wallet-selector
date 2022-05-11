@@ -240,7 +240,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const [signedTx] = await signTransactions(
+      const signedTransactions = await signTransactions(
         [
           {
             receiverId,
@@ -252,7 +252,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         _state.authData.accountId
       );
 
-      return provider.sendTransaction(signedTx);
+      return provider.sendTransaction(signedTransactions[0]);
     },
 
     async signAndSendTransactions({ transactions }) {

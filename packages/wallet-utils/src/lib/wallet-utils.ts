@@ -89,11 +89,11 @@ const signTransactions = async (
   provider: ProviderService,
   accountId: string
 ) => {
-  const publicKey = await signer.getPublicKey();
+  const publicKey = (await signer.getPublicKey()).toString();
 
   const [block, accessKey] = await Promise.all([
     provider.block({ finality: "final" }),
-    provider.viewAccessKey({ accountId, publicKey: publicKey.toString() }),
+    provider.viewAccessKey({ accountId, publicKey: publicKey }),
   ]);
 
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];

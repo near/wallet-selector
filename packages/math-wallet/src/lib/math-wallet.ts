@@ -1,5 +1,4 @@
-import { transactions as nearTransactions } from "near-api-js";
-import { isMobile, createTransaction } from "@near-wallet-selector/utils";
+import { isMobile } from "@near-wallet-selector/utils";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -114,33 +113,19 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not connected");
       }
 
-      const { accountId, publicKey } = account;
-      const [block, accessKey] = await Promise.all([
-        provider.block({ finality: "final" }),
-        provider.viewAccessKey({ accountId, publicKey }),
-      ]);
-
-      logger.log("MathWallet:signAndSendTransaction:block", block);
-      logger.log("MathWallet:signAndSendTransaction:accessKey", accessKey);
-
-      const transaction = createTransaction({
-        accountId,
-        publicKey,
-        receiverId: receiverId,
-        nonce: accessKey.nonce + 1,
-        actions,
-        hash: block.header.hash,
-      });
-
-      const [hash, signedTx] = await nearTransactions.signTransaction(
-        transaction,
+      const signedTransactions = await signTransactions(
+        [
+          {
+            receiverId,
+            actions,
+          },
+        ],
         _state.wallet.signer,
-        accountId
+        provider,
+        account.accountId
       );
 
-      logger.log("MathWallet:signAndSendTransaction:hash", hash);
-
-      return provider.sendTransaction(signedTx);
+      return provider.sendTransaction(signedTransactions[0]);
     },
 
     async signAndSendTransactions({ transactions }) {
