@@ -105,7 +105,7 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a connected state.
 
-> Note: Hardware wallets are passed a `derivationPath` where other wallets types are called without any parameters.
+> Note: Hardware wallets are passed `derivationPaths` where other wallets types are called without any parameters.
 
 ### `disconnect`
 
