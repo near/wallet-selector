@@ -91,7 +91,7 @@ export type InjectedWallet = BaseWallet<
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
 export interface HardwareWalletConnectParams {
-  derivationPath: string;
+  derivationPaths: Array<string>;
 }
 
 export type HardwareWalletBehaviour = Modify<
