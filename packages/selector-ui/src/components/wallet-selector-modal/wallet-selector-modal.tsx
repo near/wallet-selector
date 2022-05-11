@@ -9,6 +9,7 @@ import {
 } from "@stencil/core";
 import { Components } from "../../components";
 import { Theme } from "../../modal.types";
+import appState from "../../store";
 
 @Component({
   tag: "wallet-selector-modal",
@@ -43,6 +44,9 @@ export class WalletSelectorModal {
     this.opened = false;
     const component = this.el.shadowRoot.querySelector("wallet-selector");
     component.setRouteName("WalletOptions");
+
+    appState.ledgerIsLoading = false;
+    appState.ledgerError = "";
   }
 
   getThemeClass() {
@@ -52,6 +56,7 @@ export class WalletSelectorModal {
   @Method()
   async setSelector(selector: unknown): Promise<void> {
     console.log("setSelector", selector);
+    appState.selector = selector;
     const component = this.el.shadowRoot.querySelector("wallet-selector");
     component.setSelector(selector as unknown as Components.WalletSelector);
   }

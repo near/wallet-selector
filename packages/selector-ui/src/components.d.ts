@@ -8,19 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Theme } from "./modal.types";
 import { Components } from "./components";
 export namespace Components {
-    interface AlertMessage {
-        "message": string;
-    }
     interface CloseButton {
-    }
-    interface LedgerDerivationPath {
-        "selector": any;
-    }
-    interface WalletNetworkChanged {
-        "selector": any;
-    }
-    interface WalletOptions {
-        "selector": any;
     }
     interface WalletSelector {
         "setRouteName": (route: string) => Promise<void>;
@@ -43,35 +31,11 @@ export namespace Components {
     }
 }
 declare global {
-    interface HTMLAlertMessageElement extends Components.AlertMessage, HTMLStencilElement {
-    }
-    var HTMLAlertMessageElement: {
-        prototype: HTMLAlertMessageElement;
-        new (): HTMLAlertMessageElement;
-    };
     interface HTMLCloseButtonElement extends Components.CloseButton, HTMLStencilElement {
     }
     var HTMLCloseButtonElement: {
         prototype: HTMLCloseButtonElement;
         new (): HTMLCloseButtonElement;
-    };
-    interface HTMLLedgerDerivationPathElement extends Components.LedgerDerivationPath, HTMLStencilElement {
-    }
-    var HTMLLedgerDerivationPathElement: {
-        prototype: HTMLLedgerDerivationPathElement;
-        new (): HTMLLedgerDerivationPathElement;
-    };
-    interface HTMLWalletNetworkChangedElement extends Components.WalletNetworkChanged, HTMLStencilElement {
-    }
-    var HTMLWalletNetworkChangedElement: {
-        prototype: HTMLWalletNetworkChangedElement;
-        new (): HTMLWalletNetworkChangedElement;
-    };
-    interface HTMLWalletOptionsElement extends Components.WalletOptions, HTMLStencilElement {
-    }
-    var HTMLWalletOptionsElement: {
-        prototype: HTMLWalletOptionsElement;
-        new (): HTMLWalletOptionsElement;
     };
     interface HTMLWalletSelectorElement extends Components.WalletSelector, HTMLStencilElement {
     }
@@ -86,38 +50,14 @@ declare global {
         new (): HTMLWalletSelectorModalElement;
     };
     interface HTMLElementTagNameMap {
-        "alert-message": HTMLAlertMessageElement;
         "close-button": HTMLCloseButtonElement;
-        "ledger-derivation-path": HTMLLedgerDerivationPathElement;
-        "wallet-network-changed": HTMLWalletNetworkChangedElement;
-        "wallet-options": HTMLWalletOptionsElement;
         "wallet-selector": HTMLWalletSelectorElement;
         "wallet-selector-modal": HTMLWalletSelectorModalElement;
     }
 }
 declare namespace LocalJSX {
-    interface AlertMessage {
-        "message": string;
-        "onNearBackEvent"?: (event: CustomEvent<MouseEvent>) => void;
-    }
     interface CloseButton {
         "onNearModalCloseEvent"?: (event: CustomEvent<MouseEvent>) => void;
-    }
-    interface LedgerDerivationPath {
-        "onNearBackEventLedger"?: (event: CustomEvent<MouseEvent>) => void;
-        "onNearConnected"?: (event: CustomEvent<MouseEvent>) => void;
-        "selector"?: any;
-    }
-    interface WalletNetworkChanged {
-        "onNearSwitchWallet"?: (event: CustomEvent<string>) => void;
-        "onNearWalletNetworkDismiss"?: (event: CustomEvent<string>) => void;
-        "selector"?: any;
-    }
-    interface WalletOptions {
-        "onNearConnectHardwareWallet"?: (event: CustomEvent<MouseEvent>) => void;
-        "onNearConnected"?: (event: CustomEvent<void>) => void;
-        "onNearErrorWalletOptions"?: (event: CustomEvent<string>) => void;
-        "selector"?: any;
     }
     interface WalletSelector {
     }
@@ -128,11 +68,7 @@ declare namespace LocalJSX {
         "theme"?: Theme;
     }
     interface IntrinsicElements {
-        "alert-message": AlertMessage;
         "close-button": CloseButton;
-        "ledger-derivation-path": LedgerDerivationPath;
-        "wallet-network-changed": WalletNetworkChanged;
-        "wallet-options": WalletOptions;
         "wallet-selector": WalletSelector;
         "wallet-selector-modal": WalletSelectorModal;
     }
@@ -141,11 +77,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "alert-message": LocalJSX.AlertMessage & JSXBase.HTMLAttributes<HTMLAlertMessageElement>;
             "close-button": LocalJSX.CloseButton & JSXBase.HTMLAttributes<HTMLCloseButtonElement>;
-            "ledger-derivation-path": LocalJSX.LedgerDerivationPath & JSXBase.HTMLAttributes<HTMLLedgerDerivationPathElement>;
-            "wallet-network-changed": LocalJSX.WalletNetworkChanged & JSXBase.HTMLAttributes<HTMLWalletNetworkChangedElement>;
-            "wallet-options": LocalJSX.WalletOptions & JSXBase.HTMLAttributes<HTMLWalletOptionsElement>;
             "wallet-selector": LocalJSX.WalletSelector & JSXBase.HTMLAttributes<HTMLWalletSelectorElement>;
             "wallet-selector-modal": LocalJSX.WalletSelectorModal & JSXBase.HTMLAttributes<HTMLWalletSelectorModalElement>;
         }

@@ -1,4 +1,9 @@
 import { Component, Method, h, State } from "@stencil/core";
+import { AlertMessage } from "./alert-message/alert-message";
+import { WalletNetworkChanged } from "./wallet-network-changed/wallet-network-changed";
+import { LedgerDerivationPath } from "./ledger-derivation-path/ledger-derivation-path";
+import { WalletOptions } from "./wallet-options/wallet-options";
+import appState from "../../store";
 
 @Component({
   tag: "wallet-selector",
@@ -6,18 +11,19 @@ import { Component, Method, h, State } from "@stencil/core";
   shadow: true,
 })
 export class WalletSelectorComponent {
-  @State() selector: unknown;
   @State() routeName = "WalletOptions";
   @State() errorMessage: string;
 
   @Method()
   async setSelector(selector: unknown): Promise<void> {
-    this.selector = selector;
+    if (!appState.selector) {
+      appState.selector = selector;
+    }
     // @ts-ignore
-    this.selector.on("networkChanged", ({ networkId }) => {
+    appState.selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       // @ts-ignore
-      if (networkId === selector.options.network.networkId) {
+      if (networkId === appState.selector.options.network.networkId) {
         return this.handleDismissClick();
       }
 
@@ -41,32 +47,30 @@ export class WalletSelectorComponent {
     return (
       <div class="wallet-selector-wrapper">
         {this.routeName === "AlertMessage" && (
-          <alert-message
+          <AlertMessage
             message={this.errorMessage}
-            onNearBackEvent={() => {
+            onBack={() => {
               this.errorMessage = null;
               this.routeName = "WalletOptions";
             }}
           />
         )}
         {this.routeName === "WalletOptions" && (
-          <wallet-options
-            selector={this.selector}
-            onNearConnectHardwareWallet={() => {
+          <WalletOptions
+            onConnectHardwareWallet={() => {
               this.routeName = "LedgerDerivationPath";
             }}
-            onNearErrorWalletOptions={(e) => {
-              this.errorMessage = e.detail;
+            onError={(err) => {
+              this.errorMessage = err.message;
               this.routeName = "AlertMessage";
             }}
-            onNearConnected={this.handleDismissClick}
+            onConnected={this.handleDismissClick}
           />
         )}
         {this.routeName === "LedgerDerivationPath" && (
-          <ledger-derivation-path
-            selector={this.selector}
-            onNearConnected={this.handleDismissClick}
-            onNearBackEventLedger={() => {
+          <LedgerDerivationPath
+            onConnected={this.handleDismissClick}
+            onBack={() => {
               {
                 this.routeName = "WalletOptions";
               }
@@ -75,12 +79,11 @@ export class WalletSelectorComponent {
         )}
 
         {this.routeName === "WalletNetworkChanged" && (
-          <wallet-network-changed
-            selector={this.selector}
-            onNearSwitchWallet={() => {
+          <WalletNetworkChanged
+            onSwitchWallet={() => {
               this.routeName = "WalletOptions";
             }}
-            onNearWalletNetworkDismiss={this.handleDismissClick}
+            onDismiss={this.handleDismissClick}
           />
         )}
       </div>

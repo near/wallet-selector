@@ -1,28 +1,3 @@
 :host {
   display: block;
 }
-.alert-message-wrapper {
-
-  .action-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    button {
-      background: inherit;
-      font-size: 14.2px;
-      font-family: inherit;
-      border-width: 1px;
-      border-style: solid;
-      border-color: inherit;
-      border-radius: 40px;
-      margin-top: 8px;
-      padding: 0.55em 1.4em;
-      text-align: center;
-      color: inherit;
-      transition: background 150ms ease-in-out;
-      line-height: 1.15;
-      cursor: pointer;
-    }
-  }
-}

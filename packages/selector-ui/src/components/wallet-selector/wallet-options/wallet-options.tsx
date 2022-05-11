@@ -1,86 +1,67 @@
-import {
-  Component,
-  h,
-  Prop,
-  Watch,
-  State,
-  Event,
-  EventEmitter,
-} from "@stencil/core";
+import { FunctionalComponent, h } from "@stencil/core";
 import { ModuleState } from "@near-wallet-selector/core";
+import appState from "../../../store";
 
-@Component({
-  tag: "wallet-options",
-  styleUrl: "wallet-options.scss",
-  shadow: true,
-})
-export class WalletOptions {
-  @Prop() selector: any;
-  @Watch("selector")
-  watchSelector(newValue: any) {
-    this.selector = newValue;
-    if (this.selector) {
-      this.selector.store.observable.subscribe((state) => {
-        this.modules = state.modules;
-      });
-    }
+interface WalletOptionsProps {
+  onConnectHardwareWallet: () => void;
+  onConnected: () => void;
+  onError: (error: Error) => void;
+}
+
+export const WalletOptions: FunctionalComponent<WalletOptionsProps> = ({
+  onConnectHardwareWallet,
+  onConnected,
+  onError,
+}) => {
+  if (appState.selector) {
+    const subscription = appState.selector.store.observable.subscribe(
+      (state) => {
+        appState.walletOptionsModules = state.modules;
+      }
+    );
+    subscription.unsubscribe();
   }
 
-  @State() modules: Array<ModuleState> = [];
-  @State() connecting = false;
-  @State() walletInfoVisible = false;
-
-  @Event() nearConnectHardwareWallet: EventEmitter<MouseEvent>;
-  @Event() nearErrorWalletOptions: EventEmitter<string>;
-  @Event() nearConnected: EventEmitter<void>;
-
-  async handleWalletClick(module: ModuleState) {
-    if (this.connecting) {
+  const handleWalletClick = (module: ModuleState) => async () => {
+    if (appState.walletOptionsConnecting) {
       return;
     }
 
     try {
-      this.connecting = true;
+      appState.walletOptionsConnecting = true;
       const wallet = await module.wallet();
 
       if (wallet.type === "hardware") {
-        return this.nearConnectHardwareWallet.emit();
+        return onConnectHardwareWallet();
       }
 
       await wallet.connect();
-      this.nearConnected.emit();
+      onConnected();
     } catch (err) {
       const { name } = module.metadata;
-
-      // logger.log(`Failed to select ${name}`);
-      // logger.error(err);
-      console.log(`Failed to select ${name}`);
-      console.error(err);
 
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      this.nearErrorWalletOptions.emit(
-        `Failed to connect with ${name}: ${message}`
-      );
+      onError(new Error(`Failed to connect with ${name}: ${message}`));
     } finally {
-      this.connecting = false;
+      appState.walletOptionsConnecting = false;
     }
-  }
-  componentWillLoad() {
-    this.watchSelector(this.selector);
-  }
-  render() {
-    return [
+  };
+  return (
+    <div>
       <div class="wallet-options-wrapper">
         <p class="description">
           Please select a wallet to connect to this dApp:
         </p>
         <ul
-          class={"options-list " + (this.connecting ? "selection-process" : "")}
+          class={
+            "options-list " +
+            (appState.walletOptionsConnecting ? "selection-process" : "")
+          }
         >
-          {this.modules.reduce((result, module) => {
-            const { selectedWalletId } = this.selector.store.getState();
+          {appState.walletOptionsModules.reduce((result, module) => {
+            const { selectedWalletId } = appState.selector.store.getState();
             const { name, description, iconUrl } = module.metadata;
             const selected = module.id === selectedWalletId;
 
@@ -89,11 +70,7 @@ export class WalletOptions {
                 key={module.id}
                 id={module.id}
                 class={selected ? "selected-wallet" : ""}
-                onClick={
-                  selected
-                    ? undefined
-                    : this.handleWalletClick.bind(this, module)
-                }
+                onClick={selected ? undefined : handleWalletClick(module)}
               >
                 <div title={description || ""}>
                   <img src={iconUrl} alt={name} />
@@ -112,18 +89,18 @@ export class WalletOptions {
             return result;
           }, [])}
         </ul>
-      </div>,
+      </div>
       <div class="info">
         <span
           onClick={() => {
-            this.walletInfoVisible = !this.walletInfoVisible;
+            appState.walletInfoVisible = !appState.walletInfoVisible;
           }}
         >
           What is a Wallet?
         </span>
         <div
           class={`info-description ${
-            this.walletInfoVisible ? "show" : "hide"
+            appState.walletInfoVisible ? "show" : "hide"
           }-explanation`}
         >
           <p>
@@ -133,7 +110,7 @@ export class WalletOptions {
             web-based or an app on your mobile device.
           </p>
         </div>
-      </div>,
-    ];
-  }
-}
+      </div>
+    </div>
+  );
+};
