@@ -49,7 +49,7 @@ There are four wallet types:
   const wallet = await selector.wallet("ledger");
   
   if (wallet.type === "hardware") {
-    await wallet.connect({ derviationPath: "44'/397'/0'/0'/1'" });
+    await wallet.connect({ derivationPaths: ["44'/397'/0'/0'/1'"] });
   }
 })();
 ```
@@ -78,7 +78,7 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 **Parameters**
 
 - `params` (`object?`)
-  - `derviationPath` (`string?`): Required for hardware wallets (e.g. Ledger Wallet). This is the path to the public key on your device.
+  - `derivationPaths` (`Array<string>?`): Required for hardware wallets (e.g. Ledger). This is a list of derivation paths linked to public keys on your device.
 
 **Returns**
 
@@ -86,7 +86,7 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 
 **Description**
 
-Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledger Wallet) require `derivationPath` to validate access key permissions.
+Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
 
 **Example**
 
@@ -112,8 +112,8 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // Ledger
 (async () => {
   const wallet = await selector.wallet("ledger");
-  const accounts = await wallet.connect({ 
-    derviationPath: "44'/397'/0'/0'/1'"
+  const accounts = await wallet.connect({
+    derivationPaths: ["44'/397'/0'/0'/1'"],
   });
 })();
 
