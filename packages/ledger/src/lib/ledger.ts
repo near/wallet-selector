@@ -220,7 +220,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       const accounts: Array<LedgerAccount> = [];
 
-      for (let i = 0; i <= derivationPaths.length; i += 1) {
+      for (let i = 0; i < derivationPaths.length; i += 1) {
         const derivationPath = derivationPaths[i];
         const publicKey = await _state.client.getPublicKey({ derivationPath });
         const accountId = await getAccountIdFromPublicKey({ publicKey });
