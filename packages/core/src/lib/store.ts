@@ -1,6 +1,6 @@
 import { Subject, BehaviorSubject, scan } from "rxjs";
 
-import { logger, JSONStorage, StorageService } from "./services";
+import { logger, JsonStorage, StorageService } from "./services";
 import {
   Store,
   WalletSelectorState,
@@ -69,7 +69,7 @@ const reducer = (
 };
 
 export const createStore = async (storage: StorageService): Promise<Store> => {
-  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
+  const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],

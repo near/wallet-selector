@@ -1,6 +1,6 @@
 import { Options } from "../options.types";
 import { AccountState, ModuleState, Store } from "../store.types";
-import { logger, EventEmitter, StorageService, JSONStorage } from "../services";
+import { logger, EventEmitter, StorageService, JsonStorage } from "../services";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { WalletModuleFactory, Wallet } from "../wallet";
 import { setupWalletInstance } from "./wallet-instance";
@@ -23,7 +23,7 @@ export const setupWalletModules = async ({
 }: WalletModulesParams) => {
   const modules: Array<ModuleState> = [];
   const instances: Record<string, Wallet> = {};
-  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
+  const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
 
   const getWallet = async <Variation extends Wallet = Wallet>(
     id: string | null

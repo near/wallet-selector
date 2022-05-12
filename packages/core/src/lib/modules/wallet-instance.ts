@@ -2,7 +2,7 @@ import {
   EventEmitter,
   logger,
   Provider,
-  JSONStorage,
+  JsonStorage,
   StorageService,
 } from "../services";
 import { Wallet, WalletEvents, WalletModule } from "../wallet";
@@ -29,7 +29,7 @@ export const setupWalletInstance = async ({
   emitter,
 }: WalletInstanceParams) => {
   const walletEmitter = new EventEmitter<WalletEvents>();
-  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
+  const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
 
   const handleDisconnected = (walletId: string) => {
     store.dispatch({
@@ -112,7 +112,7 @@ export const setupWalletInstance = async ({
       provider: new Provider(options.network.nodeUrl),
       emitter: walletEmitter,
       logger,
-      storage: new JSONStorage(storage, [PACKAGE_NAME, module.id]),
+      storage: new JsonStorage(storage, [PACKAGE_NAME, module.id]),
     })),
   } as Wallet;
 

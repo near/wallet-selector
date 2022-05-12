@@ -1,9 +1,9 @@
 import { StorageService } from "./storage.service.types";
-import { JSONStorageService } from "./json-storage.service.types";
+import { JsonStorageService } from "./json-storage.service.types";
 
 const KEY_DELIMITER = ":";
 
-export class JSONStorage implements JSONStorageService {
+export class JsonStorage implements JsonStorageService {
   storage: StorageService;
   namespace?: string;
 
