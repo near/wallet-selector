@@ -7,7 +7,7 @@ type StoreState = {
   //ledger-derivation-path-component
   ledgerIsLoading: boolean;
   ledgerError: string;
-  ledgerDerivationPath: string;
+  ledgerDerivationPaths: Array<string>;
   //wallet-options-component
   walletOptionsConnecting: boolean;
   walletInfoVisible: boolean;
@@ -18,7 +18,7 @@ const store: StoreState = {
   selector: null,
   ledgerIsLoading: false,
   ledgerError: "",
-  ledgerDerivationPath: DEFAULT_DERIVATION_PATH,
+  ledgerDerivationPaths: [DEFAULT_DERIVATION_PATH],
   walletOptionsConnecting: false,
   walletInfoVisible: false,
   walletOptionsModules: [],

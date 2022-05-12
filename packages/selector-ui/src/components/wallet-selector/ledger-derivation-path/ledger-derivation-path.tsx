@@ -15,7 +15,7 @@ export const LedgerDerivationPath: FunctionalComponent<
   };
 
   const handleDerivationPathChange = (e) => {
-    appState.ledgerDerivationPath = e.target.value;
+    appState.ledgerDerivationPaths = [e.target.value];
   };
 
   const handleConnectClick = async () => {
@@ -30,7 +30,7 @@ export const LedgerDerivationPath: FunctionalComponent<
     appState.ledgerIsLoading = true;
 
     return wallet
-      .connect({ derivationPath: appState.ledgerDerivationPath })
+      .connect({ derivationPaths: [appState.ledgerDerivationPaths][0] })
       .then(() => {
         onConnected();
         resetState();
@@ -57,7 +57,7 @@ export const LedgerDerivationPath: FunctionalComponent<
           type="text"
           class={appState.ledgerError ? "input-error" : ""}
           placeholder="Derivation Path"
-          value={appState.ledgerDerivationPath}
+          value={appState.ledgerDerivationPaths[0]}
           onChange={handleDerivationPathChange}
           readOnly={appState.ledgerIsLoading}
           onKeyPress={handleEnterClick}
