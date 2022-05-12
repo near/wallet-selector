@@ -4,7 +4,7 @@ import isMobile from "is-mobile";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
-  WalletBehaviourOptions,
+  JsonStorageService,
   AccountState,
   Account,
   HardwareWallet,
@@ -42,7 +42,7 @@ export interface LedgerParams {
 export const STORAGE_ACCOUNTS = "accounts";
 
 const setupLedgerState = async (
-  storage: WalletBehaviourOptions<HardwareWallet>["storage"]
+  storage: JsonStorageService
 ): Promise<LedgerState> => {
   const accounts = await storage.getItem<Array<LedgerAccount>>(
     STORAGE_ACCOUNTS
