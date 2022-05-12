@@ -84,12 +84,14 @@ describe("connect", () => {
     const derivationPath = "derivationPath";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
-    await wallet.connect({ derivationPath });
-    expect(storage.setItem).toHaveBeenCalledWith("ledger:authData", {
-      accountId,
-      derivationPath,
-      publicKey,
-    });
+    await wallet.connect({ derivationPaths: [derivationPath] });
+    expect(storage.setItem).toHaveBeenCalledWith("ledger:accounts", [
+      {
+        accountId,
+        derivationPath,
+        publicKey,
+      },
+    ]);
     expect(ledgerClient.connect).toHaveBeenCalled();
     expect(ledgerClient.setScrambleKey).toHaveBeenCalled();
     expect(ledgerClient.on).toHaveBeenCalled();
@@ -102,7 +104,7 @@ describe("getAccounts", () => {
     const accountId = "accountId";
     const { wallet } = await createLedgerWallet();
     await wallet.connect({
-      derivationPath: "derivationPath",
+      derivationPaths: ["derivationPath"],
     });
     const result = await wallet.getAccounts();
     expect(result).toEqual([{ accountId }]);
@@ -114,7 +116,7 @@ describe("getAccounts", () => {
 //     const { wallet, authData } = await createLedgerWallet();
 //     await wallet.connect({
 //       accountId: authData.accountId,
-//       derivationPath: authData.derivationPath,
+//       derivationPaths: [authData.derivationPath],
 //     });
 //     const result = await wallet.signAndSendTransaction({
 //       signerId: "amirsaran.testnet",

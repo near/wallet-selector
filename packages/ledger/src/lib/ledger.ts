@@ -6,6 +6,7 @@ import {
   WalletBehaviourFactory,
   WalletBehaviourOptions,
   AccountState,
+  Account,
   HardwareWallet,
   transformActions,
   Transaction,
@@ -14,8 +15,7 @@ import {
 
 import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
 
-interface AuthData {
-  accountId: string;
+interface LedgerAccount extends Account {
   derivationPath: string;
   publicKey: string;
 }
@@ -31,7 +31,7 @@ interface GetAccountIdFromPublicKeyParams {
 
 interface LedgerState {
   client: LedgerClient;
-  authData: AuthData | null;
+  accounts: Array<LedgerAccount>;
   subscriptions: Array<Subscription>;
 }
 
@@ -39,15 +39,19 @@ export interface LedgerParams {
   iconUrl?: string;
 }
 
-export const LOCAL_STORAGE_AUTH_DATA = `ledger:authData`;
+export const LOCAL_STORAGE_ACCOUNTS = `ledger:accounts`;
 
 const setupLedgerState = (
   storage: WalletBehaviourOptions<HardwareWallet>["storage"]
 ): LedgerState => {
+  const accounts = storage.getItem<Array<LedgerAccount>>(
+    LOCAL_STORAGE_ACCOUNTS
+  );
+
   return {
     client: new LedgerClient(),
     subscriptions: [],
-    authData: storage.getItem<AuthData>(LOCAL_STORAGE_AUTH_DATA),
+    accounts: accounts || [],
   };
 };
 
@@ -60,25 +64,19 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 }) => {
   const _state = setupLedgerState(storage);
 
-  const getAccounts = (
-    authData: AuthData | null = _state.authData
-  ): Array<AccountState> => {
-    const accountId = authData?.accountId;
-
-    if (!accountId) {
-      return [];
-    }
-
-    return [{ accountId }];
+  const getAccounts = (): Array<AccountState> => {
+    return _state.accounts.map((x) => ({
+      accountId: x.accountId,
+    }));
   };
 
   const cleanup = () => {
     _state.subscriptions.forEach((subscription) => subscription.remove());
 
     _state.subscriptions = [];
-    _state.authData = null;
+    _state.accounts = [];
 
-    storage.removeItem(LOCAL_STORAGE_AUTH_DATA);
+    storage.removeItem(LOCAL_STORAGE_ACCOUNTS);
   };
 
   const disconnect = async () => {
@@ -140,7 +138,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     const accountIds = await response.json();
 
     if (!Array.isArray(accountIds) || !accountIds.length) {
-      throw new Error("Failed to find account linked to public key");
+      throw new Error(
+        "Failed to find account linked for public key: " + publicKey
+      );
     }
 
     return accountIds[0];
@@ -149,34 +149,41 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   const signTransactions = async (
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
-    if (!_state.authData) {
+    if (!_state.accounts.length) {
       throw new Error(`${metadata.name} not connected`);
     }
-
-    const { accountId, derivationPath, publicKey } = _state.authData;
-
-    const [block, accessKey] = await Promise.all([
-      provider.block({ finality: "final" }),
-      provider.viewAccessKey({ accountId, publicKey }),
-    ]);
 
     const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
     for (let i = 0; i < transactions.length; i++) {
-      const actions = transformActions(transactions[i].actions);
+      const transaction = transactions[i];
+      const account = transaction.signerId
+        ? _state.accounts.find((x) => x.accountId === transaction.signerId)
+        : _state.accounts[0];
 
-      const transaction = nearTransactions.createTransaction(
+      if (!account) {
+        throw new Error("Invalid signer id: " + transaction.signerId);
+      }
+
+      const { accountId, derivationPath, publicKey } = account;
+
+      const [block, accessKey] = await Promise.all([
+        provider.block({ finality: "final" }),
+        provider.viewAccessKey({ accountId, publicKey }),
+      ]);
+
+      const tx = nearTransactions.createTransaction(
         accountId,
         utils.PublicKey.from(publicKey),
-        transactions[i].receiverId,
+        transaction.receiverId,
         accessKey.nonce + i + 1,
-        actions,
+        transformActions(transaction.actions),
         utils.serialize.base_decode(block.header.hash)
       );
 
       const serializedTx = utils.serialize.serialize(
         nearTransactions.SCHEMA,
-        transaction
+        tx
       );
 
       const signature = await _state.client.sign({
@@ -185,9 +192,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       });
 
       const signedTx = new nearTransactions.SignedTransaction({
-        transaction,
+        transaction: tx,
         signature: new nearTransactions.Signature({
-          keyType: transaction.publicKey.keyType,
+          keyType: tx.publicKey.keyType,
           data: signature,
         }),
       });
@@ -199,47 +206,50 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   };
 
   return {
-    async connect({ derivationPath }) {
+    async connect({ derivationPaths }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      if (!derivationPath) {
-        throw new Error("Invalid derivation path");
+      if (!derivationPaths.length) {
+        throw new Error("Invalid derivation paths");
       }
 
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const publicKey = await _state.client.getPublicKey({ derivationPath });
-      const accountId = await getAccountIdFromPublicKey({ publicKey });
+      const accounts: Array<LedgerAccount> = [];
 
-      return validateAccessKey({ accountId, publicKey })
-        .then((accessKey) => {
-          if (!accessKey) {
-            throw new Error(
-              `Public key is not registered with the account '${accountId}'.`
-            );
-          }
+      for (let i = 0; i < derivationPaths.length; i += 1) {
+        const derivationPath = derivationPaths[i];
+        const publicKey = await _state.client.getPublicKey({ derivationPath });
+        const accountId = await getAccountIdFromPublicKey({ publicKey });
 
-          const authData: AuthData = {
-            accountId,
-            derivationPath,
-            publicKey,
-          };
+        if (accounts.some((x) => x.accountId === accountId)) {
+          throw new Error("Duplicate account id: " + accountId);
+        }
 
-          storage.setItem(LOCAL_STORAGE_AUTH_DATA, authData);
-          _state.authData = authData;
+        const accessKey = await validateAccessKey({ accountId, publicKey });
 
-          return getAccounts();
-        })
-        .catch(async (err) => {
-          await disconnect();
+        if (!accessKey) {
+          throw new Error(
+            `Public key is not registered with the account '${accountId}'.`
+          );
+        }
 
-          throw err;
+        accounts.push({
+          accountId,
+          derivationPath,
+          publicKey,
         });
+      }
+
+      storage.setItem(LOCAL_STORAGE_ACCOUNTS, accounts);
+      _state.accounts = accounts;
+
+      return getAccounts();
     },
 
     disconnect,
@@ -259,8 +269,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         actions,
       });
 
-      if (!_state.authData) {
-        throw new Error("Wallet not connected");
+      if (!_state.accounts.length) {
+        throw new Error(`${metadata.name} not connected`);
       }
 
       // Note: Connection must be triggered by user interaction.
@@ -268,6 +278,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       const [signedTx] = await signTransactions([
         {
+          signerId,
           receiverId,
           actions,
         },
@@ -279,8 +290,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     async signAndSendTransactions({ transactions }) {
       logger.log("Ledger:signAndSendTransactions", { transactions });
 
-      if (!_state.authData) {
-        throw new Error("Wallet not connected");
+      if (!_state.accounts.length) {
+        throw new Error(`${metadata.name} not connected`);
       }
 
       // Note: Connection must be triggered by user interaction.
