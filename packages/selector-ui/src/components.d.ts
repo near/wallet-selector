@@ -10,7 +10,6 @@ import { Theme } from "./modal.types";
 import { Components } from "./components";
 export namespace Components {
     interface WalletSelector {
-        "setRouteName": (route: string) => Promise<void>;
         "setSelector": (selector: WalletSelector) => Promise<void>;
     }
     interface WalletSelectorModal {

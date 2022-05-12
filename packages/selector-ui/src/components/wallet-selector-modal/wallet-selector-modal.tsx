@@ -41,12 +41,10 @@ export class WalletSelectorModal {
    * Method to hide the modal
    */
   @Method()
-  // @Listen("nearModalCloseEvent")
   async hide() {
     this.opened = false;
-    const component = this.el.shadowRoot.querySelector("wallet-selector");
-    component.setRouteName("WalletOptions");
 
+    appState.routeName = "WalletOptions";
     appState.ledgerIsLoading = false;
     appState.ledgerError = "";
   }

@@ -4,6 +4,11 @@ import { DEFAULT_DERIVATION_PATH } from "./constants";
 
 type StoreState = {
   selector: WalletSelector;
+  routeName:
+    | "WalletOptions"
+    | "AlertMessage"
+    | "WalletNetworkChanged"
+    | "LedgerDerivationPath";
   //ledger-derivation-path-component
   ledgerIsLoading: boolean;
   ledgerError: string;
@@ -16,6 +21,7 @@ type StoreState = {
 
 const store: StoreState = {
   selector: null,
+  routeName: "WalletOptions",
   ledgerIsLoading: false,
   ledgerError: "",
   ledgerDerivationPaths: [DEFAULT_DERIVATION_PATH],

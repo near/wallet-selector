@@ -12,7 +12,6 @@ import appState from "../../store";
   shadow: true,
 })
 export class WalletSelectorComponent {
-  @State() routeName = "WalletOptions";
   @State() errorMessage: string;
 
   @Method()
@@ -26,61 +25,56 @@ export class WalletSelectorComponent {
         return this.handleDismissClick();
       }
 
-      this.routeName = "WalletNetworkChanged";
+      appState.routeName = "WalletNetworkChanged";
     });
-  }
-
-  @Method()
-  async setRouteName(route: string) {
-    this.routeName = route;
   }
 
   handleDismissClick() {
     const component = document.querySelector("wallet-selector-modal");
     component.hide();
-    this.routeName = "WalletOptions";
+    appState.routeName = "WalletOptions";
     this.errorMessage = null;
   }
 
   render() {
     return (
       <div class="wallet-selector-wrapper">
-        {this.routeName === "AlertMessage" && (
+        {appState.routeName === "AlertMessage" && (
           <AlertMessage
             message={this.errorMessage}
             onBack={() => {
               this.errorMessage = null;
-              this.routeName = "WalletOptions";
+              appState.routeName = "WalletOptions";
             }}
           />
         )}
-        {this.routeName === "WalletOptions" && (
+        {appState.routeName === "WalletOptions" && (
           <WalletOptions
             onConnectHardwareWallet={() => {
-              this.routeName = "LedgerDerivationPath";
+              appState.routeName = "LedgerDerivationPath";
             }}
             onError={(err) => {
               this.errorMessage = err.message;
-              this.routeName = "AlertMessage";
+              appState.routeName = "AlertMessage";
             }}
             onConnected={this.handleDismissClick}
           />
         )}
-        {this.routeName === "LedgerDerivationPath" && (
+        {appState.routeName === "LedgerDerivationPath" && (
           <LedgerDerivationPath
             onConnected={this.handleDismissClick}
             onBack={() => {
               {
-                this.routeName = "WalletOptions";
+                appState.routeName = "WalletOptions";
               }
             }}
           />
         )}
 
-        {this.routeName === "WalletNetworkChanged" && (
+        {appState.routeName === "WalletNetworkChanged" && (
           <WalletNetworkChanged
             onSwitchWallet={() => {
-              this.routeName = "WalletOptions";
+              appState.routeName = "WalletOptions";
             }}
             onDismiss={this.handleDismissClick}
           />
