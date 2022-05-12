@@ -27,9 +27,7 @@ interface WalletSelectorContextValue {
 const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
-export const WalletSelectorContextProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({ children }) => {
+export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
@@ -69,7 +67,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupMathWallet(),
         setupLedger(),
         setupWalletConnect({
-          projectId: "c8cb6204543639c31aef44ea4837a554",
+          projectId: "c4f79cc...",
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
