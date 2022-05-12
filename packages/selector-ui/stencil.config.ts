@@ -10,8 +10,6 @@ import {
 
 import { reactOutputTarget } from "@stencil/react-output-target";
 
-import { svelteOutputTarget } from "@stencil/svelte-output-target";
-
 export const config: Config = {
   namespace: "selector-ui",
   taskQueue: "async",
@@ -46,13 +44,6 @@ export const config: Config = {
       componentCorePackage: "@near-wallet-selector/selector-ui",
       proxiesFile:
         "../../../packages/selector-ui-react/src/generated/components.ts",
-      includeDefineCustomElements: true,
-    }),
-
-    svelteOutputTarget({
-      componentCorePackage: "@near-wallet-selector/selector-ui",
-      proxiesFile:
-        "../../../packages/selector-ui-svelte/src/generated/components.ts",
       includeDefineCustomElements: true,
     }),
   ],
