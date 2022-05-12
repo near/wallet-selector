@@ -1,21 +1,21 @@
 import { StorageService } from "./storage.service.types";
 import { JSONStorageService } from "./json-storage.service.types";
 
+const KEY_DELIMITER = ":";
+
 export class JSONStorage implements JSONStorageService {
   storage: StorageService;
   namespace?: string;
 
-  constructor(storage: StorageService, namespace?: string) {
+  constructor(storage: StorageService, namespace: string | Array<string>) {
     this.storage = storage;
-    this.namespace = namespace;
+    this.namespace = Array.isArray(namespace)
+      ? namespace.join(KEY_DELIMITER)
+      : namespace;
   }
 
   private resolveKey(key: string) {
-    if (!this.namespace) {
-      return key;
-    }
-
-    return [this.namespace, key].join(":");
+    return [this.namespace, key].join(KEY_DELIMITER);
   }
 
   getItem<Value>(key: string): Promise<Value | null> {

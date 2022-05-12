@@ -6,7 +6,7 @@ import {
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
-import { SELECTED_WALLET_ID } from "./constants";
+import { PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -69,11 +69,11 @@ const reducer = (
 };
 
 export const createStore = async (storage: StorageService): Promise<Store> => {
-  const globalStorage = new JSONStorage(storage);
+  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    selectedWalletId: await globalStorage.getItem(SELECTED_WALLET_ID),
+    selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -90,11 +90,11 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     }
 
     if (state.selectedWalletId) {
-      await globalStorage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+      await jsonStorage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
       return;
     }
 
-    await globalStorage.removeItem(SELECTED_WALLET_ID);
+    await jsonStorage.removeItem(SELECTED_WALLET_ID);
   };
 
   let prevState = state$.getValue();

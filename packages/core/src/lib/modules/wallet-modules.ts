@@ -4,7 +4,7 @@ import { logger, EventEmitter, StorageService, JSONStorage } from "../services";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { WalletModuleFactory, Wallet } from "../wallet";
 import { setupWalletInstance } from "./wallet-instance";
-import { PENDING_SELECTED_WALLET_ID } from "../constants";
+import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../constants";
 
 interface WalletModulesParams {
   factories: Array<WalletModuleFactory>;
@@ -23,7 +23,7 @@ export const setupWalletModules = async ({
 }: WalletModulesParams) => {
   const modules: Array<ModuleState> = [];
   const instances: Record<string, Wallet> = {};
-  const globalStorage = new JSONStorage(storage);
+  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
 
   const getWallet = async <Variation extends Wallet = Wallet>(
     id: string | null
@@ -56,14 +56,14 @@ export const setupWalletModules = async ({
   };
 
   const getSelectedWallet = async () => {
-    const pendingSelectedWalletId = await globalStorage.getItem<string>(
+    const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
 
     if (pendingSelectedWalletId) {
       const accounts = await validateWallet(pendingSelectedWalletId);
 
-      await globalStorage.removeItem(PENDING_SELECTED_WALLET_ID);
+      await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
 
       if (accounts.length) {
         const { selectedWalletId } = store.getState();

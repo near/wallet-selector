@@ -8,7 +8,7 @@ import {
 import { Wallet, WalletEvents, WalletModule } from "../wallet";
 import { ModuleState, Store } from "../store.types";
 import { WalletSelectorEvents } from "../wallet-selector.types";
-import { PENDING_SELECTED_WALLET_ID } from "../constants";
+import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../constants";
 import { Options } from "../options.types";
 
 interface WalletInstanceParams {
@@ -29,7 +29,7 @@ export const setupWalletInstance = async ({
   emitter,
 }: WalletInstanceParams) => {
   const walletEmitter = new EventEmitter<WalletEvents>();
-  const globalStorage = new JSONStorage(storage);
+  const jsonStorage = new JSONStorage(storage, PACKAGE_NAME);
 
   const handleDisconnected = (walletId: string) => {
     store.dispatch({
@@ -61,7 +61,7 @@ export const setupWalletInstance = async ({
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
-        await globalStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
       }
 
       return;
@@ -112,7 +112,7 @@ export const setupWalletInstance = async ({
       provider: new Provider(options.network.nodeUrl),
       emitter: walletEmitter,
       logger,
-      storage: new JSONStorage(storage, module.id),
+      storage: new JSONStorage(storage, [PACKAGE_NAME, module.id]),
     })),
   } as Wallet;
 
