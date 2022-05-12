@@ -28,7 +28,7 @@ export const LedgerDerivationPath: FunctionalComponent<
     }
 
     appState.ledgerIsLoading = true;
-    console.log(appState.ledgerDerivationPaths[0]);
+
     return wallet
       .connect({ derivationPaths: [appState.ledgerDerivationPaths[0]] })
       .then(() => {
