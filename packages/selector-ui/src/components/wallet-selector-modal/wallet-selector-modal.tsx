@@ -9,6 +9,7 @@ import {
 } from "@stencil/core";
 import { WalletSelector } from "@near-wallet-selector/core";
 import { Components } from "../../components";
+import { CloseButton } from "./close-button/close-button";
 import { Theme } from "../../modal.types";
 import appState from "../../store";
 
@@ -24,7 +25,7 @@ export class WalletSelectorModal {
   opened = false;
 
   /**
-   * The prefered theme for the modal.
+   * The preferred theme for the modal.
    */
   @Prop() theme: Theme = "auto";
 
@@ -40,7 +41,7 @@ export class WalletSelectorModal {
    * Method to hide the modal
    */
   @Method()
-  @Listen("nearModalCloseEvent")
+  // @Listen("nearModalCloseEvent")
   async hide() {
     this.opened = false;
     const component = this.el.shadowRoot.querySelector("wallet-selector");
@@ -99,7 +100,7 @@ export class WalletSelectorModal {
         <div class="modal">
           <div class="modal-header">
             <h2>Connect Wallet</h2>
-            <close-button />
+            <CloseButton onClose={this.hide.bind(this)} />
           </div>
           <div class="modal-body">
             <wallet-selector />

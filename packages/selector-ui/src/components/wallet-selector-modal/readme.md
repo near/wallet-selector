@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description                       | Type                          | Default  |
-| -------- | --------- | --------------------------------- | ----------------------------- | -------- |
-| `theme`  | `theme`   | The prefered theme for the modal. | `"auto" \| "dark" \| "light"` | `"auto"` |
+| Property | Attribute | Description                        | Type                          | Default  |
+| -------- | --------- | ---------------------------------- | ----------------------------- | -------- |
+| `theme`  | `theme`   | The preferred theme for the modal. | `"auto" \| "dark" \| "light"` | `"auto"` |
 
 
 ## Methods
@@ -56,13 +56,11 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [close-button](close-button)
 - [wallet-selector](../wallet-selector)
 
 ### Graph
 ```mermaid
 graph TD;
-  wallet-selector-modal --> close-button
   wallet-selector-modal --> wallet-selector
   style wallet-selector-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```

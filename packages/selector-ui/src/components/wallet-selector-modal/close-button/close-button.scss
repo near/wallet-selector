@@ -1,27 +1,3 @@
 :host {
   display: block;
 }
-
-button {
-  border: 0;
-  cursor: pointer;
-  height: 24px;
-  padding: 4px;
-  background-color: transparent;
-
-  &:active {
-    background: transparent;
-  }
-
-  svg {
-    pointer-events: none;
-  }
-
-  &:hover {
-    svg {
-      fill: var(--near-modal-close-button-color);
-      transition: all 0.2s ease-in;
-    }
-  }
-
-}

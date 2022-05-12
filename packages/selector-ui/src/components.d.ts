@@ -9,8 +9,6 @@ import { WalletSelector } from "@near-wallet-selector/core";
 import { Theme } from "./modal.types";
 import { Components } from "./components";
 export namespace Components {
-    interface CloseButton {
-    }
     interface WalletSelector {
         "setRouteName": (route: string) => Promise<void>;
         "setSelector": (selector: WalletSelector) => Promise<void>;
@@ -26,18 +24,12 @@ export namespace Components {
          */
         "show": () => Promise<void>;
         /**
-          * The prefered theme for the modal.
+          * The preferred theme for the modal.
          */
         "theme": Theme;
     }
 }
 declare global {
-    interface HTMLCloseButtonElement extends Components.CloseButton, HTMLStencilElement {
-    }
-    var HTMLCloseButtonElement: {
-        prototype: HTMLCloseButtonElement;
-        new (): HTMLCloseButtonElement;
-    };
     interface HTMLWalletSelectorElement extends Components.WalletSelector, HTMLStencilElement {
     }
     var HTMLWalletSelectorElement: {
@@ -51,25 +43,20 @@ declare global {
         new (): HTMLWalletSelectorModalElement;
     };
     interface HTMLElementTagNameMap {
-        "close-button": HTMLCloseButtonElement;
         "wallet-selector": HTMLWalletSelectorElement;
         "wallet-selector-modal": HTMLWalletSelectorModalElement;
     }
 }
 declare namespace LocalJSX {
-    interface CloseButton {
-        "onNearModalCloseEvent"?: (event: CustomEvent<MouseEvent>) => void;
-    }
     interface WalletSelector {
     }
     interface WalletSelectorModal {
         /**
-          * The prefered theme for the modal.
+          * The preferred theme for the modal.
          */
         "theme"?: Theme;
     }
     interface IntrinsicElements {
-        "close-button": CloseButton;
         "wallet-selector": WalletSelector;
         "wallet-selector-modal": WalletSelectorModal;
     }
@@ -78,7 +65,6 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "close-button": LocalJSX.CloseButton & JSXBase.HTMLAttributes<HTMLCloseButtonElement>;
             "wallet-selector": LocalJSX.WalletSelector & JSXBase.HTMLAttributes<HTMLWalletSelectorElement>;
             "wallet-selector-modal": LocalJSX.WalletSelectorModal & JSXBase.HTMLAttributes<HTMLWalletSelectorModalElement>;
         }

@@ -111,6 +111,29 @@
       align-items: start;
       justify-content: space-between;
 
+      .close-button {
+        border: 0;
+        cursor: pointer;
+        height: 24px;
+        padding: 4px;
+        background-color: transparent;
+
+        &:active {
+          background: transparent;
+        }
+
+        svg {
+          pointer-events: none;
+        }
+
+        &:hover {
+          svg {
+            fill: var(--near-modal-close-button-color);
+            transition: all 0.2s ease-in;
+          }
+        }
+      }
+
       h2 {
         color: var(--near-heading-color);
         font-size: 22px;
