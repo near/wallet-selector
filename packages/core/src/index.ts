@@ -53,7 +53,5 @@ export {
 
 export { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export { WalletSelectorUIComponent } from "./lib/modal";
-
 export { transformActions } from "./lib/wallet";
 export { waitFor } from "./lib/helpers";
