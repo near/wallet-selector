@@ -8,7 +8,7 @@ import {
 import { HardwareWallet } from "../../../core/src/lib/wallet";
 import {
   ProviderService,
-  StorageService,
+  JsonStorageService,
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
 
@@ -20,9 +20,9 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const { setupLedger } = require("./ledger");
 
   const provider = mock<ProviderService>();
-  const storage = mock<StorageService>({
-    getItem: jest.fn((key) => storageState[key] || null),
-    setItem: jest.fn((key, value) => {
+  const storage = mock<JsonStorageService>({
+    getItem: jest.fn(async (key) => storageState[key] || null),
+    setItem: jest.fn(async (key, value) => {
       // @ts-ignore
       storageState[key] = value;
     }),
