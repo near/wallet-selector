@@ -1,5 +1,5 @@
+import { isMobile } from "is-mobile";
 import { TypedError } from "near-api-js/lib/utils/errors";
-import { isMobile } from "@near-wallet-selector/utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
   WalletModuleFactory,
@@ -248,7 +248,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           },
         ],
         signer,
-        provider,
         _state.authData.accountId
       );
 
@@ -268,7 +267,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       const signedTransactions = await signTransactions(
         transactions,
         signer,
-        provider,
         _state.authData.accountId
       );
 

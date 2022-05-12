@@ -1,6 +1,6 @@
 # @near-wallet-selector/wallet-utils
 
-This is the [Wallet Utils](https://chrome.google.com/webstore/detail/wallet-utils/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
+This is the Wallet Utils package for NEAR Wallet Selector.
 
 ## Installation and Usage
 

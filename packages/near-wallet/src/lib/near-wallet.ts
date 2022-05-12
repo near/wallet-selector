@@ -1,4 +1,10 @@
-import { WalletConnection, connect, keyStores } from "near-api-js";
+import {
+  WalletConnection,
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -7,7 +13,6 @@ import {
   Optional,
   Network,
 } from "@near-wallet-selector/core";
-import { createTransaction } from "@near-wallet-selector/utils";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
 export interface NearWalletParams {
@@ -95,6 +100,7 @@ const NearWallet: WalletBehaviourFactory<
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
+        const actions = createAction(transaction.actions);
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
           createAction(transaction.actions),
@@ -109,14 +115,14 @@ const NearWallet: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
-        return createTransaction({
-          accountId: account.accountId,
-          publicKey: accessKey.public_key,
-          receiverId: transaction.receiverId,
-          nonce: accessKey.access_key.nonce + index + 1,
-          actions: transaction.actions,
-          hash: block.header.hash,
-        });
+        return nearTransactions.createTransaction(
+          account.accountId,
+          utils.PublicKey.from(accessKey.public_key),
+          transaction.receiverId,
+          accessKey.access_key.nonce + index + 1,
+          actions,
+          utils.serialize.base_decode(block.header.hash)
+        );
       })
     );
   };

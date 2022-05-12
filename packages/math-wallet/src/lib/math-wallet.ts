@@ -1,4 +1,4 @@
-import { isMobile } from "@near-wallet-selector/utils";
+import { isMobile } from "is-mobile";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -121,7 +121,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           },
         ],
         _state.wallet.signer,
-        provider,
         account.accountId
       );
 
@@ -149,7 +148,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       const signedTransactions = await signTransactions(
         transactions,
         _state.wallet.signer,
-        provider,
         accountId
       );
 

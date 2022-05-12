@@ -28,7 +28,6 @@
     "build:near-wallet": "nx run-many --target=build --projects=near-wallet --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
-    "build:utils": "nx run-many --target=build --projects=utils --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",

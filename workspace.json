@@ -11,7 +11,6 @@
     "angular-e2e": "examples/angular-e2e",
     "react": "examples/react",
     "react-e2e": "examples/react-e2e",
-    "utils": "packages/utils",
     "wallet-utils": "packages/wallet-utils"
   }
 }
