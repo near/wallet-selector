@@ -4,7 +4,7 @@ import {
   EventEmitterService,
   LoggerService,
   ProviderService,
-  StorageService,
+  JSONStorageService,
 } from "../services";
 import { Options } from "../options.types";
 import { Transaction, Action } from "./transactions.types";
@@ -142,7 +142,7 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;
-  storage: StorageService;
+  storage: JSONStorageService;
 }
 
 // Note: TypeScript doesn't seem to like reusing this in WalletModule.

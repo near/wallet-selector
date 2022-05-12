@@ -18,8 +18,7 @@ export const setupWalletSelector = async (
   Logger.debug = options.debug;
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = createStore();
-
+  const store = await createStore(storage);
   const walletModules = await setupWalletModules({
     factories: params.modules,
     storage,

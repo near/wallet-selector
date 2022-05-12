@@ -1,6 +1,6 @@
 import { Subject, BehaviorSubject, scan } from "rxjs";
 
-import { logger, storage } from "./services";
+import { logger, JSONStorage, StorageService } from "./services";
 import {
   Store,
   WalletSelectorState,
@@ -68,33 +68,34 @@ const reducer = (
   }
 };
 
-const syncStorage = (
-  prevState: WalletSelectorState,
-  state: WalletSelectorState
-) => {
-  if (state.selectedWalletId === prevState.selectedWalletId) {
-    return;
-  }
-
-  if (state.selectedWalletId) {
-    storage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
-    return;
-  }
-
-  storage.removeItem(SELECTED_WALLET_ID);
-};
-
-export const createStore = (): Store => {
+export const createStore = async (storage: StorageService): Promise<Store> => {
+  const globalStorage = new JSONStorage(storage);
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    selectedWalletId: storage.getItem(SELECTED_WALLET_ID),
+    selectedWalletId: await globalStorage.getItem(SELECTED_WALLET_ID),
   };
 
   const state$ = new BehaviorSubject(initialState);
   const actions$ = new Subject<WalletSelectorAction>();
 
   actions$.pipe(scan(reducer, initialState)).subscribe(state$);
+
+  const syncStorage = async (
+    prevState: WalletSelectorState,
+    state: WalletSelectorState
+  ) => {
+    if (state.selectedWalletId === prevState.selectedWalletId) {
+      return;
+    }
+
+    if (state.selectedWalletId) {
+      await globalStorage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+      return;
+    }
+
+    await globalStorage.removeItem(SELECTED_WALLET_ID);
+  };
 
   let prevState = state$.getValue();
   state$.subscribe((state) => {
