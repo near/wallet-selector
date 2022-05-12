@@ -14,7 +14,7 @@ import { setupModal } from "./modal/modal";
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {
-  const options = resolveOptions(params);
+  const { options, storage } = resolveOptions(params);
   Logger.debug = options.debug;
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
@@ -22,6 +22,7 @@ export const setupWalletSelector = async (
 
   const walletModules = await setupWalletModules({
     factories: params.modules,
+    storage,
     options,
     store,
     emitter,

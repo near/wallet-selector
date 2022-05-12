@@ -1,6 +1,6 @@
 import { Options } from "../options.types";
 import { AccountState, ModuleState, Store } from "../store.types";
-import { logger, EventEmitter, storage } from "../services";
+import { logger, EventEmitter, StorageService, JSONStorage } from "../services";
 import { WalletSelectorEvents } from "../wallet-selector.types";
 import { WalletModuleFactory, Wallet } from "../wallet";
 import { setupWalletInstance } from "./wallet-instance";
@@ -8,6 +8,7 @@ import { PENDING_SELECTED_WALLET_ID } from "../constants";
 
 interface WalletModulesParams {
   factories: Array<WalletModuleFactory>;
+  storage: StorageService;
   options: Options;
   store: Store;
   emitter: EventEmitter<WalletSelectorEvents>;
@@ -15,12 +16,14 @@ interface WalletModulesParams {
 
 export const setupWalletModules = async ({
   factories,
+  storage,
   options,
   store,
   emitter,
 }: WalletModulesParams) => {
   const modules: Array<ModuleState> = [];
   const instances: Record<string, Wallet> = {};
+  const globalStorage = new JSONStorage(storage);
 
   const getWallet = async <Variation extends Wallet = Wallet>(
     id: string | null
@@ -53,14 +56,14 @@ export const setupWalletModules = async ({
   };
 
   const getSelectedWallet = async () => {
-    const pendingSelectedWalletId = storage.getItem<string>(
+    const pendingSelectedWalletId = await globalStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
 
     if (pendingSelectedWalletId) {
       const accounts = await validateWallet(pendingSelectedWalletId);
 
-      storage.removeItem(PENDING_SELECTED_WALLET_ID);
+      await globalStorage.removeItem(PENDING_SELECTED_WALLET_ID);
 
       if (accounts.length) {
         const { selectedWalletId } = store.getState();
@@ -120,6 +123,7 @@ export const setupWalletModules = async ({
         instance = await setupWalletInstance({
           modules,
           module,
+          storage,
           store,
           options,
           emitter,

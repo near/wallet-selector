@@ -4,13 +4,14 @@ import { Wallet, WalletModuleFactory } from "./wallet/wallet.types";
 import { WalletSelectorState } from "./store.types";
 import { Network, NetworkId, Options } from "./options.types";
 import { ModalOptions, WalletSelectorModal } from "./modal/modal.types";
-import { Subscription } from "./services";
+import { Subscription, StorageService } from "./services";
 
 export interface WalletSelectorParams {
   network: NetworkId | Network;
   contractId: string;
   methodNames?: Array<string>;
   modules: Array<WalletModuleFactory>;
+  storage?: StorageService;
   ui?: ModalOptions;
   debug?: boolean;
 }

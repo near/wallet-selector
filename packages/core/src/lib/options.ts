@@ -1,5 +1,6 @@
 import { WalletSelectorParams } from "./wallet-selector.types";
 import { Options, Network, NetworkId } from "./options.types";
+import { WebStorageService } from "./services";
 
 export const getNetworkPreset = (networkId: NetworkId): Network => {
   switch (networkId) {
@@ -33,11 +34,16 @@ export const resolveNetwork = (network: NetworkId | Network): Network => {
   return typeof network === "string" ? getNetworkPreset(network) : network;
 };
 
-export const resolveOptions = (params: WalletSelectorParams): Options => {
-  return {
+export const resolveOptions = (params: WalletSelectorParams) => {
+  const options: Options = {
     network: resolveNetwork(params.network),
     contractId: params.contractId,
     methodNames: params.methodNames,
     debug: params.debug || false,
+  };
+
+  return {
+    options,
+    storage: params.storage || new WebStorageService(),
   };
 };
