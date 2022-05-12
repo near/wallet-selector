@@ -7,6 +7,7 @@ import { Message } from "../../interfaces/message";
 import { Sumbitted } from "../form/form.component";
 import { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
+import { WalletSelectorModal } from "@near-wallet-selector/angular-selector-ui";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -21,6 +22,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() selector: WalletSelector;
   @Input() accounts: Array<AccountState>;
   @Input() accountId: string | null;
+  @Input() walletSelectorModal: WalletSelectorModal;
 
   account: Account | null;
   messages: Array<Message>;
@@ -59,7 +61,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   signIn() {
-    // this.selector.show();
+    this.walletSelectorModal.show();
   }
 
   async signOut() {
@@ -72,7 +74,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   switchProvider() {
-    // this.selector.show();
+    this.walletSelectorModal.show();
   }
 
   getMessages() {

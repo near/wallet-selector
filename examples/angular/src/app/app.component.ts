@@ -90,6 +90,9 @@ export class AppComponent implements OnInit {
 
         window.selector = instance;
         this.selector = instance;
+
+        // TODO: Check how to set the type of 'selector' without importing the loader and remove ts-ignore.
+        // @ts-ignore
         return this.walletSelectorModal.setSelector(this.selector);
       })
       .catch((err) => {
