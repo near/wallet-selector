@@ -67,6 +67,11 @@ const selector = await setupWalletSelector({
 });
 ```
 
+### Use the Modal component:
+
+- [React Component](./packages/selector-ui-react)
+- [Angular Component ](./packages/selector-ui-angular)
+
 ## Contributing
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
