@@ -102,11 +102,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     accountId,
     publicKey,
   }: ValidateAccessKeyParams) => {
-    logger.log("Ledger:validateAccessKey", { accountId, publicKey });
+    logger.log("validateAccessKey", { accountId, publicKey });
 
     return provider.viewAccessKey({ accountId, publicKey }).then(
       (accessKey) => {
-        logger.log("Ledger:validateAccessKey:accessKey", { accessKey });
+        logger.log("validateAccessKey:accessKey", { accessKey });
 
         if (accessKey.permission !== "FullAccess") {
           throw new Error("Public key requires 'FullAccess' permission");
@@ -263,11 +263,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("Ledger:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.accounts.length) {
         throw new Error(`${metadata.name} not connected`);
@@ -288,7 +284,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("Ledger:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.accounts.length) {
         throw new Error(`${metadata.name} not connected`);

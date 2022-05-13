@@ -102,11 +102,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("MathWallet:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       const account = getSignedInAccount();
 
@@ -120,8 +116,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         provider.viewAccessKey({ accountId, publicKey }),
       ]);
 
-      logger.log("MathWallet:signAndSendTransaction:block", block);
-      logger.log("MathWallet:signAndSendTransaction:accessKey", accessKey);
+      logger.log("signAndSendTransaction:block", block);
+      logger.log("signAndSendTransaction:accessKey", accessKey);
 
       const transaction = nearTransactions.createTransaction(
         accountId,
@@ -138,13 +134,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         accountId
       );
 
-      logger.log("MathWallet:signAndSendTransaction:hash", hash);
+      logger.log("signAndSendTransaction:hash", hash);
 
       return provider.sendTransaction(signedTx);
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("MathWallet:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       const account = getSignedInAccount();
 
@@ -158,8 +154,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         provider.viewAccessKey({ accountId, publicKey }),
       ]);
 
-      logger.log("MathWallet:signAndSendTransactions:block", block);
-      logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
+      logger.log("signAndSendTransactions:block", block);
+      logger.log("signAndSendTransactions:accessKey", accessKey);
 
       const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
       let nonce = accessKey.nonce;
@@ -180,13 +176,13 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           accountId
         );
 
-        logger.log("MathWallet:signAndSendTransactions:hash", hash);
+        logger.log("signAndSendTransactions:hash", hash);
 
         signedTransactions.push(signedTx);
       }
 
       logger.log(
-        "MathWallet:signAndSendTransactions:signedTransactions",
+        "signAndSendTransactions:signedTransactions",
         signedTransactions
       );
 

@@ -4,6 +4,7 @@ import {
   Provider,
   JsonStorage,
   StorageService,
+  Logger,
 } from "../services";
 import { Wallet, WalletEvents, WalletModule } from "../wallet";
 import { ModuleState, Store } from "../store.types";
@@ -111,7 +112,7 @@ export const setupWalletInstance = async ({
       options,
       provider: new Provider(options.network.nodeUrl),
       emitter: walletEmitter,
-      logger,
+      logger: new Logger(module.id),
       storage: new JsonStorage(storage, [PACKAGE_NAME, module.id]),
     })),
   } as Wallet;
