@@ -1,12 +1,12 @@
 import { Subject, BehaviorSubject, scan } from "rxjs";
 
-import { logger, storage } from "./services";
+import { logger, JsonStorage, StorageService } from "./services";
 import {
   Store,
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
-import { SELECTED_WALLET_ID } from "./constants";
+import { PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -68,33 +68,34 @@ const reducer = (
   }
 };
 
-const syncStorage = (
-  prevState: WalletSelectorState,
-  state: WalletSelectorState
-) => {
-  if (state.selectedWalletId === prevState.selectedWalletId) {
-    return;
-  }
-
-  if (state.selectedWalletId) {
-    storage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
-    return;
-  }
-
-  storage.removeItem(SELECTED_WALLET_ID);
-};
-
-export const createStore = (): Store => {
+export const createStore = async (storage: StorageService): Promise<Store> => {
+  const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    selectedWalletId: storage.getItem(SELECTED_WALLET_ID),
+    selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
   };
 
   const state$ = new BehaviorSubject(initialState);
   const actions$ = new Subject<WalletSelectorAction>();
 
   actions$.pipe(scan(reducer, initialState)).subscribe(state$);
+
+  const syncStorage = async (
+    prevState: WalletSelectorState,
+    state: WalletSelectorState
+  ) => {
+    if (state.selectedWalletId === prevState.selectedWalletId) {
+      return;
+    }
+
+    if (state.selectedWalletId) {
+      await jsonStorage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+      return;
+    }
+
+    await jsonStorage.removeItem(SELECTED_WALLET_ID);
+  };
 
   let prevState = state$.getValue();
   state$.subscribe((state) => {

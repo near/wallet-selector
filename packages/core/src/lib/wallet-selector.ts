@@ -14,14 +14,14 @@ import { setupModal } from "./modal/modal";
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {
-  const options = resolveOptions(params);
+  const { options, storage } = resolveOptions(params);
   Logger.debug = options.debug;
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = createStore();
-
+  const store = await createStore(storage);
   const walletModules = await setupWalletModules({
     factories: params.modules,
+    storage,
     options,
     store,
     emitter,

@@ -4,7 +4,7 @@ import isMobile from "is-mobile";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
-  WalletBehaviourOptions,
+  JsonStorageService,
   AccountState,
   Account,
   HardwareWallet,
@@ -39,13 +39,13 @@ export interface LedgerParams {
   iconUrl?: string;
 }
 
-export const LOCAL_STORAGE_ACCOUNTS = `ledger:accounts`;
+export const STORAGE_ACCOUNTS = "accounts";
 
-const setupLedgerState = (
-  storage: WalletBehaviourOptions<HardwareWallet>["storage"]
-): LedgerState => {
-  const accounts = storage.getItem<Array<LedgerAccount>>(
-    LOCAL_STORAGE_ACCOUNTS
+const setupLedgerState = async (
+  storage: JsonStorageService
+): Promise<LedgerState> => {
+  const accounts = await storage.getItem<Array<LedgerAccount>>(
+    STORAGE_ACCOUNTS
   );
 
   return {
@@ -62,7 +62,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   logger,
   storage,
 }) => {
-  const _state = setupLedgerState(storage);
+  const _state = await setupLedgerState(storage);
 
   const getAccounts = (): Array<AccountState> => {
     return _state.accounts.map((x) => ({
@@ -76,7 +76,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     _state.subscriptions = [];
     _state.accounts = [];
 
-    storage.removeItem(LOCAL_STORAGE_ACCOUNTS);
+    storage.removeItem(STORAGE_ACCOUNTS);
   };
 
   const disconnect = async () => {
@@ -246,7 +246,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         });
       }
 
-      storage.setItem(LOCAL_STORAGE_ACCOUNTS, accounts);
+      storage.setItem(STORAGE_ACCOUNTS, accounts);
       _state.accounts = accounts;
 
       return getAccounts();
