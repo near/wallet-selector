@@ -4,9 +4,12 @@ import {
   WalletBehaviourFactory,
   BridgeWallet,
   Subscription,
+  Transaction,
+  Account,
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
+import { utils } from "near-api-js";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -22,8 +25,11 @@ type WalletConnectExtraOptions = Pick<WalletConnectParams, "chainId"> &
 interface WalletConnectState {
   client: WalletConnectClient;
   session: SessionTypes.Settled | null;
+  accounts: Array<Account>;
   subscriptions: Array<Subscription>;
 }
+
+export const STORAGE_ACCOUNTS = "accounts";
 
 const setupWalletConnectState = async (
   params: WalletConnectExtraOptions
@@ -40,6 +46,7 @@ const setupWalletConnectState = async (
   return {
     client,
     session,
+    accounts: [],
     subscriptions: [],
   };
 };
@@ -47,7 +54,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, params, emitter, logger }) => {
+> = async ({ options, params, emitter, storage, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -65,13 +72,7 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const getAccounts = () => {
-    if (!_state.session) {
-      return [];
-    }
-
-    return _state.session.state.accounts.map((wcAccountId) => ({
-      accountId: wcAccountId.split(":")[2],
-    }));
+    return _state.accounts;
   };
 
   const cleanup = () => {
@@ -79,6 +80,9 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
+    _state.accounts = [];
+
+    storage.removeItem(STORAGE_ACCOUNTS);
   };
 
   const disconnect = async () => {
@@ -153,7 +157,53 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
+        // TODO: Use all items once near_signAndSendTransactions is supported.
+        const [transaction] = _state.session.state.accounts.map<Transaction>(
+          (account) => {
+            const accountId = account.split(":")[2];
+            // TODO: Store keypair in a key store.
+            const keyPair = utils.KeyPair.fromRandom("ed25519");
+
+            return {
+              signerId: accountId,
+              receiverId: accountId,
+              actions: [
+                {
+                  type: "AddKey",
+                  params: {
+                    publicKey: keyPair.getPublicKey().toString(),
+                    accessKey: {
+                      permission: {
+                        receiverId: options.contractId,
+                        methodNames: options.methodNames,
+                      },
+                    },
+                  },
+                },
+              ],
+            };
+          }
+        );
+
+        await _state.client.request({
+          timeout: 30 * 1000,
+          topic: _state.session.topic,
+          chainId: getChainId(),
+          request: {
+            method: "near_signAndSendTransaction",
+            params: {
+              signerId: transaction.signerId,
+              receiverId: transaction.receiverId,
+              actions: transaction.actions,
+            },
+          },
+        });
+
         setupEvents();
+
+        const accounts: Array<Account> = [{ accountId: transaction.signerId }];
+        await storage.setItem(STORAGE_ACCOUNTS, accounts);
+        _state.accounts = accounts;
 
         return getAccounts();
       } catch (err) {
