@@ -4,7 +4,7 @@ import { Wallet, WalletModuleFactory } from "./wallet/wallet.types";
 import { WalletSelectorState } from "./store.types";
 import { Network, NetworkId, Options } from "./options.types";
 import type { WalletSelectorUIComponent } from "./modal";
-import { Subscription } from "./services";
+import { Subscription, StorageService } from "./services";
 
 export interface WalletSelectorParams {
   network: NetworkId | Network;
@@ -12,6 +12,7 @@ export interface WalletSelectorParams {
   methodNames?: Array<string>;
   modules: Array<WalletModuleFactory>;
   ui?: () => Promise<WalletSelectorUIComponent & HTMLElement>;
+  storage?: StorageService;
   debug?: boolean;
 }
 
