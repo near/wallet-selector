@@ -11,7 +11,6 @@
   - `explorerUrl` (`string`): URL for the NEAR explorer.
 - `contractId` (`string`): Account ID of the Smart Contract used for `connect` and signing transactions.
 - `methodNames` (`Array<string>?`): List of methods that can only be accessed on the Smart Contract.
-- `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) isn't available.
 - `debug` (`boolean`): Whether internal logging is enabled.
 
 **Description**
