@@ -155,11 +155,7 @@ const NearWallet: WalletBehaviourFactory<
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("NearWallet:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
@@ -177,7 +173,7 @@ const NearWallet: WalletBehaviourFactory<
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("NearWallet:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
