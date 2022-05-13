@@ -6,6 +6,7 @@ import {
   Subscription,
   Transaction,
   Account,
+  JsonStorageService,
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
@@ -32,9 +33,11 @@ interface WalletConnectState {
 export const STORAGE_ACCOUNTS = "accounts";
 
 const setupWalletConnectState = async (
-  params: WalletConnectExtraOptions
+  params: WalletConnectExtraOptions,
+  storage: JsonStorageService
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
+  const accounts = await storage.getItem<Array<Account>>(STORAGE_ACCOUNTS);
   let session: SessionTypes.Settled | null = null;
 
   await client.init(params);
@@ -46,7 +49,7 @@ const setupWalletConnectState = async (
   return {
     client,
     session,
-    accounts: [],
+    accounts: accounts || [],
     subscriptions: [],
   };
 };
@@ -55,7 +58,7 @@ const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
 > = async ({ options, params, emitter, storage, logger }) => {
-  const _state = await setupWalletConnectState(params);
+  const _state = await setupWalletConnectState(params, storage);
 
   const getChainId = () => {
     if (params.chainId) {
