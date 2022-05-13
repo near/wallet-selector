@@ -75,7 +75,7 @@ export class WalletModules {
         const { selectedWalletId } = this.store.getState();
         const selectedWallet = await this.getWallet(selectedWalletId);
 
-        if (selectedWallet) {
+        if (selectedWallet && pendingSelectedWalletId !== selectedWalletId) {
           await selectedWallet.disconnect().catch((err) => {
             logger.log("Failed to disconnect existing wallet");
             logger.error(err);
@@ -98,66 +98,67 @@ export class WalletModules {
     };
   }
 
-  private async setupInstance(module: WalletModule): Promise<Wallet> {
+  private async disconnectWallet(walletId: string) {
+    const wallet = (await this.getWallet(walletId))!;
+
+    await wallet.disconnect().catch((err) => {
+      logger.log(`Failed to disconnect ${wallet.id}`);
+      logger.error(err);
+
+      // At least clean up state on our side.
+      this.onWalletDisconnected(wallet.id);
+    });
+  }
+
+  private async onWalletConnected(
+    walletId: string,
+    { accounts }: WalletEvents["connected"]
+  ) {
+    const { selectedWalletId } = this.store.getState();
+
+    if (!accounts.length) {
+      const module = this.getModule(walletId)!;
+      // We can't guarantee the user will actually sign in with browser wallets.
+      // Best we can do is set in storage and validate on init.
+      if (module.type === "browser") {
+        const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+      }
+
+      return;
+    }
+
+    if (selectedWalletId && selectedWalletId !== walletId) {
+      await this.disconnectWallet(selectedWalletId);
+    }
+
+    this.store.dispatch({
+      type: "WALLET_CONNECTED",
+      payload: { walletId, accounts },
+    });
+  }
+
+  private onWalletDisconnected(walletId: string) {
+    this.store.dispatch({
+      type: "WALLET_DISCONNECTED",
+      payload: { walletId },
+    });
+  }
+
+  private setupWalletEmitter(module: WalletModule) {
     const emitter = new EventEmitter<WalletEvents>();
 
-    const handleDisconnected = (walletId: string) => {
-      this.store.dispatch({
-        type: "WALLET_DISCONNECTED",
-        payload: { walletId },
-      });
-    };
-
-    const disconnect = async (walletId: string) => {
-      const wallet = await this.getWallet(walletId);
-
-      await wallet!.disconnect().catch((err) => {
-        logger.log(`Failed to disconnect ${walletId}`);
-        logger.error(err);
-
-        // At least clean up state on our side.
-        handleDisconnected(walletId);
-      });
-    };
-
-    const handleConnected = async (
-      walletId: string,
-      { accounts = [] }: WalletEvents["connected"]
-    ) => {
-      const { selectedWalletId } = this.store.getState();
-
-      if (!accounts.length) {
-        // We can't guarantee the user will actually sign in with browser wallets.
-        // Best we can do is set in storage and validate on init.
-        if (module.type === "browser") {
-          const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-          await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        }
-
-        return;
-      }
-
-      if (selectedWalletId && selectedWalletId !== walletId) {
-        await disconnect(selectedWalletId);
-      }
-
-      this.store.dispatch({
-        type: "WALLET_CONNECTED",
-        payload: { walletId, accounts },
-      });
-    };
-
     emitter.on("disconnected", () => {
-      handleDisconnected(module.id);
+      this.onWalletDisconnected(module.id);
     });
 
     emitter.on("connected", (event) => {
-      handleConnected(module.id, event);
+      this.onWalletConnected(module.id, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
       if (!accounts.length) {
-        return disconnect(module.id);
+        return this.disconnectWallet(module.id);
       }
 
       this.store.dispatch({
@@ -170,6 +171,29 @@ export class WalletModules {
       this.emitter.emit("networkChanged", { walletId: module.id, networkId });
     });
 
+    return emitter;
+  }
+
+  private decorateWallet(wallet: Wallet): Wallet {
+    const _connect = wallet.connect;
+    const _disconnect = wallet.disconnect;
+
+    wallet.connect = async (params: never) => {
+      const accounts = await _connect(params);
+      await this.onWalletConnected(wallet.id, { accounts });
+
+      return accounts;
+    };
+
+    wallet.disconnect = async () => {
+      await _disconnect();
+      this.onWalletDisconnected(wallet.id);
+    };
+
+    return wallet;
+  }
+
+  private async setupInstance(module: WalletModule): Promise<Wallet> {
     const wallet = {
       id: module.id,
       type: module.type,
@@ -180,33 +204,21 @@ export class WalletModules {
         metadata: module.metadata,
         options: this.options,
         provider: new Provider(this.options.network.nodeUrl),
-        emitter,
+        emitter: this.setupWalletEmitter(module),
         logger: new Logger(module.id),
         storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
       })),
     } as Wallet;
 
-    const _connect = wallet.connect;
-    const _disconnect = wallet.disconnect;
+    return this.decorateWallet(wallet);
+  }
 
-    wallet.connect = async (params: never) => {
-      const accounts = await _connect(params);
-
-      await handleConnected(wallet.id, { accounts });
-      return accounts;
-    };
-
-    wallet.disconnect = async () => {
-      await _disconnect();
-
-      handleDisconnected(wallet.id);
-    };
-
-    return wallet;
+  private getModule(id: string | null) {
+    return this.modules.find((x) => x.id === id);
   }
 
   async getWallet<Variation extends Wallet = Wallet>(id: string | null) {
-    const module = this.modules.find((x) => x.id === id);
+    const module = this.getModule(id);
 
     if (!module) {
       return null;
