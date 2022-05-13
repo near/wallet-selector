@@ -5,7 +5,7 @@ const KEY_DELIMITER = ":";
 
 export class JsonStorage implements JsonStorageService {
   storage: StorageService;
-  namespace?: string;
+  namespace: string;
 
   constructor(storage: StorageService, namespace: string | Array<string>) {
     this.storage = storage;
