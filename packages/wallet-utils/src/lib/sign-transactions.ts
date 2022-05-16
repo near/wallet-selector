@@ -33,7 +33,9 @@ export const signTransactions = async (
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
-    const actions = createAction(transactions[i].actions);
+    const actions = transactions[i].actions.map((action) =>
+      createAction(action)
+    );
 
     const transaction = nearTransactions.createTransaction(
       accountId,

@@ -4,7 +4,7 @@ import BN = require("bn.js");
 
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
-    const actions = createAction([{ type: "CreateAccount" }]);
+    const actions = createAction({ type: "CreateAccount" });
 
     expect(actions).toEqual([transactions.createAccount()]);
   });
@@ -12,14 +12,12 @@ describe("transformActions", () => {
   it("correctly transforms 'DeployContract' action", () => {
     const code = Buffer.from("{}");
 
-    const actions = createAction([
-      {
-        type: "DeployContract",
-        params: {
-          code,
-        },
+    const actions = createAction({
+      type: "DeployContract",
+      params: {
+        code,
       },
-    ]);
+    });
 
     expect(actions).toEqual([transactions.deployContract(code)]);
   });
@@ -30,17 +28,15 @@ describe("transformActions", () => {
     const deposit = "2";
     const methodName = "methodName";
 
-    const actions = createAction([
-      {
-        type: "FunctionCall",
-        params: {
-          methodName,
-          args,
-          gas,
-          deposit,
-        },
+    const actions = createAction({
+      type: "FunctionCall",
+      params: {
+        methodName,
+        args,
+        gas,
+        deposit,
       },
-    ]);
+    });
 
     expect(actions).toEqual([
       transactions.functionCall(methodName, args, new BN(gas), new BN(deposit)),
@@ -49,14 +45,12 @@ describe("transformActions", () => {
 
   it("correctly transforms 'Transfer' action", () => {
     const deposit = "1";
-    const actions = createAction([
-      {
-        type: "Transfer",
-        params: {
-          deposit,
-        },
+    const actions = createAction({
+      type: "Transfer",
+      params: {
+        deposit,
       },
-    ]);
+    });
 
     expect(actions).toEqual([transactions.transfer(new BN(deposit))]);
   });
@@ -65,15 +59,13 @@ describe("transformActions", () => {
     const stake = "1";
     const publicKey = "";
 
-    const actions = createAction([
-      {
-        type: "Stake",
-        params: {
-          stake,
-          publicKey,
-        },
+    const actions = createAction({
+      type: "Stake",
+      params: {
+        stake,
+        publicKey,
       },
-    ]);
+    });
 
     expect(actions).toEqual([
       transactions.stake(new BN(stake), utils.PublicKey.from(publicKey)),
@@ -82,17 +74,15 @@ describe("transformActions", () => {
 
   it("correctly transforms 'AddKey' action with 'FullAccess' permission", () => {
     const publicKey = "";
-    const actions = createAction([
-      {
-        type: "AddKey",
-        params: {
-          publicKey,
-          accessKey: {
-            permission: "FullAccess",
-          },
+    const actions = createAction({
+      type: "AddKey",
+      params: {
+        publicKey,
+        accessKey: {
+          permission: "FullAccess",
         },
       },
-    ]);
+    });
 
     expect(actions).toEqual([
       transactions.addKey(
@@ -108,21 +98,19 @@ describe("transformActions", () => {
     const allowance = "1";
     const methodNames = ["methodName"];
 
-    const actions = createAction([
-      {
-        type: "AddKey",
-        params: {
-          publicKey,
-          accessKey: {
-            permission: {
-              receiverId,
-              allowance,
-              methodNames,
-            },
+    const actions = createAction({
+      type: "AddKey",
+      params: {
+        publicKey,
+        accessKey: {
+          permission: {
+            receiverId,
+            allowance,
+            methodNames,
           },
         },
       },
-    ]);
+    });
 
     expect(actions).toEqual([
       transactions.addKey(
@@ -139,14 +127,12 @@ describe("transformActions", () => {
   it("correctly transforms 'DeleteKey' action", () => {
     const publicKey = "";
 
-    const actions = createAction([
-      {
-        type: "DeleteKey",
-        params: {
-          publicKey,
-        },
+    const actions = createAction({
+      type: "DeleteKey",
+      params: {
+        publicKey,
       },
-    ]);
+    });
 
     expect(actions).toEqual([
       transactions.deleteKey(utils.PublicKey.from(publicKey)),
@@ -156,14 +142,12 @@ describe("transformActions", () => {
   it("correctly transforms 'DeleteAccount' action", () => {
     const beneficiaryId = "test.testnet";
 
-    const actions = createAction([
-      {
-        type: "DeleteAccount",
-        params: {
-          beneficiaryId,
-        },
+    const actions = createAction({
+      type: "DeleteAccount",
+      params: {
+        beneficiaryId,
       },
-    ]);
+    });
 
     expect(actions).toEqual([transactions.deleteAccount(beneficiaryId)]);
   });

@@ -100,10 +100,12 @@ const NearWallet: WalletBehaviourFactory<
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
-        const actions = createAction(transaction.actions);
+        const actions = transaction.actions.map((action) =>
+          createAction(action)
+        );
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
-          createAction(transaction.actions),
+          actions,
           localKey
         );
 
@@ -170,7 +172,7 @@ const NearWallet: WalletBehaviourFactory<
 
       return account["signAndSendTransaction"]({
         receiverId,
-        actions: createAction(actions),
+        actions: actions.map((action) => createAction(action)),
       }).then(() => {
         // Suppress response since transactions with deposits won't actually
         // return FinalExecutionOutcome.
