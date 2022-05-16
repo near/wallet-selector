@@ -11,11 +11,14 @@ import { createAction } from "./create-action";
 export const signTransactions = async (
   transactions: Array<Transaction>,
   signer: Signer,
-  accountId: string
+  accountId: string,
+  networkId: string
 ) => {
   const publicKey = (await signer.getPublicKey()).toString();
 
-  const provider = new providers.JsonRpcProvider();
+  const provider = new providers.JsonRpcProvider({
+    url: networkId,
+  });
 
   const [block, accessKey] = await Promise.all([
     provider.block({ finality: "final" }),

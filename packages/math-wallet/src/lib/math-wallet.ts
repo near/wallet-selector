@@ -138,7 +138,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           },
         ],
         _state.wallet.signer,
-        account.accountId
+        account.accountId,
+        options.network.nodeUrl
       );
 
       return provider.sendTransaction(signedTransactions[0]);
@@ -165,7 +166,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
         _state.wallet.signer,
-        accountId
+        accountId,
+        options.network.nodeUrl
       );
 
       logger.log(
