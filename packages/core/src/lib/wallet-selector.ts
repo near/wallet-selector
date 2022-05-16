@@ -5,9 +5,8 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { EventEmitter, Logger } from "./services";
+import { EventEmitter, Logger, WalletModules } from "./services";
 import { Wallet } from "./wallet";
-import { setupWalletModules } from "./modules/wallet-modules";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
@@ -17,13 +16,15 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage);
-  const walletModules = await setupWalletModules({
+  const walletModules = new WalletModules({
     factories: params.modules,
     storage,
     options,
     store,
     emitter,
   });
+
+  await walletModules.setup();
 
   // TODO: Remove omit once modal is a separate package.
   const selector: WalletSelector = {
