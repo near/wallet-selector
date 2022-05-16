@@ -10,7 +10,7 @@ import {
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { utils } from "near-api-js";
+import { utils, keyStores } from "near-api-js";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -25,6 +25,7 @@ type WalletConnectExtraOptions = Pick<WalletConnectParams, "chainId"> &
 
 interface WalletConnectState {
   client: WalletConnectClient;
+  keystore: keyStores.BrowserLocalStorageKeyStore;
   session: SessionTypes.Settled | null;
   accounts: Array<Account>;
   subscriptions: Array<Subscription>;
@@ -33,10 +34,15 @@ interface WalletConnectState {
 export const STORAGE_ACCOUNTS = "accounts";
 
 const setupWalletConnectState = async (
+  id: string,
   params: WalletConnectExtraOptions,
   storage: JsonStorageService
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
+  const keystore = new keyStores.BrowserLocalStorageKeyStore(
+    window.localStorage,
+    `near-wallet-selector:${id}:keystore:`
+  );
   const accounts = await storage.getItem<Array<Account>>(STORAGE_ACCOUNTS);
   let session: SessionTypes.Settled | null = null;
 
@@ -48,6 +54,7 @@ const setupWalletConnectState = async (
 
   return {
     client,
+    keystore,
     session,
     accounts: accounts || [],
     subscriptions: [],
@@ -57,8 +64,8 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, params, emitter, storage, logger }) => {
-  const _state = await setupWalletConnectState(params, storage);
+> = async ({ id, options, params, emitter, storage, logger }) => {
+  const _state = await setupWalletConnectState(id, params, storage);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -78,8 +85,10 @@ const WalletConnect: WalletBehaviourFactory<
     return _state.accounts;
   };
 
-  const cleanup = () => {
+  const cleanup = async () => {
     _state.subscriptions.forEach((subscription) => subscription.remove());
+
+    await _state.keystore.clear();
 
     _state.subscriptions = [];
     _state.session = null;
@@ -99,7 +108,7 @@ const WalletConnect: WalletBehaviourFactory<
       });
     }
 
-    cleanup();
+    await cleanup();
   };
 
   const setupEvents = () => {
@@ -166,6 +175,12 @@ const WalletConnect: WalletBehaviourFactory<
             const accountId = account.split(":")[2];
             // TODO: Store keypair in a key store.
             const keyPair = utils.KeyPair.fromRandom("ed25519");
+
+            _state.keystore.setKey(
+              options.network.networkId,
+              accountId,
+              keyPair
+            );
 
             return {
               signerId: accountId,
