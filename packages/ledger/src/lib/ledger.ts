@@ -254,14 +254,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error(`${metadata.name} not connected`);
       }
 
-      const account = signerId
-        ? _state.accounts.find((x) => x.accountId === signerId)
-        : _state.accounts[0];
-
-      if (!account) {
-        throw new Error("Invalid signer id: " + signerId);
-      }
-
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
@@ -270,11 +262,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           {
             receiverId,
             actions,
-            signerId: account.accountId,
+            signerId: signerId!,
           },
         ],
         signer,
-        account.accountId,
         options.network.nodeUrl
       );
 
@@ -294,7 +285,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
         signer,
-        _state.accounts[0].accountId,
         options.network.nodeUrl
       );
 

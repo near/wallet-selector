@@ -123,12 +123,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const account = getSignedInAccount();
-
-      if (!account) {
-        throw new Error("Wallet not connected");
-      }
-
       const signedTransactions = await signTransactions(
         [
           {
@@ -138,7 +132,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           },
         ],
         _state.wallet.signer,
-        account.accountId,
         options.network.nodeUrl
       );
 
@@ -154,19 +147,9 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not connected");
       }
 
-      const { accountId, publicKey } = account;
-      const [block, accessKey] = await Promise.all([
-        provider.block({ finality: "final" }),
-        provider.viewAccessKey({ accountId, publicKey }),
-      ]);
-
-      logger.log("signAndSendTransactions:block", block);
-      logger.log("signAndSendTransactions:accessKey", accessKey);
-
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
         _state.wallet.signer,
-        accountId,
         options.network.nodeUrl
       );
 

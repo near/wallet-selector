@@ -11,7 +11,6 @@ import { createAction } from "./create-action";
 export const signTransactions = async (
   transactions: Array<Transaction>,
   signer: Signer,
-  accountId: string,
   networkId: string
 ) => {
   const publicKey = (await signer.getPublicKey()).toString();
@@ -20,25 +19,25 @@ export const signTransactions = async (
     url: networkId,
   });
 
-  const [block, accessKey] = await Promise.all([
-    provider.block({ finality: "final" }),
-    provider.query<AccessKeyView>({
-      request_type: "view_access_key",
-      finality: "final",
-      account_id: accountId,
-      public_key: publicKey,
-    }),
-  ]);
-
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
+    const [block, accessKey] = await Promise.all([
+      provider.block({ finality: "final" }),
+      provider.query<AccessKeyView>({
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: transactions[i].signerId,
+        public_key: publicKey,
+      }),
+    ]);
+
     const actions = transactions[i].actions.map((action) =>
       createAction(action)
     );
 
     const transaction = nearTransactions.createTransaction(
-      accountId,
+      transactions[i].signerId,
       utils.PublicKey.from(publicKey),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
@@ -49,7 +48,7 @@ export const signTransactions = async (
     const response = await nearTransactions.signTransaction(
       transaction,
       signer,
-      accountId
+      transactions[i].signerId
     );
 
     signedTransactions.push(response[1]);
