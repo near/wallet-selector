@@ -50,9 +50,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     } catch (err) {
       const { name } = module.metadata;
 
-      console.log(`Failed to select ${name}`);
-      console.error(err);
-
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
