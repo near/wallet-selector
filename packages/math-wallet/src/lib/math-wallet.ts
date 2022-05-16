@@ -5,6 +5,8 @@ import {
   InjectedWallet,
   AccountState,
   waitFor,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet } from "./injected-math-wallet";
@@ -74,6 +76,24 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return [{ accountId: account.accountId }];
   };
 
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId">>
+  ): Array<Transaction> => {
+    const account = getSignedInAccount();
+
+    if (!account) {
+      throw new Error("Wallet not connected");
+    }
+
+    return transactions.map((t) => {
+      return {
+        receiverId: t.receiverId,
+        actions: t.actions,
+        signerId: account.accountId,
+      };
+    });
+  };
+
   return {
     async connect() {
       const existingAccounts = getAccounts();
@@ -118,6 +138,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           {
             receiverId,
             actions,
+            signerId: signerId!,
           },
         ],
         _state.wallet.signer,
@@ -146,7 +167,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
 
       const signedTransactions = await signTransactions(
-        transactions,
+        transformTransactions(transactions),
         _state.wallet.signer,
         accountId
       );

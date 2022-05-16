@@ -4,12 +4,12 @@ import {
   Signer,
   providers,
 } from "near-api-js";
-import { Transaction, Optional } from "@near-wallet-selector/core";
+import { Transaction } from "@near-wallet-selector/core";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (
-  transactions: Array<Optional<Transaction, "signerId">>,
+  transactions: Array<Transaction>,
   signer: Signer,
   accountId: string
 ) => {

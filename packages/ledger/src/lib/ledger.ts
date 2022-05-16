@@ -7,6 +7,8 @@ import {
   WalletBehaviourOptions,
   AccountState,
   HardwareWallet,
+  Transaction,
+  Optional,
 } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
@@ -172,6 +174,22 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     return accountIds[0];
   };
 
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId">>
+  ): Array<Transaction> => {
+    return transactions.map((t) => {
+      if (!_state.authData) {
+        throw new Error("Wallet not connected");
+      }
+
+      return {
+        receiverId: t.receiverId,
+        actions: t.actions,
+        signerId: _state.authData.accountId,
+      };
+    });
+  };
+
   return {
     async connect({ derivationPath }) {
       const existingAccounts = getAccounts();
@@ -245,6 +263,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           {
             receiverId,
             actions,
+            signerId: signerId!,
           },
         ],
         signer,
@@ -265,7 +284,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       await connectLedgerDevice();
 
       const signedTransactions = await signTransactions(
-        transactions,
+        transformTransactions(transactions),
         signer,
         _state.authData.accountId
       );
