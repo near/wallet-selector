@@ -6,7 +6,7 @@ describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
     const actions = createAction({ type: "CreateAccount" });
 
-    expect(actions).toEqual([transactions.createAccount()]);
+    expect(actions).toEqual(transactions.createAccount());
   });
 
   it("correctly transforms 'DeployContract' action", () => {
@@ -19,7 +19,7 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([transactions.deployContract(code)]);
+    expect(actions).toEqual(transactions.deployContract(code));
   });
 
   it("correctly transforms 'FunctionCall' action", () => {
@@ -38,9 +38,9 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([
-      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit)),
-    ]);
+    expect(actions).toEqual(
+      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit))
+    );
   });
 
   it("correctly transforms 'Transfer' action", () => {
@@ -52,7 +52,7 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([transactions.transfer(new BN(deposit))]);
+    expect(actions).toEqual(transactions.transfer(new BN(deposit)));
   });
 
   it("correctly transforms 'Stake' action", () => {
@@ -67,9 +67,9 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([
-      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey)),
-    ]);
+    expect(actions).toEqual(
+      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey))
+    );
   });
 
   it("correctly transforms 'AddKey' action with 'FullAccess' permission", () => {
@@ -84,12 +84,12 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([
+    expect(actions).toEqual(
       transactions.addKey(
         utils.PublicKey.from(publicKey),
         transactions.fullAccessKey()
-      ),
-    ]);
+      )
+    );
   });
 
   it("correctly transforms 'AddKey' action with 'FunctionCall' permission", () => {
@@ -112,7 +112,7 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([
+    expect(actions).toEqual(
       transactions.addKey(
         utils.PublicKey.from(publicKey),
         transactions.functionCallAccessKey(
@@ -120,8 +120,8 @@ describe("transformActions", () => {
           methodNames,
           new BN(allowance)
         )
-      ),
-    ]);
+      )
+    );
   });
 
   it("correctly transforms 'DeleteKey' action", () => {
@@ -134,9 +134,9 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([
-      transactions.deleteKey(utils.PublicKey.from(publicKey)),
-    ]);
+    expect(actions).toEqual(
+      transactions.deleteKey(utils.PublicKey.from(publicKey))
+    );
   });
 
   it("correctly transforms 'DeleteAccount' action", () => {
@@ -149,6 +149,6 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual([transactions.deleteAccount(beneficiaryId)]);
+    expect(actions).toEqual(transactions.deleteAccount(beneficiaryId));
   });
 });
