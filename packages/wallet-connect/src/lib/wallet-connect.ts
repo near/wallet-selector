@@ -99,6 +99,40 @@ const WalletConnect: WalletBehaviourFactory<
 
   const disconnect = async () => {
     if (_state.session) {
+      // TODO: Use all transactions once near_signAndSendTransactions is supported.
+      const transactions: Array<Transaction> = [];
+
+      for (let i = 0; i < _state.session.state.accounts.length; i += 1) {
+        const accountId = _state.session.state.accounts[i].split(":")[2];
+        const keyPair = await _state.keystore.getKey(
+          options.network.networkId,
+          accountId
+        );
+
+        transactions.push({
+          signerId: accountId,
+          receiverId: accountId,
+          actions: [
+            {
+              type: "DeleteKey",
+              params: {
+                publicKey: keyPair.getPublicKey().toString(),
+              },
+            },
+          ],
+        });
+      }
+
+      await _state.client.request({
+        timeout: 30 * 1000,
+        topic: _state.session.topic,
+        chainId: getChainId(),
+        request: {
+          method: "near_signAndSendTransaction",
+          params: transactions[0],
+        },
+      });
+
       await _state.client.disconnect({
         topic: _state.session.topic,
         reason: {
@@ -169,7 +203,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        // TODO: Use all items once near_signAndSendTransactions is supported.
+        // TODO: Use all transactions once near_signAndSendTransactions is supported.
         const [transaction] = _state.session.state.accounts.map<Transaction>(
           (account) => {
             const accountId = account.split(":")[2];
