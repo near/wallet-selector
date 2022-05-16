@@ -99,7 +99,6 @@ const WalletConnect: WalletBehaviourFactory<
 
   const disconnect = async () => {
     if (_state.session) {
-      // TODO: Use all transactions once near_signAndSendTransactions is supported.
       const transactions: Array<Transaction> = [];
 
       for (let i = 0; i < _state.session.state.accounts.length; i += 1) {
@@ -128,8 +127,8 @@ const WalletConnect: WalletBehaviourFactory<
         topic: _state.session.topic,
         chainId: getChainId(),
         request: {
-          method: "near_signAndSendTransaction",
-          params: transactions[0],
+          method: "near_signAndSendTransactions",
+          params: { transactions },
         },
       });
 
@@ -203,8 +202,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        // TODO: Use all transactions once near_signAndSendTransactions is supported.
-        const [transaction] = _state.session.state.accounts.map<Transaction>(
+        const transactions = _state.session.state.accounts.map<Transaction>(
           (account) => {
             const accountId = account.split(":")[2];
             // TODO: Store keypair in a key store.
@@ -242,14 +240,16 @@ const WalletConnect: WalletBehaviourFactory<
           topic: _state.session.topic,
           chainId: getChainId(),
           request: {
-            method: "near_signAndSendTransaction",
-            params: transaction,
+            method: "near_signAndSendTransactions",
+            params: { transactions },
           },
         });
 
         setupEvents();
 
-        const accounts: Array<Account> = [{ accountId: transaction.signerId }];
+        const accounts: Array<Account> = transactions.map((x) => ({
+          accountId: x.signerId,
+        }));
         await storage.setItem(STORAGE_ACCOUNTS, accounts);
         _state.accounts = accounts;
 
