@@ -4,7 +4,7 @@ import {
   EventEmitterService,
   LoggerService,
   ProviderService,
-  StorageService,
+  JsonStorageService,
 } from "../services";
 import { Options } from "../options.types";
 import { Transaction, Action } from "./transactions.types";
@@ -91,7 +91,7 @@ export type InjectedWallet = BaseWallet<
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
 export interface HardwareWalletConnectParams {
-  derivationPath: string;
+  derivationPaths: Array<string>;
 }
 
 export type HardwareWalletBehaviour = Modify<
@@ -142,7 +142,7 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;
-  storage: StorageService;
+  storage: JsonStorageService;
 }
 
 // Note: TypeScript doesn't seem to like reusing this in WalletModule.

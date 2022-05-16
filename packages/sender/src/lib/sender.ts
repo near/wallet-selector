@@ -81,12 +81,12 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const setupEvents = () => {
     _state.wallet.on("accountChanged", async (newAccountId) => {
-      logger.log("Sender:onAccountChange", newAccountId);
+      logger.log("onAccountChange", newAccountId);
       emitter.emit("disconnected", null);
     });
 
-    _state.wallet.on("rpcChanged", async ({ rpc }) => {
-      logger.log("Sender:onNetworkChange", rpc);
+    _state.wallet.on("rpcChanged", async (rpc) => {
+      logger.log("onNetworkChange", rpc);
 
       if (options.network.networkId !== rpc.networkId) {
         await disconnect();
@@ -178,11 +178,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("Sender:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
@@ -208,7 +204,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("Sender:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");

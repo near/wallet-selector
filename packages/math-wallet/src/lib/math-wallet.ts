@@ -121,11 +121,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("MathWallet:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       const account = getSignedInAccount();
 
@@ -149,7 +145,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("MathWallet:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       const account = getSignedInAccount();
 
@@ -163,8 +159,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         provider.viewAccessKey({ accountId, publicKey }),
       ]);
 
-      logger.log("MathWallet:signAndSendTransactions:block", block);
-      logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
+      logger.log("signAndSendTransactions:block", block);
+      logger.log("signAndSendTransactions:accessKey", accessKey);
 
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
@@ -173,7 +169,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       );
 
       logger.log(
-        "MathWallet:signAndSendTransactions:signedTransactions",
+        "signAndSendTransactions:signedTransactions",
         signedTransactions
       );
 

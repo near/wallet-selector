@@ -46,10 +46,15 @@ export interface RequestSignInParams {
 }
 
 export interface RpcChangedResponse {
-  method: "rpcChanged";
-  notificationId: number;
-  rpc: RpcInfo;
-  type: "sender-wallet-fromContent";
+  explorerUrl: string;
+  helperUrl: string;
+  index: number;
+  name: string;
+  network: string;
+  networkId: string;
+  nodeUrl: string;
+  walletUrl: string;
+  wrapNearContract: string;
 }
 
 export interface SendMoneyParams {

@@ -6,7 +6,7 @@ import {
   ProviderService,
   EventEmitterService,
   LoggerService,
-  StorageService,
+  JsonStorageService,
 } from "./services";
 import { getNetworkPreset } from "./options";
 
@@ -15,7 +15,7 @@ export interface MockWalletDependencies {
   provider?: ProviderService;
   emitter?: EventEmitterService<WalletEvents>;
   logger?: LoggerService;
-  storage?: StorageService;
+  storage?: JsonStorageService;
 }
 
 export const mockWallet = async <Variation extends Wallet>(
@@ -42,7 +42,7 @@ export const mockWallet = async <Variation extends Wallet>(
     provider: deps.provider || mock<ProviderService>(),
     emitter: deps.emitter || mock<EventEmitterService<WalletEvents>>(),
     logger: deps.logger || mock<LoggerService>(),
-    storage: deps.storage || mock<StorageService>(),
+    storage: deps.storage || mock<JsonStorageService>(),
   });
 
   return wallet as Variation;
