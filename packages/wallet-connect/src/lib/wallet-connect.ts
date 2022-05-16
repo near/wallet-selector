@@ -194,11 +194,7 @@ const WalletConnect: WalletBehaviourFactory<
           chainId: getChainId(),
           request: {
             method: "near_signAndSendTransaction",
-            params: {
-              signerId: transaction.signerId,
-              receiverId: transaction.receiverId,
-              actions: transaction.actions,
-            },
+            params: transaction,
           },
         });
 
