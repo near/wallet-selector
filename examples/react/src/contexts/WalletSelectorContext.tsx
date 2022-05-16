@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -51,6 +52,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       contractId: "guest-book.testnet",
       wallets: [
         setupNearWallet(),
+        setupMyNearWallet(),
         setupSender(),
         setupLedger(),
         setupMathWallet(),

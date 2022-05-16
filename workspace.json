@@ -5,6 +5,7 @@
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",
+    "my-near-wallet": "packages/my-near-wallet",
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
     "angular": "examples/angular",
