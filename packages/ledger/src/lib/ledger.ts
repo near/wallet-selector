@@ -66,28 +66,32 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
   const signer: Signer = {
     createKey: () => {
-      throw Error("Not implemented");
+      throw new Error("Not implemented");
     },
-    getPublicKey: async () => {
-      if (!_state.accounts.length) {
-        throw new Error(`${metadata.name} not connected`);
+    getPublicKey: async (accountId) => {
+      const account = _state.accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find public key for account");
       }
 
-      return utils.PublicKey.from(_state.accounts[0].publicKey);
+      return utils.PublicKey.from(account.publicKey);
     },
-    signMessage: async (message: Uint8Array) => {
-      if (!_state.accounts.length) {
-        throw new Error(`${metadata.name} not connected`);
+    signMessage: async (message, accountId) => {
+      const account = _state.accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find account for signing");
       }
 
       const signature = await _state.client.sign({
         data: message,
-        derivationPath: _state.accounts[0].derivationPath,
+        derivationPath: account.derivationPath,
       });
 
       return {
         signature,
-        publicKey: utils.PublicKey.from(_state.accounts[0].publicKey),
+        publicKey: utils.PublicKey.from(account.publicKey),
       };
     },
   };
@@ -182,10 +186,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("Wallet not connected");
       }
 
+      const signerId = t.signerId ? t.signerId : _state.accounts[0].accountId;
+
       return {
         receiverId: t.receiverId,
         actions: t.actions,
-        signerId: _state.accounts[0].accountId,
+        signerId,
       };
     });
   };

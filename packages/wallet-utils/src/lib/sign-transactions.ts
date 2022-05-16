@@ -13,8 +13,6 @@ export const signTransactions = async (
   signer: Signer,
   networkId: string
 ) => {
-  const publicKey = (await signer.getPublicKey()).toString();
-
   const provider = new providers.JsonRpcProvider({
     url: networkId,
   });
@@ -22,6 +20,10 @@ export const signTransactions = async (
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
+    const publicKey = (
+      await signer.getPublicKey(transactions[i].signerId, networkId)
+    ).toString();
+
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
       provider.query<AccessKeyView>({

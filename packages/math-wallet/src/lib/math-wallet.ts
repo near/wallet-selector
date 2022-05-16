@@ -86,10 +86,12 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
 
     return transactions.map((t) => {
+      const signerId = t.signerId ? t.signerId : account.accountId;
+
       return {
         receiverId: t.receiverId,
         actions: t.actions,
-        signerId: account.accountId,
+        signerId,
       };
     });
   };
