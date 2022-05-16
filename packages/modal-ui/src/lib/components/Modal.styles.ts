@@ -20,7 +20,7 @@ export default `
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--backdrop-bg);
+  background-color: var(--wallet-selector-backdrop-bg, --backdrop-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,14 +33,14 @@ export default `
 }
 
 .Modal, .Modal.Modal-light-theme {
-  color: var(--text-color);
+  color: var(--wallet-selector-text-color, --text-color);
 }
 
 .Modal .Modal-content {
   max-width: 700px;
   max-height: 70vh;
   width: 400px;
-  background-color: var(--white);
+  background-color: var(--wallet-selector-white, --white);
   margin: 10px;
   border-radius: 16px;
   padding: 32px;
@@ -84,12 +84,12 @@ export default `
 }
 
 .Modal-header button:hover svg {
-  fill: var(--black);
+  fill: var(--wallet-selector-black, --black);
   transition: all 0.2s ease-in;
 }
 
 .Modal-header h2 {
-  color: var(--black);
+  color: var(--wallet-selector-black, --black);
   font-size: 22px;
   margin-top: 0;
   margin-bottom: 20px;
@@ -108,7 +108,7 @@ export default `
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
-  border: 1px solid var(--dark-gray-op-30);
+  border: 1px solid var(--wallet-selector-dark-gray-op-30, --dark-gray-op-30);
   display: flex;
 }
 
@@ -117,7 +117,7 @@ export default `
 }
 
 .Modal-option-list:not(.selection-process) li:hover {
-  box-shadow: 0 2px 10px 0 var(--backdrop-bg);
+  box-shadow: 0 2px 10px 0 var(--wallet-selector-backdrop-bg, --backdrop-bg);
 }
 
 .Modal-option-list li img {
@@ -127,7 +127,7 @@ export default `
 }
 
 .Modal-option-list li.selected-wallet {
-  background-color: var(--dark-gray-op-30);
+  background-color: var(--wallet-selector-dark-gray-op-30, --dark-gray-op-30);
 }
 .Modal-option-list li .selected-wallet-text {
   text-align: center;
@@ -174,12 +174,12 @@ export default `
 }
 
 .path-option-highlighted {
-  border-color: var(--blue)!important;
+  border-color: var(--wallet-selector-blue, --blue)!important;
 }
 
 .error {
   font-family: inherit;
-  color: var(--red);
+  color: var(--wallet-selector-red, --red);
 }
 .info {
   margin-top: 20px;
@@ -213,7 +213,7 @@ export default `
 }
 
 .input-error {
-  border-color: var(--red)!important;
+  border-color: var(--wallet-selector-red, --red)!important;
 }
 
 .Modal-wallet-not-installed .icon-display {
@@ -229,7 +229,7 @@ export default `
 }
 
 .Modal-wallet-not-installed .refresh-link {
-  color: var(--blue);
+  color: var(--wallet-selector-blue, --blue);
   cursor: pointer;
 }
 
@@ -240,16 +240,16 @@ export default `
 }
 
 .Modal .Modal-content .left-button {
-  border: 0.5px solid var(--light-gray);
+  border: 0.5px solid var(--wallet-selector-light-gray, --light-gray);
 }
 .Modal .Modal-content .left-button:hover {
-  background-color: var(--dark-gray-op-30);
+  background-color: var(--wallet-selector-dark-gray-op-30, --dark-gray-op-30);
 }
 
 .Modal .Modal-content .right-button {
-  color: var(--white);
-  background-color: var(--blue);
-  border: 1px solid var(--blue);
+  color: var(--wallet-selector-white, --white);
+  background-color: var(--wallet-selector-blue, --blue);
+  border: 1px solid var(--wallet-selector-blue, --blue);
 }
 
 .Modal .Modal-content .right-button:hover {
@@ -259,7 +259,7 @@ export default `
 .Modal-switch-network-message .header h2 {
   font-size: 18px;
   margin-top: 0px;
-  color: var(--black);
+  color: var(--wallet-selector-black, --black);
 }
 
 .Modal-switch-network-message .content p {
@@ -273,20 +273,20 @@ export default `
 }
 
 .Modal-dark-theme .Modal-content {
-  background-color: var(--dark-gray);
-  color: var(--white);
+  background-color: var(--wallet-selector-dark-gray, --dark-gray);
+  color: var(--wallet-selector-white, --white);
 }
 
 .Modal-dark-theme .Modal-content .Modal-header h2 {
-  color: var(--white);
+  color: var(--wallet-selector-white, --white);
 }
 
 .Modal-dark-theme .Modal-header button:hover svg {
-  fill: var(--light-gray);
+  fill: var(--wallet-selector-light-gray, --light-gray);
 }
 
 .Modal-dark-theme .Modal-content .Modal-option-list li {
-  border-color: var(--dark-gray-op-30);
+  border-color: var(--wallet-selector-dark-gray-op-30, --dark-gray-op-30);
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -298,44 +298,44 @@ export default `
 
 .Modal-dark-theme .Modal-content .Modal-option-list li:hover,
 .Modal-dark-theme .Modal-content .Modal-option-list li.selected-wallet {
-  background-color: rgba(var(--black-rgb), 0.8);
+  background-color: rgba(var(--wallet-selector-black-rgb, --black-rgb), 0.8);
 }
 
 .Modal-dark-theme .Modal-switch-network-message .header h2 {
-  color: var(--white);
+  color: var(--wallet-selector-white, --white);
 }
 
 .Modal-dark-theme .Modal-content .info span:hover {
-  color: var(--light-gray);
+  color: var(--wallet-selector-light-gray, --light-gray);
   transition: all 200ms ease-in;
 }
 
 .Modal-dark-theme .Modal-content .left-button:hover {
-    background-color: rgba(var(--black-rgb), 0.8);
-    border-color: var(--black);
+    background-color: rgba(var(--wallet-selector-black-rgb, --black-rgb), 0.8);
+    border-color: var(--wallet-selector-black, --black);
 }
 
 .Modal-dark-theme .Modal-alert-window {
-  background-color: var(--dark-gray);
+  background-color: var(--wallet-selector-dark-gray, --dark-gray);
   color: white;
 }
 
 @media (prefers-color-scheme: dark) {
   .Modal .Modal-content {
-    background-color: var(--dark-gray);
-    color: var(--white);
+    background-color: var(--wallet-selector-dark-gray, --dark-gray);
+    color: var(--wallet-selector-white, --white);
   }
 
   .Modal-content .Modal-header h2 {
-    color: var(--white);
+    color: var(--wallet-selector-white, --white);
   }
 
   .Modal-header button:hover svg {
-    fill: var(--light-gray);
+    fill: var(--wallet-selector-light-gray, --light-gray);
   }
 
   .Modal-content .Modal-option-list li {
-    border-color: var(--dark-gray-op-30);
+    border-color: var(--wallet-selector-dark-gray-op-30, --dark-gray-op-30);
     transition: background-color 0.2s ease-in-out;
   }
 
@@ -348,25 +348,25 @@ export default `
 
   .Modal-content .Modal-option-list li:hover,
   .Modal-content .Modal-option-list li.selected-wallet {
-    background-color: rgba(var(--black-rgb), 0.8);
+    background-color: rgba(var(--wallet-selector-black-rgb, --black-rgb), 0.8);
   }
 
   .Modal-switch-network-message .header h2 {
-    color: var(--white);
+    color: var(--wallet-selector-white, --white);
   }
 
   .Modal-content .info span:hover {
-    color: var(--light-gray);
+    color: var(--wallet-selector-light-gray, --light-gray);
     transition: all 200ms ease-in;
   }
 
   .Modal .Modal-content .left-button:hover {
-      background-color: rgba(var(--black-rgb), 0.8);
-      border-color: var(--black);
+      background-color: rgba(var(--wallet-selector-black-rgb, --black-rgb), 0.8);
+      border-color: var(--wallet-selector-black, --black);
   }
 
   .Modal-alert-window {
-    background-color: var(--dark-gray);
+    background-color: var(--wallet-selector-dark-gray, --dark-gray);
     color: white;
   }
 }
