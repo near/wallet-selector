@@ -17,6 +17,7 @@
     "strictPropertyInitialization": false,
     "paths": {
       "@near-wallet-selector/core": ["dist/packages/core"],
+      "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
       "@near-wallet-selector/ledger": [
         "packages/ledger/src/index.ts"
       ],

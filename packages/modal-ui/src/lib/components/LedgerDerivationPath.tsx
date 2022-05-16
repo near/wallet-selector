@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
-import { DEFAULT_DERIVATION_PATH } from "../../constants";
+import { WalletSelector } from "@near-wallet-selector/core";
+
 import { WalletSelectorModal } from "../modal.types";
-import { WalletSelector } from "../../wallet-selector.types";
 
 interface LedgerDerivationPathProps {
   // TODO: Remove omit once modal is a separate package.
@@ -9,6 +9,8 @@ interface LedgerDerivationPathProps {
   onBack: () => void;
   onConnected: () => void;
 }
+
+export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   selector,

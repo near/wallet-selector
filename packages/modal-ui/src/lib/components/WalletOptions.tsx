@@ -1,9 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 
-import { ModuleState } from "../../store.types";
-import { WalletSelector } from "../../wallet-selector.types";
 import { ModalOptions, WalletSelectorModal } from "../modal.types";
-import { logger } from "../../services";
 
 interface WalletOptionsProps {
   // TODO: Remove omit once modal is a separate package.
@@ -52,8 +50,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     } catch (err) {
       const { name } = module.metadata;
 
-      logger.log(`Failed to select ${name}`);
-      logger.error(err);
+      console.log(`Failed to select ${name}`);
+      console.error(err);
 
       const message =
         err instanceof Error ? err.message : "Something went wrong";

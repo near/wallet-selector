@@ -1,7 +1,7 @@
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import { WalletSelector } from "@near-wallet-selector/core";
 
 import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
-import { WalletSelector } from "../../wallet-selector.types";
 import { ModalRouteName } from "./Modal.types";
 import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
