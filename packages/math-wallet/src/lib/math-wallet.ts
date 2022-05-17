@@ -1,15 +1,16 @@
-import { transactions as nearTransactions, utils } from "near-api-js";
-import isMobile from "is-mobile";
+import { isMobile } from "is-mobile";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
   AccountState,
-  transformActions,
   waitFor,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
 
 import { InjectedMathWallet } from "./injected-math-wallet";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 declare global {
   interface Window {
@@ -75,6 +76,26 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return [{ accountId: account.accountId }];
   };
 
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId">>
+  ): Array<Transaction> => {
+    const account = getSignedInAccount();
+
+    if (!account) {
+      throw new Error("Wallet not connected");
+    }
+
+    return transactions.map((t) => {
+      const signerId = t.signerId ? t.signerId : account.accountId;
+
+      return {
+        receiverId: t.receiverId,
+        actions: t.actions,
+        signerId,
+      };
+    });
+  };
+
   return {
     async connect() {
       const existingAccounts = getAccounts();
@@ -107,36 +128,21 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       const account = getSignedInAccount();
 
       if (!account) {
-        throw new Error("Wallet not connected");
+        throw new Error("Not signed in");
       }
 
-      const { accountId, publicKey } = account;
-      const [block, accessKey] = await Promise.all([
-        provider.block({ finality: "final" }),
-        provider.viewAccessKey({ accountId, publicKey }),
-      ]);
-
-      logger.log("signAndSendTransaction:block", block);
-      logger.log("signAndSendTransaction:accessKey", accessKey);
-
-      const transaction = nearTransactions.createTransaction(
-        accountId,
-        utils.PublicKey.from(publicKey),
-        receiverId,
-        accessKey.nonce + 1,
-        transformActions(actions),
-        utils.serialize.base_decode(block.header.hash)
-      );
-
-      const [hash, signedTx] = await nearTransactions.signTransaction(
-        transaction,
+      const signedTransactions = await signTransactions(
+        transformTransactions([
+          {
+            receiverId,
+            actions,
+          },
+        ]),
         _state.wallet.signer,
-        accountId
+        options.network.nodeUrl
       );
 
-      logger.log("signAndSendTransaction:hash", hash);
-
-      return provider.sendTransaction(signedTx);
+      return provider.sendTransaction(signedTransactions[0]);
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -148,38 +154,11 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not connected");
       }
 
-      const { accountId, publicKey } = account;
-      const [block, accessKey] = await Promise.all([
-        provider.block({ finality: "final" }),
-        provider.viewAccessKey({ accountId, publicKey }),
-      ]);
-
-      logger.log("signAndSendTransactions:block", block);
-      logger.log("signAndSendTransactions:accessKey", accessKey);
-
-      const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
-      let nonce = accessKey.nonce;
-
-      for (let i = 0; i < transactions.length; i++) {
-        const transaction = nearTransactions.createTransaction(
-          accountId,
-          utils.PublicKey.from(publicKey),
-          transactions[i].receiverId,
-          ++nonce,
-          transformActions(transactions[i].actions),
-          utils.serialize.base_decode(block.header.hash)
-        );
-
-        const [hash, signedTx] = await nearTransactions.signTransaction(
-          transaction,
-          _state.wallet.signer,
-          accountId
-        );
-
-        logger.log("signAndSendTransactions:hash", hash);
-
-        signedTransactions.push(signedTx);
-      }
+      const signedTransactions = await signTransactions(
+        transformTransactions(transactions),
+        _state.wallet.signer,
+        options.network.nodeUrl
+      );
 
       logger.log(
         "signAndSendTransactions:signedTransactions",

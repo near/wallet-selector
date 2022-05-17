@@ -1,14 +1,19 @@
-import { WalletConnection, connect, keyStores, utils } from "near-api-js";
-import * as nearApi from "near-api-js";
+import {
+  WalletConnection,
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BrowserWallet,
   Transaction,
   Optional,
-  transformActions,
   Network,
 } from "@near-wallet-selector/core";
+import { createAction } from "@near-wallet-selector/wallet-utils";
 
 export interface NearWalletParams {
   walletUrl?: string;
@@ -95,7 +100,9 @@ const NearWallet: WalletBehaviourFactory<
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
-        const actions = transformActions(transaction.actions);
+        const actions = transaction.actions.map((action) =>
+          createAction(action)
+        );
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
           actions,
@@ -110,7 +117,7 @@ const NearWallet: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
-        return nearApi.transactions.createTransaction(
+        return nearTransactions.createTransaction(
           account.accountId,
           utils.PublicKey.from(accessKey.public_key),
           transaction.receiverId,
@@ -165,7 +172,7 @@ const NearWallet: WalletBehaviourFactory<
 
       return account["signAndSendTransaction"]({
         receiverId,
-        actions: transformActions(actions),
+        actions: actions.map((action) => createAction(action)),
       }).then(() => {
         // Suppress response since transactions with deposits won't actually
         // return FinalExecutionOutcome.

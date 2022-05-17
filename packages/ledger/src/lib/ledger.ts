@@ -1,6 +1,6 @@
-import { transactions as nearTransactions, utils } from "near-api-js";
+import { isMobile } from "is-mobile";
 import { TypedError } from "near-api-js/lib/utils/errors";
-import isMobile from "is-mobile";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -8,12 +8,12 @@ import {
   AccountState,
   Account,
   HardwareWallet,
-  transformActions,
   Transaction,
   Optional,
 } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
+import { Signer, utils } from "near-api-js";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -63,6 +63,38 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   storage,
 }) => {
   const _state = await setupLedgerState(storage);
+
+  const signer: Signer = {
+    createKey: () => {
+      throw new Error("Not implemented");
+    },
+    getPublicKey: async (accountId) => {
+      const account = _state.accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find public key for account");
+      }
+
+      return utils.PublicKey.from(account.publicKey);
+    },
+    signMessage: async (message, accountId) => {
+      const account = _state.accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find account for signing");
+      }
+
+      const signature = await _state.client.sign({
+        data: message,
+        derivationPath: account.derivationPath,
+      });
+
+      return {
+        signature,
+        publicKey: utils.PublicKey.from(account.publicKey),
+      };
+    },
+  };
 
   const getAccounts = (): Array<AccountState> => {
     return _state.accounts.map((x) => ({
@@ -146,63 +178,22 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     return accountIds[0];
   };
 
-  const signTransactions = async (
+  const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId">>
-  ) => {
-    if (!_state.accounts.length) {
-      throw new Error(`${metadata.name} not connected`);
-    }
-
-    const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
-
-    for (let i = 0; i < transactions.length; i++) {
-      const transaction = transactions[i];
-      const account = transaction.signerId
-        ? _state.accounts.find((x) => x.accountId === transaction.signerId)
-        : _state.accounts[0];
-
-      if (!account) {
-        throw new Error("Invalid signer id: " + transaction.signerId);
+  ): Array<Transaction> => {
+    return transactions.map((t) => {
+      if (!_state.accounts.length) {
+        throw new Error("Wallet not connected");
       }
 
-      const { accountId, derivationPath, publicKey } = account;
+      const signerId = t.signerId ? t.signerId : _state.accounts[0].accountId;
 
-      const [block, accessKey] = await Promise.all([
-        provider.block({ finality: "final" }),
-        provider.viewAccessKey({ accountId, publicKey }),
-      ]);
-
-      const tx = nearTransactions.createTransaction(
-        accountId,
-        utils.PublicKey.from(publicKey),
-        transaction.receiverId,
-        accessKey.nonce + i + 1,
-        transformActions(transaction.actions),
-        utils.serialize.base_decode(block.header.hash)
-      );
-
-      const serializedTx = utils.serialize.serialize(
-        nearTransactions.SCHEMA,
-        tx
-      );
-
-      const signature = await _state.client.sign({
-        data: serializedTx,
-        derivationPath,
-      });
-
-      const signedTx = new nearTransactions.SignedTransaction({
-        transaction: tx,
-        signature: new nearTransactions.Signature({
-          keyType: tx.publicKey.keyType,
-          data: signature,
-        }),
-      });
-
-      signedTransactions.push(signedTx);
-    }
-
-    return signedTransactions;
+      return {
+        receiverId: t.receiverId,
+        actions: t.actions,
+        signerId,
+      };
+    });
   };
 
   return {
@@ -272,15 +263,18 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const [signedTx] = await signTransactions([
-        {
-          signerId,
-          receiverId,
-          actions,
-        },
-      ]);
+      const signedTransactions = await signTransactions(
+        transformTransactions([
+          {
+            receiverId,
+            actions,
+          },
+        ]),
+        signer,
+        options.network.nodeUrl
+      );
 
-      return provider.sendTransaction(signedTx);
+      return provider.sendTransaction(signedTransactions[0]);
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -293,7 +287,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       // Note: Connection must be triggered by user interaction.
       await connectLedgerDevice();
 
-      const signedTransactions = await signTransactions(transactions);
+      const signedTransactions = await signTransactions(
+        transformTransactions(transactions),
+        signer,
+        options.network.nodeUrl
+      );
 
       return Promise.all(
         signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))
