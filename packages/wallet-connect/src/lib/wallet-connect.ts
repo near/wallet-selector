@@ -167,7 +167,8 @@ const WalletConnect: WalletBehaviourFactory<
         logger.log("Session Deleted", deletedSession);
 
         if (deletedSession.topic === _state.session?.topic) {
-          await disconnect();
+          await cleanup();
+          emitter.emit("disconnected", null);
         }
       })
     );
