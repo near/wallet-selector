@@ -9,6 +9,7 @@ import {
 
 import WalletConnectClient from "./wallet-connect-client";
 import { utils, keyStores, KeyPair } from "near-api-js";
+import { getTransactionKeyPair } from "./access-keys";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -310,6 +311,28 @@ const WalletConnect: WalletBehaviourFactory<
 
       if (!_state.session) {
         throw new Error("Wallet not connected");
+      }
+
+      const accounts = getAccounts();
+      const transaction: Transaction = {
+        signerId: signerId || accounts[0].accountId,
+        receiverId,
+        actions,
+      };
+
+      if (accounts.some((x) => x.accountId === transaction.signerId)) {
+        const keyPair = await getTransactionKeyPair(
+          transaction,
+          _state.keystore,
+          options.network
+        );
+
+        if (!keyPair) {
+          // TODO: Make AddKey request (if it's only a FunctionCall list of Actions).
+          throw new Error("Failed to find matching key pair");
+        }
+
+        logger.log("Transaction is eligible for signing without WalletConnect");
       }
 
       return _state.client.request({
