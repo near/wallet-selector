@@ -5,8 +5,6 @@ import {
   BridgeWallet,
   Subscription,
   Transaction,
-  Account,
-  JsonStorageService,
 } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
@@ -27,23 +25,18 @@ interface WalletConnectState {
   client: WalletConnectClient;
   keystore: keyStores.BrowserLocalStorageKeyStore;
   session: SessionTypes.Settled | null;
-  accounts: Array<Account>;
   subscriptions: Array<Subscription>;
 }
 
-export const STORAGE_ACCOUNTS = "accounts";
-
 const setupWalletConnectState = async (
   id: string,
-  params: WalletConnectExtraOptions,
-  storage: JsonStorageService
+  params: WalletConnectExtraOptions
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
   const keystore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
-  const accounts = await storage.getItem<Array<Account>>(STORAGE_ACCOUNTS);
   let session: SessionTypes.Settled | null = null;
 
   await client.init(params);
@@ -56,7 +49,6 @@ const setupWalletConnectState = async (
     client,
     keystore,
     session,
-    accounts: accounts || [],
     subscriptions: [],
   };
 };
@@ -64,8 +56,8 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, params, emitter, storage, logger }) => {
-  const _state = await setupWalletConnectState(id, params, storage);
+> = async ({ id, options, params, emitter, logger }) => {
+  const _state = await setupWalletConnectState(id, params);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -94,9 +86,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
-    _state.accounts = [];
-
-    storage.removeItem(STORAGE_ACCOUNTS);
   };
 
   const disconnect = async () => {
@@ -147,7 +136,7 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  const requestFunctionCallAccess = async (): Promise<Array<Account>> => {
+  const requestFunctionCallAccess = async () => {
     const accounts = getAccounts();
 
     const { keyPairs, transactions } = accounts.reduce<{
@@ -201,8 +190,6 @@ const WalletConnect: WalletBehaviourFactory<
         keyPair
       );
     }
-
-    return transactions.map((x) => ({ accountId: x.signerId }));
   };
 
   const setupEvents = () => {
@@ -292,9 +279,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        const accounts = await requestFunctionCallAccess();
-        await storage.setItem(STORAGE_ACCOUNTS, accounts);
-        _state.accounts = accounts;
+        await requestFunctionCallAccess();
 
         setupEvents();
 
