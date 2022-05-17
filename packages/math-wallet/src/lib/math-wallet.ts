@@ -125,14 +125,19 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
+      const account = getSignedInAccount();
+
+      if (!account) {
+        throw new Error("Not signed in");
+      }
+
       const signedTransactions = await signTransactions(
-        [
+        transformTransactions([
           {
             receiverId,
             actions,
-            signerId: signerId!,
           },
-        ],
+        ]),
         _state.wallet.signer,
         options.network.nodeUrl
       );
