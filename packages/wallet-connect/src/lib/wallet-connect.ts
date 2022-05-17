@@ -306,11 +306,7 @@ const WalletConnect: WalletBehaviourFactory<
       receiverId = options.contractId,
       actions,
     }) {
-      logger.log("WalletConnect:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.session) {
         throw new Error("Wallet not connected");
@@ -352,11 +348,7 @@ const WalletConnect: WalletBehaviourFactory<
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransaction",
-          params: {
-            signerId,
-            receiverId,
-            actions,
-          },
+          params: transaction,
         },
       });
     },
