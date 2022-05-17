@@ -4,24 +4,24 @@ import {
   Signer,
   providers,
 } from "near-api-js";
-import { Transaction } from "@near-wallet-selector/core";
+import { Transaction, Network } from "@near-wallet-selector/core";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
   signer: Signer,
-  networkId: string
+  network: Network
 ) => {
   const provider = new providers.JsonRpcProvider({
-    url: networkId,
+    url: network.nodeUrl,
   });
 
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
     const publicKey = (
-      await signer.getPublicKey(transactions[i].signerId, networkId)
+      await signer.getPublicKey(transactions[i].signerId, network.networkId)
     ).toString();
 
     const [block, accessKey] = await Promise.all([
@@ -50,7 +50,8 @@ export const signTransactions = async (
     const response = await nearTransactions.signTransaction(
       transaction,
       signer,
-      transactions[i].signerId
+      transactions[i].signerId,
+      network.networkId
     );
 
     signedTransactions.push(response[1]);
