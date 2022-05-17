@@ -1,3 +1,4 @@
+import { utils, keyStores, KeyPair, InMemorySigner } from "near-api-js";
 import { AppMetadata, SessionTypes } from "@walletconnect/types";
 import {
   WalletModuleFactory,
@@ -6,9 +7,9 @@ import {
   Subscription,
   Transaction,
 } from "@near-wallet-selector/core";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { utils, keyStores, KeyPair } from "near-api-js";
 import { getTransactionKeyPair } from "./access-keys";
 
 export interface WalletConnectParams {
@@ -57,8 +58,10 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, params, emitter, logger }) => {
+> = async ({ id, options, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params);
+
+  const signer = new InMemorySigner(_state.keystore);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -333,6 +336,14 @@ const WalletConnect: WalletBehaviourFactory<
         }
 
         logger.log("Transaction is eligible for signing without WalletConnect");
+
+        const [signedTx] = await signTransactions(
+          [transaction],
+          signer,
+          options.network
+        );
+
+        return provider.sendTransaction(signedTx);
       }
 
       return _state.client.request({
