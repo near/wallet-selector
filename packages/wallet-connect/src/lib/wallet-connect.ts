@@ -217,8 +217,36 @@ const WalletConnect: WalletBehaviourFactory<
         logger.log("Session Updated", updatedSession);
 
         if (updatedSession.topic === _state.session?.topic) {
-          _state.session = updatedSession;
-          emitter.emit("accountsChanged", { accounts: getAccounts() });
+          (async () => {
+            const updatedAccounts = getAccounts(updatedSession.state.accounts);
+            const accounts = getAccounts();
+
+            // Determine accounts that have been removed.
+            for (let i = 0; i < accounts.length; i += 1) {
+              const account = accounts[i];
+              const valid = updatedAccounts.some(
+                (x) => x.accountId === account.accountId
+              );
+
+              if (valid) {
+                continue;
+              }
+
+              logger.log("Removing key pair for", account.accountId);
+
+              await _state.keystore.removeKey(
+                options.network.networkId,
+                account.accountId
+              );
+            }
+
+            // TODO: Determine accounts that have been added.
+            // Maybe we should defer adding keys here because we might not have a pairing connection established.
+            // The idea here is we would handle if we can't find the keyPair for a given account id before signing a transaction.
+
+            _state.session = updatedSession;
+            emitter.emit("accountsChanged", { accounts: getAccounts() });
+          })();
         }
       })
     );
