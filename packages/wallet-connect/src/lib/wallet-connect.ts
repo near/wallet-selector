@@ -10,7 +10,7 @@ import {
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { getTransactionKeyPair } from "./access-keys";
+import { getTransactionsWithKeyPairs } from "./access-keys";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -313,62 +313,81 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       const accounts = getAccounts();
-      const transaction: Transaction = {
-        signerId: signerId || accounts[0].accountId,
-        receiverId,
-        actions,
-      };
+      const [{ transaction, keyPair }] = await getTransactionsWithKeyPairs(
+        [
+          {
+            signerId: signerId || accounts[0].accountId,
+            receiverId,
+            actions,
+          },
+        ],
+        _state.keystore,
+        options.network
+      );
 
-      if (accounts.some((x) => x.accountId === transaction.signerId)) {
-        const keyPair = await getTransactionKeyPair(
-          transaction,
-          _state.keystore,
-          options.network
-        );
-
-        if (!keyPair) {
-          // TODO: Make AddKey request (if it's only a FunctionCall list of Actions).
-          throw new Error("Failed to find matching key pair");
-        }
-
-        logger.log("Transaction is eligible for signing without WalletConnect");
-
-        const [signedTx] = await signTransactions(
-          [transaction],
-          signer,
-          options.network
-        );
-
-        return provider.sendTransaction(signedTx);
+      if (!keyPair) {
+        // TODO: Make AddKey request (if it's only a FunctionCall list of Actions).
+        return _state.client.request({
+          timeout: 30 * 1000,
+          topic: _state.session.topic,
+          chainId: getChainId(),
+          request: {
+            method: "near_signAndSendTransaction",
+            params: transaction,
+          },
+        });
       }
 
-      return _state.client.request({
-        timeout: 30 * 1000,
-        topic: _state.session.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signAndSendTransaction",
-          params: transaction,
-        },
-      });
+      const [signedTx] = await signTransactions(
+        [transaction],
+        signer,
+        options.network
+      );
+
+      return provider.sendTransaction(signedTx);
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("WalletConnect:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.session) {
         throw new Error("Wallet not connected");
       }
 
-      return _state.client.request({
-        timeout: 30 * 1000,
-        topic: _state.session.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signAndSendTransactions",
-          params: { transactions },
-        },
-      });
+      const accounts = getAccounts();
+      const results = await getTransactionsWithKeyPairs(
+        transactions.map((x) => ({
+          signerId: x.signerId || accounts[0].accountId,
+          receiverId: x.receiverId,
+          actions: x.actions,
+        })),
+        _state.keystore,
+        options.network
+      );
+
+      if (results.some((x) => !x.keyPair)) {
+        return _state.client.request({
+          timeout: 30 * 1000,
+          topic: _state.session.topic,
+          chainId: getChainId(),
+          request: {
+            method: "near_signAndSendTransactions",
+            params: {
+              transactions: results.map((x) => x.transaction),
+            },
+          },
+        });
+      }
+
+      const signedTxs = await signTransactions(
+        results.map((x) => x.transaction),
+        signer,
+        options.network
+      );
+
+      return Promise.all(
+        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
+      );
     },
   };
 };
