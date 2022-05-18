@@ -54,12 +54,12 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   };
 
   return (
-    <div className="Modal-body Modal-choose-ledger-derivation-path">
+    <div className="ledger-derivation-path-wrapper">
       <p>
         Make sure your Ledger is plugged in, then enter an account id to
         connect:
       </p>
-      <div className="derivation-paths-list">
+      <div className="derivation-path-list">
         <input
           type="text"
           className={ledgerError ? "input-error" : ""}
@@ -71,7 +71,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
         />
         {ledgerError && <p className="error">{ledgerError}</p>}
       </div>
-      <div className="derivation-paths--actions">
+      <div className="action-buttons">
         <button className="left-button" disabled={isLoading} onClick={onBack}>
           Back
         </button>

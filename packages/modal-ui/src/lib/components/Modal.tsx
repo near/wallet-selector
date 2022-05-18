@@ -21,9 +21,9 @@ interface ModalProps {
 const getThemeClass = (theme?: Theme) => {
   switch (theme) {
     case "dark":
-      return "Modal-dark-theme";
+      return "dark-theme";
     case "light":
-      return "Modal-light-theme";
+      return "light-theme";
     default:
       return "";
   }
@@ -86,14 +86,19 @@ export const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <div className={getThemeClass(options?.theme)}>
+    <div
+      className={`modal-wrapper ${getThemeClass(options?.theme)} ${
+        visible ? "open" : ""
+      }`}
+    >
       <style>{styles}</style>
-      <div className="Modal" onClick={handleDismissOutsideClick}>
-        <div className="Modal-content">
-          <div className="Modal-header">
-            <h2>Connect Wallet</h2>
-            <CloseButton onClick={handleDismissClick} />
-          </div>
+      <div className="modal-overlay" onClick={handleDismissOutsideClick} />
+      <div className="modal" onClick={handleDismissOutsideClick}>
+        <div className="modal-header">
+          <h2>Connect Wallet</h2>
+          <CloseButton onClick={handleDismissClick} />
+        </div>
+        <div className="modal-body">
           {routeName === "AlertMessage" && alertMessage && (
             <AlertMessage
               message={alertMessage}

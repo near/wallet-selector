@@ -61,15 +61,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   return (
     <Fragment>
-      <div className="Modal-body Modal-select-wallet-option">
-        <p className="Modal-description">
+      <div className="wallet-options-wrapper">
+        <p className="description">
           {options?.description ||
             "Please select a wallet to connect to this dApp:"}
         </p>
         <ul
-          className={
-            "Modal-option-list " + (connecting ? "selection-process" : "")
-          }
+          className={"options-list " + (connecting ? "selection-process" : "")}
         >
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
