@@ -1,8 +1,21 @@
 import { providers, keyStores, KeyPair } from "near-api-js";
-import { Action, Network, Transaction } from "@near-wallet-selector/core";
+import { Transaction, Network } from "@near-wallet-selector/core";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
 
-const validateActions = (actions: Array<Action>, accessKey: AccessKeyView) => {
+const validateAccessKey = (
+  accessKey: AccessKeyView,
+  transaction: Transaction
+) => {
+  const { receiverId, actions } = transaction;
+
+  if (accessKey.permission === "FullAccess") {
+    return true;
+  }
+
+  if (receiverId !== accessKey.permission.FunctionCall.receiver_id) {
+    return false;
+  }
+
   return actions.every((action) => {
     if (accessKey.permission === "FullAccess") {
       return true;
@@ -37,8 +50,10 @@ export const getTransactionsWithKeyPairs = async (
 
   for (let i = 0; i < transactions.length; i += 1) {
     const transaction = transactions[i];
-    const { signerId, receiverId, actions } = transaction;
-    const keyPair = await keyStore.getKey(network.networkId, signerId);
+    const keyPair = await keyStore.getKey(
+      network.networkId,
+      transaction.signerId
+    );
 
     if (!keyPair) {
       result.push({ transaction, keyPair: null });
@@ -48,21 +63,11 @@ export const getTransactionsWithKeyPairs = async (
     const accessKey = await provider.query<AccessKeyView>({
       request_type: "view_access_key",
       finality: "final",
-      account_id: signerId,
+      account_id: transaction.signerId,
       public_key: keyPair.getPublicKey().toString(),
     });
 
-    if (accessKey.permission === "FullAccess") {
-      result.push({ transaction, keyPair });
-      continue;
-    }
-
-    if (receiverId !== accessKey.permission.FunctionCall.receiver_id) {
-      result.push({ transaction, keyPair: null });
-      continue;
-    }
-
-    if (!validateActions(actions, accessKey)) {
+    if (!validateAccessKey(accessKey, transaction)) {
       result.push({ transaction, keyPair: null });
       continue;
     }
