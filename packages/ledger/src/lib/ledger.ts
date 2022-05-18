@@ -271,7 +271,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           },
         ]),
         signer,
-        options.network.nodeUrl
+        options.network
       );
 
       return provider.sendTransaction(signedTransactions[0]);
@@ -290,7 +290,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
         signer,
-        options.network.nodeUrl
+        options.network
       );
 
       return Promise.all(
