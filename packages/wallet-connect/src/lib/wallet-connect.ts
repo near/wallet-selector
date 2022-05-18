@@ -196,6 +196,33 @@ const WalletConnect: WalletBehaviourFactory<
     }
   };
 
+  const isFunctionCallTransaction = (transaction: Transaction) => {
+    const accounts = getAccounts();
+    const methodNames = options.methodNames || [];
+
+    if (!accounts.some((x) => x.accountId === transaction.signerId)) {
+      return false;
+    }
+
+    if (transaction.receiverId !== options.contractId) {
+      return false;
+    }
+
+    return transaction.actions.every((action) => {
+      if (action.type !== "FunctionCall") {
+        return false;
+      }
+
+      const { methodName, deposit } = action.params;
+
+      if (methodNames.length && !methodNames.includes(methodName)) {
+        return false;
+      }
+
+      return parseFloat(deposit) <= 0;
+    });
+  };
+
   const setupEvents = () => {
     _state.subscriptions.push(
       _state.client.on("pairing_created", (pairing) => {
@@ -355,35 +382,83 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       const accounts = getAccounts();
-      const results = await getTransactionsWithKeyPairs(
-        transactions.map((x) => ({
-          signerId: x.signerId || accounts[0].accountId,
-          receiverId: x.receiverId,
-          actions: x.actions,
-        })),
-        _state.keystore,
-        options.network
-      );
+      const pendingAddKeyTransactions: Array<Transaction> = [];
+      const pendingKeyPairs: Record<string, KeyPair> = {};
+      const txs = transactions.map((x) => ({
+        signerId: x.signerId || accounts[0].accountId,
+        receiverId: x.receiverId,
+        actions: x.actions,
+      }));
 
-      if (results.some((x) => !x.keyPair)) {
-        return _state.client.request({
+      for (let i = 0; i < txs.length; i += 1) {
+        const transaction = txs[i];
+
+        if (!isFunctionCallTransaction(transaction)) {
+          return _state.client.request({
+            timeout: 30 * 1000,
+            topic: _state.session.topic,
+            chainId: getChainId(),
+            request: {
+              method: "near_signAndSendTransactions",
+              params: { transactions: txs },
+            },
+          });
+        }
+
+        const keyPair = await _state.keystore.getKey(
+          options.network.networkId,
+          transaction.signerId
+        );
+
+        if (!keyPair) {
+          const newKeyPair = utils.KeyPair.fromRandom("ed25519");
+
+          pendingKeyPairs[transaction.signerId] = newKeyPair;
+
+          pendingAddKeyTransactions.push({
+            signerId: transaction.signerId,
+            receiverId: transaction.signerId,
+            actions: [
+              {
+                type: "AddKey",
+                params: {
+                  publicKey: newKeyPair.getPublicKey().toString(),
+                  accessKey: {
+                    permission: {
+                      receiverId: options.contractId,
+                      methodNames: options.methodNames,
+                    },
+                  },
+                },
+              },
+            ],
+          });
+        }
+      }
+
+      if (pendingAddKeyTransactions.length) {
+        await _state.client.request({
           timeout: 30 * 1000,
           topic: _state.session.topic,
           chainId: getChainId(),
           request: {
             method: "near_signAndSendTransactions",
-            params: {
-              transactions: results.map((x) => x.transaction),
-            },
+            params: { transactions: pendingAddKeyTransactions },
           },
         });
       }
 
-      const signedTxs = await signTransactions(
-        results.map((x) => x.transaction),
-        signer,
-        options.network
-      );
+      for (const accountId in pendingKeyPairs) {
+        const keyPair = pendingKeyPairs[accountId];
+
+        await _state.keystore.setKey(
+          options.network.networkId,
+          accountId,
+          keyPair
+        );
+      }
+
+      const signedTxs = await signTransactions(txs, signer, options.network);
 
       return Promise.all(
         signedTxs.map((signedTx) => provider.sendTransaction(signedTx))

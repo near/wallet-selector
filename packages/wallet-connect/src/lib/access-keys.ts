@@ -2,7 +2,7 @@ import { providers, keyStores, KeyPair } from "near-api-js";
 import { Transaction, Network } from "@near-wallet-selector/core";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
 
-const validateAccessKey = (
+export const validateAccessKey = (
   accessKey: AccessKeyView,
   transaction: Transaction
 ) => {
