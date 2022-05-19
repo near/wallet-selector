@@ -18,7 +18,7 @@ export default `
   --confirm-button-bg-hover: #5AA6FF;
   --confirm-button-border-color: #5F8AFA;
   --error: #DB5555;
-  --modal-close-button-color: #262626;
+  --close-button-color: #262626;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -38,7 +38,7 @@ export default `
   --confirm-button-bg-hover: #5AA6FF;
   --confirm-button-border-color: #5F8AFA;
   --error: #DB5555;
-  --modal-close-button-color: #A7A7A7;
+  --close-button-color: #A7A7A7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,7 +59,7 @@ export default `
     --confirm-button-bg-hover: #5AA6FF;
     --confirm-button-border-color: #5F8AFA;
     --error: #DB5555;
-    --modal-close-button-color: #A7A7A7;
+    --close-button-color: #A7A7A7;
   }
 }
 /**
@@ -143,7 +143,7 @@ export default `
 }
 
 .modal-wrapper .modal .modal-header .close-button:hover svg {
-  fill: var(--wallet-selector-modal-close-button-color, var(--modal-close-button-color));
+  fill: var(--wallet-selector-close-button-color, var(--close-button-color));
   transition: all 0.2s ease-in;
 }
 
