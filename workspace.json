@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "modal-ui": "packages/modal-ui",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",

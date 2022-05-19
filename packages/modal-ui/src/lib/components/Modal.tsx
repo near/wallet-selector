@@ -1,7 +1,7 @@
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { WalletSelector } from "@near-wallet-selector/core";
 
-import { WalletSelectorModal, ModalOptions, Theme } from "../modal.types";
-import { WalletSelector } from "../../wallet-selector.types";
+import { ModalOptions, Theme } from "../modal.types";
 import { ModalRouteName } from "./Modal.types";
 import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
@@ -11,8 +11,7 @@ import { CloseButton } from "./CloseButton";
 import styles from "./Modal.styles";
 
 interface ModalProps {
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
+  selector: WalletSelector;
   options?: ModalOptions;
   visible: boolean;
   hide: () => void;
@@ -21,9 +20,9 @@ interface ModalProps {
 const getThemeClass = (theme?: Theme) => {
   switch (theme) {
     case "dark":
-      return "Modal-dark-theme";
+      return "dark-theme";
     case "light":
-      return "Modal-light-theme";
+      return "light-theme";
     default:
       return "";
   }
@@ -73,27 +72,24 @@ export const Modal: React.FC<ModalProps> = ({
     return () => window.removeEventListener("keydown", close);
   }, [handleDismissClick]);
 
-  const handleDismissOutsideClick = (e: MouseEvent) => {
-    e.preventDefault();
-
-    if (e.target === e.currentTarget) {
-      handleDismissClick();
-    }
-  };
-
   if (!visible) {
     return null;
   }
 
   return (
-    <div className={getThemeClass(options?.theme)}>
+    <div
+      className={`modal-wrapper ${getThemeClass(options?.theme)} ${
+        visible ? "open" : ""
+      }`}
+    >
       <style>{styles}</style>
-      <div className="Modal" onClick={handleDismissOutsideClick}>
-        <div className="Modal-content">
-          <div className="Modal-header">
-            <h2>Connect Wallet</h2>
-            <CloseButton onClick={handleDismissClick} />
-          </div>
+      <div className="modal-overlay" onClick={handleDismissClick} />
+      <div className="modal">
+        <div className="modal-header">
+          <h2>Connect Wallet</h2>
+          <CloseButton onClick={handleDismissClick} />
+        </div>
+        <div className="modal-body">
           {routeName === "AlertMessage" && alertMessage && (
             <AlertMessage
               message={alertMessage}

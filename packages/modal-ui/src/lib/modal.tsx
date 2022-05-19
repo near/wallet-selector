@@ -1,15 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { WalletSelector } from "@near-wallet-selector/core";
 
-import { WalletSelector } from "../wallet-selector.types";
 import { WalletSelectorModal, ModalOptions } from "./modal.types";
 import { Modal } from "./components/Modal";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 export const setupModal = (
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>,
+  selector: WalletSelector,
   options?: ModalOptions
 ): WalletSelectorModal => {
   const el = document.createElement("div");

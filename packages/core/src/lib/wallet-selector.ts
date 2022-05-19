@@ -5,10 +5,8 @@ import {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { WalletSelectorModal } from "./modal/modal.types";
 import { EventEmitter, Logger, WalletModules } from "./services";
 import { Wallet } from "./wallet";
-import { setupModal } from "./modal/modal";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
@@ -28,8 +26,7 @@ export const setupWalletSelector = async (
 
   await walletModules.setup();
 
-  // TODO: Remove omit once modal is a separate package.
-  const selector: Omit<WalletSelector, keyof WalletSelectorModal> = {
+  return {
     store: {
       getState: () => store.getState(),
       observable: store.observable.asObservable(),
@@ -62,13 +59,5 @@ export const setupWalletSelector = async (
     off: (eventName, callback) => {
       emitter.off(eventName, callback);
     },
-  };
-
-  // TODO: Extract into separate package.
-  const modal = setupModal(selector, params.ui);
-
-  return {
-    ...selector,
-    ...modal,
   };
 };
