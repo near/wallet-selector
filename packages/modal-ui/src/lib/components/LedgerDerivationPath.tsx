@@ -1,11 +1,8 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import { WalletSelector } from "@near-wallet-selector/core";
 
-import { WalletSelectorModal } from "../modal.types";
-
 interface LedgerDerivationPathProps {
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
+  selector: WalletSelector;
   onBack: () => void;
   onConnected: () => void;
 }

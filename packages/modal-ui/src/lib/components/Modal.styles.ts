@@ -329,7 +329,7 @@ export default `
   max-height: 300px;
 }
 
-.modal-wrapper .modal .info .info-description..hide-explanation {
+.modal-wrapper .modal .info .info-description.hide-explanation {
   animation: outAnimation 200ms ease-out;
   animation-fill-mode: forwards;
 }

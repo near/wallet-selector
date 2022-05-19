@@ -1,11 +1,8 @@
 import React from "react";
 import { WalletSelector } from "@near-wallet-selector/core";
 
-import { WalletSelectorModal } from "../modal.types";
-
 interface WalletNetworkChangedProps {
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
+  selector: WalletSelector;
   onSwitchWallet: () => void;
   onDismiss: () => void;
 }
@@ -16,7 +13,7 @@ export const WalletNetworkChanged: React.FC<WalletNetworkChangedProps> = ({
   onDismiss,
 }) => {
   return (
-    <div className="Modal-body Modal-switch-network-message">
+    <div className="switch-network-message-wrapper">
       <div className="header">
         <h2>You Must Change Networks</h2>
       </div>
@@ -31,7 +28,7 @@ export const WalletNetworkChanged: React.FC<WalletNetworkChangedProps> = ({
           networks you may consider switching to another wallet.
         </p>
       </div>
-      <div className="actions">
+      <div className="action-buttons">
         <button className="left-button" onClick={onDismiss}>
           Dismiss
         </button>

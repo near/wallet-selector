@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 
-import { ModalOptions, WalletSelectorModal } from "../modal.types";
+import { ModalOptions } from "../modal.types";
 
 interface WalletOptionsProps {
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
+  selector: WalletSelector;
   options?: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
