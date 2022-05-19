@@ -42,7 +42,7 @@ export default `
 }
 
 @media (prefers-color-scheme: dark) {
-  #wallet-selector-modal {
+  #near-wallet-selector-modal {
     --backdrop-bg: #26262630;
     --heading-color: #FFFFFF;
     --text-color: #FFFFFF;
