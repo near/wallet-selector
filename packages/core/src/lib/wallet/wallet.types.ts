@@ -16,8 +16,27 @@ interface BaseWalletMetadata {
   iconUrl: string;
 }
 
+export interface Account {
+  accountId: string;
+}
+
+export interface ConnectParams {
+  contractId: string;
+  methodNames?: Array<string>;
+}
+
+export interface SignAndSendTransactionParams {
+  signerId?: string;
+  receiverId?: string;
+  actions: Array<Action>;
+}
+
+export interface SignAndSendTransactionsParams {
+  transactions: Array<Optional<Transaction, "signerId">>;
+}
+
 interface BaseWalletBehaviour<ExecutionOutcome> {
-  connect(): Promise<Array<Account>>;
+  connect(params: ConnectParams): Promise<Array<Account>>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
@@ -38,22 +57,12 @@ type BaseWallet<
   metadata: Metadata;
 } & Behaviour;
 
-export interface Account {
-  accountId: string;
-}
-
-export interface SignAndSendTransactionParams {
-  signerId?: string;
-  receiverId?: string;
-  actions: Array<Action>;
-}
-
-export interface SignAndSendTransactionsParams {
-  transactions: Array<Optional<Transaction, "signerId">>;
-}
-
 export type WalletEvents = {
-  connected: { accounts: Array<Account> };
+  connected: {
+    contractId: string;
+    methodNames: Array<string>;
+    accounts: Array<Account>;
+  };
   disconnected: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
@@ -90,7 +99,7 @@ export type InjectedWallet = BaseWallet<
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
-export interface HardwareWalletConnectParams {
+export interface HardwareWalletConnectParams extends ConnectParams {
   derivationPaths: Array<string>;
 }
 

@@ -7,8 +7,6 @@ import { Subscription, StorageService } from "./services";
 
 export interface WalletSelectorParams {
   network: NetworkId | Network;
-  contractId: string;
-  methodNames?: Array<string>;
   modules: Array<WalletModuleFactory>;
   storage?: StorageService;
   debug?: boolean;

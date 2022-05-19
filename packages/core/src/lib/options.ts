@@ -37,8 +37,6 @@ export const resolveNetwork = (network: NetworkId | Network): Network => {
 export const resolveOptions = (params: WalletSelectorParams) => {
   const options: Options = {
     network: resolveNetwork(params.network),
-    contractId: params.contractId,
-    methodNames: params.methodNames,
     debug: params.debug || false,
   };
 

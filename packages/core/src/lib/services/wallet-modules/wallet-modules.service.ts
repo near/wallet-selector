@@ -1,5 +1,6 @@
 import { WalletModulesParams } from "./wallet-modules.service.types";
 import {
+  ConnectParams,
   Wallet,
   WalletEvents,
   WalletModule,
@@ -112,16 +113,16 @@ export class WalletModules {
 
   private async onWalletConnected(
     walletId: string,
-    { accounts }: WalletEvents["connected"]
+    { accounts, contractId, methodNames }: WalletEvents["connected"]
   ) {
     const { selectedWalletId } = this.store.getState();
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
-        const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
       }
 
@@ -132,13 +133,19 @@ export class WalletModules {
       await this.disconnectWallet(selectedWalletId);
     }
 
+    await jsonStorage.setItem("contract", { contractId, methodNames });
+
     this.store.dispatch({
       type: "WALLET_CONNECTED",
       payload: { walletId, accounts },
     });
   }
 
-  private onWalletDisconnected(walletId: string) {
+  private async onWalletDisconnected(walletId: string) {
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+
+    await jsonStorage.removeItem("contract");
+
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
@@ -180,14 +187,20 @@ export class WalletModules {
 
     wallet.connect = async (params: never) => {
       const accounts = await _connect(params);
-      await this.onWalletConnected(wallet.id, { accounts });
+
+      const { contractId, methodNames = [] } = params as ConnectParams;
+      await this.onWalletConnected(wallet.id, {
+        accounts,
+        contractId,
+        methodNames,
+      });
 
       return accounts;
     };
 
     wallet.disconnect = async () => {
       await _disconnect();
-      this.onWalletDisconnected(wallet.id);
+      await this.onWalletDisconnected(wallet.id);
     };
 
     return wallet;
