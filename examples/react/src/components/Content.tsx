@@ -13,7 +13,8 @@ const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 const Content: React.FC = () => {
-  const { selector, accounts, accountId, setAccountId } = useWalletSelector();
+  const { selector, modal, accounts, accountId, setAccountId } =
+    useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +75,7 @@ const Content: React.FC = () => {
   }, [accountId, getAccount]);
 
   const handleSignIn = () => {
-    selector.show();
+    modal.show();
   };
 
   const handleSignOut = async () => {
@@ -87,7 +88,7 @@ const Content: React.FC = () => {
   };
 
   const handleSwitchProvider = () => {
-    selector.show();
+    modal.show();
   };
 
   const handleSwitchAccount = () => {

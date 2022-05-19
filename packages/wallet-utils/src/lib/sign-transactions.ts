@@ -4,7 +4,7 @@ import {
   Signer,
   providers,
 } from "near-api-js";
-import { Transaction, Network } from "@near-wallet-selector/core";
+import { Network, Transaction } from "@near-wallet-selector/core";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
 import { createAction } from "./create-action";
 

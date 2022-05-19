@@ -1,13 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 
-import { ModuleState } from "../../store.types";
-import { WalletSelector } from "../../wallet-selector.types";
-import { ModalOptions, WalletSelectorModal } from "../modal.types";
-import { logger } from "../../services";
+import { ModalOptions } from "../modal.types";
 
 interface WalletOptionsProps {
-  // TODO: Remove omit once modal is a separate package.
-  selector: Omit<WalletSelector, keyof WalletSelectorModal>;
+  selector: WalletSelector;
   options?: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
@@ -52,9 +49,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     } catch (err) {
       const { name } = module.metadata;
 
-      logger.log(`Failed to select ${name}`);
-      logger.error(err);
-
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
@@ -66,15 +60,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   return (
     <Fragment>
-      <div className="Modal-body Modal-select-wallet-option">
-        <p className="Modal-description">
+      <div className="wallet-options-wrapper">
+        <p className="description">
           {options?.description ||
             "Please select a wallet to connect to this dApp:"}
         </p>
         <ul
-          className={
-            "Modal-option-list " + (connecting ? "selection-process" : "")
-          }
+          className={"options-list " + (connecting ? "selection-process" : "")}
         >
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();

@@ -10,10 +10,10 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
   onBack,
 }) => {
   return (
-    <div className="Modal-body Modal-alert-message">
+    <div className="alert-message-wrapper">
       <p>{message}</p>
       <div className="action-buttons">
-        <button className="left" onClick={onBack}>
+        <button className="left-button" onClick={onBack}>
           OK
         </button>
       </div>

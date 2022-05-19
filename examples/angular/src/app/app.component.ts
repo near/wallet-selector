@@ -9,10 +9,15 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import {
+  setupModal,
+  WalletSelectorModal,
+} from "@near-wallet-selector/modal-ui";
 
 declare global {
   interface Window {
     selector: WalletSelector;
+    modal: WalletSelectorModal;
   }
 }
 
@@ -23,6 +28,7 @@ declare global {
 })
 export class AppComponent implements OnInit {
   selector: WalletSelector;
+  modal: WalletSelectorModal;
   accountId: string | null;
   accounts: Array<AccountState> = [];
 
@@ -76,6 +82,7 @@ export class AppComponent implements OnInit {
       ],
     })
       .then((instance) => {
+        const selectorModal = setupModal(instance);
         const state = instance.store.getState();
 
         this.syncAccountState(
@@ -84,7 +91,9 @@ export class AppComponent implements OnInit {
         );
 
         window.selector = instance;
+        window.modal = selectorModal;
         this.selector = instance;
+        this.modal = selectorModal;
       })
       .catch((err) => {
         console.error(err);

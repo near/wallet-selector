@@ -5,6 +5,10 @@ import {
   WalletSelector,
   AccountState,
 } from "@near-wallet-selector/core";
+import {
+  setupModal,
+  WalletSelectorModal,
+} from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -14,11 +18,13 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 declare global {
   interface Window {
     selector: WalletSelector;
+    modal: WalletSelectorModal;
   }
 }
 
 interface WalletSelectorContextValue {
   selector: WalletSelector;
+  modal: WalletSelectorModal;
   accounts: Array<AccountState>;
   accountId: string | null;
   setAccountId: (accountId: string) => void;
@@ -29,6 +35,7 @@ const WalletSelectorContext =
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
+  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
@@ -78,12 +85,16 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       ],
     })
       .then((instance) => {
+        const selectorModal = setupModal(instance);
         const state = instance.store.getState();
 
         syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
         window.selector = instance;
+        window.modal = selectorModal;
+
         setSelector(instance);
+        setModal(selectorModal);
       })
       .catch((err) => {
         console.error(err);
@@ -110,7 +121,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     return () => subscription.unsubscribe();
   }, [selector, accountId]);
 
-  if (!selector) {
+  if (!selector || !modal) {
     return null;
   }
 
@@ -118,6 +129,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     <WalletSelectorContext.Provider
       value={{
         selector,
+        modal,
         accounts,
         accountId,
         setAccountId,
