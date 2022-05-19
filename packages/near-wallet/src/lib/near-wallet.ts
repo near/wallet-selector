@@ -161,8 +161,14 @@ const NearWallet: WalletBehaviourFactory<
       signerId,
       receiverId = options.contractId,
       actions,
+      callbackUrl,
     }) {
-      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+      logger.log("signAndSendTransaction", {
+        signerId,
+        receiverId,
+        actions,
+        callbackUrl,
+      });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
@@ -173,14 +179,15 @@ const NearWallet: WalletBehaviourFactory<
       return account["signAndSendTransaction"]({
         receiverId,
         actions: actions.map((action) => createAction(action)),
+        walletCallbackUrl: callbackUrl,
       }).then(() => {
         // Suppress response since transactions with deposits won't actually
         // return FinalExecutionOutcome.
       });
     },
 
-    async signAndSendTransactions({ transactions }) {
-      logger.log("signAndSendTransactions", { transactions });
+    async signAndSendTransactions({ transactions, callbackUrl }) {
+      logger.log("signAndSendTransactions", { transactions, callbackUrl });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
@@ -188,6 +195,7 @@ const NearWallet: WalletBehaviourFactory<
 
       return _state.wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),
+        callbackUrl,
       });
     },
   };

@@ -1,4 +1,4 @@
-import * as BN from "bn.js";
+import { BN } from "bn.js";
 import { utils, transactions } from "near-api-js";
 import { AddKeyPermission, Action } from "@near-wallet-selector/core";
 
