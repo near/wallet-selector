@@ -1,7 +1,7 @@
+import { Action } from "./transactions.types";
+import { AddKeyPermission } from "./transactions.types";
 import { transactions, utils } from "near-api-js";
-import { BN } from "bn.js";
-
-import { Action, AddKeyPermission } from "./transactions.types";
+import BN from "bn.js";
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {

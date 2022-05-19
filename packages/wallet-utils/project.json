@@ -1,0 +1,42 @@
+{
+  "root": "packages/wallet-utils",
+  "sourceRoot": "packages/wallet-utils/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
+      "options": {
+        "outputPath": "dist/packages/wallet-utils",
+        "main": "packages/wallet-utils/src/index.ts",
+        "tsConfig": "packages/wallet-utils/tsconfig.lib.json",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "assets": [
+          "packages/wallet-utils/*.md",
+          "packages/wallet-utils/assets/*"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/wallet-utils/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/wallet-utils"],
+      "options": {
+        "jestConfig": "packages/wallet-utils/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
