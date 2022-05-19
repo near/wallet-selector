@@ -14,7 +14,7 @@ import { getNetwork, resolveNetwork } from "../../../core/src/lib/network";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { updateState } from "../../../core/src/lib/state";
 
-const createNearWallet = () => {
+const createMyNearWallet = () => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>();
 
@@ -44,18 +44,19 @@ const createNearWallet = () => {
 
   const networkId = "testnet";
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { setupMyNearWallet } = require("./my-near-wallet");
-  const NearWallet = setupMyNearWallet();
+  const MyNearWallet = setupMyNearWallet();
 
   const config = getNetwork(networkId);
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: NearWallet({
+    wallet: MyNearWallet({
       options: {
         network: networkId,
         contractId: "guest-book.testnet",
-        wallets: ["near-wallet"],
+        wallets: ["my-near-wallet"],
       },
       network: resolveNetwork(networkId),
       provider: new Provider(config.nodeUrl),
@@ -75,14 +76,14 @@ afterEach(() => {
 
 describe("isAvailable", () => {
   it("returns true", async () => {
-    const { wallet } = createNearWallet();
+    const { wallet } = createMyNearWallet();
     expect(wallet.isAvailable()).toBe(true);
   });
 });
 
 describe("init", () => {
   it("connects to near and clears storage", async () => {
-    const { wallet, nearApiJs } = createNearWallet();
+    const { wallet, nearApiJs } = createMyNearWallet();
     await wallet.init();
     expect(nearApiJs.connect).toHaveBeenCalled();
   });
@@ -90,7 +91,7 @@ describe("init", () => {
 
 describe("signIn", () => {
   it("sign into near wallet", async () => {
-    const { wallet, walletConnection } = createNearWallet();
+    const { wallet, walletConnection } = createMyNearWallet();
     await wallet.init();
     await wallet.signIn();
     expect(walletConnection.requestSignIn).toHaveBeenCalled();
@@ -99,7 +100,7 @@ describe("signIn", () => {
 
 describe("signOut", () => {
   it("sign out of near wallet", async () => {
-    const { wallet, walletConnection } = createNearWallet();
+    const { wallet, walletConnection } = createMyNearWallet();
     await wallet.init();
     await wallet.signOut();
     expect(walletConnection.signOut).toHaveBeenCalled();
@@ -108,7 +109,7 @@ describe("signOut", () => {
 
 describe("isSignedIn", () => {
   it("isSignedIn returns false", async () => {
-    const { wallet } = createNearWallet();
+    const { wallet } = createMyNearWallet();
     await wallet.init();
     const result = await wallet.isSignedIn();
     expect(result).toEqual(true);
@@ -117,7 +118,7 @@ describe("isSignedIn", () => {
 
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
-    const { wallet, walletConnection } = createNearWallet();
+    const { wallet, walletConnection } = createMyNearWallet();
     await wallet.init();
     await wallet.signIn();
     const result = await wallet.getAccounts();
@@ -133,7 +134,7 @@ describe("getAccounts", () => {
 describe("signAndSendTransaction", () => {
   // TODO: Figure out why imports to core are returning undefined.
   it.skip("signs and sends transaction", async () => {
-    const { wallet, walletConnection, account } = createNearWallet();
+    const { wallet, walletConnection, account } = createMyNearWallet();
     await wallet.init();
     await wallet.signIn();
     const result = await wallet.signAndSendTransaction({
