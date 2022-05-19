@@ -167,11 +167,17 @@ export function setupNearWallet({
         return getAccounts();
       },
 
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
+      async signAndSendTransaction({
+        signerId,
+        receiverId,
+        actions,
+        callbackUrl,
+      }) {
         logger.log("NearWallet:signAndSendTransaction", {
           signerId,
           receiverId,
           actions,
+          callbackUrl,
         });
 
         const account = wallet.account();
@@ -179,17 +185,22 @@ export function setupNearWallet({
         return account["signAndSendTransaction"]({
           receiverId,
           actions: transformActions(actions),
+          walletCallbackUrl: callbackUrl,
         }).then(() => {
           // Suppress response since transactions with deposits won't actually
           // return FinalExecutionOutcome.
         });
       },
 
-      async signAndSendTransactions({ transactions }) {
-        logger.log("NearWallet:signAndSendTransactions", { transactions });
+      async signAndSendTransactions({ transactions, callbackUrl }) {
+        logger.log("NearWallet:signAndSendTransactions", {
+          transactions,
+          callbackUrl,
+        });
 
         return wallet.requestSignTransactions({
           transactions: await transformTransactions(transactions),
+          callbackUrl,
         });
       },
     };

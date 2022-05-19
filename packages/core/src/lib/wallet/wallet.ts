@@ -21,6 +21,16 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Transaction>;
 }
 
+export interface BrowserWalletSignAndSendTransactionParams
+  extends SignAndSendTransactionParams {
+  callbackUrl?: string;
+}
+
+export interface BrowserWalletSignAndSendTransactionsParams
+  extends SignAndSendTransactionsParams {
+  callbackUrl?: string;
+}
+
 export interface AccountInfo {
   accountId: string;
 }
@@ -70,6 +80,12 @@ interface BaseWallet<ExecutionOutcome = providers.FinalExecutionOutcome> {
 
 export interface BrowserWallet extends BaseWallet<void> {
   type: "browser";
+  signAndSendTransaction(
+    params: BrowserWalletSignAndSendTransactionParams
+  ): Promise<void>;
+  signAndSendTransactions(
+    params: BrowserWalletSignAndSendTransactionsParams
+  ): Promise<void>;
 }
 
 export interface InjectedWallet extends BaseWallet {
