@@ -30,7 +30,3 @@ jobs:
         run: yarn lint
       - name: Run Unit & Integration Tests
         run: yarn test
-      # - name: Install Playwright Dependencies
-      #   run: sudo npx playwright install-deps
-      # - name: Run End-to-End Tests
-      #   run: yarn test:e2e
