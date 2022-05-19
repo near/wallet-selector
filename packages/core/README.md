@@ -299,7 +299,7 @@ console.log(contractId); // "guest-book.testnet"
   - `actions` (`Array<Action>`)
     - `type` (`string`): Action type. See below for available values.
     - `params` (`object?`): Parameters for the Action (if applicable).
-  - `callbackUrl` (`string?`): Required for browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved. 
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved. 
 
 **Returns**
 
@@ -409,7 +409,7 @@ await selector.signAndSendTransaction({
     - `actions` (`Array<Action>`)
       - `type` (`string`): Action type. See above for available values.
       - `params` (`object?`): Parameters for the Action (if applicable).
-  - `callbackUrl` (`string?`): Required for browser wallets (e.g. NEAR Wallet). This the callback url once the transactions are approved.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transactions are approved.
 
 **Returns**
 
