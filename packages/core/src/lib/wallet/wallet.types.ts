@@ -35,16 +35,16 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-interface BaseWalletBehaviour<ExecutionOutcome> {
+interface BaseWalletBehaviour {
   connect(params: ConnectParams): Promise<Array<Account>>;
   disconnect(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<ExecutionOutcome>;
+  ): Promise<providers.FinalExecutionOutcome>;
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
-  ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
+  ): Promise<Array<providers.FinalExecutionOutcome>>;
 }
 
 type BaseWallet<
@@ -72,7 +72,27 @@ export type WalletEvents = {
 
 export type BrowserWalletMetadata = BaseWalletMetadata;
 
-export type BrowserWalletBehaviour = BaseWalletBehaviour<void>;
+export interface BrowserWalletSignAndSendTransactionParams
+  extends SignAndSendTransactionParams {
+  callbackUrl?: string;
+}
+
+export interface BrowserWalletSignAndSendTransactionsParams
+  extends SignAndSendTransactionsParams {
+  callbackUrl?: string;
+}
+
+export type BrowserWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  {
+    signAndSendTransaction(
+      params: BrowserWalletSignAndSendTransactionParams
+    ): Promise<void>;
+    signAndSendTransactions(
+      params: BrowserWalletSignAndSendTransactionsParams
+    ): Promise<void>;
+  }
+>;
 
 export type BrowserWallet = BaseWallet<
   "browser",
@@ -86,8 +106,7 @@ export type InjectedWalletMetadata = BaseWalletMetadata & {
   downloadUrl: string;
 };
 
-export type InjectedWalletBehaviour =
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>;
+export type InjectedWalletBehaviour = BaseWalletBehaviour;
 
 export type InjectedWallet = BaseWallet<
   "injected",
@@ -104,7 +123,7 @@ export interface HardwareWalletConnectParams extends ConnectParams {
 }
 
 export type HardwareWalletBehaviour = Modify<
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>,
+  BaseWalletBehaviour,
   { connect(params: HardwareWalletConnectParams): Promise<Array<Account>> }
 >;
 
@@ -118,8 +137,7 @@ export type HardwareWallet = BaseWallet<
 
 export type BridgeWalletMetadata = BaseWalletMetadata;
 
-export type BridgeWalletBehaviour =
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>;
+export type BridgeWalletBehaviour = BaseWalletBehaviour;
 
 export type BridgeWallet = BaseWallet<
   "bridge",
