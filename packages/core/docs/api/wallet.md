@@ -77,7 +77,9 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 
 **Parameters**
 
-- `params` (`object?`)
+- `params` (`object`)
+  - `contractId` (`string`): Account ID of the Smart Contract.
+  - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `derivationPaths` (`Array<string>?`): Required for hardware wallets (e.g. Ledger). This is a list of derivation paths linked to public keys on your device.
 
 **Returns**
@@ -94,25 +96,26 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // NEAR Wallet.
 (async () => {
   const wallet = await selector.wallet("near-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Sender.
 (async () => {
   const wallet = await selector.wallet("sender");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Math Wallet.
 (async () => {
   const wallet = await selector.wallet("math-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Ledger
 (async () => {
   const wallet = await selector.wallet("ledger");
   const accounts = await wallet.connect({
+    contractId: "test.testnet",
     derivationPaths: ["44'/397'/0'/0'/1'"],
   });
 })();
@@ -120,7 +123,7 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // WalletConnect.
 (async () => {
   const wallet = await selector.wallet("wallet-connect");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 ```
 
