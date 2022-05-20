@@ -141,7 +141,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   }
 
   return {
-    async connect() {
+    async connect({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -149,8 +149,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
+        contractId,
+        methodNames,
       });
 
       if (!accessKey || error) {
@@ -173,11 +173,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.wallet.isSignedIn()) {
@@ -186,7 +182,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return _state.wallet
         .signAndSendTransaction({
-          receiverId,
+          // TODO: Get default contractId from store.
+          receiverId: receiverId || "guest-book.testnet",
           actions: transformActions(actions),
         })
         .then((res) => {
