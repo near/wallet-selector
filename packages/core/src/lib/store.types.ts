@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 
 import { Wallet, Account } from "./wallet";
 
@@ -54,8 +54,14 @@ export type WalletSelectorAction =
       };
     };
 
+export interface ReadOnlyStore {
+  getState(): WalletSelectorState;
+  observable: Observable<WalletSelectorState>;
+}
+
 export interface Store {
   observable: BehaviorSubject<WalletSelectorState>;
   getState(): WalletSelectorState;
   dispatch(action: WalletSelectorAction): void;
+  toReadOnly(): ReadOnlyStore;
 }

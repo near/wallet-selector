@@ -110,5 +110,9 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     observable: state$,
     getState: () => state$.getValue(),
     dispatch: (action) => actions$.next(action),
+    toReadOnly: () => ({
+      getState: () => state$.getValue(),
+      observable: state$.asObservable(),
+    }),
   };
 };
