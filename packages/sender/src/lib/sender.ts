@@ -41,6 +41,7 @@ const setupSenderState = (): SenderState => {
 const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
+  store,
   emitter,
   logger,
 }) => {
@@ -176,14 +177,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      if (!_state.wallet.isSignedIn()) {
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not connected");
       }
 
       return _state.wallet
         .signAndSendTransaction({
-          // TODO: Get default contractId from store.
-          receiverId: receiverId || "guest-book.testnet",
+          receiverId: receiverId || contract.contractId,
           actions: transformActions(actions),
         })
         .then((res) => {
