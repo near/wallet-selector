@@ -6,7 +6,7 @@ import {
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
-import { PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
+import { PACKAGE_NAME, CONTRACT, SELECTED_WALLET_ID } from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -26,7 +26,7 @@ const reducer = (
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, accounts } = action.payload;
+      const { walletId, contract, accounts } = action.payload;
 
       if (!accounts.length) {
         return state;
@@ -34,6 +34,7 @@ const reducer = (
 
       return {
         ...state,
+        contract,
         accounts,
         selectedWalletId: walletId,
       };
@@ -47,6 +48,7 @@ const reducer = (
 
       return {
         ...state,
+        contract: null,
         accounts: [],
         selectedWalletId: null,
       };
@@ -71,6 +73,7 @@ const reducer = (
 export const createStore = async (storage: StorageService): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
+    contract: await jsonStorage.getItem(CONTRACT),
     modules: [],
     accounts: [],
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),

@@ -2,6 +2,11 @@ import { BehaviorSubject } from "rxjs";
 
 import { Wallet, Account } from "./wallet";
 
+export interface ContractState {
+  contractId: string;
+  methodNames: Array<string>;
+}
+
 export type ModuleState<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
   type: Variation["type"];
@@ -12,6 +17,7 @@ export type ModuleState<Variation extends Wallet = Wallet> = {
 export type AccountState = Account;
 
 export interface WalletSelectorState {
+  contract: ContractState | null;
   modules: Array<ModuleState>;
   accounts: Array<AccountState>;
   selectedWalletId: string | null;
@@ -30,6 +36,7 @@ export type WalletSelectorAction =
       type: "WALLET_CONNECTED";
       payload: {
         walletId: string;
+        contract: ContractState;
         accounts: Array<AccountState>;
       };
     }

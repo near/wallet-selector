@@ -12,7 +12,11 @@ import { AccountState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
-import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../../constants";
+import {
+  PACKAGE_NAME,
+  CONTRACT,
+  PENDING_SELECTED_WALLET_ID,
+} from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import { Provider } from "../provider/provider.service";
 
@@ -117,6 +121,7 @@ export class WalletModules {
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+    const contract = { contractId, methodNames };
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
@@ -133,18 +138,18 @@ export class WalletModules {
       await this.disconnectWallet(selectedWalletId);
     }
 
-    await jsonStorage.setItem("contract", { contractId, methodNames });
+    await jsonStorage.setItem(CONTRACT, contract);
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, accounts },
+      payload: { walletId, contract, accounts },
     });
   }
 
   private async onWalletDisconnected(walletId: string) {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
 
-    await jsonStorage.removeItem("contract");
+    await jsonStorage.removeItem(CONTRACT);
 
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
