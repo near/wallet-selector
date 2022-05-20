@@ -20,9 +20,10 @@ export const signTransactions = async (
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
-    const publicKey = (
-      await signer.getPublicKey(transactions[i].signerId, network.nodeUrl)
-    ).toString();
+    const publicKey = await signer.getPublicKey(
+      transactions[i].signerId,
+      network.networkId
+    );
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -30,7 +31,7 @@ export const signTransactions = async (
         request_type: "view_access_key",
         finality: "final",
         account_id: transactions[i].signerId,
-        public_key: publicKey,
+        public_key: publicKey.toString(),
       }),
     ]);
 
@@ -40,7 +41,7 @@ export const signTransactions = async (
 
     const transaction = nearTransactions.createTransaction(
       transactions[i].signerId,
-      utils.PublicKey.from(publicKey),
+      utils.PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       actions,
@@ -50,7 +51,8 @@ export const signTransactions = async (
     const response = await nearTransactions.signTransaction(
       transaction,
       signer,
-      transactions[i].signerId
+      transactions[i].signerId,
+      network.networkId
     );
 
     signedTransactions.push(response[1]);
