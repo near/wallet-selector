@@ -9,11 +9,12 @@ import {
   setupModal,
   WalletSelectorModal,
 } from "@near-wallet-selector/modal-ui";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+// import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+// import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+// import { setupLedger } from "@near-wallet-selector/ledger";
+// import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -66,28 +67,27 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
       debug: true,
       modules: [
-        setupNearWallet(),
+        // setupNearWallet(),
         setupSender(),
-        setupMathWallet(),
-        setupLedger(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
+        // setupMathWallet(),
+        // setupLedger(),
+        // setupWalletConnect({
+        //   projectId: "c4f79cc...",
+        //   metadata: {
+        //     name: "NEAR Wallet Selector",
+        //     description: "Example dApp used by NEAR Wallet Selector",
+        //     url: "https://github.com/near/wallet-selector",
+        //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
+        //   },
+        // }),
       ],
     })
       .then((instance) => {
-        const selectorModal = setupModal(instance);
-        const state = instance.store.getState();
+        const selectorModal = setupModal(instance, { contractId: CONTRACT_ID });
 
+        const state = instance.store.getState();
         syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
         window.selector = instance;
