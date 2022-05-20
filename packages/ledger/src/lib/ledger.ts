@@ -57,7 +57,7 @@ const setupLedgerState = async (
 
 const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   options,
-  metadata,
+  store,
   provider,
   logger,
   storage,
@@ -179,19 +179,20 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   };
 
   const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId">>
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    return transactions.map((t) => {
-      if (!_state.accounts.length) {
-        throw new Error("Wallet not connected");
-      }
+    const accounts = getAccounts();
+    const { contract } = store.getState();
 
-      const signerId = t.signerId ? t.signerId : _state.accounts[0].accountId;
+    if (!accounts.length || !contract) {
+      throw new Error("Wallet not connected");
+    }
 
+    return transactions.map((transaction) => {
       return {
-        receiverId: t.receiverId,
-        actions: t.actions,
-        signerId,
+        signerId: transaction.signerId || accounts[0].accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
       };
     });
   };
@@ -237,7 +238,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         });
       }
 
-      storage.setItem(STORAGE_ACCOUNTS, accounts);
+      await storage.setItem(STORAGE_ACCOUNTS, accounts);
       _state.accounts = accounts;
 
       return getAccounts();
@@ -249,15 +250,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.accounts.length) {
-        throw new Error(`${metadata.name} not connected`);
+        throw new Error("Wallet not connected");
       }
 
       // Note: Connection must be triggered by user interaction.
@@ -276,7 +273,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.accounts.length) {
-        throw new Error(`${metadata.name} not connected`);
+        throw new Error("Wallet not connected");
       }
 
       // Note: Connection must be triggered by user interaction.
