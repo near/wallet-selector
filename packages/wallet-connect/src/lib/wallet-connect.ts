@@ -177,9 +177,10 @@ const WalletConnect: WalletBehaviourFactory<
         actions,
       });
 
+      const accounts = getAccounts();
       const { contract } = store.getState();
 
-      if (!_state.session || !contract) {
+      if (!_state.session || !accounts.length || !contract) {
         throw new Error("Wallet not connected");
       }
 
@@ -190,7 +191,7 @@ const WalletConnect: WalletBehaviourFactory<
         request: {
           method: "near_signAndSendTransaction",
           params: {
-            signerId,
+            signerId: signerId || accounts[0].accountId,
             receiverId: receiverId || contract.contractId,
             actions,
           },
