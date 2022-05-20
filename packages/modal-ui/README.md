@@ -41,10 +41,17 @@ modal.show();
 
 ## Styles & Customizing CSS
 
-Import css in your main css file:
+Import modal css styles:
 
+### Angular
 ```css
+/* Add import in the main css file */
 @import "~@near-wallet-selector/modal-ui/styles.css";
+```
+### React, Vue
+```ts
+// Add import in the main component
+import "@near-wallet-selector/modal-ui/styles.css";
 ```
 
 These are the available css variables:
