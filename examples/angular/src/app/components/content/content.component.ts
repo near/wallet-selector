@@ -8,6 +8,7 @@ import { Sumbitted } from "../form/form.component";
 import { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { CONTRACT_ID } from "../../../constants";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -78,13 +79,13 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    const { network, contractId } = this.selector.options;
+    const { network } = this.selector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: contractId,
+        account_id: CONTRACT_ID,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -111,7 +112,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   async onSendMultipleTransactions() {
-    const { contractId } = this.selector.options;
+    const { contract } = this.selector.store.getState();
     const wallet = await this.selector.wallet();
 
     wallet.signAndSendTransactions({
@@ -133,7 +134,8 @@ export class ContentComponent implements OnInit, OnDestroy {
           ],
         },
         {
-          receiverId: contractId,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",

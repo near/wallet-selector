@@ -13,6 +13,7 @@ import {
   setupModal,
   WalletSelectorModal,
 } from "@near-wallet-selector/modal-ui";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -63,7 +64,6 @@ export class AppComponent implements OnInit {
   async initialize() {
     setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
       debug: true,
       modules: [
         setupNearWallet(),
@@ -82,9 +82,9 @@ export class AppComponent implements OnInit {
       ],
     })
       .then((instance) => {
-        const selectorModal = setupModal(instance);
-        const state = instance.store.getState();
+        const selectorModal = setupModal(instance, { contractId: CONTRACT_ID });
 
+        const state = instance.store.getState();
         this.syncAccountState(
           localStorage.getItem("accountId"),
           state.accounts
@@ -92,6 +92,7 @@ export class AppComponent implements OnInit {
 
         window.selector = instance;
         window.modal = selectorModal;
+
         this.selector = instance;
         this.modal = selectorModal;
       })
