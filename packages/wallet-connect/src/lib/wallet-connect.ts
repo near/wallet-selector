@@ -47,7 +47,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, params, emitter, logger }) => {
+> = async ({ options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -118,7 +118,8 @@ const WalletConnect: WalletBehaviourFactory<
         logger.log("Session Deleted", deletedSession);
 
         if (deletedSession.topic === _state.session?.topic) {
-          await disconnect();
+          await cleanup();
+          emitter.emit("disconnected", null);
         }
       })
     );
@@ -169,18 +170,16 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("WalletConnect:signAndSendTransaction", {
         signerId,
         receiverId,
         actions,
       });
 
-      if (!_state.session) {
+      const { contract } = store.getState();
+
+      if (!_state.session || !contract) {
         throw new Error("Wallet not connected");
       }
 
@@ -192,7 +191,7 @@ const WalletConnect: WalletBehaviourFactory<
           method: "near_signAndSendTransaction",
           params: {
             signerId,
-            receiverId,
+            receiverId: receiverId || contract.contractId,
             actions,
           },
         },
