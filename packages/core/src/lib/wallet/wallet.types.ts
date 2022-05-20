@@ -7,6 +7,7 @@ import {
   JsonStorageService,
 } from "../services";
 import { Options } from "../options.types";
+import { ReadOnlyStore } from "../store.types";
 import { Transaction, Action } from "./transactions.types";
 import { Modify, Optional } from "../utils.types";
 
@@ -166,6 +167,7 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
   type: Variation["type"];
   metadata: Variation["metadata"];
   options: Options;
+  store: ReadOnlyStore;
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;

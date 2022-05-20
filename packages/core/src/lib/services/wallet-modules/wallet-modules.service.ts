@@ -221,6 +221,7 @@ export class WalletModules {
         type: module.type,
         metadata: module.metadata,
         options: this.options,
+        store: this.store.toReadOnly(),
         provider: new Provider(this.options.network.nodeUrl),
         emitter: this.setupWalletEmitter(module),
         logger: new Logger(module.id),
