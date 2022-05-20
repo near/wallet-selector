@@ -22,6 +22,11 @@
             "glob": "packages/modal-ui/README.md",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "packages/modal-ui/**/*.css",
+            "input": ".",
+            "output": "."
           }
         ]
       }

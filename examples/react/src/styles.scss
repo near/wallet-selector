@@ -2,6 +2,13 @@
   box-sizing: border-box;
 }
 
+// Modal css styles need to be imported from node_modules
+// In a project you can import styles this way:
+// @import "~@near-wallet-selector/modal-ui/styles.css";
+
+// In this case we are importing via a relative path to the dist folder since in this NX setup we don't have our packages in node_modules.
+@import "../../../dist/packages/modal-ui/styles.css";
+
 html {
   --bg: #fff;
   --fg: #25282A;
