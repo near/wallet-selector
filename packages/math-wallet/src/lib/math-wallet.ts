@@ -132,12 +132,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const signedTransactions = await signTransactions(
-        transformTransactions([
-          {
-            receiverId,
-            actions,
-          },
-        ]),
+        transformTransactions([{ signerId, receiverId, actions }]),
         _state.wallet.signer,
         options.network
       );
