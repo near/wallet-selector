@@ -148,10 +148,7 @@ export class WalletModules {
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, {
-          contractId,
-          methodNames,
-        });
+        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
       }
 
       return;
@@ -167,7 +164,7 @@ export class WalletModules {
     });
   }
 
-  private async onWalletDisconnected(walletId: string) {
+  private onWalletDisconnected(walletId: string) {
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
