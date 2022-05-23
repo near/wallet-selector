@@ -15,10 +15,12 @@ interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
   actions: Array<Action>;
+  callbackUrl?: string;
 }
 
 interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
+  callbackUrl?: string;
 }
 
 export default class NearWalletSelector {
@@ -119,6 +121,7 @@ export default class NearWalletSelector {
     signerId,
     receiverId,
     actions,
+    callbackUrl,
   }: SignAndSendTransactionParams) {
     const wallet = this.controller.getSelectedWallet();
     const accounts = await this.getAccounts();
@@ -139,11 +142,13 @@ export default class NearWalletSelector {
       signerId: signerId || accounts[0].accountId,
       receiverId: receiverId || this.getContractId(),
       actions,
+      callbackUrl,
     });
   }
 
   async signAndSendTransactions({
     transactions,
+    callbackUrl,
   }: SignAndSendTransactionsParams) {
     const wallet = this.controller.getSelectedWallet();
     const accounts = await this.getAccounts();
@@ -168,6 +173,7 @@ export default class NearWalletSelector {
           actions,
         };
       }),
+      callbackUrl,
     });
   }
 }
