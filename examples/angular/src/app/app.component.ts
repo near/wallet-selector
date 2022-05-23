@@ -84,9 +84,10 @@ export class AppComponent implements OnInit {
         }),
       ],
     });
-    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
 
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
+
     this.syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
     window.selector = _selector;
