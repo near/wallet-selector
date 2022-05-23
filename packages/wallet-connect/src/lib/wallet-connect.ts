@@ -171,11 +171,7 @@ const WalletConnect: WalletBehaviourFactory<
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
-      logger.log("WalletConnect:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       const accounts = getAccounts();
       const { contract } = store.getState();
@@ -200,7 +196,7 @@ const WalletConnect: WalletBehaviourFactory<
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("WalletConnect:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.session) {
         throw new Error("Wallet not connected");
