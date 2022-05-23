@@ -29,6 +29,7 @@ export type WalletSelectorAction =
       payload: {
         modules: Array<ModuleState>;
         accounts: Array<AccountState>;
+        contract: ContractState | null;
         selectedWalletId: string | null;
       };
     }

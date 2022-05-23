@@ -16,12 +16,13 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { modules, selectedWalletId, accounts } = action.payload;
+      const { modules, accounts, contract, selectedWalletId } = action.payload;
 
       return {
         ...state,
         modules,
         accounts,
+        contract,
         selectedWalletId,
       };
     }
@@ -73,9 +74,9 @@ const reducer = (
 export const createStore = async (storage: StorageService): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
-    contract: await jsonStorage.getItem(CONTRACT),
     modules: [],
     accounts: [],
+    contract: await jsonStorage.getItem(CONTRACT),
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
   };
 
@@ -86,23 +87,26 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
 
   const syncStorage = async (
     prevState: WalletSelectorState,
-    state: WalletSelectorState
+    state: WalletSelectorState,
+    storageKey: string,
+    property: keyof WalletSelectorState
   ) => {
-    if (state.selectedWalletId === prevState.selectedWalletId) {
+    if (state[property] === prevState[property]) {
       return;
     }
 
-    if (state.selectedWalletId) {
-      await jsonStorage.setItem(SELECTED_WALLET_ID, state.selectedWalletId);
+    if (state[property]) {
+      await jsonStorage.setItem(storageKey, state[property]);
       return;
     }
 
-    await jsonStorage.removeItem(SELECTED_WALLET_ID);
+    await jsonStorage.removeItem(storageKey);
   };
 
   let prevState = state$.getValue();
   state$.subscribe((state) => {
-    syncStorage(prevState, state);
+    syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
+    syncStorage(prevState, state, CONTRACT, "contract");
     prevState = state;
   });
 
