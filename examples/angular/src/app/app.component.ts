@@ -34,7 +34,10 @@ export class AppComponent implements OnInit {
   accounts: Array<AccountState> = [];
 
   async ngOnInit() {
-    await this.initialize();
+    await this.initialize().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
   }
 
   syncAccountState(
@@ -62,7 +65,7 @@ export class AppComponent implements OnInit {
   }
 
   async initialize() {
-    setupWalletSelector({
+    const _selector = await setupWalletSelector({
       network: "testnet",
       debug: true,
       modules: [
@@ -80,25 +83,16 @@ export class AppComponent implements OnInit {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        const selectorModal = setupModal(instance, { contractId: CONTRACT_ID });
+    });
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
 
-        const state = instance.store.getState();
-        this.syncAccountState(
-          localStorage.getItem("accountId"),
-          state.accounts
-        );
+    const state = _selector.store.getState();
+    this.syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
-        window.selector = instance;
-        window.modal = selectorModal;
+    window.selector = _selector;
+    window.modal = _modal;
 
-        this.selector = instance;
-        this.modal = selectorModal;
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    this.selector = _selector;
+    this.modal = _modal;
   }
 }
