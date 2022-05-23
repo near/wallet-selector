@@ -70,7 +70,7 @@ export class WalletModules {
     return accounts;
   }
 
-  private async getStateFromStorage() {
+  private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
@@ -306,7 +306,7 @@ export class WalletModules {
     this.modules = modules;
 
     const { accounts, contract, selectedWalletId } =
-      await this.getStateFromStorage();
+      await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
