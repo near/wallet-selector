@@ -1,4 +1,4 @@
-import { WalletSelectorParams } from "./wallet-selector.types";
+import type { WalletSelectorParams } from "./wallet-selector.types";
 
 export type NetworkId = "mainnet" | "testnet" | "betanet";
 

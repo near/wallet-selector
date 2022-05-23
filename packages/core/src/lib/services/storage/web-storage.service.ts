@@ -1,4 +1,4 @@
-import { StorageService } from "./storage.service.types";
+import type { StorageService } from "./storage.service.types";
 
 export class WebStorageService implements StorageService {
   getItem(key: string): Promise<string | null> {
