@@ -1,5 +1,5 @@
-import { AppMetadata, SessionTypes } from "@walletconnect/types";
-import {
+import type { AppMetadata, SessionTypes } from "@walletconnect/types";
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
