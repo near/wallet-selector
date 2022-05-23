@@ -2,6 +2,7 @@ export type {
   WalletSelector,
   WalletSelectorParams,
   WalletSelectorEvents,
+  WalletSelectorStore,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
@@ -15,6 +16,7 @@ export type { Optional } from "./lib/utils.types";
 
 export type {
   WalletSelectorState,
+  ContractState,
   ModuleState,
   AccountState,
 } from "./lib/store.types";

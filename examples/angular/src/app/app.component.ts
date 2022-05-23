@@ -8,6 +8,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -28,7 +29,10 @@ export class AppComponent implements OnInit {
   accounts: Array<AccountState> = [];
 
   async ngOnInit() {
-    await this.initialize();
+    await this.initialize().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
   }
 
   syncAccountState(
@@ -56,9 +60,8 @@ export class AppComponent implements OnInit {
   }
 
   async initialize() {
-    setupWalletSelector({
+    const _selector = await setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
       debug: true,
       modules: [
         setupNearWallet(),
@@ -75,24 +78,17 @@ export class AppComponent implements OnInit {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        const selectorModal = setupModal(instance);
-        const state = instance.store.getState();
+    });
 
-        this.syncAccountState(
-          localStorage.getItem("accountId"),
-          state.accounts
-        );
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const state = _selector.store.getState();
 
-        window.selector = instance;
-        window.modal = selectorModal;
-        this.selector = instance;
-        this.modal = selectorModal;
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    this.syncAccountState(localStorage.getItem("accountId"), state.accounts);
+
+    window.selector = _selector;
+    window.modal = _modal;
+
+    this.selector = _selector;
+    this.modal = _modal;
   }
 }

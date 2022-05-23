@@ -1,5 +1,6 @@
 import type { WalletModulesParams } from "./wallet-modules.service.types";
 import type {
+  ConnectParams,
   Wallet,
   WalletEvents,
   WalletModule,
@@ -7,11 +8,20 @@ import type {
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type { AccountState, ModuleState, Store } from "../../store.types";
+import type {
+  AccountState,
+  ContractState,
+  ModuleState,
+  Store,
+} from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
-import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../../constants";
+import {
+  PACKAGE_NAME,
+  PENDING_CONTRACT,
+  PENDING_SELECTED_WALLET_ID,
+} from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import { Provider } from "../provider/provider.service";
 
@@ -60,16 +70,20 @@ export class WalletModules {
     return accounts;
   }
 
-  private async getSelectedWallet() {
+  private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
+    const pendingContract = await jsonStorage.getItem<ContractState>(
+      PENDING_CONTRACT
+    );
 
-    if (pendingSelectedWalletId) {
+    if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
+      await jsonStorage.removeItem(PENDING_CONTRACT);
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
@@ -84,17 +98,27 @@ export class WalletModules {
 
         return {
           accounts,
+          contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
         };
       }
     }
 
-    const { selectedWalletId } = this.store.getState();
+    const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
+
+    if (!accounts.length) {
+      return {
+        accounts: [],
+        contract: null,
+        selectedWalletId: null,
+      };
+    }
 
     return {
       accounts,
-      selectedWalletId: accounts.length ? selectedWalletId : null,
+      contract,
+      selectedWalletId,
     };
   }
 
@@ -112,17 +136,19 @@ export class WalletModules {
 
   private async onWalletConnected(
     walletId: string,
-    { accounts }: WalletEvents["connected"]
+    { accounts, contractId, methodNames }: WalletEvents["connected"]
   ) {
     const { selectedWalletId } = this.store.getState();
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+    const contract = { contractId, methodNames };
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
-        const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
       }
 
       return;
@@ -134,7 +160,7 @@ export class WalletModules {
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, accounts },
+      payload: { walletId, contract, accounts },
     });
   }
 
@@ -180,7 +206,13 @@ export class WalletModules {
 
     wallet.connect = async (params: never) => {
       const accounts = await _connect(params);
-      await this.onWalletConnected(wallet.id, { accounts });
+
+      const { contractId, methodNames = [] } = params as ConnectParams;
+      await this.onWalletConnected(wallet.id, {
+        accounts,
+        contractId,
+        methodNames,
+      });
 
       return accounts;
     };
@@ -203,6 +235,7 @@ export class WalletModules {
         type: module.type,
         metadata: module.metadata,
         options: this.options,
+        store: this.store.toReadOnly(),
         provider: new Provider(this.options.network.nodeUrl),
         emitter: this.setupWalletEmitter(module),
         logger: new Logger(module.id),
@@ -269,13 +302,15 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, selectedWalletId } = await this.getSelectedWallet();
+    const { accounts, contract, selectedWalletId } =
+      await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
       payload: {
         modules,
         accounts,
+        contract,
         selectedWalletId,
       },
     });

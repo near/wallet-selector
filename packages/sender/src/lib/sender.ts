@@ -40,6 +40,7 @@ const setupSenderState = (): SenderState => {
 const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
+  store,
   emitter,
   logger,
 }) => {
@@ -140,7 +141,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   }
 
   return {
-    async connect() {
+    async connect({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -148,8 +149,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
+        contractId,
+        methodNames,
       });
 
       if (!accessKey || error) {
@@ -172,20 +173,18 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      if (!_state.wallet.isSignedIn()) {
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not connected");
       }
 
       return _state.wallet
         .signAndSendTransaction({
-          receiverId,
+          receiverId: receiverId || contract.contractId,
           actions: transformActions(actions),
         })
         .then((res) => {

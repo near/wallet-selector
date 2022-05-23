@@ -1,8 +1,10 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import type { WalletSelector } from "@near-wallet-selector/core";
+import type { ModalOptions } from "../modal.types";
 
 interface LedgerDerivationPathProps {
   selector: WalletSelector;
+  options: ModalOptions;
   onBack: () => void;
   onConnected: () => void;
 }
@@ -11,6 +13,7 @@ export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
   selector,
+  options,
   onBack,
   onConnected,
 }) => {
@@ -36,7 +39,11 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     setIsLoading(true);
 
     return wallet
-      .connect({ derivationPaths: [ledgerDerivationPath] })
+      .connect({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+        derivationPaths: [ledgerDerivationPath],
+      })
       .then(() => onConnected())
       .catch((err) => setLedgerError(`Error: ${err.message}`))
       .finally(() => setIsLoading(false));

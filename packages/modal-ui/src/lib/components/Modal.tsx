@@ -11,7 +11,7 @@ import { CloseButton } from "./CloseButton";
 
 interface ModalProps {
   selector: WalletSelector;
-  options?: ModalOptions;
+  options: ModalOptions;
   visible: boolean;
   hide: () => void;
 }
@@ -114,6 +114,7 @@ export const Modal: React.FC<ModalProps> = ({
           {routeName === "LedgerDerivationPath" && (
             <LedgerDerivationPath
               selector={selector}
+              options={options}
               onConnected={handleDismissClick}
               onBack={() => setRouteName("WalletOptions")}
             />

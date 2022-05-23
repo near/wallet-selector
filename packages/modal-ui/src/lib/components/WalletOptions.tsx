@@ -5,7 +5,7 @@ import type { ModalOptions } from "../modal.types";
 
 interface WalletOptionsProps {
   selector: WalletSelector;
-  options?: ModalOptions;
+  options: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onError: (error: Error) => void;
@@ -44,7 +44,11 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         return onConnectHardwareWallet();
       }
 
-      await wallet.connect();
+      await wallet.connect({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+      });
+
       onConnected();
     } catch (err) {
       const { name } = module.metadata;

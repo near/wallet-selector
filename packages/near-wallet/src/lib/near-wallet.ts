@@ -73,7 +73,7 @@ const setupWalletState = async (
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: NearWalletExtraOptions }
-> = async ({ options, params, logger }) => {
+> = async ({ options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -130,17 +130,14 @@ const NearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async connect() {
+    async connect({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      await _state.wallet.requestSignIn({ contractId, methodNames });
 
       return getAccounts();
     },
@@ -159,7 +156,7 @@ const NearWallet: WalletBehaviourFactory<
 
     async signAndSendTransaction({
       signerId,
-      receiverId = options.contractId,
+      receiverId,
       actions,
       callbackUrl,
     }) {
@@ -170,14 +167,16 @@ const NearWallet: WalletBehaviourFactory<
         callbackUrl,
       });
 
-      if (!_state.wallet.isSignedIn()) {
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not connected");
       }
 
       const account = _state.wallet.account();
 
       return account["signAndSendTransaction"]({
-        receiverId,
+        receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
         walletCallbackUrl: callbackUrl,
       }).then(() => {

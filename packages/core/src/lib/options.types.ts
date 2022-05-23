@@ -1,5 +1,3 @@
-import type { WalletSelectorParams } from "./wallet-selector.types";
-
 export type NetworkId = "mainnet" | "testnet" | "betanet";
 
 export interface Network {
@@ -9,10 +7,7 @@ export interface Network {
   explorerUrl: string;
 }
 
-export type Options = Pick<
-  WalletSelectorParams,
-  "contractId" | "methodNames"
-> & {
+export interface Options {
   network: Network;
   debug: boolean;
-};
+}

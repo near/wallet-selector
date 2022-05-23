@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
@@ -9,6 +9,7 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -58,10 +59,9 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     setAccounts(newAccounts);
   };
 
-  useEffect(() => {
-    setupWalletSelector({
+  const init = useCallback(async () => {
+    const _selector = await setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
       debug: true,
       modules: [
         setupNearWallet(),
@@ -78,24 +78,26 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        const selectorModal = setupModal(instance);
-        const state = instance.store.getState();
+    });
 
-        syncAccountState(localStorage.getItem("accountId"), state.accounts);
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const state = _selector.store.getState();
 
-        window.selector = instance;
-        window.modal = selectorModal;
+    syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
-        setSelector(instance);
-        setModal(selectorModal);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    window.selector = _selector;
+    window.modal = _modal;
+
+    setSelector(_selector);
+    setModal(_modal);
   }, []);
+
+  useEffect(() => {
+    init().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
+  }, [init]);
 
   useEffect(() => {
     if (!selector) {

@@ -27,10 +27,7 @@ export const setupWalletSelector = async (
   await walletModules.setup();
 
   return {
-    store: {
-      getState: () => store.getState(),
-      observable: store.observable.asObservable(),
-    },
+    store: store.toReadOnly(),
     get connected() {
       const { accounts } = store.getState();
 

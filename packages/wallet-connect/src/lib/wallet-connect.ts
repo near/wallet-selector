@@ -47,7 +47,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, params, emitter, logger }) => {
+> = async ({ options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -118,7 +118,8 @@ const WalletConnect: WalletBehaviourFactory<
         logger.log("Session Deleted", deletedSession);
 
         if (deletedSession.topic === _state.session?.topic) {
-          await disconnect();
+          await cleanup();
+          emitter.emit("disconnected", null);
         }
       })
     );
@@ -169,18 +170,13 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
-      logger.log("WalletConnect:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      if (!_state.session) {
+      const accounts = getAccounts();
+      const { contract } = store.getState();
+
+      if (!_state.session || !accounts.length || !contract) {
         throw new Error("Wallet not connected");
       }
 
@@ -191,8 +187,8 @@ const WalletConnect: WalletBehaviourFactory<
         request: {
           method: "near_signAndSendTransaction",
           params: {
-            signerId,
-            receiverId,
+            signerId: signerId || accounts[0].accountId,
+            receiverId: receiverId || contract.contractId,
             actions,
           },
         },
@@ -200,7 +196,7 @@ const WalletConnect: WalletBehaviourFactory<
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("WalletConnect:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.session) {
         throw new Error("Wallet not connected");

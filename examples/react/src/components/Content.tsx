@@ -7,6 +7,8 @@ import type {
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
+import { CONTRACT_ID } from "../constants";
+
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
@@ -43,13 +45,13 @@ const Content: React.FC = () => {
   }, [accountId, selector.options]);
 
   const getMessages = useCallback(() => {
-    const { network, contractId } = selector.options;
+    const { network } = selector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: contractId,
+        account_id: CONTRACT_ID,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -105,7 +107,7 @@ const Content: React.FC = () => {
   };
 
   const handleSendMultipleTransactions = async () => {
-    const { contractId } = selector.options;
+    const { contract } = selector.store.getState();
     const wallet = await selector.wallet();
 
     await wallet.signAndSendTransactions({
@@ -126,7 +128,7 @@ const Content: React.FC = () => {
           ],
         },
         {
-          receiverId: contractId,
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",
