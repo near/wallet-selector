@@ -6,6 +6,7 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
+  ConnectParams,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
@@ -140,7 +141,10 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  const requestFunctionCallAccess = async () => {
+  const requestFunctionCallAccess = async ({
+    contractId,
+    methodNames,
+  }: ConnectParams) => {
     const accounts = getAccounts();
 
     const { keyPairs, transactions } = accounts.reduce<{
@@ -162,8 +166,8 @@ const WalletConnect: WalletBehaviourFactory<
                 publicKey: keyPair.getPublicKey().toString(),
                 accessKey: {
                   permission: {
-                    receiverId: options.contractId,
-                    methodNames: options.methodNames,
+                    receiverId: contractId,
+                    methodNames,
                   },
                 },
               },
@@ -198,13 +202,13 @@ const WalletConnect: WalletBehaviourFactory<
 
   const isFunctionCallTransaction = (transaction: Transaction) => {
     const accounts = getAccounts();
-    const methodNames = options.methodNames || [];
+    const { contract } = store.getState();
 
     if (!accounts.some((x) => x.accountId === transaction.signerId)) {
       return false;
     }
 
-    if (transaction.receiverId !== options.contractId) {
+    if (transaction.receiverId !== contract!.contractId) {
       return false;
     }
 
@@ -215,7 +219,10 @@ const WalletConnect: WalletBehaviourFactory<
 
       const { methodName, deposit } = action.params;
 
-      if (methodNames.length && !methodNames.includes(methodName)) {
+      if (
+        contract!.methodNames.length &&
+        !contract!.methodNames.includes(methodName)
+      ) {
         return false;
       }
 
@@ -286,7 +293,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async connect() {
+    async connect({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -310,7 +317,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestFunctionCallAccess();
+        await requestFunctionCallAccess({ contractId, methodNames });
 
         setupEvents();
 
@@ -375,11 +382,13 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      if (!_state.session) {
+      const accounts = getAccounts();
+      const { contract } = store.getState();
+
+      if (!_state.session || !accounts.length || !contract) {
         throw new Error("Wallet not connected");
       }
 
-      const accounts = getAccounts();
       const pendingAddKeyTransactions: Array<Transaction> = [];
       const pendingKeyPairs: Record<string, KeyPair> = {};
       const txs = transactions.map((x) => ({
@@ -423,8 +432,8 @@ const WalletConnect: WalletBehaviourFactory<
                   publicKey: newKeyPair.getPublicKey().toString(),
                   accessKey: {
                     permission: {
-                      receiverId: options.contractId,
-                      methodNames: options.methodNames,
+                      receiverId: contract.contractId,
+                      methodNames: contract.methodNames,
                     },
                   },
                 },
