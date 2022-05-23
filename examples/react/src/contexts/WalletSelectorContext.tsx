@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import {
   setupWalletSelector,
@@ -64,8 +64,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     setAccounts(newAccounts);
   };
 
-  useEffect(() => {
-    setupWalletSelector({
+  const init = useCallback(async () => {
+    const _selector = await setupWalletSelector({
       network: "testnet",
       debug: true,
       modules: [
@@ -83,24 +83,26 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        const selectorModal = setupModal(instance, { contractId: CONTRACT_ID });
+    });
 
-        const state = instance.store.getState();
-        syncAccountState(localStorage.getItem("accountId"), state.accounts);
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const state = _selector.store.getState();
 
-        window.selector = instance;
-        window.modal = selectorModal;
+    syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
-        setSelector(instance);
-        setModal(selectorModal);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    window.selector = _selector;
+    window.modal = _modal;
+
+    setSelector(_selector);
+    setModal(_modal);
   }, []);
+
+  useEffect(() => {
+    init().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
+  }, [init]);
 
   useEffect(() => {
     if (!selector) {
