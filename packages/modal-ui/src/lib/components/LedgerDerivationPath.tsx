@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
-import { WalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector } from "@near-wallet-selector/core";
 
 interface LedgerDerivationPathProps {
   selector: WalletSelector;
