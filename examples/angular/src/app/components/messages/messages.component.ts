@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/message";
 
 @Component({
   selector: "near-wallet-selector-messages",

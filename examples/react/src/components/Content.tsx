@@ -1,8 +1,11 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { providers, utils } from "near-api-js";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
+import type {
+  AccountView,
+  CodeResult,
+} from "near-api-js/lib/providers/provider";
 
-import { Account, Message } from "../interfaces";
+import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import SignIn from "./SignIn";
 import Form from "./Form";

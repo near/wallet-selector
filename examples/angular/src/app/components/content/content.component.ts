@@ -1,13 +1,16 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { providers, utils } from "near-api-js";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
-import { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import type {
+  AccountView,
+  CodeResult,
+} from "near-api-js/lib/providers/provider";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 
-import { Message } from "../../interfaces/message";
-import { Sumbitted } from "../form/form.component";
-import { Account } from "../../interfaces/account";
+import type { Message } from "../../interfaces/message";
+import type { Sumbitted } from "../form/form.component";
+import type { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

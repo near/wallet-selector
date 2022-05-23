@@ -1,18 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  setupWalletSelector,
-  WalletSelector,
-  AccountState,
-} from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import {
-  setupModal,
-  WalletSelectorModal,
-} from "@near-wallet-selector/modal-ui";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 
 declare global {
   interface Window {
