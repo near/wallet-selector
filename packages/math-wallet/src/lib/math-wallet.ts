@@ -1,15 +1,14 @@
 import { isMobile } from "is-mobile";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
   AccountState,
-  waitFor,
   Optional,
   Transaction,
 } from "@near-wallet-selector/core";
-
-import { InjectedMathWallet } from "./injected-math-wallet";
+import { waitFor } from "@near-wallet-selector/core";
+import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 declare global {

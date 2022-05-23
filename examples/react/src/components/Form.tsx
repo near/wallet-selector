@@ -1,7 +1,7 @@
 import React, { FormEventHandler } from "react";
 import Big from "big.js";
 
-import { Account } from "../interfaces";
+import type { Account } from "../interfaces";
 
 interface FormProps {
   account: Account;

@@ -1,5 +1,5 @@
-import { StorageService } from "./storage.service.types";
-import { JsonStorageService } from "./json-storage.service.types";
+import type { StorageService } from "./storage.service.types";
+import type { JsonStorageService } from "./json-storage.service.types";
 
 const KEY_DELIMITER = ":";
 

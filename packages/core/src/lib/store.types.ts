@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Wallet, Account } from "./wallet";
+import type { Wallet, Account } from "./wallet";
 
 export type ModuleState<Variation extends Wallet = Wallet> = {
   id: Variation["id"];

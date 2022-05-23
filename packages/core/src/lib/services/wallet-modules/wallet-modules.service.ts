@@ -1,15 +1,15 @@
-import { WalletModulesParams } from "./wallet-modules.service.types";
-import {
+import type { WalletModulesParams } from "./wallet-modules.service.types";
+import type {
   Wallet,
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
 } from "../../wallet";
-import { StorageService } from "../storage/storage.service.types";
-import { Options } from "../../options.types";
-import { AccountState, ModuleState, Store } from "../../store.types";
+import type { StorageService } from "../storage/storage.service.types";
+import type { Options } from "../../options.types";
+import type { AccountState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
-import { WalletSelectorEvents } from "../../wallet-selector.types";
+import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
