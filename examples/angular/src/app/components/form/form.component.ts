@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import Big from "big.js";
 import type { Account } from "../../interfaces/account";
 
-export type Sumbitted = SubmitEvent & {
+export type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
 };
 
@@ -13,7 +13,7 @@ export type Sumbitted = SubmitEvent & {
 })
 export class FormComponent implements OnInit {
   @Input() account: Account;
-  @Output() addMessage: EventEmitter<Sumbitted> = new EventEmitter();
+  @Output() addMessage: EventEmitter<Submitted> = new EventEmitter();
   maxValue: string;
 
   ngOnInit(): void {
@@ -22,7 +22,7 @@ export class FormComponent implements OnInit {
       .toString();
   }
 
-  onSubmit(event: Sumbitted) {
+  onSubmit(event: Submitted) {
     this.addMessage.emit(event);
   }
 }

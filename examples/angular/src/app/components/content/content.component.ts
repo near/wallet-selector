@@ -7,7 +7,7 @@ import type {
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 
 import type { Message } from "../../interfaces/message";
-import type { Sumbitted } from "../form/form.component";
+import type { Submitted } from "../form/form.component";
 import type { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
@@ -199,7 +199,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       });
   }
 
-  async onSubmit(e: Sumbitted) {
+  async onSubmit(e: Submitted) {
     const { fieldset, message, donation } = e.target.elements;
 
     fieldset.disabled = true;
