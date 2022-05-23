@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { Wallet, Account } from "./wallet";
+import type { Wallet, Account } from "./wallet";
 
 export interface ContractState {
   contractId: string;

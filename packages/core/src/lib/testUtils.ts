@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { WalletModuleFactory, Wallet, WalletEvents } from "./wallet";
-import { Options } from "./options.types";
-import {
+import type { WalletModuleFactory, Wallet, WalletEvents } from "./wallet";
+import type { Options } from "./options.types";
+import type {
   ProviderService,
   EventEmitterService,
   LoggerService,

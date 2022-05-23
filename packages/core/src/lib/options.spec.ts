@@ -1,5 +1,5 @@
 import { getNetworkPreset, resolveNetwork } from "./options";
-import { NetworkId, Network } from "./options.types";
+import type { NetworkId, Network } from "./options.types";
 
 describe("getNetworkPreset", () => {
   it("returns the correct config for 'mainnet'", () => {

@@ -3,7 +3,7 @@ import Client, {
   SESSION_EMPTY_PERMISSIONS,
   SESSION_SIGNAL_METHOD_PAIRING,
 } from "@walletconnect/client";
-import {
+import type {
   AppMetadata,
   PairingTypes,
   SessionTypes,

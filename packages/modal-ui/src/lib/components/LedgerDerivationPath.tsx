@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
-import { WalletSelector } from "@near-wallet-selector/core";
-import { ModalOptions } from "../modal.types";
+import type { WalletSelector } from "@near-wallet-selector/core";
+import type { ModalOptions } from "../modal.types";
 
 interface LedgerDerivationPathProps {
   selector: WalletSelector;

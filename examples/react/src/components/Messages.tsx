@@ -1,5 +1,5 @@
 import React from "react";
-import { Message } from "../interfaces";
+import type { Message } from "../interfaces";
 
 interface MessagesProps {
   messages: Array<Message>;

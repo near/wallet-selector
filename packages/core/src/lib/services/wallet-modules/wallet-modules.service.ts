@@ -1,21 +1,16 @@
-import { WalletModulesParams } from "./wallet-modules.service.types";
-import {
+import type { WalletModulesParams } from "./wallet-modules.service.types";
+import type {
   ConnectParams,
   Wallet,
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
 } from "../../wallet";
-import { StorageService } from "../storage/storage.service.types";
-import { Options } from "../../options.types";
-import {
-  AccountState,
-  ContractState,
-  ModuleState,
-  Store,
-} from "../../store.types";
+import type { StorageService } from "../storage/storage.service.types";
+import type { Options } from "../../options.types";
+import type { AccountState, ContractState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
-import { WalletSelectorEvents } from "../../wallet-selector.types";
+import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   PACKAGE_NAME,
@@ -219,7 +214,7 @@ export class WalletModules {
 
     wallet.disconnect = async () => {
       await _disconnect();
-      await this.onWalletDisconnected(wallet.id);
+      this.onWalletDisconnected(wallet.id);
     };
 
     return wallet;

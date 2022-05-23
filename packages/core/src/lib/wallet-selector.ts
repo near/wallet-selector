@@ -1,12 +1,12 @@
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
-import {
+import type {
   WalletSelector,
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
 import { EventEmitter, Logger, WalletModules } from "./services";
-import { Wallet } from "./wallet";
+import type { Wallet } from "./wallet";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams

@@ -40,7 +40,20 @@ modal.show();
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
 
-## Customizing CSS
+## Styles & Customizing CSS
+
+Import modal css styles:
+
+### Angular
+```css
+/* Add import in the main css file */
+@import "~@near-wallet-selector/modal-ui/styles.css";
+```
+### React, Vue
+```ts
+// Add import in the main component
+import "@near-wallet-selector/modal-ui/styles.css";
+```
 
 These are the available css variables:
 

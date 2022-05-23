@@ -1,5 +1,5 @@
-import { WalletSelectorParams } from "./wallet-selector.types";
-import { Options, Network, NetworkId } from "./options.types";
+import type { WalletSelectorParams } from "./wallet-selector.types";
+import type { Options, Network, NetworkId } from "./options.types";
 import { WebStorageService } from "./services";
 
 export const getNetworkPreset = (networkId: NetworkId): Network => {

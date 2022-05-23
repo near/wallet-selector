@@ -1,7 +1,7 @@
 import { isMobile } from "is-mobile";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   JsonStorageService,
@@ -12,7 +12,8 @@ import {
   Optional,
 } from "@near-wallet-selector/core";
 
-import { isLedgerSupported, LedgerClient, Subscription } from "./ledger-client";
+import { isLedgerSupported, LedgerClient } from "./ledger-client";
+import type { Subscription } from "./ledger-client";
 import { Signer, utils } from "near-api-js";
 
 interface LedgerAccount extends Account {

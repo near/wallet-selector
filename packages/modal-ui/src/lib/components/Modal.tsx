@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { WalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector } from "@near-wallet-selector/core";
 
-import { ModalOptions, Theme } from "../modal.types";
-import { ModalRouteName } from "./Modal.types";
+import type { ModalOptions, Theme } from "../modal.types";
+import type { ModalRouteName } from "./Modal.types";
 import { LedgerDerivationPath } from "./LedgerDerivationPath";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
 import { CloseButton } from "./CloseButton";
-import styles from "./Modal.styles";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -78,11 +77,10 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className={`modal-wrapper ${getThemeClass(options?.theme)} ${
+      className={`nws-modal-wrapper ${getThemeClass(options?.theme)} ${
         visible ? "open" : ""
       }`}
     >
-      <style>{styles}</style>
       <div className="modal-overlay" onClick={handleDismissClick} />
       <div className="modal">
         <div className="modal-header">
