@@ -4,8 +4,8 @@ import {
   Signer,
   providers,
 } from "near-api-js";
-import { Network, Transaction } from "@near-wallet-selector/core";
-import { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { Network, Transaction } from "@near-wallet-selector/core";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (
@@ -20,9 +20,10 @@ export const signTransactions = async (
   const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
-    const publicKey = (
-      await signer.getPublicKey(transactions[i].signerId, network.networkId)
-    ).toString();
+    const publicKey = await signer.getPublicKey(
+      transactions[i].signerId,
+      network.networkId
+    );
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -30,7 +31,7 @@ export const signTransactions = async (
         request_type: "view_access_key",
         finality: "final",
         account_id: transactions[i].signerId,
-        public_key: publicKey,
+        public_key: publicKey.toString(),
       }),
     ]);
 
@@ -40,7 +41,7 @@ export const signTransactions = async (
 
     const transaction = nearTransactions.createTransaction(
       transactions[i].signerId,
-      utils.PublicKey.from(publicKey),
+      utils.PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       actions,

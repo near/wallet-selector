@@ -9,8 +9,6 @@
   - `nodeUrl` (`string`): URL for RPC requests.
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
-- `contractId` (`string`): Account ID of the Smart Contract used for `connect` and signing transactions.
-- `methodNames` (`Array<string>?`): List of methods that can only be accessed on the Smart Contract.
 - `debug` (`boolean`): Whether internal logging is enabled.
 
 **Description**

@@ -1,6 +1,6 @@
 import { utils, keyStores, KeyPair, InMemorySigner } from "near-api-js";
-import { AppMetadata, SessionTypes } from "@walletconnect/types";
-import {
+import type { AppMetadata, SessionTypes } from "@walletconnect/types";
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
@@ -58,7 +58,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, params, provider, emitter, logger }) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params);
 
   const signer = new InMemorySigner(_state.keystore);
@@ -328,23 +328,21 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      if (!_state.session) {
+      const accounts = getAccounts();
+      const { contract } = store.getState();
+
+      if (!_state.session || !accounts.length || !contract) {
         throw new Error("Wallet not connected");
       }
 
-      const accounts = getAccounts();
       const [{ transaction, keyPair }] = await getTransactionsWithKeyPairs(
         [
           {
             signerId: signerId || accounts[0].accountId,
-            receiverId,
+            receiverId: receiverId || contract.contractId,
             actions,
           },
         ],

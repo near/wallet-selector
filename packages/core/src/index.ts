@@ -1,25 +1,27 @@
-export {
+export type {
   WalletSelector,
   WalletSelectorParams,
   WalletSelectorEvents,
+  WalletSelectorStore,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
-export { Network, NetworkId } from "./lib/options.types";
-export {
+export type { Network, NetworkId } from "./lib/options.types";
+export type {
   Subscription,
   StorageService,
   JsonStorageService,
 } from "./lib/services";
-export { Optional } from "./lib/utils.types";
+export type { Optional } from "./lib/utils.types";
 
-export {
+export type {
   WalletSelectorState,
+  ContractState,
   ModuleState,
   AccountState,
 } from "./lib/store.types";
 
-export {
+export type {
   WalletModuleFactory,
   WalletModule,
   WalletBehaviourFactory,
@@ -56,6 +58,6 @@ export {
   AddKeyPermission,
 } from "./lib/wallet";
 
-export { FinalExecutionOutcome } from "near-api-js/lib/providers";
+export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export { waitFor } from "./lib/helpers";

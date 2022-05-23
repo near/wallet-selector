@@ -1,12 +1,10 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { mock } from "jest-mock-extended";
 
-import {
-  mockWallet,
-  MockWalletDependencies,
-} from "../../../core/src/lib/testUtils";
-import { HardwareWallet } from "../../../core/src/lib/wallet";
-import {
+import { mockWallet } from "../../../core/src/lib/testUtils";
+import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
+import type { HardwareWallet } from "../../../core/src/lib/wallet";
+import type {
   ProviderService,
   JsonStorageService,
 } from "../../../core/src/lib/services";
@@ -84,7 +82,10 @@ describe("connect", () => {
     const derivationPath = "derivationPath";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
-    await wallet.connect({ derivationPaths: [derivationPath] });
+    await wallet.connect({
+      contractId: "test.testnet",
+      derivationPaths: [derivationPath],
+    });
     expect(storage.setItem).toHaveBeenCalledWith("ledger:accounts", [
       {
         accountId,
@@ -104,6 +105,7 @@ describe("getAccounts", () => {
     const accountId = "accountId";
     const { wallet } = await createLedgerWallet();
     await wallet.connect({
+      contractId: "test.testnet",
       derivationPaths: ["derivationPath"],
     });
     const result = await wallet.getAccounts();

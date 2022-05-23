@@ -1,6 +1,6 @@
 import { BN } from "bn.js";
 import { utils, transactions } from "near-api-js";
-import { AddKeyPermission, Action } from "@near-wallet-selector/core";
+import type { AddKeyPermission, Action } from "@near-wallet-selector/core";
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {

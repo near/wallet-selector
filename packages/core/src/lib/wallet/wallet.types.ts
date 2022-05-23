@@ -7,6 +7,7 @@ import {
   JsonStorageService,
 } from "../services";
 import { Options } from "../options.types";
+import { ReadOnlyStore } from "../store.types";
 import { Transaction, Action } from "./transactions.types";
 import { Modify, Optional } from "../utils.types";
 
@@ -16,30 +17,13 @@ interface BaseWalletMetadata {
   iconUrl: string;
 }
 
-interface BaseWalletBehaviour<ExecutionOutcome> {
-  connect(): Promise<Array<Account>>;
-  disconnect(): Promise<void>;
-  getAccounts(): Promise<Array<Account>>;
-  signAndSendTransaction(
-    params: SignAndSendTransactionParams
-  ): Promise<ExecutionOutcome>;
-  signAndSendTransactions(
-    params: SignAndSendTransactionsParams
-  ): Promise<ExecutionOutcome extends void ? void : Array<ExecutionOutcome>>;
-}
-
-type BaseWallet<
-  Type extends string,
-  Metadata extends BaseWalletMetadata,
-  Behaviour
-> = {
-  id: string;
-  type: Type;
-  metadata: Metadata;
-} & Behaviour;
-
 export interface Account {
   accountId: string;
+}
+
+export interface ConnectParams {
+  contractId: string;
+  methodNames?: Array<string>;
 }
 
 export interface SignAndSendTransactionParams {
@@ -52,8 +36,34 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
+interface BaseWalletBehaviour {
+  connect(params: ConnectParams): Promise<Array<Account>>;
+  disconnect(): Promise<void>;
+  getAccounts(): Promise<Array<Account>>;
+  signAndSendTransaction(
+    params: SignAndSendTransactionParams
+  ): Promise<providers.FinalExecutionOutcome>;
+  signAndSendTransactions(
+    params: SignAndSendTransactionsParams
+  ): Promise<Array<providers.FinalExecutionOutcome>>;
+}
+
+type BaseWallet<
+  Type extends string,
+  Metadata extends BaseWalletMetadata,
+  Behaviour
+> = {
+  id: string;
+  type: Type;
+  metadata: Metadata;
+} & Behaviour;
+
 export type WalletEvents = {
-  connected: { accounts: Array<Account> };
+  connected: {
+    contractId: string;
+    methodNames: Array<string>;
+    accounts: Array<Account>;
+  };
   disconnected: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
@@ -63,7 +73,27 @@ export type WalletEvents = {
 
 export type BrowserWalletMetadata = BaseWalletMetadata;
 
-export type BrowserWalletBehaviour = BaseWalletBehaviour<void>;
+export interface BrowserWalletSignAndSendTransactionParams
+  extends SignAndSendTransactionParams {
+  callbackUrl?: string;
+}
+
+export interface BrowserWalletSignAndSendTransactionsParams
+  extends SignAndSendTransactionsParams {
+  callbackUrl?: string;
+}
+
+export type BrowserWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  {
+    signAndSendTransaction(
+      params: BrowserWalletSignAndSendTransactionParams
+    ): Promise<void>;
+    signAndSendTransactions(
+      params: BrowserWalletSignAndSendTransactionsParams
+    ): Promise<void>;
+  }
+>;
 
 export type BrowserWallet = BaseWallet<
   "browser",
@@ -77,8 +107,7 @@ export type InjectedWalletMetadata = BaseWalletMetadata & {
   downloadUrl: string;
 };
 
-export type InjectedWalletBehaviour =
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>;
+export type InjectedWalletBehaviour = BaseWalletBehaviour;
 
 export type InjectedWallet = BaseWallet<
   "injected",
@@ -90,12 +119,12 @@ export type InjectedWallet = BaseWallet<
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
-export interface HardwareWalletConnectParams {
+export interface HardwareWalletConnectParams extends ConnectParams {
   derivationPaths: Array<string>;
 }
 
 export type HardwareWalletBehaviour = Modify<
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>,
+  BaseWalletBehaviour,
   { connect(params: HardwareWalletConnectParams): Promise<Array<Account>> }
 >;
 
@@ -109,8 +138,7 @@ export type HardwareWallet = BaseWallet<
 
 export type BridgeWalletMetadata = BaseWalletMetadata;
 
-export type BridgeWalletBehaviour =
-  BaseWalletBehaviour<providers.FinalExecutionOutcome>;
+export type BridgeWalletBehaviour = BaseWalletBehaviour;
 
 export type BridgeWallet = BaseWallet<
   "bridge",
@@ -139,6 +167,7 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
   type: Variation["type"];
   metadata: Variation["metadata"];
   options: Options;
+  store: ReadOnlyStore;
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;

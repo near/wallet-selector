@@ -1,12 +1,12 @@
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
-import {
+import type {
   WalletSelector,
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
 import { EventEmitter, Logger, WalletModules } from "./services";
-import { Wallet } from "./wallet";
+import type { Wallet } from "./wallet";
 
 export const setupWalletSelector = async (
   params: WalletSelectorParams
@@ -27,10 +27,7 @@ export const setupWalletSelector = async (
   await walletModules.setup();
 
   return {
-    store: {
-      getState: () => store.getState(),
-      observable: store.observable.asObservable(),
-    },
+    store: store.toReadOnly(),
     get connected() {
       const { accounts } = store.getState();
 

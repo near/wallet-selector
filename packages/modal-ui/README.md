@@ -23,12 +23,11 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [setupNearWallet()],
 });
 
 const modal = setupModal(selector, {
-  theme: "dark",
+  contractId: "test.testnet",
 });
 
 modal.show();
@@ -36,10 +35,25 @@ modal.show();
 
 ## Options
 
+- `contractId` (`string`): Account ID of the Smart Contract used for connecting and signing transactions.
+- `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
 
-## Customizing CSS
+## Styles & Customizing CSS
+
+Import modal css styles:
+
+### Angular
+```css
+/* Add import in the main css file */
+@import "~@near-wallet-selector/modal-ui/styles.css";
+```
+### React, Vue
+```ts
+// Add import in the main component
+import "@near-wallet-selector/modal-ui/styles.css";
+```
 
 These are the available css variables:
 

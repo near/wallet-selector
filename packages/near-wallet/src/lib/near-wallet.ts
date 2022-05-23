@@ -5,7 +5,7 @@ import {
   transactions as nearTransactions,
   utils,
 } from "near-api-js";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BrowserWallet,
@@ -73,7 +73,7 @@ const setupWalletState = async (
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: NearWalletExtraOptions }
-> = async ({ options, params, logger }) => {
+> = async ({ options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -130,17 +130,14 @@ const NearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async connect() {
+    async connect({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      await _state.wallet.requestSignIn({ contractId, methodNames });
 
       return getAccounts();
     },
@@ -159,28 +156,37 @@ const NearWallet: WalletBehaviourFactory<
 
     async signAndSendTransaction({
       signerId,
-      receiverId = options.contractId,
+      receiverId,
       actions,
+      callbackUrl,
     }) {
-      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+      logger.log("signAndSendTransaction", {
+        signerId,
+        receiverId,
+        actions,
+        callbackUrl,
+      });
 
-      if (!_state.wallet.isSignedIn()) {
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not connected");
       }
 
       const account = _state.wallet.account();
 
       return account["signAndSendTransaction"]({
-        receiverId,
+        receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
+        walletCallbackUrl: callbackUrl,
       }).then(() => {
         // Suppress response since transactions with deposits won't actually
         // return FinalExecutionOutcome.
       });
     },
 
-    async signAndSendTransactions({ transactions }) {
-      logger.log("signAndSendTransactions", { transactions });
+    async signAndSendTransactions({ transactions, callbackUrl }) {
+      logger.log("signAndSendTransactions", { transactions, callbackUrl });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not connected");
@@ -188,6 +194,7 @@ const NearWallet: WalletBehaviourFactory<
 
       return _state.wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),
+        callbackUrl,
       });
     },
   };

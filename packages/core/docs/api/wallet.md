@@ -77,7 +77,9 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 
 **Parameters**
 
-- `params` (`object?`)
+- `params` (`object`)
+  - `contractId` (`string`): Account ID of the Smart Contract.
+  - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `derivationPaths` (`Array<string>?`): Required for hardware wallets (e.g. Ledger). This is a list of derivation paths linked to public keys on your device.
 
 **Returns**
@@ -94,25 +96,26 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // NEAR Wallet.
 (async () => {
   const wallet = await selector.wallet("near-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Sender.
 (async () => {
   const wallet = await selector.wallet("sender");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Math Wallet.
 (async () => {
   const wallet = await selector.wallet("math-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 
 // Ledger
 (async () => {
   const wallet = await selector.wallet("ledger");
   const accounts = await wallet.connect({
+    contractId: "test.testnet",
     derivationPaths: ["44'/397'/0'/0'/1'"],
   });
 })();
@@ -120,7 +123,7 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // WalletConnect.
 (async () => {
   const wallet = await selector.wallet("wallet-connect");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.connect({ contractId: "test.testnet" });
 })();
 ```
 
@@ -179,6 +182,7 @@ Returns one or more accounts when connected. This method can be useful for walle
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
   - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
   - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
 
 **Returns**
 
@@ -215,6 +219,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be c
 
 - `params` (`object`)
   - `transactions` (`Array<Transaction>`): NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` [here](./transactions.md).
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
 
 **Returns**
 
