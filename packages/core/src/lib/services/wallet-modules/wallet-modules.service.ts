@@ -19,7 +19,6 @@ import { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   PACKAGE_NAME,
-  CONTRACT,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
 } from "../../constants";
@@ -162,8 +161,6 @@ export class WalletModules {
       await this.disconnectWallet(selectedWalletId);
     }
 
-    await jsonStorage.setItem(CONTRACT, contract);
-
     this.store.dispatch({
       type: "WALLET_CONNECTED",
       payload: { walletId, contract, accounts },
@@ -171,10 +168,6 @@ export class WalletModules {
   }
 
   private async onWalletDisconnected(walletId: string) {
-    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-
-    await jsonStorage.removeItem(CONTRACT);
-
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
