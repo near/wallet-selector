@@ -5,7 +5,7 @@ import {
   transactions as nearTransactions,
   utils,
 } from "near-api-js";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BrowserWallet,
