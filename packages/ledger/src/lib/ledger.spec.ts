@@ -84,7 +84,10 @@ describe("connect", () => {
     const derivationPath = "derivationPath";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
-    await wallet.connect({ derivationPaths: [derivationPath] });
+    await wallet.connect({
+      contractId: "test.testnet",
+      derivationPaths: [derivationPath],
+    });
     expect(storage.setItem).toHaveBeenCalledWith("ledger:accounts", [
       {
         accountId,
@@ -104,6 +107,7 @@ describe("getAccounts", () => {
     const accountId = "accountId";
     const { wallet } = await createLedgerWallet();
     await wallet.connect({
+      contractId: "test.testnet",
       derivationPaths: ["derivationPath"],
     });
     const result = await wallet.getAccounts();
