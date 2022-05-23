@@ -30,6 +30,7 @@ export type {
   WalletType,
   WalletMetadata,
   WalletEvents,
+  ConnectParams,
   BrowserWalletMetadata,
   BrowserWalletBehaviour,
   BrowserWallet,
