@@ -24,7 +24,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   // Initialise wallet-sepecific client(s) here.
   
   return {
-    async signIn() {
+    async signIn({ contractId, methodNames }) {
       // Sign in to My Wallet for access to account(s).
       
       return [];
@@ -40,11 +40,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       return [];
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       // Sign a list of NEAR Actions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
       
