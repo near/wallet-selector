@@ -86,7 +86,7 @@ const Content: React.FC = () => {
   const handleSignOut = async () => {
     const wallet = await selector.wallet();
 
-    wallet.disconnect().catch((err) => {
+    wallet.signOut().catch((err) => {
       console.log("Failed to sign out");
       console.error(err);
     });

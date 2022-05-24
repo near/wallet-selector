@@ -71,8 +71,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   async signOut() {
     const wallet = await this.selector.wallet();
 
-    wallet.disconnect().catch((err) => {
-      console.log("Failed to disconnect");
+    wallet.signOut().catch((err) => {
+      console.log("Failed to sign out");
       console.error(err);
     });
   }
