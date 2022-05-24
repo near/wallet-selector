@@ -171,6 +171,7 @@ export const setupMathWallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+        deprecated: false,
       },
       init: MathWallet,
     };

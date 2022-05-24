@@ -311,6 +311,7 @@ export function setupLedger({
         name: "Ledger",
         description: null,
         iconUrl,
+        deprecated: false,
       },
       init: Ledger,
     };

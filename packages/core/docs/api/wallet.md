@@ -62,7 +62,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description` and `iconUrl` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` and `deprecated` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
 
 **Example**
 
