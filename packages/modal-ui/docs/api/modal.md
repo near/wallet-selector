@@ -12,7 +12,7 @@
 
 **Description**
 
-Opens the modal for users to connect to their preferred wallet. You can also use this method to switch wallets.
+Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
 
 **Example**
 

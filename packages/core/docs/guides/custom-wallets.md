@@ -24,27 +24,23 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   // Initialise wallet-sepecific client(s) here.
   
   return {
-    async connect() {
-      // Connect to My Wallet for access to account(s).
+    async signIn({ contractId, methodNames }) {
+      // Sign in to My Wallet for access to account(s).
       
       return [];
     },
 
-    async disconnect() {
-      // Disconnect from accounts and cleanup (e.g. listeners).
+    async signOut() {
+      // Sign out from accounts and cleanup (e.g. listeners).
     },
 
     async getAccounts() {
-      // Return list of connected accounts.
+      // Return list of signed in accounts.
       
       return [];
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       // Sign a list of NEAR Actions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
       
@@ -101,19 +97,19 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 ## Methods
 
-### `connect`
+### `signIn`
 
-This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a connected state.
+This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a signed in state.
 
-> Note: Hardware wallets are passed `derivationPaths` where other wallets types are called without any parameters.
+> Note: Hardware wallets require `derivationPaths`.
 
-### `disconnect`
+### `signOut`
 
-This method handles disconnecting from accounts and cleanup such as event listeners. It's called when either the user specifically disconnects or when switching to a different wallet.
+This method handles signing out from accounts and cleanup such as event listeners. It's called when either the user specifically signs out or when switching to a different wallet.
 
 ### `getAccounts`
 
-This method returns the current list of accounts we have access to. When no accounts are returned, the wallet is considered to be in a disconnected state.
+This method returns the current list of accounts we have access to. When no accounts are returned, the wallet is considered to be in a signed out state.
 
 ### `signAndSendTransaction`
 

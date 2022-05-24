@@ -75,14 +75,14 @@ afterEach(() => {
   jest.resetModules();
 });
 
-describe("connect", () => {
+describe("signIn", () => {
   // TODO: Need to mock fetching for account id.
   it.skip("signs in", async () => {
     const accountId = "accountId";
     const derivationPath = "derivationPath";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       contractId: "test.testnet",
       derivationPaths: [derivationPath],
     });
@@ -104,7 +104,7 @@ describe("getAccounts", () => {
   it.skip("returns account objects", async () => {
     const accountId = "accountId";
     const { wallet } = await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       contractId: "test.testnet",
       derivationPaths: ["derivationPath"],
     });
@@ -116,7 +116,7 @@ describe("getAccounts", () => {
 // describe("signAndSendTransaction", () => {
 //   it("signs and sends transaction", async () => {
 //     const { wallet, authData } = await createLedgerWallet();
-//     await wallet.connect({
+//     await wallet.signIn({
 //       accountId: authData.accountId,
 //       derivationPaths: [authData.derivationPath],
 //     });

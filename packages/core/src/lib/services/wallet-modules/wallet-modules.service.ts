@@ -1,6 +1,6 @@
 import type { WalletModulesParams } from "./wallet-modules.service.types";
 import type {
-  ConnectParams,
+  SignInParams,
   Wallet,
   WalletEvents,
   WalletModule,
@@ -58,7 +58,7 @@ export class WalletModules {
 
     if (wallet) {
       // Ensure our persistent state aligns with the selected wallet.
-      // For example a wallet is selected, but it returns no accounts (not connected).
+      // For example a wallet is selected, but it returns no accounts (not signed in).
       accounts = await wallet.getAccounts().catch((err) => {
         logger.log(`Failed to validate ${wallet.id} during setup`);
         logger.error(err);
@@ -90,8 +90,8 @@ export class WalletModules {
         const selectedWallet = await this.getWallet(selectedWalletId);
 
         if (selectedWallet && pendingSelectedWalletId !== selectedWalletId) {
-          await selectedWallet.disconnect().catch((err) => {
-            logger.log("Failed to disconnect existing wallet");
+          await selectedWallet.signOut().catch((err) => {
+            logger.log("Failed to sign out existing wallet");
             logger.error(err);
           });
         }
@@ -122,21 +122,21 @@ export class WalletModules {
     };
   }
 
-  private async disconnectWallet(walletId: string) {
+  private async signOutWallet(walletId: string) {
     const wallet = (await this.getWallet(walletId))!;
 
-    await wallet.disconnect().catch((err) => {
-      logger.log(`Failed to disconnect ${wallet.id}`);
+    await wallet.signOut().catch((err) => {
+      logger.log(`Failed to sign out ${wallet.id}`);
       logger.error(err);
 
       // At least clean up state on our side.
-      this.onWalletDisconnected(wallet.id);
+      this.onWalletSignedOut(wallet.id);
     });
   }
 
-  private async onWalletConnected(
+  private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames }: WalletEvents["connected"]
+    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -155,7 +155,7 @@ export class WalletModules {
     }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
-      await this.disconnectWallet(selectedWalletId);
+      await this.signOutWallet(selectedWalletId);
     }
 
     this.store.dispatch({
@@ -164,7 +164,7 @@ export class WalletModules {
     });
   }
 
-  private onWalletDisconnected(walletId: string) {
+  private onWalletSignedOut(walletId: string) {
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
@@ -174,17 +174,17 @@ export class WalletModules {
   private setupWalletEmitter(module: WalletModule) {
     const emitter = new EventEmitter<WalletEvents>();
 
-    emitter.on("disconnected", () => {
-      this.onWalletDisconnected(module.id);
+    emitter.on("signedOut", () => {
+      this.onWalletSignedOut(module.id);
     });
 
-    emitter.on("connected", (event) => {
-      this.onWalletConnected(module.id, event);
+    emitter.on("signedIn", (event) => {
+      this.onWalletSignedIn(module.id, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
       if (!accounts.length) {
-        return this.disconnectWallet(module.id);
+        return this.signOutWallet(module.id);
       }
 
       this.store.dispatch({
@@ -201,14 +201,14 @@ export class WalletModules {
   }
 
   private decorateWallet(wallet: Wallet): Wallet {
-    const _connect = wallet.connect;
-    const _disconnect = wallet.disconnect;
+    const _signIn = wallet.signIn;
+    const _signOut = wallet.signOut;
 
-    wallet.connect = async (params: never) => {
-      const accounts = await _connect(params);
+    wallet.signIn = async (params: never) => {
+      const accounts = await _signIn(params);
 
-      const { contractId, methodNames = [] } = params as ConnectParams;
-      await this.onWalletConnected(wallet.id, {
+      const { contractId, methodNames = [] } = params as SignInParams;
+      await this.onWalletSignedIn(wallet.id, {
         accounts,
         contractId,
         methodNames,
@@ -217,9 +217,9 @@ export class WalletModules {
       return accounts;
     };
 
-    wallet.disconnect = async () => {
-      await _disconnect();
-      this.onWalletDisconnected(wallet.id);
+    wallet.signOut = async () => {
+      await _signOut();
+      this.onWalletSignedOut(wallet.id);
     };
 
     return wallet;

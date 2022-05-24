@@ -81,7 +81,7 @@ const WalletConnect: WalletBehaviourFactory<
     _state.session = null;
   };
 
-  const disconnect = async () => {
+  const signOut = async () => {
     if (_state.session) {
       await _state.client.disconnect({
         topic: _state.session.topic,
@@ -119,7 +119,7 @@ const WalletConnect: WalletBehaviourFactory<
 
         if (deletedSession.topic === _state.session?.topic) {
           await cleanup();
-          emitter.emit("disconnected", null);
+          emitter.emit("signedOut", null);
         }
       })
     );
@@ -130,7 +130,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async connect() {
+    async signIn() {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -158,13 +158,13 @@ const WalletConnect: WalletBehaviourFactory<
 
         return getAccounts();
       } catch (err) {
-        await disconnect();
+        await signOut();
 
         throw err;
       }
     },
 
-    disconnect,
+    signOut,
 
     async getAccounts() {
       return getAccounts();
@@ -177,7 +177,7 @@ const WalletConnect: WalletBehaviourFactory<
       const { contract } = store.getState();
 
       if (!_state.session || !accounts.length || !contract) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.client.request({
@@ -199,7 +199,7 @@ const WalletConnect: WalletBehaviourFactory<
       logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.session) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.client.request({

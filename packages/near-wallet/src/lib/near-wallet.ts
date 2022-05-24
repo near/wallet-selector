@@ -130,7 +130,7 @@ const NearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async connect({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -142,7 +142,7 @@ const NearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async disconnect() {
+    async signOut() {
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
@@ -170,7 +170,7 @@ const NearWallet: WalletBehaviourFactory<
       const { contract } = store.getState();
 
       if (!_state.wallet.isSignedIn() || !contract) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       const account = _state.wallet.account();
@@ -189,7 +189,7 @@ const NearWallet: WalletBehaviourFactory<
       logger.log("signAndSendTransactions", { transactions, callbackUrl });
 
       if (!_state.wallet.isSignedIn()) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.wallet.requestSignTransactions({
