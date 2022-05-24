@@ -85,7 +85,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     const { contract } = store.getState();
 
     if (!account || !contract) {
-      throw new Error("Wallet not connected");
+      throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
@@ -98,7 +98,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   return {
-    async connect({ contractId }) {
+    async signIn({ contractId }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -110,7 +110,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async disconnect() {
+    async signOut() {
       // Ignore if unsuccessful (returns false).
       await _state.wallet.logout();
     },

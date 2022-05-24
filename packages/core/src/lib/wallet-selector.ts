@@ -28,7 +28,7 @@ export const setupWalletSelector = async (
 
   return {
     store: store.toReadOnly(),
-    get connected() {
+    get signedIn() {
       const { accounts } = store.getState();
 
       return Boolean(accounts.length);
