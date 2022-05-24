@@ -230,6 +230,7 @@ export function setupWalletConnect({
         name: "WalletConnect",
         description: null,
         iconUrl,
+        deprecated: false,
       },
       init: (options) => {
         return WalletConnect({

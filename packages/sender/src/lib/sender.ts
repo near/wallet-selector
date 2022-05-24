@@ -254,6 +254,7 @@ export function setupSender({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+        deprecated: false,
       },
       init: Sender,
     };
