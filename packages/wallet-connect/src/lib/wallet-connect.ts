@@ -310,8 +310,10 @@ const WalletConnect: WalletBehaviourFactory<
             },
             jsonrpc: {
               methods: [
-                "near_signAndSendTransaction",
-                "near_signAndSendTransactions",
+                "near_signTransaction",
+                "near_signTransactions",
+                "near_signIn",
+                "near_signOut",
               ],
             },
           },
