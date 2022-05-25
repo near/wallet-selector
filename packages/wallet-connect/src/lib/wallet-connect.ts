@@ -16,8 +16,12 @@ export interface WalletConnectParams {
   chainId?: string;
 }
 
-type WalletConnectExtraOptions = Pick<WalletConnectParams, "chainId"> &
-  Required<Pick<WalletConnectParams, "projectId" | "metadata" | "relayUrl">>;
+interface WalletConnectExtraOptions {
+  chainId?: string;
+  projectId: string;
+  metadata: AppMetadata;
+  relayUrl: string;
+}
 
 interface WalletConnectState {
   client: WalletConnectClient;

@@ -25,7 +25,9 @@ interface MyNearWalletState {
   keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
-type MyNearWalletExtraOptions = Required<Pick<MyNearWalletParams, "walletUrl">>;
+interface MyNearWalletExtraOptions {
+  walletUrl: string;
+}
 
 const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   if (walletUrl) {
