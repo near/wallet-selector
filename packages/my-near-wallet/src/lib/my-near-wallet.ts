@@ -25,9 +25,9 @@ interface MyNearWalletState {
   keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
-type MyNearWalletExtraOptions = Pick<MyNearWalletParams, "walletUrl">;
+type MyNearWalletExtraOptions = Required<Pick<MyNearWalletParams, "walletUrl">>;
 
-const getWalletUrl = (network: Network, walletUrl?: string) => {
+const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   if (walletUrl) {
     return walletUrl;
   }
@@ -50,7 +50,7 @@ const setupWalletState = async (
 
   const near = await connect({
     keyStore,
-    walletUrl: getWalletUrl(network, params.walletUrl),
+    walletUrl: params.walletUrl,
     ...network,
     headers: {},
   });
@@ -216,7 +216,7 @@ export function setupMyNearWallet({
         return MyNearWallet({
           ...options,
           params: {
-            walletUrl,
+            walletUrl: resolveWalletUrl(options.options.network, walletUrl),
           },
         });
       },
