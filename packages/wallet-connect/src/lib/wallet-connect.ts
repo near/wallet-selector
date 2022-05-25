@@ -1,4 +1,5 @@
 import { utils, keyStores, KeyPair, InMemorySigner } from "near-api-js";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 import type { AppMetadata, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -6,7 +7,7 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
-  ConnectParams,
+  SignInParams,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
@@ -93,6 +94,46 @@ const WalletConnect: WalletBehaviourFactory<
     _state.session = null;
   };
 
+  const signAndSendTransaction = async (transaction: Transaction) => {
+    const signedTx = await _state.client
+      .request<Buffer>({
+        timeout: 30 * 1000,
+        topic: _state.session!.topic,
+        chainId: getChainId(),
+        request: {
+          method: "near_signTransaction",
+          params: transaction,
+        },
+      })
+      .then((result) => SignedTransaction.decode(result));
+
+    return provider.sendTransaction(signedTx);
+  };
+
+  const signAndSendTransactions = async (transactions: Array<Transaction>) => {
+    if (!transactions.length) {
+      return [];
+    }
+
+    const signedTxs = await _state.client
+      .request<Array<Buffer>>({
+        timeout: 30 * 1000,
+        topic: _state.session!.topic,
+        chainId: getChainId(),
+        request: {
+          method: "near_signTransactions",
+          params: { transactions },
+        },
+      })
+      .then((results) => {
+        return results.map((x) => SignedTransaction.decode(new Buffer(x)));
+      });
+
+    return Promise.all(
+      signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
+    );
+  };
+
   const signOut = async () => {
     if (_state.session) {
       const transactions: Array<Transaction> = [];
@@ -104,6 +145,10 @@ const WalletConnect: WalletBehaviourFactory<
           options.network.networkId,
           account.accountId
         );
+
+        if (!keyPair) {
+          continue;
+        }
 
         transactions.push({
           signerId: account.accountId,
@@ -119,15 +164,7 @@ const WalletConnect: WalletBehaviourFactory<
         });
       }
 
-      await _state.client.request({
-        timeout: 30 * 1000,
-        topic: _state.session.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signAndSendTransactions",
-          params: { transactions },
-        },
-      });
+      await signAndSendTransactions(transactions);
 
       await _state.client.disconnect({
         topic: _state.session.topic,
@@ -144,7 +181,7 @@ const WalletConnect: WalletBehaviourFactory<
   const requestFunctionCallAccess = async ({
     contractId,
     methodNames,
-  }: ConnectParams) => {
+  }: SignInParams) => {
     const accounts = getAccounts();
 
     const { keyPairs, transactions } = accounts.reduce<{
@@ -180,15 +217,7 @@ const WalletConnect: WalletBehaviourFactory<
       { keyPairs: {}, transactions: [] }
     );
 
-    await _state.client.request({
-      timeout: 30 * 1000,
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
-        method: "near_signAndSendTransactions",
-        params: { transactions },
-      },
-    });
+    await signAndSendTransactions(transactions);
 
     for (const accountId in keyPairs) {
       const keyPair = keyPairs[accountId];
@@ -361,15 +390,7 @@ const WalletConnect: WalletBehaviourFactory<
 
       if (!keyPair) {
         // TODO: Make AddKey request (if it's only a FunctionCall list of Actions).
-        return _state.client.request({
-          timeout: 30 * 1000,
-          topic: _state.session.topic,
-          chainId: getChainId(),
-          request: {
-            method: "near_signAndSendTransaction",
-            params: transaction,
-          },
-        });
+        return signAndSendTransaction(transaction);
       }
 
       const [signedTx] = await signTransactions(
@@ -403,15 +424,7 @@ const WalletConnect: WalletBehaviourFactory<
         const transaction = txs[i];
 
         if (!isFunctionCallTransaction(transaction)) {
-          return _state.client.request({
-            timeout: 30 * 1000,
-            topic: _state.session.topic,
-            chainId: getChainId(),
-            request: {
-              method: "near_signAndSendTransactions",
-              params: { transactions: txs },
-            },
-          });
+          return signAndSendTransactions(txs);
         }
 
         const keyPair = await _state.keystore.getKey(
@@ -446,15 +459,7 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       if (pendingAddKeyTransactions.length) {
-        await _state.client.request({
-          timeout: 30 * 1000,
-          topic: _state.session.topic,
-          chainId: getChainId(),
-          request: {
-            method: "near_signAndSendTransactions",
-            params: { transactions: pendingAddKeyTransactions },
-          },
-        });
+        await signAndSendTransactions(pendingAddKeyTransactions);
       }
 
       for (const accountId in pendingKeyPairs) {
