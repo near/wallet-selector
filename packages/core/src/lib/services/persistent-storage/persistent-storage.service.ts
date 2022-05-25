@@ -64,4 +64,4 @@ export class PersistentStorage {
   }
 }
 
-export const storage = new PersistentStorage();
+export const storage = typeof window !== "undefined" ? new PersistentStorage() : undefined;

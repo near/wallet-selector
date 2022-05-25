@@ -38,4 +38,4 @@ export class Logger {
   }
 }
 
-export const logger = new Logger();
+export const logger = typeof window !== "undefined" ? new Logger() : undefined;
