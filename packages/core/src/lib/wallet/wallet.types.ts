@@ -163,6 +163,10 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
+export interface WalletModuleOptions {
+  options: Options;
+}
+
 export interface WalletBehaviourOptions<Variation extends Wallet> {
   id: Variation["id"];
   type: Variation["type"];
@@ -192,5 +196,6 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
   ): Promise<Omit<Variation, "id" | "type" | "metadata">>;
 };
 
-export type WalletModuleFactory<Variation extends Wallet = Wallet> =
-  () => Promise<WalletModule<Variation> | null>;
+export type WalletModuleFactory<Variation extends Wallet = Wallet> = (
+  options: WalletModuleOptions
+) => Promise<WalletModule<Variation> | null>;
