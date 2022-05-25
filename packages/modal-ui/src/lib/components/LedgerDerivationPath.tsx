@@ -39,7 +39,7 @@ export const LedgerDerivationPath: React.FC<LedgerDerivationPathProps> = ({
     setIsLoading(true);
 
     return wallet
-      .connect({
+      .signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
         derivationPaths: [ledgerDerivationPath],

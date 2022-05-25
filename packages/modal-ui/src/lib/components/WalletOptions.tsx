@@ -44,7 +44,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         return onConnectHardwareWallet();
       }
 
-      await wallet.connect({
+      await wallet.signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
       });
@@ -56,7 +56,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(new Error(`Failed to connect with ${name}: ${message}`));
+      onError(new Error(`Failed to sign in with ${name}: ${message}`));
     } finally {
       setConnecting(false);
     }
@@ -67,7 +67,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       <div className="wallet-options-wrapper">
         <p className="description">
           {options?.description ||
-            "Please select a wallet to connect to this dApp:"}
+            "Please select a wallet to sign in to this dApp:"}
         </p>
         <ul
           className={"options-list " + (connecting ? "selection-process" : "")}

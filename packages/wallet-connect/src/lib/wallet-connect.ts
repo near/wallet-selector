@@ -93,7 +93,7 @@ const WalletConnect: WalletBehaviourFactory<
     _state.session = null;
   };
 
-  const disconnect = async () => {
+  const signOut = async () => {
     if (_state.session) {
       const transactions: Array<Transaction> = [];
       const accounts = getAccounts();
@@ -282,7 +282,7 @@ const WalletConnect: WalletBehaviourFactory<
 
         if (deletedSession.topic === _state.session?.topic) {
           await cleanup();
-          emitter.emit("disconnected", null);
+          emitter.emit("signedOut", null);
         }
       })
     );
@@ -293,7 +293,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async connect({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -325,13 +325,13 @@ const WalletConnect: WalletBehaviourFactory<
 
         return getAccounts();
       } catch (err) {
-        await disconnect();
+        await signOut();
 
         throw err;
       }
     },
 
-    disconnect,
+    signOut,
 
     async getAccounts() {
       return getAccounts();
@@ -344,7 +344,7 @@ const WalletConnect: WalletBehaviourFactory<
       const { contract } = store.getState();
 
       if (!_state.session || !accounts.length || !contract) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       const [{ transaction, keyPair }] = await getTransactionsWithKeyPairs(
@@ -388,7 +388,7 @@ const WalletConnect: WalletBehaviourFactory<
       const { contract } = store.getState();
 
       if (!_state.session || !accounts.length || !contract) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       const pendingAddKeyTransactions: Array<Transaction> = [];
@@ -491,6 +491,7 @@ export function setupWalletConnect({
         name: "WalletConnect",
         description: null,
         iconUrl,
+        deprecated: false,
       },
       init: (options) => {
         return WalletConnect({

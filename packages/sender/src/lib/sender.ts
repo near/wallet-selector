@@ -52,7 +52,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
-  const disconnect = async () => {
+  const signOut = async () => {
     if (!_state.wallet.isSignedIn()) {
       return;
     }
@@ -69,29 +69,29 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       typeof res.error === "string" ? res.error : res.error.type
     );
 
-    // Prevent disconnecting by throwing.
+    // Prevent signing out by throwing.
     if (error.message === "User reject") {
       throw error;
     }
 
-    // Continue disconnecting but log out the issue.
-    logger.log("Failed to disconnect");
+    // Continue signing out but log the issue.
+    logger.log("Failed to sign out");
     logger.error(error);
   };
 
   const setupEvents = () => {
     _state.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("onAccountChange", newAccountId);
-      emitter.emit("disconnected", null);
+      emitter.emit("signedOut", null);
     });
 
     _state.wallet.on("rpcChanged", async (rpc) => {
       logger.log("onNetworkChange", rpc);
 
       if (options.network.networkId !== rpc.networkId) {
-        await disconnect();
+        await signOut();
 
-        emitter.emit("disconnected", null);
+        emitter.emit("signedOut", null);
         emitter.emit("networkChanged", { networkId: rpc.networkId });
       }
     });
@@ -141,7 +141,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   }
 
   return {
-    async connect({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -154,11 +154,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       });
 
       if (!accessKey || error) {
-        await disconnect();
+        await signOut();
 
         throw new Error(
           (typeof error === "string" ? error : error.type) ||
-            "Failed to connect"
+            "Failed to sign in"
         );
       }
 
@@ -167,7 +167,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    disconnect,
+    signOut,
 
     async getAccounts() {
       return getAccounts();
@@ -179,7 +179,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       const { contract } = store.getState();
 
       if (!_state.wallet.isSignedIn() || !contract) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.wallet
@@ -205,7 +205,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.wallet.isSignedIn()) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.wallet
@@ -254,6 +254,7 @@ export function setupSender({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+        deprecated: false,
       },
       init: Sender,
     };

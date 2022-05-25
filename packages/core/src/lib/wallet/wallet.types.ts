@@ -15,13 +15,14 @@ interface BaseWalletMetadata {
   name: string;
   description: string | null;
   iconUrl: string;
+  deprecated: boolean;
 }
 
 export interface Account {
   accountId: string;
 }
 
-export interface ConnectParams {
+export interface SignInParams {
   contractId: string;
   methodNames?: Array<string>;
 }
@@ -37,8 +38,8 @@ export interface SignAndSendTransactionsParams {
 }
 
 interface BaseWalletBehaviour {
-  connect(params: ConnectParams): Promise<Array<Account>>;
-  disconnect(): Promise<void>;
+  signIn(params: SignInParams): Promise<Array<Account>>;
+  signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
@@ -59,12 +60,12 @@ type BaseWallet<
 } & Behaviour;
 
 export type WalletEvents = {
-  connected: {
+  signedIn: {
     contractId: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
   };
-  disconnected: null;
+  signedOut: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
 };
@@ -119,13 +120,13 @@ export type InjectedWallet = BaseWallet<
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
-export interface HardwareWalletConnectParams extends ConnectParams {
+export interface HardwareWalletSignInParams extends SignInParams {
   derivationPaths: Array<string>;
 }
 
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { connect(params: HardwareWalletConnectParams): Promise<Array<Account>> }
+  { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
 >;
 
 export type HardwareWallet = BaseWallet<

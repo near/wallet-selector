@@ -18,7 +18,7 @@ export type WalletSelectorEvents = {
 
 export interface WalletSelector {
   options: Options;
-  connected: boolean;
+  signedIn: boolean;
 
   store: WalletSelectorStore;
 

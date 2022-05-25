@@ -112,10 +112,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     storage.removeItem(STORAGE_ACCOUNTS);
   };
 
-  const disconnect = async () => {
+  const signOut = async () => {
     if (_state.client.isConnected()) {
       await _state.client.disconnect().catch((err) => {
-        logger.log("Failed to disconnect");
+        logger.log("Failed to disconnect device");
         logger.error(err);
       });
     }
@@ -186,7 +186,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     const { contract } = store.getState();
 
     if (!accounts.length || !contract) {
-      throw new Error("Wallet not connected");
+      throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
@@ -199,7 +199,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   };
 
   return {
-    async connect({ derivationPaths }) {
+    async signIn({ derivationPaths }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -245,7 +245,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
-    disconnect,
+    signOut,
 
     async getAccounts() {
       return getAccounts();
@@ -255,7 +255,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       if (!_state.accounts.length) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       // Note: Connection must be triggered by user interaction.
@@ -274,7 +274,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.accounts.length) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       // Note: Connection must be triggered by user interaction.
@@ -311,6 +311,7 @@ export function setupLedger({
         name: "Ledger",
         description: null,
         iconUrl,
+        deprecated: false,
       },
       init: Ledger,
     };

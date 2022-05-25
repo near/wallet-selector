@@ -10,7 +10,7 @@
 
 **Description**
 
-Returns the connected contract.
+Returns the signed in contract.
 
 **Example**
 
@@ -49,7 +49,7 @@ console.log(modules); // [{ id: "near-wallet", ... }]
 
 **Description**
 
-Returns the list of connected accounts.
+Returns the list of signed in accounts.
 
 **Example**
 

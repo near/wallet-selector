@@ -35,7 +35,7 @@ modal.show();
 
 ## Options
 
-- `contractId` (`string`): Account ID of the Smart Contract used for connecting and signing transactions.
+- `contractId` (`string`): Account ID of the Smart Contract used for sign in and signing transactions.
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
