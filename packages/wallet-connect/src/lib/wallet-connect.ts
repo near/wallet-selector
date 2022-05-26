@@ -105,7 +105,7 @@ const WalletConnect: WalletBehaviourFactory<
           params: transaction,
         },
       })
-      .then((result) => SignedTransaction.decode(result));
+      .then((result) => SignedTransaction.decode(new Buffer(result)));
 
     return provider.sendTransaction(signedTx);
   };
