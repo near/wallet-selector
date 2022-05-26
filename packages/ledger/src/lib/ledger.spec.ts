@@ -96,9 +96,9 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   };
 };
 
-// afterEach(() => {
-//   jest.resetModules();
-// });
+afterEach(() => {
+  jest.resetModules();
+});
 
 describe("connect", () => {
   // TODO: Need to mock fetching for account id.
