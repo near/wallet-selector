@@ -1,40 +1,52 @@
-type ModalRouteName =
-  | "AlertMessage"
-  | "WalletOptions"
-  | "DerivationPath"
-  | "WalletNotInstalled"
-  | "WalletNetworkChanged";
-
-type AlertMessageParams = {
+export type AlertMessageModalRouteParams = {
   message: string;
   onBack: () => void;
 };
 
-type WalletOptionsParams = {
+export type WalletOptionsModalRouteParams = {
   walletId: string;
 };
 
-type DerivationPathParams = {
-  walletId: string;
-  description: string;
-};
-
-type WalletNotInstalledParams = {
+export type DerivationPathModalRouteParams = {
   walletId: string;
 };
 
-type WalletNetworkChangedParams = {
+export type WalletNotInstalledModalRouteParams = {
   walletId: string;
 };
 
-export type ModalRouteParams =
-  | AlertMessageParams
-  | WalletOptionsParams
-  | DerivationPathParams
-  | WalletNotInstalledParams
-  | WalletNetworkChangedParams;
-
-export type ModalRoute = {
-  name: ModalRouteName;
-  params?: ModalRouteParams;
+export type WalletNetworkChangedModalRouteParams = {
+  walletId: string;
 };
+
+export type AlertMessageModalRoute = {
+  name: "AlertMessage";
+  params: AlertMessageModalRouteParams;
+};
+
+export type WalletOptionsModalRoute = {
+  name: "WalletOptions";
+  params: WalletOptionsModalRouteParams;
+};
+
+export type DerivationPathModalRoute = {
+  name: "DerivationPath";
+  params: DerivationPathModalRouteParams;
+};
+
+export type WalletNotInstalledModalRoute = {
+  name: "WalletNotInstalled";
+  params: WalletNotInstalledModalRouteParams;
+};
+
+export type WalletNetworkChangedModalRoute = {
+  name: "WalletNetworkChanged";
+  params: WalletNetworkChangedModalRouteParams;
+};
+
+export type ModalRoute =
+  | AlertMessageModalRoute
+  | WalletOptionsModalRoute
+  | DerivationPathModalRoute
+  | WalletNotInstalledModalRoute
+  | WalletNetworkChangedModalRoute;

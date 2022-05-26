@@ -1,14 +1,14 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import type { WalletSelector } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
-import { ModalRouteParams } from "./Modal.types";
+import { DerivationPathModalRouteParams } from "./Modal.types";
 
 interface DerivationPathProps {
   selector: WalletSelector;
   options: ModalOptions;
   onBack: () => void;
   onConnected: () => void;
-  params: ModalRouteParams;
+  params: DerivationPathModalRouteParams;
 }
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
