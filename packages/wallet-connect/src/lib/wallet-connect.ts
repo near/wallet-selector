@@ -1,4 +1,4 @@
-import { utils, keyStores, KeyPair, InMemorySigner } from "near-api-js";
+import { utils, keyStores, InMemorySigner } from "near-api-js";
 import { SignedTransaction } from "near-api-js/lib/transaction";
 import type { AppMetadata, SessionTypes } from "@walletconnect/types";
 import type {
@@ -12,7 +12,6 @@ import type {
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { getTransactionsWithKeyPairs } from "./access-keys";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -181,7 +180,8 @@ const WalletConnect: WalletBehaviourFactory<
     }));
   };
 
-  const isFunctionCallTransaction = (transaction: Transaction) => {
+  // Determine whether a transaction can be signed with a local key pair.
+  const isSignable = (transaction: Transaction) => {
     const accounts = getAccounts();
     const { contract } = store.getState();
 
@@ -291,10 +291,10 @@ const WalletConnect: WalletBehaviourFactory<
             },
             jsonrpc: {
               methods: [
-                "near_signTransaction",
-                "near_signTransactions",
                 "near_signIn",
                 "near_signOut",
+                "near_signTransaction",
+                "near_signTransactions",
               ],
             },
           },
@@ -356,22 +356,17 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const [{ transaction, keyPair }] = await getTransactionsWithKeyPairs(
-        [
-          {
-            signerId: signerId || accounts[0].accountId,
-            receiverId: receiverId || contract.contractId,
-            actions,
-          },
-        ],
-        _state.keystore,
-        options.network
-      );
+      const transaction: Transaction = {
+        signerId: signerId || accounts[0].accountId,
+        receiverId: receiverId || contract.contractId,
+        actions,
+      };
 
-      if (!keyPair) {
-        // TODO: Make AddKey request (if it's only a FunctionCall list of Actions).
+      if (!isSignable(transaction)) {
         return signAndSendTransaction(transaction);
       }
+
+      // TODO: Handle when we don't yet have a key pair for the signerId.
 
       const [signedTx] = await signTransactions(
         [transaction],
@@ -392,65 +387,17 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const pendingAddKeyTransactions: Array<Transaction> = [];
-      const pendingKeyPairs: Record<string, KeyPair> = {};
       const txs = transactions.map((x) => ({
         signerId: x.signerId || accounts[0].accountId,
         receiverId: x.receiverId,
         actions: x.actions,
       }));
 
-      for (let i = 0; i < txs.length; i += 1) {
-        const transaction = txs[i];
-
-        if (!isFunctionCallTransaction(transaction)) {
-          return signAndSendTransactions(txs);
-        }
-
-        const keyPair = await _state.keystore.getKey(
-          options.network.networkId,
-          transaction.signerId
-        );
-
-        if (!keyPair) {
-          const newKeyPair = utils.KeyPair.fromRandom("ed25519");
-
-          pendingKeyPairs[transaction.signerId] = newKeyPair;
-
-          pendingAddKeyTransactions.push({
-            signerId: transaction.signerId,
-            receiverId: transaction.signerId,
-            actions: [
-              {
-                type: "AddKey",
-                params: {
-                  publicKey: newKeyPair.getPublicKey().toString(),
-                  accessKey: {
-                    permission: {
-                      receiverId: contract.contractId,
-                      methodNames: contract.methodNames,
-                    },
-                  },
-                },
-              },
-            ],
-          });
-        }
+      if (!txs.every((x) => isSignable(x))) {
+        return signAndSendTransactions(txs);
       }
 
-      if (pendingAddKeyTransactions.length) {
-        await signAndSendTransactions(pendingAddKeyTransactions);
-      }
-
-      for (const accountId in pendingKeyPairs) {
-        const keyPair = pendingKeyPairs[accountId];
-
-        await _state.keystore.setKey(
-          options.network.networkId,
-          accountId,
-          keyPair
-        );
-      }
+      // TODO: Handle when we don't yet have a key pair for each signerId.
 
       const signedTxs = await signTransactions(txs, signer, options.network);
 
