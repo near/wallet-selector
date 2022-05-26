@@ -1,4 +1,4 @@
-import { QueryResponseKind } from "near-api-js/lib/providers/provider";
+import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
 
 export const createQueryResponseMock = (): QueryResponseKind => ({
   block_height: 0,

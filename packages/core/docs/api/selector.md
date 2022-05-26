@@ -9,8 +9,6 @@
   - `nodeUrl` (`string`): URL for RPC requests.
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
-- `contractId` (`string`): Account ID of the Smart Contract used for `connect` and signing transactions.
-- `methodNames` (`Array<string>?`): List of methods that can only be accessed on the Smart Contract.
 - `debug` (`boolean`): Whether internal logging is enabled.
 
 **Description**
@@ -23,7 +21,7 @@ Resolved variation of the options passed to `setupWalletSelector`.
 console.log(selector.options); // { contractId: "guest-book.testnet", ... }
 ```
 
-### `.connected`
+### `.signedIn`
 
 **Returns**
 
@@ -31,12 +29,12 @@ console.log(selector.options); // { contractId: "guest-book.testnet", ... }
 
 **Description**
 
-Determines whether we're connected to one or more accounts.
+Determines whether we're signed in to one or more accounts.
 
 **Example**
 
 ```ts
-console.log(selector.connected); // true
+console.log(selector.signedIn); // true
 ```
 
 ### `.store.getState()`
@@ -119,7 +117,7 @@ Programmatically access wallets and call their methods. It's advised to use `sta
 // Specific wallet.
 (async () => {
   const wallet = await selector.wallet("near-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 ```
 
@@ -135,7 +133,7 @@ Programmatically access wallets and call their methods. It's advised to use `sta
 
 **Description**
 
-Opens the modal for users to connect to their preferred wallet. You can also use this method to switch wallets.
+Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
 
 **Example**
 

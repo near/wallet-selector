@@ -1,5 +1,5 @@
-import { AppMetadata, SessionTypes } from "@walletconnect/types";
-import {
+import type { AppMetadata, SessionTypes } from "@walletconnect/types";
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
@@ -47,7 +47,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, params, emitter, logger }) => {
+> = async ({ options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -81,7 +81,7 @@ const WalletConnect: WalletBehaviourFactory<
     _state.session = null;
   };
 
-  const disconnect = async () => {
+  const signOut = async () => {
     if (_state.session) {
       await _state.client.disconnect({
         topic: _state.session.topic,
@@ -118,7 +118,8 @@ const WalletConnect: WalletBehaviourFactory<
         logger.log("Session Deleted", deletedSession);
 
         if (deletedSession.topic === _state.session?.topic) {
-          await disconnect();
+          await cleanup();
+          emitter.emit("signedOut", null);
         }
       })
     );
@@ -129,7 +130,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async connect() {
+    async signIn() {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -157,31 +158,26 @@ const WalletConnect: WalletBehaviourFactory<
 
         return getAccounts();
       } catch (err) {
-        await disconnect();
+        await signOut();
 
         throw err;
       }
     },
 
-    disconnect,
+    signOut,
 
     async getAccounts() {
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
-      logger.log("WalletConnect:signAndSendTransaction", {
-        signerId,
-        receiverId,
-        actions,
-      });
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      if (!_state.session) {
-        throw new Error("Wallet not connected");
+      const accounts = getAccounts();
+      const { contract } = store.getState();
+
+      if (!_state.session || !accounts.length || !contract) {
+        throw new Error("Wallet not signed in");
       }
 
       return _state.client.request({
@@ -191,8 +187,8 @@ const WalletConnect: WalletBehaviourFactory<
         request: {
           method: "near_signAndSendTransaction",
           params: {
-            signerId,
-            receiverId,
+            signerId: signerId || accounts[0].accountId,
+            receiverId: receiverId || contract.contractId,
             actions,
           },
         },
@@ -200,10 +196,10 @@ const WalletConnect: WalletBehaviourFactory<
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("WalletConnect:signAndSendTransactions", { transactions });
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.session) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.client.request({
@@ -234,6 +230,7 @@ export function setupWalletConnect({
         name: "WalletConnect",
         description: null,
         iconUrl,
+        deprecated: false,
       },
       init: (options) => {
         return WalletConnect({

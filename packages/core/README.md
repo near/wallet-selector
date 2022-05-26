@@ -23,7 +23,6 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 // The entire set of options can be found in the section below.
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [setupNearWallet()],
 });
 ```
@@ -35,8 +34,6 @@ const selector = await setupWalletSelector({
   - `nodeUrl` (`string`): Custom URL for RPC requests.
   - `helperUrl` (`string`): Custom URL for creating accounts.
   - `explorerUrl` (`string`): Custom URL for the NEAR explorer.
-- `contractId` (`string`): Account ID of the Smart Contract used for `connect` and signing transactions.
-- `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `debug` (`boolean?`): Enable internal logging for debugging purposes. Defaults to `false`.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.

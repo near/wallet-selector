@@ -5,7 +5,7 @@ import {
   transactions as nearTransactions,
   utils,
 } from "near-api-js";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BrowserWallet,
@@ -73,7 +73,7 @@ const setupWalletState = async (
 const NearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: NearWalletExtraOptions }
-> = async ({ options, params, logger }) => {
+> = async ({ options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -130,22 +130,19 @@ const NearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async connect() {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      await _state.wallet.requestSignIn({ contractId, methodNames });
 
       return getAccounts();
     },
 
-    async disconnect() {
+    async signOut() {
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
@@ -159,7 +156,7 @@ const NearWallet: WalletBehaviourFactory<
 
     async signAndSendTransaction({
       signerId,
-      receiverId = options.contractId,
+      receiverId,
       actions,
       callbackUrl,
     }) {
@@ -170,14 +167,16 @@ const NearWallet: WalletBehaviourFactory<
         callbackUrl,
       });
 
-      if (!_state.wallet.isSignedIn()) {
-        throw new Error("Wallet not connected");
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
+        throw new Error("Wallet not signed in");
       }
 
       const account = _state.wallet.account();
 
       return account["signAndSendTransaction"]({
-        receiverId,
+        receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
         walletCallbackUrl: callbackUrl,
       }).then(() => {
@@ -190,7 +189,7 @@ const NearWallet: WalletBehaviourFactory<
       logger.log("signAndSendTransactions", { transactions, callbackUrl });
 
       if (!_state.wallet.isSignedIn()) {
-        throw new Error("Wallet not connected");
+        throw new Error("Wallet not signed in");
       }
 
       return _state.wallet.requestSignTransactions({
@@ -213,6 +212,7 @@ export function setupNearWallet({
         name: "NEAR Wallet",
         description: null,
         iconUrl,
+        deprecated: true,
       },
       init: (options) => {
         return NearWallet({

@@ -1,13 +1,17 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { providers, utils } from "near-api-js";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
-import { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import type {
+  AccountView,
+  CodeResult,
+} from "near-api-js/lib/providers/provider";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 
-import { Message } from "../../interfaces/message";
-import { Sumbitted } from "../form/form.component";
-import { Account } from "../../interfaces/account";
+import type { Message } from "../../interfaces/message";
+import type { Submitted } from "../form/form.component";
+import type { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { CONTRACT_ID } from "../../../constants";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -67,8 +71,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   async signOut() {
     const wallet = await this.selector.wallet();
 
-    wallet.disconnect().catch((err) => {
-      console.log("Failed to disconnect");
+    wallet.signOut().catch((err) => {
+      console.log("Failed to sign out");
       console.error(err);
     });
   }
@@ -78,13 +82,13 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    const { network, contractId } = this.selector.options;
+    const { network } = this.selector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: contractId,
+        account_id: CONTRACT_ID,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -111,7 +115,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   async onSendMultipleTransactions() {
-    const { contractId } = this.selector.options;
+    const { contract } = this.selector.store.getState();
     const wallet = await this.selector.wallet();
 
     wallet.signAndSendTransactions({
@@ -133,7 +137,8 @@ export class ContentComponent implements OnInit, OnDestroy {
           ],
         },
         {
-          receiverId: contractId,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",
@@ -196,7 +201,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       });
   }
 
-  async onSubmit(e: Sumbitted) {
+  async onSubmit(e: Submitted) {
     const { fieldset, message, donation } = e.target.elements;
 
     fieldset.disabled = true;

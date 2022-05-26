@@ -49,7 +49,7 @@ There are four wallet types:
   const wallet = await selector.wallet("ledger");
   
   if (wallet.type === "hardware") {
-    await wallet.connect({ derivationPaths: ["44'/397'/0'/0'/1'"] });
+    await wallet.signIn({ derivationPaths: ["44'/397'/0'/0'/1'"] });
   }
 })();
 ```
@@ -62,7 +62,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description` and `iconUrl` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` and `deprecated` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
 
 **Example**
 
@@ -73,11 +73,13 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 })();
 ```
 
-### `.connect(params)`
+### `.signIn(params)`
 
 **Parameters**
 
-- `params` (`object?`)
+- `params` (`object`)
+  - `contractId` (`string`): Account ID of the Smart Contract.
+  - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `derivationPaths` (`Array<string>?`): Required for hardware wallets (e.g. Ledger). This is a list of derivation paths linked to public keys on your device.
 
 **Returns**
@@ -86,7 +88,7 @@ Returns meta information about the wallet such as `name`, `description` and `ico
 
 **Description**
 
-Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
+Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
 
 **Example**
 
@@ -94,25 +96,26 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // NEAR Wallet.
 (async () => {
   const wallet = await selector.wallet("near-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
 // Sender.
 (async () => {
   const wallet = await selector.wallet("sender");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
 // Math Wallet.
 (async () => {
   const wallet = await selector.wallet("math-wallet");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
 // Ledger
 (async () => {
   const wallet = await selector.wallet("ledger");
-  const accounts = await wallet.connect({
+  const accounts = await wallet.signIn({
+    contractId: "test.testnet",
     derivationPaths: ["44'/397'/0'/0'/1'"],
   });
 })();
@@ -120,11 +123,11 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 // WalletConnect.
 (async () => {
   const wallet = await selector.wallet("wallet-connect");
-  const accounts = await wallet.connect();
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 ```
 
-### `.disconnect()`
+### `.signOut()`
 
 **Parameters**
 
@@ -136,14 +139,14 @@ Programmatically connect without presenting the UI. Hardware wallets (e.g. Ledge
 
 **Description**
 
-Disconnects from the wallet.
+Sign out from the wallet.
 
 **Example**
 
 ```ts
 (async () => {
   const wallet = await selector.wallet("sender");
-  await wallet.disconnect();
+  await wallet.signOut();
 })();
 ```
 
@@ -159,7 +162,7 @@ Disconnects from the wallet.
 
 **Description**
 
-Returns one or more accounts when connected. This method can be useful for wallets that support accounts at once such as WalletConnect. In this case, you can use an `accountId` returned as the `signerId` for `signAndSendTransaction`.
+Returns one or more accounts when signed in. This method can be useful for wallets that support accounts at once such as WalletConnect. In this case, you can use an `accountId` returned as the `signerId` for `signAndSendTransaction`.
 
 **Example**
 
@@ -187,7 +190,7 @@ Returns one or more accounts when connected. This method can be useful for walle
 
 **Description**
 
-Signs one or more NEAR Actions before sending to the network. The user must be connected to call this method as there's at least charges for gas spent.
+Signs one or more NEAR Actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
 > Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 
@@ -224,7 +227,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be c
 
 **Description**
 
-Signs one or more transactions before sending to the network. The user must be connected to call this method as there's at least charges for gas spent.
+Signs one or more transactions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
 
 > Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
 

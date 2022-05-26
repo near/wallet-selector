@@ -3,11 +3,9 @@ import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
 import { AccountView } from "near-api-js/lib/providers/provider";
 import { mock } from "jest-mock-extended";
 
-import {
-  mockWallet,
-  MockWalletDependencies,
-} from "../../../core/src/lib/testUtils";
-import { BrowserWallet } from "../../../core/src/lib/wallet";
+import { mockWallet } from "../../../core/src/lib/testUtils";
+import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
+import type { BrowserWallet } from "../../../core/src/lib/wallet";
 
 const createNearWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
@@ -53,22 +51,22 @@ afterEach(() => {
   jest.resetModules();
 });
 
-describe("connect", () => {
+describe("signIn", () => {
   it("sign into near wallet", async () => {
     const { wallet, nearApiJs } = await createNearWallet();
 
-    await wallet.connect();
+    await wallet.signIn({ contractId: "test.testnet" });
 
     expect(nearApiJs.connect).toHaveBeenCalled();
   });
 });
 
-describe("disconnect", () => {
+describe("signOut", () => {
   it("sign out of near wallet", async () => {
     const { wallet, walletConnection } = await createNearWallet();
 
-    await wallet.connect();
-    await wallet.disconnect();
+    await wallet.signIn({ contractId: "test.testnet" });
+    await wallet.signOut();
 
     expect(walletConnection.signOut).toHaveBeenCalled();
   });
@@ -78,7 +76,7 @@ describe("getAccounts", () => {
   it("returns array of accounts", async () => {
     const { wallet, walletConnection } = await createNearWallet();
 
-    await wallet.connect();
+    await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.getAccounts();
 
     expect(walletConnection.getAccountId).toHaveBeenCalled();
@@ -91,7 +89,7 @@ describe("signAndSendTransaction", () => {
   it.skip("signs and sends transaction", async () => {
     const { wallet, walletConnection, account } = await createNearWallet();
 
-    await wallet.connect();
+    await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.signAndSendTransaction({
       receiverId: "guest-book.testnet",
       actions: [],

@@ -1,17 +1,27 @@
-import { WalletModulesParams } from "./wallet-modules.service.types";
-import {
+import type { WalletModulesParams } from "./wallet-modules.service.types";
+import type {
+  SignInParams,
   Wallet,
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
 } from "../../wallet";
-import { StorageService } from "../storage/storage.service.types";
-import { Options } from "../../options.types";
-import { AccountState, ModuleState, Store } from "../../store.types";
+import type { StorageService } from "../storage/storage.service.types";
+import type { Options } from "../../options.types";
+import type {
+  AccountState,
+  ContractState,
+  ModuleState,
+  Store,
+} from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
-import { WalletSelectorEvents } from "../../wallet-selector.types";
+import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
-import { PACKAGE_NAME, PENDING_SELECTED_WALLET_ID } from "../../constants";
+import {
+  PACKAGE_NAME,
+  PENDING_CONTRACT,
+  PENDING_SELECTED_WALLET_ID,
+} from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import { Provider } from "../provider/provider.service";
 
@@ -48,7 +58,7 @@ export class WalletModules {
 
     if (wallet) {
       // Ensure our persistent state aligns with the selected wallet.
-      // For example a wallet is selected, but it returns no accounts (not connected).
+      // For example a wallet is selected, but it returns no accounts (not signed in).
       accounts = await wallet.getAccounts().catch((err) => {
         logger.log(`Failed to validate ${wallet.id} during setup`);
         logger.error(err);
@@ -60,85 +70,101 @@ export class WalletModules {
     return accounts;
   }
 
-  private async getSelectedWallet() {
+  private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
+    const pendingContract = await jsonStorage.getItem<ContractState>(
+      PENDING_CONTRACT
+    );
 
-    if (pendingSelectedWalletId) {
+    if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
+      await jsonStorage.removeItem(PENDING_CONTRACT);
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
         const selectedWallet = await this.getWallet(selectedWalletId);
 
         if (selectedWallet && pendingSelectedWalletId !== selectedWalletId) {
-          await selectedWallet.disconnect().catch((err) => {
-            logger.log("Failed to disconnect existing wallet");
+          await selectedWallet.signOut().catch((err) => {
+            logger.log("Failed to sign out existing wallet");
             logger.error(err);
           });
         }
 
         return {
           accounts,
+          contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
         };
       }
     }
 
-    const { selectedWalletId } = this.store.getState();
+    const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
+
+    if (!accounts.length) {
+      return {
+        accounts: [],
+        contract: null,
+        selectedWalletId: null,
+      };
+    }
 
     return {
       accounts,
-      selectedWalletId: accounts.length ? selectedWalletId : null,
+      contract,
+      selectedWalletId,
     };
   }
 
-  private async disconnectWallet(walletId: string) {
+  private async signOutWallet(walletId: string) {
     const wallet = (await this.getWallet(walletId))!;
 
-    await wallet.disconnect().catch((err) => {
-      logger.log(`Failed to disconnect ${wallet.id}`);
+    await wallet.signOut().catch((err) => {
+      logger.log(`Failed to sign out ${wallet.id}`);
       logger.error(err);
 
       // At least clean up state on our side.
-      this.onWalletDisconnected(wallet.id);
+      this.onWalletSignedOut(wallet.id);
     });
   }
 
-  private async onWalletConnected(
+  private async onWalletSignedIn(
     walletId: string,
-    { accounts }: WalletEvents["connected"]
+    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+    const contract = { contractId, methodNames };
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
-        const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
       }
 
       return;
     }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
-      await this.disconnectWallet(selectedWalletId);
+      await this.signOutWallet(selectedWalletId);
     }
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, accounts },
+      payload: { walletId, contract, accounts },
     });
   }
 
-  private onWalletDisconnected(walletId: string) {
+  private onWalletSignedOut(walletId: string) {
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
@@ -148,17 +174,17 @@ export class WalletModules {
   private setupWalletEmitter(module: WalletModule) {
     const emitter = new EventEmitter<WalletEvents>();
 
-    emitter.on("disconnected", () => {
-      this.onWalletDisconnected(module.id);
+    emitter.on("signedOut", () => {
+      this.onWalletSignedOut(module.id);
     });
 
-    emitter.on("connected", (event) => {
-      this.onWalletConnected(module.id, event);
+    emitter.on("signedIn", (event) => {
+      this.onWalletSignedIn(module.id, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
       if (!accounts.length) {
-        return this.disconnectWallet(module.id);
+        return this.signOutWallet(module.id);
       }
 
       this.store.dispatch({
@@ -175,19 +201,25 @@ export class WalletModules {
   }
 
   private decorateWallet(wallet: Wallet): Wallet {
-    const _connect = wallet.connect;
-    const _disconnect = wallet.disconnect;
+    const _signIn = wallet.signIn;
+    const _signOut = wallet.signOut;
 
-    wallet.connect = async (params: never) => {
-      const accounts = await _connect(params);
-      await this.onWalletConnected(wallet.id, { accounts });
+    wallet.signIn = async (params: never) => {
+      const accounts = await _signIn(params);
+
+      const { contractId, methodNames = [] } = params as SignInParams;
+      await this.onWalletSignedIn(wallet.id, {
+        accounts,
+        contractId,
+        methodNames,
+      });
 
       return accounts;
     };
 
-    wallet.disconnect = async () => {
-      await _disconnect();
-      this.onWalletDisconnected(wallet.id);
+    wallet.signOut = async () => {
+      await _signOut();
+      this.onWalletSignedOut(wallet.id);
     };
 
     return wallet;
@@ -203,6 +235,7 @@ export class WalletModules {
         type: module.type,
         metadata: module.metadata,
         options: this.options,
+        store: this.store.toReadOnly(),
         provider: new Provider(this.options.network.nodeUrl),
         emitter: this.setupWalletEmitter(module),
         logger: new Logger(module.id),
@@ -269,13 +302,15 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, selectedWalletId } = await this.getSelectedWallet();
+    const { accounts, contract, selectedWalletId } =
+      await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
       payload: {
         modules,
         accounts,
+        contract,
         selectedWalletId,
       },
     });

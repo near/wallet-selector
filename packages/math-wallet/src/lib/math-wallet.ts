@@ -1,15 +1,15 @@
 import { isMobile } from "is-mobile";
-import {
+import type {
+  WalletSelectorStore,
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
   AccountState,
-  waitFor,
   Optional,
   Transaction,
 } from "@near-wallet-selector/core";
-
-import { InjectedMathWallet } from "./injected-math-wallet";
+import { waitFor } from "@near-wallet-selector/core";
+import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 declare global {
@@ -31,16 +31,17 @@ const isInstalled = () => {
 };
 
 const setupMathWalletState = async (
-  contractId: string
+  store: WalletSelectorStore
 ): Promise<MathWalletState> => {
   const wallet = window.nearWalletApi!;
+  const { contract } = store.getState();
 
   // This wallet currently has weird behaviour regarding signer.account.
   // - When you initially sign in, you get a SignedInAccount interface.
   // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
   // This method normalises the behaviour to only return the SignedInAccount interface.
-  if (wallet.signer.account && "address" in wallet.signer.account) {
-    await wallet.login({ contractId });
+  if (contract && wallet.signer.account && "address" in wallet.signer.account) {
+    await wallet.login({ contractId: contract.contractId });
   }
 
   return {
@@ -50,10 +51,11 @@ const setupMathWalletState = async (
 
 const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
+  store,
   provider,
   logger,
 }) => {
-  const _state = await setupMathWalletState(options.contractId);
+  const _state = await setupMathWalletState(store);
 
   const getSignedInAccount = () => {
     if (
@@ -77,39 +79,38 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId">>
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
     const account = getSignedInAccount();
+    const { contract } = store.getState();
 
-    if (!account) {
-      throw new Error("Wallet not connected");
+    if (!account || !contract) {
+      throw new Error("Wallet not signed in");
     }
 
-    return transactions.map((t) => {
-      const signerId = t.signerId ? t.signerId : account.accountId;
-
+    return transactions.map((transaction) => {
       return {
-        receiverId: t.receiverId,
-        actions: t.actions,
-        signerId,
+        signerId: transaction.signerId || account.accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
       };
     });
   };
 
   return {
-    async connect() {
+    async signIn({ contractId }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.login({ contractId: options.contractId });
+      await _state.wallet.login({ contractId });
 
       return getAccounts();
     },
 
-    async disconnect() {
+    async signOut() {
       // Ignore if unsuccessful (returns false).
       await _state.wallet.logout();
     },
@@ -118,19 +119,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId = options.contractId,
-      actions,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
-
-      const account = getSignedInAccount();
-
-      if (!account) {
-        throw new Error("Not signed in");
-      }
-
       const signedTransactions = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
         _state.wallet.signer,
@@ -142,12 +132,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
-
-      const account = getSignedInAccount();
-
-      if (!account) {
-        throw new Error("Wallet not connected");
-      }
 
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
@@ -187,6 +171,7 @@ export const setupMathWallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+        deprecated: false,
       },
       init: MathWallet,
     };

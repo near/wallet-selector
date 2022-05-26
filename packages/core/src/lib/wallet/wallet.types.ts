@@ -7,6 +7,7 @@ import {
   JsonStorageService,
 } from "../services";
 import { Options } from "../options.types";
+import { ReadOnlyStore } from "../store.types";
 import { Transaction, Action } from "./transactions.types";
 import { Modify, Optional } from "../utils.types";
 
@@ -14,11 +15,31 @@ interface BaseWalletMetadata {
   name: string;
   description: string | null;
   iconUrl: string;
+  deprecated: boolean;
+}
+
+export interface Account {
+  accountId: string;
+}
+
+export interface SignInParams {
+  contractId: string;
+  methodNames?: Array<string>;
+}
+
+export interface SignAndSendTransactionParams {
+  signerId?: string;
+  receiverId?: string;
+  actions: Array<Action>;
+}
+
+export interface SignAndSendTransactionsParams {
+  transactions: Array<Optional<Transaction, "signerId">>;
 }
 
 interface BaseWalletBehaviour {
-  connect(): Promise<Array<Account>>;
-  disconnect(): Promise<void>;
+  signIn(params: SignInParams): Promise<Array<Account>>;
+  signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
@@ -38,23 +59,13 @@ type BaseWallet<
   metadata: Metadata;
 } & Behaviour;
 
-export interface Account {
-  accountId: string;
-}
-
-export interface SignAndSendTransactionParams {
-  signerId?: string;
-  receiverId?: string;
-  actions: Array<Action>;
-}
-
-export interface SignAndSendTransactionsParams {
-  transactions: Array<Optional<Transaction, "signerId">>;
-}
-
 export type WalletEvents = {
-  connected: { accounts: Array<Account> };
-  disconnected: null;
+  signedIn: {
+    contractId: string;
+    methodNames: Array<string>;
+    accounts: Array<Account>;
+  };
+  signedOut: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
 };
@@ -109,13 +120,13 @@ export type InjectedWallet = BaseWallet<
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
-export interface HardwareWalletConnectParams {
+export interface HardwareWalletSignInParams extends SignInParams {
   derivationPaths: Array<string>;
 }
 
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { connect(params: HardwareWalletConnectParams): Promise<Array<Account>> }
+  { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
 >;
 
 export type HardwareWallet = BaseWallet<
@@ -157,6 +168,7 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
   type: Variation["type"];
   metadata: Variation["metadata"];
   options: Options;
+  store: ReadOnlyStore;
   provider: ProviderService;
   emitter: EventEmitterService<WalletEvents>;
   logger: LoggerService;

@@ -1,5 +1,24 @@
 ## API Reference (State)
 
+### `.contract`
+
+**Returns**
+
+- `ContractState | null`
+  - `contractId` (`string`): Account ID of the Smart Contract.
+  - `methodNames` (`Array<string>`): List of methods that can only be invoked on the Smart Contract. Empty list means no restriction.
+
+**Description**
+
+Returns the signed in contract.
+
+**Example**
+
+```ts
+const { contract } = selector.store.getState();
+console.log(contract); // { contractId: "test.testnet", methodNames: [] }
+```
+
 ### `.modules`
 
 **Returns**
@@ -30,7 +49,7 @@ console.log(modules); // [{ id: "near-wallet", ... }]
 
 **Description**
 
-Returns the list of connected accounts.
+Returns the list of signed in accounts.
 
 **Example**
 

@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/ledger",
-        "main": "packages/ledger/src/index.ts",
         "tsConfig": "packages/ledger/tsconfig.lib.json",
+        "project": "packages/ledger/package.json",
+        "entryFile": "packages/ledger/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/ledger/*.md",
-          "packages/ledger/assets/*"
+          {
+            "glob": "packages/ledger/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/ledger/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },

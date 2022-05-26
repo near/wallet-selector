@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { WalletSelector, ModuleState } from "@near-wallet-selector/core";
+import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 
-import { ModalOptions } from "../modal.types";
+import type { ModalOptions } from "../modal.types";
 
 interface WalletOptionsProps {
   selector: WalletSelector;
-  options?: ModalOptions;
+  options: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onError: (error: Error) => void;
@@ -44,7 +44,11 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         return onConnectHardwareWallet();
       }
 
-      await wallet.connect();
+      await wallet.signIn({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+      });
+
       onConnected();
     } catch (err) {
       const { name } = module.metadata;
@@ -52,7 +56,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(new Error(`Failed to connect with ${name}: ${message}`));
+      onError(new Error(`Failed to sign in with ${name}: ${message}`));
     } finally {
       setConnecting(false);
     }
@@ -63,7 +67,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       <div className="wallet-options-wrapper">
         <p className="description">
           {options?.description ||
-            "Please select a wallet to connect to this dApp:"}
+            "Please select a wallet to sign in to this dApp:"}
         </p>
         <ul
           className={"options-list " + (connecting ? "selection-process" : "")}

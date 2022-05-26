@@ -1,4 +1,4 @@
-import { LoggerService } from "./logger.service.types";
+import type { LoggerService } from "./logger.service.types";
 
 type SupportedMethod = "log" | "info" | "warn" | "error";
 

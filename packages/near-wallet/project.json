@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/near-wallet",
-        "main": "packages/near-wallet/src/index.ts",
         "tsConfig": "packages/near-wallet/tsconfig.lib.json",
+        "project": "packages/near-wallet/package.json",
+        "entryFile": "packages/near-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/near-wallet/*.md",
-          "packages/near-wallet/assets/*"
+          {
+            "glob": "packages/near-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/near-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
