@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/math-wallet",
-        "main": "packages/math-wallet/src/index.ts",
         "tsConfig": "packages/math-wallet/tsconfig.lib.json",
+        "project": "packages/math-wallet/package.json",
+        "entryFile": "packages/math-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/math-wallet/*.md",
-          "packages/math-wallet/assets/*"
+          {
+            "glob": "packages/math-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/math-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
