@@ -101,13 +101,16 @@ afterEach(() => {
 });
 
 describe("connect", () => {
-  // TODO: Need to mock fetching for account id.
   it("signs in", async () => {
     const accountId = "amirsaran.testnet";
     const derivationPath = "44'/397'/0'/0'/1'";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
     await wallet.connect({ derivationPaths: [derivationPath] });
+
+    expect(ledgerClient.isConnected).toHaveBeenCalledTimes(1);
+    expect(ledgerClient.connect).toHaveBeenCalledTimes(1);
+    expect(ledgerClient.getPublicKey).toHaveBeenCalledTimes(1);
     expect(storage.setItem).toHaveBeenCalledWith("accounts", [
       {
         accountId,
@@ -115,14 +118,10 @@ describe("connect", () => {
         publicKey,
       },
     ]);
-    expect(ledgerClient.isConnected).toHaveBeenCalled();
-    expect(ledgerClient.connect).toHaveBeenCalled();
-    expect(ledgerClient.getPublicKey).toHaveBeenCalled();
   });
 });
 
 describe("getAccounts", () => {
-  // TODO: Need to mock fetching for account id.
   it("returns account objects", async () => {
     const accountId = "amirsaran.testnet";
     const { wallet } = await createLedgerWallet();
