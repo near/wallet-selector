@@ -136,35 +136,31 @@ const WalletConnect: WalletBehaviourFactory<
 
   const signOut = async () => {
     if (_state.session) {
-      const transactions: Array<Transaction> = [];
       const accounts = getAccounts();
 
-      for (let i = 0; i < accounts.length; i += 1) {
-        const account = accounts[i];
-        const keyPair = await _state.keystore.getKey(
-          options.network.networkId,
-          account.accountId
-        );
+      await _state.client.request({
+        timeout: 30 * 1000,
+        topic: _state.session!.topic,
+        chainId: getChainId(),
+        request: {
+          method: "near_signOut",
+          params: {
+            accounts: await Promise.all(
+              accounts.map(async (account) => {
+                const keyPair = await _state.keystore.getKey(
+                  options.network.networkId,
+                  account.accountId
+                );
 
-        if (!keyPair) {
-          continue;
-        }
-
-        transactions.push({
-          signerId: account.accountId,
-          receiverId: account.accountId,
-          actions: [
-            {
-              type: "DeleteKey",
-              params: {
-                publicKey: keyPair.getPublicKey().toString(),
-              },
-            },
-          ],
-        });
-      }
-
-      await signAndSendTransactions(transactions);
+                return {
+                  accountId: account.accountId,
+                  publicKey: keyPair ? keyPair.getPublicKey().toString() : null,
+                };
+              })
+            ).then((results) => results.filter((x) => x.publicKey)),
+          },
+        },
+      });
 
       await _state.client.disconnect({
         topic: _state.session.topic,
