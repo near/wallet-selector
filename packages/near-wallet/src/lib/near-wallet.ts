@@ -49,7 +49,7 @@ export function setupNearWallet({
         name: "NEAR Wallet",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated: true,
       },
     };
   };
