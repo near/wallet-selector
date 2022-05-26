@@ -78,6 +78,13 @@ const WalletConnect: WalletBehaviourFactory<
     throw new Error("Invalid chain id");
   };
 
+  const createAccountKeyPairs = (accounts: Array<Account>) => {
+    return accounts.map((account) => ({
+      accountId: account.accountId,
+      keyPair: utils.KeyPair.fromRandom("ed25519"),
+    }));
+  };
+
   const getAccounts = (accountIds?: Array<string>) => {
     const ids = accountIds || _state.session?.state.accounts || [];
 
@@ -93,7 +100,7 @@ const WalletConnect: WalletBehaviourFactory<
     _state.session = null;
   };
 
-  const signAndSendTransaction = async (transaction: Transaction) => {
+  const requestSignAndSendTransaction = async (transaction: Transaction) => {
     const signedTx = await _state.client
       .request<Buffer>({
         timeout: 30 * 1000,
@@ -109,7 +116,9 @@ const WalletConnect: WalletBehaviourFactory<
     return provider.sendTransaction(signedTx);
   };
 
-  const signAndSendTransactions = async (transactions: Array<Transaction>) => {
+  const requestSignAndSendTransactions = async (
+    transactions: Array<Transaction>
+  ) => {
     if (!transactions.length) {
       return [];
     }
@@ -131,6 +140,41 @@ const WalletConnect: WalletBehaviourFactory<
     return Promise.all(
       signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
     );
+  };
+
+  const requestSignIn = async (
+    contractId: string,
+    methodNames: Array<string> | undefined,
+    accounts: Array<Account>
+  ) => {
+    const accountKeyPairs = createAccountKeyPairs(accounts);
+
+    await _state.client.request({
+      timeout: 30 * 1000,
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signIn",
+        params: {
+          contractId,
+          methodNames,
+          accounts: accountKeyPairs.map(({ accountId, keyPair }) => ({
+            accountId,
+            publicKey: keyPair.getPublicKey().toString(),
+          })),
+        },
+      },
+    });
+
+    for (let i = 0; i < accountKeyPairs.length; i += 1) {
+      const { accountId, keyPair } = accountKeyPairs[i];
+
+      await _state.keystore.setKey(
+        options.network.networkId,
+        accountId,
+        keyPair
+      );
+    }
   };
 
   const signOut = async () => {
@@ -173,13 +217,6 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  const createAccountKeyPairs = (accounts: Array<Account>) => {
-    return accounts.map((account) => ({
-      accountId: account.accountId,
-      keyPair: utils.KeyPair.fromRandom("ed25519"),
-    }));
-  };
-
   // Determine whether a transaction can be signed with a local key pair.
   const isSignable = (transaction: Transaction) => {
     const accounts = getAccounts();
@@ -209,6 +246,33 @@ const WalletConnect: WalletBehaviourFactory<
 
       return parseFloat(deposit) <= 0;
     });
+  };
+
+  // Find accounts that lack a key pair for signing.
+  const getAccountsWithoutKeyPairs = async (
+    transactions: Array<Transaction>
+  ) => {
+    const accounts = getAccounts();
+    const result: Array<Account> = [];
+
+    for (let i = 0; i < accounts.length; i += 1) {
+      const account = accounts[i];
+
+      if (!transactions.some((x) => x.signerId === account.accountId)) {
+        continue;
+      }
+
+      const keyPair = await _state.keystore.getKey(
+        options.network.networkId,
+        account.accountId
+      );
+
+      if (!keyPair) {
+        result.push(account);
+      }
+    }
+
+    return result;
   };
 
   const setupEvents = () => {
@@ -301,38 +365,11 @@ const WalletConnect: WalletBehaviourFactory<
         });
 
         const accounts = getAccounts();
-        const accountKeyPairs = createAccountKeyPairs(accounts);
-
-        await _state.client.request({
-          timeout: 30 * 1000,
-          topic: _state.session!.topic,
-          chainId: getChainId(),
-          request: {
-            method: "near_signIn",
-            params: {
-              contractId,
-              methodNames,
-              accounts: accountKeyPairs.map(({ accountId, keyPair }) => ({
-                accountId,
-                publicKey: keyPair.getPublicKey().toString(),
-              })),
-            },
-          },
-        });
-
-        for (let i = 0; i < accountKeyPairs.length; i += 1) {
-          const { accountId, keyPair } = accountKeyPairs[i];
-
-          await _state.keystore.setKey(
-            options.network.networkId,
-            accountId,
-            keyPair
-          );
-        }
+        await requestSignIn(contractId, methodNames, accounts);
 
         setupEvents();
 
-        return getAccounts();
+        return accounts;
       } catch (err) {
         await signOut();
 
@@ -356,23 +393,25 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const transaction: Transaction = {
+      const tx: Transaction = {
         signerId: signerId || accounts[0].accountId,
         receiverId: receiverId || contract.contractId,
         actions,
       };
 
-      if (!isSignable(transaction)) {
-        return signAndSendTransaction(transaction);
+      if (!isSignable(tx)) {
+        return requestSignAndSendTransaction(tx);
       }
 
-      // TODO: Handle when we don't yet have a key pair for the signerId.
+      const accountsWithoutKeyPairs = await getAccountsWithoutKeyPairs([tx]);
 
-      const [signedTx] = await signTransactions(
-        [transaction],
-        signer,
-        options.network
-      );
+      if (accountsWithoutKeyPairs.length) {
+        const { contractId, methodNames } = contract;
+
+        await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
+      }
+
+      const [signedTx] = await signTransactions([tx], signer, options.network);
 
       return provider.sendTransaction(signedTx);
     },
@@ -394,10 +433,16 @@ const WalletConnect: WalletBehaviourFactory<
       }));
 
       if (!txs.every((x) => isSignable(x))) {
-        return signAndSendTransactions(txs);
+        return requestSignAndSendTransactions(txs);
       }
 
-      // TODO: Handle when we don't yet have a key pair for each signerId.
+      const accountsWithoutKeyPairs = await getAccountsWithoutKeyPairs(txs);
+
+      if (accountsWithoutKeyPairs.length) {
+        const { contractId, methodNames } = contract;
+
+        await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
+      }
 
       const signedTxs = await signTransactions(txs, signer, options.network);
 
