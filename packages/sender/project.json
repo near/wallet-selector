@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/sender",
-        "main": "packages/sender/src/index.ts",
         "tsConfig": "packages/sender/tsconfig.lib.json",
+        "project": "packages/sender/package.json",
+        "entryFile": "packages/sender/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/sender/*.md",
-          "packages/sender/assets/*"
+          {
+            "glob": "packages/sender/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/sender/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
