@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/wallet-utils",
-        "main": "packages/wallet-utils/src/index.ts",
         "tsConfig": "packages/wallet-utils/tsconfig.lib.json",
+        "project": "packages/wallet-utils/package.json",
+        "entryFile": "packages/wallet-utils/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/wallet-utils/*.md",
-          "packages/wallet-utils/assets/*"
+          {
+            "glob": "packages/wallet-utils/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/wallet-utils/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
