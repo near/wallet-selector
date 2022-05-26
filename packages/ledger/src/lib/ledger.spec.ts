@@ -5,7 +5,7 @@ import {
   mockWallet,
   MockWalletDependencies,
 } from "../../../core/src/lib/testUtils";
-import { HardwareWallet } from "../../../core/src/lib/wallet";
+import { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
 import {
   ProviderService,
   JsonStorageService,
@@ -132,6 +132,11 @@ describe("getAccounts", () => {
     const result = await wallet.getAccounts();
     expect(result).toEqual([{ accountId }]);
   });
+  it("returns empty list because not connected", async () => {
+    const { wallet } = await createLedgerWallet();
+    const result = await wallet.getAccounts();
+    expect(result).toEqual([]);
+  });
 });
 
 describe("signAndSendTransaction", () => {
@@ -147,5 +152,51 @@ describe("signAndSendTransaction", () => {
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
     expect(result).toEqual(getSendTransactionResponse());
+  });
+});
+
+describe("signAndSendTransactions", () => {
+  it("signs and sends only one transaction", async () => {
+    const { wallet, ledgerClient } = await createLedgerWallet();
+    await wallet.connect({
+      derivationPaths: ["44'/397'/0'/0'/1'"],
+    });
+    const transactions: Array<Transaction> = [
+      {
+        signerId: "amirsaran.testnet",
+        receiverId: "guest-book.testnet",
+        actions: [],
+      },
+    ];
+    const result = await wallet.signAndSendTransactions({
+      transactions: transactions,
+    });
+    expect(ledgerClient.sign).toHaveBeenCalled();
+    expect(result).toEqual([getSendTransactionResponse()]);
+  });
+
+  it("signs and sends multiple transactions", async () => {
+    const { wallet, ledgerClient } = await createLedgerWallet();
+    await wallet.connect({
+      derivationPaths: ["44'/397'/0'/0'/1'"],
+    });
+    const transactions: Array<Transaction> = [
+      {
+        signerId: "amirsaran.testnet",
+        receiverId: "guest-book.testnet",
+        actions: [],
+      },
+      {
+        signerId: "amirsaran.testnet",
+        receiverId: "guest-book.testnet",
+        actions: [],
+      },
+    ];
+    const result = await wallet.signAndSendTransactions({
+      transactions,
+    });
+    expect(ledgerClient.sign).toHaveBeenCalled();
+    const txResponse = getSendTransactionResponse();
+    expect(result).toEqual([txResponse, txResponse]);
   });
 });
