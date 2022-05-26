@@ -12,6 +12,7 @@ import type {
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
+import { retry } from "./retry";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -411,9 +412,15 @@ const WalletConnect: WalletBehaviourFactory<
         await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
       }
 
-      const [signedTx] = await signTransactions([tx], signer, options.network);
+      return retry(async () => {
+        const [signedTx] = await signTransactions(
+          [tx],
+          signer,
+          options.network
+        );
 
-      return provider.sendTransaction(signedTx);
+        return provider.sendTransaction(signedTx);
+      });
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -444,10 +451,14 @@ const WalletConnect: WalletBehaviourFactory<
         await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
       }
 
-      const signedTxs = await signTransactions(txs, signer, options.network);
+      const signedTxs = await retry(() => {
+        return signTransactions(txs, signer, options.network);
+      });
 
       return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
+        signedTxs.map((signedTx) => {
+          return retry(() => provider.sendTransaction(signedTx));
+        })
       );
     },
   };
