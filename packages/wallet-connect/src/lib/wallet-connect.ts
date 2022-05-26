@@ -7,7 +7,7 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
-  SignInParams,
+  Account,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
@@ -178,55 +178,11 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  const requestFunctionCallAccess = async ({
-    contractId,
-    methodNames,
-  }: SignInParams) => {
-    const accounts = getAccounts();
-
-    const { keyPairs, transactions } = accounts.reduce<{
-      transactions: Array<Transaction>;
-      keyPairs: Record<string, KeyPair>;
-    }>(
-      (result, account) => {
-        const keyPair = utils.KeyPair.fromRandom("ed25519");
-
-        result.keyPairs[account.accountId] = keyPair;
-
-        result.transactions.push({
-          signerId: account.accountId,
-          receiverId: account.accountId,
-          actions: [
-            {
-              type: "AddKey",
-              params: {
-                publicKey: keyPair.getPublicKey().toString(),
-                accessKey: {
-                  permission: {
-                    receiverId: contractId,
-                    methodNames,
-                  },
-                },
-              },
-            },
-          ],
-        });
-
-        return result;
-      },
-      { keyPairs: {}, transactions: [] }
-    );
-
-    await signAndSendTransactions(transactions);
-
-    for (const accountId in keyPairs) {
-      const keyPair = keyPairs[accountId];
-      await _state.keystore.setKey(
-        options.network.networkId,
-        accountId,
-        keyPair
-      );
-    }
+  const createAccountKeyPairs = (accounts: Array<Account>) => {
+    return accounts.map((account) => ({
+      accountId: account.accountId,
+      keyPair: utils.KeyPair.fromRandom("ed25519"),
+    }));
   };
 
   const isFunctionCallTransaction = (transaction: Transaction) => {
@@ -348,7 +304,35 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestFunctionCallAccess({ contractId, methodNames });
+        const accounts = getAccounts();
+        const accountKeyPairs = createAccountKeyPairs(accounts);
+
+        await _state.client.request({
+          timeout: 30 * 1000,
+          topic: _state.session!.topic,
+          chainId: getChainId(),
+          request: {
+            method: "near_signIn",
+            params: {
+              contractId,
+              methodNames,
+              accounts: accountKeyPairs.map(({ accountId, keyPair }) => ({
+                accountId,
+                publicKey: keyPair.getPublicKey().toString(),
+              })),
+            },
+          },
+        });
+
+        for (let i = 0; i < accountKeyPairs.length; i += 1) {
+          const { accountId, keyPair } = accountKeyPairs[i];
+
+          await _state.keystore.setKey(
+            options.network.networkId,
+            accountId,
+            keyPair
+          );
+        }
 
         setupEvents();
 
