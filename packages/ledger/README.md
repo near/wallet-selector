@@ -27,7 +27,6 @@ const ledger = setupLedger({
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [ledger],
 });
 ```
