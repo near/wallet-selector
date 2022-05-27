@@ -1,6 +1,6 @@
 import { utils, keyStores, InMemorySigner } from "near-api-js";
 import { SignedTransaction } from "near-api-js/lib/transaction";
-import type { AppMetadata, SessionTypes } from "@walletconnect/types";
+import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -16,19 +16,23 @@ import { retry } from "./retry";
 
 export interface WalletConnectParams {
   projectId: string;
-  metadata: AppMetadata;
+  metadata: SignClientTypes.Metadata;
   relayUrl?: string;
   iconUrl?: string;
   chainId?: string;
 }
 
-type WalletConnectExtraOptions = Pick<WalletConnectParams, "chainId"> &
-  Required<Pick<WalletConnectParams, "projectId" | "metadata" | "relayUrl">>;
+interface WalletConnectExtraOptions {
+  chainId?: string;
+  projectId: string;
+  metadata: SignClientTypes.Metadata;
+  relayUrl: string;
+}
 
 interface WalletConnectState {
   client: WalletConnectClient;
   keystore: keyStores.BrowserLocalStorageKeyStore;
-  session: SessionTypes.Settled | null;
+  session: SessionTypes.Struct | null;
   subscriptions: Array<Subscription>;
 }
 
@@ -41,12 +45,17 @@ const setupWalletConnectState = async (
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
-  let session: SessionTypes.Settled | null = null;
+  let session: SessionTypes.Struct | null = null;
 
-  await client.init(params);
+  await client.init({
+    projectId: params.projectId,
+    metadata: params.metadata,
+    relayUrl: params.relayUrl,
+  });
 
-  if (client.session.topics.length) {
-    session = await client.session.get(client.session.topics[0]);
+  if (client.session.length) {
+    const lastKeyIndex = client.session.keys.length - 1;
+    session = client.session.get(client.session.keys[lastKeyIndex]);
   }
 
   return {
@@ -87,7 +96,7 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const getAccounts = (accountIds?: Array<string>) => {
-    const ids = accountIds || _state.session?.state.accounts || [];
+    const ids = accountIds || _state.session?.namespaces["near"].accounts || [];
 
     return ids.map((x) => ({ accountId: x.split(":")[2] }));
   };
@@ -104,7 +113,7 @@ const WalletConnect: WalletBehaviourFactory<
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
     const signedTx = await _state.client
       .request<Buffer>({
-        timeout: 30 * 1000,
+        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -126,7 +135,7 @@ const WalletConnect: WalletBehaviourFactory<
 
     const signedTxs = await _state.client
       .request<Array<Buffer>>({
-        timeout: 30 * 1000,
+        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -151,7 +160,7 @@ const WalletConnect: WalletBehaviourFactory<
     const accountKeyPairs = createAccountKeyPairs(accounts);
 
     await _state.client.request({
-      timeout: 30 * 1000,
+      // timeout: 30 * 1000,
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
@@ -183,7 +192,7 @@ const WalletConnect: WalletBehaviourFactory<
       const accounts = getAccounts();
 
       await _state.client.request({
-        timeout: 30 * 1000,
+        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -277,19 +286,21 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const setupEvents = () => {
-    _state.subscriptions.push(
-      _state.client.on("pairing_created", (pairing) => {
-        logger.log("Pairing Created", pairing);
-      })
-    );
+    // _state.subscriptions.push(
+    //   _state.client.on("pairing_created", (pairing) => {
+    //     logger.log("Pairing Created", pairing);
+    //   })
+    // );
 
     _state.subscriptions.push(
-      _state.client.on("session_updated", (updatedSession) => {
-        logger.log("Session Updated", updatedSession);
+      _state.client.on("session_update", (event) => {
+        logger.log("Session Update", event);
 
-        if (updatedSession.topic === _state.session?.topic) {
+        if (event.topic === _state.session?.topic) {
           (async () => {
-            const updatedAccounts = getAccounts(updatedSession.state.accounts);
+            const updatedAccounts = getAccounts(
+              event.params.namespaces["near"].accounts
+            );
             const accounts = getAccounts();
 
             // Determine accounts that have been removed.
@@ -311,11 +322,10 @@ const WalletConnect: WalletBehaviourFactory<
               );
             }
 
-            // TODO: Determine accounts that have been added.
-            // Maybe we should defer adding keys here because we might not have a pairing connection established.
-            // The idea here is we would handle if we can't find the keyPair for a given account id before signing a transaction.
-
-            _state.session = updatedSession;
+            _state.session = {
+              ..._state.client.session.get(event.topic),
+              namespaces: event.params.namespaces,
+            };
             emitter.emit("accountsChanged", { accounts: getAccounts() });
           })();
         }
@@ -323,10 +333,10 @@ const WalletConnect: WalletBehaviourFactory<
     );
 
     _state.subscriptions.push(
-      _state.client.on("session_deleted", async (deletedSession) => {
-        logger.log("Session Deleted", deletedSession);
+      _state.client.on("session_delete", async (event) => {
+        logger.log("Session Deleted", event);
 
-        if (deletedSession.topic === _state.session?.topic) {
+        if (event.topic === _state.session?.topic) {
           await cleanup();
           emitter.emit("signedOut", null);
         }
@@ -348,19 +358,16 @@ const WalletConnect: WalletBehaviourFactory<
 
       try {
         _state.session = await _state.client.connect({
-          metadata: params.metadata,
-          timeout: 30 * 1000,
-          permissions: {
-            blockchain: {
+          requiredNamespaces: {
+            near: {
               chains: [getChainId()],
-            },
-            jsonrpc: {
               methods: [
                 "near_signIn",
                 "near_signOut",
                 "near_signTransaction",
                 "near_signTransactions",
               ],
+              events: ["chainChanged", "accountsChanged"],
             },
           },
         });

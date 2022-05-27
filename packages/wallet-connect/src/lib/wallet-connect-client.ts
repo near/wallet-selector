@@ -1,38 +1,12 @@
-import Client, {
-  RELAYER_DEFAULT_PROTOCOL,
-  SESSION_EMPTY_PERMISSIONS,
-  SESSION_SIGNAL_METHOD_PAIRING,
-} from "@walletconnect/client";
-import type {
-  AppMetadata,
-  PairingTypes,
-  SessionTypes,
-  ClientTypes,
-  ClientOptions,
-} from "@walletconnect/types";
+import Client from "@walletconnect/sign-client";
+import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-
-export type ConnectParams = ClientTypes.ConnectParams & {
-  metadata: AppMetadata;
-  timeout?: number;
-};
-
-interface WalletConnectEvents {
-  pairing_proposal: (proposal: PairingTypes.Proposal) => void;
-
-  pairing_created: (proposal: PairingTypes.Settled) => void;
-  pairing_updated: (proposal: PairingTypes.Settled) => void;
-  pairing_deleted: (proposal: PairingTypes.Settled) => void;
-
-  session_created: (session: SessionTypes.Settled) => void;
-  session_updated: (session: SessionTypes.Settled) => void;
-  session_deleted: (session: SessionTypes.Settled) => void;
-}
+import { SessionTypes } from "@walletconnect/types/dist/cjs/sign-client/session";
 
 class WalletConnectClient {
   private client: Client;
 
-  async init(opts: ClientOptions) {
+  async init(opts: SignClientTypes.Options) {
     this.client = await Client.init(opts);
   }
 
@@ -40,9 +14,9 @@ class WalletConnectClient {
     return this.client.session;
   }
 
-  on<Event extends keyof WalletConnectEvents>(
+  on<Event extends SignClientTypes.Event>(
     event: Event,
-    callback: WalletConnectEvents[Event]
+    callback: (args: SignClientTypes.EventArguments[Event]) => void
   ) {
     this.client.on(event, callback);
 
@@ -51,73 +25,88 @@ class WalletConnectClient {
     };
   }
 
-  once<Event extends keyof WalletConnectEvents>(
+  once<Event extends SignClientTypes.Event>(
     event: Event,
-    callback: WalletConnectEvents[Event]
+    callback: (args: SignClientTypes.EventArguments[Event]) => void
   ) {
     this.client.once(event, callback);
   }
 
-  async connect(params: ConnectParams) {
-    const relay = params.relay || { protocol: RELAYER_DEFAULT_PROTOCOL };
-    const timeout = params.timeout || 30 * 1000;
+  async connect(params: EngineTypes.ConnectParams) {
+    // const timeout = params.timeout || 30 * 1000;
 
-    return new Promise<SessionTypes.Settled>((resolve, reject) => {
-      this.once("pairing_proposal", (proposal) => {
-        const { uri } = proposal.signal.params;
-
-        QRCodeModal.open(uri, () => {
-          reject(new Error("User cancelled pairing"));
-        });
-      });
-
-      (async () => {
-        try {
-          const pairing = await this.client.pairing.create({
-            relay,
-            timeout,
+    return new Promise<SessionTypes.Struct>((resolve, reject) => {
+      this.client.connect(params).then(({ uri, approval }) => {
+        if (uri) {
+          QRCodeModal.open(uri, () => {
+            reject(new Error("User cancelled pairing"));
           });
-
-          const session = this.client.session.create({
-            signal: {
-              method: SESSION_SIGNAL_METHOD_PAIRING,
-              params: { topic: pairing.topic },
-            },
-            relay,
-            timeout,
-            metadata: params.metadata,
-            permissions: {
-              ...SESSION_EMPTY_PERMISSIONS,
-              ...params.permissions,
-            },
-          });
-
-          QRCodeModal.close();
-
-          return session;
-        } catch (err) {
-          QRCodeModal.close();
-
-          // WalletConnect sadly throws strings.
-          if (typeof err === "string") {
-            throw new Error(err);
-          }
-
-          throw err;
         }
-      })()
-        .then(resolve)
-        .catch(reject);
+
+        approval()
+          .then(resolve)
+          .catch(reject)
+          .finally(() => QRCodeModal.close());
+      });
     });
+
+    // return new Promise((resolve, reject) => {
+    //   this.client.once("pairing_proposal", (proposal) => {
+    //     const { uri } = proposal.signal.params;
+    //
+    //     QRCodeModal.open(uri, () => {
+    //       reject(new Error("User cancelled pairing"));
+    //     });
+    //   });
+    //
+    //   (async () => {
+    //     try {
+    //       this.client.connect();
+    //       const pairing = await this.client.pairing.create({
+    //         relay,
+    //         timeout,
+    //       });
+    //
+    //       const session = this.client.session.create({
+    //         signal: {
+    //           method: SESSION_SIGNAL_METHOD_PAIRING,
+    //           params: { topic: pairing.topic },
+    //         },
+    //         relay,
+    //         timeout,
+    //         metadata: params.metadata,
+    //         permissions: {
+    //           ...SESSION_EMPTY_PERMISSIONS,
+    //           ...params.permissions,
+    //         },
+    //       });
+    //
+    //       QRCodeModal.close();
+    //
+    //       return session;
+    //     } catch (err) {
+    //       QRCodeModal.close();
+    //
+    //       // WalletConnect sadly throws strings.
+    //       if (typeof err === "string") {
+    //         throw new Error(err);
+    //       }
+    //
+    //       throw err;
+    //     }
+    //   })()
+    //     .then(resolve)
+    //     .catch(reject);
+    // });
   }
 
   async request<Response>(
-    params: ClientTypes.RequestParams
+    params: EngineTypes.RequestParams
   ): Promise<Response> {
     return this.client.request(params);
   }
 
-  async disconnect(params: ClientTypes.DisconnectParams) {
+  async disconnect(params: EngineTypes.DisconnectParams) {
     return this.client.disconnect(params);
   }
 }
