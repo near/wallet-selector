@@ -18,11 +18,11 @@ export type WalletSelectorEvents = {
 
 export interface WalletSelector {
   options: Options;
+  signedIn: boolean;
+
   store: WalletSelectorStore;
 
   wallet<Variation extends Wallet = Wallet>(id?: string): Promise<Variation>;
-
-  isSignedIn(): boolean;
 
   on<EventName extends keyof WalletSelectorEvents>(
     eventName: EventName,
