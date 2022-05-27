@@ -36,9 +36,9 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 
   switch (network.networkId) {
     case "mainnet":
-      return "https://mynearwallet.com/";
+      return "https://mynearwallet.com";
     case "testnet":
-      return "https://testnet.mynearwallet.com/";
+      return "https://testnet.mynearwallet.com";
     default:
       throw new Error("Invalid wallet url");
   }
