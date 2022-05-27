@@ -264,12 +264,14 @@ export class WalletModules {
     const modules: Array<ModuleState> = [];
 
     for (let i = 0; i < this.factories.length; i += 1) {
-      const module = await this.factories[i]().catch((err) => {
-        logger.log("Failed to setup module");
-        logger.error(err);
+      const module = await this.factories[i]({ options: this.options }).catch(
+        (err) => {
+          logger.log("Failed to setup module");
+          logger.error(err);
 
-        return null;
-      });
+          return null;
+        }
+      );
 
       // Filter out wallets that aren't available.
       if (!module) {

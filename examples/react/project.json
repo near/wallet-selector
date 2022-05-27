@@ -25,6 +25,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/my-near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/sender/assets/",
             "output": "assets/"
           },

@@ -351,6 +351,7 @@
 }
 
 .nws-modal-wrapper.dark-theme .modal .wallet-options-wrapper .options-list #near-wallet img,
+.nws-modal-wrapper.dark-theme .modal .wallet-options-wrapper .options-list #my-near-wallet img,
 .nws-modal-wrapper.dark-theme .modal .wallet-options-wrapper .options-list #math-wallet img,
 .nws-modal-wrapper.dark-theme .modal .wallet-options-wrapper .options-list #wallet-connect img {
   filter: invert(1);
@@ -358,6 +359,7 @@
 
 @media (prefers-color-scheme: dark) {
   .nws-modal-wrapper .modal .wallet-options-wrapper .options-list #near-wallet img,
+  .nws-modal-wrapper .modal .wallet-options-wrapper .options-list #my-near-wallet img,
   .nws-modal-wrapper .modal .wallet-options-wrapper .options-list #math-wallet img,
   .nws-modal-wrapper .modal .wallet-options-wrapper .options-list #wallet-connect img {
     filter: invert(1);
