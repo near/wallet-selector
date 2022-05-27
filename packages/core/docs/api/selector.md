@@ -21,7 +21,11 @@ Resolved variation of the options passed to `setupWalletSelector`.
 console.log(selector.options); // { network: { networkId: "testnet", ... }, ... }
 ```
 
-### `.signedIn`
+### `.isSignedIn()`
+
+****Parameters****
+
+- N/A
 
 **Returns**
 
@@ -34,7 +38,7 @@ Determines whether we're signed in to one or more accounts.
 **Example**
 
 ```ts
-console.log(selector.signedIn); // true
+console.log(selector.isSignedIn()); // true
 ```
 
 ### `.store.getState()`

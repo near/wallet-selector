@@ -27,13 +27,8 @@ export const setupWalletSelector = async (
   await walletModules.setup();
 
   return {
-    store: store.toReadOnly(),
-    get signedIn() {
-      const { accounts } = store.getState();
-
-      return Boolean(accounts.length);
-    },
     options,
+    store: store.toReadOnly(),
     wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
       const { selectedWalletId } = store.getState();
       const wallet = await walletModules.getWallet<Variation>(
@@ -49,6 +44,11 @@ export const setupWalletSelector = async (
       }
 
       return wallet;
+    },
+    isSignedIn() {
+      const { accounts } = store.getState();
+
+      return Boolean(accounts.length);
     },
     on: (eventName, callback) => {
       return emitter.on(eventName, callback);
