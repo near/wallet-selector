@@ -113,7 +113,6 @@ const WalletConnect: WalletBehaviourFactory<
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
     const signedTx = await _state.client
       .request<Buffer>({
-        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -135,7 +134,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     const signedTxs = await _state.client
       .request<Array<Buffer>>({
-        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -160,7 +158,6 @@ const WalletConnect: WalletBehaviourFactory<
     const accountKeyPairs = createAccountKeyPairs(accounts);
 
     await _state.client.request({
-      // timeout: 30 * 1000,
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
@@ -192,7 +189,6 @@ const WalletConnect: WalletBehaviourFactory<
       const accounts = getAccounts();
 
       await _state.client.request({
-        // timeout: 30 * 1000,
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
@@ -286,12 +282,6 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const setupEvents = () => {
-    // _state.subscriptions.push(
-    //   _state.client.on("pairing_created", (pairing) => {
-    //     logger.log("Pairing Created", pairing);
-    //   })
-    // );
-
     _state.subscriptions.push(
       _state.client.on("session_update", (event) => {
         logger.log("Session Update", event);
