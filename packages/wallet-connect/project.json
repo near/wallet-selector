@@ -4,27 +4,22 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "targetDependencies": {
+        "build": [{
+          "target": "build",
+          "projects": "dependencies"
+        }]
+      },
       "options": {
         "outputPath": "dist/packages/wallet-connect",
+        "main": "packages/wallet-connect/src/index.ts",
         "tsConfig": "packages/wallet-connect/tsconfig.lib.json",
-        "project": "packages/wallet-connect/package.json",
-        "entryFile": "packages/wallet-connect/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
         "assets": [
-          {
-            "glob": "packages/wallet-connect/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/wallet-connect/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
+          "packages/wallet-connect/*.md",
+          "packages/wallet-connect/assets/*"
         ]
       }
     },
