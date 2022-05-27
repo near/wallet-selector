@@ -27,7 +27,6 @@ const mathWallet = setupMathWallet({
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [mathWallet],
 });
 ```
