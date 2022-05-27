@@ -26,11 +26,10 @@ export const mockWallet = async <Variation extends Wallet>(
 ) => {
   const options = deps.options || {
     network: getNetworkPreset("testnet"),
-    contractId: "test.testnet",
     debug: false,
   };
 
-  const module = await factory();
+  const module = await factory({ options });
 
   if (!module) {
     return null;
