@@ -17,7 +17,7 @@ npm install @near-wallet-selector/math-wallet
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 
 // Math Wallet for Wallet Selector can be setup without any params or it can take one optional param.
@@ -25,10 +25,9 @@ const mathWallet = setupMathWallet({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
-  wallets: [mathWallet],
+  modules: [mathWallet],
 });
 ```
 

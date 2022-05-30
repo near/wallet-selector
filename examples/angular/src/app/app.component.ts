@@ -1,14 +1,20 @@
 import { Component, OnInit } from "@angular/core";
-import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
-    selector: NearWalletSelector;
+    selector: WalletSelector;
+    modal: WalletSelectorModal;
   }
 }
 
@@ -18,17 +24,21 @@ declare global {
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  selector: NearWalletSelector;
+  selector: WalletSelector;
+  modal: WalletSelectorModal;
   accountId: string | null;
-  accounts: Array<AccountInfo> = [];
+  accounts: Array<AccountState> = [];
 
   async ngOnInit() {
-    await this.initialize();
+    await this.initialize().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
   }
 
   syncAccountState(
     currentAccountId: string | null,
-    newAccounts: Array<AccountInfo>
+    newAccounts: Array<AccountState>
   ) {
     if (!newAccounts.length) {
       localStorage.removeItem("accountId");
@@ -51,11 +61,12 @@ export class AppComponent implements OnInit {
   }
 
   async initialize() {
-    NearWalletSelector.init({
+    const _selector = await setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
-      wallets: [
+      debug: true,
+      modules: [
         setupNearWallet(),
+        setupMyNearWallet(),
         setupSender(),
         setupLedger(),
         setupMathWallet(),
@@ -69,18 +80,17 @@ export class AppComponent implements OnInit {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        return instance.getAccounts().then(async (newAccounts) => {
-          this.syncAccountState(localStorage.getItem("accountId"), newAccounts);
+    });
 
-          window.selector = instance;
-          this.selector = instance;
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const state = _selector.store.getState();
+
+    this.syncAccountState(localStorage.getItem("accountId"), state.accounts);
+
+    window.selector = _selector;
+    window.modal = _modal;
+
+    this.selector = _selector;
+    this.modal = _modal;
   }
 }

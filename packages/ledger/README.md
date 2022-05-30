@@ -17,7 +17,7 @@ npm install @near-wallet-selector/ledger
 Then use it in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupLedger } from "@near-wallet-selector/ledger";
 
 // Ledger for Wallet Selector can be setup without any params or it can take one optional param.
@@ -25,10 +25,9 @@ const ledger = setupLedger({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
-  wallets: [ledger],
+  modules: [ledger],
 });
 ```
 

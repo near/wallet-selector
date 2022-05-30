@@ -1,9 +1,14 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { providers, utils } from "near-api-js";
-import { AccountView, CodeResult } from "near-api-js/lib/providers/provider";
+import type {
+  AccountView,
+  CodeResult,
+} from "near-api-js/lib/providers/provider";
 
-import { Account, Message } from "../interfaces";
+import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
+import { CONTRACT_ID } from "../constants";
+
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
@@ -13,7 +18,8 @@ const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 const Content: React.FC = () => {
-  const { selector, accounts, accountId, setAccountId } = useWalletSelector();
+  const { selector, modal, accounts, accountId, setAccountId } =
+    useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,8 +29,8 @@ const Content: React.FC = () => {
       return null;
     }
 
-    const { nodeUrl } = selector.network;
-    const provider = new providers.JsonRpcProvider({ url: nodeUrl });
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<AccountView>({
@@ -36,17 +42,16 @@ const Content: React.FC = () => {
         ...data,
         account_id: accountId,
       }));
-  }, [accountId, selector.network]);
+  }, [accountId, selector.options]);
 
   const getMessages = useCallback(() => {
-    const provider = new providers.JsonRpcProvider({
-      url: selector.network.nodeUrl,
-    });
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
       .query<CodeResult>({
         request_type: "call_function",
-        account_id: selector.getContractId(),
+        account_id: CONTRACT_ID,
         method_name: "getMessages",
         args_base64: "",
         finality: "optimistic",
@@ -75,18 +80,20 @@ const Content: React.FC = () => {
   }, [accountId, getAccount]);
 
   const handleSignIn = () => {
-    selector.show();
+    modal.show();
   };
 
-  const handleSignOut = () => {
-    selector.signOut().catch((err) => {
+  const handleSignOut = async () => {
+    const wallet = await selector.wallet();
+
+    wallet.signOut().catch((err) => {
       console.log("Failed to sign out");
       console.error(err);
     });
   };
 
   const handleSwitchProvider = () => {
-    selector.show();
+    modal.show();
   };
 
   const handleSwitchAccount = () => {
@@ -99,8 +106,11 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
-  const handleSendMultipleTransactions = () => {
-    selector.signAndSendTransactions({
+  const handleSendMultipleTransactions = async () => {
+    const { contract } = selector.store.getState();
+    const wallet = await selector.wallet();
+
+    await wallet.signAndSendTransactions({
       transactions: [
         {
           // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
@@ -118,7 +128,7 @@ const Content: React.FC = () => {
           ],
         },
         {
-          receiverId: selector.getContractId(),
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",
@@ -136,7 +146,7 @@ const Content: React.FC = () => {
   };
 
   const handleSubmit = useCallback(
-    (e: SubmitEvent) => {
+    async (e: SubmitEvent) => {
       e.preventDefault();
 
       // TODO: Fix the typing so that target.elements exists..
@@ -149,7 +159,10 @@ const Content: React.FC = () => {
       // TODO: optimistically update page with new message,
       // update blockchain data in background
       // add uuid to each message, so we know which one is already known
-      selector
+
+      const wallet = await selector.wallet();
+
+      wallet
         .signAndSendTransaction({
           signerId: accountId!,
           actions: [

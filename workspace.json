@@ -2,14 +2,15 @@
   "version": 2,
   "projects": {
     "core": "packages/core",
+    "modal-ui": "packages/modal-ui",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
     "near-wallet": "packages/near-wallet",
+    "my-near-wallet": "packages/my-near-wallet",
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
     "angular": "examples/angular",
-    "angular-e2e": "examples/angular-e2e",
     "react": "examples/react",
-    "react-e2e": "examples/react-e2e"
+    "wallet-utils": "packages/wallet-utils"
   }
 }

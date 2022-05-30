@@ -1,14 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
-import NearWalletSelector, { AccountInfo } from "@near-wallet-selector/core";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { map, distinctUntilChanged } from "rxjs";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { CONTRACT_ID } from "../constants";
+
+declare global {
+  interface Window {
+    selector: WalletSelector;
+    modal: WalletSelectorModal;
+  }
+}
 
 interface WalletSelectorContextValue {
-  selector: NearWalletSelector;
-  accounts: Array<AccountInfo>;
+  selector: WalletSelector;
+  modal: WalletSelectorModal;
+  accounts: Array<AccountState>;
   accountId: string | null;
   setAccountId: (accountId: string) => void;
 }
@@ -17,13 +31,14 @@ const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
-  const [selector, setSelector] = useState<NearWalletSelector | null>(null);
+  const [selector, setSelector] = useState<WalletSelector | null>(null);
+  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accountId, setAccountId] = useState<string | null>(null);
-  const [accounts, setAccounts] = useState<Array<AccountInfo>>([]);
+  const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const syncAccountState = (
     currentAccountId: string | null,
-    newAccounts: Array<AccountInfo>
+    newAccounts: Array<AccountState>
   ) => {
     if (!newAccounts.length) {
       localStorage.removeItem("accountId");
@@ -45,15 +60,16 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     setAccounts(newAccounts);
   };
 
-  useEffect(() => {
-    NearWalletSelector.init({
+  const init = useCallback(async () => {
+    const _selector = await setupWalletSelector({
       network: "testnet",
-      contractId: "guest-book.testnet",
-      wallets: [
+      debug: true,
+      modules: [
         setupNearWallet(),
+        setupMyNearWallet(),
         setupSender(),
-        setupLedger(),
         setupMathWallet(),
+        setupLedger(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
@@ -64,36 +80,47 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
           },
         }),
       ],
-    })
-      .then((instance) => {
-        return instance.getAccounts().then(async (newAccounts) => {
-          syncAccountState(localStorage.getItem("accountId"), newAccounts);
+    });
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-next-line
-          window.selector = instance;
-          setSelector(instance);
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to initialise wallet selector");
-      });
+    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const state = _selector.store.getState();
+
+    syncAccountState(localStorage.getItem("accountId"), state.accounts);
+
+    window.selector = _selector;
+    window.modal = _modal;
+
+    setSelector(_selector);
+    setModal(_modal);
   }, []);
+
+  useEffect(() => {
+    init().catch((err) => {
+      console.error(err);
+      alert("Failed to initialise wallet selector");
+    });
+  }, [init]);
 
   useEffect(() => {
     if (!selector) {
       return;
     }
 
-    const subscription = selector.on("accountsChanged", (e) => {
-      syncAccountState(accountId, e.accounts);
-    });
+    const subscription = selector.store.observable
+      .pipe(
+        map((state) => state.accounts),
+        distinctUntilChanged()
+      )
+      .subscribe((nextAccounts) => {
+        console.log("Accounts Update", nextAccounts);
 
-    return () => subscription.remove();
+        syncAccountState(accountId, nextAccounts);
+      });
+
+    return () => subscription.unsubscribe();
   }, [selector, accountId]);
 
-  if (!selector) {
+  if (!selector || !modal) {
     return null;
   }
 
@@ -101,6 +128,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     <WalletSelectorContext.Provider
       value={{
         selector,
+        modal,
         accounts,
         accountId,
         setAccountId,

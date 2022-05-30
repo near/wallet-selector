@@ -1,16 +1,18 @@
-import { Provider, QueryParams, ViewAccessKeyParams } from "./provider.service";
+import { Provider } from "./provider.service";
+import type {
+  QueryParams,
+  ViewAccessKeyParams,
+} from "./provider.service.types";
 import { mock } from "jest-mock-extended";
-import {
-  FinalExecutionOutcome,
-  JsonRpcProvider,
-} from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { providers } from "near-api-js";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
 } from "./provider.service.mocks";
 import { SignedTransaction } from "near-api-js/lib/transaction";
-import {
+import type {
   BlockReference,
   BlockResult,
 } from "near-api-js/lib/providers/provider";

@@ -1,19 +1,17 @@
 import { providers } from "near-api-js";
-import {
+import type {
   AccessKeyView,
   BlockReference,
   QueryResponseKind,
 } from "near-api-js/lib/providers/provider";
 import { SignedTransaction } from "near-api-js/lib/transaction";
+import type {
+  ProviderService,
+  QueryParams,
+  ViewAccessKeyParams,
+} from "./provider.service.types";
 
-export type QueryParams = { [key in string]: unknown };
-
-export interface ViewAccessKeyParams {
-  accountId: string;
-  publicKey: string;
-}
-
-export class Provider {
+export class Provider implements ProviderService {
   private provider: providers.JsonRpcProvider;
 
   constructor(url: string) {

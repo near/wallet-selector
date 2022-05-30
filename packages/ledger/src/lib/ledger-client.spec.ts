@@ -101,6 +101,7 @@ describe("getVersion", () => {
     });
     await client.connect();
     const result = await client.getVersion();
+
     expect(transport.send).toHaveBeenCalledWith(
       constants.CLA,
       constants.INS_GET_APP_VERSION,
@@ -134,7 +135,6 @@ describe("getPublicKey", () => {
       constants.networkId,
       parseDerivationPath(derivationPath)
     );
-
     expect(result).toEqual("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC");
   });
 });
@@ -155,6 +155,7 @@ describe("sign", () => {
       data,
       derivationPath: "44'/397'/0'/0'/1'",
     });
+
     expect(transport.send).toHaveBeenCalledWith(
       constants.CLA,
       constants.INS_GET_APP_VERSION,
@@ -189,8 +190,8 @@ describe("on", () => {
 
     await client.connect();
     await client.on(event, listener);
+
     expect(transport.on).toHaveBeenCalledWith(event, listener);
-    expect(transport.on).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -203,8 +204,8 @@ describe("off", () => {
 
     await client.connect();
     await client.off(event, listener);
+
     expect(transport.off).toHaveBeenCalledWith(event, listener);
-    expect(transport.off).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -220,7 +221,7 @@ describe("setScrambleKey", () => {
 
     await client.connect();
     await client.setScrambleKey(scrambleKey);
+
     expect(transport.setScrambleKey).toHaveBeenCalledWith(scrambleKey);
-    expect(transport.setScrambleKey).toHaveBeenCalledTimes(1);
   });
 });

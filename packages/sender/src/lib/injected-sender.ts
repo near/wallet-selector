@@ -13,16 +13,12 @@ interface AccessKey {
 
 export interface RequestSignInResponse {
   accessKey: AccessKey;
-  error:
-    | string
-    | {
-        type: string;
-      };
+  error: string | { type: string };
   notificationId: number;
   type: "sender-wallet-result";
 }
 
-export type SignOutResponse = boolean | { error: string | { type: string } };
+export type SignOutResponse = true | { error: string | { type: string } };
 
 export interface RpcInfo {
   explorerUrl: string;
@@ -50,10 +46,15 @@ export interface RequestSignInParams {
 }
 
 export interface RpcChangedResponse {
-  method: "rpcChanged";
-  notificationId: number;
-  rpc: RpcInfo;
-  type: "sender-wallet-fromContent";
+  explorerUrl: string;
+  helperUrl: string;
+  index: number;
+  name: string;
+  network: string;
+  networkId: string;
+  nodeUrl: string;
+  walletUrl: string;
+  wrapNearContract: string;
 }
 
 export interface SendMoneyParams {
@@ -110,6 +111,7 @@ export interface SenderEvents {
 
 export interface InjectedSender {
   isSender: boolean;
+  callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
@@ -117,6 +119,7 @@ export interface InjectedSender {
   ) => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
+  remove: (event: string) => void;
   on: <Event extends keyof SenderEvents>(
     event: Event,
     callback: SenderEvents[Event]

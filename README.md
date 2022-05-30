@@ -1,16 +1,17 @@
 # NEAR Wallet Selector
 
-The NEAR Wallet Selector makes it easy for users to interact with your dApp. This package presents a modal to switch between a number of supported wallet types:
+NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
-- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Web wallet.
-- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Browser extension wallet.
-- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Browser extension wallet.
+- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
+- [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
 ## Preview
 
-[React](https://reactjs.org/), [Vue](https://vuejs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate `near-wallet-selector` into your own dApp.
+[React](https://reactjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
 ![Preview](./images/preview-img.PNG)
 
@@ -32,6 +33,7 @@ Next, you'll need to install the wallets you want to support:
 # Using Yarn
 yarn add \
   @near-wallet-selector/near-wallet \
+  @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/ledger \
@@ -40,27 +42,40 @@ yarn add \
 # Using NPM.
 npm install \
   @near-wallet-selector/near-wallet \
+  @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
 ```
 
-Then them in your dApp:
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
+
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/modal-ui
+
+# Using NPM.
+npm install @near-wallet-selector/modal-ui
+```
+
+Then in your dApp:
 
 ```ts
-import NearWalletSelector from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 
-const selector = await NearWalletSelector.init({
+const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
-  wallets: [
+  modules: [
     setupNearWallet(),
+    setupMyNearWallet(),
     setupSender(),
     setupLedger(),
     setupMathWallet(),
@@ -74,6 +89,10 @@ const selector = await NearWalletSelector.init({
       },
     }),
   ],
+});
+
+const modal = setupModal(selector, {
+  contractId: "guest-book.testnet"
 });
 ```
 

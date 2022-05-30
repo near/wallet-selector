@@ -1,0 +1,47 @@
+{
+  "root": "packages/wallet-utils",
+  "sourceRoot": "packages/wallet-utils/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/wallet-utils",
+        "tsConfig": "packages/wallet-utils/tsconfig.lib.json",
+        "project": "packages/wallet-utils/package.json",
+        "entryFile": "packages/wallet-utils/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/wallet-utils/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/wallet-utils/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/wallet-utils/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/wallet-utils"],
+      "options": {
+        "jestConfig": "packages/wallet-utils/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

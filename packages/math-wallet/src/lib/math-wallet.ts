@@ -1,13 +1,16 @@
-import { transactions as nearTransactions, utils } from "near-api-js";
-import isMobile from "is-mobile";
-import {
+import { isMobile } from "is-mobile";
+import type {
+  WalletSelectorStore,
+  WalletModuleFactory,
+  WalletBehaviourFactory,
   InjectedWallet,
-  WalletModule,
-  transformActions,
-  waitFor,
+  AccountState,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
-
-import { InjectedMathWallet, SignedInAccount } from "./injected-math-wallet";
+import { waitFor } from "@near-wallet-selector/core";
+import type { InjectedMathWallet } from "./injected-math-wallet";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 declare global {
   interface Window {
@@ -19,231 +22,158 @@ export interface MathWalletParams {
   iconUrl?: string;
 }
 
-export function setupMathWallet({
-  iconUrl,
-}: MathWalletParams = {}): WalletModule<InjectedWallet> {
-  return function MathWallet({
-    options,
-    provider,
-    emitter,
-    logger,
-    updateState,
-  }) {
-    let wallet: InjectedMathWallet;
+interface MathWalletState {
+  wallet: InjectedMathWallet;
+}
 
-    const getAccounts = () => {
-      if (!wallet.signer.account) {
-        return [];
+const isInstalled = () => {
+  return waitFor(() => !!window.nearWalletApi).catch(() => false);
+};
+
+const setupMathWalletState = async (
+  store: WalletSelectorStore
+): Promise<MathWalletState> => {
+  const wallet = window.nearWalletApi!;
+  const { contract } = store.getState();
+
+  // This wallet currently has weird behaviour regarding signer.account.
+  // - When you initially sign in, you get a SignedInAccount interface.
+  // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
+  // This method normalises the behaviour to only return the SignedInAccount interface.
+  if (contract && wallet.signer.account && "address" in wallet.signer.account) {
+    await wallet.login({ contractId: contract.contractId });
+  }
+
+  return {
+    wallet,
+  };
+};
+
+const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
+  options,
+  store,
+  provider,
+  logger,
+}) => {
+  const _state = await setupMathWalletState(store);
+
+  const getSignedInAccount = () => {
+    if (
+      _state.wallet.signer.account &&
+      "accountId" in _state.wallet.signer.account
+    ) {
+      return _state.wallet.signer.account;
+    }
+
+    return null;
+  };
+
+  const getAccounts = (): Array<AccountState> => {
+    const account = getSignedInAccount();
+
+    if (!account) {
+      return [];
+    }
+
+    return [{ accountId: account.accountId }];
+  };
+
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+  ): Array<Transaction> => {
+    const account = getSignedInAccount();
+    const { contract } = store.getState();
+
+    if (!account || !contract) {
+      throw new Error("Wallet not signed in");
+    }
+
+    return transactions.map((transaction) => {
+      return {
+        signerId: transaction.signerId || account.accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
+      };
+    });
+  };
+
+  return {
+    async signIn({ contractId }) {
+      const existingAccounts = getAccounts();
+
+      if (existingAccounts.length) {
+        return existingAccounts;
       }
 
-      const accountId =
-        "accountId" in wallet.signer.account
-          ? wallet.signer.account.accountId
-          : wallet.signer.account.name;
+      await _state.wallet.login({ contractId });
 
-      return [{ accountId }];
-    };
+      return getAccounts();
+    },
 
-    const isInstalled = async () => {
-      try {
-        return await waitFor(() => !!window.nearWalletApi, {});
-      } catch (e) {
-        logger.log("MathWallet:isInstalled:error", e);
+    async signOut() {
+      // Ignore if unsuccessful (returns false).
+      await _state.wallet.logout();
+    },
 
-        return false;
-      }
-    };
+    async getAccounts() {
+      return getAccounts();
+    },
 
-    // This wallet currently has weird behaviour regarding signer.account.
-    // - When you initially sign in, you get a SignedInAccount interface.
-    // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
-    // This method normalises the behaviour to only return the SignedInAccount interface.
-    const getSignerAccount = async (): Promise<SignedInAccount | null> => {
-      if (!wallet.signer.account) {
-        return null;
-      }
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+      const signedTransactions = await signTransactions(
+        transformTransactions([{ signerId, receiverId, actions }]),
+        _state.wallet.signer,
+        options.network
+      );
 
-      if ("accountId" in wallet.signer.account) {
-        return wallet.signer.account;
-      }
+      return provider.sendTransaction(signedTransactions[0]);
+    },
 
-      return wallet.login({ contractId: options.contractId });
-    };
+    async signAndSendTransactions({ transactions }) {
+      logger.log("signAndSendTransactions", { transactions });
+
+      const signedTransactions = await signTransactions(
+        transformTransactions(transactions),
+        _state.wallet.signer,
+        options.network
+      );
+
+      logger.log(
+        "signAndSendTransactions:signedTransactions",
+        signedTransactions
+      );
+
+      return Promise.all(
+        signedTransactions.map((tx) => provider.sendTransaction(tx))
+      );
+    },
+  };
+};
+
+export const setupMathWallet = ({
+  iconUrl = "./assets/math-wallet-icon.png",
+}: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
+  return async () => {
+    const mobile = isMobile();
+    const installed = await isInstalled();
+
+    if (mobile || !installed) {
+      return null;
+    }
 
     return {
       id: "math-wallet",
       type: "injected",
-      name: "Math Wallet",
-      description: null,
-      iconUrl: iconUrl || "./assets/math-wallet-icon.png",
-      downloadUrl:
-        "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-
-      isAvailable() {
-        if (!isInstalled()) {
-          return false;
-        }
-
-        if (isMobile()) {
-          return false;
-        }
-
-        return true;
+      metadata: {
+        name: "Math Wallet",
+        description: null,
+        iconUrl,
+        downloadUrl:
+          "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
+        deprecated: false,
       },
-
-      async init() {
-        if (!(await isInstalled())) {
-          throw new Error("Wallet not installed");
-        }
-
-        wallet = window.nearWalletApi as InjectedMathWallet;
-      },
-
-      async signIn() {
-        if (!(await isInstalled())) {
-          return updateState((prevState) => ({
-            ...prevState,
-            showWalletOptions: false,
-            showWalletNotInstalled: this.id,
-          }));
-        }
-
-        if (!wallet) {
-          await this.init();
-        }
-
-        const account = await wallet.login({
-          contractId: options.contractId,
-        });
-
-        if (!account) {
-          throw new Error("Failed to sign in");
-        }
-
-        updateState((prevState) => ({
-          ...prevState,
-          showModal: false,
-          selectedWalletId: this.id,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("signIn", { accounts });
-        emitter.emit("accountsChanged", { accounts });
-      },
-
-      async isSignedIn() {
-        const signerAccount = await getSignerAccount();
-
-        return !!signerAccount;
-      },
-
-      async signOut() {
-        const res = await wallet.logout();
-
-        if (!res) {
-          throw new Error("Failed to sign out");
-        }
-
-        updateState((prevState) => ({
-          ...prevState,
-          selectedWalletId: null,
-        }));
-
-        const accounts = getAccounts();
-        emitter.emit("accountsChanged", { accounts });
-        emitter.emit("signOut", { accounts });
-      },
-
-      async getAccounts() {
-        return getAccounts();
-      },
-
-      async signAndSendTransaction({ signerId, receiverId, actions }) {
-        logger.log("MathWallet:signAndSendTransaction", {
-          signerId,
-          receiverId,
-          actions,
-        });
-
-        const signerAccount = await getSignerAccount();
-        const { accountId, publicKey } = signerAccount as SignedInAccount;
-
-        const [block, accessKey] = await Promise.all([
-          provider.block({ finality: "final" }),
-          provider.viewAccessKey({ accountId, publicKey }),
-        ]);
-
-        logger.log("MathWallet:signAndSendTransaction:block", block);
-        logger.log("MathWallet:signAndSendTransaction:accessKey", accessKey);
-
-        const transaction = nearTransactions.createTransaction(
-          accountId,
-          utils.PublicKey.from(publicKey),
-          receiverId,
-          accessKey.nonce + 1,
-          transformActions(actions),
-          utils.serialize.base_decode(block.header.hash)
-        );
-
-        const [hash, signedTx] = await nearTransactions.signTransaction(
-          transaction,
-          wallet.signer,
-          accountId
-        );
-
-        logger.log("MathWallet:signAndSendTransaction:hash", hash);
-
-        return provider.sendTransaction(signedTx);
-      },
-
-      async signAndSendTransactions({ transactions }) {
-        logger.log("MathWallet:signAndSendTransactions", { transactions });
-
-        const signerAccount = await getSignerAccount();
-        const { accountId, publicKey } = signerAccount as SignedInAccount;
-
-        const [block, accessKey] = await Promise.all([
-          provider.block({ finality: "final" }),
-          provider.viewAccessKey({ accountId, publicKey }),
-        ]);
-
-        logger.log("MathWallet:signAndSendTransactions:block", block);
-        logger.log("MathWallet:signAndSendTransactions:accessKey", accessKey);
-
-        const signedTransactions: Array<nearTransactions.SignedTransaction> =
-          [];
-        let nonce = accessKey.nonce;
-
-        for (let i = 0; i < transactions.length; i++) {
-          const transaction = nearTransactions.createTransaction(
-            accountId,
-            utils.PublicKey.from(publicKey),
-            transactions[i].receiverId,
-            ++nonce,
-            transformActions(transactions[i].actions),
-            utils.serialize.base_decode(block.header.hash)
-          );
-
-          const [hash, signedTx] = await nearTransactions.signTransaction(
-            transaction,
-            wallet.signer,
-            accountId
-          );
-
-          logger.log("MathWallet:signAndSendTransactions:hash", hash);
-
-          signedTransactions.push(signedTx);
-        }
-
-        logger.log(
-          "MathWallet:signAndSendTransactions:signedTransactions",
-          signedTransactions
-        );
-
-        return Promise.all(
-          signedTransactions.map((tx) => provider.sendTransaction(tx))
-        );
-      },
+      init: MathWallet,
     };
   };
-}
+};

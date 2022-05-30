@@ -1,18 +1,50 @@
-import NearWalletSelector from "./lib/NearWalletSelector";
+export type {
+  WalletSelector,
+  WalletSelectorParams,
+  WalletSelectorEvents,
+  WalletSelectorStore,
+} from "./lib/wallet-selector.types";
+export { setupWalletSelector } from "./lib/wallet-selector";
 
-export { NetworkId, Options } from "./lib/Options";
-export { NetworkConfiguration } from "./lib/network";
-export { Subscription } from "./lib/services";
+export type { Network, NetworkId } from "./lib/options.types";
+export type {
+  Subscription,
+  StorageService,
+  JsonStorageService,
+} from "./lib/services";
+export type { Optional } from "./lib/utils.types";
 
-export {
+export type {
+  WalletSelectorState,
+  ContractState,
+  ModuleState,
+  AccountState,
+} from "./lib/store.types";
+
+export type {
+  WalletModuleFactory,
+  WalletModule,
+  WalletBehaviourFactory,
+  WalletBehaviourOptions,
   Wallet,
   WalletType,
-  WalletModule,
+  WalletMetadata,
+  WalletEvents,
+  SignInParams,
+  BrowserWalletMetadata,
+  BrowserWalletBehaviour,
   BrowserWallet,
+  InjectedWalletMetadata,
+  InjectedWalletBehaviour,
   InjectedWallet,
+  HardwareWalletMetadata,
+  HardwareWalletSignInParams,
+  HardwareWalletBehaviour,
   HardwareWallet,
+  BridgeWalletMetadata,
+  BridgeWalletBehaviour,
   BridgeWallet,
-  AccountInfo,
+  Account,
   Transaction,
   Action,
   ActionType,
@@ -24,9 +56,9 @@ export {
   AddKeyAction,
   DeleteKeyAction,
   DeleteAccountAction,
+  AddKeyPermission,
 } from "./lib/wallet";
 
-export { transformActions } from "./lib/wallet";
-export { waitFor } from "./lib/helpers";
+export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export default NearWalletSelector;
+export { waitFor } from "./lib/helpers";
