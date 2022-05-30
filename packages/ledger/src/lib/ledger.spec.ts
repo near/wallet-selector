@@ -11,29 +11,28 @@ import {
   JsonStorageService,
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
-
-const getSendTransactionResponse = () => {
-  return {
-    receipts_outcome: [],
-    status: { SuccessValue: "" },
-    transaction: {},
-    transaction_outcome: {
-      id: "8mH8sUCzor2WzMxdfhGsG2YQWAK98sX7KkNXSjMRLMJm",
-      outcome: {
-        gas_burnt: 123,
-        logs: [],
-        status: {
-          SuccessReceiptId: "GFKNTQiurtQxvZ77DYKBm6UekG5qhybduemrUe5NBrrt",
-        },
-        receipt_ids: [],
-      },
-    },
-  };
-};
+import {
+  ReadOnlyStore,
+  WalletSelectorState,
+} from "packages/core/src/lib/store.types";
 
 const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const storageState: Record<string, never> = {};
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
+
+  const store = mock<ReadOnlyStore>();
+
+  const state: WalletSelectorState = {
+    contract: {
+      contractId: "guest-book.testnet",
+      methodNames: [],
+    },
+    modules: [],
+    accounts: [],
+    selectedWalletId: "ledger",
+  };
+
+  store.getState.mockReturnValue(state);
 
   const ledgerClient = mock<LedgerClient>({
     getPublicKey: jest.fn().mockResolvedValue(publicKey),
@@ -85,8 +84,6 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
     block_hash: "block_hash",
   });
 
-  provider.sendTransaction.mockResolvedValue(getSendTransactionResponse());
-
   return {
     nearApiJs: require("near-api-js"),
     wallet: ledgerWallet!,
@@ -106,7 +103,10 @@ describe("connect", () => {
     const derivationPath = "44'/397'/0'/0'/1'";
     const { wallet, ledgerClient, storage, publicKey } =
       await createLedgerWallet();
-    await wallet.connect({ derivationPaths: [derivationPath] });
+    await wallet.signIn({
+      derivationPaths: [derivationPath],
+      contractId: "guest-book.testnet",
+    });
 
     expect(ledgerClient.isConnected).toHaveBeenCalledTimes(1);
     expect(ledgerClient.connect).toHaveBeenCalledTimes(1);
@@ -125,8 +125,9 @@ describe("getAccounts", () => {
   it("returns account objects", async () => {
     const accountId = "amirsaran.testnet";
     const { wallet } = await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       derivationPaths: ["44'/397'/0'/0'/1'"],
+      contractId: "guest-book.testnet",
     });
     const result = await wallet.getAccounts();
     expect(result).toEqual([{ accountId }]);
@@ -141,24 +142,25 @@ describe("getAccounts", () => {
 describe("signAndSendTransaction", () => {
   it("signs and sends transaction", async () => {
     const { wallet, ledgerClient } = await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       derivationPaths: ["44'/397'/0'/0'/1'"],
+      contractId: "guest-book.testnet",
     });
-    const result = await wallet.signAndSendTransaction({
+    await wallet.signAndSendTransaction({
       signerId: "amirsaran.testnet",
       receiverId: "guest-book.testnet",
       actions: [],
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
-    expect(result).toEqual(getSendTransactionResponse());
   });
 });
 
 describe("signAndSendTransactions", () => {
   it("signs and sends only one transaction", async () => {
     const { wallet, ledgerClient } = await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       derivationPaths: ["44'/397'/0'/0'/1'"],
+      contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [
       {
@@ -171,13 +173,14 @@ describe("signAndSendTransactions", () => {
       transactions: transactions,
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
-    expect(result).toEqual([getSendTransactionResponse()]);
+    expect(result.length).toEqual(1);
   });
 
   it("signs and sends multiple transactions", async () => {
     const { wallet, ledgerClient } = await createLedgerWallet();
-    await wallet.connect({
+    await wallet.signIn({
       derivationPaths: ["44'/397'/0'/0'/1'"],
+      contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [
       {
@@ -195,7 +198,6 @@ describe("signAndSendTransactions", () => {
       transactions,
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
-    const txResponse = getSendTransactionResponse();
-    expect(result).toEqual([txResponse, txResponse]);
+    expect(result.length).toEqual(2);
   });
 });
