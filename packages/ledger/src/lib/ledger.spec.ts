@@ -11,28 +11,10 @@ import {
   JsonStorageService,
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
-import {
-  ReadOnlyStore,
-  WalletSelectorState,
-} from "packages/core/src/lib/store.types";
 
 const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const storageState: Record<string, never> = {};
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
-
-  const store = mock<ReadOnlyStore>();
-
-  const state: WalletSelectorState = {
-    contract: {
-      contractId: "guest-book.testnet",
-      methodNames: [],
-    },
-    modules: [],
-    accounts: [],
-    selectedWalletId: "ledger",
-  };
-
-  store.getState.mockReturnValue(state);
 
   const ledgerClient = mock<LedgerClient>({
     getPublicKey: jest.fn().mockResolvedValue(publicKey),
@@ -173,7 +155,7 @@ describe("signAndSendTransactions", () => {
       transactions: transactions,
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
-    expect(result.length).toEqual(1);
+    expect(result.length).toEqual(transactions.length);
   });
 
   it("signs and sends multiple transactions", async () => {
@@ -198,6 +180,6 @@ describe("signAndSendTransactions", () => {
       transactions,
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
-    expect(result.length).toEqual(2);
+    expect(result.length).toEqual(transactions.length);
   });
 });

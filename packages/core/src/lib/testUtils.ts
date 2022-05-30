@@ -45,7 +45,7 @@ export const mockWallet = async <Variation extends Wallet>(
         },
         modules: [],
         accounts: [],
-        selectedWalletId: "ledger",
+        selectedWalletId: null,
       };
     }),
   });
