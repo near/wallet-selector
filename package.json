@@ -1,10 +1,20 @@
 {
   "name": "near-wallet-selector",
-  "version": "3.0.1",
-  "description": "This is a wallet modal that allows users to interact with NEAR dApps with a selection of available wallets.",
+  "version": "4.0.0",
+  "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
-    "walletselector"
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "near-wallet",
+    "my-near-wallet",
+    "sender",
+    "math-wallet",
+    "ledger",
+    "wallet-connect"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
