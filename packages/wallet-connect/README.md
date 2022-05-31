@@ -34,7 +34,6 @@ const walletConnect = setupWalletConnect({
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [walletConnect],
 });
 ```

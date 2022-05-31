@@ -1,6 +1,6 @@
 # @near-wallet-selector/modal-ui
 
-This is the modal-ui package for NEAR Wallet Selector.
+This is the Modal UI package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -45,11 +45,14 @@ modal.show();
 Import modal css styles:
 
 ### Angular
+
 ```css
 /* Add import in the main css file */
 @import "~@near-wallet-selector/modal-ui/styles.css";
 ```
-### React, Vue
+
+### React & Vue
+
 ```ts
 // Add import in the main component
 import "@near-wallet-selector/modal-ui/styles.css";
@@ -76,7 +79,9 @@ These are the available css variables:
 --wallet-selector-error
 --wallet-selector-close-button-color
 ```
+
 Customizing css is done simply by updating the value of a variable in the root of your css file.
+
 ```css
 :root {
   --wallet-selector-backdrop-bg: #26262630;
