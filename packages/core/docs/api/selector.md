@@ -18,10 +18,14 @@ Resolved variation of the options passed to `setupWalletSelector`.
 **Example**
 
 ```ts
-console.log(selector.options); // { contractId: "guest-book.testnet", ... }
+console.log(selector.options); // { network: { networkId: "testnet", ... }, ... }
 ```
 
-### `.signedIn`
+### `.isSignedIn()`
+
+****Parameters****
+
+- N/A
 
 **Returns**
 
@@ -34,7 +38,7 @@ Determines whether we're signed in to one or more accounts.
 **Example**
 
 ```ts
-console.log(selector.signedIn); // true
+console.log(selector.isSignedIn()); // true
 ```
 
 ### `.store.getState()`
@@ -119,46 +123,6 @@ Programmatically access wallets and call their methods. It's advised to use `sta
   const wallet = await selector.wallet("near-wallet");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
-```
-
-### `.show()`
-
-****Parameters****
-
-- N/A
-
-**Returns**
-
-- `void`
-
-**Description**
-
-Opens the modal for users to sign in to their preferred wallet. You can also use this method to switch wallets.
-
-**Example**
-
-```ts
-selector.show();
-```
-
-### `.hide()`
-
-**Parameters**
-
-- N/A
-
-**Returns**
-
-- `void`
-
-**Description**
-
-Closes the modal.
-
-**Example**
-
-```ts
-selector.hide();
 ```
 
 ### `.on(event, callback)`

@@ -27,7 +27,6 @@ const sender = setupSender({
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  contractId: "guest-book.testnet",
   modules: [sender],
 });
 ```

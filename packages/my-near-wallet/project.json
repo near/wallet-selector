@@ -1,27 +1,27 @@
 {
-  "root": "packages/math-wallet",
-  "sourceRoot": "packages/math-wallet/src",
+  "root": "packages/my-near-wallet",
+  "sourceRoot": "packages/my-near-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/math-wallet",
-        "tsConfig": "packages/math-wallet/tsconfig.lib.json",
-        "project": "packages/math-wallet/package.json",
-        "entryFile": "packages/math-wallet/src/index.ts",
+        "outputPath": "dist/packages/my-near-wallet",
+        "tsConfig": "packages/my-near-wallet/tsconfig.lib.json",
+        "project": "packages/my-near-wallet/package.json",
+        "entryFile": "packages/my-near-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "umd", "cjs"],
         "assets": [
           {
-            "glob": "packages/math-wallet/README.md",
+            "glob": "packages/my-near-wallet/README.md",
             "input": ".",
             "output": "."
           },
           {
-            "glob": "packages/math-wallet/assets/*",
+            "glob": "packages/my-near-wallet/assets/*",
             "input": ".",
             "output": "assets"
           }
@@ -32,14 +32,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/math-wallet/**/*.ts"]
+        "lintFilePatterns": ["packages/my-near-wallet/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/math-wallet"],
+      "outputs": ["coverage/packages/my-near-wallet"],
       "options": {
-        "jestConfig": "packages/math-wallet/jest.config.js",
+        "jestConfig": "packages/my-near-wallet/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -50,5 +50,5 @@
       }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": ["browser-wallet"]
 }

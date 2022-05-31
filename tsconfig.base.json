@@ -27,6 +27,9 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/my-near-wallet": [
+        "packages/my-near-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],
