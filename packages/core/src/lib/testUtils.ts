@@ -39,10 +39,7 @@ export const mockWallet = async <Variation extends Wallet>(
   const storeMock = mock<Store>({
     getState: jest.fn(() => {
       return {
-        contract: {
-          contractId: "guest-book.testnet",
-          methodNames: [],
-        },
+        contract: null,
         modules: [],
         accounts: [],
         selectedWalletId: null,

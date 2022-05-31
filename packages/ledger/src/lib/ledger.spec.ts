@@ -11,10 +11,25 @@ import {
   JsonStorageService,
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
+import { Store, WalletSelectorState } from "packages/core/src/lib/store.types";
 
 const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const storageState: Record<string, never> = {};
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
+
+  const store = mock<Store>();
+
+  const state: WalletSelectorState = {
+    contract: {
+      contractId: "guest-book.testnet",
+      methodNames: [],
+    },
+    modules: [],
+    accounts: [],
+    selectedWalletId: "ledger",
+  };
+
+  store.getState.mockReturnValue(state);
 
   const ledgerClient = mock<LedgerClient>({
     getPublicKey: jest.fn().mockResolvedValue(publicKey),
@@ -56,6 +71,7 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const ledgerWallet = await mockWallet<HardwareWallet>(setupLedger(), {
     storage,
     provider,
+    store,
     ...deps,
   });
 
