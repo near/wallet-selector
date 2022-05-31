@@ -1,17 +1,18 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { mock } from "jest-mock-extended";
 
-import {
-  mockWallet,
-  MockWalletDependencies,
-} from "../../../core/src/lib/testUtils";
-import { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
-import {
+import { mockWallet } from "../../../core/src/lib/testUtils";
+import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
+import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
+import type {
   ProviderService,
   JsonStorageService,
 } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
-import { Store, WalletSelectorState } from "packages/core/src/lib/store.types";
+import type {
+  Store,
+  WalletSelectorState,
+} from "../../../core/src/lib/store.types";
 
 const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const storageState: Record<string, never> = {};
