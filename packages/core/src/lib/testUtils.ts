@@ -35,12 +35,23 @@ export const mockWallet = async <Variation extends Wallet>(
     return null;
   }
 
+  const storeMock = mock<Store>({
+    getState: jest.fn(() => {
+      return {
+        contract: null,
+        modules: [],
+        accounts: [],
+        selectedWalletId: null,
+      };
+    }),
+  });
+
   const wallet = await module.init({
     id: module.id,
     type: module.type,
     metadata: module.metadata,
     options,
-    store: deps.store || mock<Store>(),
+    store: deps.store || storeMock,
     provider: deps.provider || mock<ProviderService>(),
     emitter: deps.emitter || mock<EventEmitterService<WalletEvents>>(),
     logger: deps.logger || mock<LoggerService>(),
