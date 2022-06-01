@@ -1,5 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
-import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
+import type {
+  WalletSelector,
+  ModuleState,
+  Wallet,
+} from "@near-wallet-selector/core";
 
 import type { ModalOptions } from "../modal.types";
 
@@ -8,6 +12,7 @@ interface WalletOptionsProps {
   options: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
+  onConnecting: (wallet: Wallet) => void;
   onError: (error: Error) => void;
 }
 
@@ -16,6 +21,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   options,
   onError,
   onConnectHardwareWallet,
+  onConnecting,
   onConnected,
 }) => {
   const [connecting, setConnecting] = useState(false);
@@ -37,8 +43,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     }
 
     try {
-      setConnecting(true);
       const wallet = await module.wallet();
+      onConnecting(wallet);
 
       if (wallet.type === "hardware") {
         return onConnectHardwareWallet();
@@ -69,9 +75,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           {options?.description ||
             "Please select a wallet to sign in to this dApp:"}
         </p>
-        <ul
-          className={"options-list " + (connecting ? "selection-process" : "")}
-        >
+        <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
             const { name, description, iconUrl } = module.metadata;
