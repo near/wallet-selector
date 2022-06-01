@@ -131,8 +131,18 @@ export const Modal: React.FC<ModalProps> = ({
             <LedgerDerivationPath
               selector={selector}
               options={options}
+              onConnecting={(wallet) => {
+                setRoute({
+                  name: "WalletConnecting",
+                  params: { wallet: wallet },
+                });
+              }}
               onConnected={handleDismissClick}
               onBack={() => setRoute({ name: "WalletOptions" })}
+              onError={(message) => {
+                setAlertMessage(message);
+                setRoute({ name: "AlertMessage" });
+              }}
             />
           )}
           {route.name === "WalletNetworkChanged" && (
