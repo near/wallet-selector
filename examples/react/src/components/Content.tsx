@@ -12,6 +12,7 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
+import { InjectedWallet } from "@near-wallet-selector/core";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -23,6 +24,18 @@ const Content: React.FC = () => {
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Try eager connect on app launch
+  useEffect(() => {
+    const eagerConnect = async () => {
+      const state = selector.store.getState();
+      if (state.selectedWalletId === "nightly") {
+        const wallet = (await selector.wallet()) as InjectedWallet;
+        wallet.signIn({ contractId: CONTRACT_ID });
+      }
+    };
+    eagerConnect();
+  }, []);
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {
