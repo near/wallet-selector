@@ -8,6 +8,7 @@ import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
 import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
+import { WalletConnecting } from "./WalletConnecting";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -120,6 +121,12 @@ export const Modal: React.FC<ModalProps> = ({
                   },
                 });
               }}
+              onConnecting={(wallet) => {
+                setRoute({
+                  name: "WalletConnecting",
+                  params: { wallet: wallet },
+                });
+              }}
               onConnected={handleDismissClick}
               onError={(err) => {
                 setAlertMessage(err.message);
@@ -133,6 +140,12 @@ export const Modal: React.FC<ModalProps> = ({
             <DerivationPath
               selector={selector}
               options={options}
+              onConnecting={(wallet) => {
+                setRoute({
+                  name: "WalletConnecting",
+                  params: { wallet: wallet },
+                });
+              }}
               onConnected={handleDismissClick}
               params={route.params}
               onBack={() =>
@@ -140,6 +153,12 @@ export const Modal: React.FC<ModalProps> = ({
                   name: "WalletOptions",
                 })
               }
+              onError={(message) => {
+                setAlertMessage(message);
+                setRoute({
+                  name: "AlertMessage",
+                });
+              }}
             />
           )}
           {route.name === "WalletNetworkChanged" && (
@@ -151,6 +170,14 @@ export const Modal: React.FC<ModalProps> = ({
                 })
               }
               onDismiss={handleDismissClick}
+            />
+          )}
+          {route.name === "WalletConnecting" && (
+            <WalletConnecting
+              wallet={route.params?.wallet}
+              onBack={() => {
+                setRoute({ name: "WalletOptions" });
+              }}
             />
           )}
         </div>

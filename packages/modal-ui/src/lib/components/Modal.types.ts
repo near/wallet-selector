@@ -50,7 +50,7 @@ export type WalletNetworkChangedModalRoute = {
 };
 
 export type WalletConnectingModalRoute = {
-  name: "WalletNetworkChanged";
+  name: "WalletConnecting";
   params?: WalletConnectingModalRouteParams;
 };
 
