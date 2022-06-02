@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import type { WalletSelector } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
-import { DerivationPathModalRouteParams } from "./Modal.types";
+import type { DerivationPathModalRouteParams } from "./Modal.types";
 
 interface DerivationPathProps {
   selector: WalletSelector;
