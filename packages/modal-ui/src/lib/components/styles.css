@@ -214,7 +214,7 @@
  * Modal Ledger Derivation Path Section/Wrapper
  */
 
-.nws-modal-wrapper .modal .ledger-derivation-path-wrapper .derivation-path-list {
+.nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -222,20 +222,20 @@
   margin-bottom: 16px;
 }
 
-.nws-modal-wrapper .modal .ledger-derivation-path-wrapper input:focus {
+.nws-modal-wrapper .modal .derivation-path-wrapper input:focus {
   border: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
 }
 
-.nws-modal-wrapper .modal .ledger-derivation-path-wrapper input:focus-visible {
+.nws-modal-wrapper .modal .derivation-path-wrapper input:focus-visible {
   border: none;
   outline: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
 }
 
-.nws-modal-wrapper .modal .ledger-derivation-path-wrapper .input-error {
+.nws-modal-wrapper .modal .derivation-path-wrapper .input-error {
   border-color: var(--wallet-selector-error, var(--error)) !important;
 }
 
-.nws-modal-wrapper .modal .ledger-derivation-path-wrapper .error {
+.nws-modal-wrapper .modal .derivation-path-wrapper .error {
   font-family: inherit;
   color: var(--wallet-selector-error, var(--error));
 }
