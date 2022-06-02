@@ -24,7 +24,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   onConnecting,
   onConnected,
 }) => {
-  const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [modules, setModules] = useState<Array<ModuleState>>([]);
 
@@ -38,10 +37,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   }, []);
 
   const handleWalletClick = (module: ModuleState) => async () => {
-    if (connecting) {
-      return;
-    }
-
     try {
       const wallet = await module.wallet();
       onConnecting(wallet);
@@ -63,8 +58,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         err instanceof Error ? err.message : "Something went wrong";
 
       onError(new Error(`Failed to sign in with ${name}: ${message}`));
-    } finally {
-      setConnecting(false);
     }
   };
 

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { Wallet, WalletSelector } from "@near-wallet-selector/core";
+import type { WalletSelector } from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
-import type { ModalRouteName } from "./Modal.types";
-import { LedgerDerivationPath } from "./LedgerDerivationPath";
+import type { ModalRoute } from "./Modal.types";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
 import { CloseButton } from "./CloseButton";
+import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 
 interface ModalProps {
@@ -15,13 +15,6 @@ interface ModalProps {
   options: ModalOptions;
   visible: boolean;
   hide: () => void;
-}
-
-interface ModalRouteProps {
-  name: ModalRouteName;
-  params?: {
-    wallet: Wallet;
-  };
 }
 
 const getThemeClass = (theme?: Theme) => {
@@ -41,13 +34,15 @@ export const Modal: React.FC<ModalProps> = ({
   visible,
   hide,
 }) => {
-  const [route, setRoute] = useState<ModalRouteProps>({
+  const [route, setRoute] = useState<ModalRoute>({
     name: "WalletOptions",
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    setRoute({ name: "WalletOptions" });
+    setRoute({
+      name: "WalletOptions",
+    });
   }, [visible]);
 
   useEffect(() => {
@@ -57,7 +52,9 @@ export const Modal: React.FC<ModalProps> = ({
         return handleDismissClick();
       }
 
-      setRoute({ name: "WalletNetworkChanged" });
+      setRoute({
+        name: "WalletNetworkChanged",
+      });
     });
 
     return () => subscription.remove();
@@ -66,7 +63,9 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleDismissClick = useCallback(() => {
     setAlertMessage(null);
-    setRoute({ name: "WalletOptions" });
+    setRoute({
+      name: "WalletOptions",
+    });
     hide();
   }, [hide]);
 
@@ -103,7 +102,9 @@ export const Modal: React.FC<ModalProps> = ({
               message={alertMessage}
               onBack={() => {
                 setAlertMessage(null);
-                setRoute({ name: "WalletOptions" });
+                setRoute({
+                  name: "WalletOptions",
+                });
               }}
             />
           )}
@@ -112,7 +113,13 @@ export const Modal: React.FC<ModalProps> = ({
               selector={selector}
               options={options}
               onConnectHardwareWallet={() => {
-                setRoute({ name: "LedgerDerivationPath" });
+                setRoute({
+                  name: "DerivationPath",
+                  params: {
+                    walletId:
+                      selector.store.getState().selectedWalletId || "ledger",
+                  },
+                });
               }}
               onConnecting={(wallet) => {
                 setRoute({
@@ -123,12 +130,14 @@ export const Modal: React.FC<ModalProps> = ({
               onConnected={handleDismissClick}
               onError={(err) => {
                 setAlertMessage(err.message);
-                setRoute({ name: "AlertMessage" });
+                setRoute({
+                  name: "AlertMessage",
+                });
               }}
             />
           )}
-          {route.name === "LedgerDerivationPath" && (
-            <LedgerDerivationPath
+          {route.name === "DerivationPath" && (
+            <DerivationPath
               selector={selector}
               options={options}
               onConnecting={(wallet) => {
@@ -138,17 +147,28 @@ export const Modal: React.FC<ModalProps> = ({
                 });
               }}
               onConnected={handleDismissClick}
-              onBack={() => setRoute({ name: "WalletOptions" })}
+              params={route.params}
+              onBack={() =>
+                setRoute({
+                  name: "WalletOptions",
+                })
+              }
               onError={(message) => {
                 setAlertMessage(message);
-                setRoute({ name: "AlertMessage" });
+                setRoute({
+                  name: "AlertMessage",
+                });
               }}
             />
           )}
           {route.name === "WalletNetworkChanged" && (
             <WalletNetworkChanged
               selector={selector}
-              onSwitchWallet={() => setRoute({ name: "WalletOptions" })}
+              onSwitchWallet={() =>
+                setRoute({
+                  name: "WalletOptions",
+                })
+              }
               onDismiss={handleDismissClick}
             />
           )}
