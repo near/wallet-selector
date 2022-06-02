@@ -78,6 +78,7 @@ These are the available css variables:
 --wallet-selector-confirm-button-border-color
 --wallet-selector-error
 --wallet-selector-close-button-color
+--wallet-selector-spinner-color
 ```
 
 Customizing css is done simply by updating the value of a variable in the root of your css file.

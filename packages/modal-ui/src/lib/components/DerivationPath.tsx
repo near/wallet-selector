@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
-import type { WalletSelector } from "@near-wallet-selector/core";
+import type { Wallet, WalletSelector } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
 import type { DerivationPathModalRouteParams } from "./Modal.types";
 
@@ -7,8 +7,10 @@ interface DerivationPathProps {
   selector: WalletSelector;
   options: ModalOptions;
   onBack: () => void;
+  onConnecting: (wallet: Wallet) => void;
   onConnected: () => void;
   params: DerivationPathModalRouteParams;
+  onError: (message: string) => void;
 }
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
@@ -17,11 +19,11 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   selector,
   options,
   onBack,
+  onConnecting,
   onConnected,
   params,
+  onError,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [derivationPath, setDerivationPath] = useState(DEFAULT_DERIVATION_PATH);
 
   const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +31,12 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   };
 
   const handleConnectClick = async () => {
-    setIsLoading(true);
     const wallet = await selector.wallet(params.walletId);
+    onConnecting(wallet);
 
     if (wallet.type !== "hardware") {
       return;
     }
-
-    setIsLoading(true);
 
     return wallet
       .signIn({
@@ -45,8 +45,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         derivationPaths: [derivationPath],
       })
       .then(() => onConnected())
-      .catch((err) => setError(`Error: ${err.message}`))
-      .finally(() => setIsLoading(false));
+      .catch((err) => {
+        onError(`Error: ${err.message}`);
+      });
   };
 
   const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
@@ -66,25 +67,18 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       <div className="derivation-path-list">
         <input
           type="text"
-          className={error ? "input-error" : ""}
           placeholder="Derivation Path"
           value={derivationPath}
           onChange={handleDerivationPathChange}
-          readOnly={isLoading}
           onKeyPress={handleEnterClick}
         />
-        {error && <p className="error">{error}</p>}
       </div>
       <div className="action-buttons">
-        <button className="left-button" disabled={isLoading} onClick={onBack}>
+        <button className="left-button" onClick={onBack}>
           Back
         </button>
-        <button
-          className="right-button"
-          onClick={handleConnectClick}
-          disabled={isLoading}
-        >
-          {isLoading ? "Connecting..." : "Connect"}
+        <button className="right-button" onClick={handleConnectClick}>
+          Connect
         </button>
       </div>
     </div>
