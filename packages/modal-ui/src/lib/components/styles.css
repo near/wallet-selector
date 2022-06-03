@@ -221,8 +221,12 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  align-items: center;
+  /*align-items: center;*/
   margin-bottom: 16px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper input {
+  margin-right: 8px;
 }
 
 .nws-modal-wrapper .modal .derivation-path-wrapper input:focus {
@@ -390,6 +394,10 @@
 @media (max-width: 600px) {
   .nws-modal-wrapper .modal {
     width: 250px;
+  }
+
+  .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {
+    max-width: 140px;
   }
 }
 
