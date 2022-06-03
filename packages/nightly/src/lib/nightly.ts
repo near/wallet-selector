@@ -42,6 +42,11 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupNightlyState(metadata);
   const provider = new JsonRpcProvider({ url: options.network.nodeUrl });
+  const state = store.getState();
+
+  if (state.selectedWalletId === "nightly") {
+    await _state.wallet.connect();
+  }
   return {
     // nightly does not support delegating signing right now
     async signIn() {
