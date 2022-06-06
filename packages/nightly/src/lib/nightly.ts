@@ -47,6 +47,15 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   if (state.selectedWalletId === "nightly") {
     await _state.wallet.connect();
   }
+  const getAccounts = async () => {
+    if (_state.wallet.account.accountId === "") {
+      return [];
+    }
+    const nearAccount: Account = {
+      accountId: _state.wallet.account.accountId,
+    };
+    return [nearAccount];
+  };
   return {
     // nightly does not support delegating signing right now
     async signIn() {
@@ -58,10 +67,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         };
         return [nearAccount];
       }
-
-      const { accountId } = await _state.wallet.connect();
-      const nearAccount: Account = { accountId };
-      return [nearAccount];
+      return await getAccounts();
     },
 
     async signOut() {
@@ -69,10 +75,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      const nearAccount: Account = {
-        accountId: _state.wallet.account.accountId,
-      };
-      return [nearAccount];
+      return await getAccounts();
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
