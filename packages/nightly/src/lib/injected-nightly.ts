@@ -32,7 +32,10 @@ export declare class NearNightly {
   _onDisconnect: () => void;
   private readonly _nightlyEventsMap;
   constructor(eventMap: Map<string, (data: unknown) => unknown>);
-  connect(onDisconnect?: () => void): Promise<NearAccount>;
+  connect(
+    onDisconnect?: () => void,
+    eagerConnect?: boolean
+  ): Promise<NearAccount>;
   disconnect(): Promise<void>;
   signTransaction: (
     transaction: NearTransaction

@@ -30,9 +30,13 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupNightlyState();
   const currentState = store.getState();
-
   if (currentState.selectedWalletId === "nightly") {
-    await _state?.connect();
+    try {
+      // eager connect to the wallet
+      await _state?.connect(undefined, true);
+    } catch {
+      // ignore
+    }
   }
   const getAccounts = async () => {
     if (!_state || _state.account.accountId === "") {
