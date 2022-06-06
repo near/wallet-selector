@@ -1,17 +1,16 @@
 import type {
   InjectedWallet,
-  InjectedWalletMetadata,
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import { Account, waitFor } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import { utils } from "near-api-js";
-import { createTransaction } from "near-api-js/lib/transaction";
-import { Account, waitFor } from "@near-wallet-selector/core";
-import type { NearNightly, NightlyInjected } from "./injected-nightly";
-import { PublicKey } from "near-api-js/lib/utils";
 import { AccessKeyView } from "near-api-js/lib/providers/provider";
+import { createTransaction } from "near-api-js/lib/transaction";
+import { PublicKey } from "near-api-js/lib/utils";
+import type { NearNightly, NightlyInjected } from "./injected-nightly";
 
 declare global {
   interface Window {
@@ -19,60 +18,54 @@ declare global {
   }
 }
 
-interface NightlyState {
-  wallet: NearNightly;
-}
-
-const setupNightlyState = (meta: InjectedWalletMetadata): NightlyState => {
-  const wallet = window.nightly?.near;
-  if (!wallet) {
-    window.location.href = meta.downloadUrl;
-    throw new Error("Redirecting to download");
-  }
-  return {
-    wallet: wallet,
-  };
+const setupNightlyState = (): NearNightly | undefined => {
+  return window.nightly?.near;
 };
 
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
+  metadata,
   store,
   logger,
-  metadata,
   provider,
 }) => {
-  const _state = setupNightlyState(metadata);
-  const state = store.getState();
+  const _state = setupNightlyState();
+  const currentState = store.getState();
 
-  if (state.selectedWalletId === "nightly") {
-    await _state.wallet.connect();
+  if (currentState.selectedWalletId === "nightly") {
+    await _state?.connect();
   }
   const getAccounts = async () => {
-    if (_state.wallet.account.accountId === "") {
+    if (!_state || _state.account.accountId === "") {
       return [];
     }
     const nearAccount: Account = {
-      accountId: _state.wallet.account.accountId,
+      accountId: _state.account.accountId,
     };
     return [nearAccount];
   };
   return {
     // nightly does not support delegating signing right now
     async signIn() {
-      const existingAccount = _state.wallet.account.accountId;
+      // If wallet does not exist user will be redirected to download page
+      if (!_state) {
+        window.location.href = metadata.downloadUrl;
+        throw new Error("Redirecting to download");
+      }
+      const existingAccount = _state.account.accountId;
 
       if (existingAccount) {
         const nearAccount: Account = {
-          accountId: _state.wallet.account.accountId,
+          accountId: _state.account.accountId,
         };
         return [nearAccount];
       }
-      await _state.wallet.connect();
+      await _state.connect();
 
       return await getAccounts();
     },
 
     async signOut() {
-      await _state.wallet.disconnect();
+      await _state!.disconnect();
     },
 
     async getAccounts() {
@@ -88,21 +81,21 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const blockInfo = await provider.query<AccessKeyView>({
-        account_id: _state.wallet.account.accountId,
-        public_key: _state.wallet.account.publicKey.toString(),
+        account_id: _state!.account.accountId,
+        public_key: _state!.account.publicKey.toString(),
         request_type: "view_access_key",
         finality: "final",
       });
       const blockHash = utils.serialize.base_decode(blockInfo.block_hash);
       const tx = createTransaction(
-        signerId || _state.wallet.account.accountId,
-        new PublicKey(_state.wallet.account.publicKey),
+        signerId || _state!.account.accountId,
+        new PublicKey(_state!.account.publicKey),
         receiverId || contract!.contractId,
         ++blockInfo.nonce,
         actions.map((a) => createAction(a)),
         blockHash
       );
-      const signedTransactions = await _state.wallet.signTransaction(tx);
+      const signedTransactions = await _state!.signTransaction(tx);
       const result = await provider.sendTransaction(signedTransactions);
       return result;
     },
@@ -111,8 +104,8 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signAndSendTransactions", { transactions });
       const { contract } = store.getState();
       const blockInfo = await provider.query<AccessKeyView>({
-        account_id: _state.wallet.account.accountId,
-        public_key: _state.wallet.account.publicKey.toString(),
+        account_id: _state!.account.accountId,
+        public_key: _state!.account.publicKey.toString(),
         request_type: "view_access_key",
         finality: "final",
       });
@@ -123,8 +116,8 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
           throw new Error("Recipient not found");
         }
         const tx = createTransaction(
-          txData.signerId || _state.wallet.account.accountId,
-          new PublicKey(_state.wallet.account.publicKey),
+          txData.signerId || _state!.account.accountId,
+          new PublicKey(_state!.account.publicKey),
           txData.receiverId || contract!.contractId,
           ++blockInfo.nonce,
           txData.actions.map((a) => createAction(a)),
@@ -132,7 +125,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         );
         return tx;
       });
-      const signedTransactions = await _state.wallet.signAllTransactions(txs);
+      const signedTransactions = await _state!.signAllTransactions(txs);
       logger.log(
         "signAndSendTransactions:signedTransactions",
         signedTransactions
