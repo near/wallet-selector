@@ -7,11 +7,11 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import { utils } from "near-api-js";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { createTransaction } from "near-api-js/lib/transaction";
 import { Account, waitFor } from "@near-wallet-selector/core";
 import type { NearNightly, NightlyInjected } from "./injected-nightly";
 import { PublicKey } from "near-api-js/lib/utils";
+import { AccessKeyView } from "near-api-js/lib/providers/provider";
 
 declare global {
   interface Window {
@@ -35,13 +35,12 @@ const setupNightlyState = (meta: InjectedWalletMetadata): NightlyState => {
 };
 
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
-  options,
   store,
   logger,
   metadata,
+  provider,
 }) => {
   const _state = setupNightlyState(metadata);
-  const provider = new JsonRpcProvider({ url: options.network.nodeUrl });
   const state = store.getState();
 
   if (state.selectedWalletId === "nightly") {
@@ -67,6 +66,8 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         };
         return [nearAccount];
       }
+      await _state.wallet.connect();
+
       return await getAccounts();
     },
 
@@ -85,18 +86,18 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!receiverId && !contract) {
         throw new Error("Recipient not found");
       }
-      const blockInfo = await provider.query(
-        `access_key/${_state.wallet.account.accountId}/${
-          _state.wallet.account.publicKey.toString().split(":")[1]
-        }`,
-        ""
-      );
+
+      const blockInfo = await provider.query<AccessKeyView>({
+        account_id: _state.wallet.account.accountId,
+        public_key: _state.wallet.account.publicKey.toString(),
+        request_type: "view_access_key",
+        finality: "final",
+      });
       const blockHash = utils.serialize.base_decode(blockInfo.block_hash);
       const tx = createTransaction(
         signerId || _state.wallet.account.accountId,
         new PublicKey(_state.wallet.account.publicKey),
         receiverId || contract!.contractId,
-        // @ts-expect-error
         ++blockInfo.nonce,
         actions.map((a) => createAction(a)),
         blockHash
@@ -109,12 +110,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
       const { contract } = store.getState();
-      const blockInfo = await provider.query(
-        `access_key/${_state.wallet.account.accountId}/${
-          _state.wallet.account.publicKey.toString().split(":")[1]
-        }`,
-        ""
-      );
+      const blockInfo = await provider.query<AccessKeyView>({
+        account_id: _state.wallet.account.accountId,
+        public_key: _state.wallet.account.publicKey.toString(),
+        request_type: "view_access_key",
+        finality: "final",
+      });
 
       const blockHash = utils.serialize.base_decode(blockInfo.block_hash);
       const txs = transactions.map((txData) => {
@@ -125,7 +126,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
           txData.signerId || _state.wallet.account.accountId,
           new PublicKey(_state.wallet.account.publicKey),
           txData.receiverId || contract!.contractId,
-          // @ts-expect-error
           ++blockInfo.nonce,
           txData.actions.map((a) => createAction(a)),
           blockHash
