@@ -29,22 +29,26 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   >([{ path: DEFAULT_DERIVATION_PATH }]);
 
   const handleDerivationPathAdd = () => {
-    setDerivationPaths([...derivationPaths, { path: "" }]);
+    setDerivationPaths((prevDerivationPaths) => {
+      return [...prevDerivationPaths, { path: "" }];
+    });
   };
 
   const handleDerivationPathRemove = (index: number) => {
-    const newPaths = [...derivationPaths];
-    newPaths.splice(index, 1);
-    setDerivationPaths(newPaths);
+    setDerivationPaths((prevDerivationPaths) => {
+      prevDerivationPaths.splice(index, 1);
+      return [...prevDerivationPaths];
+    });
   };
 
   const handleDerivationPathChange = (
     index: number,
     e: ChangeEvent<HTMLInputElement>
   ) => {
-    const newPaths = [...derivationPaths];
-    newPaths[index].path = e.target.value;
-    setDerivationPaths(newPaths);
+    setDerivationPaths((prevDerivationPaths) => {
+      prevDerivationPaths[index].path = e.target.value;
+      return [...prevDerivationPaths];
+    });
   };
 
   const handleConnectClick = async () => {
