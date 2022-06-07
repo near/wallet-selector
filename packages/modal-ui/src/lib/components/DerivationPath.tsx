@@ -24,10 +24,31 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   params,
   onError,
 }) => {
-  const [derivationPath, setDerivationPath] = useState(DEFAULT_DERIVATION_PATH);
+  const [derivationPaths, setDerivationPaths] = useState<
+    Array<{ path: string }>
+  >([{ path: DEFAULT_DERIVATION_PATH }]);
 
-  const handleDerivationPathChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDerivationPath(e.target.value);
+  const handleDerivationPathAdd = () => {
+    setDerivationPaths((prevDerivationPaths) => {
+      return [...prevDerivationPaths, { path: "" }];
+    });
+  };
+
+  const handleDerivationPathRemove = (index: number) => {
+    setDerivationPaths((prevDerivationPaths) => {
+      prevDerivationPaths.splice(index, 1);
+      return [...prevDerivationPaths];
+    });
+  };
+
+  const handleDerivationPathChange = (
+    index: number,
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    setDerivationPaths((prevDerivationPaths) => {
+      prevDerivationPaths[index].path = e.target.value;
+      return [...prevDerivationPaths];
+    });
   };
 
   const handleConnectClick = async () => {
@@ -42,7 +63,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       .signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
-        derivationPaths: [derivationPath],
+        derivationPaths: derivationPaths.map((d) => d.path),
       })
       .then(() => onConnected())
       .catch((err) => {
@@ -65,13 +86,40 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         connect:
       </p>
       <div className="derivation-path-list">
-        <input
-          type="text"
-          placeholder="Derivation Path"
-          value={derivationPath}
-          onChange={handleDerivationPathChange}
-          onKeyPress={handleEnterClick}
-        />
+        {derivationPaths.map((path, index) => {
+          return (
+            <div key={index}>
+              <input
+                type="text"
+                placeholder="Derivation Path"
+                value={index === 0 ? derivationPaths[0].path : path.path}
+                onChange={(e) => {
+                  handleDerivationPathChange(index, e);
+                }}
+                onKeyPress={handleEnterClick}
+              />
+
+              {index !== 0 && (
+                <button
+                  type="button"
+                  title="Remove"
+                  onClick={() => handleDerivationPathRemove(index)}
+                >
+                  -
+                </button>
+              )}
+              {index === derivationPaths.length - 1 && (
+                <button
+                  title="Add"
+                  type="button"
+                  onClick={() => handleDerivationPathAdd()}
+                >
+                  +
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div className="action-buttons">
         <button className="left-button" onClick={onBack}>
