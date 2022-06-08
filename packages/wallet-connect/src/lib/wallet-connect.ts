@@ -1,5 +1,4 @@
-import { utils, keyStores, InMemorySigner } from "near-api-js";
-import { SignedTransaction } from "near-api-js/lib/transaction";
+import { providers } from "near-api-js";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -7,12 +6,9 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
-  Account,
 } from "@near-wallet-selector/core";
-import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
-import { retry } from "./retry";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -31,20 +27,24 @@ interface WalletConnectExtraOptions {
 
 interface WalletConnectState {
   client: WalletConnectClient;
-  keystore: keyStores.BrowserLocalStorageKeyStore;
   session: SessionTypes.Struct | null;
   subscriptions: Array<Subscription>;
 }
+
+const WC_METHODS = [
+  "near_signIn",
+  "near_signOut",
+  "near_signAndSendTransaction",
+  "near_signAndSendTransactions",
+];
+
+const WC_EVENTS = ["chainChanged", "accountsChanged"];
 
 const setupWalletConnectState = async (
   id: string,
   params: WalletConnectExtraOptions
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
-  const keystore = new keyStores.BrowserLocalStorageKeyStore(
-    window.localStorage,
-    `near-wallet-selector:${id}:keystore:`
-  );
   let session: SessionTypes.Struct | null = null;
 
   await client.init({
@@ -60,7 +60,6 @@ const setupWalletConnectState = async (
 
   return {
     client,
-    keystore,
     session,
     subscriptions: [],
   };
@@ -69,10 +68,8 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, provider, emitter, logger }) => {
+> = async ({ id, options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params);
-
-  const signer = new InMemorySigner(_state.keystore);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -88,41 +85,30 @@ const WalletConnect: WalletBehaviourFactory<
     throw new Error("Invalid chain id");
   };
 
-  const createAccountKeyPairs = (accounts: Array<Account>) => {
-    return accounts.map((account) => ({
-      accountId: account.accountId,
-      keyPair: utils.KeyPair.fromRandom("ed25519"),
+  const getAccounts = () => {
+    return (_state.session?.namespaces["near"].accounts || []).map((x) => ({
+      accountId: x.split(":")[2],
     }));
-  };
-
-  const getAccounts = (accountIds?: Array<string>) => {
-    const ids = accountIds || _state.session?.namespaces["near"].accounts || [];
-
-    return ids.map((x) => ({ accountId: x.split(":")[2] }));
   };
 
   const cleanup = async () => {
     _state.subscriptions.forEach((subscription) => subscription.remove());
 
-    await _state.keystore.clear();
-
     _state.subscriptions = [];
     _state.session = null;
+
+    console.log(_state);
   };
 
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
-    const signedTx = await _state.client
-      .request<Buffer>({
-        topic: _state.session!.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signTransaction",
-          params: transaction,
-        },
-      })
-      .then((result) => SignedTransaction.decode(new Buffer(result)));
-
-    return provider.sendTransaction(signedTx);
+    return _state.client.request<providers.FinalExecutionOutcome>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signAndSendTransaction",
+        params: transaction,
+      },
+    });
   };
 
   const requestSignAndSendTransactions = async (
@@ -132,32 +118,21 @@ const WalletConnect: WalletBehaviourFactory<
       return [];
     }
 
-    const signedTxs = await _state.client
-      .request<Array<Buffer>>({
-        topic: _state.session!.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signTransactions",
-          params: { transactions },
-        },
-      })
-      .then((results) => {
-        return results.map((x) => SignedTransaction.decode(new Buffer(x)));
-      });
-
-    return Promise.all(
-      signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-    );
+    return _state.client.request<Array<providers.FinalExecutionOutcome>>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signAndSendTransactions",
+        params: { transactions },
+      },
+    });
   };
 
   const requestSignIn = async (
     contractId: string,
-    methodNames: Array<string> | undefined,
-    accounts: Array<Account>
+    methodNames: Array<string> | undefined
   ) => {
-    const accountKeyPairs = createAccountKeyPairs(accounts);
-
-    await _state.client.request({
+    return _state.client.request({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
@@ -165,49 +140,19 @@ const WalletConnect: WalletBehaviourFactory<
         params: {
           contractId,
           methodNames,
-          accounts: accountKeyPairs.map(({ accountId, keyPair }) => ({
-            accountId,
-            publicKey: keyPair.getPublicKey().toString(),
-          })),
         },
       },
     });
-
-    for (let i = 0; i < accountKeyPairs.length; i += 1) {
-      const { accountId, keyPair } = accountKeyPairs[i];
-
-      await _state.keystore.setKey(
-        options.network.networkId,
-        accountId,
-        keyPair
-      );
-    }
   };
 
   const signOut = async () => {
     if (_state.session) {
-      const accounts = getAccounts();
-
       await _state.client.request({
         topic: _state.session!.topic,
         chainId: getChainId(),
         request: {
           method: "near_signOut",
-          params: {
-            accounts: await Promise.all(
-              accounts.map(async (account) => {
-                const keyPair = await _state.keystore.getKey(
-                  options.network.networkId,
-                  account.accountId
-                );
-
-                return {
-                  accountId: account.accountId,
-                  publicKey: keyPair ? keyPair.getPublicKey().toString() : null,
-                };
-              })
-            ).then((results) => results.filter((x) => x.publicKey)),
-          },
+          params: {},
         },
       });
 
@@ -223,101 +168,18 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  // Determine whether a transaction can be signed with a local key pair.
-  const isSignable = (transaction: Transaction) => {
-    const accounts = getAccounts();
-    const { contract } = store.getState();
-
-    if (!accounts.some((x) => x.accountId === transaction.signerId)) {
-      return false;
-    }
-
-    if (transaction.receiverId !== contract!.contractId) {
-      return false;
-    }
-
-    return transaction.actions.every((action) => {
-      if (action.type !== "FunctionCall") {
-        return false;
-      }
-
-      const { methodName, deposit } = action.params;
-
-      if (
-        contract!.methodNames.length &&
-        !contract!.methodNames.includes(methodName)
-      ) {
-        return false;
-      }
-
-      return parseFloat(deposit) <= 0;
-    });
-  };
-
-  // Find accounts that lack a key pair for signing.
-  const getAccountsWithoutKeyPairs = async (
-    transactions: Array<Transaction>
-  ) => {
-    const accounts = getAccounts();
-    const result: Array<Account> = [];
-
-    for (let i = 0; i < accounts.length; i += 1) {
-      const account = accounts[i];
-
-      if (!transactions.some((x) => x.signerId === account.accountId)) {
-        continue;
-      }
-
-      const keyPair = await _state.keystore.getKey(
-        options.network.networkId,
-        account.accountId
-      );
-
-      if (!keyPair) {
-        result.push(account);
-      }
-    }
-
-    return result;
-  };
-
   const setupEvents = () => {
     _state.subscriptions.push(
       _state.client.on("session_update", (event) => {
         logger.log("Session Update", event);
 
         if (event.topic === _state.session?.topic) {
-          (async () => {
-            const updatedAccounts = getAccounts(
-              event.params.namespaces["near"].accounts
-            );
-            const accounts = getAccounts();
+          _state.session = {
+            ..._state.client.session.get(event.topic),
+            namespaces: event.params.namespaces,
+          };
 
-            // Determine accounts that have been removed.
-            for (let i = 0; i < accounts.length; i += 1) {
-              const account = accounts[i];
-              const valid = updatedAccounts.some(
-                (x) => x.accountId === account.accountId
-              );
-
-              if (valid) {
-                continue;
-              }
-
-              logger.log("Removing key pair for", account.accountId);
-
-              await _state.keystore.removeKey(
-                options.network.networkId,
-                account.accountId
-              );
-            }
-
-            _state.session = {
-              ..._state.client.session.get(event.topic),
-              namespaces: event.params.namespaces,
-            };
-            emitter.emit("accountsChanged", { accounts: getAccounts() });
-          })();
+          emitter.emit("accountsChanged", { accounts: getAccounts() });
         }
       })
     );
@@ -351,23 +213,17 @@ const WalletConnect: WalletBehaviourFactory<
           requiredNamespaces: {
             near: {
               chains: [getChainId()],
-              methods: [
-                "near_signIn",
-                "near_signOut",
-                "near_signTransaction",
-                "near_signTransactions",
-              ],
-              events: ["chainChanged", "accountsChanged"],
+              methods: WC_METHODS,
+              events: WC_EVENTS,
             },
           },
         });
 
-        const accounts = getAccounts();
-        await requestSignIn(contractId, methodNames, accounts);
+        await requestSignIn(contractId, methodNames);
 
         setupEvents();
 
-        return accounts;
+        return getAccounts();
       } catch (err) {
         await signOut();
 
@@ -391,32 +247,10 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const tx: Transaction = {
+      return requestSignAndSendTransaction({
         signerId: signerId || accounts[0].accountId,
         receiverId: receiverId || contract.contractId,
         actions,
-      };
-
-      if (!isSignable(tx)) {
-        return requestSignAndSendTransaction(tx);
-      }
-
-      const accountsWithoutKeyPairs = await getAccountsWithoutKeyPairs([tx]);
-
-      if (accountsWithoutKeyPairs.length) {
-        const { contractId, methodNames } = contract;
-
-        await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
-      }
-
-      return retry(async () => {
-        const [signedTx] = await signTransactions(
-          [tx],
-          signer,
-          options.network
-        );
-
-        return provider.sendTransaction(signedTx);
       });
     },
 
@@ -430,32 +264,12 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const txs = transactions.map((x) => ({
-        signerId: x.signerId || accounts[0].accountId,
-        receiverId: x.receiverId,
-        actions: x.actions,
-      }));
-
-      if (!txs.every((x) => isSignable(x))) {
-        return requestSignAndSendTransactions(txs);
-      }
-
-      const accountsWithoutKeyPairs = await getAccountsWithoutKeyPairs(txs);
-
-      if (accountsWithoutKeyPairs.length) {
-        const { contractId, methodNames } = contract;
-
-        await requestSignIn(contractId, methodNames, accountsWithoutKeyPairs);
-      }
-
-      const signedTxs = await retry(() => {
-        return signTransactions(txs, signer, options.network);
-      });
-
-      return Promise.all(
-        signedTxs.map((signedTx) => {
-          return retry(() => provider.sendTransaction(signedTx));
-        })
+      return requestSignAndSendTransactions(
+        transactions.map((x) => ({
+          signerId: x.signerId || accounts[0].accountId,
+          receiverId: x.receiverId,
+          actions: x.actions,
+        }))
       );
     },
   };
