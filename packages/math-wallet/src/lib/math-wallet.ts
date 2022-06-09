@@ -1,6 +1,5 @@
 import { isMobile } from "is-mobile";
 import type {
-  WalletSelectorStore,
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
@@ -30,19 +29,8 @@ const isInstalled = () => {
   return waitFor(() => !!window.nearWalletApi).catch(() => false);
 };
 
-const setupMathWalletState = async (
-  store: WalletSelectorStore
-): Promise<MathWalletState> => {
+const setupMathWalletState = (): MathWalletState => {
   const wallet = window.nearWalletApi!;
-  const { contract } = store.getState();
-
-  // This wallet currently has weird behaviour regarding signer.account.
-  // - When you initially sign in, you get a SignedInAccount interface.
-  // - When the extension loads after this, you get a PreviouslySignedInAccount interface.
-  // This method normalises the behaviour to only return the SignedInAccount interface.
-  if (contract && wallet.signer.account && "address" in wallet.signer.account) {
-    await wallet.login({ contractId: contract.contractId });
-  }
 
   return {
     wallet,
@@ -55,21 +43,10 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   logger,
 }) => {
-  const _state = await setupMathWalletState(store);
-
-  const getSignedInAccount = () => {
-    if (
-      _state.wallet.signer.account &&
-      "accountId" in _state.wallet.signer.account
-    ) {
-      return _state.wallet.signer.account;
-    }
-
-    return null;
-  };
+  const _state = setupMathWalletState();
 
   const getAccounts = (): Array<AccountState> => {
-    const account = getSignedInAccount();
+    const account = _state.wallet.signer.account;
 
     if (!account) {
       return [];
@@ -81,16 +58,16 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const account = getSignedInAccount();
+    const accounts = getAccounts();
     const { contract } = store.getState();
 
-    if (!account || !contract) {
+    if (!accounts.length || !contract) {
       throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || account.accountId,
+        signerId: transaction.signerId || accounts[0].accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
