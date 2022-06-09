@@ -96,8 +96,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
-
-    console.log(_state);
   };
 
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
