@@ -156,6 +156,17 @@ export class ContentComponent implements OnInit, OnDestroy {
     });
   }
 
+  async onSignMessage() {
+    const wallet = await this.selector.wallet();
+    const message = "Hello World";
+
+    const signature = await wallet.signMessage({
+      message: new Uint8Array(Buffer.from(message)),
+    });
+
+    alert(`Signature for '${message}': ${signature.signature.toString()}`);
+  }
+
   syncAccountState(
     currentAccountId: string | null,
     newAccounts: Array<AccountState>

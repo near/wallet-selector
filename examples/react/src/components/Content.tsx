@@ -145,6 +145,17 @@ const Content: React.FC = () => {
     });
   };
 
+  const handleSignMessage = async () => {
+    const wallet = await selector.wallet();
+    const message = "Hello World";
+
+    const signature = await wallet.signMessage({
+      message: new Uint8Array(Buffer.from(message)),
+    });
+
+    alert(`Signature for '${message}': ${signature.signature.toString()}`);
+  };
+
   const handleSubmit = useCallback(
     async (e: SubmitEvent) => {
       e.preventDefault();
@@ -232,6 +243,7 @@ const Content: React.FC = () => {
         <button onClick={handleSendMultipleTransactions}>
           Send Multiple Transactions
         </button>
+        <button onClick={handleSignMessage}>Sign Message</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
