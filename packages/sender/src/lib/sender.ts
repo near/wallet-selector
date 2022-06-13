@@ -180,7 +180,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      // When the wallet is locked, Sender returns an empty Signer interface.
+      // Note: When the wallet is locked, Sender returns an empty Signer interface.
       // Even after unlocking the wallet, the user will need to refresh to gain
       // access to these methods.
       if (!account.connection.signer.signMessage) {
