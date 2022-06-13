@@ -154,6 +154,20 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
+    async signMessage({ signerId, message }) {
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+
+      return account.connection.signer.signMessage(
+        message,
+        signerId || account.accountId,
+        options.network.networkId
+      );
+    },
+
     async signAndSendTransaction({
       signerId,
       receiverId,
