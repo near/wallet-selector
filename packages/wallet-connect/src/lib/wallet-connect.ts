@@ -174,6 +174,27 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
+    async signMessage({ signerId, message }) {
+      const accounts = getAccounts();
+
+      if (!_state.session || !accounts.length) {
+        throw new Error("Wallet not signed in");
+      }
+
+      return _state.client.request({
+        timeout: 30 * 1000,
+        topic: _state.session.topic,
+        chainId: getChainId(),
+        request: {
+          method: "near_signMessage",
+          params: {
+            signerId: signerId || accounts[0].accountId,
+            message,
+          },
+        },
+      });
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
