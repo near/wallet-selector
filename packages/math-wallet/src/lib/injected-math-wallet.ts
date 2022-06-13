@@ -5,24 +5,13 @@ export interface LoginParams {
   publicKey?: string;
 }
 
-export interface SignedInAccount {
+export interface MathAccount {
   name: string;
   accountId: string;
   publicKey: string;
   permission: string;
   network: string;
 }
-
-export interface PreviouslySignedInAccount {
-  networkUnique: string;
-  address: string;
-  name: string;
-  authority: string;
-  selected: boolean;
-  type: string;
-}
-
-export type MathAccount = SignedInAccount | PreviouslySignedInAccount;
 
 export interface MathNetwork {
   id: string;
@@ -44,6 +33,6 @@ export type MathSigner = Signer & {
 
 export interface InjectedMathWallet {
   signer: MathSigner;
-  login: (param: LoginParams) => Promise<SignedInAccount>;
+  login: (param: LoginParams) => Promise<MathAccount>;
   logout: () => Promise<boolean>;
 }
