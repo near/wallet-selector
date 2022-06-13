@@ -251,6 +251,20 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
+    async signMessage({ signerId, message }) {
+      const accounts = getAccounts();
+
+      if (!accounts.length) {
+        throw new Error("Wallet not signed in");
+      }
+
+      return signer.signMessage(
+        message,
+        signerId || accounts[0].accountId,
+        options.network.networkId
+      );
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
