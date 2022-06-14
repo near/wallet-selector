@@ -33,7 +33,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         if (current.metadata.deprecated === next.metadata.deprecated) {
           return 0;
         }
-        
+
         return current.metadata.deprecated ? 1 : -1;
       });
       setModules(state.modules);
