@@ -40,22 +40,12 @@ const isInstalled = () => {
   return waitFor(() => !!window.nightly!.near!).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
-  metadata,
   store,
   logger,
   provider,
 }) => {
   const _state = await setupNightlyState(store);
 
-  const currentState = store.getState();
-  if (currentState.selectedWalletId === "nightly") {
-    try {
-      // eager connect to the wallet
-      await _state.wallet.connect(undefined, true);
-    } catch {
-      // ignore
-    }
-  }
   const getAccounts = async () => {
     if (!_state || _state.wallet.account.accountId === "") {
       return [];
@@ -68,19 +58,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   return {
     // nightly does not support delegating signing right now
     async signIn() {
-      // If wallet does not exist user will be redirected to download page
-      if (!_state) {
-        window.location.href = metadata.downloadUrl;
-        throw new Error("Redirecting to download");
-      }
       const existingAccount = _state.wallet.account.accountId;
 
       if (existingAccount) {
-        const nearAccount: Account = {
-          accountId: _state.wallet.account.accountId,
-        };
-        return [nearAccount];
+        return await getAccounts();
       }
+
       await _state.wallet.connect();
 
       return await getAccounts();
