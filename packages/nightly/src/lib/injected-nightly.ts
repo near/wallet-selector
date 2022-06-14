@@ -20,27 +20,26 @@ export interface WalletAdapter {
   disconnect: () => Promise<void>;
 }
 
-export declare class NightlyInjected {
-  near: NearNightly;
-  private readonly _nightlyEventsMap;
-  constructor();
-  invalidate(): void;
+export interface NightlyAccount {
+  accountId: string;
+  publicKey: NearPublicKey;
 }
-
-export declare class NearNightly {
-  account: NearAccount;
-  _onDisconnect: () => void;
-  private readonly _nightlyEventsMap;
-  constructor(eventMap: Map<string, (data: unknown) => unknown>);
-  connect(
-    onDisconnect?: () => void,
-    eagerConnect?: boolean
-  ): Promise<NearAccount>;
-  disconnect(): Promise<void>;
+export interface NearNightly {
+  account: NightlyAccount;
+  connected: boolean;
   signTransaction: (
     transaction: NearTransaction
   ) => Promise<NearSignedTransaction>;
   signAllTransactions: (
     transaction: Array<NearTransaction>
   ) => Promise<Array<NearSignedTransaction>>;
+  connect: (
+    onDisconnect?: () => void,
+    eagerConnect?: boolean
+  ) => Promise<NightlyAccount>;
+  disconnect: () => Promise<void>;
+}
+export interface NightlyInjected {
+  near: NearNightly;
+  invalidate: () => void;
 }
