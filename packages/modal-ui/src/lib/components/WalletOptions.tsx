@@ -81,12 +81,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 key={module.id}
                 id={module.id}
                 className={selected ? "selected-wallet" : ""}
-                onClick={
-                  selected
-                    ? // This kinda broke for me if we dont have eager connect
-                      handleWalletClick(module)
-                    : handleWalletClick(module)
-                }
+                onClick={selected ? undefined : handleWalletClick(module)}
               >
                 <div title={description || ""}>
                   <img src={iconUrl} alt={name} />
