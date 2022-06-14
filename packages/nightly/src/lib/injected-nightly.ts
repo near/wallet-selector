@@ -39,7 +39,7 @@ export interface NearNightly {
   ) => Promise<NightlyAccount>;
   disconnect: () => Promise<void>;
 }
-export interface NightlyInjected {
+export interface InjectedNightly {
   near: NearNightly;
   invalidate: () => void;
 }
