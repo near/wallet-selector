@@ -29,6 +29,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
+      state.modules.sort((current, next) => {
+        return current.metadata.deprecated === next.metadata.deprecated
+          ? 0
+          : current.metadata.deprecated
+          ? 1
+          : -1;
+      });
       setModules(state.modules);
     });
 
@@ -79,7 +86,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
-            const { name, description, iconUrl } = module.metadata;
+            const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
 
             result.push(
@@ -97,6 +104,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                   {selected && (
                     <div className="selected-wallet-text">
                       <span>selected</span>
+                    </div>
+                  )}
+
+                  {deprecated && (
+                    <div className="deprecated-wallet-text">
+                      <span>deprecated</span>
                     </div>
                   )}
                 </div>
