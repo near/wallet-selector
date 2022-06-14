@@ -93,7 +93,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               <li
                 key={module.id}
                 id={module.id}
-                className={selected ? "selected-wallet" : ""}
+                className={
+                  (selected ? "selected-wallet" : "") +
+                  (deprecated ? " deprecated-wallet" : "")
+                }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
                 <div title={description || ""}>
@@ -104,12 +107,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                   {selected && (
                     <div className="selected-wallet-text">
                       <span>selected</span>
-                    </div>
-                  )}
-
-                  {deprecated && (
-                    <div className="deprecated-wallet-text">
-                      <span>deprecated</span>
                     </div>
                   )}
                 </div>
