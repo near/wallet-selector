@@ -39,6 +39,14 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   const handleWalletClick = (module: ModuleState) => async () => {
     try {
       const wallet = await module.wallet();
+
+      if (wallet.metadata.deprecated) {
+        return onError(
+          new Error(
+            `${wallet.metadata.name} is deprecated, please select another wallet.`
+          )
+        );
+      }
       onConnecting(wallet);
 
       if (wallet.type === "hardware") {
