@@ -1,5 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
-import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
+import type {
+  WalletSelector,
+  ModuleState,
+  Wallet,
+} from "@near-wallet-selector/core";
 
 import type { ModalOptions } from "../modal.types";
 
@@ -8,6 +12,7 @@ interface WalletOptionsProps {
   options: ModalOptions;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
+  onConnecting: (wallet: Wallet) => void;
   onError: (error: Error) => void;
 }
 
@@ -16,14 +21,21 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   options,
   onError,
   onConnectHardwareWallet,
+  onConnecting,
   onConnected,
 }) => {
-  const [connecting, setConnecting] = useState(false);
   const [walletInfoVisible, setWalletInfoVisible] = useState(false);
   const [modules, setModules] = useState<Array<ModuleState>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
+      state.modules.sort((current, next) => {
+        if (current.metadata.deprecated === next.metadata.deprecated) {
+          return 0;
+        }
+
+        return current.metadata.deprecated ? 1 : -1;
+      });
       setModules(state.modules);
     });
 
@@ -32,13 +44,17 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   }, []);
 
   const handleWalletClick = (module: ModuleState) => async () => {
-    if (connecting) {
-      return;
-    }
-
     try {
-      setConnecting(true);
       const wallet = await module.wallet();
+
+      if (wallet.metadata.deprecated) {
+        return onError(
+          new Error(
+            `${wallet.metadata.name} is deprecated, please select another wallet.`
+          )
+        );
+      }
+      onConnecting(wallet);
 
       if (wallet.type === "hardware") {
         return onConnectHardwareWallet();
@@ -57,8 +73,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         err instanceof Error ? err.message : "Something went wrong";
 
       onError(new Error(`Failed to sign in with ${name}: ${message}`));
-    } finally {
-      setConnecting(false);
     }
   };
 
@@ -69,19 +83,20 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           {options?.description ||
             "Please select a wallet to sign in to this dApp:"}
         </p>
-        <ul
-          className={"options-list " + (connecting ? "selection-process" : "")}
-        >
+        <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
-            const { name, description, iconUrl } = module.metadata;
+            const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
 
             result.push(
               <li
                 key={module.id}
                 id={module.id}
-                className={selected ? "selected-wallet" : ""}
+                className={
+                  (selected ? "selected-wallet" : "") +
+                  (deprecated ? " deprecated-wallet" : "")
+                }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
                 <div title={description || ""}>

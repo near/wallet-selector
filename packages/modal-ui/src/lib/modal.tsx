@@ -7,6 +7,8 @@ import { Modal } from "./components/Modal";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
+let modalInstance: WalletSelectorModal | null = null;
+
 export const setupModal = (
   selector: WalletSelector,
   options: ModalOptions
@@ -29,12 +31,16 @@ export const setupModal = (
 
   render();
 
-  return {
-    show: () => {
-      render(true);
-    },
-    hide: () => {
-      render(false);
-    },
-  };
+  if (!modalInstance) {
+    modalInstance = {
+      show: () => {
+        render(true);
+      },
+      hide: () => {
+        render(false);
+      },
+    };
+  }
+
+  return modalInstance;
 };
