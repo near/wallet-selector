@@ -88,7 +88,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             const { selectedWalletId } = selector.store.getState();
             const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
-
             result.push(
               <li
                 key={module.id}

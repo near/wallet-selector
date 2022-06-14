@@ -12,6 +12,7 @@
     "near-wallet",
     "my-near-wallet",
     "sender",
+    "nightly",
     "math-wallet",
     "ledger",
     "wallet-connect"
@@ -39,6 +40,7 @@
     "build:near-wallet": "nx run-many --target=build --projects=near-wallet --configuration=production",
     "build:my-near-wallet": "nx run-many --target=build --projects=my-near-wallet --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
+    "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",

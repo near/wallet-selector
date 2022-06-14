@@ -9,6 +9,7 @@ import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { CONTRACT_ID } from "../constants";
 
@@ -68,6 +69,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNearWallet(),
         setupMyNearWallet(),
         setupSender(),
+        setupNightly(),
         setupMathWallet(),
         setupLedger(),
         setupWalletConnect({
@@ -81,10 +83,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         }),
       ],
     });
-
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
-
     syncAccountState(localStorage.getItem("accountId"), state.accounts);
 
     window.selector = _selector;

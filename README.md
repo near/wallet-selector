@@ -38,6 +38,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
+  @near-wallet-selector/nightly
 
 # Using NPM.
 npm install \
@@ -47,6 +48,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
+  @near-wallet-selector/nightly
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -70,6 +72,7 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNightly } from "@near-wallet-selector/nightly";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -79,6 +82,7 @@ const selector = await setupWalletSelector({
     setupSender(),
     setupLedger(),
     setupMathWallet(),
+    setupNightly(),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {
