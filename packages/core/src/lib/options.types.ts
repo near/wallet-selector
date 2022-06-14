@@ -5,6 +5,7 @@ export interface Network {
   nodeUrl: string;
   helperUrl: string;
   explorerUrl: string;
+  indexerUrl: string;
 }
 
 export interface Options {
