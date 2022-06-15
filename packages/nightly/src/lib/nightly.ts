@@ -53,7 +53,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
-    return [{ accountId, publicKey: publicKey.toString() }];
+    return [
+      {
+        accountId,
+        publicKey: publicKey.toString(),
+      },
+    ];
   };
 
   const transformTransactions = (
