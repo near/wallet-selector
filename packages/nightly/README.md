@@ -1,7 +1,7 @@
 # @near-wallet-selector/nightly
 
 
-This is the [Nightly](https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa) package for NEAR Wallet Selector.
+This is the [Nightly](https://www.nightly.app) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
