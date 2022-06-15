@@ -50,7 +50,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       if (wallet.metadata.deprecated) {
         return onError(
           new Error(
-            `${wallet.metadata.name} is deprecated, please select another wallet.`
+            `${wallet.metadata.name} is deprecated. Please select another wallet.`
           )
         );
       }
