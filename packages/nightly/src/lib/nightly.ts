@@ -4,7 +4,7 @@ import type {
   WalletModuleFactory,
   WalletSelectorStore,
 } from "@near-wallet-selector/core";
-import { Account, waitFor } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import { utils } from "near-api-js";
@@ -28,10 +28,12 @@ const setupNightlyState = async (
 ): Promise<NightlyState> => {
   const { selectedWalletId } = store.getState();
   const wallet = window.nightly!.near!;
+
   // Attempt to reconnect wallet if previously selected.
   if (selectedWalletId === "nightly") {
     await wallet.connect(undefined, true).catch(() => null);
   }
+
   return {
     wallet,
   };
@@ -46,27 +48,26 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = await setupNightlyState(store);
 
-  const getAccounts = async () => {
-    if (!_state || _state.wallet.account.accountId === "") {
+  const getAccounts = () => {
+    const { accountId } = _state.wallet.account;
+
+    if (!accountId) {
       return [];
     }
-    const nearAccount: Account = {
-      accountId: _state.wallet.account.accountId,
-    };
-    return [nearAccount];
+
+    return [{ accountId }];
   };
   return {
-    // nightly does not support delegating signing right now
     async signIn() {
-      const existingAccount = _state.wallet.account.accountId;
+      const existingAccounts = getAccounts();
 
-      if (existingAccount) {
-        return await getAccounts();
+      if (existingAccounts.length) {
+        return existingAccounts;
       }
 
       await _state.wallet.connect();
 
-      return await getAccounts();
+      return getAccounts();
     },
 
     async signOut() {
@@ -74,7 +75,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      return await getAccounts();
+      return getAccounts();
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
