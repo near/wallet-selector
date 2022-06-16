@@ -12,6 +12,7 @@ import type { Account } from "../../interfaces/account";
 import { distinctUntilChanged, map, Subscription } from "rxjs";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../../../constants";
+import { Transaction } from "@near-wallet-selector/core";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -77,7 +78,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     });
   }
 
-  switchProvider() {
+  switchWallet() {
     this.modal.show();
   }
 
@@ -111,48 +112,6 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.account = null;
     this.getAccount().then((account) => {
       this.account = account;
-    });
-  }
-
-  async onSendMultipleTransactions() {
-    const { contract } = this.selector.store.getState();
-    const wallet = await this.selector.wallet();
-
-    wallet.signAndSendTransactions({
-      transactions: [
-        {
-          // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
-          receiverId: "dev-1648806797290-14624341764914",
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "increment",
-                args: {},
-                gas: BOATLOAD_OF_GAS,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                deposit: utils.format.parseNearAmount("0")!,
-              },
-            },
-          ],
-        },
-        {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          receiverId: contract!.contractId,
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: { text: "Hello World!" },
-                gas: BOATLOAD_OF_GAS,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                deposit: utils.format.parseNearAmount("0")!,
-              },
-            },
-          ],
-        },
-      ],
     });
   }
 
@@ -201,39 +160,75 @@ export class ContentComponent implements OnInit, OnDestroy {
       });
   }
 
-  async onSubmit(e: Submitted) {
-    const { fieldset, message, donation } = e.target.elements;
-
-    fieldset.disabled = true;
-
-    // TODO: optimistically update page with new message,
-    // update blockchain data in background
-    // add uuid to each message, so we know which one is already known
-
+  async addMessages(message: string, donation: string, multiple: boolean) {
+    const { contract } = this.selector.store.getState();
     const wallet = await this.selector.wallet();
 
-    wallet
-      .signAndSendTransaction({
+    if (!multiple) {
+      return wallet
+        .signAndSendTransaction({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          signerId: this.accountId!,
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: message },
+                gas: BOATLOAD_OF_GAS,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount(donation)!,
+              },
+            },
+          ],
+        })
+        .catch((err) => {
+          alert("Failed to add message");
+          console.log("Failed to add message");
+
+          throw err;
+        });
+    }
+
+    const transactions: Array<Transaction> = [];
+
+    for (let i = 0; i < 2; i += 1) {
+      transactions.push({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        receiverId: contract!.contractId,
         actions: [
           {
             type: "FunctionCall",
             params: {
               methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS as string,
+              args: {
+                text: `${message} (${i + 1}/2)`,
+              },
+              gas: BOATLOAD_OF_GAS,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              deposit: utils.format.parseNearAmount(donation.value || "0")!,
+              deposit: utils.format.parseNearAmount(donation)!,
             },
           },
         ],
-      })
-      .catch((err) => {
-        alert("Failed to add message");
-        console.log("Failed to add message");
-        throw err;
-      })
+      });
+    }
+
+    return wallet.signAndSendTransactions({ transactions }).catch((err) => {
+      alert("Failed to add messages");
+      console.log("Failed to add messages");
+
+      throw err;
+    });
+  }
+
+  async onSubmit(e: Submitted) {
+    const { fieldset, message, donation, multiple } = e.target.elements;
+
+    fieldset.disabled = true;
+
+    this.addMessages(message.value, donation.value || "0", multiple.checked)
       .then(() => {
         return this.getMessages()
           .then((nextMessages) => {

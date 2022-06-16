@@ -1,10 +1,7 @@
 <ng-container *ngIf="account">
   <div>
     <button (click)="signOut()">Log out</button>
-    <button (click)="switchProvider()">Switch Provider</button>
-    <button (click)="onSendMultipleTransactions()">
-      Send Multiple Transactions
-    </button>
+    <button (click)="switchWallet()">Switch Wallet</button>
     <button *ngIf="accounts.length > 1" (click)="switchAccount()">
       Switch Account
     </button>

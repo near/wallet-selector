@@ -6,6 +6,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
+- [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
@@ -36,9 +37,9 @@ yarn add \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
+  @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
-  @near-wallet-selector/nightly
 
 # Using NPM.
 npm install \
@@ -46,9 +47,9 @@ npm install \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/math-wallet \
+  @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect
-  @near-wallet-selector/nightly
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -70,9 +71,9 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNightly } from "@near-wallet-selector/nightly";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -80,9 +81,9 @@ const selector = await setupWalletSelector({
     setupNearWallet(),
     setupMyNearWallet(),
     setupSender(),
-    setupLedger(),
     setupMathWallet(),
     setupNightly(),
+    setupLedger(),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {

@@ -8,8 +8,8 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { CONTRACT_ID } from "../constants";
 
@@ -69,8 +69,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNearWallet(),
         setupMyNearWallet(),
         setupSender(),
-        setupNightly(),
         setupMathWallet(),
+        setupNightly(),
         setupLedger(),
         setupWalletConnect({
           projectId: "c4f79cc...",

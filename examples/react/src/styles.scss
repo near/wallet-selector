@@ -96,6 +96,10 @@ input[type="number"] {
   }
 }
 
+input[type="checkbox"] {
+  margin: 0 1em;
+}
+
 button, input {
   background: transparent;
   color: inherit;
