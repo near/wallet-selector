@@ -4,6 +4,7 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
+import { Transaction } from "@near-wallet-selector/core";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
@@ -92,7 +93,7 @@ const Content: React.FC = () => {
     });
   };
 
-  const handleSwitchProvider = () => {
+  const handleSwitchWallet = () => {
     modal.show();
   };
 
@@ -106,42 +107,67 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
-  const handleSendMultipleTransactions = async () => {
+  const addMessages = async (
+    message: string,
+    donation: string,
+    multiple: boolean
+  ) => {
     const { contract } = selector.store.getState();
     const wallet = await selector.wallet();
 
-    await wallet.signAndSendTransactions({
-      transactions: [
-        {
-          // Deploy your own version of https://github.com/near-examples/rust-counter using Gitpod to get a valid receiverId.
-          receiverId: "dev-1648806797290-14624341764914",
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "increment",
-                args: {},
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount("0")!,
-              },
-            },
-          ],
-        },
-        {
-          receiverId: contract!.contractId,
+    if (!multiple) {
+      return wallet
+        .signAndSendTransaction({
+          signerId: accountId!,
           actions: [
             {
               type: "FunctionCall",
               params: {
                 methodName: "addMessage",
-                args: { text: "Hello World!" },
+                args: { text: message },
                 gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount("0")!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                deposit: utils.format.parseNearAmount(donation)!,
               },
             },
           ],
-        },
-      ],
+        })
+        .catch((err) => {
+          alert("Failed to add message");
+          console.log("Failed to add message");
+
+          throw err;
+        });
+    }
+
+    const transactions: Array<Transaction> = [];
+
+    for (let i = 0; i < 2; i += 1) {
+      transactions.push({
+        signerId: accountId!,
+        receiverId: contract!.contractId,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: {
+                text: `${message} (${i + 1}/2)`,
+              },
+              gas: BOATLOAD_OF_GAS,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              deposit: utils.format.parseNearAmount(donation)!,
+            },
+          },
+        ],
+      });
+    }
+
+    return wallet.signAndSendTransactions({ transactions }).catch((err) => {
+      alert("Failed to add messages");
+      console.log("Failed to add messages");
+
+      throw err;
     });
   };
 
@@ -152,38 +178,11 @@ const Content: React.FC = () => {
       // TODO: Fix the typing so that target.elements exists..
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore.
-      const { fieldset, message, donation } = e.target.elements;
+      const { fieldset, message, donation, multiple } = e.target.elements;
 
       fieldset.disabled = true;
 
-      // TODO: optimistically update page with new message,
-      // update blockchain data in background
-      // add uuid to each message, so we know which one is already known
-
-      const wallet = await selector.wallet();
-
-      wallet
-        .signAndSendTransaction({
-          signerId: accountId!,
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: { text: message.value },
-                gas: BOATLOAD_OF_GAS,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                deposit: utils.format.parseNearAmount(donation.value || "0")!,
-              },
-            },
-          ],
-        })
-        .catch((err) => {
-          alert("Failed to add message");
-          console.log("Failed to add message");
-
-          throw err;
-        })
+      return addMessages(message.value, donation.value || "0", multiple.checked)
         .then(() => {
           return getMessages()
             .then((nextMessages) => {
@@ -228,10 +227,7 @@ const Content: React.FC = () => {
     <Fragment>
       <div>
         <button onClick={handleSignOut}>Log out</button>
-        <button onClick={handleSwitchProvider}>Switch Provider</button>
-        <button onClick={handleSendMultipleTransactions}>
-          Send Multiple Transactions
-        </button>
+        <button onClick={handleSwitchWallet}>Switch Wallet</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}

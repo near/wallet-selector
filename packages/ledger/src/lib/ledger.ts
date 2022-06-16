@@ -161,7 +161,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     publicKey,
   }: GetAccountIdFromPublicKeyParams): Promise<string> => {
     const response = await fetch(
-      `${options.network.helperUrl}/publicKey/ed25519:${publicKey}/accounts`
+      `${options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
     );
 
     if (!response.ok) {
