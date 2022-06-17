@@ -14,7 +14,9 @@ export type ModuleState<Variation extends Wallet = Wallet> = {
   wallet(): Promise<Variation>;
 };
 
-export type AccountState = Account;
+export type AccountState = Account & {
+  active: boolean;
+};
 
 export interface WalletSelectorState {
   contract: ContractState | null;
@@ -28,7 +30,7 @@ export type WalletSelectorAction =
       type: "SETUP_WALLET_MODULES";
       payload: {
         modules: Array<ModuleState>;
-        accounts: Array<AccountState>;
+        accounts: Array<Account>;
         contract: ContractState | null;
         selectedWalletId: string | null;
       };
@@ -38,7 +40,7 @@ export type WalletSelectorAction =
       payload: {
         walletId: string;
         contract: ContractState;
-        accounts: Array<AccountState>;
+        accounts: Array<Account>;
       };
     }
   | {
@@ -51,7 +53,7 @@ export type WalletSelectorAction =
       type: "ACCOUNTS_CHANGED";
       payload: {
         walletId: string;
-        accounts: Array<AccountState>;
+        accounts: Array<Account>;
       };
     };
 

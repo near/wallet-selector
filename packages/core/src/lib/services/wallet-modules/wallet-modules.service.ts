@@ -5,15 +5,11 @@ import type {
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
+  Account,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type {
-  AccountState,
-  ContractState,
-  ModuleState,
-  Store,
-} from "../../store.types";
+import type { ContractState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
@@ -53,7 +49,7 @@ export class WalletModules {
   }
 
   private async validateWallet(id: string | null) {
-    let accounts: Array<AccountState> = [];
+    let accounts: Array<Account> = [];
     const wallet = await this.getWallet(id);
 
     if (wallet) {

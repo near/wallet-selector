@@ -19,10 +19,17 @@ const reducer = (
     case "SETUP_WALLET_MODULES": {
       const { modules, accounts, contract, selectedWalletId } = action.payload;
 
+      const accountStates = accounts.map((account, i) => {
+        return {
+          ...account,
+          active: i === 0,
+        };
+      });
+
       return {
         ...state,
         modules,
-        accounts,
+        accounts: accountStates,
         contract,
         selectedWalletId,
       };
@@ -34,10 +41,17 @@ const reducer = (
         return state;
       }
 
+      const accountStates = accounts.map((account, i) => {
+        return {
+          ...account,
+          active: i === 0,
+        };
+      });
+
       return {
         ...state,
         contract,
-        accounts,
+        accounts: accountStates,
         selectedWalletId: walletId,
       };
     }
@@ -62,9 +76,16 @@ const reducer = (
         return state;
       }
 
+      const accountStates = accounts.map((account, i) => {
+        return {
+          ...account,
+          active: i === 0,
+        };
+      });
+
       return {
         ...state,
-        accounts,
+        accounts: accountStates,
       };
     }
     default:
