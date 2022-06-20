@@ -1,8 +1,7 @@
-import { AccountState } from "../store.types";
-import { WalletSelectorStore } from "../wallet-selector.types";
+import { AccountState, WalletSelectorState } from "../store.types";
 
 export const getActiveAccount = (
-  store: WalletSelectorStore
+  state: WalletSelectorState
 ): AccountState | null => {
-  return store.getState().accounts.find((account) => account.active) || null;
+  return state.accounts.find((account) => account.active) || null;
 };

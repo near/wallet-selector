@@ -1,13 +1,13 @@
 import { isMobile } from "is-mobile";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
   Account,
   Optional,
   Transaction,
-  getActiveAccount,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
@@ -65,7 +65,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error("Wallet not signed in");
     }
 
-    const account = getActiveAccount(store);
+    const account = getActiveAccount(store.getState());
 
     if (!account) {
       throw new Error("No active account");

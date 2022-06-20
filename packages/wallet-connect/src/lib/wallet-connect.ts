@@ -1,11 +1,11 @@
 import type { AppMetadata, SessionTypes } from "@walletconnect/types";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
   Subscription,
-  getActiveAccount,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
 
@@ -184,7 +184,7 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const account = getActiveAccount(store);
+      const account = getActiveAccount(store.getState());
 
       if (!account) {
         throw new Error("No active account");

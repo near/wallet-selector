@@ -1,7 +1,7 @@
 import { isMobile } from "is-mobile";
 import { TypedError } from "near-api-js/lib/utils/errors";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   JsonStorageService,
@@ -9,8 +9,8 @@ import {
   HardwareWallet,
   Transaction,
   Optional,
-  getActiveAccount,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
@@ -188,7 +188,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       throw new Error("Wallet not signed in");
     }
 
-    const account = getActiveAccount(store);
+    const account = getActiveAccount(store.getState());
 
     // eslint-disable-next-line no-console
     console.log(account);
