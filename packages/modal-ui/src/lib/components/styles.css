@@ -6,7 +6,6 @@
   --text-color: #676767;
   --selected-wallet-bg: #A7A7A730;
   --selected-wallet-bg-hover: transparent;
-  --deprecated-wallet-bg: #F5F5F5;
   --wallet-option-border-color: #A7A7A730;
   --content-bg: #FFFFFF;
   --input-border-color-focus: #5F8AFA;
@@ -28,7 +27,6 @@
   --text-color: #FFFFFF;
   --selected-wallet-bg: #262626CC;
   --selected-wallet-bg-hover: #262626CC;
-  --deprecated-wallet-bg: #35373a;
   --wallet-option-border-color: #A7A7A730;
   --content-bg: #3F4246;
   --input-border-color-focus: #5F8AFA;
@@ -51,7 +49,6 @@
     --text-color: #FFFFFF;
     --selected-wallet-bg: #262626CC;
     --selected-wallet-bg-hover: #262626CC;
-    --deprecated-wallet-bg: #35373a;
     --wallet-option-border-color: #A7A7A730;
     --content-bg: #3F4246;
     --input-border-color-focus: #5F8AFA;
@@ -299,8 +296,8 @@
   background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.deprecated-wallet {
-  background-color: var(--wallet-selector-deprecated-wallet-bg, var(--deprecated-wallet-bg));
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.deprecated-wallet div {
+  opacity: 50%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .selected-wallet-text {

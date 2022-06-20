@@ -35,6 +35,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/nightly/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/ledger/assets/",
             "output": "assets/"
           },
