@@ -34,18 +34,21 @@ class WalletConnectClient {
 
   async connect(params: EngineTypes.ConnectParams) {
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
-      this.client.connect(params).then(({ uri, approval }) => {
-        if (uri) {
-          QRCodeModal.open(uri, () => {
-            reject(new Error("User cancelled pairing"));
-          });
-        }
+      this.client
+        .connect(params)
+        .then(({ uri, approval }) => {
+          if (uri) {
+            QRCodeModal.open(uri, () => {
+              reject(new Error("User cancelled pairing"));
+            });
+          }
 
-        approval()
-          .then(resolve)
-          .catch(reject)
-          .finally(() => QRCodeModal.close());
-      });
+          approval()
+            .then(resolve)
+            .catch(reject)
+            .finally(() => QRCodeModal.close());
+        })
+        .catch(reject);
     });
   }
 
