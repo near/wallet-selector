@@ -127,7 +127,9 @@ export interface HardwareWalletSignInParams extends SignInParams {
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
   { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
->;
+> & {
+  getPublicKey(derivationPath: string): Promise<string>;
+};
 
 export type HardwareWallet = BaseWallet<
   "hardware",

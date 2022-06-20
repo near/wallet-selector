@@ -290,6 +290,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))
       );
     },
+    async getPublicKey(derivationPath: string) {
+      await connectLedgerDevice();
+
+      return await _state.client.getPublicKey({ derivationPath });
+    },
   };
 };
 
