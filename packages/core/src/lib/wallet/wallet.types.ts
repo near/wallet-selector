@@ -121,7 +121,11 @@ export type InjectedWallet = BaseWallet<
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
 export interface HardwareWalletSignInParams extends SignInParams {
-  derivationPaths: Array<string>;
+  accounts: Array<{
+    derivationPath: string;
+    publicKey: string;
+    accountId: string;
+  }>;
 }
 
 export type HardwareWalletBehaviour = Modify<
