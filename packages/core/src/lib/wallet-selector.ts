@@ -48,12 +48,6 @@ export const setupWalletSelector = async (
 
         return wallet;
       },
-      setActiveAccount: (accountId: string) => {
-        store.getState().accounts = store.getState().accounts.map((account) => {
-          account.active = account.accountId === accountId;
-          return account;
-        });
-      },
       isSignedIn() {
         const { accounts } = store.getState();
 

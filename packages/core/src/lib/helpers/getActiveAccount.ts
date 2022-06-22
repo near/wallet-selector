@@ -1,4 +1,4 @@
-import { AccountState, WalletSelectorState } from "../store.types";
+import type { AccountState, WalletSelectorState } from "../store.types";
 
 export const getActiveAccount = (
   state: WalletSelectorState

@@ -88,6 +88,19 @@ const reducer = (
         accounts: accountStates,
       };
     }
+    case "SET_ACTIVE_ACCOUNT": {
+      const { accountId, accounts } = action.payload;
+
+      const accountStates = accounts.map((account) => {
+        account.active = account.accountId === accountId;
+        return account;
+      });
+
+      return {
+        ...state,
+        accounts: accountStates,
+      };
+    }
     default:
       return state;
   }

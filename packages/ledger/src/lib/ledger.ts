@@ -190,9 +190,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
     const account = getActiveAccount(store.getState());
 
-    // eslint-disable-next-line no-console
-    console.log(account);
-
     if (!account) {
       throw new Error("No active account");
     }

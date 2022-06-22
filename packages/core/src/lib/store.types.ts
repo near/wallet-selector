@@ -55,6 +55,13 @@ export type WalletSelectorAction =
         walletId: string;
         accounts: Array<Account>;
       };
+    }
+  | {
+      type: "SET_ACTIVE_ACCOUNT";
+      payload: {
+        accountId: string;
+        accounts: Array<AccountState>;
+      };
     };
 
 export interface ReadOnlyStore {

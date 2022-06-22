@@ -6,10 +6,10 @@ import {
   ProviderService,
   JsonStorageService,
 } from "../services";
-import { Options } from "../options.types";
-import { ReadOnlyStore } from "../store.types";
-import { Transaction, Action } from "./transactions.types";
-import { Modify, Optional } from "../utils.types";
+import type { Options } from "../options.types";
+import type { AccountState, ReadOnlyStore } from "../store.types";
+import type { Transaction, Action } from "./transactions.types";
+import type { Modify, Optional } from "../utils.types";
 
 interface BaseWalletMetadata {
   name: string;
@@ -67,6 +67,7 @@ export type WalletEvents = {
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };
+  setActiveAccount: { accountId: string; accounts: Array<AccountState> };
   networkChanged: { networkId: string };
 };
 
