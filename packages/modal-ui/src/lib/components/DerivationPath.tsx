@@ -187,6 +187,16 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     );
   };
 
+  const handleAccountChange = (
+    accountIndex: number,
+    selectedAccountId: string
+  ) => {
+    setHardwareWalletAccounts((accounts) => {
+      accounts[accountIndex].selectedAccountId = selectedAccountId;
+      return [...accounts];
+    });
+  };
+
   const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
     e
   ) => {
@@ -213,6 +223,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       {showMultipleAccountsSelect ? (
         <HardwareWalletAccountsForm
           hardwareWalletAccounts={hardwareWalletAccounts}
+          onAccountChanged={(accountIndex, selectedAccountId) => {
+            handleAccountChange(accountIndex, selectedAccountId);
+          }}
           onSubmit={(accounts, e) => {
             e.preventDefault();
             const mapAccounts = accounts.map((account) => {
