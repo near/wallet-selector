@@ -1,16 +1,16 @@
 import React from "react";
-import { LedgerAccountState } from "./DerivationPath";
+import type { HardwareWalletAccountState } from "./DerivationPath";
 
 interface FormProps {
-  ledgerAccounts: Array<LedgerAccountState>;
+  hardwareWalletAccounts: Array<HardwareWalletAccountState>;
   onSubmit: (
-    accounts: Array<LedgerAccountState>,
+    accounts: Array<HardwareWalletAccountState>,
     e: React.FormEvent<HTMLFormElement>
   ) => void;
 }
 
 const ChooseLedgerAccountForm: React.FC<FormProps> = ({
-  ledgerAccounts,
+  hardwareWalletAccounts,
   onSubmit,
 }) => {
   return (
@@ -21,11 +21,11 @@ const ChooseLedgerAccountForm: React.FC<FormProps> = ({
       <form
         className="form"
         onSubmit={(e) => {
-          onSubmit(ledgerAccounts, e);
+          onSubmit(hardwareWalletAccounts, e);
         }}
       >
         <div>
-          {ledgerAccounts.map((account, index) => {
+          {hardwareWalletAccounts.map((account, index) => {
             return (
               <div key={index} className="form-control">
                 <label>{account.derivationPath}</label>

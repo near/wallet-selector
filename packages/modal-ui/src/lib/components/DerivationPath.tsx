@@ -16,7 +16,7 @@ interface DerivationPathProps {
   onError: (message: string) => void;
 }
 
-export interface LedgerAccountState {
+export interface HardwareWalletAccountState {
   derivationPath: string;
   publicKey: string;
   accountIds: Array<string>;
@@ -38,8 +38,8 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     Array<{ path: string }>
   >([{ path: DEFAULT_DERIVATION_PATH }]);
 
-  const [ledgerAccounts, setLedgerAccounts] = useState<
-    Array<LedgerAccountState>
+  const [hardwareWalletAccounts, setHardwareWalletAccounts] = useState<
+    Array<HardwareWalletAccountState>
   >([]);
 
   const [showMultipleAccountsSelect, setShowMultipleAccountsSelect] =
@@ -94,7 +94,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   };
 
   const resolveAccounts = async (wallet: Wallet) => {
-    const accounts: Array<LedgerAccountState> = [];
+    const accounts: Array<HardwareWalletAccountState> = [];
 
     for (let i = 0; i < derivationPaths.length; i += 1) {
       const derivationPath = derivationPaths[i].path;
@@ -164,7 +164,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       } else {
         setConnecting(false);
 
-        setLedgerAccounts(accounts);
+        setHardwareWalletAccounts(accounts);
         setShowMultipleAccountsSelect(true);
       }
     } catch (err) {
@@ -253,7 +253,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       )}
       {showMultipleAccountsSelect && !connecting && (
         <ChooseLedgerAccountForm
-          ledgerAccounts={ledgerAccounts}
+          hardwareWalletAccounts={hardwareWalletAccounts}
           onSubmit={(accounts, e) => {
             e.preventDefault();
             const mapAccounts = accounts.map((account) => {
