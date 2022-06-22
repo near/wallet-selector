@@ -28,10 +28,7 @@ const ChooseLedgerAccountForm: React.FC<FormProps> = ({
           {ledgerAccounts.map((account, index) => {
             return (
               <div key={index} className="form-control">
-                <label>
-                  <strong>Derivation Path: </strong>
-                  {account.derivationPath}
-                </label>
+                <label>{account.derivationPath}</label>
                 <select
                   disabled={account.accountIds.length === 1}
                   onChange={(e) => {

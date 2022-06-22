@@ -251,18 +251,23 @@
  */
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
   display: flex;
-  flex-direction: column;
   margin-bottom: 16px;
-}
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
-  margin-bottom: 8px;
+  padding: 10px;
+  box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
   padding: 8px;
   font-size: 14px;
   border-radius: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
 }
+
 
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .action-buttons {
   justify-content: flex-end;
