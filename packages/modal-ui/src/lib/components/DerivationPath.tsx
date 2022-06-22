@@ -2,6 +2,7 @@ import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import type { Wallet, WalletSelector } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
 import type { DerivationPathModalRouteParams } from "./Modal.types";
+import type { HardwareWalletAccount } from "@near-wallet-selector/core";
 import ChooseLedgerAccountForm from "./ChooseLedgerAccountForm";
 import { WalletConnecting } from "./WalletConnecting";
 
@@ -20,12 +21,6 @@ export interface LedgerAccountState {
   publicKey: string;
   accountIds: Array<string>;
   selectedAccountId?: string;
-}
-
-interface LedgerAccount {
-  derivationPath: string;
-  publicKey: string;
-  accountId: string;
 }
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
@@ -122,7 +117,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     wallet: Wallet,
     contractId: string,
     methodNames: Array<string> | undefined,
-    accounts: Array<LedgerAccount>
+    accounts: Array<HardwareWalletAccount>
   ) => {
     return wallet
       .signIn({
@@ -187,7 +182,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   };
 
   const handleMultipleAccountsSignIn = async (
-    accounts: Array<LedgerAccount>
+    accounts: Array<HardwareWalletAccount>
   ) => {
     await signIn(
       hardwareWallet!,
