@@ -48,6 +48,12 @@ export const setupWalletSelector = async (
 
         return wallet;
       },
+      setActiveAccount: (accountId: string) => {
+        store.dispatch({
+          type: "SET_ACTIVE_ACCOUNT",
+          payload: { accountId, accounts: store.getState().accounts },
+        });
+      },
       isSignedIn() {
         const { accounts } = store.getState();
 

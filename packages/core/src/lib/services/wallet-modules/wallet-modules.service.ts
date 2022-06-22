@@ -189,17 +189,6 @@ export class WalletModules {
       });
     });
 
-    emitter.on("setActiveAccount", async ({ accounts, accountId }) => {
-      if (!accounts.length) {
-        return this.signOutWallet(module.id);
-      }
-
-      this.store.dispatch({
-        type: "SET_ACTIVE_ACCOUNT",
-        payload: { accountId, accounts },
-      });
-    });
-
     emitter.on("networkChanged", ({ networkId }) => {
       this.emitter.emit("networkChanged", { walletId: module.id, networkId });
     });
