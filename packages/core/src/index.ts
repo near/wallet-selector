@@ -41,6 +41,7 @@ export type {
   HardwareWalletSignInParams,
   HardwareWalletBehaviour,
   HardwareWallet,
+  HardwareWalletAccount,
   BridgeWalletMetadata,
   BridgeWalletBehaviour,
   BridgeWallet,

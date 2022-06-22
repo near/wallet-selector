@@ -247,6 +247,41 @@
 }
 
 /**
+ * Modal Wallet ChooseLedgerAccountForm/Wrapper
+ */
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+  display: flex;
+  margin-bottom: 16px;
+  padding: 10px;
+  box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-color);
+}
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
+  color: inherit;
+}
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
+  color: inherit;
+}
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select option {
+  background-color: var(--content-bg);
+}
+
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .action-buttons {
+  justify-content: flex-end;
+}
+
+/**
  * Modal Wallet Options Section/Wrapper
  */
 
@@ -402,6 +437,14 @@
 
   .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {
     max-width: 140px;
+  }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+    flex-direction: column;
+  }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+    text-align: center;
   }
 }
 
