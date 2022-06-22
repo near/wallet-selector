@@ -3,7 +3,7 @@ import type { Wallet, WalletSelector } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
 import type { DerivationPathModalRouteParams } from "./Modal.types";
 import type { HardwareWalletAccount } from "@near-wallet-selector/core";
-import ChooseLedgerAccountForm from "./ChooseLedgerAccountForm";
+import HardwareWalletAccountsForm from "./HardwareWalletAccountsForm";
 import { WalletConnecting } from "./WalletConnecting";
 
 interface DerivationPathProps {
@@ -250,7 +250,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         </div>
       )}
       {showMultipleAccountsSelect && !connecting && (
-        <ChooseLedgerAccountForm
+        <HardwareWalletAccountsForm
           hardwareWalletAccounts={hardwareWalletAccounts}
           onSubmit={(accounts, e) => {
             e.preventDefault();
@@ -258,7 +258,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               return {
                 derivationPath: account.derivationPath,
                 publicKey: account.publicKey,
-                accountId: account.selectedAccountId!,
+                accountId: account.selectedAccountId,
               };
             });
             handleMultipleAccountsSignIn(mapAccounts);

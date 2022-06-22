@@ -9,7 +9,7 @@ interface FormProps {
   ) => void;
 }
 
-const ChooseLedgerAccountForm: React.FC<FormProps> = ({
+const HardwareWalletAccountsForm: React.FC<FormProps> = ({
   hardwareWalletAccounts,
   onSubmit,
 }) => {
@@ -58,4 +58,4 @@ const ChooseLedgerAccountForm: React.FC<FormProps> = ({
   );
 };
 
-export default ChooseLedgerAccountForm;
+export default HardwareWalletAccountsForm;
