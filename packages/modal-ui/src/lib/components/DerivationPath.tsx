@@ -195,9 +195,37 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     }
   };
 
+  if (connecting) {
+    return (
+      <div className="derivation-path-wrapper">
+        <WalletConnecting
+          wallet={hardwareWallet}
+          onBack={() => {
+            setConnecting(false);
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="derivation-path-wrapper">
-      {!showMultipleAccountsSelect && !connecting && (
+      {showMultipleAccountsSelect ? (
+        <HardwareWalletAccountsForm
+          hardwareWalletAccounts={hardwareWalletAccounts}
+          onSubmit={(accounts, e) => {
+            e.preventDefault();
+            const mapAccounts = accounts.map((account) => {
+              return {
+                derivationPath: account.derivationPath,
+                publicKey: account.publicKey,
+                accountId: account.selectedAccountId,
+              };
+            });
+            handleMultipleAccountsSignIn(mapAccounts);
+          }}
+        />
+      ) : (
         <div>
           <p>
             Make sure your device is plugged in, then enter an account id to
@@ -248,30 +276,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             </button>
           </div>
         </div>
-      )}
-      {showMultipleAccountsSelect && !connecting && (
-        <HardwareWalletAccountsForm
-          hardwareWalletAccounts={hardwareWalletAccounts}
-          onSubmit={(accounts, e) => {
-            e.preventDefault();
-            const mapAccounts = accounts.map((account) => {
-              return {
-                derivationPath: account.derivationPath,
-                publicKey: account.publicKey,
-                accountId: account.selectedAccountId,
-              };
-            });
-            handleMultipleAccountsSignIn(mapAccounts);
-          }}
-        />
-      )}
-      {connecting && (
-        <WalletConnecting
-          wallet={hardwareWallet}
-          onBack={() => {
-            setConnecting(false);
-          }}
-        />
       )}
     </div>
   );
