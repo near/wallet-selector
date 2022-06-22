@@ -3,7 +3,7 @@ import type { HardwareWalletAccountState } from "./DerivationPath";
 
 interface FormProps {
   hardwareWalletAccounts: Array<HardwareWalletAccountState>;
-  onAccountChanged: (index: number, selectedAccountId: string) => void;
+  onAccountChanged: (derivationPath: string, selectedAccountId: string) => void;
   onSubmit: (
     accounts: Array<HardwareWalletAccountState>,
     e: React.FormEvent<HTMLFormElement>
@@ -35,7 +35,7 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
                   disabled={account.accountIds.length === 1}
                   defaultValue={account.selectedAccountId}
                   onChange={(e) => {
-                    onAccountChanged(accountIndex, e.target.value);
+                    onAccountChanged(account.derivationPath, e.target.value);
                   }}
                 >
                   {account.accountIds.map((accountId) => {
