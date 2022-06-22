@@ -92,8 +92,10 @@ const reducer = (
       const { accountId, accounts } = action.payload;
 
       const accountStates = accounts.map((account) => {
-        account.active = account.accountId === accountId;
-        return account;
+        return {
+          ...account,
+          active: account.accountId === accountId,
+        };
       });
 
       return {
