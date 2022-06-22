@@ -10,7 +10,6 @@ interface DerivationPathProps {
   selector: WalletSelector;
   options: ModalOptions;
   onBack: () => void;
-  onConnecting: (wallet: Wallet) => void;
   onConnected: () => void;
   params: DerivationPathModalRouteParams;
   onError: (message: string) => void;
@@ -29,7 +28,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   selector,
   options,
   onBack,
-  onConnecting,
   onConnected,
   params,
   onError,
