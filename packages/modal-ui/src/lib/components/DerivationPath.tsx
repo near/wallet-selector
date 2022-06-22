@@ -20,7 +20,7 @@ export interface LedgerAccountState {
   derivationPath: string;
   publicKey: string;
   accountIds: Array<string>;
-  selectedAccountId?: string;
+  selectedAccountId: string;
 }
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
@@ -107,6 +107,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           derivationPath,
           publicKey,
           accountIds,
+          selectedAccountId: accountIds[0],
         });
       }
     }
@@ -162,10 +163,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         );
       } else {
         setConnecting(false);
-
-        accounts.forEach((account) => {
-          account.selectedAccountId = account.accountIds[0];
-        });
 
         setLedgerAccounts(accounts);
         setShowMultipleAccountsSelect(true);
