@@ -449,17 +449,17 @@
 }
 
 .nws-modal-wrapper.dark-theme .modal #near-wallet img,
-.nws-modal-wrapper.dark-theme .modal #my-near-wallet img,
-.nws-modal-wrapper.dark-theme .modal #math-wallet img,
-.nws-modal-wrapper.dark-theme .modal #wallet-connect img {
+/*.nws-modal-wrapper.dark-theme .modal #my-near-wallet img,*/
+.nws-modal-wrapper.dark-theme .modal #math-wallet img
+/*.nws-modal-wrapper.dark-theme .modal #wallet-connect img */
+{
   filter: invert(1);
 }
 
 @media (prefers-color-scheme: dark) {
   .nws-modal-wrapper .modal #near-wallet img,
-  .nws-modal-wrapper .modal #my-near-wallet img,
-  .nws-modal-wrapper .modal #math-wallet img,
-  .nws-modal-wrapper .modal #wallet-connect img {
+  .nws-modal-wrapper .modal #math-wallet img
+  {
     filter: invert(1);
   }
 }
