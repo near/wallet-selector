@@ -1066,6 +1066,8 @@ Apache-2.0
 
 @near-wallet-selector/near-wallet
 
+@near-wallet-selector/nightly
+
 @near-wallet-selector/sender
 
 @near-wallet-selector/wallet-connect
