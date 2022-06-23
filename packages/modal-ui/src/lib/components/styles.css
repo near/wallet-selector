@@ -304,23 +304,33 @@
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li {
+  display: flex;
+  justify-content: center;
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
   border: 1px solid var(--wallet-selector-wallet-option-border-color, var(--wallet-option-border-color));
-  display: flex;
   transition: background-color 0.2s ease-in-out;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li div {
-  text-align: center;
-  margin: auto;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li img {
-  display: block;
-  margin: 0 auto 5px;
-  max-width: 50px;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box img {
+  text-align: center;
+  width: 100%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li:hover {
@@ -449,17 +459,15 @@
 }
 
 .nws-modal-wrapper.dark-theme .modal #near-wallet img,
-/*.nws-modal-wrapper.dark-theme .modal #my-near-wallet img,*/
-.nws-modal-wrapper.dark-theme .modal #math-wallet img
-/*.nws-modal-wrapper.dark-theme .modal #wallet-connect img */
-{
+.nws-modal-wrapper.dark-theme .modal #math-wallet img,
+.nws-modal-wrapper.dark-theme .modal #ledger img {
   filter: invert(1);
 }
 
 @media (prefers-color-scheme: dark) {
   .nws-modal-wrapper .modal #near-wallet img,
-  .nws-modal-wrapper .modal #math-wallet img
-  {
+  .nws-modal-wrapper .modal #math-wallet img,
+  .nws-modal-wrapper .modal #ledger img {
     filter: invert(1);
   }
 }
