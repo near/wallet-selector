@@ -1,0 +1,54 @@
+{
+  "root": "packages/nightly",
+  "sourceRoot": "packages/nightly/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/nightly",
+        "tsConfig": "packages/nightly/tsconfig.lib.json",
+        "project": "packages/nightly/package.json",
+        "entryFile": "packages/nightly/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/nightly/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/nightly/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/nightly/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/nightly"],
+      "options": {
+        "jestConfig": "packages/nightly/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}

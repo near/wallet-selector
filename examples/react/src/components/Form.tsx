@@ -32,6 +32,10 @@ const Form: React.FC<FormProps> = ({ account, onSubmit }) => {
           />
           <span title="NEAR Tokens">Ⓝ</span>
         </p>
+        <p>
+          <label htmlFor="multiple">Multiple Transactions:</label>
+          <input id="multiple" type="checkbox" />
+        </p>
         <button type="submit">Sign</button>
       </fieldset>
     </form>

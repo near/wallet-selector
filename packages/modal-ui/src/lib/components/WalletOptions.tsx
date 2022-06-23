@@ -29,6 +29,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
+      state.modules.sort((current, next) => {
+        if (current.metadata.deprecated === next.metadata.deprecated) {
+          return 0;
+        }
+
+        return current.metadata.deprecated ? 1 : -1;
+      });
       setModules(state.modules);
     });
 
@@ -39,6 +46,14 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   const handleWalletClick = (module: ModuleState) => async () => {
     try {
       const wallet = await module.wallet();
+
+      if (wallet.metadata.deprecated) {
+        return onError(
+          new Error(
+            `${wallet.metadata.name} is deprecated. Please select another wallet.`
+          )
+        );
+      }
       onConnecting(wallet);
 
       if (wallet.type === "hardware") {
@@ -71,14 +86,16 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
-            const { name, description, iconUrl } = module.metadata;
+            const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
-
             result.push(
               <li
                 key={module.id}
                 id={module.id}
-                className={selected ? "selected-wallet" : ""}
+                className={
+                  (selected ? "selected-wallet" : "") +
+                  (deprecated ? " deprecated-wallet" : "")
+                }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
                 <div title={description || ""}>

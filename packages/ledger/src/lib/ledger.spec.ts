@@ -100,16 +100,12 @@ describe("connect", () => {
   it("signs in", async () => {
     const accountId = "amirsaran.testnet";
     const derivationPath = "44'/397'/0'/0'/1'";
-    const { wallet, ledgerClient, storage, publicKey } =
-      await createLedgerWallet();
+    const { wallet, storage, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: [derivationPath],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
 
-    expect(ledgerClient.isConnected).toHaveBeenCalledTimes(1);
-    expect(ledgerClient.connect).toHaveBeenCalledTimes(1);
-    expect(ledgerClient.getPublicKey).toHaveBeenCalledTimes(1);
     expect(storage.setItem).toHaveBeenCalledWith("accounts", [
       {
         accountId,
@@ -123,9 +119,10 @@ describe("connect", () => {
 describe("getAccounts", () => {
   it("returns account objects", async () => {
     const accountId = "amirsaran.testnet";
-    const { wallet } = await createLedgerWallet();
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const result = await wallet.getAccounts();
@@ -140,9 +137,11 @@ describe("getAccounts", () => {
 
 describe("signAndSendTransaction", () => {
   it("signs and sends transaction", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     await wallet.signAndSendTransaction({
@@ -156,9 +155,11 @@ describe("signAndSendTransaction", () => {
 
 describe("signAndSendTransactions", () => {
   it("signs and sends only one transaction", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [
@@ -176,9 +177,11 @@ describe("signAndSendTransactions", () => {
   });
 
   it("signs and sends multiple transactions", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [
