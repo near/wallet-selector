@@ -27,19 +27,6 @@ describe("getNetworkPreset", () => {
       indexerUrl: "https://testnet-api.kitwallet.app",
     });
   });
-
-  it("returns the correct config for 'betanet'", () => {
-    const networkId: NetworkId = "betanet";
-    const network = getNetworkPreset(networkId);
-
-    expect(network).toEqual({
-      networkId,
-      nodeUrl: "https://rpc.betanet.near.org",
-      helperUrl: "https://helper.betanet.near.org",
-      explorerUrl: "https://explorer.betanet.near.org",
-      indexerUrl: "",
-    });
-  });
 });
 
 describe("resolveNetwork", () => {

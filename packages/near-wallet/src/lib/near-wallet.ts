@@ -20,8 +20,6 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
       return "https://wallet.near.org";
     case "testnet":
       return "https://wallet.testnet.near.org";
-    case "betanet":
-      return "https://wallet.betanet.near.org";
     default:
       throw new Error("Invalid wallet url");
   }

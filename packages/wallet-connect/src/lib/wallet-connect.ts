@@ -61,7 +61,7 @@ const WalletConnect: WalletBehaviourFactory<
 
     const { networkId } = options.network;
 
-    if (["mainnet", "testnet", "betanet"].includes(networkId)) {
+    if (["mainnet", "testnet"].includes(networkId)) {
       return `near:${networkId}`;
     }
 
