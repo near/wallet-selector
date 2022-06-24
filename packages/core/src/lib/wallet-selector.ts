@@ -50,6 +50,12 @@ export const setupWalletSelector = async (
         return wallet;
       },
       setActiveAccount: (accountId: string) => {
+        const { accounts } = store.getState();
+
+        if (!accounts.some((account) => account.accountId === accountId)) {
+          throw new Error("Invalid account id");
+        }
+
         store.dispatch({
           type: "SET_ACTIVE_ACCOUNT",
           payload: { accountId },

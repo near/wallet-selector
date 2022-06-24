@@ -103,10 +103,6 @@ const reducer = (
     case "SET_ACTIVE_ACCOUNT": {
       const { accountId } = action.payload;
 
-      if (!state.accounts.some((account) => account.accountId === accountId)) {
-        throw new Error("No account with accountId: " + accountId);
-      }
-
       const accountStates = state.accounts.map((account) => {
         return {
           ...account,
