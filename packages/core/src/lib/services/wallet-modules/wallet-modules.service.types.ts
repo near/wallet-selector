@@ -4,6 +4,7 @@ import type { Options } from "../../options.types";
 import type { Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export interface WalletModulesParams {
   factories: Array<WalletModuleFactory>;
@@ -11,4 +12,5 @@ export interface WalletModulesParams {
   options: Options;
   store: Store;
   emitter: EventEmitter<WalletSelectorEvents>;
+  provider: ProviderService;
 }

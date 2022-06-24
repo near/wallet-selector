@@ -37,14 +37,11 @@ const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { setupMyNearWallet } = require("./my-near-wallet");
-  const myNearWallet = await mockWallet<BrowserWallet>(
-    setupMyNearWallet(),
-    deps
-  );
+  const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), deps);
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: myNearWallet!,
+    wallet,
     walletConnection,
     account,
   };

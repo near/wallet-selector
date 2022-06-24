@@ -2,35 +2,12 @@
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
-import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
-import type {
-  ProviderService,
-  JsonStorageService,
-} from "../../../core/src/lib/services";
+import type { ProviderService } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
-import type {
-  Store,
-  WalletSelectorState,
-} from "../../../core/src/lib/store.types";
 
-const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
-  const storageState: Record<string, never> = {};
+const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
-
-  const store = mock<Store>();
-
-  const state: WalletSelectorState = {
-    contract: {
-      contractId: "guest-book.testnet",
-      methodNames: [],
-    },
-    modules: [],
-    accounts: [],
-    selectedWalletId: "ledger",
-  };
-
-  store.getState.mockReturnValue(state);
 
   const ledgerClient = mock<LedgerClient>({
     getPublicKey: jest.fn().mockResolvedValue(publicKey),
@@ -62,18 +39,8 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const { setupLedger } = require("./ledger");
 
   const provider = mock<ProviderService>();
-  const storage = mock<JsonStorageService>({
-    getItem: jest.fn(async (key) => storageState[key] || null),
-    setItem: jest.fn(async (key, value) => {
-      // @ts-ignore
-      storageState[key] = value;
-    }),
-  });
-  const ledgerWallet = await mockWallet<HardwareWallet>(setupLedger(), {
-    storage,
+  const { wallet, storage } = await mockWallet<HardwareWallet>(setupLedger(), {
     provider,
-    store,
-    ...deps,
   });
 
   provider.viewAccessKey.mockResolvedValue({
@@ -85,8 +52,8 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: ledgerWallet!,
-    storage: deps.storage || storage,
+    wallet,
+    storage,
     ledgerClient,
     publicKey,
   };
@@ -106,13 +73,16 @@ describe("connect", () => {
       contractId: "guest-book.testnet",
     });
 
-    expect(storage.setItem).toHaveBeenCalledWith("accounts", [
-      {
-        accountId,
-        derivationPath,
-        publicKey,
-      },
-    ]);
+    expect(storage.setItem).toHaveBeenCalledWith(
+      "near-wallet-selector:ledger:accounts",
+      JSON.stringify([
+        {
+          accountId,
+          derivationPath,
+          publicKey,
+        },
+      ])
+    );
   });
 });
 
