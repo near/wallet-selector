@@ -7,7 +7,7 @@ import {
   JsonStorageService,
 } from "../services";
 import type { Options } from "../options.types";
-import type { AccountState, ReadOnlyStore } from "../store.types";
+import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 
@@ -67,7 +67,6 @@ export type WalletEvents = {
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };
-  setActiveAccount: { accountId: string; accounts: Array<AccountState> };
   networkChanged: { networkId: string };
 };
 

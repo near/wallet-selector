@@ -19,14 +19,10 @@ const reducer = (
     case "SETUP_WALLET_MODULES": {
       const { modules, accounts, contract, selectedWalletId } = action.payload;
 
-      const activeAccountIndex = state.accounts.findIndex(
-        (account) => account.active
-      );
-
       const accountStates = accounts.map((account, i) => {
         return {
           ...account,
-          active: i === (activeAccountIndex > -1 ? activeAccountIndex : 0),
+          active: i === 0,
         };
       });
 
