@@ -19,10 +19,14 @@ const reducer = (
     case "SETUP_WALLET_MODULES": {
       const { modules, accounts, contract, selectedWalletId } = action.payload;
 
+      const activeAccountIndex = state.accounts.findIndex(
+        (account) => account.active
+      );
+
       const accountStates = accounts.map((account, i) => {
         return {
           ...account,
-          active: i === 0,
+          active: i === (activeAccountIndex > -1 ? activeAccountIndex : 0),
         };
       });
 
@@ -41,10 +45,14 @@ const reducer = (
         return state;
       }
 
+      const activeAccountIndex = state.accounts.findIndex(
+        (account) => account.active
+      );
+
       const accountStates = accounts.map((account, i) => {
         return {
           ...account,
-          active: i === 0,
+          active: i === (activeAccountIndex > -1 ? activeAccountIndex : 0),
         };
       });
 
@@ -76,10 +84,18 @@ const reducer = (
         return state;
       }
 
+      const activeAccount = state.accounts.find((account) => account.active);
+
+      const isActiveAccountRemoved = !accounts.some(
+        (account) => account.accountId === activeAccount?.accountId
+      );
+
       const accountStates = accounts.map((account, i) => {
         return {
           ...account,
-          active: i === 0,
+          active: isActiveAccountRemoved
+            ? i === 0
+            : account.accountId === activeAccount?.accountId,
         };
       });
 
@@ -89,9 +105,13 @@ const reducer = (
       };
     }
     case "SET_ACTIVE_ACCOUNT": {
-      const { accountId, accounts } = action.payload;
+      const { accountId } = action.payload;
 
-      const accountStates = accounts.map((account) => {
+      if (!state.accounts.some((account) => account.accountId === accountId)) {
+        throw new Error("No account with accountId: " + accountId);
+      }
+
+      const accountStates = state.accounts.map((account) => {
         return {
           ...account,
           active: account.accountId === accountId,

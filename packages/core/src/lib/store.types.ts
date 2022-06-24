@@ -60,7 +60,6 @@ export type WalletSelectorAction =
       type: "SET_ACTIVE_ACCOUNT";
       payload: {
         accountId: string;
-        accounts: Array<AccountState>;
       };
     };
 
