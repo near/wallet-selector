@@ -106,37 +106,9 @@ export class ContentComponent implements OnInit, OnDestroy {
 
     const nextAccountId = this.accounts[nextIndex].accountId;
 
-    this.accountId = nextAccountId;
+    this.selector.setActiveAccount(nextAccountId);
+
     alert("Switched account to " + nextAccountId);
-
-    this.account = null;
-    this.getAccount().then((account) => {
-      this.account = account;
-    });
-  }
-
-  syncAccountState(
-    currentAccountId: string | null,
-    newAccounts: Array<AccountState>
-  ) {
-    if (!newAccounts.length) {
-      localStorage.removeItem("accountId");
-      this.accountId = null;
-      this.accounts = [];
-
-      return;
-    }
-
-    const validAccountId =
-      currentAccountId &&
-      newAccounts.some((x) => x.accountId === currentAccountId);
-    const newAccountId = validAccountId
-      ? currentAccountId
-      : newAccounts[0].accountId;
-
-    localStorage.setItem("accountId", newAccountId);
-    this.accountId = newAccountId;
-    this.accounts = newAccounts;
   }
 
   subscribeToEvents() {
@@ -148,9 +120,23 @@ export class ContentComponent implements OnInit, OnDestroy {
       .subscribe((nextAccounts) => {
         console.log("Accounts Update", nextAccounts);
 
+        if (!nextAccounts.length) {
+          localStorage.removeItem("accountId");
+          this.accountId = null;
+          this.accounts = [];
+
+          return;
+        }
+
         const prevAccountId = this.accountId;
 
-        this.syncAccountState(this.accountId, nextAccounts);
+        const newAccount = nextAccounts.find((account) => account.active);
+
+        if (newAccount) {
+          localStorage.setItem("accountId", newAccount.accountId);
+          this.accountId = newAccount.accountId;
+          this.accounts = nextAccounts;
+        }
 
         if (prevAccountId !== this.accountId) {
           this.getAccount().then((account) => {
