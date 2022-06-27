@@ -37,30 +37,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
-  const syncAccountState = (
-    currentAccountId: string | null,
-    newAccounts: Array<AccountState>
-  ) => {
-    if (!newAccounts.length) {
-      localStorage.removeItem("accountId");
-      setAccountId(null);
-      setAccounts([]);
-
-      return;
-    }
-
-    const validAccountId =
-      currentAccountId &&
-      newAccounts.some((x) => x.accountId === currentAccountId);
-    const newAccountId = validAccountId
-      ? currentAccountId
-      : newAccounts[0].accountId;
-
-    localStorage.setItem("accountId", newAccountId);
-    setAccountId(newAccountId);
-    setAccounts(newAccounts);
-  };
-
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
       network: "testnet",
@@ -85,7 +61,22 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     });
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
-    syncAccountState(localStorage.getItem("accountId"), state.accounts);
+
+    if (!state.accounts.length) {
+      localStorage.removeItem("accountId");
+      setAccountId(null);
+      setAccounts([]);
+
+      return;
+    }
+
+    const newAccount = state.accounts.find((account) => account.active);
+
+    if (newAccount) {
+      localStorage.setItem("accountId", newAccount.accountId);
+      setAccountId(newAccount.accountId);
+      setAccounts(state.accounts);
+    }
 
     window.selector = _selector;
     window.modal = _modal;
@@ -114,7 +105,21 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       .subscribe((nextAccounts) => {
         console.log("Accounts Update", nextAccounts);
 
-        syncAccountState(accountId, nextAccounts);
+        if (!nextAccounts.length) {
+          localStorage.removeItem("accountId");
+          setAccountId(null);
+          setAccounts([]);
+
+          return;
+        }
+
+        const newAccount = nextAccounts.find((account) => account.active);
+
+        if (newAccount) {
+          localStorage.setItem("accountId", newAccount.accountId);
+          setAccountId(newAccount.accountId);
+          setAccounts(nextAccounts);
+        }
       });
 
     return () => subscription.unsubscribe();
