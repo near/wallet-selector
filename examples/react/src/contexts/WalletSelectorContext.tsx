@@ -25,7 +25,6 @@ interface WalletSelectorContextValue {
   modal: WalletSelectorModal;
   accounts: Array<AccountState>;
   accountId: string | null;
-  setAccountId: (accountId: string) => void;
 }
 
 const WalletSelectorContext =
@@ -34,7 +33,6 @@ const WalletSelectorContext =
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
-  const [accountId, setAccountId] = useState<string | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const init = useCallback(async () => {
@@ -63,16 +61,13 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     const state = _selector.store.getState();
 
     if (!state.accounts.length) {
-      localStorage.removeItem("accountId");
-      setAccountId(null);
       setAccounts([]);
     }
 
     const newAccount = state.accounts.find((account) => account.active);
 
     if (newAccount) {
-      localStorage.setItem("accountId", newAccount.accountId);
-      setAccountId(newAccount.accountId);
+      _selector.setActiveAccount(newAccount.accountId);
       setAccounts(state.accounts);
     }
 
@@ -104,8 +99,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         console.log("Accounts Update", nextAccounts);
 
         if (!nextAccounts.length) {
-          localStorage.removeItem("accountId");
-          setAccountId(null);
           setAccounts([]);
 
           return;
@@ -114,18 +107,20 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         const newAccount = nextAccounts.find((account) => account.active);
 
         if (newAccount) {
-          localStorage.setItem("accountId", newAccount.accountId);
-          setAccountId(newAccount.accountId);
+          selector.setActiveAccount(newAccount.accountId);
           setAccounts(nextAccounts);
         }
       });
 
     return () => subscription.unsubscribe();
-  }, [selector, accountId]);
+  }, [selector]);
 
   if (!selector || !modal) {
     return null;
   }
+
+  const accountId =
+    accounts.find((account) => account.active)?.accountId || null;
 
   return (
     <WalletSelectorContext.Provider
@@ -134,7 +129,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         modal,
         accounts,
         accountId,
-        setAccountId,
       }}
     >
       {children}

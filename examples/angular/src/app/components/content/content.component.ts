@@ -121,7 +121,6 @@ export class ContentComponent implements OnInit, OnDestroy {
         console.log("Accounts Update", nextAccounts);
 
         if (!nextAccounts.length) {
-          localStorage.removeItem("accountId");
           this.accountId = null;
           this.accounts = [];
 
@@ -133,7 +132,6 @@ export class ContentComponent implements OnInit, OnDestroy {
         const newAccount = nextAccounts.find((account) => account.active);
 
         if (newAccount) {
-          localStorage.setItem("accountId", newAccount.accountId);
           this.accountId = newAccount.accountId;
           this.accounts = nextAccounts;
         }

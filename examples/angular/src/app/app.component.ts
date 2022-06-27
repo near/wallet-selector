@@ -64,7 +64,6 @@ export class AppComponent implements OnInit {
     const state = _selector.store.getState();
 
     if (!state.accounts.length) {
-      localStorage.removeItem("accountId");
       this.accountId = null;
       this.accounts = [];
     }
@@ -72,7 +71,6 @@ export class AppComponent implements OnInit {
     const newAccount = state.accounts.find((account) => account.active);
 
     if (newAccount) {
-      localStorage.setItem("accountId", newAccount.accountId);
       this.accountId = newAccount.accountId;
       this.accounts = state.accounts;
     }
