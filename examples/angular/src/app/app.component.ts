@@ -63,17 +63,9 @@ export class AppComponent implements OnInit {
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
 
-    if (!state.accounts.length) {
-      this.accountId = null;
-      this.accounts = [];
-    }
-
-    const newAccount = state.accounts.find((account) => account.active);
-
-    if (newAccount) {
-      this.accountId = newAccount.accountId;
-      this.accounts = state.accounts;
-    }
+    this.accounts = state.accounts;
+    this.accountId =
+      state.accounts.find((account) => account.active)?.accountId || null;
 
     window.selector = _selector;
     window.modal = _modal;

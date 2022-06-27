@@ -60,16 +60,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
 
-    if (!state.accounts.length) {
-      setAccounts([]);
-    }
-
-    const newAccount = state.accounts.find((account) => account.active);
-
-    if (newAccount) {
-      _selector.setActiveAccount(newAccount.accountId);
-      setAccounts(state.accounts);
-    }
+    setAccounts(state.accounts);
 
     window.selector = _selector;
     window.modal = _modal;
