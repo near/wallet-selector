@@ -120,27 +120,9 @@ export class ContentComponent implements OnInit, OnDestroy {
       .subscribe((nextAccounts) => {
         console.log("Accounts Update", nextAccounts);
 
-        if (!nextAccounts.length) {
-          this.accountId = null;
-          this.accounts = [];
-
-          return;
-        }
-
-        const prevAccountId = this.accountId;
-
-        const newAccount = nextAccounts.find((account) => account.active);
-
-        if (newAccount) {
-          this.accountId = newAccount.accountId;
-          this.accounts = nextAccounts;
-        }
-
-        if (prevAccountId !== this.accountId) {
-          this.getAccount().then((account) => {
-            this.account = account;
-          });
-        }
+        this.accounts = nextAccounts;
+        this.accountId =
+          nextAccounts.find((account) => account.active)?.accountId || null;
       });
   }
 

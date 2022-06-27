@@ -89,18 +89,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       .subscribe((nextAccounts) => {
         console.log("Accounts Update", nextAccounts);
 
-        if (!nextAccounts.length) {
-          setAccounts([]);
-
-          return;
-        }
-
-        const newAccount = nextAccounts.find((account) => account.active);
-
-        if (newAccount) {
-          selector.setActiveAccount(newAccount.accountId);
-          setAccounts(nextAccounts);
-        }
+        setAccounts(nextAccounts);
       });
 
     return () => subscription.unsubscribe();
