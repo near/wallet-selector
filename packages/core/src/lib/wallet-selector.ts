@@ -5,7 +5,7 @@ import type {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { EventEmitter, Logger, WalletModules } from "./services";
+import { EventEmitter, Logger, Provider, WalletModules } from "./services";
 import type { Wallet } from "./wallet";
 
 let walletSelectorInstance: WalletSelector | null = null;
@@ -24,6 +24,7 @@ export const setupWalletSelector = async (
     options,
     store,
     emitter,
+    provider: new Provider(options.network.nodeUrl),
   });
 
   await walletModules.setup();
@@ -47,6 +48,18 @@ export const setupWalletSelector = async (
         }
 
         return wallet;
+      },
+      setActiveAccount: (accountId: string) => {
+        const { accounts } = store.getState();
+
+        if (!accounts.some((account) => account.accountId === accountId)) {
+          throw new Error("Invalid account id");
+        }
+
+        store.dispatch({
+          type: "SET_ACTIVE_ACCOUNT",
+          payload: { accountId },
+        });
       },
       isSignedIn() {
         const { accounts } = store.getState();

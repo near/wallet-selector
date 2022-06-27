@@ -62,4 +62,4 @@ export type {
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export { waitFor } from "./lib/helpers";
+export { waitFor, getActiveAccount } from "./lib/helpers";

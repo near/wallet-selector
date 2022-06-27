@@ -5,12 +5,12 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   JsonStorageService,
-  AccountState,
   Account,
   HardwareWallet,
   Transaction,
   Optional,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
@@ -93,7 +93,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     },
   };
 
-  const getAccounts = (): Array<AccountState> => {
+  const getAccounts = (): Array<Account> => {
     return _state.accounts.map((x) => ({
       accountId: x.accountId,
     }));
@@ -156,16 +156,21 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const accounts = getAccounts();
     const { contract } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!contract) {
       throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || accounts[0].accountId,
+        signerId: transaction.signerId || account.accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };

@@ -5,15 +5,11 @@ import type {
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
+  Account,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type {
-  AccountState,
-  ContractState,
-  ModuleState,
-  Store,
-} from "../../store.types";
+import type { ContractState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
@@ -23,7 +19,7 @@ import {
   PENDING_SELECTED_WALLET_ID,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import { Provider } from "../provider/provider.service";
+import { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -31,6 +27,7 @@ export class WalletModules {
   private options: Options;
   private store: Store;
   private emitter: EventEmitter<WalletSelectorEvents>;
+  private provider: ProviderService;
 
   private modules: Array<ModuleState>;
   private instances: Record<string, Wallet>;
@@ -41,19 +38,21 @@ export class WalletModules {
     options,
     store,
     emitter,
+    provider,
   }: WalletModulesParams) {
     this.factories = factories;
     this.storage = storage;
     this.options = options;
     this.store = store;
     this.emitter = emitter;
+    this.provider = provider;
 
     this.modules = [];
     this.instances = {};
   }
 
   private async validateWallet(id: string | null) {
-    let accounts: Array<AccountState> = [];
+    let accounts: Array<Account> = [];
     const wallet = await this.getWallet(id);
 
     if (wallet) {
@@ -236,7 +235,7 @@ export class WalletModules {
         metadata: module.metadata,
         options: this.options,
         store: this.store.toReadOnly(),
-        provider: new Provider(this.options.network.nodeUrl),
+        provider: this.provider,
         emitter: this.setupWalletEmitter(module),
         logger: new Logger(module.id),
         storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),

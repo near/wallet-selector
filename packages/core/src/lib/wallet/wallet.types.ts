@@ -6,10 +6,10 @@ import {
   ProviderService,
   JsonStorageService,
 } from "../services";
-import { Options } from "../options.types";
-import { ReadOnlyStore } from "../store.types";
-import { Transaction, Action } from "./transactions.types";
-import { Modify, Optional } from "../utils.types";
+import type { Options } from "../options.types";
+import type { ReadOnlyStore } from "../store.types";
+import type { Transaction, Action } from "./transactions.types";
+import type { Modify, Optional } from "../utils.types";
 
 interface BaseWalletMetadata {
   name: string;
