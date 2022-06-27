@@ -67,8 +67,6 @@ export class AppComponent implements OnInit {
       localStorage.removeItem("accountId");
       this.accountId = null;
       this.accounts = [];
-
-      return;
     }
 
     const newAccount = state.accounts.find((account) => account.active);

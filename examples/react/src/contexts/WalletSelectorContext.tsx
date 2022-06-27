@@ -66,8 +66,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       localStorage.removeItem("accountId");
       setAccountId(null);
       setAccounts([]);
-
-      return;
     }
 
     const newAccount = state.accounts.find((account) => account.active);
