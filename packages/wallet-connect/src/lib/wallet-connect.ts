@@ -1,4 +1,12 @@
-import { KeyPair, keyStores, providers, utils } from "near-api-js";
+import {
+  InMemorySigner,
+  KeyPair,
+  keyStores,
+  transactions as nearTransactions,
+  providers,
+  utils,
+} from "near-api-js";
+import { AccessKeyView } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -8,6 +16,7 @@ import type {
   Transaction,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
+import { createAction } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
 
@@ -85,7 +94,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, emitter, logger }) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params);
 
   const getChainId = () => {
@@ -117,13 +126,88 @@ const WalletConnect: WalletBehaviourFactory<
     await _state.keystore.clear();
   };
 
+  const validateAccessKey = (
+    transaction: Transaction,
+    accessKey: AccessKeyView
+  ) => {
+    if (accessKey.permission === "FullAccess") {
+      return accessKey;
+    }
+
+    const { receiver_id, method_names } = accessKey.permission.FunctionCall;
+
+    if (transaction.receiverId !== receiver_id) {
+      return null;
+    }
+
+    return transaction.actions.every((action) => {
+      if (action.type !== "FunctionCall") {
+        return false;
+      }
+
+      const { methodName, deposit } = action.params;
+
+      if (method_names.length && method_names.includes(methodName)) {
+        return false;
+      }
+
+      return parseFloat(deposit) <= 0;
+    });
+  };
+
+  const signTransactions = async (transactions: Array<Transaction>) => {
+    const signer = new InMemorySigner(_state.keystore);
+    const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
+
+    const block = await provider.block({ finality: "final" });
+
+    for (let i = 0; i < transactions.length; i += 1) {
+      const transaction = transactions[i];
+      const publicKey = await signer.getPublicKey(
+        transaction.signerId,
+        options.network.networkId
+      );
+
+      const accessKey = await provider.query<AccessKeyView>({
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: transaction.signerId,
+        public_key: publicKey.toString(),
+      });
+
+      if (!validateAccessKey(transaction, accessKey)) {
+        throw new Error("Invalid access key");
+      }
+
+      const tx = nearTransactions.createTransaction(
+        transactions[i].signerId,
+        utils.PublicKey.from(publicKey.toString()),
+        transactions[i].receiverId,
+        accessKey.nonce + i + 1,
+        transaction.actions.map((action) => createAction(action)),
+        utils.serialize.base_decode(block.header.hash)
+      );
+
+      const [, signedTx] = await nearTransactions.signTransaction(
+        tx,
+        signer,
+        transactions[i].signerId,
+        options.network.networkId
+      );
+
+      signedTransactions.push(signedTx);
+    }
+
+    return signedTransactions;
+  };
+
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
     return _state.client.request<providers.FinalExecutionOutcome>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signAndSendTransaction",
-        params: transaction,
+        params: { transaction },
       },
     });
   };
@@ -333,11 +417,21 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("No active account");
       }
 
-      return requestSignAndSendTransaction({
+      const resolvedTransaction: Transaction = {
         signerId: signerId || account.accountId,
         receiverId: receiverId || contract.contractId,
         actions,
-      });
+      };
+
+      try {
+        const [signedTx] = await signTransactions([resolvedTransaction]);
+
+        return provider.sendTransaction(signedTx);
+      } catch (err) {
+        console.log("Falling back to WalletConnect to sign transaction", err);
+
+        return requestSignAndSendTransaction(resolvedTransaction);
+      }
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -355,13 +449,24 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("No active account");
       }
 
-      return requestSignAndSendTransactions(
-        transactions.map((x) => ({
-          signerId: x.signerId || account.accountId,
-          receiverId: x.receiverId,
-          actions: x.actions,
-        }))
-      );
+      const resolvedTransactions = transactions.map((x) => ({
+        signerId: x.signerId || account.accountId,
+        receiverId: x.receiverId,
+        actions: x.actions,
+      }));
+
+      try {
+        const signedTxs = await signTransactions(resolvedTransactions);
+        const results: Array<providers.FinalExecutionOutcome> = [];
+
+        for (let i = 0; i < signedTxs.length; i += 1) {
+          results.push(await provider.sendTransaction(signedTxs[i]));
+        }
+
+        return results;
+      } catch (err) {
+        return requestSignAndSendTransactions(resolvedTransactions);
+      }
     },
   };
 };
