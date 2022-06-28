@@ -1,5 +1,5 @@
 import { AppNear, NightlyConnectModal } from "@nightlylabs/connect";
-import { NearAppInfo as NightlyConnectParams } from "@nightlylabs/connect/lib/sdk/src/types/AppInfo";
+import { NearAppInfo } from "@nightlylabs/connect/lib/sdk/src/types/AppInfo";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -12,17 +12,25 @@ import { PublicKey } from "near-api-js/lib/utils";
 import { Signer, utils, transactions as nearTransactions } from "near-api-js";
 
 const setupNightlyConnectState = async (
-  params: NightlyConnectParams
+  params: NearAppInfo
 ): Promise<AppNear> => {
   const client = await AppNear.build(params);
   return client;
 };
 
+export interface NightlyConnectParams {
+  application: string;
+  description: string;
+  additionalInfo: string;
+  appIcon: string;
+  url?: string;
+  timeout?: number;
+}
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
-  { params: SetupNightlyConnectParams }
+  { params: NightlyConnectParams }
 > = async ({ store, params, logger, options, provider }) => {
-  const connectedAccounts: Array<{ accountId: string; publicKey: PublicKey }> =
+  let connectedAccounts: Array<{ accountId: string; publicKey: PublicKey }> =
     [];
   let client: AppNear | undefined;
   const modal = new NightlyConnectModal();
@@ -35,11 +43,12 @@ const NightlyConnect: WalletBehaviourFactory<
       const timer = setTimeout(() => {
         reject("Closing connection timed out");
       }, 5000);
-
-      client!.ws.on("close", () => {
+      client!.ws.onclose = () => {
         clearTimeout(timer);
+        client = undefined;
+        connectedAccounts = [];
         resolve();
-      });
+      };
       client?.ws.close();
     });
 
@@ -111,7 +120,7 @@ const NightlyConnect: WalletBehaviourFactory<
         try {
           setupNightlyConnectState({
             ...params,
-            icon: params.icon || "./assets/nightly-connect.png",
+            icon: params.appIcon,
             onUserConnect: (pk) => {
               connectedAccounts.push(pk);
               modal.closeModal();
@@ -173,22 +182,18 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 };
 
-export interface SetupNightlyConnectParams {
-  application: string;
-  description: string;
-  additionalInfo: string;
-  icon?: string;
-  url?: string;
-  timeout?: number;
-}
+export type SetupNightlyConnectParams = NightlyConnectParams & {
+  iconUrl?: string;
+};
 
 export function setupNightlyConnect({
   additionalInfo,
   application,
   description,
-  icon,
   timeout,
   url,
+  appIcon,
+  iconUrl = "./assets/nightly-connect.png",
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -197,7 +202,7 @@ export function setupNightlyConnect({
       metadata: {
         name: "NightlyConnect",
         description: description,
-        iconUrl: "./assets/nightly-connect.png",
+        iconUrl: iconUrl,
         deprecated: false,
       },
       init: (options) => {
@@ -207,7 +212,7 @@ export function setupNightlyConnect({
             additionalInfo,
             application,
             description,
-            icon: icon,
+            appIcon,
             timeout,
             url,
           },
