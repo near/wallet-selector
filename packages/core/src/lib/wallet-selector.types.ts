@@ -24,6 +24,8 @@ export interface WalletSelector {
 
   isSignedIn(): boolean;
 
+  setActiveAccount(accountId: string): void;
+
   on<EventName extends keyof WalletSelectorEvents>(
     eventName: EventName,
     callback: (event: WalletSelectorEvents[EventName]) => void

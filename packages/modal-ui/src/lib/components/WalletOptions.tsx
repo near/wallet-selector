@@ -98,8 +98,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
-                <div title={description || ""}>
-                  <img src={iconUrl} alt={name} />
+                <div title={description || ""} className="wallet-content">
+                  <div className="wallet-img-box">
+                    <img src={iconUrl} alt={name} />
+                  </div>
                   <div>
                     <span>{name}</span>
                   </div>

@@ -7,6 +7,7 @@ import type {
   Subscription,
   Transaction,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
 
@@ -78,7 +79,7 @@ const WalletConnect: WalletBehaviourFactory<
 
     const { networkId } = options.network;
 
-    if (["mainnet", "testnet", "betanet"].includes(networkId)) {
+    if (["mainnet", "testnet"].includes(networkId)) {
       return `near:${networkId}`;
     }
 
@@ -238,15 +239,20 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const accounts = getAccounts();
       const { contract } = store.getState();
 
-      if (!_state.session || !accounts.length || !contract) {
+      if (!_state.session || !contract) {
         throw new Error("Wallet not signed in");
       }
 
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
       return requestSignAndSendTransaction({
-        signerId: signerId || accounts[0].accountId,
+        signerId: signerId || account.accountId,
         receiverId: receiverId || contract.contractId,
         actions,
       });
@@ -255,16 +261,21 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      const accounts = getAccounts();
       const { contract } = store.getState();
 
-      if (!_state.session || !accounts.length || !contract) {
+      if (!_state.session || !contract) {
         throw new Error("Wallet not signed in");
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
       }
 
       return requestSignAndSendTransactions(
         transactions.map((x) => ({
-          signerId: x.signerId || accounts[0].accountId,
+          signerId: x.signerId || account.accountId,
           receiverId: x.receiverId,
           actions: x.actions,
         }))
