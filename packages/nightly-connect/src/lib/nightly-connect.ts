@@ -21,8 +21,8 @@ const setupNightlyConnectState = async (
 export interface NightlyConnectParams {
   application: string;
   description: string;
-  additionalInfo: string;
   appIcon: string;
+  additionalInfo?: string;
   url?: string;
   timeout?: number;
 }
@@ -121,6 +121,7 @@ const NightlyConnect: WalletBehaviourFactory<
           setupNightlyConnectState({
             ...params,
             icon: params.appIcon,
+            additionalInfo: params.additionalInfo || "",
             onUserConnect: (pk) => {
               connectedAccounts.push(pk);
               modal.closeModal();
