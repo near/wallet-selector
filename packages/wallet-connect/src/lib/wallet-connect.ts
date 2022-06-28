@@ -1,4 +1,4 @@
-import { keyStores, providers } from "near-api-js";
+import { KeyPair, keyStores, providers, utils } from "near-api-js";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -26,7 +26,12 @@ interface WalletConnectExtraOptions {
   relayUrl: string;
 }
 
-interface SignInAccount {
+interface LimitedAccessKeyPair {
+  accountId: string;
+  keyPair: KeyPair;
+}
+
+interface LimitedAccessAccount {
   accountId: string;
   publicKey: string;
 }
@@ -108,6 +113,8 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
+
+    await _state.keystore.clear();
   };
 
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
@@ -138,12 +145,28 @@ const WalletConnect: WalletBehaviourFactory<
     });
   };
 
+  const createLimitedAccessKeyPairs = (): Array<LimitedAccessKeyPair> => {
+    const accounts = getAccounts();
+
+    return accounts.map(({ accountId }) => ({
+      accountId,
+      keyPair: utils.KeyPair.fromRandom("ed25519"),
+    }));
+  };
+
   const requestSignIn = async (
     contractId: string,
-    methodNames: Array<string> | undefined,
-    accounts: Array<SignInAccount>
+    methodNames: Array<string> | undefined
   ) => {
-    return _state.client.request({
+    const keyPairs = createLimitedAccessKeyPairs();
+    const limitedAccessAccounts: Array<LimitedAccessAccount> = keyPairs.map(
+      ({ accountId, keyPair }) => ({
+        accountId,
+        publicKey: keyPair.getPublicKey().toString(),
+      })
+    );
+
+    await _state.client.request({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
@@ -151,28 +174,64 @@ const WalletConnect: WalletBehaviourFactory<
         params: {
           contractId,
           methodNames,
-          accounts,
+          accounts: limitedAccessAccounts,
         },
       },
     });
+
+    for (let i = 0; i < keyPairs.length; i += 1) {
+      const { accountId, keyPair } = keyPairs[i];
+
+      await _state.keystore.setKey(
+        options.network.networkId,
+        accountId,
+        keyPair
+      );
+    }
   };
 
-  const requestSignOut = async (accounts: Array<SignInAccount>) => {
-    return _state.client.request({
+  const requestSignOut = async () => {
+    const accounts = getAccounts();
+    const limitedAccessAccounts: Array<LimitedAccessAccount> = [];
+
+    for (let i = 0; i < accounts.length; i += 1) {
+      const account = accounts[i];
+      const keyPair = await _state.keystore.getKey(
+        options.network.networkId,
+        account.accountId
+      );
+
+      if (!keyPair) {
+        continue;
+      }
+
+      limitedAccessAccounts.push({
+        accountId: account.accountId,
+        publicKey: keyPair.getPublicKey().toString(),
+      });
+    }
+
+    await _state.client.request({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signOut",
         params: {
-          accounts,
+          accounts: limitedAccessAccounts,
         },
       },
     });
+
+    for (let i = 0; i < limitedAccessAccounts.length; i += 1) {
+      const { accountId } = limitedAccessAccounts[i];
+
+      await _state.keystore.removeKey(options.network.networkId, accountId);
+    }
   };
 
   const signOut = async () => {
     if (_state.session) {
-      await requestSignOut([]);
+      await requestSignOut();
 
       await _state.client.disconnect({
         topic: _state.session.topic,
@@ -237,7 +296,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestSignIn(contractId, methodNames, []);
+        await requestSignIn(contractId, methodNames);
 
         setupEvents();
 
