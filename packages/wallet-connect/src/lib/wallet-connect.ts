@@ -211,6 +211,10 @@ const WalletConnect: WalletBehaviourFactory<
       });
     }
 
+    if (!limitedAccessAccounts.length) {
+      return;
+    }
+
     await _state.client.request({
       topic: _state.session!.topic,
       chainId: getChainId(),
