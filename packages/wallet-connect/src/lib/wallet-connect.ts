@@ -1,4 +1,4 @@
-import { providers } from "near-api-js";
+import { keyStores, providers } from "near-api-js";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -26,9 +26,15 @@ interface WalletConnectExtraOptions {
   relayUrl: string;
 }
 
+interface SignInAccount {
+  accountId: string;
+  publicKey: string;
+}
+
 interface WalletConnectState {
   client: WalletConnectClient;
   session: SessionTypes.Struct | null;
+  keystore: keyStores.KeyStore;
   subscriptions: Array<Subscription>;
 }
 
@@ -47,6 +53,10 @@ const setupWalletConnectState = async (
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
   let session: SessionTypes.Struct | null = null;
+  const keystore = new keyStores.BrowserLocalStorageKeyStore(
+    window.localStorage,
+    `near-wallet-selector:${id}:keystore:`
+  );
 
   await client.init({
     projectId: params.projectId,
@@ -62,6 +72,7 @@ const setupWalletConnectState = async (
   return {
     client,
     session,
+    keystore,
     subscriptions: [],
   };
 };
@@ -129,7 +140,8 @@ const WalletConnect: WalletBehaviourFactory<
 
   const requestSignIn = async (
     contractId: string,
-    methodNames: Array<string> | undefined
+    methodNames: Array<string> | undefined,
+    accounts: Array<SignInAccount>
   ) => {
     return _state.client.request({
       topic: _state.session!.topic,
@@ -139,6 +151,20 @@ const WalletConnect: WalletBehaviourFactory<
         params: {
           contractId,
           methodNames,
+          accounts,
+        },
+      },
+    });
+  };
+
+  const requestSignOut = async (accounts: Array<SignInAccount>) => {
+    return _state.client.request({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signOut",
+        params: {
+          accounts,
         },
       },
     });
@@ -146,14 +172,7 @@ const WalletConnect: WalletBehaviourFactory<
 
   const signOut = async () => {
     if (_state.session) {
-      await _state.client.request({
-        topic: _state.session!.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signOut",
-          params: {},
-        },
-      });
+      await requestSignOut([]);
 
       await _state.client.disconnect({
         topic: _state.session.topic,
@@ -218,7 +237,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestSignIn(contractId, methodNames);
+        await requestSignIn(contractId, methodNames, []);
 
         setupEvents();
 
