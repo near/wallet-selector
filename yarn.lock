@@ -1790,17 +1790,16 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-13.2.6.tgz#8fe9c54dce13ec291eeef352ed773b77d1d0bed0"
   integrity sha512-N8SvRV91+/57TcAfbghc0k0tKCukw/7KqbDaLPAQTGFekJ4xMGT3elMzOyBXTH3Hvp5HL8/hiBt2tG04qiMf+w==
 
-"@nightlylabs/connect@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.16.tgz#dac58db7875668c3fd7ff65b1c5c0da70c45d15b"
-  integrity sha512-h0/Pqpg24c9R2N4UQ6jFDIIcJGSjc7zZYE/nJxQbajQB7bOaEV1DHZ0pyxDZ90Ce+jjSYQ3mBrtfamswHMP52w==
+"@nightlylabs/connect@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.17.tgz#71a0cc76e11213cecd15d74b76a04c967ac5144b"
+  integrity sha512-qoh/YTIdxm7DwbFfmEqJpR4Z80/4ux89g6sH9jl5hYQ5VfQDek12A3OnSfRIUS2Pklc2eyAhLMC8XY+ANfFCTQ==
   dependencies:
     "@nightlylabs/qr-code" "^1.0.19"
     "@solana/wallet-adapter-base" "^0.9.5"
     "@solana/web3.js" "^1.44.2"
     isomorphic-ws "^4.0.1"
     near-api-js "^0.45.1"
-    tsc-alias "^1.6.10"
     uuid "^8.3.2"
     ws "^8.8.0"
 
@@ -5776,11 +5775,6 @@ commander@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
-
-commander@^9.0.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.3.0.tgz#f619114a5a2d2054e0d9ff1b31d5ccf89255e26b"
-  integrity sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw==
 
 common-ancestor-path@^1.0.1:
   version "1.0.1"
@@ -10889,11 +10883,6 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mylas@^2.1.9:
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/mylas/-/mylas-2.1.11.tgz#1827462533977bed1c4251317aa84254e3ca94c7"
-  integrity sha512-krnPUl3n9/k52FGCltWMYcqp9SttxjRJEy0sWLk+g7mIa7wnZrmNSZ40Acx7ghzRSOsxt2rEqMbaq4jWlnTDKg==
-
 nanoid@^3.1.30, nanoid@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.1.tgz#6347a18cac88af88f58af0b3594b723d5e99bb35"
@@ -12060,13 +12049,6 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-plimit-lit@^1.2.6:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/plimit-lit/-/plimit-lit-1.2.7.tgz#ae16e6e5eadf87924e574337b4c01d140b986c4a"
-  integrity sha512-ce/kfCHFJ2sIK1IuSnXfVBxoMaIwuAF9J5NjFwxng1j+r8XguGxXMK87dBSODQfY+se2Raj/grpx5EAK9kapEA==
-  dependencies:
-    queue-lit "^1.2.8"
-
 pngjs@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
@@ -12800,11 +12782,6 @@ query-string@^6.13.5:
     filter-obj "^1.1.0"
     split-on-first "^1.0.0"
     strict-uri-encode "^2.0.0"
-
-queue-lit@^1.2.8:
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/queue-lit/-/queue-lit-1.2.8.tgz#2bafa0eafb8db0380ab2301d90c52a065c4baad0"
-  integrity sha512-CR0/8Xb0oRk4rZrteSZcjrrPhWfXGBAWa/ATxYCqpdM4fnZu8M3zob5ajLxLUCXmpOzhHZ1+zgscrlzQtEOM0A==
 
 queue-microtask@^1.2.2:
   version "1.2.3"
@@ -14572,18 +14549,6 @@ ts-node@~9.1.1:
     make-error "^1.1.1"
     source-map-support "^0.5.17"
     yn "3.1.1"
-
-tsc-alias@^1.6.10:
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/tsc-alias/-/tsc-alias-1.6.11.tgz#d6d83f030ad11f48e4ead8ec5729929e5e60519b"
-  integrity sha512-mXEM21WriTJMQyo07B4Kc2nNFFk/1qOjU+jZ0ymXOyLz/A8J+dIBkimqZrh3s/x1qLGoJ1cNZQxa8GGoWOGX1Q==
-  dependencies:
-    chokidar "^3.5.3"
-    commander "^9.0.0"
-    globby "^11.0.4"
-    mylas "^2.1.9"
-    normalize-path "^3.0.0"
-    plimit-lit "^1.2.6"
 
 tsconfig-paths-webpack-plugin@3.5.2:
   version "3.5.2"

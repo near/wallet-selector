@@ -1,4 +1,4 @@
-import { AppNear, NightlyConnectModal } from "@nightlylabs/connect";
+import { AppNear, Network, NightlyConnectModal } from "@nightlylabs/connect";
 import { NearAppInfo } from "@nightlylabs/connect/lib/sdk/src/types/AppInfo";
 import type {
   WalletModuleFactory,
@@ -129,8 +129,7 @@ const NightlyConnect: WalletBehaviourFactory<
             },
           }).then((appClient) => {
             client = appClient;
-
-            modal.openModal(client.sessionId);
+            modal.openModal(client.sessionId, Network.Near);
           });
         } catch (err) {
           signOut();
