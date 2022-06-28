@@ -20,15 +20,6 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         explorerUrl: "https://explorer.testnet.near.org",
         indexerUrl: "https://testnet-api.kitwallet.app",
       };
-    case "betanet":
-      return {
-        networkId,
-        nodeUrl: "https://rpc.betanet.near.org",
-        helperUrl: "https://helper.betanet.near.org",
-        explorerUrl: "https://explorer.betanet.near.org",
-        //TODO: Update value with the correct endpoint once it's available.
-        indexerUrl: "",
-      };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);
   }

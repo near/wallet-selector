@@ -140,12 +140,6 @@ export const Modal: React.FC<ModalProps> = ({
             <DerivationPath
               selector={selector}
               options={options}
-              onConnecting={(wallet) => {
-                setRoute({
-                  name: "WalletConnecting",
-                  params: { wallet: wallet },
-                });
-              }}
               onConnected={handleDismissClick}
               params={route.params}
               onBack={() =>

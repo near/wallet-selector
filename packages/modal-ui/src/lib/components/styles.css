@@ -32,7 +32,8 @@
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
   --dismiss-button-bg-hover: #262626CC;
-  --dismiss-button-border-color-hover: #262626;;
+  --dismiss-button-border-color-hover: #262626;
+  ;
   --confirm-button-color: #FFFFFF;
   --confirm-button-bg: #5F8AFA;
   --confirm-button-bg-hover: #5AA6FF;
@@ -54,7 +55,8 @@
     --input-border-color-focus: #5F8AFA;
     --box-shadow-color: #26262630;
     --dismiss-button-bg-hover: #262626CC;
-    --dismiss-button-border-color-hover: #262626;;
+    --dismiss-button-border-color-hover: #262626;
+    ;
     --confirm-button-color: #FFFFFF;
     --confirm-button-bg: #5F8AFA;
     --confirm-button-bg-hover: #5AA6FF;
@@ -64,6 +66,7 @@
     --spinner-color: #FFFFFF;
   }
 }
+
 /**
  * Modal Wrapper
  */
@@ -92,6 +95,7 @@
   width: 100%;
   position: absolute;
 }
+
 /**
  * Modal
  */
@@ -209,7 +213,7 @@
   color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
-.nws-modal-wrapper .modal .switch-network-message-wrapper .content  p {
+.nws-modal-wrapper .modal .switch-network-message-wrapper .content p {
   font-size: 14.25px;
 }
 
@@ -247,6 +251,43 @@
 }
 
 /**
+ * Modal Wallet ChooseLedgerAccountForm/Wrapper
+ */
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+  display: flex;
+  margin-bottom: 16px;
+  padding: 10px;
+  box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
+  color: inherit;
+}
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
+  color: inherit;
+}
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select option {
+  background-color: var(--content-bg);
+}
+
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .action-buttons {
+  justify-content: flex-end;
+}
+
+/**
  * Modal Wallet Options Section/Wrapper
  */
 
@@ -269,23 +310,33 @@
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li {
+  display: flex;
+  justify-content: center;
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
   border: 1px solid var(--wallet-selector-wallet-option-border-color, var(--wallet-option-border-color));
-  display: flex;
   transition: background-color 0.2s ease-in-out;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li div {
-  text-align: center;
-  margin: auto;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li img {
-  display: block;
-  margin: 0 auto 5px;
-  max-width: 50px;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box img {
+  text-align: center;
+  width: 100%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li:hover {
@@ -354,11 +405,13 @@
   visibility: visible;
   transition: visibility 0s linear 0s, opacity 0.25s 0s;
 }
+
 .nws-modal-wrapper .modal .connecting-wrapper .content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .nws-modal-wrapper .spinner {
   margin-top: 20px;
   --size: 160px;
@@ -371,6 +424,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .nws-modal-wrapper .spinner:before {
   content: "";
   border-radius: 50%;
@@ -381,12 +435,19 @@
   /*animation: spin 1.4s linear infinite;*/
   animation: spin 1.3s ease infinite;
 }
-.nws-modal-wrapper .spinner img {
+
+.nws-modal-wrapper .spinner .icon {
   width: calc(var(--size) / 1.2);
   height: calc(var(--size) / 1.2);
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 50%;
   box-shadow: rgb(0 0 0 / 5%) 0 10px 20px 0;
+}
+
+.nws-modal-wrapper .spinner img {
+  width: 100%;
+  height: auto;
+  padding: 20px;
 }
 
 @keyframes spin {
@@ -403,23 +464,36 @@
   .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {
     max-width: 140px;
   }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+    flex-direction: column;
+  }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+    text-align: center;
+  }
 }
 
 .nws-modal-wrapper.dark-theme .modal #near-wallet img,
-.nws-modal-wrapper.dark-theme .modal #my-near-wallet img,
-.nws-modal-wrapper.dark-theme .modal #sender img,
 .nws-modal-wrapper.dark-theme .modal #math-wallet img,
-.nws-modal-wrapper.dark-theme .modal #wallet-connect img {
+.nws-modal-wrapper.dark-theme .modal #ledger img {
   filter: invert(1);
 }
 
+.nws-modal-wrapper.dark-theme .spinner .icon {
+  box-shadow: 0 10px 20px 0 rgb(255 255 255 / 5%)
+}
+
 @media (prefers-color-scheme: dark) {
+
   .nws-modal-wrapper .modal #near-wallet img,
-  .nws-modal-wrapper .modal #my-near-wallet img,
-  .nws-modal-wrapper .modal #sender img,
   .nws-modal-wrapper .modal #math-wallet img,
-  .nws-modal-wrapper .modal #wallet-connect img {
+  .nws-modal-wrapper .modal #ledger img {
     filter: invert(1);
+  }
+
+  .nws-modal-wrapper .spinner .icon {
+    box-shadow: 0 10px 20px 0 rgb(255 255 255 / 5%)
   }
 }
 
@@ -427,6 +501,7 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     visibility: hidden;

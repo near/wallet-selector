@@ -6,10 +6,10 @@ import {
   ProviderService,
   JsonStorageService,
 } from "../services";
-import { Options } from "../options.types";
-import { ReadOnlyStore } from "../store.types";
-import { Transaction, Action } from "./transactions.types";
-import { Modify, Optional } from "../utils.types";
+import type { Options } from "../options.types";
+import type { ReadOnlyStore } from "../store.types";
+import type { Transaction, Action } from "./transactions.types";
+import type { Modify, Optional } from "../utils.types";
 
 interface BaseWalletMetadata {
   name: string;
@@ -120,14 +120,22 @@ export type InjectedWallet = BaseWallet<
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
 
+export interface HardwareWalletAccount {
+  derivationPath: string;
+  publicKey: string;
+  accountId: string;
+}
+
 export interface HardwareWalletSignInParams extends SignInParams {
-  derivationPaths: Array<string>;
+  accounts: Array<HardwareWalletAccount>;
 }
 
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
   { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
->;
+> & {
+  getPublicKey(derivationPath: string): Promise<string>;
+};
 
 export type HardwareWallet = BaseWallet<
   "hardware",

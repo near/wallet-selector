@@ -1,62 +1,59 @@
 import { mock } from "jest-mock-extended";
-
-import type { WalletModuleFactory, Wallet, WalletEvents } from "./wallet";
+import type { WalletModuleFactory, Wallet } from "./wallet";
+import type { ProviderService, StorageService } from "./services";
+import type { WalletSelectorEvents } from "./wallet-selector.types";
 import type { Options } from "./options.types";
-import type {
-  ProviderService,
-  EventEmitterService,
-  LoggerService,
-  JsonStorageService,
-} from "./services";
-import { getNetworkPreset } from "./options";
-import type { Store } from "./store.types";
+import { getNetworkPreset, resolveOptions } from "./options";
+import { createStore } from "./store";
+import { EventEmitter, WalletModules } from "./services";
+
+const createStorageMock = (): StorageService => {
+  const _state: Record<string, string> = {};
+
+  return {
+    getItem: jest.fn(async (key) => _state[key] || null),
+    setItem: jest.fn(async (key, value) => {
+      _state[key] = value;
+    }),
+    removeItem: jest.fn(async (key) => {
+      delete _state[key];
+    }),
+  };
+};
 
 export interface MockWalletDependencies {
   options?: Options;
-  store?: Store;
   provider?: ProviderService;
-  emitter?: EventEmitterService<WalletEvents>;
-  logger?: LoggerService;
-  storage?: JsonStorageService;
 }
 
 export const mockWallet = async <Variation extends Wallet>(
   factory: WalletModuleFactory,
-  deps: MockWalletDependencies = {}
+  deps?: MockWalletDependencies
 ) => {
-  const options = deps.options || {
+  const { options, storage } = resolveOptions({
     network: getNetworkPreset("testnet"),
-    debug: false,
-  };
-
-  const module = await factory({ options });
-
-  if (!module) {
-    return null;
-  }
-
-  const storeMock = mock<Store>({
-    getState: jest.fn(() => {
-      return {
-        contract: null,
-        modules: [],
-        accounts: [],
-        selectedWalletId: null,
-      };
-    }),
+    storage: createStorageMock(),
+    modules: [factory],
+    ...deps?.options,
   });
-
-  const wallet = await module.init({
-    id: module.id,
-    type: module.type,
-    metadata: module.metadata,
+  const emitter = new EventEmitter<WalletSelectorEvents>();
+  const store = await createStore(storage);
+  const walletModules = new WalletModules({
+    factories: [factory],
+    storage,
     options,
-    store: deps.store || storeMock,
-    provider: deps.provider || mock<ProviderService>(),
-    emitter: deps.emitter || mock<EventEmitterService<WalletEvents>>(),
-    logger: deps.logger || mock<LoggerService>(),
-    storage: deps.storage || mock<JsonStorageService>(),
+    store,
+    emitter,
+    provider: deps?.provider || mock<ProviderService>(),
   });
 
-  return wallet as Variation;
+  await walletModules.setup();
+
+  const { modules } = store.getState();
+  const wallet = await walletModules.getWallet<Variation>(modules[0].id);
+
+  return {
+    wallet: wallet!,
+    storage,
+  };
 };

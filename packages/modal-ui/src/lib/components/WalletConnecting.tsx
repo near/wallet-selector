@@ -14,7 +14,9 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
     <div className="connecting-wrapper">
       <div className="content">
         <div className="spinner" id={wallet?.id}>
-          <img src={wallet?.metadata.iconUrl} alt="" />
+          <div className="icon">
+            <img src={wallet?.metadata.iconUrl} alt="" />
+          </div>
         </div>
         <span>Connecting...</span>
       </div>
