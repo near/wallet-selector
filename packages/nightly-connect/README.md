@@ -18,7 +18,7 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupNightlytConnect } from "@near-wallet-selector/nightly-connect";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 
 const nightlyConnect = setupNightlyConnect({
           additionalInfo: "",

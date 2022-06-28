@@ -32,8 +32,7 @@
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
   --dismiss-button-bg-hover: #262626CC;
-  --dismiss-button-border-color-hover: #262626;
-  ;
+  --dismiss-button-border-color-hover: #262626;;
   --confirm-button-color: #FFFFFF;
   --confirm-button-bg: #5F8AFA;
   --confirm-button-bg-hover: #5AA6FF;
@@ -55,8 +54,7 @@
     --input-border-color-focus: #5F8AFA;
     --box-shadow-color: #26262630;
     --dismiss-button-bg-hover: #262626CC;
-    --dismiss-button-border-color-hover: #262626;
-    ;
+    --dismiss-button-border-color-hover: #262626;;
     --confirm-button-color: #FFFFFF;
     --confirm-button-bg: #5F8AFA;
     --confirm-button-bg-hover: #5AA6FF;
@@ -66,7 +64,6 @@
     --spinner-color: #FFFFFF;
   }
 }
-
 /**
  * Modal Wrapper
  */
@@ -95,7 +92,6 @@
   width: 100%;
   position: absolute;
 }
-
 /**
  * Modal
  */
@@ -213,7 +209,7 @@
   color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
-.nws-modal-wrapper .modal .switch-network-message-wrapper .content p {
+.nws-modal-wrapper .modal .switch-network-message-wrapper .content  p {
   font-size: 14.25px;
 }
 
@@ -262,11 +258,9 @@
   align-items: center;
   color: var(--text-color);
 }
-
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
   color: inherit;
 }
-
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
   padding: 8px;
   font-size: 14px;
@@ -405,13 +399,11 @@
   visibility: visible;
   transition: visibility 0s linear 0s, opacity 0.25s 0s;
 }
-
 .nws-modal-wrapper .modal .connecting-wrapper .content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .nws-modal-wrapper .spinner {
   margin-top: 20px;
   --size: 160px;
@@ -424,7 +416,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .nws-modal-wrapper .spinner:before {
   content: "";
   border-radius: 50%;
@@ -435,7 +426,6 @@
   /*animation: spin 1.4s linear infinite;*/
   animation: spin 1.3s ease infinite;
 }
-
 .nws-modal-wrapper .spinner .icon {
   width: calc(var(--size) / 1.2);
   height: calc(var(--size) / 1.2);
@@ -443,7 +433,6 @@
   border-radius: 50%;
   box-shadow: rgb(0 0 0 / 5%) 0 10px 20px 0;
 }
-
 .nws-modal-wrapper .spinner img {
   width: 100%;
   height: auto;
@@ -485,7 +474,6 @@
 }
 
 @media (prefers-color-scheme: dark) {
-
   .nws-modal-wrapper .modal #near-wallet img,
   .nws-modal-wrapper .modal #math-wallet img,
   .nws-modal-wrapper .modal #ledger img {
@@ -501,7 +489,6 @@
   0% {
     opacity: 1;
   }
-
   100% {
     opacity: 0;
     visibility: hidden;
