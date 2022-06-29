@@ -136,7 +136,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  if (_state.wallet.isSignedIn()) {
+  if (_state.wallet && _state.wallet.isSignedIn()) {
     setupEvents();
   }
 
