@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "wallet-connect",
+  displayName: "nightly-connect",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {

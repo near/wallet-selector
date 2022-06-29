@@ -52,7 +52,7 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 
 ```ts
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import nightlyConnectIconUrl from "@near-wallet-selector/wallet-connect/assets/nightly-connect.png";
+import nightlyConnectIconUrl from "@near-wallet-selector/nightly-connect/assets/nightly-connect.png";
 
 const walletConnect = setupWalletConnect({
   iconUrl: nightlyConnectIconUrl

@@ -70,7 +70,7 @@
     "@walletconnect/client": "^2.0.0-alpha.26",
     "@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
     "@walletconnect/types": "^2.0.0-beta.26",
-    "@nightlylabs/connect": "0.0.18",
+    "@nightlylabs/connect": "0.0.20",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "buffer": "^6.0.3",

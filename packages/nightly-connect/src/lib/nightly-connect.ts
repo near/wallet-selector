@@ -1,11 +1,12 @@
 import { AppNear, Network, NightlyConnectModal } from "@nightlylabs/connect";
 import { NearAppInfo } from "@nightlylabs/connect/lib/sdk/src/types/AppInfo";
-import type {
+import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
   Optional,
   Transaction,
+  getActiveAccount,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { PublicKey } from "near-api-js/lib/utils";
@@ -29,42 +30,34 @@ export interface NightlyConnectParams {
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: NightlyConnectParams }
-> = async ({ store, params, logger, options, provider }) => {
+> = async ({ store, params, logger, options, provider, emitter }) => {
   let connectedAccounts: Array<{ accountId: string; publicKey: PublicKey }> =
     [];
   let client: AppNear | undefined;
+
   const modal = new NightlyConnectModal();
 
   const getAccounts = () => {
     return connectedAccounts;
   };
-  const signOut = async (): Promise<void> =>
-    new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject("Closing connection timed out");
-      }, 5000);
-      client!.ws.onclose = () => {
-        clearTimeout(timer);
-        client = undefined;
-        connectedAccounts = [];
-        resolve();
-      };
-      client?.ws.close();
-    });
+
+  const signOut = async (): Promise<void> => {
+    client?.ws.close();
+  };
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const accounts = getAccounts();
+    const account = getActiveAccount(store.getState());
     const { contract } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!account || !contract) {
       throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || accounts[0].accountId,
+        signerId: transaction.signerId || account.accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
@@ -124,12 +117,22 @@ const NightlyConnect: WalletBehaviourFactory<
             additionalInfo: params.additionalInfo || "",
             onUserConnect: (pk) => {
               connectedAccounts.push(pk);
+              modal.onClose = undefined;
               modal.closeModal();
               resolve(getAccounts());
             },
           }).then((appClient) => {
             client = appClient;
+            // Add hook onclose
+            client.ws.onclose = () => {
+              client = undefined;
+              connectedAccounts = [];
+              emitter.emit("signedOut", null);
+            };
             modal.openModal(client.sessionId, Network.Near);
+            modal.onClose = () => {
+              reject(new Error("User cancelled pairing"));
+            };
           });
         } catch (err) {
           signOut();
@@ -200,8 +203,8 @@ export function setupNightlyConnect({
       id: "nightly-connect",
       type: "bridge",
       metadata: {
-        name: "NightlyConnect",
-        description: description,
+        name: "Nightly Connect",
+        description: null,
         iconUrl: iconUrl,
         deprecated: false,
       },

@@ -1790,12 +1790,12 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-13.2.6.tgz#8fe9c54dce13ec291eeef352ed773b77d1d0bed0"
   integrity sha512-N8SvRV91+/57TcAfbghc0k0tKCukw/7KqbDaLPAQTGFekJ4xMGT3elMzOyBXTH3Hvp5HL8/hiBt2tG04qiMf+w==
 
-"@nightlylabs/connect@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.18.tgz#1a9c3e7e84e16605cd9220e35a811df3294e5d25"
-  integrity sha512-H4V0+mc+AoRurSsSMmtxba1eiWAKpfcmDMxlfiRViZguSn1gmD70i8v2NVZRLvGhh5BCemcd3XCpOUAk8n3/0Q==
+"@nightlylabs/connect@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.20.tgz#5fb3f177adf172efd46c7fd774b65bb60e85725d"
+  integrity sha512-7KCB8Uy7ZDYWdK9wVIb/D6laYFDVloQiXWbroJtkS2uyWTc/kRZrMsmapLrpS7stuj/fafU9O3ZrOSDdBHREGw==
   dependencies:
-    "@nightlylabs/qr-code" "^1.0.19"
+    "@nightlylabs/qr-code" "1.0.20"
     "@solana/wallet-adapter-base" "^0.9.5"
     "@solana/web3.js" "^1.44.2"
     isomorphic-ws "^4.0.1"
@@ -1803,10 +1803,10 @@
     uuid "^8.3.2"
     ws "^8.8.0"
 
-"@nightlylabs/qr-code@^1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.19.tgz#418f2e86d170aba5e0640a264df2e5f8893a3816"
-  integrity sha512-WLHu8O4Kees0DGIIF6wPmc/39rnorUpz/x/HLfxraQVX7j5XK5pUJnyiJBuQ/0VC6ELu9hU1f+p13JamFSVoeA==
+"@nightlylabs/qr-code@1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.20.tgz#627d052117475da6859ace51cd101f4cbce4bf5f"
+  integrity sha512-odaOJBXXugZDPD9aId3SaXN0xXCszWafoGGbVId6FnaODxP34yTCrYkkz6alyKr9RDOpUiCg8hhAFpS81ob1Pw==
   dependencies:
     qrcode-generator "^1.4.3"
 
