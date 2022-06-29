@@ -4,6 +4,7 @@ import type {
   WalletBehaviourFactory,
   BridgeWallet,
   Subscription,
+  Transaction,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 
@@ -190,16 +191,18 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("No active account");
       }
 
+      const transaction: Transaction = {
+        signerId: signerId || account.accountId,
+        receiverId: receiverId || contract.contractId,
+        actions,
+      };
+
       return _state.client.request({
         topic: _state.session.topic,
         chainId: getChainId(),
         request: {
           method: "near_signAndSendTransaction",
-          params: {
-            signerId: signerId || account.accountId,
-            receiverId: receiverId || contract.contractId,
-            actions,
-          },
+          params: { transaction },
         },
       });
     },
