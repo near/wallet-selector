@@ -168,6 +168,10 @@ const WalletConnect: WalletBehaviourFactory<
         options.network.networkId
       );
 
+      if (!publicKey) {
+        throw new Error("No public key found");
+      }
+
       const accessKey = await provider.query<AccessKeyView>({
         request_type: "view_access_key",
         finality: "final",
