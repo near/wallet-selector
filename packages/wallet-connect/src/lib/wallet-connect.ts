@@ -1,4 +1,4 @@
-import type { AppMetadata, SessionTypes } from "@walletconnect/types";
+import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -11,7 +11,7 @@ import WalletConnectClient from "./wallet-connect-client";
 
 export interface WalletConnectParams {
   projectId: string;
-  metadata: AppMetadata;
+  metadata: SignClientTypes.Metadata;
   relayUrl?: string;
   iconUrl?: string;
   chainId?: string;
@@ -20,26 +20,38 @@ export interface WalletConnectParams {
 interface WalletConnectExtraOptions {
   chainId?: string;
   projectId: string;
-  metadata: AppMetadata;
+  metadata: SignClientTypes.Metadata;
   relayUrl: string;
 }
 
 interface WalletConnectState {
   client: WalletConnectClient;
-  session: SessionTypes.Settled | null;
+  session: SessionTypes.Struct | null;
   subscriptions: Array<Subscription>;
 }
+
+const WC_METHODS = [
+  "near_signAndSendTransaction",
+  "near_signAndSendTransactions",
+];
+
+const WC_EVENTS = ["accountsChanged"];
 
 const setupWalletConnectState = async (
   params: WalletConnectExtraOptions
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient();
-  let session: SessionTypes.Settled | null = null;
+  let session: SessionTypes.Struct | null = null;
 
-  await client.init(params);
+  await client.init({
+    projectId: params.projectId,
+    metadata: params.metadata,
+    relayUrl: params.relayUrl,
+  });
 
-  if (client.session.topics.length) {
-    session = await client.session.get(client.session.topics[0]);
+  if (client.session.length) {
+    const lastKeyIndex = client.session.keys.length - 1;
+    session = client.session.get(client.session.keys[lastKeyIndex]);
   }
 
   return {
@@ -70,12 +82,8 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const getAccounts = () => {
-    if (!_state.session) {
-      return [];
-    }
-
-    return _state.session.state.accounts.map((wcAccountId) => ({
-      accountId: wcAccountId.split(":")[2],
+    return (_state.session?.namespaces["near"].accounts || []).map((x) => ({
+      accountId: x.split(":")[2],
     }));
   };
 
@@ -102,28 +110,26 @@ const WalletConnect: WalletBehaviourFactory<
 
   const setupEvents = () => {
     _state.subscriptions.push(
-      _state.client.on("pairing_created", (pairing) => {
-        logger.log("Pairing Created", pairing);
-      })
-    );
+      _state.client.on("session_update", (event) => {
+        logger.log("Session Update", event);
 
-    _state.subscriptions.push(
-      _state.client.on("session_updated", (updatedSession) => {
-        logger.log("Session Updated", updatedSession);
+        if (event.topic === _state.session?.topic) {
+          _state.session = {
+            ..._state.client.session.get(event.topic),
+            namespaces: event.params.namespaces,
+          };
 
-        if (updatedSession.topic === _state.session?.topic) {
-          _state.session = updatedSession;
           emitter.emit("accountsChanged", { accounts: getAccounts() });
         }
       })
     );
 
     _state.subscriptions.push(
-      _state.client.on("session_deleted", async (deletedSession) => {
-        logger.log("Session Deleted", deletedSession);
+      _state.client.on("session_delete", async (event) => {
+        logger.log("Session Deleted", event);
 
-        if (deletedSession.topic === _state.session?.topic) {
-          await cleanup();
+        if (event.topic === _state.session?.topic) {
+          cleanup();
           emitter.emit("signedOut", null);
         }
       })
@@ -144,17 +150,11 @@ const WalletConnect: WalletBehaviourFactory<
 
       try {
         _state.session = await _state.client.connect({
-          metadata: params.metadata,
-          timeout: 30 * 1000,
-          permissions: {
-            blockchain: {
+          requiredNamespaces: {
+            near: {
               chains: [getChainId()],
-            },
-            jsonrpc: {
-              methods: [
-                "near_signAndSendTransaction",
-                "near_signAndSendTransactions",
-              ],
+              methods: WC_METHODS,
+              events: WC_EVENTS,
             },
           },
         });
@@ -191,7 +191,6 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       return _state.client.request({
-        timeout: 30 * 1000,
         topic: _state.session.topic,
         chainId: getChainId(),
         request: {
@@ -213,7 +212,6 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       return _state.client.request({
-        timeout: 30 * 1000,
         topic: _state.session.topic,
         chainId: getChainId(),
         request: {
