@@ -9,6 +9,7 @@ import { AlertMessage } from "./AlertMessage";
 import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
+import { WalletNotInstalled } from "./WalletNotInstalled";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -112,6 +113,12 @@ export const Modal: React.FC<ModalProps> = ({
             <WalletOptions
               selector={selector}
               options={options}
+              onWalletNotInstalled={(wallet) => {
+                setRoute({
+                  name: "WalletNotInstalled",
+                  params: { wallet: wallet },
+                });
+              }}
               onConnectHardwareWallet={() => {
                 setRoute({
                   name: "DerivationPath",
@@ -164,6 +171,16 @@ export const Modal: React.FC<ModalProps> = ({
                 })
               }
               onDismiss={handleDismissClick}
+            />
+          )}
+          {route.name === "WalletNotInstalled" && (
+            <WalletNotInstalled
+              wallet={route.params?.wallet!}
+              onBack={() => {
+                setRoute({
+                  name: "WalletOptions",
+                });
+              }}
             />
           )}
           {route.name === "WalletConnecting" && (

@@ -394,11 +394,39 @@
   animation-fill-mode: forwards;
 }
 
+/**
+ * Modal Wallet Not Installed Section/Wrapper
+ */
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data {
+  display: flex;
+  align-items: center;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data p {
+  margin: 0 0 0 10px;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box {
+  width: 40px;
+  height: 40px;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box img {
+  width: 100%;
+  height: auto;
+}
+
 .open {
   opacity: 1;
   visibility: visible;
   transition: visibility 0s linear 0s, opacity 0.25s 0s;
 }
+
+/**
+ * Modal Wallet Connecting Section/Wrapper
+ */
+
 .nws-modal-wrapper .modal .connecting-wrapper .content {
   display: flex;
   flex-direction: column;
