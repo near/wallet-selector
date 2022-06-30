@@ -283,7 +283,7 @@ export function setupLedger({
         description: null,
         iconUrl,
         deprecated: false,
-        available: true,
+        available: supported,
       },
       init: Ledger,
     };
