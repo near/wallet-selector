@@ -9,7 +9,8 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
-- [NightlyConnect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
+- [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
+
 ## Preview
 
 [React](https://reactjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
@@ -97,12 +98,13 @@ const selector = await setupWalletSelector({
       },
     }),
     setupNightlyConnect({
-          additionalInfo: "",
-          application: "NEAR Wallet Selector",
-          description: "Example dApp used by NEAR Wallet Selector",
-          url: "wss://ncproxy.nightly.app/app",
-          appIcon:
-            "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+      url: "wss://ncproxy.nightly.app/app",
+      appMetadata: {
+        additionalInfo: "",
+        application: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+      },
     }),
   ],
 });
