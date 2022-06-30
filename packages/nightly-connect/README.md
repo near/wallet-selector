@@ -1,6 +1,6 @@
 # @near-wallet-selector/nightly-connect
 
-This is the [NightlyConnect](https://connect.nightly.app/) package for NEAR Wallet Selector.
+This is the [Nightly Connect](https://connect.nightly.app/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -39,7 +39,7 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `appMetadata` (`object`): App metadata used to provide context of the dApp to the connected wallet.
-- `url` (`string?`): URL address of NightlyConnect proxy.
+- `url` (`string?`): URL address of Nightly Connect proxy.
 - `timeout` (`number?`): Timeout of requests sent via proxy.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nightly-connect.png`.
 
