@@ -21,14 +21,14 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 
 const nightlyConnect = setupNightlyConnect({
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-          },
-          url: "wss://ncproxy.nightly.app/app",
-        });
+  url: "wss://ncproxy.nightly.app/app",
+  appMetadata: {
+    additionalInfo: "",
+    application: "NEAR Wallet Selector",
+    description: "Example dApp used by NEAR Wallet Selector",
+    icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+  },
+});
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -38,11 +38,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `params` (`object`)
-    - `application` (`string`): Application name.
-    - `description` (`string`): Description of application.
-    - `icon` (`string`): URL of application icon.
-    - `additionalInfo` (`string`): Additional informations about application.
+- `appMetadata` (`object`): App metadata used to provide context of the dApp to the connected wallet.
 - `url` (`string?`): URL address of NightlyConnect proxy.
 - `timeout` (`number?`): Timeout of requests sent via proxy.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nightly-connect.png`.
@@ -56,8 +52,8 @@ import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import nightlyConnectIconUrl from "@near-wallet-selector/nightly-connect/assets/nightly-connect.png";
 
 const nightlyConnect = setupNightlyConnect({
-    iconUrl: nightlyConnectIconUrl
-  });
+  iconUrl: nightlyConnectIconUrl
+});
 ```
 
 ## License
