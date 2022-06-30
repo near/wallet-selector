@@ -11,6 +11,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -54,6 +55,15 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
             url: "https://github.com/near/wallet-selector",
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
           },
+        }),
+        setupNightlyConnect({
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
+          url: "wss://ncproxy.nightly.app/app",
         }),
       ],
     });
