@@ -131,12 +131,12 @@ const NightlyConnect: WalletBehaviourFactory<
               resolve(getAccounts());
             },
           }).then((client) => {
-            _state.client = client;
-            _state.client.ws.onclose = () => {
+            client.ws.onclose = () => {
               _state.client = null;
               _state.accounts = [];
               emitter.emit("signedOut", null);
             };
+            _state.client = client;
             _state.modal.openModal(client.sessionId, Network.Near);
             _state.modal.onClose = () => {
               reject(new Error("User cancelled pairing"));
