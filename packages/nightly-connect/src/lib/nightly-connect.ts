@@ -1,16 +1,21 @@
-import { AppNear, Network, NightlyConnectModal } from "@nightlylabs/connect";
-import { NearAppInfo } from "@nightlylabs/connect/lib/sdk/src/types/AppInfo";
 import {
-  WalletModuleFactory,
-  WalletBehaviourFactory,
   BridgeWallet,
+  getActiveAccount,
   Optional,
   Transaction,
-  getActiveAccount,
+  WalletBehaviourFactory,
+  WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import {
+  AppMetadata,
+  AppNear,
+  Network,
+  NightlyConnectModal,
+  NearAppInfo,
+} from "@nightlylabs/connect";
+import { Signer, transactions as nearTransactions, utils } from "near-api-js";
 import { PublicKey } from "near-api-js/lib/utils";
-import { Signer, utils, transactions as nearTransactions } from "near-api-js";
 
 const setupNightlyConnectState = async (
   params: NearAppInfo
@@ -20,10 +25,7 @@ const setupNightlyConnectState = async (
 };
 
 export interface NightlyConnectParams {
-  application: string;
-  description: string;
-  appIcon: string;
-  additionalInfo?: string;
+  appMetadata: AppMetadata;
   url?: string;
   timeout?: number;
 }
@@ -113,8 +115,6 @@ const NightlyConnect: WalletBehaviourFactory<
         try {
           setupNightlyConnectState({
             ...params,
-            icon: params.appIcon,
-            additionalInfo: params.additionalInfo || "",
             onUserConnect: (pk) => {
               connectedAccounts.push(pk);
               modal.onClose = undefined;
@@ -190,12 +190,9 @@ export type SetupNightlyConnectParams = NightlyConnectParams & {
 };
 
 export function setupNightlyConnect({
-  additionalInfo,
-  application,
-  description,
+  appMetadata,
   timeout,
   url,
-  appIcon,
   iconUrl = "./assets/nightly-connect.png",
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
@@ -212,10 +209,7 @@ export function setupNightlyConnect({
         return NightlyConnect({
           ...options,
           params: {
-            additionalInfo,
-            application,
-            description,
-            appIcon,
+            appMetadata,
             timeout,
             url,
           },

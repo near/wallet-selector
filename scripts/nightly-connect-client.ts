@@ -7,11 +7,12 @@ import type { SignTransactionsRequest } from '@nightlylabs/connect'
 
 // To run test you need to have running instance of the server
 const CLIENT_ADDRESS = 'wss://ncproxy.nightly.app/client'
-const SESSION_ID = 'nightlyconnect:290fd69b-8e21-47b0-aa3b-5084dcb024fb?network=Near'.split(':')[1].split("?")[0]
+const SESSION_ID = 'nightlyconnect:f92e0d2e-6e4e-435c-bcd2-28fb55266270?network=Near'.split(':')[1].split("?")[0]
 
 const alice_ed25519 = new KeyPairEd25519(
   '3zR44QTFXYHPErMnFYZYizFRFmyYajpfH9jLJnm4BQ67ndoQ5PpKsJDcG1BHBhKrat92ospVNfs4SRQ6Z8uXUGiM'
 )
+
 const main = async () => {
   const accountId = Buffer.from(alice_ed25519.publicKey.data).toString('hex')
   try {

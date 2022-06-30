@@ -1790,10 +1790,10 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-13.2.6.tgz#8fe9c54dce13ec291eeef352ed773b77d1d0bed0"
   integrity sha512-N8SvRV91+/57TcAfbghc0k0tKCukw/7KqbDaLPAQTGFekJ4xMGT3elMzOyBXTH3Hvp5HL8/hiBt2tG04qiMf+w==
 
-"@nightlylabs/connect@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.20.tgz#5fb3f177adf172efd46c7fd774b65bb60e85725d"
-  integrity sha512-7KCB8Uy7ZDYWdK9wVIb/D6laYFDVloQiXWbroJtkS2uyWTc/kRZrMsmapLrpS7stuj/fafU9O3ZrOSDdBHREGw==
+"@nightlylabs/connect@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect/-/connect-0.0.21.tgz#b0a4e00bfaf34aa97e08ff419e7ba8b74a8b6138"
+  integrity sha512-xTJidb9wLFzSFw4etCayp0abZTq7vtxIhFRm+hoP/idPDbDe/w/mTCWnbqVJIOU+Z/TzPYbtPx1jWBXMg1E1bA==
   dependencies:
     "@nightlylabs/qr-code" "1.0.20"
     "@solana/wallet-adapter-base" "^0.9.5"

@@ -59,12 +59,13 @@ export class AppComponent implements OnInit {
           },
         }),
         setupNightlyConnect({
-          additionalInfo: "",
-          application: "NEAR Wallet Selector",
-          description: "Example dApp used by NEAR Wallet Selector",
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
           url: "wss://ncproxy.nightly.app/app",
-          appIcon:
-            "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
         }),
       ],
     });
