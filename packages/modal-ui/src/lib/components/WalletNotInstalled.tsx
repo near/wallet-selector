@@ -13,7 +13,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
   return (
     <div className="wallet-not-installed-wrapper">
       <div className="wallet-data">
-        <div className="wallet-icon-box">
+        <div className={`wallet-icon-box ${wallet.id}`}>
           <img src={wallet.metadata.iconUrl} alt={wallet.metadata.name} />
         </div>
         <p>{wallet.metadata.name}</p>
