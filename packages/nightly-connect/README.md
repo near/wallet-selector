@@ -21,12 +21,13 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 
 const nightlyConnect = setupNightlyConnect({
-          additionalInfo: "",
-          application: "NEAR Wallet Selector",
-          description: "Example dApp used by NEAR Wallet Selector",
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
           url: "wss://ncproxy.nightly.app/app",
-          appIcon:
-            "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
         });
 
 const selector = await setupWalletSelector({
@@ -37,11 +38,11 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-
-- `application` (`string`): Application name.
-- `description` (`string`): Description of application.
-- `appIcon` (`string`): URL of application icon.
-- `additionalInfo` (`string?`): Additional informations about application.
+- `params` (`object`)
+    - `application` (`string`): Application name.
+    - `description` (`string`): Description of application.
+    - `icon` (`string`): URL of application icon.
+    - `additionalInfo` (`string`): Additional informations about application.
 - `url` (`string?`): URL address of NightlyConnect proxy.
 - `timeout` (`number?`): Timeout of requests sent via proxy.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nightly-connect.png`.
@@ -54,9 +55,9 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import nightlyConnectIconUrl from "@near-wallet-selector/nightly-connect/assets/nightly-connect.png";
 
-const walletConnect = setupWalletConnect({
-  iconUrl: nightlyConnectIconUrl
-});
+const nightlyConnect = setupNightlyConnect({
+    iconUrl: nightlyConnectIconUrl
+  });
 ```
 
 ## License
