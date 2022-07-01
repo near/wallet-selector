@@ -123,6 +123,10 @@ export class ContentComponent implements OnInit, OnDestroy {
         this.accounts = nextAccounts;
         this.accountId =
           nextAccounts.find((account) => account.active)?.accountId || null;
+
+        this.getAccount().then((account) => {
+          this.account = account;
+        });
       });
   }
 

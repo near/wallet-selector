@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -15,7 +15,8 @@
     "math-wallet",
     "nightly",
     "ledger",
-    "wallet-connect"
+    "wallet-connect",
+    "nightly-connect"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -42,6 +43,7 @@
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
+    "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
@@ -67,6 +69,7 @@
     "@ledgerhq/logs": "^6.10.0",
     "@walletconnect/sign-client": "2.0.0-beta.101",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
+    "@nightlylabs/connect": "0.0.21",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "buffer": "^6.0.3",
