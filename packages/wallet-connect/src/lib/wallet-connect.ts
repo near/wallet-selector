@@ -45,6 +45,11 @@ interface LimitedAccessAccount {
   publicKey: string;
 }
 
+interface WalletConnectAccount {
+  accountId: string;
+  publicKey: string;
+}
+
 interface WalletConnectState {
   client: WalletConnectClient;
   session: SessionTypes.Struct | null;
@@ -55,6 +60,7 @@ interface WalletConnectState {
 const WC_METHODS = [
   "near_signIn",
   "near_signOut",
+  "near_getAccounts",
   "near_signAndSendTransaction",
   "near_signAndSendTransactions",
 ];
@@ -205,13 +211,50 @@ const WalletConnect: WalletBehaviourFactory<
     return signedTransactions;
   };
 
+  const requestAccounts = async () => {
+    return _state.client.request<Array<WalletConnectAccount>>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_getAccounts",
+        params: {},
+      },
+    });
+  };
+
   const requestSignAndSendTransaction = async (transaction: Transaction) => {
+    const accounts = await requestAccounts();
+    const account = accounts.find((x) => x.accountId === transaction.signerId);
+
+    if (!account) {
+      throw new Error("Invalid signer id");
+    }
+
+    const [block, accessKey] = await Promise.all([
+      provider.block({ finality: "final" }),
+      provider.query<AccessKeyView>({
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: transaction.signerId,
+        public_key: account.publicKey,
+      }),
+    ]);
+
+    const tx = nearTransactions.createTransaction(
+      transaction.signerId,
+      utils.PublicKey.from(account.publicKey),
+      transaction.receiverId,
+      accessKey.nonce + 1,
+      transaction.actions.map((action) => createAction(action)),
+      utils.serialize.base_decode(block.header.hash)
+    );
+
     return _state.client.request<providers.FinalExecutionOutcome>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signAndSendTransaction",
-        params: { transaction },
+        params: { transaction: tx.encode() },
       },
     });
   };
@@ -223,12 +266,48 @@ const WalletConnect: WalletBehaviourFactory<
       return [];
     }
 
+    const txs: Array<nearTransactions.Transaction> = [];
+
+    const [block, accounts] = await Promise.all([
+      provider.block({ finality: "final" }),
+      requestAccounts(),
+    ]);
+
+    for (let i = 0; i < transactions.length; i += 1) {
+      const transaction = transactions[i];
+      const account = accounts.find(
+        (x) => x.accountId === transaction.signerId
+      );
+
+      if (!account) {
+        throw new Error("Invalid signer id");
+      }
+
+      const accessKey = await provider.query<AccessKeyView>({
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: transaction.signerId,
+        public_key: account.publicKey,
+      });
+
+      txs.push(
+        nearTransactions.createTransaction(
+          transaction.signerId,
+          utils.PublicKey.from(account.publicKey),
+          transaction.receiverId,
+          accessKey.nonce + i + 1,
+          transaction.actions.map((action) => createAction(action)),
+          utils.serialize.base_decode(block.header.hash)
+        )
+      );
+    }
+
     return _state.client.request<Array<providers.FinalExecutionOutcome>>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signAndSendTransactions",
-        params: { transactions },
+        params: { transactions: txs.map((x) => x.encode()) },
       },
     });
   };
