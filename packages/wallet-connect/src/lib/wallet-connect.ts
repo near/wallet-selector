@@ -322,8 +322,7 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const requestSignIn = async (
-    contractId: string,
-    methodNames: Array<string> | undefined
+    permission: nearTransactions.FunctionCallPermission
   ) => {
     const keyPairs = createLimitedAccessKeyPairs();
     const limitedAccessAccounts: Array<LimitedAccessAccount> = keyPairs.map(
@@ -339,8 +338,7 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_signIn",
         params: {
-          contractId,
-          methodNames,
+          permission: permission,
           accounts: limitedAccessAccounts,
         },
       },
@@ -449,7 +447,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async signIn({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames = [] }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -467,7 +465,7 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestSignIn(contractId, methodNames);
+        await requestSignIn({ receiverId: contractId, methodNames });
 
         setupEvents();
 
