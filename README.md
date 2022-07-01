@@ -9,7 +9,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
-
+- [NightlyConnect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
 ## Preview
 
 [React](https://reactjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
@@ -39,7 +39,8 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/nightly-connect 
 
 # Using NPM.
 npm install \
@@ -49,7 +50,8 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/nightly-connect
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -74,6 +76,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -92,6 +95,14 @@ const selector = await setupWalletSelector({
         url: "https://github.com/near/wallet-selector",
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
       },
+    }),
+    setupNightlyConnect({
+          additionalInfo: "",
+          application: "NEAR Wallet Selector",
+          description: "Example dApp used by NEAR Wallet Selector",
+          url: "wss://ncproxy.nightly.app/app",
+          appIcon:
+            "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
     }),
   ],
 });
