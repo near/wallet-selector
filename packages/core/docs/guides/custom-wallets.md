@@ -74,6 +74,7 @@ export function setupMyWallet({
         description: null,
         iconUrl,
         deprecated: false,
+        available: true,
       },
       init: MyWallet,
     };

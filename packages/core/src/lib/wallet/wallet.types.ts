@@ -16,6 +16,7 @@ interface BaseWalletMetadata {
   description: string | null;
   iconUrl: string;
   deprecated: boolean;
+  available: boolean;
 }
 
 export interface Account {

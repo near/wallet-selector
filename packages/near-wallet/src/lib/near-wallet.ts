@@ -48,6 +48,7 @@ export function setupNearWallet({
         description: null,
         iconUrl,
         deprecated: true,
+        available: true,
       },
     };
   };

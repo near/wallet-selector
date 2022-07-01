@@ -242,6 +242,7 @@ export function setupWalletConnect({
         description: null,
         iconUrl,
         deprecated: false,
+        available: true,
       },
       init: (options) => {
         return WalletConnect({
