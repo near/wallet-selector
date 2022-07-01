@@ -1,25 +1,29 @@
 import React from "react";
-import { Wallet } from "@near-wallet-selector/core";
+import { ModuleState } from "@near-wallet-selector/core";
 
 interface WalletNotInstalledProps {
-  wallet: Wallet;
+  module: ModuleState & {
+    metadata: {
+      downloadUrl?: string;
+    };
+  };
   onBack: () => void;
 }
 
 export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
-  wallet,
+  module,
   onBack,
 }) => {
   return (
     <div className="wallet-not-installed-wrapper">
       <div className="wallet-data">
-        <div className={`wallet-icon-box ${wallet.id}`}>
-          <img src={wallet.metadata.iconUrl} alt={wallet.metadata.name} />
+        <div className={`wallet-icon-box ${module.id}`}>
+          <img src={module.metadata.iconUrl} alt={module.metadata.name} />
         </div>
-        <p>{wallet.metadata.name}</p>
+        <p>{module.metadata.name}</p>
       </div>
       <p>
-        {`You'll need to install ${wallet.metadata.name} to continue. After installing`}
+        {`You'll need to install ${module.metadata.name} to continue. After installing`}
         <span className="refresh-link" onClick={() => window.location.reload()}>
           &nbsp;refresh the page.
         </span>
@@ -31,14 +35,14 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
         <button
           className="right-button"
           onClick={() => {
-            if (wallet.type !== "injected") {
+            if (module.type !== "injected") {
               return;
             }
 
-            window.open(wallet.metadata.downloadUrl, "_blank");
+            window.open(module.metadata.downloadUrl, "_blank");
           }}
         >
-          {`Open ${wallet.metadata.name}`}
+          {`Open ${module.metadata.name}`}
         </button>
       </div>
     </div>

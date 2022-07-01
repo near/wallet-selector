@@ -10,7 +10,7 @@ import type { ModalOptions } from "../modal.types";
 interface WalletOptionsProps {
   selector: WalletSelector;
   options: ModalOptions;
-  onWalletNotInstalled: (wallet: Wallet) => void;
+  onWalletNotInstalled: (module: ModuleState) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onConnecting: (wallet: Wallet) => void;
@@ -47,20 +47,21 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   const handleWalletClick = (module: ModuleState) => async () => {
     try {
-      const wallet = await module.wallet();
-      const { deprecated, available } = wallet.metadata;
+      const { deprecated, available } = module.metadata;
 
-      if (wallet.type === "injected" && !available) {
-        return onWalletNotInstalled(wallet);
+      if (module.type === "injected" && !available) {
+        return onWalletNotInstalled(module);
       }
 
       if (deprecated) {
         return onError(
           new Error(
-            `${wallet.metadata.name} is deprecated. Please select another wallet.`
+            `${module.metadata.name} is deprecated. Please select another wallet.`
           )
         );
       }
+
+      const wallet = await module.wallet();
       onConnecting(wallet);
 
       if (wallet.type === "hardware") {

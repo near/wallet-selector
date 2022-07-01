@@ -113,10 +113,10 @@ export const Modal: React.FC<ModalProps> = ({
             <WalletOptions
               selector={selector}
               options={options}
-              onWalletNotInstalled={(wallet) => {
+              onWalletNotInstalled={(module) => {
                 setRoute({
                   name: "WalletNotInstalled",
-                  params: { wallet: wallet },
+                  params: { module: module },
                 });
               }}
               onConnectHardwareWallet={() => {
@@ -175,7 +175,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
           {route.name === "WalletNotInstalled" && (
             <WalletNotInstalled
-              wallet={route.params?.wallet!}
+              module={route.params?.module!}
               onBack={() => {
                 setRoute({
                   name: "WalletOptions",
