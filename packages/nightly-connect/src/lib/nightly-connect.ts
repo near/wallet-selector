@@ -214,6 +214,7 @@ export function setupNightlyConnect({
         description: null,
         iconUrl: iconUrl,
         deprecated: false,
+        available: true,
       },
       init: (options) => {
         return NightlyConnect({

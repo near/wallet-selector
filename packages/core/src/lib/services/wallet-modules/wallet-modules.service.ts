@@ -225,6 +225,14 @@ export class WalletModules {
   }
 
   private async setupInstance(module: WalletModule): Promise<Wallet> {
+    if (!module.metadata.available) {
+      return {
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+      } as Wallet;
+    }
+
     const wallet = {
       id: module.id,
       type: module.type,
