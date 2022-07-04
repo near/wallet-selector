@@ -3,10 +3,11 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
-  AccountState,
+  Account,
   Optional,
   Transaction,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
@@ -45,7 +46,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupMathWalletState();
 
-  const getAccounts = (): Array<AccountState> => {
+  const getAccounts = (): Array<Account> => {
     const account = _state.wallet.signer.account;
 
     if (!account) {
@@ -58,16 +59,21 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const accounts = getAccounts();
     const { contract } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!contract) {
       throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || accounts[0].accountId,
+        signerId: transaction.signerId || account.accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
@@ -135,7 +141,7 @@ export const setupMathWallet = ({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -149,6 +155,7 @@ export const setupMathWallet = ({
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
         deprecated: false,
+        available: installed,
       },
       init: MathWallet,
     };

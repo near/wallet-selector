@@ -5,12 +5,12 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   JsonStorageService,
-  AccountState,
   Account,
   HardwareWallet,
   Transaction,
   Optional,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
@@ -23,10 +23,6 @@ interface LedgerAccount extends Account {
 
 interface ValidateAccessKeyParams {
   accountId: string;
-  publicKey: string;
-}
-
-interface GetAccountIdFromPublicKeyParams {
   publicKey: string;
 }
 
@@ -97,7 +93,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     },
   };
 
-  const getAccounts = (): Array<AccountState> => {
+  const getAccounts = (): Array<Account> => {
     return _state.accounts.map((x) => ({
       accountId: x.accountId,
     }));
@@ -157,41 +153,24 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     );
   };
 
-  const getAccountIdFromPublicKey = async ({
-    publicKey,
-  }: GetAccountIdFromPublicKeyParams): Promise<string> => {
-    const response = await fetch(
-      `${options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to get account id from public key");
-    }
-
-    const accountIds = await response.json();
-
-    if (!Array.isArray(accountIds) || !accountIds.length) {
-      throw new Error(
-        "Failed to find account linked for public key: " + publicKey
-      );
-    }
-
-    return accountIds[0];
-  };
-
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const accounts = getAccounts();
     const { contract } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!contract) {
       throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || accounts[0].accountId,
+        signerId: transaction.signerId || account.accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
@@ -199,30 +178,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   };
 
   return {
-    async signIn({ derivationPaths }) {
+    async signIn({ accounts }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      if (!derivationPaths.length) {
-        throw new Error("Invalid derivation paths");
-      }
+      const ledgerAccounts: Array<LedgerAccount> = [];
 
-      // Note: Connection must be triggered by user interaction.
-      await connectLedgerDevice();
-
-      const accounts: Array<LedgerAccount> = [];
-
-      for (let i = 0; i < derivationPaths.length; i += 1) {
-        const derivationPath = derivationPaths[i];
-        const publicKey = await _state.client.getPublicKey({ derivationPath });
-        const accountId = await getAccountIdFromPublicKey({ publicKey });
-
-        if (accounts.some((x) => x.accountId === accountId)) {
-          throw new Error("Duplicate account id: " + accountId);
-        }
+      for (let i = 0; i < accounts.length; i++) {
+        const { derivationPath, accountId, publicKey } = accounts[i];
 
         const accessKey = await validateAccessKey({ accountId, publicKey });
 
@@ -232,15 +198,15 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           );
         }
 
-        accounts.push({
+        ledgerAccounts.push({
           accountId,
           derivationPath,
           publicKey,
         });
       }
 
-      await storage.setItem(STORAGE_ACCOUNTS, accounts);
-      _state.accounts = accounts;
+      await storage.setItem(STORAGE_ACCOUNTS, ledgerAccounts);
+      _state.accounts = ledgerAccounts;
 
       return getAccounts();
     },
@@ -290,6 +256,11 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))
       );
     },
+    async getPublicKey(derivationPath: string) {
+      await connectLedgerDevice();
+
+      return await _state.client.getPublicKey({ derivationPath });
+    },
   };
 };
 
@@ -312,6 +283,7 @@ export function setupLedger({
         description: null,
         iconUrl,
         deprecated: false,
+        available: supported,
       },
       init: Ledger,
     };

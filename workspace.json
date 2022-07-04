@@ -10,6 +10,7 @@
     "sender": "packages/sender",
     "nightly": "packages/nightly",
     "wallet-connect": "packages/wallet-connect",
+    "nightly-connect": "packages/nightly-connect",
     "angular": "examples/angular",
     "react": "examples/react",
     "wallet-utils": "packages/wallet-utils"

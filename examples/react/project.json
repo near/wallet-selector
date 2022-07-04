@@ -52,6 +52,11 @@
             "glob": "**/*",
             "input": "packages/wallet-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nightly-connect/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/react/src/styles.scss"],

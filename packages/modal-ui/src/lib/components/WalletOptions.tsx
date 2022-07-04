@@ -10,6 +10,7 @@ import type { ModalOptions } from "../modal.types";
 interface WalletOptionsProps {
   selector: WalletSelector;
   options: ModalOptions;
+  onWalletNotInstalled: (module: ModuleState) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onConnecting: (wallet: Wallet) => void;
@@ -19,6 +20,7 @@ interface WalletOptionsProps {
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
+  onWalletNotInstalled,
   onError,
   onConnectHardwareWallet,
   onConnecting,
@@ -45,15 +47,21 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   const handleWalletClick = (module: ModuleState) => async () => {
     try {
-      const wallet = await module.wallet();
+      const { deprecated, available } = module.metadata;
 
-      if (wallet.metadata.deprecated) {
+      if (module.type === "injected" && !available) {
+        return onWalletNotInstalled(module);
+      }
+
+      if (deprecated) {
         return onError(
           new Error(
-            `${wallet.metadata.name} is deprecated. Please select another wallet.`
+            `${module.metadata.name} is deprecated. Please select another wallet.`
           )
         );
       }
+
+      const wallet = await module.wallet();
       onConnecting(wallet);
 
       if (wallet.type === "hardware") {
@@ -98,8 +106,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
-                <div title={description || ""}>
-                  <img src={iconUrl} alt={name} />
+                <div title={description || ""} className="wallet-content">
+                  <div className="wallet-img-box">
+                    <img src={iconUrl} alt={name} />
+                  </div>
                   <div>
                     <span>{name}</span>
                   </div>

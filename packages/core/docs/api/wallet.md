@@ -62,7 +62,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description`, `iconUrl` and `deprecated` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` for injected wallets.
 
 **Example**
 
@@ -80,7 +80,7 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
 - `params` (`object`)
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
-  - `derivationPaths` (`Array<string>?`): Required for hardware wallets (e.g. Ledger). This is a list of derivation paths linked to public keys on your device.
+  - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
 
 **Returns**
 
@@ -114,9 +114,17 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 // Ledger
 (async () => {
   const wallet = await selector.wallet("ledger");
+  const derivationPath = "44'/397'/0'/0'/1'";
+  const publicKey = await wallet.getPublicKey(derivationPath);
+  const accountId = "youraccountid.testnet"
+  
   const accounts = await wallet.signIn({
     contractId: "test.testnet",
-    derivationPaths: ["44'/397'/0'/0'/1'"],
+    accounts: [{
+      derivationPath,
+      publicKey,
+      accountId
+    }],
   });
 })();
 

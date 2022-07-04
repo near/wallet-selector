@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
-    "module": "commonjs"
   },
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",

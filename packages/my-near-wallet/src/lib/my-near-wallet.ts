@@ -213,6 +213,7 @@ export function setupMyNearWallet({
         description: null,
         iconUrl,
         deprecated: false,
+        available: true,
       },
       init: (options) => {
         return MyNearWallet({

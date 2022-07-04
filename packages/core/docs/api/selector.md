@@ -125,6 +125,28 @@ Programmatically access wallets and call their methods. It's advised to use `sta
 })();
 ```
 
+### `.setActiveAccount(accountId)`
+
+**Parameters**
+
+- `accountId` (`string`): ID of account to be set as active.
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Programmatically change active account which will be used to sign and send transactions.
+
+> Note: This function will throw when calling with an `accountId` that is not in the `state.accounts` list.
+
+**Example**
+
+```ts
+selector.setActiveAccount("sometestaccount.testnet");
+```
+
 ### `.on(event, callback)`
 
 **Parameters**

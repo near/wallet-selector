@@ -8,6 +8,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../constants";
@@ -37,30 +38,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  syncAccountState(
-    currentAccountId: string | null,
-    newAccounts: Array<AccountState>
-  ) {
-    if (!newAccounts.length) {
-      localStorage.removeItem("accountId");
-      this.accountId = null;
-      this.accounts = [];
-
-      return;
-    }
-
-    const validAccountId =
-      currentAccountId &&
-      newAccounts.some((x) => x.accountId === currentAccountId);
-    const newAccountId = validAccountId
-      ? currentAccountId
-      : newAccounts[0].accountId;
-
-    localStorage.setItem("accountId", newAccountId);
-    this.accountId = newAccountId;
-    this.accounts = newAccounts;
-  }
-
   async initialize() {
     const _selector = await setupWalletSelector({
       network: "testnet",
@@ -81,13 +58,24 @@ export class AppComponent implements OnInit {
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
           },
         }),
+        setupNightlyConnect({
+          url: "wss://ncproxy.nightly.app/app",
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
+        }),
       ],
     });
 
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
 
-    this.syncAccountState(localStorage.getItem("accountId"), state.accounts);
+    this.accounts = state.accounts;
+    this.accountId =
+      state.accounts.find((account) => account.active)?.accountId || null;
 
     window.selector = _selector;
     window.modal = _modal;

@@ -29,7 +29,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `network` (`NetworkId | Network`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
+- `network` (`NetworkId | Network`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet` or `testnet`.
   - `networkId` (`string`): Custom network ID (e.g. `localnet`).
   - `nodeUrl` (`string`): Custom URL for RPC requests.
   - `helperUrl` (`string`): Custom URL for creating accounts.
