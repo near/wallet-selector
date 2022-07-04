@@ -36,7 +36,7 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 
   switch (network.networkId) {
     case "mainnet":
-      return "https://mynearwallet.com";
+      return "https://app.mynearwallet.com";
     case "testnet":
       return "https://testnet.mynearwallet.com";
     default:
@@ -202,14 +202,14 @@ const MyNearWallet: WalletBehaviourFactory<
 
 export function setupMyNearWallet({
   walletUrl,
-  iconUrl = "./assets/my-near-wallet-icon.png",
+  iconUrl = "./assets/my-near-wallet-icon.svg",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     return {
       id: "my-near-wallet",
       type: "browser",
       metadata: {
-        name: "My NEAR Wallet",
+        name: "MyNearWallet",
         description: null,
         iconUrl,
         deprecated: false,
