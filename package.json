@@ -69,7 +69,7 @@
     "@ledgerhq/logs": "^6.10.0",
     "@walletconnect/sign-client": "2.0.0-beta.101",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
-    "@nightlylabs/connect": "0.0.21",
+    "@nightlylabs/connect": "0.0.23",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "buffer": "^6.0.3",

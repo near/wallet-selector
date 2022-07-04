@@ -2,7 +2,7 @@ import { Signer, transactions as nearTransactions, utils } from "near-api-js";
 import {
   AppMetadata,
   AppNear,
-  Network,
+  NETWORK,
   NightlyConnectModal,
 } from "@nightlylabs/connect";
 import {
@@ -137,7 +137,7 @@ const NightlyConnect: WalletBehaviourFactory<
               emitter.emit("signedOut", null);
             };
             _state.client = client;
-            _state.modal.openModal(client.sessionId, Network.Near);
+            _state.modal.openModal(client.sessionId, NETWORK.NEAR);
             _state.modal.onClose = () => {
               reject(new Error("User cancelled pairing"));
             };
