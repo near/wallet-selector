@@ -61,8 +61,8 @@ const WC_METHODS = [
   "near_signIn",
   "near_signOut",
   "near_getAccounts",
-  "near_signAndSendTransaction",
-  "near_signAndSendTransactions",
+  "near_signTransaction",
+  "near_signTransactions",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -222,7 +222,7 @@ const WalletConnect: WalletBehaviourFactory<
     });
   };
 
-  const requestSignAndSendTransaction = async (transaction: Transaction) => {
+  const requestSignTransaction = async (transaction: Transaction) => {
     const accounts = await requestAccounts();
     const account = accounts.find((x) => x.accountId === transaction.signerId);
 
@@ -249,19 +249,19 @@ const WalletConnect: WalletBehaviourFactory<
       utils.serialize.base_decode(block.header.hash)
     );
 
-    return _state.client.request<providers.FinalExecutionOutcome>({
+    const result = await _state.client.request<Uint8Array>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
-        method: "near_signAndSendTransaction",
+        method: "near_signTransaction",
         params: { transaction: tx.encode() },
       },
     });
+
+    return nearTransactions.SignedTransaction.decode(Buffer.from(result));
   };
 
-  const requestSignAndSendTransactions = async (
-    transactions: Array<Transaction>
-  ) => {
+  const requestSignTransactions = async (transactions: Array<Transaction>) => {
     if (!transactions.length) {
       return [];
     }
@@ -302,13 +302,17 @@ const WalletConnect: WalletBehaviourFactory<
       );
     }
 
-    return _state.client.request<Array<providers.FinalExecutionOutcome>>({
+    const results = await _state.client.request<Array<Uint8Array>>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signAndSendTransactions",
         params: { transactions: txs.map((x) => x.encode()) },
       },
+    });
+
+    return results.map((result) => {
+      return nearTransactions.SignedTransaction.decode(Buffer.from(result));
     });
   };
 
@@ -506,12 +510,12 @@ const WalletConnect: WalletBehaviourFactory<
 
       try {
         const [signedTx] = await signTransactions([resolvedTransaction]);
-
         return provider.sendTransaction(signedTx);
       } catch (err) {
-        console.log("Falling back to WalletConnect to sign transaction", err);
+        logger.log("Falling back to WalletConnect to sign transaction", err);
 
-        return requestSignAndSendTransaction(resolvedTransaction);
+        const signedTx = await requestSignTransaction(resolvedTransaction);
+        return provider.sendTransaction(signedTx);
       }
     },
 
@@ -546,7 +550,14 @@ const WalletConnect: WalletBehaviourFactory<
 
         return results;
       } catch (err) {
-        return requestSignAndSendTransactions(resolvedTransactions);
+        const signedTxs = await requestSignTransactions(resolvedTransactions);
+        const results: Array<providers.FinalExecutionOutcome> = [];
+
+        for (let i = 0; i < signedTxs.length; i += 1) {
+          results.push(await provider.sendTransaction(signedTxs[i]));
+        }
+
+        return results;
       }
     },
   };
