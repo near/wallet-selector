@@ -136,7 +136,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  if (_state.wallet.isSignedIn()) {
+  if (_state.wallet && _state.wallet.isSignedIn()) {
     setupEvents();
   }
 
@@ -235,7 +235,7 @@ export function setupSender({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -255,6 +255,7 @@ export function setupSender({
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
         deprecated: false,
+        available: installed,
       },
       init: Sender,
     };

@@ -185,7 +185,7 @@ export function setupNightly({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -203,6 +203,7 @@ export function setupNightly({
         // Will replace we open beta with stable version
         downloadUrl: "https://www.nightly.app",
         deprecated: false,
+        available: installed,
       },
       init: Nightly,
     };

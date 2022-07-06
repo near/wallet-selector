@@ -141,7 +141,7 @@ export const setupMathWallet = ({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -155,6 +155,7 @@ export const setupMathWallet = ({
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
         deprecated: false,
+        available: installed,
       },
       init: MathWallet,
     };

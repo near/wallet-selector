@@ -225,6 +225,12 @@ export class WalletModules {
   }
 
   private async setupInstance(module: WalletModule): Promise<Wallet> {
+    if (!module.metadata.available) {
+      const message =
+        module.type === "injected" ? "not installed" : "not available";
+      throw Error(`${module.metadata.name} is ${message}`);
+    }
+
     const wallet = {
       id: module.id,
       type: module.type,

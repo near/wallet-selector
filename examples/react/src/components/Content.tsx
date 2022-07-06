@@ -107,69 +107,68 @@ const Content: React.FC = () => {
     alert("Switched account to " + nextAccountId);
   };
 
-  const addMessages = async (
-    message: string,
-    donation: string,
-    multiple: boolean
-  ) => {
-    const { contract } = selector.store.getState();
-    const wallet = await selector.wallet();
+  const addMessages = useCallback(
+    async (message: string, donation: string, multiple: boolean) => {
+      const { contract } = selector.store.getState();
+      const wallet = await selector.wallet();
 
-    if (!multiple) {
-      return wallet
-        .signAndSendTransaction({
+      if (!multiple) {
+        return wallet
+          .signAndSendTransaction({
+            signerId: accountId!,
+            actions: [
+              {
+                type: "FunctionCall",
+                params: {
+                  methodName: "addMessage",
+                  args: { text: message },
+                  gas: BOATLOAD_OF_GAS,
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  deposit: utils.format.parseNearAmount(donation)!,
+                },
+              },
+            ],
+          })
+          .catch((err) => {
+            alert("Failed to add message");
+            console.log("Failed to add message");
+
+            throw err;
+          });
+      }
+
+      const transactions: Array<Transaction> = [];
+
+      for (let i = 0; i < 2; i += 1) {
+        transactions.push({
           signerId: accountId!,
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",
               params: {
                 methodName: "addMessage",
-                args: { text: message },
+                args: {
+                  text: `${message} (${i + 1}/2)`,
+                },
                 gas: BOATLOAD_OF_GAS,
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 deposit: utils.format.parseNearAmount(donation)!,
               },
             },
           ],
-        })
-        .catch((err) => {
-          alert("Failed to add message");
-          console.log("Failed to add message");
-
-          throw err;
         });
-    }
+      }
 
-    const transactions: Array<Transaction> = [];
+      return wallet.signAndSendTransactions({ transactions }).catch((err) => {
+        alert("Failed to add messages");
+        console.log("Failed to add messages");
 
-    for (let i = 0; i < 2; i += 1) {
-      transactions.push({
-        signerId: accountId!,
-        receiverId: contract!.contractId,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: {
-                text: `${message} (${i + 1}/2)`,
-              },
-              gas: BOATLOAD_OF_GAS,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              deposit: utils.format.parseNearAmount(donation)!,
-            },
-          },
-        ],
+        throw err;
       });
-    }
-
-    return wallet.signAndSendTransactions({ transactions }).catch((err) => {
-      alert("Failed to add messages");
-      console.log("Failed to add messages");
-
-      throw err;
-    });
-  };
+    },
+    [selector, accountId]
+  );
 
   const handleSubmit = useCallback(
     async (e: SubmitEvent) => {
@@ -205,7 +204,7 @@ const Content: React.FC = () => {
           fieldset.disabled = false;
         });
     },
-    [selector, accountId, getMessages]
+    [addMessages, getMessages]
   );
 
   if (loading) {

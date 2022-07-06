@@ -4,22 +4,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/nightly-connect",
-        "main": "packages/nightly-connect/src/index.ts",
         "tsConfig": "packages/nightly-connect/tsconfig.lib.json",
+        "project": "packages/nightly-connect/package.json",
+        "entryFile": "packages/nightly-connect/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
         "assets": [
-          "packages/nightly-connect/*.md",
-          "packages/nightly-connect/assets/*"
+          {
+            "glob": "packages/nightly-connect/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/nightly-connect/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
