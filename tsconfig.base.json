@@ -42,6 +42,9 @@
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
       ],
+      "@near-wallet-selector/narwallets": [
+        "packages/narwallets/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
       ]

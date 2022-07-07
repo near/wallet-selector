@@ -11,6 +11,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { CONTRACT_ID } from "../constants";
 
@@ -47,6 +48,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupMathWallet(),
         setupNightly(),
         setupLedger(),
+        setupNarwallets(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

@@ -57,6 +57,11 @@
             "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/react/src/styles.scss"],

@@ -11,8 +11,10 @@
     "nightly": "packages/nightly",
     "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",
+    "narwallets": "packages/narwallets",
     "angular": "examples/angular",
     "react": "examples/react",
     "wallet-utils": "packages/wallet-utils"
+    
   }
 }
