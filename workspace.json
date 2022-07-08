@@ -13,6 +13,7 @@
     "nightly-connect": "packages/nightly-connect",
     "angular": "examples/angular",
     "react": "examples/react",
+    "next": "examples/next",
     "wallet-utils": "packages/wallet-utils"
   }
 }
