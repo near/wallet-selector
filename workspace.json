@@ -12,7 +12,7 @@
     "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",
     "angular": "examples/angular",
-    "next": "examples/next",
+    "react": "examples/react",
     "wallet-utils": "packages/wallet-utils"
   }
 }

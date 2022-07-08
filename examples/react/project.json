@@ -1,6 +1,6 @@
 {
-  "root": "examples/next",
-  "sourceRoot": "examples/next",
+  "root": "examples/react",
+  "sourceRoot": "examples/react",
   "projectType": "application",
   "targets": {
     "build": {
@@ -8,8 +8,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "examples/next",
-        "outputPath": "dist/examples/next",
+        "root": "examples/react",
+        "outputPath": "dist/examples/react",
         "assets": [
           {
             "glob": "**/*",
@@ -60,12 +60,12 @@
     "serve": {
       "executor": "@nrwl/next:server",
       "options": {
-        "buildTarget": "next:build",
+        "buildTarget": "react:build",
         "dev": true
       },
       "configurations": {
         "production": {
-          "buildTarget": "next:build:production",
+          "buildTarget": "react:build:production",
           "dev": false
         }
       }
