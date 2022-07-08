@@ -80,7 +80,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["examples/next/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
