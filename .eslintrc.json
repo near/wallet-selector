@@ -12,7 +12,6 @@
     "@nrwl/nx",
     "@typescript-eslint",
     "prettier",
-    "react",
     "react-hooks"
   ],
   "overrides": [
@@ -40,7 +39,6 @@
         "plugin:@nrwl/nx/typescript",
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
         "prettier"
       ],
       "rules": {
@@ -112,15 +110,7 @@
           }
         ],
         "strict": ["error", "global"],
-        "valid-jsdoc": "error",
-        "react/jsx-uses-react": "error",
-        "react/react-in-jsx-scope": "error",
-        "react/jsx-no-target-blank": "off",
-        "react/no-unescaped-entities": "off",
-        "react/prop-types": "off",
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
-        "react/display-name": "off"
+        "valid-jsdoc": "error"
       }
     },
     {

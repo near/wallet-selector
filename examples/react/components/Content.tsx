@@ -9,13 +9,11 @@ import { Transaction } from "@near-wallet-selector/core";
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import { CONTRACT_ID } from "../constants";
-
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
 
 const SUGGESTED_DONATION = "0";
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
 const Content: React.FC = () => {
@@ -62,8 +60,6 @@ const Content: React.FC = () => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -123,7 +119,6 @@ const Content: React.FC = () => {
                   methodName: "addMessage",
                   args: { text: message },
                   gas: BOATLOAD_OF_GAS,
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   deposit: utils.format.parseNearAmount(donation)!,
                 },
               },
@@ -152,7 +147,6 @@ const Content: React.FC = () => {
                   text: `${message} (${i + 1}/2)`,
                 },
                 gas: BOATLOAD_OF_GAS,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 deposit: utils.format.parseNearAmount(donation)!,
               },
             },
@@ -175,7 +169,6 @@ const Content: React.FC = () => {
       e.preventDefault();
 
       // TODO: Fix the typing so that target.elements exists..
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore.
       const { fieldset, message, donation, multiple } = e.target.elements;
 
