@@ -1,0 +1,29 @@
+{
+  "name": "next",
+  "version": "0.0.1",
+  "dependencies": {
+    "react": "^17.0.2",
+    "near-api-js": "0.44.2",
+    "rxjs": "~7.4.0",
+    "big.js": "^6.1.1",
+    "bn.js": "^5.2.0",
+    "is-mobile": "^3.0.0",
+    "@ledgerhq/hw-transport": "^6.20.0",
+    "@ledgerhq/hw-transport-webhid": "^6.20.0",
+    "@walletconnect/sign-client": "2.0.0-beta.101",
+    "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
+    "@nightlylabs/connect": "0.0.23",
+    "next": "12.1.0",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "jest-mock-extended": "^2.0.4",
+    "jest": "^27.4.7",
+    "typescript": "~4.5.2",
+    "@walletconnect/types": "^2.0.0-beta.101",
+    "@nrwl/next": "13.8.5"
+  },
+  "scripts": {
+    "start": "next start"
+  }
+}
