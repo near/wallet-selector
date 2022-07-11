@@ -9,6 +9,7 @@
     "my-near-wallet": "packages/my-near-wallet",
     "sender": "packages/sender",
     "nightly": "packages/nightly",
+    "meteor-wallet": "packages/meteor-wallet",
     "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",
     "angular": "examples/angular",

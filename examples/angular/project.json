@@ -57,6 +57,11 @@
             "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/meteor-wallet/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/angular/src/styles.scss"],

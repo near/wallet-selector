@@ -1,0 +1,7 @@
+{
+  "name": "@near-wallet-selector/meteor-wallet",
+  "version": "5.0.0",
+  "dependencies": {
+    "@meteorwallet/sdk": "^0.0.7"
+  }
+}

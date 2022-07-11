@@ -50,6 +50,11 @@
             "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/meteor-wallet/assets/",
+            "output": "assets/"
           }
         ]
       },
@@ -79,9 +84,6 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
-      }
     }
   },
   "tags": []
