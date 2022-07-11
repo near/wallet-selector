@@ -33,6 +33,9 @@
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],
+      "@near-wallet-selector/nearfi": [
+        "packages/nearfi/src/index.ts"
+      ],
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"
       ],

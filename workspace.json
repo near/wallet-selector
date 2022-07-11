@@ -8,6 +8,7 @@
     "near-wallet": "packages/near-wallet",
     "my-near-wallet": "packages/my-near-wallet",
     "sender": "packages/sender",
+    "nearfi": "packages/nearfi",
     "nightly": "packages/nightly",
     "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",

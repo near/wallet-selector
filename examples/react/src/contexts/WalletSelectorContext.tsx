@@ -12,6 +12,7 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -44,6 +45,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNearWallet(),
         setupMyNearWallet(),
         setupSender(),
+        setupNearFi(),
         setupMathWallet(),
         setupNightly(),
         setupLedger(),
@@ -69,7 +71,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     });
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
-
     setAccounts(state.accounts);
 
     window.selector = _selector;

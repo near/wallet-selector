@@ -1,0 +1,54 @@
+{
+  "root": "packages/nearfi",
+  "sourceRoot": "packages/nearfi/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/nearfi",
+        "tsConfig": "packages/nearfi/tsconfig.lib.json",
+        "project": "packages/nearfi/package.json",
+        "entryFile": "packages/nearfi/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/nearfi/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/nearfi/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/nearfi/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/nearfi"],
+      "options": {
+        "jestConfig": "packages/nearfi/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}
