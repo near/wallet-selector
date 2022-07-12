@@ -14,10 +14,8 @@ import {
 } from "@near-wallet-selector/core";
 import {
   EMeteorWalletSignInType,
-  IOMeteorWalletSdk_RequestSignIn_Inputs,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
-import { notNullEmptyArray } from "./utils/basic_utils";
 import {
   MeteorWalletParams_Injected,
   MeteorWalletState,
@@ -75,6 +73,14 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
 
+    for (const trx of transactions) {
+      if (trx.signerId !== account.accountId) {
+        throw new Error(
+          `Transaction had a signerId which didn't match the currently logged in account`
+        );
+      }
+    }
+
     return Promise.all(
       transactions.map(async (transaction, index) => {
         const actions = transaction.actions.map((action) =>
@@ -107,28 +113,25 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames = [] }) {
       logger.log("MeteorWallet:signIn", {
         contractId,
         methodNames,
       });
 
-      let signInRequest: IOMeteorWalletSdk_RequestSignIn_Inputs;
-
-      if (notNullEmptyArray(methodNames)) {
-        signInRequest = {
+      if (methodNames.length) {
+        await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
           contract_id: contractId,
-        } as IOMeteorWalletSdk_RequestSignIn_Inputs;
+        });
       } else {
-        signInRequest = {
+        await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
           contract_id: contractId,
-        } as IOMeteorWalletSdk_RequestSignIn_Inputs;
+        });
       }
 
-      await _state.wallet.requestSignIn(signInRequest);
       return getAccounts();
     },
 
