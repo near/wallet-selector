@@ -69,6 +69,7 @@
     "@ledgerhq/hw-transport": "^6.20.0",
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
     "@ledgerhq/logs": "^6.10.0",
+    "@meteorwallet/sdk": "^0.0.7",
     "@nightlylabs/connect": "0.0.23",
     "@nrwl/next": "13.8.5",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
