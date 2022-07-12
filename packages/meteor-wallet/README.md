@@ -1,6 +1,6 @@
 # @near-wallet-selector/meteor-wallet
 
-This is the [Meteor Wallet](https://chrome.google.com/webstore/detail/meteor-wallet/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
+This is the [Meteor Wallet](https://meteorwallet.app) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
