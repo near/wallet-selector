@@ -1785,6 +1785,15 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.0.tgz#c012c1ecc1a0e53d50e6af381618dca5268461c1"
   integrity sha512-lLseUPEhSFUXYTKj6q7s2O3s2vW2ebgA11vMAlKodXGf5AFw4zUoEbTz9CoFOC9jS6xY4Qr8BmRnxP/odT4Uuw==
 
+"@meteorwallet/sdk@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.0.7.tgz#24d95b8dc5b64fc687de655b19043afa716e060c"
+  integrity sha512-rmZ5skSZPY+/7LKqWbs8Y5TYTl5mXwPuvbCOfsNy8TxcxnyrQV5VROSocm+0qvBlRF6F+I9X+8DP7iTofsTXBw==
+  dependencies:
+    borsh "^0.7.0"
+    is-mobile "^3.1.1"
+    near-api-js "^0.44.2"
+
 "@next/env@12.1.0":
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-12.1.0.tgz#73713399399b34aa5a01771fb73272b55b22c314"
@@ -9549,6 +9558,11 @@ is-mobile@^3.0.0:
   resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-3.1.0.tgz#d1d053ed1bdc97b6bf95843d11ea9eb83380cc29"
   integrity sha512-BUeEDcth3Mj03fZ+Xo+amAvER9snFH8cx8A5GTHmWFZmKcIPqpQ5fAsDH6EGstRoLGdFnSZWXImK5IPh534enw==
 
+is-mobile@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-3.1.1.tgz#3b9e48f40068e4ea2da411f5009779844ce8d6aa"
+  integrity sha512-RRoXXR2HNFxNkUnxtaBdGBXtFlUMFa06S0NUKf/LCF+MuGLu13gi9iBCkoEmc6+rpXuwi5Mso5V8Zf7mNynMBQ==
+
 is-module@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-module/-/is-module-1.0.0.tgz#3258fb69f78c14d5b815d664336b4cffb6441591"
@@ -11434,7 +11448,7 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-near-api-js@0.44.2:
+near-api-js@0.44.2, near-api-js@^0.44.2:
   version "0.44.2"
   resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-0.44.2.tgz#e451f68f2c56bd885c7b918db5818a3e6e9423d0"
   integrity sha512-eMnc4V+geggapEUa3nU2p8HSHn/njtloI4P2mceHQWO8vDE1NGpnAw8FuTBrLmXSgIv9m6oocgFc9t3VNf5zwg==
