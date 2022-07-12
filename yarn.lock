@@ -1785,10 +1785,10 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.0.tgz#c012c1ecc1a0e53d50e6af381618dca5268461c1"
   integrity sha512-lLseUPEhSFUXYTKj6q7s2O3s2vW2ebgA11vMAlKodXGf5AFw4zUoEbTz9CoFOC9jS6xY4Qr8BmRnxP/odT4Uuw==
 
-"@meteorwallet/sdk@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.0.7.tgz#24d95b8dc5b64fc687de655b19043afa716e060c"
-  integrity sha512-rmZ5skSZPY+/7LKqWbs8Y5TYTl5mXwPuvbCOfsNy8TxcxnyrQV5VROSocm+0qvBlRF6F+I9X+8DP7iTofsTXBw==
+"@meteorwallet/sdk@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.0.9.tgz#731ce3a000e27d8722c6b661b17c002395209292"
+  integrity sha512-1pfTNWfZl7iiOyEvOAFY4kxZ4SWQx1FgLpk7CiIv5yVks23aPoCYMDvz0rf2ox26vyiIV4MlwSNdj+Qh/CeU6Q==
   dependencies:
     borsh "^0.7.0"
     is-mobile "^3.1.1"

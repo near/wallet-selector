@@ -1,1 +1,1 @@
-export { setupMeteor } from "./lib/meteor-wallet";
+export { setupMeteorWallet } from "./lib/meteor-wallet";

@@ -28,7 +28,10 @@ const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore(
+    window.localStorage,
+    "_meteor_wallet"
+  );
 
   const near = await connect({
     keyStore,
@@ -37,11 +40,6 @@ const setupWalletState = async (
   });
 
   const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
-
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
 
   return {
     wallet,
@@ -195,16 +193,16 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
   };
 };
 
-export function setupMeteor({
+export function setupMeteorWallet({
   iconUrl = "./assets/meteor-icon.png",
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     return {
-      id: "meteor-wallet-injected",
+      id: "meteor-wallet",
       type: "injected",
       metadata: {
         available: true,
-        name: "Meteor",
+        name: "Meteor Wallet",
         description: null,
         iconUrl,
         deprecated: false,
