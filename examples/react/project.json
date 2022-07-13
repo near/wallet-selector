@@ -50,6 +50,11 @@
             "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/meteor-wallet/assets/",
+            "output": "assets/"
           }
         ]
       },
