@@ -18,16 +18,16 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupMeteor } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 
 // Meteor for Wallet Selector can be setup without any params or it can take one optional param.
-const meteor = setupMeteor({
+const meteorWallet = setupMeteorWallet({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [meteor],
+  modules: [meteorWallet],
 });
 ```
 
@@ -40,10 +40,10 @@ const selector = await setupWalletSelector({
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupMeteor } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import meteorIconUrl from "@near-wallet-selector/meteor-wallet/assets/meteor-icon.png";
 
-const meteor = setupMeteor({
+const meteorWallet = setupMeteorWallet({
   iconUrl: meteorIconUrl
 });
 ```
