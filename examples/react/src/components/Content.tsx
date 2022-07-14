@@ -13,6 +13,7 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
+import swal from 'sweetalert';
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -129,9 +130,17 @@ const Content: React.FC = () => {
               },
             ],
           })
+          .then((ret) => {
+            alert("success ");
+          })
           .catch((err) => {
-            alert("Failed to add message");
-            console.log("Failed to add message");
+            try {
+              swal ( "Oops" ,  "" + err ,  "error" )
+              //alert("fail " + err);
+            } catch(e) {
+
+            }
+            console.log("Failed to add message " + err);
 
             throw err;
           });
@@ -161,7 +170,7 @@ const Content: React.FC = () => {
       }
 
       return wallet.signAndSendTransactions({ transactions }).catch((err) => {
-        alert("Failed to add messages");
+        alert("Failed to add messages exception " + err);
         console.log("Failed to add messages");
 
         throw err;
