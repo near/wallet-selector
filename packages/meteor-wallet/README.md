@@ -14,6 +14,17 @@ yarn add @near-wallet-selector/meteor-wallet
 npm install @near-wallet-selector/meteor-wallet
 ```
 
+
+This package requires `near-api-js` v0.44.2 or above:
+
+```bash
+# Using Yarn
+yarn add near-api-js@^0.44.2
+
+# Using NPM.
+npm install near-api-js@^0.44.2
+```
+
 Then use it in your dApp:
 
 ```ts
