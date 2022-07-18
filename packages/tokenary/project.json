@@ -1,0 +1,54 @@
+{
+  "root": "packages/tokenary",
+  "sourceRoot": "packages/tokenary/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/tokenary",
+        "tsConfig": "packages/tokenary/tsconfig.lib.json",
+        "project": "packages/tokenary/package.json",
+        "entryFile": "packages/tokenary/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/tokenary/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/tokenary/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/tokenary/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/tokenary"],
+      "options": {
+        "jestConfig": "packages/tokenary/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}
