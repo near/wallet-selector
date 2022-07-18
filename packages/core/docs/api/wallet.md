@@ -105,6 +105,12 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
+// Tokenary.
+(async () => {
+  const wallet = await selector.wallet("tokenary");
+  const accounts = await wallet.signIn({ contractId: "test.testnet" });
+})();
+
 // Math Wallet.
 (async () => {
   const wallet = await selector.wallet("math-wallet");

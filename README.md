@@ -5,6 +5,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
+- [Tokenary](https://www.npmjs.com/package/@near-wallet-selector/tokenary) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
@@ -37,6 +38,7 @@ yarn add \
   @near-wallet-selector/near-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
+  @near-wallet-selector/tokenary \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
@@ -48,6 +50,7 @@ npm install \
   @near-wallet-selector/near-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
+  @near-wallet-selector/tokenary \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/ledger \
@@ -73,6 +76,7 @@ import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupTokenary } from "@near-wallet-selector/tokenary";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -85,6 +89,7 @@ const selector = await setupWalletSelector({
     setupNearWallet(),
     setupMyNearWallet(),
     setupSender(),
+    setupTokenary(),
     setupMathWallet(),
     setupNightly(),
     setupLedger(),
