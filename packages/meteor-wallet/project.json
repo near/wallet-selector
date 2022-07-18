@@ -1,32 +1,29 @@
 {
-  "root": "packages/meteor-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/meteor-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/meteor-wallet",
+        "main": "packages/meteor-wallet/src/index.ts",
         "tsConfig": "packages/meteor-wallet/tsconfig.lib.json",
-        "project": "packages/meteor-wallet/package.json",
-        "entryFile": "packages/meteor-wallet/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
-        "assets": [
-          {
-            "glob": "packages/meteor-wallet/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/meteor-wallet/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
-        ]
+        "assets": ["packages/meteor-wallet/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs meteor-wallet {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,16 +36,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/meteor-wallet"],
       "options": {
-        "jestConfig": "packages/meteor-wallet/jest.config.js",
+        "jestConfig": "packages/meteor-wallet/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": []
 }

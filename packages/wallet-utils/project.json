@@ -1,32 +1,29 @@
 {
-  "root": "packages/wallet-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-utils/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/wallet-utils",
+        "main": "packages/wallet-utils/src/index.ts",
         "tsConfig": "packages/wallet-utils/tsconfig.lib.json",
-        "project": "packages/wallet-utils/package.json",
-        "entryFile": "packages/wallet-utils/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
-        "assets": [
-          {
-            "glob": "packages/wallet-utils/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/wallet-utils/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
-        ]
+        "assets": ["packages/wallet-utils/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs wallet-utils {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,9 +36,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/wallet-utils"],
       "options": {
-        "jestConfig": "packages/wallet-utils/jest.config.js",
+        "jestConfig": "packages/wallet-utils/jest.config.ts",
         "passWithNoTests": true
       }
     }
-  }
+  },
+  "tags": []
 }

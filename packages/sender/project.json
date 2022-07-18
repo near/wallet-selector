@@ -1,32 +1,29 @@
 {
-  "root": "packages/sender",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/sender/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/sender",
+        "main": "packages/sender/src/index.ts",
         "tsConfig": "packages/sender/tsconfig.lib.json",
-        "project": "packages/sender/package.json",
-        "entryFile": "packages/sender/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
-        "assets": [
-          {
-            "glob": "packages/sender/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/sender/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
-        ]
+        "assets": ["packages/sender/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs sender {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,16 +36,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/sender"],
       "options": {
-        "jestConfig": "packages/sender/jest.config.js",
+        "jestConfig": "packages/sender/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": []
 }

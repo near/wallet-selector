@@ -1,32 +1,29 @@
 {
-  "root": "packages/math-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/math-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/math-wallet",
+        "main": "packages/math-wallet/src/index.ts",
         "tsConfig": "packages/math-wallet/tsconfig.lib.json",
-        "project": "packages/math-wallet/package.json",
-        "entryFile": "packages/math-wallet/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
-        "assets": [
-          {
-            "glob": "packages/math-wallet/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/math-wallet/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
-        ]
+        "assets": ["packages/math-wallet/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs math-wallet {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,16 +36,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/math-wallet"],
       "options": {
-        "jestConfig": "packages/math-wallet/jest.config.js",
+        "jestConfig": "packages/math-wallet/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": []
 }

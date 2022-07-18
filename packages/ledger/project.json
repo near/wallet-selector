@@ -1,54 +1,55 @@
 {
-  "root": "packages/ledger",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/ledger/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nrwl/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/ledger",
+        "main": "packages/ledger/src/index.ts",
         "tsConfig": "packages/ledger/tsconfig.lib.json",
-        "project": "packages/ledger/package.json",
-        "entryFile": "packages/ledger/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
         "assets": [
-          {
-            "glob": "packages/ledger/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/ledger/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
+          "packages/ledger/*.md"
         ]
       }
     },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs ledger {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["packages/ledger/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/ledger/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/ledger"],
+      "outputs": [
+        "coverage/packages/ledger"
+      ],
       "options": {
-        "jestConfig": "packages/ledger/jest.config.js",
+        "jestConfig": "packages/ledger/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       }
     }
   },
-  "tags": ["hardware-wallet"]
+  "tags": []
 }

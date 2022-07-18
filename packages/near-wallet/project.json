@@ -1,32 +1,29 @@
 {
-  "root": "packages/near-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/near-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/near-wallet",
+        "main": "packages/near-wallet/src/index.ts",
         "tsConfig": "packages/near-wallet/tsconfig.lib.json",
-        "project": "packages/near-wallet/package.json",
-        "entryFile": "packages/near-wallet/src/index.ts",
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
-        "assets": [
-          {
-            "glob": "packages/near-wallet/README.md",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "packages/near-wallet/assets/*",
-            "input": ".",
-            "output": "assets"
-          }
-        ]
+        "assets": ["packages/near-wallet/*.md"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs near-wallet {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,16 +36,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/near-wallet"],
       "options": {
-        "jestConfig": "packages/near-wallet/jest.config.js",
+        "jestConfig": "packages/near-wallet/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       }
     }
   },
-  "tags": ["browser-wallet"]
+  "tags": []
 }

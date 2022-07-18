@@ -17,33 +17,27 @@
     "strictPropertyInitialization": false,
     "paths": {
       "@near-wallet-selector/core": ["packages/core/src/index.ts"],
-      "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
-      "@near-wallet-selector/ledger": [
-        "packages/ledger/src/index.ts"
-      ],
+      "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
-      ],
-      "@near-wallet-selector/near-wallet": [
-        "packages/near-wallet/src/index.ts"
-      ],
-      "@near-wallet-selector/my-near-wallet": [
-        "packages/my-near-wallet/src/index.ts"
-      ],
-      "@near-wallet-selector/sender": [
-        "packages/sender/src/index.ts"
-      ],
-      "@near-wallet-selector/nightly": [
-        "packages/nightly/src/index.ts"
       ],
       "@near-wallet-selector/meteor-wallet": [
         "packages/meteor-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/wallet-connect": [
-        "packages/wallet-connect/src/index.ts"
+      "@near-wallet-selector/modal-ui": ["packages/modal-ui/src/index.ts"],
+      "@near-wallet-selector/my-near-wallet": [
+        "packages/my-near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/near-wallet": [
+        "packages/near-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/nightly": ["packages/nightly/src/index.ts"],
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
+      ],
+      "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
+      "@near-wallet-selector/wallet-connect": [
+        "packages/wallet-connect/src/index.ts"
       ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
