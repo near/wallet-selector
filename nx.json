@@ -47,6 +47,12 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
     }
   },
   "defaultProject": "react"

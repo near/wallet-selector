@@ -39,6 +39,9 @@
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"
       ],
+      "@near-wallet-selector/meteor-wallet": [
+        "packages/meteor-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],

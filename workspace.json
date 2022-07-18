@@ -10,6 +10,7 @@
     "sender": "packages/sender",
     "tokenary": "packages/tokenary",
     "nightly": "packages/nightly",
+    "meteor-wallet": "packages/meteor-wallet",
     "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",
     "angular": "examples/angular",

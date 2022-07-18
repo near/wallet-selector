@@ -1,68 +1,43 @@
 import {
-  WalletConnection,
   connect,
   keyStores,
   transactions as nearTransactions,
   utils,
 } from "near-api-js";
-import type {
-  WalletModuleFactory,
-  WalletBehaviourFactory,
-  BrowserWallet,
-  Transaction,
-  Optional,
+import {
+  InjectedWallet,
   Network,
+  Optional,
+  Transaction,
+  WalletBehaviourFactory,
+  WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import {
+  EMeteorWalletSignInType,
+  MeteorWallet as MeteorWalletSdk,
+} from "@meteorwallet/sdk";
+import {
+  MeteorWalletParams_Injected,
+  MeteorWalletState,
+} from "./meteor-wallet-types";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
-export interface MyNearWalletParams {
-  walletUrl?: string;
-  iconUrl?: string;
-}
-
-interface MyNearWalletState {
-  wallet: WalletConnection;
-  keyStore: keyStores.BrowserLocalStorageKeyStore;
-}
-
-interface MyNearWalletExtraOptions {
-  walletUrl: string;
-}
-
-const resolveWalletUrl = (network: Network, walletUrl?: string) => {
-  if (walletUrl) {
-    return walletUrl;
-  }
-
-  switch (network.networkId) {
-    case "mainnet":
-      return "https://app.mynearwallet.com";
-    case "testnet":
-      return "https://testnet.mynearwallet.com";
-    default:
-      throw new Error("Invalid wallet url");
-  }
-};
-
 const setupWalletState = async (
-  params: MyNearWalletExtraOptions,
+  params: MeteorWalletParams_Injected,
   network: Network
-): Promise<MyNearWalletState> => {
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+): Promise<MeteorWalletState> => {
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore(
+    window.localStorage,
+    "_meteor_wallet"
+  );
 
   const near = await connect({
     keyStore,
-    walletUrl: params.walletUrl,
     ...network,
     headers: {},
   });
 
-  const wallet = new WalletConnection(near, "near_app");
-
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
+  const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
 
   return {
     wallet,
@@ -70,10 +45,10 @@ const setupWalletState = async (
   };
 };
 
-const MyNearWallet: WalletBehaviourFactory<
-  BrowserWallet,
-  { params: MyNearWalletExtraOptions }
-> = async ({ options, store, params, logger }) => {
+const createMeteorWalletInjected: WalletBehaviourFactory<
+  InjectedWallet,
+  { params: MeteorWalletParams_Injected }
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -81,7 +56,7 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   const getAccounts = () => {
-    const accountId: string | null = _state.wallet.getAccountId();
+    const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
       return [];
@@ -93,10 +68,18 @@ const MyNearWallet: WalletBehaviourFactory<
   const transformTransactions = async (
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
-    const account = _state.wallet.account();
+    const account = _state.wallet.account()!;
     const { networkId, signer, provider } = account.connection;
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
+
+    for (const trx of transactions) {
+      if (trx.signerId !== account.accountId) {
+        throw new Error(
+          `Transaction had a signerId which didn't match the currently logged in account`
+        );
+      }
+    }
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
@@ -130,14 +113,24 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames }) {
-      const existingAccounts = getAccounts();
+    async signIn({ contractId, methodNames = [] }) {
+      logger.log("MeteorWallet:signIn", {
+        contractId,
+        methodNames,
+      });
 
-      if (existingAccounts.length) {
-        return existingAccounts;
+      if (methodNames.length) {
+        await _state.wallet.requestSignIn({
+          methods: methodNames,
+          type: EMeteorWalletSignInType.SELECTED_METHODS,
+          contract_id: contractId,
+        });
+      } else {
+        await _state.wallet.requestSignIn({
+          type: EMeteorWalletSignInType.ALL_METHODS,
+          contract_id: contractId,
+        });
       }
-
-      await _state.wallet.requestSignIn({ contractId, methodNames });
 
       return getAccounts();
     },
@@ -150,43 +143,47 @@ const MyNearWallet: WalletBehaviourFactory<
       cleanup();
     },
 
+    async isSignedIn() {
+      if (!_state.wallet) {
+        return false;
+      }
+
+      return _state.wallet.isSignedIn();
+    },
+
     async getAccounts() {
       return getAccounts();
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId,
-      actions,
-      callbackUrl,
-    }) {
-      logger.log("signAndSendTransaction", {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
+      logger.log("MeteorWallet:signAndSendTransaction", {
         signerId,
         receiverId,
         actions,
-        callbackUrl,
       });
 
       const { contract } = store.getState();
 
-      if (!_state.wallet.isSignedIn() || !contract) {
+      if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not signed in");
       }
 
-      const account = _state.wallet.account();
+      if (!receiverId && !contract) {
+        throw new Error("No receiver found to send the transaction to");
+      }
 
-      return account["signAndSendTransaction"]({
-        receiverId: receiverId || contract.contractId,
+      const account = _state.wallet.account()!;
+
+      return account["signAndSendTransaction_direct"]({
+        receiverId: receiverId ?? contract!.contractId,
         actions: actions.map((action) => createAction(action)),
-        walletCallbackUrl: callbackUrl,
-      }).then(() => {
-        // Suppress response since transactions with deposits won't actually
-        // return FinalExecutionOutcome.
       });
     },
 
-    async signAndSendTransactions({ transactions, callbackUrl }) {
-      logger.log("signAndSendTransactions", { transactions, callbackUrl });
+    async signAndSendTransactions({ transactions }) {
+      logger.log("MeteorWallet:signAndSendTransactions", {
+        transactions,
+      });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not signed in");
@@ -194,32 +191,31 @@ const MyNearWallet: WalletBehaviourFactory<
 
       return _state.wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),
-        callbackUrl,
       });
     },
   };
 };
 
-export function setupMyNearWallet({
-  walletUrl,
-  iconUrl = "./assets/my-near-wallet-icon.png",
-}: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
+export function setupMeteorWallet({
+  iconUrl = "./assets/meteor-icon.png",
+}: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     return {
-      id: "my-near-wallet",
-      type: "browser",
+      id: "meteor-wallet",
+      type: "injected",
       metadata: {
-        name: "MyNearWallet",
+        available: true,
+        name: "Meteor Wallet",
         description: null,
         iconUrl,
         deprecated: false,
-        available: true,
+        downloadUrl: "https://wallet.meteorwallet.app",
       },
       init: (options) => {
-        return MyNearWallet({
+        return createMeteorWalletInjected({
           ...options,
           params: {
-            walletUrl: resolveWalletUrl(options.options.network, walletUrl),
+            iconUrl,
           },
         });
       },
