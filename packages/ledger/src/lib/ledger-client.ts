@@ -60,7 +60,8 @@ export interface Subscription {
 
 // Not using TransportWebHID.isSupported as it's chosen to use a Promise...
 export const isLedgerSupported = () => {
-  return window.navigator?.hid ? !!window.navigator?.hid : false;
+  // @ts-ignore
+  return !!window.navigator?.hid;
 };
 
 export class LedgerClient {

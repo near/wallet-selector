@@ -1,94 +1,144 @@
+# NEAR Wallet Selector
 
+NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
-# NearWalletSelector
+- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
+- [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
+- [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
+- [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
+- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
+- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
+- [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
 
-This project was generated using [Nx](https://nx.dev).
+## Preview
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+[React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
-🔎 **Smart, Fast and Extensible Build System**
+![Preview](./images/preview-img.PNG)
 
-## Adding capabilities to your workspace
+## Installation and Usage
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+The easiest way to use NEAR Wallet Selector is to install the [`core`](https://www.npmjs.com/package/@near-wallet-selector/core) package from the NPM registry, some packages may require `near-api-js` v0.44.2 or above check them at [`packages`](./packages)
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+```bash
+# Using Yarn
+yarn add near-api-js@^0.44.2
 
-Below are our core plugins:
+# Using NPM.
+npm install near-api-js@^0.44.2
+```
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/core
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+# Using NPM.
+npm install @near-wallet-selector/core
+```
 
-## Generate an application
+Next, you'll need to install the wallets you want to support:
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+```bash
+# Using Yarn
+yarn add \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/my-near-wallet \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/nightly \
+  @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/nightly-connect 
 
-> You can use any of the plugins above to generate applications as well.
+# Using NPM.
+npm install \
+  @near-wallet-selector/near-wallet \
+  @near-wallet-selector/my-near-wallet \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/nightly \
+  @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/nightly-connect
+```
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
-## Generate a library
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/modal-ui
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+# Using NPM.
+npm install @near-wallet-selector/modal-ui
+```
 
-> You can also use any of the plugins above to generate libraries as well.
+Then in your dApp:
 
-Libraries are shareable across libraries and applications. They can be imported from `@near-wallet-selector/mylib`.
+```ts
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
+import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 
-## Development server
+const selector = await setupWalletSelector({
+  network: "testnet",
+  modules: [
+    setupNearWallet(),
+    setupMyNearWallet(),
+    setupSender(),
+    setupMathWallet(),
+    setupNightly(),
+    setupMeteorWallet(),
+    setupLedger(),
+    setupWalletConnect({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    }),
+    setupNightlyConnect({
+      url: "wss://ncproxy.nightly.app/app",
+      appMetadata: {
+        additionalInfo: "",
+        application: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+      },
+    }),
+  ],
+});
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+const modal = setupModal(selector, {
+  contractId: "guest-book.testnet"
+});
+```
 
-## Code scaffolding
+## Contributing
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
 
-## Build
+More details around contributing to this project can be found [here](./CONTRIBUTING.md).
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Editor Setup
 
-## Running unit tests
+This project uses [ESLint](https://eslint.org/) (with [Prettier](https://prettier.io/)) to enforce a consistent coding style. It's important that you configure your editor correctly to avoid issues when you're ready to open a Pull Request.
 
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+Although this project uses Prettier, it's simply an "internal" dependency to our ESLint configuration. This is because we want Prettier to handle code styling while avoiding conflicts with ESLint which specifically focuses on potentially problematic code. As a result, **it's important that you switch off Prettier in your editor and ensure only ESLint is enabled**.
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+## License
 
-## Running end-to-end tests
-
-Run `nx e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0). See [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE) for details.

@@ -29,6 +29,5 @@
     "incremental": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "strictTemplates": false
   }
 }

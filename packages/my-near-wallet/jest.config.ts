@@ -10,6 +10,6 @@ export default {
   transform: {
     "^.+\\.[tj]s$": "ts-jest",
   },
-  moduleFileExtensions: ["ts", "js", "html"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/my-near-wallet",
 };

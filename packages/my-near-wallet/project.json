@@ -4,26 +4,29 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/my-near-wallet",
-        "main": "packages/my-near-wallet/src/index.ts",
         "tsConfig": "packages/my-near-wallet/tsconfig.lib.json",
-        "assets": ["packages/my-near-wallet/*.md"]
+        "project": "packages/my-near-wallet/package.json",
+        "entryFile": "packages/my-near-wallet/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/my-near-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/my-near-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
       }
-    },
-    "publish": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs my-near-wallet {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,7 +42,13 @@
         "jestConfig": "packages/my-near-wallet/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
-  "tags": []
+  "tags": ["browser-wallet"]
 }

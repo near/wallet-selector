@@ -29,7 +29,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/core/**/*.ts"]
+        "lintFilePatterns": ["packages/core/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {

@@ -3,8 +3,8 @@ export default {
   displayName: "modal-ui",
   preset: "../../jest.preset.js",
   transform: {
-    "^.+\\.[tj]sx?$": "babel-jest",
+    "^.+\\.[tj]s$": "ts-jest",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/modal-ui",
 };

@@ -1,11 +1,40 @@
-# wallet-utils
+# @near-wallet-selector/wallet-utils
 
-This library was generated with [Nx](https://nx.dev).
+This is the Wallet Utils package for NEAR Wallet Selector.
 
-## Building
+## Installation and Usage
 
-Run `nx build wallet-utils` to build the library.
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
-## Running unit tests
+```bash
+# Using Yarn
+yarn add near-api-js@^0.44.2
 
-Run `nx test wallet-utils` to execute the unit tests via [Jest](https://jestjs.io).
+# Using NPM.
+npm install near-api-js@^0.44.2
+```
+
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/wallet-utils
+
+# Using NPM.
+npm install @near-wallet-selector/wallet-utils
+```
+
+Then use it in your custom wallet integration:
+
+```ts
+import { createAction } from "@near-wallet-selector/wallet-utils";
+
+const action = createAction({
+  type: "Transfer",
+  params: {
+    deposit: "10000000000000000000000",
+  },
+});
+```
+
+## License
+
+This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).

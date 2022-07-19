@@ -4,26 +4,29 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/nightly-connect",
-        "main": "packages/nightly-connect/src/index.ts",
         "tsConfig": "packages/nightly-connect/tsconfig.lib.json",
-        "assets": ["packages/nightly-connect/*.md"]
+        "project": "packages/nightly-connect/package.json",
+        "entryFile": "packages/nightly-connect/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/nightly-connect/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/nightly-connect/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
       }
-    },
-    "publish": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs nightly-connect {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,7 +42,13 @@
         "jestConfig": "packages/nightly-connect/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
-  "tags": []
+  "tags": ["bridge-wallet"]
 }

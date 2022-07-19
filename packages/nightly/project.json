@@ -4,26 +4,29 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/nightly",
-        "main": "packages/nightly/src/index.ts",
         "tsConfig": "packages/nightly/tsconfig.lib.json",
-        "assets": ["packages/nightly/*.md"]
+        "project": "packages/nightly/package.json",
+        "entryFile": "packages/nightly/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/nightly/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/nightly/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
       }
-    },
-    "publish": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs nightly {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -39,7 +42,13 @@
         "jestConfig": "packages/nightly/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
-  "tags": []
+  "tags": ["injected-wallet"]
 }
