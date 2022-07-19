@@ -75,6 +75,7 @@
     "bn.js": "^5.2.1",
     "core-js": "^3.6.5",
     "is-mobile": "^3.1.1",
+    "jest-preset-angular": "^12.2.0",
     "near-api-js": "^0.45.1",
     "next": "12.1.6",
     "ngx-deploy-npm": "^4.1.1",
