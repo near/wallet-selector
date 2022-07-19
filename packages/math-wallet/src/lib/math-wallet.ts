@@ -131,8 +131,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       const results: Array<FinalExecutionOutcome> = [];
 
       for (let i = 0; i < signedTransactions.length; i++) {
-        const tsx = await provider.sendTransaction(signedTransactions[i]);
-        results.push(tsx);
+        results.push(await provider.sendTransaction(signedTransactions[i]));
       }
 
       return results;

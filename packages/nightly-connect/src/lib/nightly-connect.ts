@@ -192,8 +192,7 @@ const NightlyConnect: WalletBehaviourFactory<
       const results: Array<FinalExecutionOutcome> = [];
 
       for (let i = 0; i < signedTxs.length; i++) {
-        const tsx = await provider.sendTransaction(signedTxs[i]);
-        results.push(tsx);
+        results.push(await provider.sendTransaction(signedTxs[i]));
       }
 
       return results;
