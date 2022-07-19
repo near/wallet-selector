@@ -9,6 +9,7 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import { Signer, utils, transactions as nearTransactions } from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 declare global {
   interface Window {
@@ -168,9 +169,14 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         options.network
       );
 
-      return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTxs.length; i++) {
+        const tsx = await provider.sendTransaction(signedTxs[i]);
+        results.push(tsx);
+      }
+
+      return results;
     },
   };
 };

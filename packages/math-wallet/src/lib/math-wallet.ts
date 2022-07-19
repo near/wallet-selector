@@ -11,6 +11,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 declare global {
   interface Window {
@@ -127,9 +128,14 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         signedTransactions
       );
 
-      return Promise.all(
-        signedTransactions.map((tx) => provider.sendTransaction(tx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        const tsx = await provider.sendTransaction(signedTransactions[i]);
+        results.push(tsx);
+      }
+
+      return results;
     },
   };
 };
