@@ -37,7 +37,6 @@ const setupWalletState = async (
     headers: {},
   });
 
-  // @ts-ignore
   const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
 
   return {
