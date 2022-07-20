@@ -15,6 +15,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import { Signer, utils } from "near-api-js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -252,9 +253,13 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         options.network
       );
 
-      return Promise.all(
-        signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        results.push(await provider.sendTransaction(signedTransactions[i]));
+      }
+
+      return results;
     },
     async getPublicKey(derivationPath: string) {
       await connectLedgerDevice();
