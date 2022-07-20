@@ -14,6 +14,7 @@ import {
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export interface NightlyConnectParams {
   appMetadata: AppMetadata;
@@ -188,9 +189,13 @@ const NightlyConnect: WalletBehaviourFactory<
         options.network
       );
 
-      return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTxs.length; i++) {
+        results.push(await provider.sendTransaction(signedTxs[i]));
+      }
+
+      return results;
     },
   };
 };
