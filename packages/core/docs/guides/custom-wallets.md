@@ -93,7 +93,7 @@ A variation of `WalletModule` is added to state during setup under `modules` (`M
 Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
 
 - `BrowserWallet`: NEAR Wallet
-- `InjectedWallet`: Sender & Math Wallet
+- `InjectedWallet`: Sender & Math Wallet & Tokenary
 - `HardwareWallet`: Ledger
 - `BridgeWallet`: WalletConnect
 
