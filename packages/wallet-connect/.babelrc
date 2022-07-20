@@ -6,5 +6,6 @@
         "useBuiltIns": "usage"
       }
     ]
-  ]
+  ],
+  "plugins": []
 }
