@@ -1,5 +1,5 @@
 {
-  "root": "packages/meteor-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/meteor-wallet/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/meteor-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/meteor-wallet/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/meteor-wallet"],
       "options": {
-        "jestConfig": "packages/meteor-wallet/jest.config.js",
+        "jestConfig": "packages/meteor-wallet/jest.config.ts",
         "passWithNoTests": true
       }
     },

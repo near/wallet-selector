@@ -1,5 +1,5 @@
 {
-  "root": "packages/my-near-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/my-near-wallet/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/my-near-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/my-near-wallet/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/my-near-wallet"],
       "options": {
-        "jestConfig": "packages/my-near-wallet/jest.config.js",
+        "jestConfig": "packages/my-near-wallet/jest.config.ts",
         "passWithNoTests": true
       }
     },

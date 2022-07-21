@@ -1,5 +1,5 @@
 {
-  "root": "packages/math-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/math-wallet/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/math-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/math-wallet/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/math-wallet"],
       "options": {
-        "jestConfig": "packages/math-wallet/jest.config.js",
+        "jestConfig": "packages/math-wallet/jest.config.ts",
         "passWithNoTests": true
       }
     },
