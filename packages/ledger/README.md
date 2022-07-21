@@ -55,6 +55,9 @@ const ledger = setupLedger({
 });
 ```
 
+## Known issues
+Existing dApps with Ledger support integrated may encounter this error `Device is already open`, it means your current integration and this package are conflicting and two ledger instances are being created. Avoid this scenario by supporting only this package. 
+
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
