@@ -1,5 +1,5 @@
 {
-  "root": "packages/wallet-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-utils/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/wallet-utils/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/wallet-utils/README.md",
@@ -39,9 +39,10 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/wallet-utils"],
       "options": {
-        "jestConfig": "packages/wallet-utils/jest.config.js",
+        "jestConfig": "packages/wallet-utils/jest.config.ts",
         "passWithNoTests": true
       }
     }
-  }
+  },
+  "tags": []
 }

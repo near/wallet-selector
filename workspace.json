@@ -1,19 +1,20 @@
 {
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "angular": "examples/angular",
     "core": "packages/core",
-    "modal-ui": "packages/modal-ui",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
-    "near-wallet": "packages/near-wallet",
-    "my-near-wallet": "packages/my-near-wallet",
-    "sender": "packages/sender",
-    "nightly": "packages/nightly",
     "meteor-wallet": "packages/meteor-wallet",
-    "wallet-connect": "packages/wallet-connect",
+    "modal-ui": "packages/modal-ui",
+    "my-near-wallet": "packages/my-near-wallet",
+    "near-wallet": "packages/near-wallet",
+    "nightly": "packages/nightly",
     "nightly-connect": "packages/nightly-connect",
-    "angular": "examples/angular",
     "react": "examples/react",
+    "sender": "packages/sender",
+    "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils"
   }
 }
