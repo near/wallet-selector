@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
 import type { WalletSelectorModal, ModalOptions } from "./modal.types";
@@ -17,15 +17,17 @@ export const setupModal = (
   el.id = MODAL_ELEMENT_ID;
   document.body.appendChild(el);
 
+  const container = document.getElementById(MODAL_ELEMENT_ID);
+  const root = createRoot(container!);
+
   const render = (visible = false) => {
-    ReactDOM.render(
+    root.render(
       <Modal
         selector={selector}
         options={options}
         visible={visible}
         hide={() => render(false)}
-      />,
-      document.getElementById(MODAL_ELEMENT_ID)
+      />
     );
   };
 
