@@ -23,6 +23,8 @@ export interface HardwareWalletAccountState {
 }
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
+const DEFAULT_DESCRIPTION =
+  "Make sure your device is plugged in, then enter a derivation path to connect:";
 
 export const DerivationPath: React.FC<DerivationPathProps> = ({
   selector,
@@ -45,6 +47,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
   const [connecting, setConnecting] = useState<boolean>(false);
   const [hardwareWallet, setHardwareWallet] = useState<Wallet>();
+  const [publicKeyState, setPublicKeyState] = useState("");
+  const [accountId, setAccountId] = useState("");
+  const [indexerFailed, setIndexerFailed] = useState(false);
 
   const handleDerivationPathAdd = () => {
     setDerivationPaths((prevDerivationPaths) => {
@@ -99,6 +104,8 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
       if (wallet.type === "hardware") {
         const publicKey = await wallet.getPublicKey(derivationPath);
+        setPublicKeyState(publicKey);
+
         const accountIds = await getAccountIdsFromPublicKey(publicKey);
 
         accounts.push({
@@ -140,6 +147,16 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     setConnecting(true);
     setHardwareWallet(wallet);
 
+    if (indexerFailed) {
+      return signIn(wallet, options.contractId, options.methodNames, [
+        {
+          derivationPath: derivationPaths[0].path,
+          publicKey: publicKeyState,
+          accountId,
+        },
+      ]);
+    }
+
     try {
       const accounts = await resolveAccounts(wallet);
       const multipleAccounts = accounts.some((x) => x.accountIds.length > 1);
@@ -170,7 +187,13 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(message);
+      if (message === "Failed to get account id from public key") {
+        setDerivationPaths([{ path: DEFAULT_DERIVATION_PATH }]);
+        setIndexerFailed(true);
+      } else {
+        setPublicKeyState("");
+        onError(message);
+      }
     } finally {
       setConnecting(false);
     }
@@ -250,13 +273,14 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       ) : (
         <div>
           <p>
-            Make sure your device is plugged in, then enter an account id to
-            connect:
+            {indexerFailed
+              ? "Failed to automatically detect account id, provide it manually:"
+              : DEFAULT_DESCRIPTION}
           </p>
           <div className="derivation-path-list">
             {derivationPaths.map((path, index) => {
               return (
-                <div key={index}>
+                <div key={index} className={indexerFailed ? "center" : ""}>
                   <input
                     type="text"
                     placeholder="Derivation Path"
@@ -267,7 +291,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                     onKeyPress={handleEnterClick}
                   />
 
-                  {index !== 0 && (
+                  {index !== 0 && !indexerFailed && (
                     <button
                       type="button"
                       title="Remove"
@@ -276,7 +300,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                       -
                     </button>
                   )}
-                  {index === derivationPaths.length - 1 && (
+                  {index === derivationPaths.length - 1 && !indexerFailed && (
                     <button
                       title="Add"
                       type="button"
@@ -284,6 +308,17 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                     >
                       +
                     </button>
+                  )}
+                  {indexerFailed && (
+                    <input
+                      type="text"
+                      placeholder="Account Id"
+                      value={accountId}
+                      onChange={(e) => {
+                        setAccountId(e.target.value);
+                      }}
+                      onKeyPress={handleEnterClick}
+                    />
                   )}
                 </div>
               );

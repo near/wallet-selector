@@ -224,6 +224,12 @@
   margin-bottom: 16px;
 }
 
+.nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list .center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .nws-modal-wrapper .modal .derivation-path-wrapper input {
   margin-right: 8px;
 }
