@@ -202,6 +202,7 @@ const NightlyConnect: WalletBehaviourFactory<
 
 export type SetupNightlyConnectParams = NightlyConnectParams & {
   iconUrl?: string;
+  deprecated?: boolean;
 };
 
 export function setupNightlyConnect({
@@ -209,6 +210,7 @@ export function setupNightlyConnect({
   timeout,
   url,
   iconUrl = "./assets/nightly-connect.png",
+  deprecated = false,
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -218,7 +220,7 @@ export function setupNightlyConnect({
         name: "Nightly Connect",
         description: null,
         iconUrl: iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

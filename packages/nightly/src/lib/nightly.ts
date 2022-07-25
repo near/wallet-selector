@@ -182,9 +182,11 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export interface NightlyWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 export function setupNightly({
   iconUrl = "./assets/nightly.png",
+  deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
@@ -207,7 +209,7 @@ export function setupNightly({
         iconUrl,
         // Will replace we open beta with stable version
         downloadUrl: "https://www.nightly.app",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: Nightly,
