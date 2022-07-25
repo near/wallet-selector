@@ -276,7 +276,7 @@ export function setupLedger({
     const mobile = isMobile();
     const supported = isLedgerSupported();
 
-    if (mobile || !supported) {
+    if (mobile) {
       return null;
     }
 
