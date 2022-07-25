@@ -6,6 +6,7 @@ import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
@@ -48,6 +49,7 @@ export class AppComponent implements OnInit {
         setupSender(),
         setupMathWallet(),
         setupNightly(),
+        setupMeteorWallet(),
         setupLedger(),
         setupWalletConnect({
           projectId: "c4f79cc...",
