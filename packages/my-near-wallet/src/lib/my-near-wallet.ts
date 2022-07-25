@@ -18,6 +18,7 @@ import { createAction } from "@near-wallet-selector/wallet-utils";
 export interface MyNearWalletParams {
   walletUrl?: string;
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface MyNearWalletState {
@@ -203,6 +204,7 @@ const MyNearWallet: WalletBehaviourFactory<
 export function setupMyNearWallet({
   walletUrl,
   iconUrl = "./assets/my-near-wallet-icon.png",
+  deprecated = false,
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     return {
@@ -212,7 +214,7 @@ export function setupMyNearWallet({
         name: "MyNearWallet",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

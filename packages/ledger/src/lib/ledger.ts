@@ -35,6 +35,7 @@ interface LedgerState {
 
 export interface LedgerParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 export const STORAGE_ACCOUNTS = "accounts";
@@ -271,6 +272,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
 export function setupLedger({
   iconUrl = "./assets/ledger-icon.png",
+  deprecated = false,
 }: LedgerParams = {}): WalletModuleFactory<HardwareWallet> {
   return async () => {
     const mobile = isMobile();
@@ -287,7 +289,7 @@ export function setupLedger({
         name: "Ledger",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: supported,
       },
       init: Ledger,

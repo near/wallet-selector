@@ -198,6 +198,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
 export function setupMeteorWallet({
   iconUrl = "./assets/meteor-icon.png",
+  deprecated = false,
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     return {
@@ -208,7 +209,7 @@ export function setupMeteorWallet({
         name: "Meteor Wallet",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         downloadUrl: "https://wallet.meteorwallet.app",
       },
       init: (options) => {

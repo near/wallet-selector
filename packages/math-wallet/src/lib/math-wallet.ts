@@ -21,6 +21,7 @@ declare global {
 
 export interface MathWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface MathWalletState {
@@ -141,6 +142,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
+  deprecated = false,
 }: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
@@ -159,7 +161,7 @@ export const setupMathWallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: MathWallet,
