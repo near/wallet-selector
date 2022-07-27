@@ -1,6 +1,6 @@
-# @near-wallet-selector/sender
+# @near-wallet-selector/narwallets
 
-This is the [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
+This is the [Narwallets](https://chrome.google.com/webstore/detail/narwallets-v3/ipbomjpcpbebobdnkoogngmknkohncjd) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -8,43 +8,43 @@ The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/sender
+yarn add @near-wallet-selector/narwallets
 
 # Using NPM.
-npm install @near-wallet-selector/sender
+npm install @near-wallet-selector/narwallets
 ```
 
 Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupSender } from "@near-wallet-selector/sender";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
 
-// Sender for Wallet Selector can be setup without any params or it can take one optional param.
-const sender = setupSender({
+// Narwallets for Wallet Selector can be setup without any params or it can take one optional param.
+const narwallets = setupNarwallets({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [sender],
+  modules: [narwallets],
 });
 ```
 
 ## Options
 
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/sender-icon.png`.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/narwallets-logo.png`.
 
 ## Assets
 
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupSender } from "@near-wallet-selector/sender";
-import senderIconUrl from "@near-wallet-selector/sender/assets/sender-icon.png";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
+import narwalletsIconUrl from "@near-wallet-selector/narwallets/assets/narwallets-icon.png";
 
-const sender = setupSender({
-  iconUrl: senderIconUrl
+const narwallets = setupNarwallets({
+  iconUrl: narwalletsIconUrl
 });
 ```
 

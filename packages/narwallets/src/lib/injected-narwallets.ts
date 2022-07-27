@@ -1,5 +1,3 @@
-// Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
-
 // Empty string if we haven't signed in before.
 import { providers } from "near-api-js";
 
@@ -12,10 +10,10 @@ interface AccessKey {
 }
 
 export interface RequestSignInResponse {
-  accessKey: AccessKey;
+  accountId: string;
   error: string | { type: string };
   notificationId: number;
-  type: "sender-wallet-result";
+  type: "narwallets-wallet-result";
 }
 
 export type SignOutResponse = true | { error: string | { type: string } };
@@ -36,7 +34,7 @@ export interface GetRpcResponse {
   method: "getRpc";
   notificationId: number;
   rpc: RpcInfo;
-  type: "sender-wallet-result";
+  type: "narwallets-wallet-result";
 }
 
 export interface RequestSignInParams {
@@ -81,7 +79,7 @@ export interface SignAndSendTransactionResponse {
   notificationId: number;
   error?: string;
   response?: Array<providers.FinalExecutionOutcome>;
-  type: "sender-wallet-extensionResult";
+  type: "narwallets-wallet-extensionResult";
 }
 
 export interface SignAndSendTransactionsResponse {
@@ -90,7 +88,7 @@ export interface SignAndSendTransactionsResponse {
   notificationId: number;
   error?: string;
   response?: Array<providers.FinalExecutionOutcome>;
-  type: "sender-wallet-extensionResult";
+  type: "narwallets-wallet-extensionResult";
 }
 
 export interface Transaction {
@@ -102,27 +100,27 @@ export interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-export interface SenderEvents {
+export interface NarwalletsEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;
   rpcChanged: (response: RpcChangedResponse) => void;
 }
 
-export interface InjectedSender {
-  isSender: boolean;
-  callbacks: Record<keyof SenderEvents, unknown>;
+export interface InjectedNarwallets {
+  isNarwallets: boolean;
+  callbacks: Record<keyof NarwalletsEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
-    params: RequestSignInParams
+    // params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
-  isSignedIn: () => boolean;
+  isSignedIn: boolean;
   remove: (event: string) => void;
-  on: <Event extends keyof SenderEvents>(
+  on: <Event extends keyof NarwalletsEvents>(
     event: Event,
-    callback: SenderEvents[Event]
+    callback: NarwalletsEvents[Event]
   ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
