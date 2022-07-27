@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { HardwareWalletAccountState } from "./DerivationPath";
 
 interface FormProps {
-  hardwareWalletAccounts: Array<HardwareWalletAccountState>;
-  onAccountChanged: (derivationPath: string, selectedAccountId: string) => void;
+  accounts: Array<HardwareWalletAccountState>;
+  onSelectedChanged: (index: number, selected: boolean) => void;
   onSubmit: (
     accounts: Array<HardwareWalletAccountState>,
     e: React.FormEvent<HTMLFormElement>
@@ -11,48 +11,56 @@ interface FormProps {
 }
 
 const HardwareWalletAccountsForm: React.FC<FormProps> = ({
-  hardwareWalletAccounts,
-  onAccountChanged,
+  accounts,
+  onSelectedChanged,
   onSubmit,
 }) => {
+  const [disableButton, setDisableButton] = useState(false);
+
+  useEffect(() => {
+    const selected = accounts.some((x) => x.selected);
+    setDisableButton(!selected);
+  }, [accounts]);
+
   return (
     <div className="choose-ledger-account-form-wrapper">
       <p>
-        Multiple accounts found. Please choose an account per derivation path.
+        We found {accounts.length} accounts on your device. Select the
+        account(s) you wish to connect.
       </p>
       <form
         className="form"
         onSubmit={(e) => {
-          onSubmit(hardwareWalletAccounts, e);
+          onSubmit(accounts, e);
         }}
       >
         <div>
-          {hardwareWalletAccounts.map((account, accountIndex) => {
-            return (
-              <div key={accountIndex} className="form-control">
-                <label>{account.derivationPath}</label>
-                <select
-                  disabled={account.accountIds.length === 1}
-                  defaultValue={account.selectedAccountId}
+          <div className="form-control">
+            {accounts.map((account, index) => (
+              <div key={index}>
+                <input
                   onChange={(e) => {
-                    onAccountChanged(account.derivationPath, e.target.value);
+                    onSelectedChanged(index, e.target.checked);
                   }}
-                >
-                  {account.accountIds.map((accountId) => {
-                    return (
-                      <option key={accountId} value={accountId}>
-                        {accountId}
-                      </option>
-                    );
-                  })}
-                </select>
+                  checked={account.selected}
+                  type="checkbox"
+                  id={account.accountId}
+                  name={account.accountId}
+                  value={account.accountId}
+                />
+                <label htmlFor={account.accountId}> {account.accountId}</label>
+                <br />
               </div>
-            );
-          })}
+            ))}
+          </div>
 
           <div className="action-buttons">
-            <button className="right-button" type="submit">
-              Connect
+            <button
+              className="right-button"
+              type="submit"
+              disabled={disableButton}
+            >
+              Continue
             </button>
           </div>
         </div>
