@@ -85,68 +85,39 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   };
 
   return (
-    <Fragment>
-      <div className="wallet-options-wrapper">
-        <p className="description">
-          {options?.description ||
-            "Please select a wallet to sign in to this dApp:"}
-        </p>
-        <ul className={"options-list"}>
-          {modules.reduce<Array<JSX.Element>>((result, module) => {
-            const { selectedWalletId } = selector.store.getState();
-            const { name, description, iconUrl, deprecated } = module.metadata;
-            const selected = module.id === selectedWalletId;
-            result.push(
-              <li
-                key={module.id}
-                id={module.id}
-                className={
-                  (selected ? "selected-wallet" : "") +
-                  (deprecated ? " deprecated-wallet" : "")
-                }
-                onClick={selected ? undefined : handleWalletClick(module)}
-              >
-                <div title={description || ""} className="wallet-content">
-                  <div className="wallet-img-box">
-                    <img src={iconUrl} alt={name} />
-                  </div>
-                  <div>
-                    <span>{name}</span>
-                  </div>
-                  {selected && (
-                    <div className="selected-wallet-text">
-                      <span>selected</span>
-                    </div>
-                  )}
+    <div className="wallet-options-wrapper">
+      <ul className={"options-list"}>
+        {modules.reduce<Array<JSX.Element>>((result, module) => {
+          const { selectedWalletId } = selector.store.getState();
+          const { name, description, iconUrl, deprecated } = module.metadata;
+          const selected = module.id === selectedWalletId;
+          result.push(
+            <li
+              key={module.id}
+              id={module.id}
+              className={
+                (selected ? "selected-wallet" : "") +
+                (deprecated ? " deprecated-wallet" : "")
+              }
+              onClick={selected ? undefined : handleWalletClick(module)}
+            >
+              <div title={description || ""} className="wallet-content">
+                <div>{name}</div>
+                <div className="wallet-img-box">
+                  <img src={iconUrl} alt={name} />
                 </div>
-              </li>
-            );
+                {selected && (
+                  <div className="selected-wallet-text">
+                    <span>selected</span>
+                  </div>
+                )}
+              </div>
+            </li>
+          );
 
-            return result;
-          }, [])}
-        </ul>
-      </div>
-      <div className="info">
-        <span
-          onClick={() => {
-            setWalletInfoVisible(!walletInfoVisible);
-          }}
-        >
-          What is a Wallet?
-        </span>
-        <div
-          className={`info-description ${
-            walletInfoVisible ? "show" : "hide"
-          }-explanation`}
-        >
-          <p>
-            Wallets are used to send, receive and store digital assets. There
-            are different types of wallets. They can be an extension added to
-            your browser, a hardware device plugged into your computer,
-            web-based or an app on your mobile device.
-          </p>
-        </div>
-      </div>
-    </Fragment>
+          return result;
+        }, [])}
+      </ul>
+    </div>
   );
 };

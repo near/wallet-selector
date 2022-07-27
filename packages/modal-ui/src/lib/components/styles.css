@@ -7,7 +7,7 @@
   --selected-wallet-bg: #A7A7A730;
   --selected-wallet-bg-hover: transparent;
   --wallet-option-border-color: #A7A7A730;
-  --content-bg: #FFFFFF;
+  --content-bg: #2E2E46;
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
   --dismiss-button-bg-hover: #A7A7A730;
@@ -28,7 +28,7 @@
   --selected-wallet-bg: #262626CC;
   --selected-wallet-bg-hover: #262626CC;
   --wallet-option-border-color: #A7A7A730;
-  --content-bg: #3F4246;
+  --content-bg: #2E2E46;
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
   --dismiss-button-bg-hover: #262626CC;
@@ -50,7 +50,7 @@
     --selected-wallet-bg: #262626CC;
     --selected-wallet-bg-hover: #262626CC;
     --wallet-option-border-color: #A7A7A730;
-    --content-bg: #3F4246;
+    --content-bg: #2E2E46;
     --input-border-color-focus: #5F8AFA;
     --box-shadow-color: #26262630;
     --dismiss-button-bg-hover: #262626CC;
@@ -82,7 +82,7 @@
   font-weight: 500;
   z-index: 100;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -119,13 +119,29 @@
 }
 
 /**
+ * Modal Image
+ */
+.nws-modal-wrapper .modal-wallet-image {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.nws-modal-wrapper .modal-wallet-image img {
+  width: 140px;
+  height: 140px;
+}
+/**
  * Modal Header
  */
 
 .nws-modal-wrapper .modal .modal-header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 35px;
 }
 
 .nws-modal-wrapper .modal .modal-header .close-button {
@@ -299,13 +315,13 @@
   list-style-type: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
@@ -315,16 +331,18 @@
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   margin-bottom: 10px;
 }
 
@@ -481,6 +499,11 @@
 @media (max-width: 600px) {
   .nws-modal-wrapper .modal {
     width: 250px;
+  }
+
+  .nws-modal-wrapper .modal-wallet-image img {
+    width: 100px;
+    height: 100px;
   }
 
   .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {

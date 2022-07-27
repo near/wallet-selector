@@ -10,6 +10,7 @@ import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
+import WalletImage from "../img/wallet.svg";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -91,11 +92,14 @@ export const Modal: React.FC<ModalProps> = ({
         visible ? "open" : ""
       }`}
     >
+      <CloseButton onClick={handleDismissClick} />
       <div className="modal-overlay" onClick={handleDismissClick} />
       <div className="modal">
+        <div className="modal-wallet-image">
+          <img src={WalletImage} alt="wallet icon" />
+        </div>
         <div className="modal-header">
           <h2>Connect Wallet</h2>
-          <CloseButton onClick={handleDismissClick} />
         </div>
         <div className="modal-body">
           {route.name === "AlertMessage" && alertMessage && (
