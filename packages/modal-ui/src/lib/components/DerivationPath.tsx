@@ -25,6 +25,7 @@ export type HardwareWalletAccountState = HardwareWalletAccount & {
 
 type HardwareRoutes =
   | "EnterDerivationPath"
+  | "NoAccountsFound"
   | "ChooseAccount"
   | "AddCustomAccountId"
   | "OverviewAccounts";
@@ -130,8 +131,13 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         setRoute("AddCustomAccountId");
         return;
       }
-
+      const noAccounts = resolvedAccounts.length === 0;
       const multipleAccounts = resolvedAccounts.length > 1;
+
+      if (noAccounts) {
+        setRoute("NoAccountsFound");
+        return;
+      }
 
       if (!multipleAccounts) {
         setRoute("OverviewAccounts");
@@ -221,6 +227,29 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             </button>
             <button className="right-button" onClick={handleValidateAccount}>
               Continue
+            </button>
+          </div>
+        </div>
+      )}
+
+      {route === "NoAccountsFound" && (
+        <div className="no-accounts-found-wrapper">
+          <p>
+            Can't found any account associated with this Ledger. Please create a
+            new NEAR account on{" "}
+            <a href="https://app.mynearwallet.com/create" target="_blank">
+              MyNearWallet
+            </a>{" "}
+            or connect an another Ledger.
+          </p>
+          <div className="action-buttons">
+            <button
+              className="left-button"
+              onClick={() => {
+                setRoute("EnterDerivationPath");
+              }}
+            >
+              Back
             </button>
           </div>
         </div>

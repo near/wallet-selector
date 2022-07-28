@@ -239,6 +239,15 @@
   color: var(--wallet-selector-error, var(--error));
 }
 
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper a {
+  color: #5f8afa;
+  text-decoration: none;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper .action-buttons {
+  justify-content: flex-start;
+}
+
 .nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account {
   font-size: 15px;
   color: #5f8afa;
