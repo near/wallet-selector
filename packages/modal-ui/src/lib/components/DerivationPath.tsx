@@ -51,8 +51,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
   const handleAddAccount = (account: HardwareWalletAccountState) => {
     setAccounts((prevAccounts) => {
-      prevAccounts.push(account);
-      return [...prevAccounts];
+      return [...prevAccounts, account];
     });
   };
 
