@@ -245,9 +245,11 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           onSubmit={(acc, e) => {
             e.preventDefault();
             setAccounts((prevAccounts) => {
-              prevAccounts = prevAccounts.filter((account) => account.selected);
+              const selectedAccounts = prevAccounts.filter(
+                (account) => account.selected
+              );
 
-              return [...prevAccounts];
+              return [...selectedAccounts];
             });
             setRoute("OverviewAccounts");
           }}
