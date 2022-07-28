@@ -142,7 +142,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       if (!multipleAccounts) {
         setRoute("OverviewAccounts");
       } else {
-        setConnecting(false);
         setRoute("ChooseAccount");
       }
     } catch (err) {
