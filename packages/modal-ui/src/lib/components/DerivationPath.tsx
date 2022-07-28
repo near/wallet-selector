@@ -48,7 +48,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [hardwareWallet, setHardwareWallet] = useState<Wallet>();
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
-  const [indexerFailed, setIndexerFailed] = useState(false);
 
   const handleAddAccount = (account: HardwareWalletAccountState) => {
     setAccounts((prevAccounts) => {
@@ -92,7 +91,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         selected,
       };
     } catch (e) {
-      setIndexerFailed(true);
       return null;
     }
   };
@@ -130,8 +128,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
     try {
       const account = await resolveAccount(wallet);
-
-      if (!account || indexerFailed) {
+      if (!account) {
         setRoute("AddCustomAccountId");
         return;
       }
