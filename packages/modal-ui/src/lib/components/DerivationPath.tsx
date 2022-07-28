@@ -20,7 +20,6 @@ interface DerivationPathProps {
 }
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
-  accountIds: Array<string>;
   selected: boolean;
 };
 
@@ -49,12 +48,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const handleAddAccount = (account: HardwareWalletAccountState) => {
-    setAccounts((prevAccounts) => {
-      return [...prevAccounts, account];
-    });
-  };
-
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const response = await fetch(
       `${selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
@@ -73,22 +66,28 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     return accountIds;
   };
 
-  const resolveAccount = async (
+  const resolveAccounts = async (
     wallet: Wallet
-  ): Promise<HardwareWalletAccountState | null> => {
+  ): Promise<Array<HardwareWalletAccountState> | null> => {
     const publicKey = await (wallet as HardwareWallet).getPublicKey(
       derivationPath
     );
     try {
       const accountIds = await getAccountIds(publicKey);
-      const selected = accountIds.length === 1;
-      return {
-        derivationPath: derivationPath,
-        publicKey,
-        accountId: accountIds[0],
-        accountIds,
-        selected,
-      };
+      const foundAccounts: Array<HardwareWalletAccountState> = [];
+
+      for (let i = 0; i < accountIds.length; i++) {
+        const selected = i === 0;
+        foundAccounts.push({
+          derivationPath,
+          publicKey,
+          accountId: accountIds[i],
+          selected,
+        });
+      }
+      setAccounts(foundAccounts);
+
+      return foundAccounts;
     } catch (e) {
       return null;
     }
@@ -126,22 +125,17 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     setHardwareWallet(wallet);
 
     try {
-      const account = await resolveAccount(wallet);
-      if (!account) {
+      const resolvedAccounts = await resolveAccounts(wallet);
+      if (!resolvedAccounts) {
         setRoute("AddCustomAccountId");
         return;
       }
 
-      const multipleAccountIds = account.accountIds.length > 1;
+      const multipleAccounts = resolvedAccounts.length > 1;
 
-      if (!multipleAccountIds) {
-        handleAddAccount(account);
+      if (!multipleAccounts) {
         setRoute("OverviewAccounts");
       } else {
-        for (let i = 0; i < account.accountIds.length; i++) {
-          account.selected = i === 0;
-          handleAddAccount({ ...account, accountId: account.accountIds[i] });
-        }
         setConnecting(false);
         setRoute("ChooseAccount");
       }
@@ -170,14 +164,14 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const publicKey = await (hardwareWallet as HardwareWallet).getPublicKey(
         derivationPath
       );
-
-      handleAddAccount({
-        derivationPath: derivationPath,
-        publicKey,
-        accountId: customAccountId,
-        accountIds: [customAccountId],
-        selected: true,
-      });
+      setAccounts([
+        {
+          derivationPath: derivationPath,
+          publicKey,
+          accountId: customAccountId,
+          selected: true,
+        },
+      ]);
       setRoute("OverviewAccounts");
     } catch (err) {
       setConnecting(false);
