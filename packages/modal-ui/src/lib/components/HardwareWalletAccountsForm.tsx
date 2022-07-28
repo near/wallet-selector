@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { HardwareWalletAccountState } from "./DerivationPath";
 
 interface FormProps {
@@ -15,13 +15,6 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
   onSelectedChanged,
   onSubmit,
 }) => {
-  const [disableButton, setDisableButton] = useState(false);
-
-  useEffect(() => {
-    const selected = accounts.some((x) => x.selected);
-    setDisableButton(!selected);
-  }, [accounts]);
-
   return (
     <div className="choose-ledger-account-form-wrapper">
       <p>
@@ -58,7 +51,7 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
             <button
               className="right-button"
               type="submit"
-              disabled={disableButton}
+              disabled={!accounts.some((x) => x.selected)}
             >
               Continue
             </button>
