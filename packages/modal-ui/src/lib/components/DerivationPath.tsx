@@ -94,27 +94,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     }
   };
 
-  const handleSignIn = () => {
-    const mapAccounts = accounts.map((account: HardwareWalletAccount) => {
-      return {
-        derivationPath: account.derivationPath,
-        publicKey: account.publicKey,
-        accountId: account.accountId,
-      };
-    });
-
-    return hardwareWallet!
-      .signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-        accounts: mapAccounts,
-      })
-      .then(() => onConnected())
-      .catch((err) => {
-        onError(`Error: ${err.message}`);
-      });
-  };
-
   const handleValidateAccount = async () => {
     const wallet = await selector.wallet(params.walletId);
 
@@ -154,13 +133,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       setConnecting(false);
     }
   };
-  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    if (e.key === "Enter") {
-      await handleValidateAccount();
-    }
-  };
 
   const handleAddCustomAccountId = async () => {
     try {
@@ -185,6 +157,35 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       onError(message);
     } finally {
       setConnecting(false);
+    }
+  };
+
+  const handleSignIn = () => {
+    const mapAccounts = accounts.map((account: HardwareWalletAccount) => {
+      return {
+        derivationPath: account.derivationPath,
+        publicKey: account.publicKey,
+        accountId: account.accountId,
+      };
+    });
+
+    return hardwareWallet!
+      .signIn({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+        accounts: mapAccounts,
+      })
+      .then(() => onConnected())
+      .catch((err) => {
+        onError(`Error: ${err.message}`);
+      });
+  };
+
+  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
+    e
+  ) => {
+    if (e.key === "Enter") {
+      await handleValidateAccount();
     }
   };
 
