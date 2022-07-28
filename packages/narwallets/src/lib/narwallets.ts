@@ -13,6 +13,7 @@ import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNarwallets, SignAndSendTransactionParams, SignAndSendTransactionResponse } from "./injected-narwallets";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
+import { providers } from "near-api-js";
 
 declare global {
   interface Window {
@@ -54,9 +55,18 @@ const getAccountId = (): Promise<string> => {
   return sendToNarwallets(code, true)
 };
 
-const callSignAndSendTransaction = (params: SignAndSendTransactionParams): Promise<SignAndSendTransactionResponse> => {
+interface SignAndSendResponseError {
+  error: string
+}
+
+const callSignAndSendTransaction = (params: SignAndSendTransactionParams): Promise<providers.FinalExecutionOutcome|SignAndSendResponseError> => {
   const code = "sign-and-send-transaction";
-  return sendToNarwallets(code, true, params)
+  return sendToNarwallets(code, false, params)
+};
+
+const callSignAndSendTransactions = (params: SignAndSendTransactionParams[]): Promise<providers.FinalExecutionOutcome[]|SignAndSendResponseError> => {
+  const code = "sign-and-send-transactions";
+  return sendToNarwallets(code, false, params)
 };
 
 const sendToNarwallets = (code: string, withTimeout: boolean = false, params?: any): Promise<any> => {
@@ -130,20 +140,21 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
   const _state = setupNarwalletsState();
 
   const cleanup = () => {
-    for (const key in _state.wallet.callbacks) {
-      _state.wallet.remove(key);
-    }
+    // for (const key in _state.wallet.callbacks) {
+    //   _state.wallet.remove(key);
+    // }
   };
 
   const signOut = async () => {
-    if (!await isSignedIn()) {
+    if (!(await isSignedIn())) {
       return;
     }
 
     cleanup();
 
-    const res = await _state.wallet.signOut();
-
+    const res = await sendToNarwallets("sign-out")
+    // const res = await _state.wallet.signOut();
+    console.log("DRes", res)
     if (res === true) {
       return;
     }
@@ -210,7 +221,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId">>
-  ) => {
+  ): SignAndSendTransactionParams[] => {
     return transactions.map((transaction) => {
       return {
         receiverId: transaction.receiverId,
@@ -259,35 +270,13 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         receiverId: receiverId || contract.contractId,
         actions: transformActions(actions),
       }).then((res) => {
-        if (res.error) {
+        console.log("DResponse", res)
+        if ("error" in res) {
           throw new Error(res.error);
         }
 
-        // Shouldn't happen but avoids inconsistent responses.
-        if (!res.response?.length) {
-          throw new Error("Invalid response");
-        }
-
-        return res.response[0];
+        return res;
       });
-
-      // return _state.wallet
-      //   .signAndSendTransaction({
-      //     receiverId: receiverId || contract.contractId,
-      //     actions: transformActions(actions),
-      //   })
-      //   .then((res) => {
-      //     if (res.error) {
-      //       throw new Error(res.error);
-      //     }
-
-      //     // Shouldn't happen but avoids inconsistent responses.
-      //     if (!res.response?.length) {
-      //       throw new Error("Invalid response");
-      //     }
-
-      //     return res.response[0];
-      //   });
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -297,21 +286,20 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      return _state.wallet
-        .requestSignTransactions({
-          transactions: transformTransactions(transactions),
-        })
+      return callSignAndSendTransactions(
+          transformTransactions(transactions),
+        )
         .then((res) => {
-          if (res.error) {
+          if ("error" in res) {
             throw new Error(res.error);
           }
 
           // Shouldn't happen but avoids inconsistent responses.
-          if (!res.response?.length) {
+          if (!res.length) {
             throw new Error("Invalid response");
           }
 
-          return res.response;
+          return res;
         });
     },
   };

@@ -78,6 +78,7 @@ export interface SignAndSendTransactionResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
+  // response?: Array<providers.FinalExecutionOutcome>;
   response?: Array<providers.FinalExecutionOutcome>;
   type: "narwallets-wallet-extensionResult";
 }
