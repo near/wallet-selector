@@ -74,7 +74,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ options, store, params, logger }) => {
+> = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -155,18 +155,10 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async signMessage({ signerId, message }) {
-      const account = _state.wallet.account();
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("MeteorWallet:verifyOwner", { message, signerId, publicKey });
 
-      if (!account) {
-        throw new Error("Wallet not signed in");
-      }
-
-      return account.connection.signer.signMessage(
-        message,
-        signerId || account.accountId,
-        options.network.networkId
-      );
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({
