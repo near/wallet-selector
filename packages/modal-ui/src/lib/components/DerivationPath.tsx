@@ -233,7 +233,14 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           <p>
             Can't found any account associated with this Ledger. Please create a
             new NEAR account on{" "}
-            <a href="https://app.mynearwallet.com/create" target="_blank">
+            <a
+              href={`https://${
+                selector.options.network.networkId === "testnet"
+                  ? "testnet"
+                  : "app"
+              }.mynearwallet.com/create`}
+              target="_blank"
+            >
               MyNearWallet
             </a>{" "}
             or connect an another Ledger.
