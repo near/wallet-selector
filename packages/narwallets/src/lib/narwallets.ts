@@ -290,10 +290,10 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
           transformTransactions(transactions),
         )
         .then((res) => {
+          console.log("DSignAndSendTransactions", res)
           if ("error" in res) {
             throw new Error(res.error);
           }
-
           // Shouldn't happen but avoids inconsistent responses.
           if (!res.length) {
             throw new Error("Invalid response");
