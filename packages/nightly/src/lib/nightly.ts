@@ -40,6 +40,7 @@ const isInstalled = () => {
   return waitFor(() => !!window.nightly!.near!).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
+  metadata,
   options,
   store,
   logger,
@@ -139,6 +140,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async getAccounts() {
       return getAccounts().map(({ accountId }) => ({ accountId }));
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("Nightly:verifyOwner", { message, signerId, publicKey });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
