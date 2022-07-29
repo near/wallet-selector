@@ -111,15 +111,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     alert("Switched account to " + nextAccountId);
   }
 
-  async onSignMessage() {
+  async onVerifyOwner() {
     const wallet = await this.selector.wallet();
-    const message = "Hello World";
+    const signature = await wallet.verifyOwner();
 
-    const signature = await wallet.signMessage({
-      message: new Uint8Array(Buffer.from(message)),
-    });
-
-    alert(`Signature for '${message}': ${signature.signature.toString()}`);
+    alert(`Signature for verification: ${signature.signature.toString()}`);
   }
 
   subscribeToEvents() {

@@ -164,15 +164,11 @@ const Content: React.FC = () => {
     [selector, accountId]
   );
 
-  const handleSignMessage = async () => {
+  const handleVerifyOwner = async () => {
     const wallet = await selector.wallet();
-    const message = "Hello World";
+    const signature = await wallet.verifyOwner();
 
-    const signature = await wallet.signMessage({
-      message: new Uint8Array(Buffer.from(message)),
-    });
-
-    alert(`Signature for '${message}': ${signature.signature.toString()}`);
+    alert(`Signature for verification: ${signature.signature.toString()}`);
   };
 
   const handleSubmit = useCallback(
@@ -231,7 +227,7 @@ const Content: React.FC = () => {
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchWallet}>Switch Wallet</button>
-        <button onClick={handleSignMessage}>Sign Message</button>
+        <button onClick={handleVerifyOwner}>Verify Owner</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
