@@ -228,8 +228,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("No active account");
       }
 
+      const networkId = options.network.networkId;
       const accountId = signerId || account.accountId;
-      const pubKey = publicKey || (await signer.getPublicKey(accountId));
+      const pubKey =
+        publicKey || (await signer.getPublicKey(accountId, networkId));
       const block = await provider.block({ finality: "final" });
 
       const msg = JSON.stringify({
@@ -243,7 +245,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return signer.signMessage(
         new Uint8Array(Buffer.from(msg)),
         accountId,
-        options.network.networkId
+        networkId
       );
     },
 

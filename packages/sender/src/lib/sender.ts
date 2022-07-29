@@ -191,9 +191,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet is locked");
       }
 
+      const networkId = options.network.networkId;
       const accountId = signerId || account.accountId;
       const pubKey =
-        publicKey || (await account.connection.signer.getPublicKey(accountId));
+        publicKey ||
+        (await account.connection.signer.getPublicKey(accountId, networkId));
       const block = await provider.block({ finality: "final" });
 
       const msg = JSON.stringify({
@@ -207,7 +209,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return account.connection.signer.signMessage(
         new Uint8Array(Buffer.from(msg)),
         accountId,
-        options.network.networkId
+        networkId
       );
     },
 
