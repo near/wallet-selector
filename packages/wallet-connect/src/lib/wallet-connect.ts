@@ -66,7 +66,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, store, params, emitter, logger }) => {
+> = async ({ metadata, options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -177,25 +177,10 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async signMessage({ signerId, message }) {
-      const accounts = getAccounts();
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("Sender:verifyOwner", { message, signerId, publicKey });
 
-      if (!_state.session || !accounts.length) {
-        throw new Error("Wallet not signed in");
-      }
-
-      return _state.client.request({
-        timeout: 30 * 1000,
-        topic: _state.session.topic,
-        chainId: getChainId(),
-        request: {
-          method: "near_signMessage",
-          params: {
-            signerId: signerId || accounts[0].accountId,
-            message,
-          },
-        },
-      });
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
