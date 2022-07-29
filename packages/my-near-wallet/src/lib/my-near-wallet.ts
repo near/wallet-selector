@@ -156,7 +156,7 @@ const MyNearWallet: WalletBehaviourFactory<
     },
 
     async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("MeteorWallet:verifyOwner", { message, signerId, publicKey });
+      logger.log("verifyOwner", { message, signerId, publicKey });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
