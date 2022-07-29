@@ -86,7 +86,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           selected,
         });
       }
-      setAccounts(foundAccounts);
 
       return foundAccounts;
     } catch (e) {
@@ -117,6 +116,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         setRoute("NoAccountsFound");
         return;
       }
+      setAccounts(resolvedAccounts);
 
       if (!multipleAccounts) {
         setRoute("OverviewAccounts");
