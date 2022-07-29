@@ -48,7 +48,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params }) => {
+> = async ({ metadata, options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -153,6 +153,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("MeteorWallet:verifyOwner", { message, signerId, publicKey });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
