@@ -1,12 +1,12 @@
 import React, { KeyboardEventHandler, useState } from "react";
 import type {
   HardwareWallet,
+  HardwareWalletAccount,
   Wallet,
   WalletSelector,
 } from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
 import type { DerivationPathModalRouteParams } from "./Modal.types";
-import type { HardwareWalletAccount } from "@near-wallet-selector/core";
 import HardwareWalletAccountsForm from "./HardwareWalletAccountsForm";
 import { WalletConnecting } from "./WalletConnecting";
 
@@ -75,19 +75,15 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     );
     try {
       const accountIds = await getAccountIds(publicKey);
-      const foundAccounts: Array<HardwareWalletAccountState> = [];
 
-      for (let i = 0; i < accountIds.length; i++) {
-        const selected = i === 0;
-        foundAccounts.push({
+      return accountIds.map((accountId, index) => {
+        return {
           derivationPath,
           publicKey,
-          accountId: accountIds[i],
-          selected,
-        });
-      }
-
-      return foundAccounts;
+          accountId,
+          selected: index === 0,
+        };
+      });
     } catch (e) {
       return null;
     }
