@@ -176,6 +176,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("Sender:verifyOwner", { message, signerId, publicKey });
+
       const account = _state.wallet.account();
 
       if (!account) {
