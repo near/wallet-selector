@@ -10,6 +10,7 @@ import type { Options } from "../options.types";
 import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
+import { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
   name: string;
@@ -28,9 +29,11 @@ export interface SignInParams {
   methodNames?: Array<string>;
 }
 
-export interface SignMessageParams {
+export interface VerifyOwnerParams {
   signerId?: string;
-  message: Uint8Array;
+  message?: string;
+  publicKey?: PublicKey;
+  blockHash?: Uint8Array;
 }
 
 export interface SignAndSendTransactionParams {
@@ -47,7 +50,7 @@ interface BaseWalletBehaviour {
   signIn(params: SignInParams): Promise<Array<Account>>;
   signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
-  signMessage(params: SignMessageParams): Promise<utils.key_pair.Signature>;
+  verifyOwner(params: VerifyOwnerParams): Promise<utils.key_pair.Signature>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;
