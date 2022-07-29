@@ -1,0 +1,11 @@
+{
+  "presets": [
+    [
+      "@nrwl/web/babel",
+      {
+        "useBuiltIns": "usage"
+      }
+    ]
+  ],
+  "plugins": []
+}

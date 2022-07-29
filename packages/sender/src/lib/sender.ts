@@ -19,6 +19,7 @@ declare global {
 
 export interface SenderParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface SenderState {
@@ -136,7 +137,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  if (_state.wallet.isSignedIn()) {
+  if (_state.wallet && _state.wallet.isSignedIn()) {
     setupEvents();
   }
 
@@ -251,12 +252,13 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export function setupSender({
   iconUrl = "./assets/sender-icon.png",
+  deprecated = false,
 }: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -275,7 +277,8 @@ export function setupSender({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
-        deprecated: false,
+        deprecated,
+        available: installed,
       },
       init: Sender,
     };

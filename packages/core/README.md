@@ -4,7 +4,15 @@ This is the core package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+
+```bash
+# Using Yarn
+yarn add near-api-js@^0.44.2
+
+# Using NPM.
+npm install near-api-js@^0.44.2
+```
 
 ```bash
 # Using Yarn
@@ -29,7 +37,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `network` (`NetworkId | Network`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet`, `testnet` or `betanet`.
+- `network` (`NetworkId | Network`): Network ID or object matching that of your dApp configuration . Network ID can be either `mainnet` or `testnet`.
   - `networkId` (`string`): Custom network ID (e.g. `localnet`).
   - `nodeUrl` (`string`): Custom URL for RPC requests.
   - `helperUrl` (`string`): Custom URL for creating accounts.

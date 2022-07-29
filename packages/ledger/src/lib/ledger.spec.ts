@@ -2,35 +2,12 @@
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
-import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
-import type {
-  ProviderService,
-  JsonStorageService,
-} from "../../../core/src/lib/services";
+import type { ProviderService } from "../../../core/src/lib/services";
 import { LedgerClient } from "./ledger-client";
-import type {
-  Store,
-  WalletSelectorState,
-} from "../../../core/src/lib/store.types";
 
-const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
-  const storageState: Record<string, never> = {};
+const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
-
-  const store = mock<Store>();
-
-  const state: WalletSelectorState = {
-    contract: {
-      contractId: "guest-book.testnet",
-      methodNames: [],
-    },
-    modules: [],
-    accounts: [],
-    selectedWalletId: "ledger",
-  };
-
-  store.getState.mockReturnValue(state);
 
   const ledgerClient = mock<LedgerClient>({
     getPublicKey: jest.fn().mockResolvedValue(publicKey),
@@ -62,18 +39,8 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
   const { setupLedger } = require("./ledger");
 
   const provider = mock<ProviderService>();
-  const storage = mock<JsonStorageService>({
-    getItem: jest.fn(async (key) => storageState[key] || null),
-    setItem: jest.fn(async (key, value) => {
-      // @ts-ignore
-      storageState[key] = value;
-    }),
-  });
-  const ledgerWallet = await mockWallet<HardwareWallet>(setupLedger(), {
-    storage,
+  const { wallet, storage } = await mockWallet<HardwareWallet>(setupLedger(), {
     provider,
-    store,
-    ...deps,
   });
 
   provider.viewAccessKey.mockResolvedValue({
@@ -85,8 +52,8 @@ const createLedgerWallet = async (deps: MockWalletDependencies = {}) => {
 
   return {
     nearApiJs: require("near-api-js"),
-    wallet: ledgerWallet!,
-    storage: deps.storage || storage,
+    wallet,
+    storage,
     ledgerClient,
     publicKey,
   };
@@ -100,32 +67,32 @@ describe("connect", () => {
   it("signs in", async () => {
     const accountId = "amirsaran.testnet";
     const derivationPath = "44'/397'/0'/0'/1'";
-    const { wallet, ledgerClient, storage, publicKey } =
-      await createLedgerWallet();
+    const { wallet, storage, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: [derivationPath],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
 
-    expect(ledgerClient.isConnected).toHaveBeenCalledTimes(1);
-    expect(ledgerClient.connect).toHaveBeenCalledTimes(1);
-    expect(ledgerClient.getPublicKey).toHaveBeenCalledTimes(1);
-    expect(storage.setItem).toHaveBeenCalledWith("accounts", [
-      {
-        accountId,
-        derivationPath,
-        publicKey,
-      },
-    ]);
+    expect(storage.setItem).toHaveBeenCalledWith(
+      "near-wallet-selector:ledger:accounts",
+      JSON.stringify([
+        {
+          accountId,
+          derivationPath,
+          publicKey,
+        },
+      ])
+    );
   });
 });
 
 describe("getAccounts", () => {
   it("returns account objects", async () => {
     const accountId = "amirsaran.testnet";
-    const { wallet } = await createLedgerWallet();
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const result = await wallet.getAccounts();
@@ -140,9 +107,11 @@ describe("getAccounts", () => {
 
 describe("signAndSendTransaction", () => {
   it("signs and sends transaction", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     await wallet.signAndSendTransaction({
@@ -156,9 +125,11 @@ describe("signAndSendTransaction", () => {
 
 describe("signAndSendTransactions", () => {
   it("signs and sends only one transaction", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [
@@ -176,9 +147,11 @@ describe("signAndSendTransactions", () => {
   });
 
   it("signs and sends multiple transactions", async () => {
-    const { wallet, ledgerClient } = await createLedgerWallet();
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
     await wallet.signIn({
-      derivationPaths: ["44'/397'/0'/0'/1'"],
+      accounts: [{ derivationPath, publicKey, accountId }],
       contractId: "guest-book.testnet",
     });
     const transactions: Array<Transaction> = [

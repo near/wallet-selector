@@ -217,13 +217,6 @@
  * Modal Ledger Derivation Path Section/Wrapper
  */
 
-.nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
 .nws-modal-wrapper .modal .derivation-path-wrapper input {
   margin-right: 8px;
 }
@@ -244,6 +237,111 @@
 .nws-modal-wrapper .modal .derivation-path-wrapper .error {
   font-family: inherit;
   color: var(--wallet-selector-error, var(--error));
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper a {
+  color: #5f8afa;
+  text-decoration: none;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper .action-buttons {
+  justify-content: flex-start;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account {
+  font-size: 15px;
+  color: #5f8afa;
+  cursor: pointer;
+}
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account:hover {
+  text-decoration: underline;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account:hover {
+  text-decoration: underline;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .error {
+  font-size: 12px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .action-buttons {
+  margin-top: 20px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .action-buttons .right-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header {
+  padding: 10px;
+  border-bottom: 1px solid rgb(216, 216, 216);
+  margin-bottom: 10px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header h4 {
+  margin: 0;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header span {
+  color: rgb(95, 138, 250);
+  cursor: pointer;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .account {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .action-buttons {
+  justify-content: flex-end;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account .input-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account input {
+  max-width: 250px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account .action-buttons {
+  justify-content: flex-end;
+}
+
+/**
+ * Modal Wallet ChooseLedgerAccountForm/Wrapper
+ */
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+  margin-bottom: 16px;
+  padding: 10px;
+  box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
+  color: var(--text-color);
+}
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
+  color: inherit;
+}
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
+  color: inherit;
+}
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select option {
+  background-color: var(--content-bg);
+}
+
+
+.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .action-buttons {
+  justify-content: flex-end;
 }
 
 /**
@@ -269,22 +367,33 @@
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li {
+  display: flex;
+  justify-content: center;
   padding: 1em;
   cursor: pointer;
   border-radius: 8px;
   border: 1px solid var(--wallet-selector-wallet-option-border-color, var(--wallet-option-border-color));
-  display: flex;
   transition: background-color 0.2s ease-in-out;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li div {
-  margin: auto;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li img {
-  display: block;
-  margin: 0 auto 5px;
-  max-width: 50px;
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box img {
+  text-align: center;
+  width: 100%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li:hover {
@@ -293,6 +402,10 @@
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.selected-wallet {
   background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+}
+
+.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.deprecated-wallet div {
+  opacity: 50%;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .selected-wallet-text {
@@ -344,11 +457,44 @@
   animation-fill-mode: forwards;
 }
 
+/**
+ * Modal Wallet Not Installed Section/Wrapper
+ */
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data {
+  display: flex;
+  align-items: center;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .refresh-link {
+  color: #5f8afa;
+  cursor: pointer;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data p {
+  margin: 0 0 0 10px;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box {
+  width: 40px;
+  height: 40px;
+}
+
+.nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box img {
+  width: 100%;
+  height: auto;
+}
+
 .open {
   opacity: 1;
   visibility: visible;
   transition: visibility 0s linear 0s, opacity 0.25s 0s;
 }
+
+/**
+ * Modal Wallet Connecting Section/Wrapper
+ */
+
 .nws-modal-wrapper .modal .connecting-wrapper .content {
   display: flex;
   flex-direction: column;
@@ -376,12 +522,17 @@
   /*animation: spin 1.4s linear infinite;*/
   animation: spin 1.3s ease infinite;
 }
-.nws-modal-wrapper .spinner img {
+.nws-modal-wrapper .spinner .icon {
   width: calc(var(--size) / 1.2);
   height: calc(var(--size) / 1.2);
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 50%;
   box-shadow: rgb(0 0 0 / 5%) 0 10px 20px 0;
+}
+.nws-modal-wrapper .spinner img {
+  width: 100%;
+  height: auto;
+  padding: 20px;
 }
 
 @keyframes spin {
@@ -398,21 +549,37 @@
   .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {
     max-width: 140px;
   }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+    flex-direction: column;
+  }
+
+  .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+    text-align: center;
+  }
 }
 
 .nws-modal-wrapper.dark-theme .modal #near-wallet img,
-.nws-modal-wrapper.dark-theme .modal #my-near-wallet img,
 .nws-modal-wrapper.dark-theme .modal #math-wallet img,
-.nws-modal-wrapper.dark-theme .modal #wallet-connect img {
+.nws-modal-wrapper.dark-theme .modal #ledger img,
+.nws-modal-wrapper.dark-theme .modal .wallet-not-installed-wrapper .math-wallet img {
   filter: invert(1);
+}
+
+.nws-modal-wrapper.dark-theme .spinner .icon {
+  box-shadow: 0 10px 20px 0 rgb(255 255 255 / 5%)
 }
 
 @media (prefers-color-scheme: dark) {
   .nws-modal-wrapper .modal #near-wallet img,
-  .nws-modal-wrapper .modal #my-near-wallet img,
   .nws-modal-wrapper .modal #math-wallet img,
-  .nws-modal-wrapper .modal #wallet-connect img {
+  .nws-modal-wrapper .modal #ledger img,
+  .nws-modal-wrapper .modal .wallet-not-installed-wrapper .math-wallet img {
     filter: invert(1);
+  }
+
+  .nws-modal-wrapper .spinner .icon {
+    box-shadow: 0 10px 20px 0 rgb(255 255 255 / 5%)
   }
 }
 

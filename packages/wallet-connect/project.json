@@ -1,25 +1,30 @@
 {
-  "root": "packages/wallet-connect",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-connect/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
-      "targetDependencies": {
-        "build": [{
-          "target": "build",
-          "projects": "dependencies"
-        }]
-      },
       "options": {
         "outputPath": "dist/packages/wallet-connect",
-        "main": "packages/wallet-connect/src/index.ts",
         "tsConfig": "packages/wallet-connect/tsconfig.lib.json",
+        "project": "packages/wallet-connect/package.json",
+        "entryFile": "packages/wallet-connect/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
         "assets": [
-          "packages/wallet-connect/*.md",
-          "packages/wallet-connect/assets/*"
+          {
+            "glob": "packages/wallet-connect/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/wallet-connect/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
         ]
       }
     },
@@ -34,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/wallet-connect"],
       "options": {
-        "jestConfig": "packages/wallet-connect/jest.config.js",
+        "jestConfig": "packages/wallet-connect/jest.config.ts",
         "passWithNoTests": true
       }
     },

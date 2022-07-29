@@ -66,6 +66,7 @@ These are the available css variables:
 --wallet-selector-text-color
 --wallet-selector-selected-wallet-bg
 --wallet-selector-selected-wallet-bg-hover
+--deprecated-wallet-bg
 --wallet-selector-wallet-option-border-color
 --wallet-selector-content-bg
 --wallet-selector-input-border-color-focus

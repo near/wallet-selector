@@ -3,13 +3,15 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
-  AccountState,
+  Account,
   Optional,
   Transaction,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 declare global {
   interface Window {
@@ -19,6 +21,7 @@ declare global {
 
 export interface MathWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface MathWalletState {
@@ -46,7 +49,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupMathWalletState();
 
-  const getAccounts = (): Array<AccountState> => {
+  const getAccounts = (): Array<Account> => {
     const account = _state.wallet.signer.account;
 
     if (!account) {
@@ -59,16 +62,21 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
-    const accounts = getAccounts();
     const { contract } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!contract) {
       throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || accounts[0].accountId,
+        signerId: transaction.signerId || account.accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
@@ -139,21 +147,26 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         signedTransactions
       );
 
-      return Promise.all(
-        signedTransactions.map((tx) => provider.sendTransaction(tx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        results.push(await provider.sendTransaction(signedTransactions[i]));
+      }
+
+      return results;
     },
   };
 };
 
 export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
+  deprecated = false,
 }: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (mobile || !installed) {
+    if (mobile) {
       return null;
     }
 
@@ -166,7 +179,8 @@ export const setupMathWallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-        deprecated: false,
+        deprecated,
+        available: installed,
       },
       init: MathWallet,
     };

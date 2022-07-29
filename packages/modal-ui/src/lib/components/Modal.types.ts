@@ -1,4 +1,5 @@
 import type { Wallet } from "@near-wallet-selector/core";
+import { ModuleState } from "@near-wallet-selector/core";
 
 export type AlertMessageModalRouteParams = {
   wallet: Wallet;
@@ -13,7 +14,7 @@ export type DerivationPathModalRouteParams = {
 };
 
 export type WalletNotInstalledModalRouteParams = {
-  wallet: Wallet;
+  module: ModuleState;
 };
 
 export type WalletNetworkChangedModalRouteParams = {

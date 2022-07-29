@@ -15,10 +15,10 @@ yarn nx run [project][:target][:configuration] [options, ...]
 yarn nx r [project][:target][:configuration] [options, ...]
 ```
 
-In order to run a specific example, make sure you build the UI library beforehand and on each modification by running:
+In order to run a specific example, make sure you build the packages beforehand by running:
 
 ```bash
-yarn build # build core package
+yarn build:all # builds all packages
 
 yarn nx serve react # run the react example
 yarn nx serve angular # run the angular example
@@ -27,6 +27,6 @@ yarn nx serve angular # run the angular example
 Build and deploy react example
 
 ```bash
-yarn nx build react # build the react example
-yarn nx deploy react # deploys react example to gh-pages
+yarn nx build angular # build the angular example
+yarn nx deploy angular # deploys angular example to gh-pages
 ```

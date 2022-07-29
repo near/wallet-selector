@@ -10,6 +10,7 @@ import type { ModalOptions } from "../modal.types";
 interface WalletOptionsProps {
   selector: WalletSelector;
   options: ModalOptions;
+  onWalletNotInstalled: (module: ModuleState) => void;
   onConnectHardwareWallet: () => void;
   onConnected: () => void;
   onConnecting: (wallet: Wallet) => void;
@@ -19,6 +20,7 @@ interface WalletOptionsProps {
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   options,
+  onWalletNotInstalled,
   onError,
   onConnectHardwareWallet,
   onConnecting,
@@ -29,6 +31,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
+      state.modules.sort((current, next) => {
+        if (current.metadata.deprecated === next.metadata.deprecated) {
+          return 0;
+        }
+
+        return current.metadata.deprecated ? 1 : -1;
+      });
       setModules(state.modules);
     });
 
@@ -38,6 +47,20 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   const handleWalletClick = (module: ModuleState) => async () => {
     try {
+      const { deprecated, available } = module.metadata;
+
+      if (module.type === "injected" && !available) {
+        return onWalletNotInstalled(module);
+      }
+
+      if (deprecated) {
+        return onError(
+          new Error(
+            `${module.metadata.name} is deprecated. Please select another wallet.`
+          )
+        );
+      }
+
       const wallet = await module.wallet();
       onConnecting(wallet);
 
@@ -71,18 +94,22 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
-            const { name, description, iconUrl } = module.metadata;
+            const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
-
             result.push(
               <li
                 key={module.id}
                 id={module.id}
-                className={selected ? "selected-wallet" : ""}
+                className={
+                  (selected ? "selected-wallet" : "") +
+                  (deprecated ? " deprecated-wallet" : "")
+                }
                 onClick={selected ? undefined : handleWalletClick(module)}
               >
-                <div title={description || ""}>
-                  <img src={iconUrl} alt={name} />
+                <div title={description || ""} className="wallet-content">
+                  <div className="wallet-img-box">
+                    <img src={iconUrl} alt={name} />
+                  </div>
                   <div>
                     <span>{name}</span>
                   </div>
