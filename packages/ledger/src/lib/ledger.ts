@@ -219,16 +219,28 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
-    async signMessage({ signerId, message }) {
-      const accounts = getAccounts();
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      const account = getActiveAccount(store.getState());
 
-      if (!accounts.length) {
-        throw new Error("Wallet not signed in");
+      if (!account) {
+        throw new Error("No active account");
       }
 
-      return signer.signMessage(
+      const accountId = signerId || account.accountId;
+      const pubKey = publicKey || (await signer.getPublicKey(accountId));
+      const block = await provider.block({ finality: "final" });
+
+      const msg = JSON.stringify({
+        accountId,
         message,
-        signerId || accounts[0].accountId,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      });
+
+      return signer.signMessage(
+        new Uint8Array(Buffer.from(msg)),
+        accountId,
         options.network.networkId
       );
     },
