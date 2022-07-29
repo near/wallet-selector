@@ -42,6 +42,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   store,
+  provider,
   emitter,
   logger,
 }) => {
@@ -174,7 +175,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signMessage({ signerId, message }) {
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
       const account = _state.wallet.account();
 
       if (!account) {
@@ -188,9 +189,22 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet is locked");
       }
 
-      return account.connection.signer.signMessage(
+      const accountId = signerId || account.accountId;
+      const pubKey =
+        publicKey || (await account.connection.signer.getPublicKey(accountId));
+      const block = await provider.block({ finality: "final" });
+
+      const msg = JSON.stringify({
+        accountId,
         message,
-        signerId || account.accountId,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      });
+
+      return account.connection.signer.signMessage(
+        new Uint8Array(Buffer.from(msg)),
+        accountId,
         options.network.networkId
       );
     },
