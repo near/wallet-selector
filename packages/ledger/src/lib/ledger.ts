@@ -220,6 +220,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     },
 
     async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("Ledger:verifyOwner", { message, signerId, publicKey });
+
       const account = getActiveAccount(store.getState());
 
       if (!account) {

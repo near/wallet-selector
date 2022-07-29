@@ -106,6 +106,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("MathWallet:verifyOwner", { message, signerId, publicKey });
+
       const account = getActiveAccount(store.getState());
 
       if (!account) {
