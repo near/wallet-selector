@@ -74,7 +74,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ options, store, params, logger }) => {
+> = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -153,6 +153,12 @@ const MyNearWallet: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("verifyOwner", { message, signerId, publicKey });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({

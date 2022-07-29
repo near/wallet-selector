@@ -44,7 +44,7 @@ const setupNightlyConnectState = (): NightlyConnectState => {
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: NightlyConnectParams }
-> = async ({ store, params, logger, options, provider, emitter }) => {
+> = async ({ metadata, store, params, logger, options, provider, emitter }) => {
   const _state = setupNightlyConnectState();
 
   const getAccounts = () => {
@@ -154,6 +154,16 @@ const NightlyConnect: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts().map(({ accountId }) => ({ accountId }));
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("NightlyConnect:verifyOwner", {
+        message,
+        signerId,
+        publicKey,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
