@@ -178,7 +178,7 @@ const WalletConnect: WalletBehaviourFactory<
     },
 
     async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("Sender:verifyOwner", { message, signerId, publicKey });
+      logger.log("WalletConnect:verifyOwner", { message, signerId, publicKey });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
