@@ -228,6 +228,9 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("No active account");
       }
 
+      // Note: Connection must be triggered by user interaction.
+      await connectLedgerDevice();
+
       const networkId = options.network.networkId;
       const accountId = signerId || account.accountId;
       const pubKey =
