@@ -24,6 +24,31 @@
             "glob": "packages/recommended-wallets/assets/*",
             "input": ".",
             "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/my-near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-wallet/assets/",
+            "output": "assets/"
           }
         ]
       }
