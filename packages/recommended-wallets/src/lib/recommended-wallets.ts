@@ -1,4 +1,3 @@
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -13,10 +12,6 @@ export const setupRecommendedWallets = (
   params: RecommendedWalletsParams
 ): Array<WalletModuleFactory> => {
   const modules: Array<RecommendedWalletsModule> = [
-    {
-      id: "near-wallet",
-      module: setupNearWallet(params.wallets["near-wallet"]),
-    },
     {
       id: "my-near-wallet",
       module: setupMyNearWallet(params.wallets["my-near-wallet"]),

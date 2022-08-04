@@ -9,8 +9,7 @@ export type RecommendedWalletId =
   | "my-near-wallet"
   | "ledger"
   | "sender"
-  | "wallet-connect"
-  | "near-wallet";
+  | "wallet-connect";
 
 export interface RecommendedWalletsParams {
   wallets: {
@@ -18,7 +17,6 @@ export interface RecommendedWalletsParams {
     ledger?: LedgerParams;
     sender?: SenderParams;
     "wallet-connect": WalletConnectParams;
-    "near-wallet"?: NearWalletParams;
   };
   whitelist?: Array<RecommendedWalletId>;
 }

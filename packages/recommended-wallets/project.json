@@ -44,11 +44,6 @@
             "glob": "**/*",
             "input": "packages/wallet-connect/assets/",
             "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/near-wallet/assets/",
-            "output": "assets/"
           }
         ]
       }
