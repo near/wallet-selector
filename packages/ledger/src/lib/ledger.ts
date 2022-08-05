@@ -60,6 +60,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   provider,
   logger,
   storage,
+  metadata,
 }) => {
   const _state = await setupLedgerState(storage);
 
@@ -244,6 +245,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         publicKey: Buffer.from(pubKey.data).toString("base64"),
         keyType: pubKey.keyType,
       });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
 
       return signer.signMessage(
         new Uint8Array(Buffer.from(msg)),
