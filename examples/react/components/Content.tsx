@@ -166,10 +166,16 @@ const Content: React.FC = () => {
 
   const handleVerifyOwner = async () => {
     const wallet = await selector.wallet();
-    const signature = await wallet.verifyOwner();
+    try {
+      const signature = await wallet.verifyOwner();
 
-    if (signature) {
-      alert(`Signature for verification: ${signature.signature.toString()}`);
+      if (signature) {
+        alert(`Signature for verification: ${signature.signature.toString()}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
     }
   };
 

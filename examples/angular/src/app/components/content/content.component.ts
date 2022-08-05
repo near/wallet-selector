@@ -113,9 +113,17 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   async onVerifyOwner() {
     const wallet = await this.selector.wallet();
-    const signature = await wallet.verifyOwner();
+    try {
+      const signature = await wallet.verifyOwner();
 
-    alert(`Signature for verification: ${signature.signature.toString()}`);
+      if (signature) {
+        alert(`Signature for verification: ${signature.signature.toString()}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
+    }
   }
 
   subscribeToEvents() {
