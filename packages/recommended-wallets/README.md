@@ -25,11 +25,29 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupRecommendedWallets } from "@near-wallet-selector/recommended-wallets";
+import {
+  setupMyNearWallet,
+  setupLedger,
+  setupSender,
+  setupWalletConnect,
+} from "@near-wallet-selector/recommended-wallets";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: await setupRecommendedWallets(),
+  modules: [
+    setupMyNearWallet(),
+    setupLedger(),
+    setupSender(),
+    setupWalletConnect({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    })
+  ],
 });
 ```
 
