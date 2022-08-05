@@ -168,7 +168,9 @@ const Content: React.FC = () => {
     const wallet = await selector.wallet();
     const signature = await wallet.verifyOwner();
 
-    alert(`Signature for verification: ${signature.signature.toString()}`);
+    if (signature) {
+      alert(`Signature for verification: ${signature.signature.toString()}`);
+    }
   };
 
   const handleSubmit = useCallback(

@@ -33,6 +33,8 @@ export interface VerifyOwnerParams {
   message?: string;
   signerId?: string;
   publicKey?: PublicKey;
+  callbackUrl?: string;
+  meta?: string;
 }
 
 export interface SignAndSendTransactionParams {
@@ -49,7 +51,9 @@ interface BaseWalletBehaviour {
   signIn(params: SignInParams): Promise<Array<Account>>;
   signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
-  verifyOwner(params?: VerifyOwnerParams): Promise<utils.key_pair.Signature>;
+  verifyOwner(
+    params?: VerifyOwnerParams
+  ): Promise<utils.key_pair.Signature | void>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;

@@ -74,7 +74,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ metadata, options, store, params, logger }) => {
+> = async ({ options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -155,10 +155,29 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+    async verifyOwner({
+      message = "verify owner",
+      signerId,
+      publicKey,
+      callbackUrl,
+      meta,
+    } = {}) {
       logger.log("verifyOwner", { message, signerId, publicKey });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+      const url = callbackUrl || window.location.href;
+      const encodedUrl = encodeURIComponent(url);
+      const extraMeta = meta ? `&meta=${meta}` : "";
+
+      window.location.replace(
+        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
+      );
+
+      return;
     },
 
     async signAndSendTransaction({
