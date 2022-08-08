@@ -530,6 +530,7 @@
   box-shadow: rgb(0 0 0 / 5%) 0 10px 20px 0;
 }
 .nws-modal-wrapper .spinner img {
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   padding: 20px;
