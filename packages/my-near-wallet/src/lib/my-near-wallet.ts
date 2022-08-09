@@ -180,9 +180,6 @@ const MyNearWallet: WalletBehaviourFactory<
         receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
         walletCallbackUrl: callbackUrl,
-      }).then(() => {
-        // Suppress response since transactions with deposits won't actually
-        // return FinalExecutionOutcome.
       });
     },
 
