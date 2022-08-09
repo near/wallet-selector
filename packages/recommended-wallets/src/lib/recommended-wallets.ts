@@ -1,5 +1,4 @@
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import { setupSender } from "@near-wallet-selector/sender";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
@@ -15,10 +14,6 @@ export const setupRecommendedWallets = (
     {
       id: "my-near-wallet",
       module: setupMyNearWallet(params.wallets["my-near-wallet"]),
-    },
-    {
-      id: "sender",
-      module: setupSender(params.wallets["sender"]),
     },
     {
       id: "ledger",
