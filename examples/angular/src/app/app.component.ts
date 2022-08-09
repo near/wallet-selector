@@ -4,10 +4,10 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import {
   setupMyNearWallet,
   setupLedger,
-  setupSender,
   setupWalletConnect,
 } from "@near-wallet-selector/recommended-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";

@@ -37,11 +37,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/sender/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/wallet-connect/assets/",
             "output": "assets/"
           }

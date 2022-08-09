@@ -28,7 +28,6 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import {
   setupMyNearWallet,
   setupLedger,
-  setupSender,
   setupWalletConnect,
 } from "@near-wallet-selector/recommended-wallets";
 
@@ -37,7 +36,6 @@ const selector = await setupWalletSelector({
   modules: [
     setupMyNearWallet(),
     setupLedger(),
-    setupSender(),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {
@@ -61,9 +59,6 @@ The recommended wallets can take optional or required params, available docs on 
 - `walletUrl` (`string?`): Wallet URL used to redirect when signing transactions. This parameter is required for custom network configuration.
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/my-near-wallet-icon.png`.
 
-#### Sender Options
-
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/sender-icon.png`.
 
 #### Ledger Options
 
