@@ -67,11 +67,11 @@ type BaseWallet<
   Type extends string,
   Metadata extends BaseWalletMetadata,
   Behaviour
-  > = {
-    id: string;
-    type: Type;
-    metadata: Metadata;
-  } & Behaviour;
+> = {
+  id: string;
+  type: Type;
+  metadata: Metadata;
+} & Behaviour;
 
 export type WalletEvents = {
   signedIn: {
@@ -205,9 +205,9 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
 export type WalletBehaviourFactory<
   Variation extends Wallet,
   ExtraOptions extends object = object
-  > = (
-    options: WalletBehaviourOptions<Variation> & ExtraOptions
-  ) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
+> = (
+  options: WalletBehaviourOptions<Variation> & ExtraOptions
+) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
 
 export type WalletModule<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
