@@ -11,6 +11,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import { PublicKey } from "near-api-js/lib/utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface BaseWalletMetadata {
   name: string;
@@ -66,11 +67,11 @@ type BaseWallet<
   Type extends string,
   Metadata extends BaseWalletMetadata,
   Behaviour
-> = {
-  id: string;
-  type: Type;
-  metadata: Metadata;
-} & Behaviour;
+  > = {
+    id: string;
+    type: Type;
+    metadata: Metadata;
+  } & Behaviour;
 
 export type WalletEvents = {
   signedIn: {
@@ -102,7 +103,7 @@ export type BrowserWalletBehaviour = Modify<
   {
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
-    ): Promise<void>;
+    ): Promise<FinalExecutionOutcome | void>;
     signAndSendTransactions(
       params: BrowserWalletSignAndSendTransactionsParams
     ): Promise<void>;
@@ -204,9 +205,9 @@ export interface WalletBehaviourOptions<Variation extends Wallet> {
 export type WalletBehaviourFactory<
   Variation extends Wallet,
   ExtraOptions extends object = object
-> = (
-  options: WalletBehaviourOptions<Variation> & ExtraOptions
-) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
+  > = (
+    options: WalletBehaviourOptions<Variation> & ExtraOptions
+  ) => Promise<Omit<Variation, "id" | "type" | "metadata">>;
 
 export type WalletModule<Variation extends Wallet = Wallet> = {
   id: Variation["id"];
