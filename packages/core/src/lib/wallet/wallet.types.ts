@@ -10,6 +10,7 @@ import type { Options } from "../options.types";
 import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface BaseWalletMetadata {
   name: string;
@@ -90,7 +91,7 @@ export type BrowserWalletBehaviour = Modify<
   {
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
-    ): Promise<void>;
+    ): Promise<FinalExecutionOutcome | void>;
     signAndSendTransactions(
       params: BrowserWalletSignAndSendTransactionsParams
     ): Promise<void>;
