@@ -41,6 +41,7 @@ const setupMathWalletState = (): MathWalletState => {
 };
 
 const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
+  metadata,
   options,
   store,
   provider,
@@ -102,6 +103,38 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("MathWallet:verifyOwner", { message, signerId, publicKey });
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      const accountId = signerId || account.accountId;
+      const pubKey =
+        publicKey || (await _state.wallet.signer.getPublicKey(accountId));
+      const block = await provider.block({ finality: "final" });
+
+      const msg = JSON.stringify({
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      });
+
+      // Note: Math Wallet currently hangs when calling signMessage.
+      throw new Error(`Method not supported by ${metadata.name}`);
+
+      return _state.wallet.signer.signMessage(
+        new Uint8Array(Buffer.from(msg)),
+        accountId,
+        options.network.networkId
+      );
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

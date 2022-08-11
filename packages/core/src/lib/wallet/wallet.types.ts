@@ -1,4 +1,4 @@
-import { providers } from "near-api-js";
+import { providers, utils } from "near-api-js";
 
 import {
   EventEmitterService,
@@ -10,6 +10,7 @@ import type { Options } from "../options.types";
 import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
+import { PublicKey } from "near-api-js/lib/utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface BaseWalletMetadata {
@@ -29,6 +30,14 @@ export interface SignInParams {
   methodNames?: Array<string>;
 }
 
+export interface VerifyOwnerParams {
+  message?: string;
+  signerId?: string;
+  publicKey?: PublicKey;
+  callbackUrl?: string;
+  meta?: string;
+}
+
 export interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
@@ -43,6 +52,9 @@ interface BaseWalletBehaviour {
   signIn(params: SignInParams): Promise<Array<Account>>;
   signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
+  verifyOwner(
+    params?: VerifyOwnerParams
+  ): Promise<utils.key_pair.Signature | void>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;

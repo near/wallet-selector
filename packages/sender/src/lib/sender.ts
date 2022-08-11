@@ -42,6 +42,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   store,
+  provider,
   emitter,
   logger,
 }) => {
@@ -172,6 +173,44 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
+      logger.log("Sender:verifyOwner", { message, signerId, publicKey });
+
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+
+      // Note: When the wallet is locked, Sender returns an empty Signer interface.
+      // Even after unlocking the wallet, the user will need to refresh to gain
+      // access to these methods.
+      if (!account.connection.signer.signMessage) {
+        throw new Error("Wallet is locked");
+      }
+
+      const networkId = options.network.networkId;
+      const accountId = signerId || account.accountId;
+      const pubKey =
+        publicKey ||
+        (await account.connection.signer.getPublicKey(accountId, networkId));
+      const block = await provider.block({ finality: "final" });
+
+      const msg = JSON.stringify({
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      });
+
+      return account.connection.signer.signMessage(
+        new Uint8Array(Buffer.from(msg)),
+        accountId,
+        networkId
+      );
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

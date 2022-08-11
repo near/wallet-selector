@@ -1,7 +1,7 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
-import { providers } from "near-api-js";
+import { Account, providers } from "near-api-js";
 
 interface AccessKey {
   publicKey: {
@@ -114,6 +114,7 @@ export interface InjectedSender {
   callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
+  account(): Account | null;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;

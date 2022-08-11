@@ -164,6 +164,21 @@ const Content: React.FC = () => {
     [selector, accountId]
   );
 
+  const handleVerifyOwner = async () => {
+    const wallet = await selector.wallet();
+    try {
+      const signature = await wallet.verifyOwner();
+
+      if (signature) {
+        alert(`Signature for verification: ${signature.signature.toString()}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
+    }
+  };
+
   const handleSubmit = useCallback(
     async (e: SubmitEvent) => {
       e.preventDefault();
@@ -220,6 +235,7 @@ const Content: React.FC = () => {
       <div>
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchWallet}>Switch Wallet</button>
+        <button onClick={handleVerifyOwner}>Verify Owner</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}

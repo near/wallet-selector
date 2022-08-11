@@ -111,6 +111,21 @@ export class ContentComponent implements OnInit, OnDestroy {
     alert("Switched account to " + nextAccountId);
   }
 
+  async onVerifyOwner() {
+    const wallet = await this.selector.wallet();
+    try {
+      const signature = await wallet.verifyOwner();
+
+      if (signature) {
+        alert(`Signature for verification: ${signature.signature.toString()}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
+    }
+  }
+
   subscribeToEvents() {
     this.subscription = this.selector.store.observable
       .pipe(
