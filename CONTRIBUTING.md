@@ -24,9 +24,42 @@ yarn nx serve react # run the react example
 yarn nx serve angular # run the angular example
 ```
 
-Build and deploy react example
+> Note: [`modal-ui`](/packages/modal-ui) package must be re-build after every change in the source files of this package `yarn nx run modal-ui:build`
+
+
+Build and deploy angular example
 
 ```bash
 yarn nx build angular # build the angular example
 yarn nx deploy angular # deploys angular example to gh-pages
 ```
+
+
+# Branching
+
+In this project there are two important branches `main` and `dev` branch. Pushing or committing directly in these two branches is forbidden.
+
+### Main branch
+
+This is the default branch and will be equal the latest official release.
+
+### Dev Branch
+
+This is the branch for development used by the team and/or other contributors from the community.
+New features, fixes and other improvements are first implemented and tested in this
+branch.
+When adding new features/fixes team members must always create a new branch locally based on latest changes of `dev` branch.
+When your work is ready a merge request should be opened from your branch to `dev`. When your PR is reviewed and approved then it can be merged.
+
+### Other branches
+
+Except `main` and `dev` branch other branches are work in progress by the team or related to the open PR(s).
+
+# Release Process
+
+Once the planned work has been finished and the set date has arrived a merge request from `dev` to `main` should be made.
+After merging only two steps remain:</br>
+ - Publish packages to NPM.
+ - Draft release in Github.
+
+Since `main` is the default branch of this project in case of regular release it will be always equal to the latest release.</br> In case of a `pre-release`  a specific branch will be linked to the `pre-release` version(tag).
