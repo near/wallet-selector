@@ -1,0 +1,48 @@
+{
+  "root": "packages/coin98-wallet",
+  "sourceRoot": "packages/coin98-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/coin98-wallet",
+        "tsConfig": "packages/coin98-wallet/tsconfig.lib.json",
+        "project": "packages/coin98-wallet/package.json",
+        "entryFile": "packages/coin98-wallet/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "umd", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/coin98-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/coin98-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/coin98-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/coin98-wallet"],
+      "options": {
+        "jestConfig": "packages/coin98-wallet/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
