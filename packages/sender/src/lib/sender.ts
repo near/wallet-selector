@@ -198,19 +198,26 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         (await account.connection.signer.getPublicKey(accountId, networkId));
       const block = await provider.block({ finality: "final" });
 
-      const msg = JSON.stringify({
+      const data = {
         accountId,
         message,
         blockId: block.header.hash,
         publicKey: Buffer.from(pubKey.data).toString("base64"),
         keyType: pubKey.keyType,
-      });
+      };
+      const encoded = JSON.stringify(data);
 
-      return account.connection.signer.signMessage(
-        new Uint8Array(Buffer.from(msg)),
+      const signed = await account.connection.signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
         accountId,
         networkId
       );
+
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

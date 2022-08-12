@@ -119,22 +119,29 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         publicKey || (await _state.wallet.signer.getPublicKey(accountId));
       const block = await provider.block({ finality: "final" });
 
-      const msg = JSON.stringify({
+      const data = {
         accountId,
         message,
         blockId: block.header.hash,
         publicKey: Buffer.from(pubKey.data).toString("base64"),
         keyType: pubKey.keyType,
-      });
+      };
+      const encoded = JSON.stringify(data);
 
       // Note: Math Wallet currently hangs when calling signMessage.
       throw new Error(`Method not supported by ${metadata.name}`);
 
-      return _state.wallet.signer.signMessage(
-        new Uint8Array(Buffer.from(msg)),
+      const signed = await _state.wallet.signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
         accountId,
         options.network.networkId
       );
+
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

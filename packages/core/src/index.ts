@@ -45,6 +45,8 @@ export type {
   BridgeWalletMetadata,
   BridgeWalletBehaviour,
   BridgeWallet,
+  VerifiedOwner,
+  VerifyOwnerParams,
   Account,
   Transaction,
   Action,
