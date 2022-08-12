@@ -188,8 +188,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           actions: transformActions(actions),
         })
         .then((res) => {
-          if (res.error) {
-            throw new Error(res.error);
+          if ("error" in res.response) {
+            throw new Error(res.response.error.message);
           }
 
           // Shouldn't happen but avoids inconsistent responses.
@@ -213,8 +213,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           transactions: transformTransactions(transactions),
         })
         .then((res) => {
-          if (res.error) {
-            throw new Error(res.error);
+          if ("error" in res.response) {
+            throw new Error(res.response.error.message);
           }
 
           // Shouldn't happen but avoids inconsistent responses.
