@@ -36,9 +36,7 @@ import { setupRecommendedWallets } from "@near-wallet-selector/recommended-walle
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [
-    ...(await setupRecommendedWallets())
-  ],
+  modules: await setupRecommendedWallets(),
 });
 ```
 
