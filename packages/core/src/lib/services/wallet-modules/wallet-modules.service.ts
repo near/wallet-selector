@@ -283,8 +283,9 @@ export class WalletModules {
         continue;
       }
 
+      // Skip duplicated module.
       if (modules.some((x) => x.id === module.id)) {
-        throw new Error("Duplicate module id detected: " + module.id);
+        continue;
       }
 
       modules.push({
