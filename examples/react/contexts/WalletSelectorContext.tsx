@@ -4,11 +4,7 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import {
-  setupMyNearWallet,
-  setupLedger,
-  setupWalletConnect,
-} from "@near-wallet-selector/recommended-wallets";
+import { setupRecommendedWallets } from "@near-wallet-selector/recommended-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -44,22 +40,12 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       network: "testnet",
       debug: true,
       modules: [
+        ...(await setupRecommendedWallets()),
         setupNearWallet(),
-        setupMyNearWallet(),
         setupSender(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
-        setupLedger(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
         setupNightlyConnect({
           url: "wss://ncproxy.nightly.app/app",
           appMetadata: {
