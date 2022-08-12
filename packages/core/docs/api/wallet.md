@@ -193,7 +193,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
   - `meta` (`string?`): Applicable to browser wallets (e.g. MyNearWallet) extra data that will be passed to the callback url once the signing is approved.
 
 **Returns**
-- `Promise<void | utils.key_pair.Signature>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
+- `Promise<void | VerifiedOwner>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
 
 **Description**
 
