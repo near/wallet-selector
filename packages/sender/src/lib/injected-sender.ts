@@ -89,7 +89,8 @@ export interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
-  response: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  error?: string;
+  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 
@@ -97,7 +98,8 @@ export interface SignAndSendTransactionsResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
-  response: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  error?: string;
+  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 

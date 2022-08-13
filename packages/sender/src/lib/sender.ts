@@ -188,7 +188,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           actions: transformActions(actions),
         })
         .then((res) => {
-          if ("error" in res.response) {
+          if (res.error) {
+            throw new Error(res.error);
+          } else if (res.response && "error" in res.response) {
             throw new Error(res.response.error.message);
           }
 
@@ -213,7 +215,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           transactions: transformTransactions(transactions),
         })
         .then((res) => {
-          if ("error" in res.response) {
+          if (res.error) {
+            throw new Error(res.error);
+          } else if (res.response && "error" in res.response) {
             throw new Error(res.response.error.message);
           }
 
