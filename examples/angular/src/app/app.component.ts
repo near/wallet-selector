@@ -4,6 +4,7 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupSafePal } from "@near-wallet-selector/safePal";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
+        setupSafepal(),
         setupNearWallet(),
         setupMyNearWallet(),
         setupSender(),
