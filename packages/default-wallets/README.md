@@ -1,8 +1,8 @@
-# @near-wallet-selector/recommended-wallets
+# @near-wallet-selector/default-wallets
 
-This is the Recommended Wallets package for NEAR Wallet Selector.
+This is the Default Wallets package for NEAR Wallet Selector.
 
-This is the list of recommended wallets:
+This is the list of default wallets:
 
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
@@ -22,31 +22,31 @@ npm install near-api-js@^0.44.2
 ```
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/recommended-wallets
+yarn add @near-wallet-selector/default-wallets
 
 # Using NPM.
-npm install @near-wallet-selector/recommended-wallets
+npm install @near-wallet-selector/default-wallets
 ```
 
 Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupRecommendedWallets } from "@near-wallet-selector/recommended-wallets";
+import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: await setupRecommendedWallets(),
+  modules: await setupDefaultWallets(),
 });
 ```
 
 
 ## Options
 
-The `setupRecommendedWallets` does not take any options. </br>
-To customize any of the recommended wallets listed above, follow these steps for example customize setup for WalletConnect:
+The `setupDefaultWallets` does not take any options. </br>
+To customize any of the default wallets listed above, follow these steps for example customize setup for WalletConnect:
 
->**Note**: In this case the customized wallet setup function must be placed before the `setupRecommendedWallets` call.
+>**Note**: In this case the customized wallet setup function must be placed before the `setupDefaultWallets` call.
 
 **Example**
 
@@ -54,7 +54,7 @@ To customize any of the recommended wallets listed above, follow these steps for
 // The same can be done for MyNearWallet and Ledger too.
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupRecommendedWallets } from "@near-wallet-selector/recommended-wallets";
+import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -68,7 +68,7 @@ const selector = await setupWalletSelector({
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
       },
     }),
-    ...(await setupRecommendedWallets())
+    ...(await setupDefaultWallets())
   ],
 });
 ```

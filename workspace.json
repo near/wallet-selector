@@ -16,6 +16,6 @@
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
-    "recommended-wallets": "packages/recommended-wallets"
+    "default-wallets": "packages/default-wallets"
   }
 }

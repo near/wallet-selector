@@ -3,7 +3,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
 
-export const setupRecommendedWallets = async (): Promise<
+export const setupDefaultWallets = async (): Promise<
   Array<WalletModuleFactory>
 > => {
   return [
