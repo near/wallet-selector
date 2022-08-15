@@ -6,7 +6,9 @@ import type {
 } from "@near-wallet-selector/core";
 
 import type { ModalOptions } from "../modal.types";
-
+import { state } from "@angular/animations";
+import { SingleWallet } from "./SingleWallet";
+// @refresh reset
 interface WalletOptionsProps {
   selector: WalletSelector;
   options: ModalOptions;
@@ -26,8 +28,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   onConnecting,
   onConnected,
 }) => {
-  const [walletInfoVisible, setWalletInfoVisible] = useState(false);
+  const [getWallet, setGetWallet] = useState(false);
   const [modules, setModules] = useState<Array<ModuleState>>([]);
+  const [shortModules, setShortModules] = useState<Array<ModuleState>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -40,7 +43,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       });
       setModules(state.modules);
     });
-
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -87,39 +89,23 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   return (
     <Fragment>
       <div className="wallet-options-wrapper">
-        <p className="description">
-          {options?.description ||
-            "Please select a wallet to sign in to this dApp:"}
-        </p>
+        <h4 className="description">Popular</h4>
         <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module) => {
             const { selectedWalletId } = selector.store.getState();
             const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === selectedWalletId;
             result.push(
-              <li
-                key={module.id}
-                id={module.id}
-                className={
-                  (selected ? "selected-wallet" : "") +
-                  (deprecated ? " deprecated-wallet" : "")
-                }
-                onClick={selected ? undefined : handleWalletClick(module)}
-              >
-                <div title={description || ""} className="wallet-content">
-                  <div className="wallet-img-box">
-                    <img src={iconUrl} alt={name} />
-                  </div>
-                  <div>
-                    <span>{name}</span>
-                  </div>
-                  {selected && (
-                    <div className="selected-wallet-text">
-                      <span>selected</span>
-                    </div>
-                  )}
-                </div>
-              </li>
+              <SingleWallet
+                iconUrl={iconUrl}
+                title={name}
+                description={description}
+                key={1}
+                isLocationSidebar={true}
+                selected={selected ? "selected-wallet" : ""}
+                deprecated={deprecated ? " deprecated-wallet" : ""}
+                onClick={handleWalletClick(module)}
+              />
             );
 
             return result;
@@ -127,16 +113,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         </ul>
       </div>
       <div className="info">
-        <span
-          onClick={() => {
-            setWalletInfoVisible(!walletInfoVisible);
-          }}
-        >
-          What is a Wallet?
-        </span>
         <div
           className={`info-description ${
-            walletInfoVisible ? "show" : "hide"
+            getWallet ? "show" : "hide"
           }-explanation`}
         >
           <p>

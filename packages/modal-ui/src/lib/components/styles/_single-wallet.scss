@@ -1,0 +1,78 @@
+//Single wallet display
+
+.single-wallet {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  column-gap: 24px;
+  padding: 12px;
+
+
+  .icon {
+    height: 48px;
+    width: auto;
+  }
+
+  .icon img {
+    width: 100%;
+    height: auto;
+    max-width: 48px;
+  }
+
+  .content {
+    width: 50%;
+  }
+
+  .content .name {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    color: #FFFFFF;
+  }
+
+  .content .description {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    color: #C1C1C1;
+    line-height: 150%;
+  }
+
+  .button-get {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  &.sidebar {
+    justify-content: flex-start;
+    column-gap: 12px;
+    &.deprecated-wallet{
+      opacity: 0.4;
+    }
+    .icon{
+        width: 32px;
+        height: 32px;
+        background-color: #FFF;
+      }
+    .content {
+      height: 32px;
+      .title {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+        /* identical to box height, or 171% */
+        align-items: center;
+        color: #FFFFFF;
+      }
+    }
+  }
+
+}
