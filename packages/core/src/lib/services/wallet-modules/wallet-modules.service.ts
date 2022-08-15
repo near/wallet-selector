@@ -262,6 +262,16 @@ export class WalletModules {
       return null;
     }
 
+    const { selectedWalletId } = this.store.getState();
+
+    // If user uninstalled/removed a wallet which was previously signed in with
+    // best we can do is clean up state on our side.
+    if (!module.metadata.available && selectedWalletId) {
+      this.onWalletSignedOut(selectedWalletId);
+
+      return null;
+    }
+
     return (await module.wallet()) as Variation;
   }
 
