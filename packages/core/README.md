@@ -42,6 +42,7 @@ const selector = await setupWalletSelector({
   - `nodeUrl` (`string`): Custom URL for RPC requests.
   - `helperUrl` (`string`): Custom URL for creating accounts.
   - `explorerUrl` (`string`): Custom URL for the NEAR explorer.
+  - `indexerUrl` (`string`): Custom URL for the Indexer service.
 - `debug` (`boolean?`): Enable internal logging for debugging purposes. Defaults to `false`.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
