@@ -191,6 +191,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         .then((res) => {
           if (res.error) {
             throw new Error(res.error);
+          } else if (res.response && "error" in res.response) {
+            throw new Error(res.response.error.message);
           }
 
           // Shouldn't happen but avoids inconsistent responses.
@@ -216,6 +218,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         .then((res) => {
           if (res.error) {
             throw new Error(res.error);
+          } else if (res.response && "error" in res.response) {
+            throw new Error(res.response.error.message);
           }
 
           // Shouldn't happen but avoids inconsistent responses.
