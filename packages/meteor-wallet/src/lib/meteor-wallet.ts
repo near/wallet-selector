@@ -137,7 +137,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
     async signOut() {
       if (_state.wallet.isSignedIn()) {
-        _state.wallet.signOut();
+        await _state.wallet.signOut();
       }
 
       cleanup();
