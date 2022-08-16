@@ -175,8 +175,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("Sender:verifyOwner", { message, signerId, publicKey });
+    async verifyOwner({ message }) {
+      logger.log("Sender:verifyOwner", { message });
 
       const account = _state.wallet.account();
 
@@ -192,10 +192,11 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const networkId = options.network.networkId;
-      const accountId = signerId || account.accountId;
-      const pubKey =
-        publicKey ||
-        (await account.connection.signer.getPublicKey(accountId, networkId));
+      const accountId = account.accountId;
+      const pubKey = await account.connection.signer.getPublicKey(
+        accountId,
+        networkId
+      );
       const block = await provider.block({ finality: "final" });
 
       const data = {

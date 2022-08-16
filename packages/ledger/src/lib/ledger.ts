@@ -220,8 +220,8 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("Ledger:verifyOwner", { message, signerId, publicKey });
+    async verifyOwner({ message }) {
+      logger.log("Ledger:verifyOwner", { message });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },

@@ -156,12 +156,8 @@ const NightlyConnect: WalletBehaviourFactory<
       return getAccounts().map(({ accountId }) => ({ accountId }));
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("NightlyConnect:verifyOwner", {
-        message,
-        signerId,
-        publicKey,
-      });
+    async verifyOwner({ message }) {
+      logger.log("NightlyConnect:verifyOwner", { message });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },

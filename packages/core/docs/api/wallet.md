@@ -186,9 +186,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
 
 **Parameters**
 - `params` (`object`)
-  - `message` (`string?`): The message requested sign. Defaults to `verify owner` string.
-  - `signerId` (`string?`): Account ID used to sign the message. Defaults to the first account.
-  - `publicKey` (`PublicKey?`): Public key used to sign the message. Defaults to the public key of the signed in account.
+  - `message` (`string`): The message requested sign. Defaults to `verify owner` string.
   - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This is the callback url once the signing is approved. Defaults to `window.location.href`.
   - `meta` (`string?`): Applicable to browser wallets (e.g. MyNearWallet) extra data that will be passed to the callback url once the signing is approved.
 

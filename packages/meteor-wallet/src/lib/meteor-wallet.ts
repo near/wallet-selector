@@ -155,8 +155,8 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("MeteorWallet:verifyOwner", { message, signerId, publicKey });
+    async verifyOwner({ message }) {
+      logger.log("MeteorWallet:verifyOwner", { message });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },

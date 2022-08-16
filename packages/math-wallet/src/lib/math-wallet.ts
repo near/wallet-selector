@@ -105,8 +105,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async verifyOwner({ message = "verify owner", signerId, publicKey } = {}) {
-      logger.log("MathWallet:verifyOwner", { message, signerId, publicKey });
+    async verifyOwner({ message }) {
+      logger.log("MathWallet:verifyOwner", { message });
 
       const account = getActiveAccount(store.getState());
 
@@ -114,9 +114,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("No active account");
       }
 
-      const accountId = signerId || account.accountId;
-      const pubKey =
-        publicKey || (await _state.wallet.signer.getPublicKey(accountId));
+      const accountId = account.accountId;
+      const pubKey = await _state.wallet.signer.getPublicKey(accountId);
       const block = await provider.block({ finality: "final" });
 
       const data = {

@@ -167,7 +167,9 @@ const Content: React.FC = () => {
   const handleVerifyOwner = async () => {
     const wallet = await selector.wallet();
     try {
-      const owner = await wallet.verifyOwner();
+      const owner = await wallet.verifyOwner({
+        message: "test message for verification",
+      });
 
       if (owner) {
         alert(`Signature for verification: ${JSON.stringify(owner)}`);

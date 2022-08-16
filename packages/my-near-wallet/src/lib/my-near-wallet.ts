@@ -155,14 +155,8 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({
-      message = "verify owner",
-      signerId,
-      publicKey,
-      callbackUrl,
-      meta,
-    } = {}) {
-      logger.log("verifyOwner", { message, signerId, publicKey });
+    async verifyOwner({ message, callbackUrl, meta }) {
+      logger.log("verifyOwner", { message });
 
       const account = _state.wallet.account();
 
