@@ -1,8 +1,7 @@
 {
-  "root": "packages/modal-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/modal-ui/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
@@ -16,7 +15,7 @@
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/modal-ui/README.md",
@@ -35,16 +34,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/modal-ui/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/modal-ui/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/modal-ui"],
       "options": {
-        "jestConfig": "packages/modal-ui/jest.config.js",
+        "jestConfig": "packages/modal-ui/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -72,5 +69,6 @@
         "access": "public"
       }
     }
-  }
+  },
+  "tags": []
 }

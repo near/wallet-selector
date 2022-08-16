@@ -1,4 +1,4 @@
-import { providers } from "near-api-js";
+import { providers, utils } from "near-api-js";
 
 import {
   EventEmitterService,
@@ -29,6 +29,21 @@ export interface SignInParams {
   methodNames?: Array<string>;
 }
 
+export interface VerifyOwnerParams {
+  message: string;
+  callbackUrl?: string;
+  meta?: string;
+}
+
+export interface VerifiedOwner {
+  accountId: string;
+  message: string;
+  blockId: string;
+  publicKey: string;
+  signature: string;
+  keyType: utils.key_pair.KeyType;
+}
+
 export interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
@@ -43,6 +58,7 @@ interface BaseWalletBehaviour {
   signIn(params: SignInParams): Promise<Array<Account>>;
   signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
+  verifyOwner(params: VerifyOwnerParams): Promise<VerifiedOwner | void>;
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;

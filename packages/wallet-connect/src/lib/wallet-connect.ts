@@ -16,6 +16,7 @@ export interface WalletConnectParams {
   relayUrl?: string;
   iconUrl?: string;
   chainId?: string;
+  deprecated?: boolean;
 }
 
 interface WalletConnectExtraOptions {
@@ -65,7 +66,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, store, params, emitter, logger }) => {
+> = async ({ metadata, options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -176,6 +177,12 @@ const WalletConnect: WalletBehaviourFactory<
       return getAccounts();
     },
 
+    async verifyOwner({ message }) {
+      logger.log("WalletConnect:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -232,6 +239,7 @@ export function setupWalletConnect({
   chainId,
   relayUrl = "wss://relay.walletconnect.com",
   iconUrl = "./assets/wallet-connect-icon.png",
+  deprecated = false,
 }: WalletConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -241,7 +249,7 @@ export function setupWalletConnect({
         name: "WalletConnect",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

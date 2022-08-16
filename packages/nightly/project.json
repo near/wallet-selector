@@ -1,5 +1,5 @@
 {
-  "root": "packages/nightly",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/nightly/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/nightly/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/nightly/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/nightly"],
       "options": {
-        "jestConfig": "packages/nightly/jest.config.js",
+        "jestConfig": "packages/nightly/jest.config.ts",
         "passWithNoTests": true
       }
     },

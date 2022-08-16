@@ -1,5 +1,5 @@
 {
-  "root": "packages/sender",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/sender/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/sender/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/sender/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/sender"],
       "options": {
-        "jestConfig": "packages/sender/jest.config.js",
+        "jestConfig": "packages/sender/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -182,6 +182,35 @@ Returns one or more accounts when signed in. This method can be useful for walle
 })();
 ```
 
+### `.verifyOwner(params)`
+
+**Parameters**
+- `params` (`object`)
+  - `message` (`string`): The message requested sign. Defaults to `verify owner` string.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This is the callback url once the signing is approved. Defaults to `window.location.href`.
+  - `meta` (`string?`): Applicable to browser wallets (e.g. MyNearWallet) extra data that will be passed to the callback url once the signing is approved.
+
+**Returns**
+- `Promise<void | VerifiedOwner>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
+
+**Description**
+
+Signs the message and verifies the owner. Message is not sent to blockchain.
+
+> Note: This feature is currently supported only by MyNearWallet on **testnet**. Sender can sign messages when unlocked.
+**Example**
+
+```ts
+// MyNearWallet
+(async () => {
+  const wallet = await selector.wallet("my-near-wallet");
+  await wallet.verifyOwner({
+    message: "Test message",
+  });
+})();
+```
+
+
 ### `.signAndSendTransaction(params)`
 
 **Parameters**

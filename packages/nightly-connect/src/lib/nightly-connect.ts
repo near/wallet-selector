@@ -44,7 +44,7 @@ const setupNightlyConnectState = (): NightlyConnectState => {
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: NightlyConnectParams }
-> = async ({ store, params, logger, options, provider, emitter }) => {
+> = async ({ metadata, store, params, logger, options, provider, emitter }) => {
   const _state = setupNightlyConnectState();
 
   const getAccounts = () => {
@@ -156,6 +156,12 @@ const NightlyConnect: WalletBehaviourFactory<
       return getAccounts().map(({ accountId }) => ({ accountId }));
     },
 
+    async verifyOwner({ message }) {
+      logger.log("NightlyConnect:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -202,6 +208,7 @@ const NightlyConnect: WalletBehaviourFactory<
 
 export type SetupNightlyConnectParams = NightlyConnectParams & {
   iconUrl?: string;
+  deprecated?: boolean;
 };
 
 export function setupNightlyConnect({
@@ -209,6 +216,7 @@ export function setupNightlyConnect({
   timeout,
   url,
   iconUrl = "./assets/nightly-connect.png",
+  deprecated = false,
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -218,7 +226,7 @@ export function setupNightlyConnect({
         name: "Nightly Connect",
         description: null,
         iconUrl: iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {
