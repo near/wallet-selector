@@ -223,7 +223,7 @@ Signs the message and verifies the owner. Message is not sent to blockchain.
 
 **Returns**
 
-- `Promise<void | FinalExecutionOutcome>`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+- `Promise<void | FinalExecutionOutcome>`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/api/rpc/transactions#send-transaction-await).
 
 **Description**
 
@@ -260,7 +260,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 
 **Returns**
 
-- `Promise<void | Array<FinalExecutionOutcome>>`: Browser wallets won't return the transaction outcomes as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/docs/api/rpc/transactions#send-transaction-await).
+- `Promise<void | Array<FinalExecutionOutcome>>`: Browser wallets won't return the transaction outcomes as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/api/rpc/transactions#send-transaction-await).
 
 **Description**
 
