@@ -8,6 +8,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../constants";
@@ -48,6 +49,15 @@ export class AppComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupWalletConnect({
+          projectId: "c4f79cc...",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
         setupNightlyConnect({
           url: "wss://ncproxy.nightly.app/app",
           appMetadata: {
