@@ -41,6 +41,9 @@
       ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
+      ],
+      "@near-wallet-selector/default-wallets": [
+        "packages/default-wallets/src/index.ts"
       ]
     }
   },
