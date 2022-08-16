@@ -66,7 +66,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ options, store, params, emitter, logger }) => {
+> = async ({ metadata, options, store, params, emitter, logger }) => {
   const _state = await setupWalletConnectState(params);
 
   const getChainId = () => {
@@ -175,6 +175,12 @@ const WalletConnect: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message }) {
+      logger.log("WalletConnect:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

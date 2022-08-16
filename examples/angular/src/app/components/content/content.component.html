@@ -2,6 +2,7 @@
   <div>
     <button (click)="signOut()">Log out</button>
     <button (click)="switchWallet()">Switch Wallet</button>
+    <button (click)="onVerifyOwner()">Verify Owner</button>
     <button *ngIf="accounts.length > 1" (click)="switchAccount()">
       Switch Account
     </button>
