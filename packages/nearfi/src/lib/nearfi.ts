@@ -95,10 +95,10 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = async () => {
-    const accountId = _state.wallet.getAccountId();
+    let accountId = _state.wallet.getAccountId();
     if (!accountId) {
-      // await _state.wallet.resolveSignInState();
-      // accountId = _state.wallet.getAccountId();
+      await _state.wallet.resolveSignInState();
+      accountId = _state.wallet.getAccountId();
       if (!accountId) {
         return [];
       }

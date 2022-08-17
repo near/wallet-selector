@@ -1,6 +1,6 @@
-# @near-wallet-selector/sender
+# @near-wallet-selector/nearfi
 
-This is the [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg) package for NEAR Wallet Selector.
+This is the [NearFi wallet](https://nearfi.finance) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -33,18 +33,18 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/sender-icon.png`.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nearfi-icon.png`.
 
 ## Assets
 
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupSender } from "@near-wallet-selector/sender";
-import senderIconUrl from "@near-wallet-selector/sender/assets/sender-icon.png";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
+import nearfiIconUrl from "@near-wallet-selector/nearfi/assets/nearfi-icon.png";
 
-const sender = setupSender({
-  iconUrl: senderIconUrl
+const nearfi = setupNearFi({
+  iconUrl: nearfiIconUrl
 });
 ```
 
