@@ -47,9 +47,12 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
   const _state = setupNearFiState();
 
   const cleanup = () => {
-    for (const key in _state.wallet.callbacks) {
-      _state.wallet.remove(key);
-    }
+    // if (!_state.wallet.hasOwnProperty("callbacks")) {
+    //   return;
+    // }
+    // for (const key in _state.wallet.callbacks) {
+    //   _state.wallet.remove(key);
+    // }
   };
 
   const signOut = async () => {
@@ -100,9 +103,9 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
   const getAccounts = async () => {
     let accountId = _state.wallet.getAccountId();
     if (!accountId) {
-      await waitFor(() => !!window.nearFiWallet?.isSignedIn(), { timeout: 300 }).catch(
-        () => false
-      );
+      await waitFor(() => !!window.nearFiWallet?.isSignedIn(), {
+        timeout: 300,
+      }).catch(() => false);
     }
     accountId = _state.wallet.getAccountId();
     if (!accountId) {
@@ -242,9 +245,9 @@ export function setupNearFi({
 
     // Add extra wait to ensure NearFi's sign in status is read from the
     // browser extension background env.
-    await waitFor(() => !!window.nearFiWallet?.isSignedIn(), { timeout: 300 }).catch(
-      () => false
-    );
+    await waitFor(() => !!window.nearFiWallet?.isSignedIn(), {
+      timeout: 300,
+    }).catch(() => false);
 
     return {
       id: "nearfi",

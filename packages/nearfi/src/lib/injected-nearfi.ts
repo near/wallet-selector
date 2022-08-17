@@ -62,6 +62,11 @@ export interface SendMoneyParams {
   amount: string;
 }
 
+export interface SendMoneyResponse {
+  transactionHash: string;
+  error?: string;
+}
+
 export interface Action {
   methodName: string;
   args: object;
@@ -111,7 +116,6 @@ export interface NearFiEvents {
 
 export interface InjectedNearFi {
   isNearFi: boolean;
-  callbacks: Record<keyof NearFiEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   requestSignIn: (
@@ -125,12 +129,13 @@ export interface InjectedNearFi {
     callback: NearFiEvents[Event]
   ) => void;
   // TODO: Determine return type.
-  sendMoney: (params: SendMoneyParams) => Promise<unknown>;
+  sendMoney: (params: SendMoneyParams) => Promise<SendMoneyResponse>;
   signAndSendTransaction: (
     params: SignAndSendTransactionParams
   ) => Promise<SignAndSendTransactionResponse>;
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
+  log: (msg: any) => void;
 }
 
