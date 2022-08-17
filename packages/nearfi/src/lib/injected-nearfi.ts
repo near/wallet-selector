@@ -123,7 +123,7 @@ export interface InjectedNearFi {
   ) => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
-  remove: (event: string) => void;
+  removeEventListener: (event: string) => void;
   on: <Event extends keyof NearFiEvents>(
     event: Event,
     callback: NearFiEvents[Event]
@@ -136,6 +136,6 @@ export interface InjectedNearFi {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
-  log: (msg: any) => void;
+  log: (...msg: any) => void;
+  resolveSignInState: () => Promise<any>;
 }
-

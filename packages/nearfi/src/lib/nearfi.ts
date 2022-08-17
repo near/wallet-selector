@@ -46,14 +46,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupNearFiState();
 
-  const cleanup = () => {
-    // if (!_state.wallet.hasOwnProperty("callbacks")) {
-    //   return;
-    // }
-    // for (const key in _state.wallet.callbacks) {
-    //   _state.wallet.remove(key);
-    // }
-  };
+  const cleanup = () => {};
 
   const signOut = async () => {
     if (!_state.wallet.isSignedIn()) {
@@ -101,17 +94,11 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = async () => {
-    let accountId = _state.wallet.getAccountId();
-    if (!accountId) {
-      await waitFor(() => !!window.nearFiWallet?.isSignedIn(), {
-        timeout: 300,
-      }).catch(() => false);
-    }
-    accountId = _state.wallet.getAccountId();
+    await _state.wallet.resolveSignInState();
+    const accountId = _state.wallet.getAccountId();
     if (!accountId) {
       return [];
     }
-
     return [{ accountId }];
   };
 
@@ -256,8 +243,7 @@ export function setupNearFi({
         name: "NearFi",
         description: null,
         iconUrl,
-        downloadUrl:
-          "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+        downloadUrl: "https://nearfi.finance",
         deprecated: false,
         available: installed,
       },
