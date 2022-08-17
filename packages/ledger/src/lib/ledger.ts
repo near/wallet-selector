@@ -60,6 +60,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   provider,
   logger,
   storage,
+  metadata,
 }) => {
   const _state = await setupLedgerState(storage);
 
@@ -217,6 +218,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message }) {
+      logger.log("Ledger:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

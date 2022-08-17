@@ -1,7 +1,7 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
-import { providers } from "near-api-js";
+import { Account, providers } from "near-api-js";
 
 interface AccessKey {
   publicKey: {
@@ -74,13 +74,23 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
+export interface FunctionCallError {
+  error: {
+    index: number;
+    kind: object;
+    message: string;
+    transaction_outcome: object;
+    type: "FunctionCallError";
+  };
+}
+
 // Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome>;
+  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 
@@ -89,7 +99,7 @@ export interface SignAndSendTransactionsResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome>;
+  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 
@@ -114,6 +124,7 @@ export interface InjectedSender {
   callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
+  account(): Account | null;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;

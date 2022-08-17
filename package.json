@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -47,6 +47,7 @@
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
+    "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "serve:react": "nx serve react",
@@ -67,7 +68,7 @@
     "@jscutlery/semver": "^2.25.2",
     "@ledgerhq/hw-transport": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@meteorwallet/sdk": "^0.0.9",
+    "@meteorwallet/sdk": "0.3.0",
     "@nightlylabs/connect": "0.0.23",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
     "@walletconnect/sign-client": "^2.0.0-beta.102",

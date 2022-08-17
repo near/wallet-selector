@@ -74,7 +74,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ options, store, params, logger }) => {
+> = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -153,6 +153,33 @@ const MyNearWallet: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts();
+    },
+
+    async verifyOwner({ message, callbackUrl, meta }) {
+      logger.log("verifyOwner", { message });
+
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+      const locationUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const url = callbackUrl || locationUrl;
+
+      if (!url) {
+        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+      }
+
+      const encodedUrl = encodeURIComponent(url);
+      const extraMeta = meta ? `&meta=${meta}` : "";
+
+      window.location.replace(
+        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
+      );
+
+      return;
     },
 
     async signAndSendTransaction({

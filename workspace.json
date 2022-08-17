@@ -15,6 +15,8 @@
     "react": "examples/react",
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
-    "wallet-utils": "packages/wallet-utils"
+    "wallet-utils": "packages/wallet-utils",
+    "default-wallets": "packages/default-wallets",
+    "coin98-wallet": "packages/coin98-wallet"
   }
 }

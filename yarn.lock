@@ -2295,12 +2295,11 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@meteorwallet/sdk@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.0.9.tgz#731ce3a000e27d8722c6b661b17c002395209292"
-  integrity sha512-1pfTNWfZl7iiOyEvOAFY4kxZ4SWQx1FgLpk7CiIv5yVks23aPoCYMDvz0rf2ox26vyiIV4MlwSNdj+Qh/CeU6Q==
+"@meteorwallet/sdk@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.3.0.tgz#d8f17d780c646caa3b96d08142705160dcaa29b2"
+  integrity sha512-eoMcLItP7pabA7E5tNY265fypQAwcjn/Ev6l/8Ag3hyJ5L8rkS5A+WPCVnWZCaE5HmXZyuiXhp5HTtjlR8u8mg==
   dependencies:
-    borsh "^0.7.0"
     is-mobile "^3.1.1"
     near-api-js "^0.44.2"
 
