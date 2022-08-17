@@ -46,6 +46,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupNearFiState();
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const cleanup = () => {};
 
   const signOut = async () => {
@@ -94,10 +95,13 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = async () => {
-    await _state.wallet.resolveSignInState();
     const accountId = _state.wallet.getAccountId();
     if (!accountId) {
-      return [];
+      // await _state.wallet.resolveSignInState();
+      // accountId = _state.wallet.getAccountId();
+      if (!accountId) {
+        return [];
+      }
     }
     return [{ accountId }];
   };
@@ -162,6 +166,12 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async getAccounts() {
       return await getAccounts();
+    },
+
+    async verifyOwner({ message }) {
+      logger.log("Nightly:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

@@ -1,0 +1,69 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/default-wallets/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/default-wallets",
+        "tsConfig": "packages/default-wallets/tsconfig.lib.json",
+        "project": "packages/default-wallets/package.json",
+        "entryFile": "packages/default-wallets/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/default-wallets/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/default-wallets/assets/*",
+            "input": ".",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/my-near-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ledger/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/wallet-connect/assets/",
+            "output": "assets/"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/default-wallets/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/default-wallets"],
+      "options": {
+        "jestConfig": "packages/default-wallets/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["hardware-wallet"]
+}

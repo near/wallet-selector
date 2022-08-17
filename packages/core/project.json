@@ -1,8 +1,7 @@
 {
-  "root": "packages/core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/core/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
@@ -16,7 +15,7 @@
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/core/README.md",
@@ -30,16 +29,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/core/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["packages/core/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/core"],
       "options": {
-        "jestConfig": "packages/core/jest.config.js",
+        "jestConfig": "packages/core/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -67,5 +64,6 @@
         "access": "public"
       }
     }
-  }
+  },
+  "tags": []
 }

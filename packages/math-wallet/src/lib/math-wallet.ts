@@ -11,6 +11,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 declare global {
   interface Window {
@@ -20,6 +21,7 @@ declare global {
 
 export interface MathWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface MathWalletState {
@@ -39,6 +41,7 @@ const setupMathWalletState = (): MathWalletState => {
 };
 
 const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
+  metadata,
   options,
   store,
   provider,
@@ -102,6 +105,44 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
+    async verifyOwner({ message }) {
+      logger.log("MathWallet:verifyOwner", { message });
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      const accountId = account.accountId;
+      const pubKey = await _state.wallet.signer.getPublicKey(accountId);
+      const block = await provider.block({ finality: "final" });
+
+      const data = {
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      };
+      const encoded = JSON.stringify(data);
+
+      // Note: Math Wallet currently hangs when calling signMessage.
+      throw new Error(`Method not supported by ${metadata.name}`);
+
+      const signed = await _state.wallet.signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
+        accountId,
+        options.network.networkId
+      );
+
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
       const signedTransactions = await signTransactions(
@@ -127,15 +168,20 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         signedTransactions
       );
 
-      return Promise.all(
-        signedTransactions.map((tx) => provider.sendTransaction(tx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        results.push(await provider.sendTransaction(signedTransactions[i]));
+      }
+
+      return results;
     },
   };
 };
 
 export const setupMathWallet = ({
   iconUrl = "./assets/math-wallet-icon.png",
+  deprecated = false,
 }: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
@@ -154,7 +200,7 @@ export const setupMathWallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: MathWallet,

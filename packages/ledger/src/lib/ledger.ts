@@ -15,6 +15,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import { Signer, utils } from "near-api-js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -34,6 +35,7 @@ interface LedgerState {
 
 export interface LedgerParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 export const STORAGE_ACCOUNTS = "accounts";
@@ -58,6 +60,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   provider,
   logger,
   storage,
+  metadata,
 }) => {
   const _state = await setupLedgerState(storage);
 
@@ -217,6 +220,12 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
+    async verifyOwner({ message }) {
+      logger.log("Ledger:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -252,9 +261,13 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         options.network
       );
 
-      return Promise.all(
-        signedTransactions.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        results.push(await provider.sendTransaction(signedTransactions[i]));
+      }
+
+      return results;
     },
     async getPublicKey(derivationPath: string) {
       await connectLedgerDevice();
@@ -266,12 +279,13 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
 export function setupLedger({
   iconUrl = "./assets/ledger-icon.png",
+  deprecated = false,
 }: LedgerParams = {}): WalletModuleFactory<HardwareWallet> {
   return async () => {
     const mobile = isMobile();
     const supported = isLedgerSupported();
 
-    if (mobile || !supported) {
+    if (mobile) {
       return null;
     }
 
@@ -282,7 +296,7 @@ export function setupLedger({
         name: "Ledger",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: supported,
       },
       init: Ledger,

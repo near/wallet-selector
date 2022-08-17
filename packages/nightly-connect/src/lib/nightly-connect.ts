@@ -14,6 +14,7 @@ import {
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export interface NightlyConnectParams {
   appMetadata: AppMetadata;
@@ -43,7 +44,7 @@ const setupNightlyConnectState = (): NightlyConnectState => {
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: NightlyConnectParams }
-> = async ({ store, params, logger, options, provider, emitter }) => {
+> = async ({ metadata, store, params, logger, options, provider, emitter }) => {
   const _state = setupNightlyConnectState();
 
   const getAccounts = () => {
@@ -155,6 +156,12 @@ const NightlyConnect: WalletBehaviourFactory<
       return getAccounts().map(({ accountId }) => ({ accountId }));
     },
 
+    async verifyOwner({ message }) {
+      logger.log("NightlyConnect:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -188,15 +195,20 @@ const NightlyConnect: WalletBehaviourFactory<
         options.network
       );
 
-      return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTxs.length; i++) {
+        results.push(await provider.sendTransaction(signedTxs[i]));
+      }
+
+      return results;
     },
   };
 };
 
 export type SetupNightlyConnectParams = NightlyConnectParams & {
   iconUrl?: string;
+  deprecated?: boolean;
 };
 
 export function setupNightlyConnect({
@@ -204,6 +216,7 @@ export function setupNightlyConnect({
   timeout,
   url,
   iconUrl = "./assets/nightly-connect.png",
+  deprecated = false,
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -213,7 +226,7 @@ export function setupNightlyConnect({
         name: "Nightly Connect",
         description: null,
         iconUrl: iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

@@ -217,13 +217,6 @@
  * Modal Ledger Derivation Path Section/Wrapper
  */
 
-.nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
 .nws-modal-wrapper .modal .derivation-path-wrapper input {
   margin-right: 8px;
 }
@@ -246,16 +239,86 @@
   color: var(--wallet-selector-error, var(--error));
 }
 
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper a {
+  color: #5f8afa;
+  text-decoration: none;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .no-accounts-found-wrapper .action-buttons {
+  justify-content: flex-start;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account {
+  font-size: 15px;
+  color: #5f8afa;
+  cursor: pointer;
+}
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account:hover {
+  text-decoration: underline;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .view-account:hover {
+  text-decoration: underline;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-derivation-path .error {
+  font-size: 12px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .action-buttons {
+  margin-top: 20px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .action-buttons .right-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header {
+  padding: 10px;
+  border-bottom: 1px solid rgb(216, 216, 216);
+  margin-bottom: 10px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header h4 {
+  margin: 0;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .overview-header span {
+  color: rgb(95, 138, 250);
+  cursor: pointer;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .account {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .overview-wrapper .action-buttons {
+  justify-content: flex-end;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account .input-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account input {
+  max-width: 250px;
+}
+
+.nws-modal-wrapper .modal .derivation-path-wrapper .enter-custom-account .action-buttons {
+  justify-content: flex-end;
+}
+
 /**
  * Modal Wallet ChooseLedgerAccountForm/Wrapper
  */
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
-  display: flex;
   margin-bottom: 16px;
   padding: 10px;
   box-shadow: rgb(0 0 0 / 16%) 0 1px 4px;
-  justify-content: space-between;
-  align-items: center;
   color: var(--text-color);
 }
 .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
@@ -467,6 +530,7 @@
   box-shadow: rgb(0 0 0 / 5%) 0 10px 20px 0;
 }
 .nws-modal-wrapper .spinner img {
+  box-sizing: border-box;
   width: 100%;
   height: auto;
   padding: 20px;

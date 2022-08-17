@@ -13,7 +13,7 @@
         "entryFile": "packages/nearfi/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/nearfi/README.md",
