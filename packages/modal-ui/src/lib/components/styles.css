@@ -692,6 +692,11 @@
   justify-content: flex-start;
   column-gap: 12px;
 }
+.single-wallet.sidebar.selected-wallet {
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #4F7CD1;
+}
 .single-wallet.sidebar.deprecated-wallet {
   opacity: 0.4;
 }
@@ -702,15 +707,19 @@
 }
 .single-wallet.sidebar .content {
   height: 32px;
+  width: auto;
 }
 .single-wallet.sidebar .content .title {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 32px;
   /* identical to box height, or 171% */
   align-items: center;
   color: #FFFFFF;
+}
+.single-wallet.sidebar .content .description {
+  display: none;
 }
 
 .wallet-options-wrapper h4 {
@@ -723,6 +732,102 @@
   align-items: center;
   /* text--light-gray */
   color: #C1C1C1;
+}
+
+.connecting-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+.connecting-wrapper .content .icon {
+  width: 80px;
+  height: 80px;
+}
+.connecting-wrapper .content .icon img {
+  width: 100%;
+  height: auto;
+}
+.connecting-wrapper .content .connecting-name {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #FFFFFF;
+}
+.connecting-wrapper .content .connecting-details {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  color: #6494EE;
+}
+.connecting-wrapper .content .connecting-details .spinner {
+  width: 16px;
+  height: auto;
+}
+
+.nws-modal-wrapper .modal .modal-body .alert-message .connection button {
+  margin: 24px auto;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  font-feature-settings: "pnum" on, "lnum" on;
+  color: #6494EE;
+  align-items: center;
+  padding: 8px 24px;
+  gap: 8px;
+  width: 86px;
+  height: 40px;
+  background: #313030;
+  border-radius: 4px;
+}
+.nws-modal-wrapper .modal .modal-body .alert-message .connection .error-wrapper {
+  vertical-align: middle;
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  flex-direction: column;
+  column-gap: 12px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  /* identical to box height, or 21px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.nws-modal-wrapper .modal .modal-body .alert-message .connection .error {
+  color: #CE5A6F;
+  vertical-align: middle;
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  flex-direction: row;
+  column-gap: 12px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  /* identical to box height, or 21px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.nws-modal-wrapper .modal .modal-body .alert-message .connection .success {
+  color: #4FD98F;
 }
 
 /*# sourceMappingURL=styles.css.map */

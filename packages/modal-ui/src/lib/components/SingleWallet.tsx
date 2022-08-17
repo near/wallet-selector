@@ -2,6 +2,7 @@ import React from "react";
 
 // @refresh reset
 interface SingleWalletProps {
+  id: string;
   iconUrl: string;
   title: string;
   description: string | null;
@@ -13,6 +14,7 @@ interface SingleWalletProps {
 }
 
 export const SingleWallet: React.FC<SingleWalletProps> = ({
+    id,
   iconUrl,
   title,
   description,
@@ -28,6 +30,7 @@ export const SingleWallet: React.FC<SingleWalletProps> = ({
         isLocationSidebar ? "sidebar" : ""
       } `}
       key={key}
+      data-id={id}
       onClick={selected ? undefined : onClick}
     >
       <div className={"icon"}>

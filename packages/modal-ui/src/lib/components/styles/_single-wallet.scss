@@ -11,7 +11,6 @@
   column-gap: 24px;
   padding: 12px;
 
-
   .icon {
     height: 48px;
     width: auto;
@@ -53,24 +52,39 @@
   &.sidebar {
     justify-content: flex-start;
     column-gap: 12px;
-    &.deprecated-wallet{
+
+    &.selected-wallet {
+      border-radius: 8px;
+      padding: 12px;
+      background-color: #4F7CD1;
+    }
+
+    &.deprecated-wallet {
       opacity: 0.4;
     }
-    .icon{
-        width: 32px;
-        height: 32px;
-        background-color: #FFF;
-      }
+
+    .icon {
+      width: 32px;
+      height: 32px;
+      background-color: #FFF;
+    }
+
     .content {
       height: 32px;
+      width: auto;
+
       .title {
         font-style: normal;
         font-weight: 500;
         font-size: 14px;
-        line-height: 24px;
+        line-height: 32px;
         /* identical to box height, or 171% */
         align-items: center;
         color: #FFFFFF;
+      }
+
+      .description {
+        display: none;
       }
     }
   }

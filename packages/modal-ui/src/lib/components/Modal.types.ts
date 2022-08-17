@@ -55,10 +55,15 @@ export type WalletConnectingModalRoute = {
   params?: WalletConnectingModalRouteParams;
 };
 
+export type WalletHome = {
+  name: "WalletHome";
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
   | DerivationPathModalRoute
   | WalletNotInstalledModalRoute
   | WalletNetworkChangedModalRoute
-  | WalletConnectingModalRoute;
+  | WalletConnectingModalRoute
+  | WalletHome;

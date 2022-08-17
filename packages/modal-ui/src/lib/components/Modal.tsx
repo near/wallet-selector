@@ -12,9 +12,10 @@ import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WhatWallet } from "./WhatWallet";
 
-import Icon from "../../../../../images/black-white.jpg";
 import { BackArrow } from "./BackArrow";
+import Icon from "../../../../../images/black-white.jpg";
 import { SingleWallet } from "./SingleWallet";
+import { WalletHome } from "./WalletHome";
 
 // @refresh reset
 interface ModalProps {
@@ -42,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({
   hide,
 }) => {
   const [route, setRoute] = useState<ModalRoute>({
-    name: "WalletOptions",
+    name: "WalletHome",
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [getWallet, setGetWallet] = useState(false);
@@ -75,7 +76,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   const getWalletMain = () => {
     const wallets = selector.store.getState();
-    let shorty = wallets.modules.filter((value) => {
+    const shorty = wallets.modules.filter((value) => {
       if (
         value.id == "my-near-wallet" ||
         value.id == "sender" ||
@@ -125,18 +126,7 @@ export const Modal: React.FC<ModalProps> = ({
             <h2>Connect Your Wallet</h2>
           </div>
           <div className="modal-body">
-            {route.name === "AlertMessage" && alertMessage && (
-              <AlertMessage
-                message={alertMessage}
-                onBack={() => {
-                  setAlertMessage(null);
-                  setRoute({
-                    name: "WalletOptions",
-                  });
-                }}
-              />
-            )}
-            {route.name === "WalletOptions" && (
+            {
               <WalletOptions
                 selector={selector}
                 options={options}
@@ -166,6 +156,78 @@ export const Modal: React.FC<ModalProps> = ({
                   setAlertMessage(err.message);
                   setRoute({
                     name: "AlertMessage",
+                  });
+                }}
+              />
+            }
+            {route.name === "DerivationPath" && (
+              <DerivationPath
+                selector={selector}
+                options={options}
+                onConnected={handleDismissClick}
+                params={route.params}
+                onBack={() =>
+                  setRoute({
+                    name: "WalletOptions",
+                  })
+                }
+                onError={(message) => {
+                  setAlertMessage(message);
+                  setRoute({
+                    name: "AlertMessage",
+                  });
+                }}
+              />
+            )}
+            {route.name === "WalletNetworkChanged" && (
+              <WalletNetworkChanged
+                selector={selector}
+                onSwitchWallet={() =>
+                  setRoute({
+                    name: "WalletOptions",
+                  })
+                }
+                onDismiss={handleDismissClick}
+              />
+            )}
+            {route.name === "WalletNotInstalled" && (
+              <WalletNotInstalled
+                module={route.params?.module!}
+                onBack={() => {
+                  setRoute({
+                    name: "WalletOptions",
+                  });
+                }}
+              />
+            )}
+          </div>
+        </div>
+        <div className="modal-right">
+          {route.name === "WalletOptions" &&
+            (getWallet ? (
+              <div className={"modal-header"}>
+                <BackArrow
+                  onClick={() => {
+                    setGetWallet(!getWallet);
+                  }}
+                />
+                <h3 className={"middleTitle"}>Get a Wallet</h3>
+                <CloseButton onClick={handleDismissClick} />
+              </div>
+            ) : (
+              <div className={"modal-header"}>
+                <h3 className={"middleTitle"}>What is a Wallet?</h3>
+                <CloseButton onClick={handleDismissClick} />
+              </div>
+            ))}
+          <div className={"modal-body"}>
+            {route.name === "AlertMessage" && alertMessage && (
+              <AlertMessage
+                message={alertMessage}
+                onBack={(module) => {
+                  setAlertMessage(null);
+                  setRoute({
+                    name: "WalletOptions",
                   });
                 }}
               />
@@ -218,66 +280,16 @@ export const Modal: React.FC<ModalProps> = ({
                 }}
               />
             )}
+            {route.name === "WalletOptions" && (
+              <WalletHome
+                getWallet={getWallet}
+                getThreeWallets={getThreeWallets}
+                onClick={() => {
+                  setGetWallet(!getWallet);
+                }}
+              />
+            )}
           </div>
-        </div>
-        <div className="modal-right">
-          {getWallet ? (
-            <div className={"modal-header"}>
-              <BackArrow
-                onClick={() => {
-                  setGetWallet(!getWallet);
-                }}
-              />
-              <h3 className={"middleTitle"}>Get a Wallet</h3>
-              <CloseButton onClick={handleDismissClick} />
-            </div>
-          ) : (
-            <div className={"modal-header"}>
-              <h3 className={"middleTitle"}>What is a Wallet?</h3>
-              <CloseButton onClick={handleDismissClick} />
-            </div>
-          )}
-          {getWallet ? (
-            <div className={"modal-body get-wallet-body"}>
-              {getThreeWallets.map((value, key) => {
-                return (
-                  <SingleWallet
-                    iconUrl={value.metadata.iconUrl}
-                    title={value.metadata.name}
-                    description={value.metadata.description || ""}
-                    key={key}
-                    onClick={() => {
-                      alert("ide");
-                    }}
-                    deprecated={""}
-                    selected={""}
-                    isLocationSidebar={false}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            <div className={"modal-body"}>
-              <WhatWallet
-                title="Secure & Manage Your Digital Assets"
-                description="Safely store and transfer your crypto and NFTs."
-                icon={Icon}
-              />
-              <WhatWallet
-                title="Log In to Any NEAR App"
-                description="No need to create new accounts or credentials. Connect your wallet and you’re good to go!"
-                icon={Icon}
-              />
-              <button
-                className={"middleButton"}
-                onClick={() => {
-                  setGetWallet(!getWallet);
-                }}
-              >
-                Get a Wallet
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

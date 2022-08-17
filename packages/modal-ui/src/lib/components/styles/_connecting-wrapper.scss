@@ -1,0 +1,46 @@
+.connecting-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+
+  .content {
+    .icon {
+      width: 80px;
+      height: 80px;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .connecting-name {
+
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    .connecting-details {
+      .spinner {
+        width: 16px;
+        height: auto;
+      }
+
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      color: #6494EE;
+    }
+  }
+}

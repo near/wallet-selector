@@ -1,0 +1,66 @@
+.nws-modal-wrapper .modal .modal-body .alert-message {
+  .connection {
+    button {
+      margin: 24px auto;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      font-feature-settings: 'pnum' on, 'lnum' on;
+      color: #6494EE;
+      align-items: center;
+      padding: 8px 24px;
+      gap: 8px;
+      width: 86px;
+      height: 40px;
+      background: #313030;
+      border-radius: 4px;
+    }
+
+    .error-wrapper {
+      vertical-align: middle;
+      align-items: center;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      flex-direction: column;
+      column-gap: 12px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 150%;
+      /* identical to box height, or 21px */
+
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+    .error {
+      color: #CE5A6F;
+      vertical-align: middle;
+      align-items: center;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      flex-direction: row;
+      column-gap: 12px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 150%;
+      /* identical to box height, or 21px */
+
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+    .success {
+      color: #4FD98F;
+    }
+  }
+
+}
