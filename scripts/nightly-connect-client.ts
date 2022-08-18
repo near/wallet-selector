@@ -25,7 +25,8 @@ const main = async () => {
     await client.connect({
       publicKey: alice_ed25519.publicKey,
       accountId: accountId,
-      sessionId: SESSION_ID
+      sessionId: SESSION_ID,
+      token: '2137'
     })
     client.on('newRequest', async (request) => {
       const signRequest = request as SignTransactionsRequest
