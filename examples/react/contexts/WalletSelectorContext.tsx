@@ -59,6 +59,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNightlyConnect({
           url: "wss://ncproxy.nightly.app/app",
           appMetadata: {
+            persistent: false,
             additionalInfo: "",
             application: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",

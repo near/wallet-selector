@@ -2,8 +2,8 @@
 import { sha256 } from 'js-sha256'
 import { transactions } from 'near-api-js'
 import { KeyPairEd25519 } from 'near-api-js/lib/utils'
-import { ClientNear } from '@nightlylabs/connect'
-import type { SignTransactionsRequest } from '@nightlylabs/connect'
+import { ClientNear } from '@nightlylabs/connect-near'
+import type { SignTransactionsRequest } from '@nightlylabs/connect-near'
 
 // To run test you need to have running instance of the server
 const CLIENT_ADDRESS = 'wss://ncproxy.nightly.app/client'
