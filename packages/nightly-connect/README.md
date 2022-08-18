@@ -30,7 +30,6 @@ import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 const nightlyConnect = setupNightlyConnect({
   url: "wss://ncproxy.nightly.app/app",
   appMetadata: {
-    persistent: false,
     additionalInfo: "",
     application: "NEAR Wallet Selector",
     description: "Example dApp used by NEAR Wallet Selector",
@@ -46,7 +45,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `persistent` (`boolean`): Indication of whether last session id should be persisted in localStorage and used after user refreshes app.
+- `persistent` (`boolean?`): Indication of whether last session id should be persisted in localStorage and used after user refreshes app. Defaults to true.
 - `appMetadata` (`object`): App metadata used to provide context of the dApp to the connected wallet.
 - `url` (`string?`): URL address of Nightly Connect proxy.
 - `timeout` (`number?`): Timeout of requests sent via proxy.
