@@ -4,7 +4,7 @@ import {
   AppNear,
   NETWORK,
   NightlyConnectModal,
-} from "@nightlylabs/connect";
+} from "@nightlylabs/connect-near";
 import {
   BridgeWallet,
   getActiveAccount,
