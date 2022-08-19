@@ -56,7 +56,21 @@ const ledger = setupLedger({
 ```
 
 ## Known issues
+
+### Multiple instances
 Existing dApps with Ledger support integrated may encounter this error `Device is already open`, it means your current integration and this package are conflicting and two ledger instances are being created. Avoid this scenario by supporting only this package. 
+
+### Bundling
+
+There is a known build issue for dApps that use `parcel` as a bundler and is outlined here as a [github-issue](https://github.com/near/wallet-selector/issues/411). This is caused by `@ledgerhq/hw-transport-webhid` which depends on `@ledgerhq/devices` the recommended fix is to add parcel-style alias to the package.json of the dApp.
+```json
+{ 
+  ...
+  "alias": {
+    "@ledgerhq/devices": "@ledgerhq/devices/lib-es"
+  }
+}
+```
 
 ## License
 
