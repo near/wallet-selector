@@ -62,7 +62,7 @@ Existing dApps with Ledger support integrated may encounter this error `Device i
 
 ### Bundling
 
-There is a known build issue for dApps that use `parcel` as a bundler and is outlined here as a [github-issue]("https://github.com/near/wallet-selector/issues/411"). This is caused by `@ledgerhq/hw-transport-webhid` which depends on `@ledgerhq/devices` the recommended fix is to add parcel-style alias to the package.json of the dApp.
+There is a known build issue for dApps that use `parcel` as a bundler and is outlined here as a [github-issue](https://github.com/near/wallet-selector/issues/411). This is caused by `@ledgerhq/hw-transport-webhid` which depends on `@ledgerhq/devices` the recommended fix is to add parcel-style alias to the package.json of the dApp.
 ```json
 { 
   ...
