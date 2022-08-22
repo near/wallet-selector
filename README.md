@@ -131,6 +131,19 @@ const modal = setupModal(selector, {
 });
 ```
 
+## Known Issues
+
+The [ledger package](./packages/ledger) can present some issues when used on the [parcel bundler](https://parceljs.org). To solve them add the following aliases to your `package.json`:
+
+```json
+{ 
+  ...
+  "alias": {
+    "@ledgerhq/devices": "@ledgerhq/devices/lib-es"
+  }
+}
+```
+
 ## Contributing
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
