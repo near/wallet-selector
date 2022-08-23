@@ -63,6 +63,10 @@
       opacity: 0.4;
     }
 
+    .warning-triangle {
+      display: flex;
+    }
+
     .icon {
       width: 32px;
       height: 32px;
@@ -88,5 +92,12 @@
       }
     }
   }
+}
+
+@media screen and (max-width: 425px) {
+
+}
+
+@media screen and (min-width: 426px) and (max-width: 768px) {
 
 }

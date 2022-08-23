@@ -46,7 +46,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           />
           <WhatWallet
             title="Log In to Any NEAR App"
-            description="No need to aaacreate new accounts or credentials. Connect your wallet and you’re good to go!"
+            description="No need to create new accounts or credentials. Connect your wallet and you’re good to go!"
             icon={Icon}
           />
           <button className={"middleButton"} onClick={onClick}>
