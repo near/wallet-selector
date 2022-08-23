@@ -28,7 +28,7 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
         }}
       >
         <div>
-          <div className="form-control">
+          <div className="nws-form-control">
             {accounts.map((account, index) => (
               <div key={index}>
                 <input
