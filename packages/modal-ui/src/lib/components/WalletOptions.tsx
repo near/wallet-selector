@@ -30,7 +30,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 }) => {
   const [getWallet] = useState(false);
   const [activeWallet, setactiveWallet] = useState("");
-  const [modules, setModules] = useState<Array<ModuleState>>([]);
+  const [popularModules, setPopularModules] = useState<Array<ModuleState>>([]);
+  const [communityModules, setCommunityModules] = useState<Array<ModuleState>>(
+    []
+  );
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -41,7 +44,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         return current.metadata.deprecated ? 1 : -1;
       });
-      setModules(state.modules);
+      // TODO: create "popular" flag on module type
+      setPopularModules(state.modules.slice(0, 4));
+      setCommunityModules(state.modules.slice(4));
     });
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,7 +99,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       <div className="wallet-options-wrapper">
         <h4 className="description">Popular</h4>
         <ul className={"options-list"}>
-          {modules.reduce<Array<JSX.Element>>((result, module, key) => {
+          {popularModules.reduce<Array<JSX.Element>>((result, module, key) => {
             const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === activeWallet;
             result.push(
@@ -113,6 +118,34 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
             return result;
           }, [])}
+        </ul>
+      </div>
+      <div className="wallet-options-wrapper">
+        <h4 className="description">Community</h4>
+        <ul className={"options-list"}>
+          {communityModules.reduce<Array<JSX.Element>>(
+            (result, module, key) => {
+              const { name, description, iconUrl, deprecated } =
+                module.metadata;
+              const selected = module.id === activeWallet;
+              result.push(
+                <SingleWallet
+                  id={module.id}
+                  iconUrl={iconUrl}
+                  title={name}
+                  description={description}
+                  key={key}
+                  isLocationSidebar={true}
+                  selected={selected ? "selected-wallet" : ""}
+                  deprecated={deprecated ? " deprecated-wallet" : ""}
+                  onClick={handleWalletClick(module)}
+                />
+              );
+
+              return result;
+            },
+            []
+          )}
         </ul>
       </div>
       <div className="info">

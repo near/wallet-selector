@@ -415,9 +415,13 @@
   justify-content: flex-end;
 }
 
+.nws-modal-wrapper .modal .wallet-options-wrapper {
+  margin-bottom: 20px;
+}
+
 .nws-modal-wrapper .modal .wallet-options-wrapper .description {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .nws-modal-wrapper .modal .wallet-options-wrapper .options-list {
