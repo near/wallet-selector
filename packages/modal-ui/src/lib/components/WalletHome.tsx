@@ -2,7 +2,7 @@ import React from "react";
 import { WhatWallet } from "./WhatWallet";
 import Icon from "../../../../../images/black-white.jpg";
 import { SingleWallet } from "./SingleWallet";
-import { ModuleState, WalletSelector } from "@near-wallet-selector/core";
+import { ModuleState } from "@near-wallet-selector/core";
 
 interface WalletHomeProps {
   getWallet: boolean;
@@ -27,8 +27,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 title={value.metadata.name}
                 description={value.metadata.description || ""}
                 key={key}
-                onClick={()=>{
-                  alert('ide');
+                onClick={() => {
+                  alert("hide");
                 }}
                 deprecated={""}
                 selected={""}
@@ -46,7 +46,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           />
           <WhatWallet
             title="Log In to Any NEAR App"
-            description="No need to create new accounts or credentials. Connect your wallet and you’re good to go!"
+            description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
             icon={Icon}
           />
           <button className={"middleButton"} onClick={onClick}>

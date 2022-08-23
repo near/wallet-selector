@@ -17,9 +17,9 @@ export const BackArrow: React.FC<BackArrowProps> = ({ onClick }) => {
         <path
           d="M7 13L1 7L7 1"
           stroke="#6494EE"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </button>

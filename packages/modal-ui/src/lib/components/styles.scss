@@ -28,11 +28,11 @@
   --selected-wallet-bg: #262626CC;
   --selected-wallet-bg-hover: #262626CC;
   --wallet-option-border-color: #A7A7A730;
-  --content-bg: #3F4246;
+  --content-bg: #232323;
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
   --dismiss-button-bg-hover: #262626CC;
-  --dismiss-button-border-color-hover: #262626;;
+  --dismiss-button-border-color-hover: #262626;
   --confirm-button-color: #FFFFFF;
   --confirm-button-bg: #5F8AFA;
   --confirm-button-bg-hover: #5AA6FF;
@@ -50,11 +50,12 @@
     --selected-wallet-bg: #262626CC;
     --selected-wallet-bg-hover: #262626CC;
     --wallet-option-border-color: #A7A7A730;
-    --content-bg: #3F4246;
+    --content-bg: #232323;
     --input-border-color-focus: #5F8AFA;
     --box-shadow-color: #26262630;
     --dismiss-button-bg-hover: #262626CC;
-    --dismiss-button-border-color-hover: #262626;;
+    --dismiss-button-border-color-hover: #262626;
+    ;
     --confirm-button-color: #FFFFFF;
     --confirm-button-bg: #5F8AFA;
     --confirm-button-bg-hover: #5AA6FF;
@@ -289,7 +290,8 @@
     /**
      * Modal buttons and inputs
      */
-    .modal-body input, .modal .modal-body button {
+    .modal-body input,
+    .modal .modal-body button {
       background: inherit;
       font-size: 14.2px;
       font-family: inherit;
@@ -567,13 +569,6 @@
     }
   }
 
-  .open {
-    opacity: 1;
-    visibility: visible;
-    transition: visibility 0s linear 0s, opacity 0.25s 0s;
-  }
-
-
   .spinner {
     margin-top: 20px;
     --size: 160px;
@@ -649,8 +644,15 @@
 
 }
 
+.open {
+  opacity: 1;
+  visibility: visible;
+  transition: visibility 0s linear 0s, opacity 0.25s 0s;
+}
+
 
 @media (prefers-color-scheme: dark) {
+
   .nws-modal-wrapper .modal #near-wallet img,
   .nws-modal-wrapper .modal #math-wallet img,
   .nws-modal-wrapper .modal #ledger img,
@@ -667,6 +669,7 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     visibility: hidden;

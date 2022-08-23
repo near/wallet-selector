@@ -10,11 +10,8 @@ import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
-import { WhatWallet } from "./WhatWallet";
 
 import { BackArrow } from "./BackArrow";
-import Icon from "../../../../../images/black-white.jpg";
-import { SingleWallet } from "./SingleWallet";
 import { WalletHome } from "./WalletHome";
 
 // @refresh reset
@@ -78,9 +75,9 @@ export const Modal: React.FC<ModalProps> = ({
     const wallets = selector.store.getState();
     const shorty = wallets.modules.filter((value) => {
       if (
-        value.id == "my-near-wallet" ||
-        value.id == "sender" ||
-        value.id == "nightly"
+        value.id === "my-near-wallet" ||
+        value.id === "sender" ||
+        value.id === "nightly"
       ) {
         return true;
       } else {

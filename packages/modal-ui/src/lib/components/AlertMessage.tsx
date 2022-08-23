@@ -7,7 +7,6 @@ interface AlertMessageProps {
   onBack: (module: ModuleState) => void;
 }
 
-
 export const AlertMessage: React.FC<AlertMessageProps> = ({
   message,
   onBack,

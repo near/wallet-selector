@@ -6,7 +6,6 @@ import type {
 } from "@near-wallet-selector/core";
 
 import type { ModalOptions } from "../modal.types";
-import { state } from "@angular/animations";
 import { SingleWallet } from "./SingleWallet";
 
 // @refresh reset
@@ -29,10 +28,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   onConnecting,
   onConnected,
 }) => {
-  const [getWallet, setGetWallet] = useState(false);
+  const [getWallet] = useState(false);
   const [activeWallet, setactiveWallet] = useState("");
   const [modules, setModules] = useState<Array<ModuleState>>([]);
-  const [shortModules, setShortModules] = useState<Array<ModuleState>>([]);
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -97,7 +95,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         <h4 className="description">Popular</h4>
         <ul className={"options-list"}>
           {modules.reduce<Array<JSX.Element>>((result, module, key) => {
-            const { selectedWalletId } = selector.store.getState();
             const { name, description, iconUrl, deprecated } = module.metadata;
             const selected = module.id === activeWallet;
             result.push(

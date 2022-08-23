@@ -17,7 +17,10 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
           <img src={wallet?.metadata.iconUrl} alt="" />
         </div>
         <h3 className={"connecting-name"}>{wallet?.metadata.name}</h3>
-        <div className={"connecting-details"}><div className="spinner" id={wallet?.id}></div> Connecting to {wallet?.metadata.name}</div>
+        <div className={"connecting-details"}>
+          <div className="spinner" id={wallet?.id}></div> Connecting to{" "}
+          {wallet?.metadata.name}
+        </div>
       </div>
       <div className="action-buttons">
         <button className="left-button" onClick={onBack}>
