@@ -21,6 +21,7 @@ import {
   MeteorWalletState,
 } from "./meteor-wallet-types";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import icon from "./icon";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
@@ -203,7 +204,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 };
 
 export function setupMeteorWallet({
-  iconUrl = "./assets/meteor-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {

@@ -9,6 +9,7 @@ import type {
 import { getActiveAccount } from "@near-wallet-selector/core";
 
 import WalletConnectClient from "./wallet-connect-client";
+import icon from "./icon";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -238,7 +239,7 @@ export function setupWalletConnect({
   metadata,
   chainId,
   relayUrl = "wss://relay.walletconnect.com",
-  iconUrl = "./assets/wallet-connect-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: WalletConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {

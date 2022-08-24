@@ -16,6 +16,7 @@ import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import { Signer, utils } from "near-api-js";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -278,7 +279,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 };
 
 export function setupLedger({
-  iconUrl = "./assets/ledger-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: LedgerParams = {}): WalletModuleFactory<HardwareWallet> {
   return async () => {
