@@ -12,7 +12,7 @@ interface DerivationPathProps {
   onBack: () => void;
   onConnected: () => void;
   params: DerivationPathModalRouteParams;
-  onError: (message: string) => void;
+  onError: (message: string, wallet: Wallet) => void;
 }
 
 export interface HardwareWalletAccountState {
@@ -126,7 +126,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       })
       .then(() => onConnected())
       .catch((err) => {
-        onError(`Error: ${err.message}`);
+        onError(`Error: ${err.message}`, wallet);
       });
   };
 
@@ -170,7 +170,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(message);
+      onError(message, wallet);
     } finally {
       setConnecting(false);
     }

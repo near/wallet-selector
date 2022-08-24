@@ -5,31 +5,23 @@ import type {
   Wallet,
 } from "@near-wallet-selector/core";
 
-import type { ModalOptions } from "../modal.types";
 import { SingleWallet } from "./SingleWallet";
 
 // @refresh reset
 interface WalletOptionsProps {
   selector: WalletSelector;
-  options: ModalOptions;
-  onWalletNotInstalled: (module: ModuleState) => void;
-  onConnectHardwareWallet: () => void;
-  onConnected: () => void;
-  onConnecting: (wallet: Wallet) => void;
-  onError: (error: Error) => void;
+  activeModule: ModuleState<Wallet> | null;
+  setActiveModule: (module: ModuleState) => void;
+  handleWalletClick: (module: ModuleState) => void;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
-  options,
-  onWalletNotInstalled,
-  onError,
-  onConnectHardwareWallet,
-  onConnecting,
-  onConnected,
+  activeModule,
+  setActiveModule,
+  handleWalletClick,
 }) => {
   const [getWallet] = useState(false);
-  const [activeWallet, setactiveWallet] = useState("");
   const [popularModules, setPopularModules] = useState<Array<ModuleState>>([]);
   const [communityModules, setCommunityModules] = useState<Array<ModuleState>>(
     []
@@ -44,6 +36,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         return current.metadata.deprecated ? 1 : -1;
       });
+      state.modules.forEach((module) => {
+        if (module.id === state.selectedWalletId) {
+          setActiveModule(module);
+        }
+      });
+
       // TODO: create "popular" flag on module type
       setPopularModules(state.modules.slice(0, 4));
       setCommunityModules(state.modules.slice(4));
@@ -52,48 +50,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleWalletClick = (module: ModuleState) => async () => {
-    try {
-      const { deprecated, available } = module.metadata;
-
-      if (module.type === "injected" && !available) {
-        return onWalletNotInstalled(module);
-      }
-
-      if (deprecated) {
-        return onError(
-          new Error(
-            `${module.metadata.name} is deprecated. Please select another wallet.`
-          )
-        );
-      }
-
-      setactiveWallet(module.id);
-
-      const wallet = await module.wallet();
-      onConnecting(wallet);
-
-      if (wallet.type === "hardware") {
-        return onConnectHardwareWallet();
-      }
-
-      await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
-
-      onConnected();
-    } catch (err) {
-      const { name } = module.metadata;
-      setactiveWallet("");
-
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-
-      onError(new Error(`Failed to sign in with ${name}: ${message}`));
-    }
-  };
-
   return (
     <Fragment>
       <div className="wallet-options-wrapper">
@@ -101,7 +57,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         <ul className={"options-list"}>
           {popularModules.reduce<Array<JSX.Element>>((result, module, key) => {
             const { name, description, iconUrl, deprecated } = module.metadata;
-            const selected = module.id === activeWallet;
+            const selected = module.id === activeModule?.id;
             result.push(
               <SingleWallet
                 id={module.id}
@@ -112,7 +68,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 isLocationSidebar={true}
                 selected={selected ? "selected-wallet" : ""}
                 deprecated={deprecated ? " deprecated-wallet" : ""}
-                onClick={handleWalletClick(module)}
+                onClick={() => {
+                  handleWalletClick(module);
+                }}
               />
             );
 
@@ -127,7 +85,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             (result, module, key) => {
               const { name, description, iconUrl, deprecated } =
                 module.metadata;
-              const selected = module.id === activeWallet;
+              const selected = module.id === activeModule?.id;
               result.push(
                 <SingleWallet
                   id={module.id}
@@ -138,7 +96,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                   isLocationSidebar={true}
                   selected={selected ? "selected-wallet" : ""}
                   deprecated={deprecated ? " deprecated-wallet" : ""}
-                  onClick={handleWalletClick(module)}
+                  onClick={() => {
+                    handleWalletClick(module);
+                  }}
                 />
               );
 

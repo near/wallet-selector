@@ -177,6 +177,10 @@
   flex-wrap: nowrap;
 }
 
+.nws-modal-wrapper .modal .modal-right .wallet-what+.wallet-what {
+  margin-top: 50px;
+}
+
 .nws-modal-wrapper .modal .modal-right .wallet-what .icon-side {
   width: 15%;
   padding-top: 9px;
@@ -245,7 +249,7 @@
   line-height: 24px;
   border-color: #4F7CD1;
   display: block;
-  margin: 35px auto 12px auto;
+  margin: 100px auto 12px auto;
 }
 
 .nws-modal-wrapper .modal .modal-body button.get-wallet {
@@ -280,7 +284,7 @@
 .nws-modal-wrapper .modal .modal-header .back-button {
   height: 100%;
   display: block;
-  vertical-align: middle;
+  /* vertical-align: middle; */
   border: none;
 }
 
@@ -561,7 +565,7 @@
 }
 
 .nws-modal-wrapper .spinner {
-  margin-top: 20px;
+  margin-right: 10px;
   --size: 160px;
   --border: 6px;
   width: var(--size);
@@ -571,17 +575,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.nws-modal-wrapper .spinner:before {
-  content: "";
-  border-radius: 50%;
-  position: absolute;
-  inset: 0;
-  border: var(--border) solid transparent;
-  border-right: var(--border) solid var(--wallet-selector-spinner-color, var(--spinner-color));
-  /*animation: spin 1.4s linear infinite;*/
-  animation: spin 1.3s ease infinite;
 }
 
 .nws-modal-wrapper .spinner .icon {
@@ -595,7 +588,6 @@
 .nws-modal-wrapper .spinner img {
   width: 100%;
   height: auto;
-  padding: 20px;
 }
 
 @keyframes spin {
@@ -731,7 +723,7 @@
   width: 40px;
   height: 40px;
   background-color: #FFF;
-  padding: 3px;
+  padding: 5px;
   border-radius: 5px;
 }
 
@@ -776,6 +768,9 @@
 .connecting-wrapper .content .icon {
   width: 80px;
   height: 80px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px
 }
 
 .connecting-wrapper .content .icon img {
@@ -802,11 +797,23 @@
   display: flex;
   align-items: center;
   color: #6494EE;
+  margin-top: 40px;
 }
 
 .connecting-wrapper .content .connecting-details .spinner {
-  width: 16px;
+  width: 25px;
   height: auto;
+  animation: spinner 2s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .nws-modal-wrapper .modal .modal-body .alert-message .connection button {
@@ -826,6 +833,7 @@
   height: 40px;
   background: #313030;
   border-radius: 4px;
+  border: 0;
 }
 
 .nws-modal-wrapper .modal .modal-body .alert-message .connection .error-wrapper {

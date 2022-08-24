@@ -1,19 +1,29 @@
 import React from "react";
 import { ConnectionResult } from "./ConnectionResult";
-import type { ModuleState } from "@near-wallet-selector/core";
+import type { Wallet } from "@near-wallet-selector/core";
 
 interface AlertMessageProps {
   message: string;
-  onBack: (module: ModuleState) => void;
+  wallet?: Wallet;
+  onBack: () => void;
 }
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
   message,
+  wallet,
   onBack,
 }) => {
   return (
-    <div className={"alert-message"}>
-      <ConnectionResult err={message !== null} />
+    <div className="alert-message connecting-wrapper">
+      <div className="content">
+        <div className="icon">
+          <img src={wallet?.metadata.iconUrl} alt={wallet?.metadata.name} />
+        </div>
+        <h3 className="connecting-name">{wallet?.metadata.name}</h3>
+        <div className="connecting-details">
+          <ConnectionResult err={message !== null} onBack={onBack} />
+        </div>
+      </div>
     </div>
   );
 };

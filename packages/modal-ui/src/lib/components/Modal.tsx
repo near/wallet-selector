@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { ModuleState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  ModuleState,
+  Wallet,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
@@ -44,6 +48,9 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [getWallet, setGetWallet] = useState(false);
+  const [activeModule, setActiveModule] = useState<ModuleState<Wallet> | null>(
+    null
+  );
   const [getThreeWallets, setgetThreeWallets] = useState<Array<ModuleState>>(
     []
   );
@@ -106,6 +113,75 @@ export const Modal: React.FC<ModalProps> = ({
     return () => window.removeEventListener("keydown", close);
   }, [handleDismissClick]);
 
+  const handleWalletClick = async (module: ModuleState) => {
+    try {
+      const { deprecated, available } = module.metadata;
+
+      if (module.type === "injected" && !available) {
+        setRoute({
+          name: "WalletNotInstalled",
+          params: { module: module },
+        });
+        return;
+      }
+
+      const wallet = await module.wallet();
+
+      if (deprecated) {
+        setAlertMessage(
+          `${module.metadata.name} is deprecated. Please select another wallet.`
+        );
+        setRoute({
+          name: "AlertMessage",
+          params: {
+            wallet: wallet,
+          },
+        });
+        return;
+      }
+
+      setActiveModule(module);
+
+      setRoute({
+        name: "WalletConnecting",
+        params: { wallet: wallet },
+      });
+
+      if (wallet.type === "hardware") {
+        setRoute({
+          name: "DerivationPath",
+          params: {
+            walletId: selector.store.getState().selectedWalletId || "ledger",
+          },
+        });
+        return;
+      }
+
+      await wallet.signIn({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+      });
+
+      handleDismissClick();
+    } catch (err) {
+      const { name } = module.metadata;
+      // setActiveModule(null);
+
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+
+      const wallet = await module.wallet();
+
+      setAlertMessage(`Failed to sign in with ${name}: ${message}`);
+      setRoute({
+        name: "AlertMessage",
+        params: {
+          wallet: wallet,
+        },
+      });
+    }
+  };
+
   if (!visible) {
     return null;
   }
@@ -125,78 +201,12 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="modal-body">
             {
               <WalletOptions
+                activeModule={activeModule}
+                setActiveModule={setActiveModule}
+                handleWalletClick={handleWalletClick}
                 selector={selector}
-                options={options}
-                onWalletNotInstalled={(module) => {
-                  setRoute({
-                    name: "WalletNotInstalled",
-                    params: { module: module },
-                  });
-                }}
-                onConnectHardwareWallet={() => {
-                  setRoute({
-                    name: "DerivationPath",
-                    params: {
-                      walletId:
-                        selector.store.getState().selectedWalletId || "ledger",
-                    },
-                  });
-                }}
-                onConnecting={(wallet) => {
-                  setRoute({
-                    name: "WalletConnecting",
-                    params: { wallet: wallet },
-                  });
-                }}
-                onConnected={handleDismissClick}
-                onError={(err) => {
-                  setAlertMessage(err.message);
-                  setRoute({
-                    name: "AlertMessage",
-                  });
-                }}
               />
             }
-            {route.name === "DerivationPath" && (
-              <DerivationPath
-                selector={selector}
-                options={options}
-                onConnected={handleDismissClick}
-                params={route.params}
-                onBack={() =>
-                  setRoute({
-                    name: "WalletOptions",
-                  })
-                }
-                onError={(message) => {
-                  setAlertMessage(message);
-                  setRoute({
-                    name: "AlertMessage",
-                  });
-                }}
-              />
-            )}
-            {route.name === "WalletNetworkChanged" && (
-              <WalletNetworkChanged
-                selector={selector}
-                onSwitchWallet={() =>
-                  setRoute({
-                    name: "WalletOptions",
-                  })
-                }
-                onDismiss={handleDismissClick}
-              />
-            )}
-            {route.name === "WalletNotInstalled" && (
-              <WalletNotInstalled
-                module={route.params?.module!}
-                onBack={() => {
-                  setRoute({
-                    name: "WalletOptions",
-                  });
-                }}
-              />
-            )}
           </div>
         </div>
         <div className="modal-right">
@@ -221,11 +231,16 @@ export const Modal: React.FC<ModalProps> = ({
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}
-                onBack={(module) => {
+                wallet={route.params?.wallet}
+                onBack={() => {
                   setAlertMessage(null);
-                  setRoute({
-                    name: "WalletOptions",
-                  });
+                  if (activeModule) {
+                    handleWalletClick(activeModule);
+                  } else {
+                    setRoute({
+                      name: "WalletOptions",
+                    });
+                  }
                 }}
               />
             )}
@@ -240,10 +255,13 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletOptions",
                   })
                 }
-                onError={(message) => {
+                onError={(message, wallet) => {
                   setAlertMessage(message);
                   setRoute({
                     name: "AlertMessage",
+                    params: {
+                      wallet: wallet,
+                    },
                   });
                 }}
               />
@@ -273,7 +291,9 @@ export const Modal: React.FC<ModalProps> = ({
               <WalletConnecting
                 wallet={route.params?.wallet}
                 onBack={() => {
-                  setRoute({ name: "WalletOptions" });
+                  setRoute({
+                    name: "WalletOptions",
+                  });
                 }}
               />
             )}
