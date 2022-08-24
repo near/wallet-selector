@@ -1,5 +1,4 @@
 import { isMobile } from "is-mobile";
-import { TypedError } from "near-api-js/lib/utils/errors";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type {
   WalletModuleFactory,
@@ -147,7 +146,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         return accessKey;
       },
       (err) => {
-        if (err instanceof TypedError && err.type === "AccessKeyDoesNotExist") {
+        if (err.type === "AccessKeyDoesNotExist") {
           return null;
         }
 
