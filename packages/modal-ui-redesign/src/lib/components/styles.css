@@ -68,6 +68,7 @@
 /**
  * Modal Wrapper
  */
+
 .nws-modal-wrapper {
   position: fixed;
   top: 0;
@@ -84,12 +85,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /**
-   * Modal
-   */
-  /**
-   * Modal Wallet Not Installed Section/Wrapper
-   */
 }
 
 .nws-modal-wrapper .nws-modal-overlay {
@@ -98,6 +93,10 @@
   width: 100%;
   position: absolute;
 }
+
+/**
+ * Modal
+ */
 
 .nws-modal-wrapper .nws-modal {
   background: var(--wallet-selector-content-bg, var(--content-bg));
@@ -117,35 +116,11 @@
   overflow: hidden;
   box-sizing: content-box;
   display: inline-flex;
-  /*Modal right side */
-  /**
-   *  Wallet listing
-   */
-  /**
-   * Modal Header
-   */
-  /**
-   * Modal buttons and inputs
-   */
-  /**
-   * Modal Switch Network Message Section/Wrapper
-   */
-  /**
-   * Modal Ledger Derivation Path Section/Wrapper
-   */
-  /**
-   * Modal Wallet ChooseLedgerAccountForm/Wrapper
-   */
-  /**
-   * Modal Wallet Options Section/Wrapper
-   */
-  /**
-   * Modal Wallet Options Info Section/Wrapper
-   */
-  /**
-  * Modal Wallet Connecting Section/Wrapper
-  */
 }
+
+/**
+* Modal left side
+*/
 
 .nws-modal-wrapper .nws-modal .nws-modal-left {
   width: 35%;
@@ -159,6 +134,10 @@
 .nws-modal-wrapper .nws-modal .nws-modal-left::-webkit-scrollbar {
   width: 10px;
 }
+
+/**
+* Modal right side
+*/
 
 .nws-modal-wrapper .nws-modal .nws-modal-right {
   width: 65%;
@@ -216,6 +195,10 @@
   font-size: 14px;
   line-height: 150%;
 }
+
+/**
+ * Modal Header
+ */
 
 .nws-modal-wrapper .nws-modal .nws-modal-right .nws-modal-header h3.middleTitle {
   text-align: center;
@@ -308,6 +291,10 @@
   margin-bottom: 20px;
 }
 
+/**
+ * Modal buttons and inputs
+ */
+
 .nws-modal-wrapper .nws-modal .nws-modal-body input,
 .nws-modal-wrapper .nws-modal .nws-modal .nws-modal-body button {
   background: inherit;
@@ -347,6 +334,10 @@
   background-color: var(--wallet-selector-confirm-button-bg-hover, var(--confirm-button-bg-hover));
 }
 
+/**
+ * Modal Switch Network Message Section/Wrapper
+ */
+
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper .header h2 {
   font-size: 18px;
   margin-top: 0;
@@ -356,6 +347,10 @@
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper .content p {
   font-size: 14.25px;
 }
+
+/**
+ * Modal Ledger Derivation Path Section/Wrapper
+ */
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list {
   display: flex;
@@ -385,6 +380,10 @@
   font-family: inherit;
   color: var(--wallet-selector-error, var(--error));
 }
+
+/**
+ * Modal Wallet ChooseLedgerAccountForm/Wrapper
+ */
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
   display: flex;
@@ -418,6 +417,10 @@
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .action-buttons {
   justify-content: flex-end;
 }
+
+/**
+ * Modal Wallet Options Section/Wrapper
+ */
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper {
   margin-bottom: 20px;
@@ -501,6 +504,10 @@
   flex-direction: column;
   align-items: center;
 }
+
+/**
+ * Modal Wallet Not Installed Section/Wrapper
+ */
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .refresh-link {
   color: #5f8afa;
@@ -728,6 +735,10 @@
   /* text--light-gray */
   color: #C1C1C1;
 }
+
+/**
+* Modal Wallet Connecting Section/Wrapper
+*/
 
 .connecting-wrapper {
   display: flex;
