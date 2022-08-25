@@ -191,13 +191,13 @@ export const Modal: React.FC<ModalProps> = ({
         visible ? "open" : ""
       }`}
     >
-      <div className="modal-overlay" onClick={handleDismissClick} />
-      <div className="modal">
-        <div className="modal-left">
-          <div className="modal-header">
+      <div className="nws-modal-overlay" onClick={handleDismissClick} />
+      <div className="nws-modal">
+        <div className="nws-modal-left">
+          <div className="nws-modal-header">
             <h2>Connect Your Wallet</h2>
           </div>
-          <div className="modal-body">
+          <div className="nws-modal-body">
             {
               <WalletOptions
                 activeModule={activeModule}
@@ -208,10 +208,10 @@ export const Modal: React.FC<ModalProps> = ({
             }
           </div>
         </div>
-        <div className="modal-right">
+        <div className="nws-modal-right">
           {route.name === "WalletOptions" &&
             (getWallet ? (
-              <div className={"modal-header"}>
+              <div className={"nws-modal-header"}>
                 <BackArrow
                   onClick={() => {
                     setGetWallet(!getWallet);
@@ -221,12 +221,12 @@ export const Modal: React.FC<ModalProps> = ({
                 <CloseButton onClick={handleDismissClick} />
               </div>
             ) : (
-              <div className={"modal-header"}>
+              <div className={"nws-modal-header"}>
                 <h3 className={"middleTitle"}>What is a Wallet?</h3>
                 <CloseButton onClick={handleDismissClick} />
               </div>
             ))}
-          <div className={"modal-body"}>
+          <div className={"nws-modal-body"}>
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}

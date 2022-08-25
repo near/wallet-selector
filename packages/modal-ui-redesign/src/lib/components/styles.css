@@ -92,14 +92,14 @@
    */
 }
 
-.nws-modal-wrapper .modal-overlay {
+.nws-modal-wrapper .nws-modal-overlay {
   background: var(--wallet-selector-backdrop-bg, var(--backdrop-bg));
   height: 100%;
   width: 100%;
   position: absolute;
 }
 
-.nws-modal-wrapper .modal {
+.nws-modal-wrapper .nws-modal {
   background: var(--wallet-selector-content-bg, var(--content-bg));
   width: 812px;
   max-width: 812px;
@@ -147,7 +147,7 @@
   */
 }
 
-.nws-modal-wrapper .modal .modal-left {
+.nws-modal-wrapper .nws-modal .nws-modal-left {
   width: 35%;
   border-right: 1px solid #313030;
   padding: 32px 24px;
@@ -156,17 +156,17 @@
   overflow: auto;
 }
 
-.nws-modal-wrapper .modal .modal-left::-webkit-scrollbar {
+.nws-modal-wrapper .nws-modal .nws-modal-left::-webkit-scrollbar {
   width: 10px;
 }
 
-.nws-modal-wrapper .modal .modal-right {
+.nws-modal-wrapper .nws-modal .nws-modal-right {
   width: 65%;
   padding: 32px;
   overflow: hidden;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what {
   display: flex;
   align-content: center;
   flex-direction: row;
@@ -177,28 +177,28 @@
   flex-wrap: nowrap;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what+.wallet-what {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what+.wallet-what {
   margin-top: 50px;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what .icon-side {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what .icon-side {
   width: 15%;
   padding-top: 9px;
   padding-bottom: 9px;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what .icon-side img {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what .icon-side img {
   width: 100%;
   height: auto;
   max-height: 65px;
   border-radius: 6px;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what .content-side {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what .content-side {
   width: 80%;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what .content-side h3 {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what .content-side h3 {
   margin: 0 auto 8px 0;
   font-family: inherit;
   font-style: normal;
@@ -208,7 +208,7 @@
   color: #FFFFFF;
 }
 
-.nws-modal-wrapper .modal .modal-right .wallet-what .content-side p {
+.nws-modal-wrapper .nws-modal .nws-modal-right .wallet-what .content-side p {
   margin: 0;
   font-family: inherit;
   font-style: normal;
@@ -217,12 +217,12 @@
   line-height: 150%;
 }
 
-.nws-modal-wrapper .modal .modal-right .modal-header h3.middleTitle {
+.nws-modal-wrapper .nws-modal .nws-modal-right .nws-modal-header h3.middleTitle {
   text-align: center;
   margin: 4px auto;
 }
 
-.nws-modal-wrapper .modal .modal-right .modal-body {
+.nws-modal-wrapper .nws-modal .nws-modal-right .nws-modal-body {
   padding: 0 28px;
   display: flex;
   flex-direction: column;
@@ -233,14 +233,14 @@
   margin-top: 91px;
 }
 
-.nws-modal-wrapper .modal .modal-right .modal-body.get-wallet-body {
+.nws-modal-wrapper .nws-modal .nws-modal-right .nws-modal-body.get-wallet-body {
   padding-left: 32px;
   padding-right: 0;
   row-gap: 16px;
   margin-top: 64px;
 }
 
-.nws-modal-wrapper .modal .modal-body button.middleButton {
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
   background-color: #4F7CD1;
   border-radius: 4px;
   color: #FFFFFF;
@@ -252,7 +252,7 @@
   margin: 100px auto 12px auto;
 }
 
-.nws-modal-wrapper .modal .modal-body button.get-wallet {
+.nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
   margin: 4px 0;
   background-color: #313030;
   border: 1px solid #313030;
@@ -266,13 +266,13 @@
   color: #6494EE;
 }
 
-.nws-modal-wrapper .modal .modal-header {
+.nws-modal-wrapper .nws-modal .nws-modal-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
 
-.nws-modal-wrapper .modal .modal-header .close-button {
+.nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
   border: 0;
   cursor: pointer;
   height: 32px;
@@ -281,35 +281,35 @@
   border-radius: 50px;
 }
 
-.nws-modal-wrapper .modal .modal-header .back-button {
+.nws-modal-wrapper .nws-modal .nws-modal-header .back-button {
   height: 100%;
   display: block;
   /* vertical-align: middle; */
   border: none;
 }
 
-.nws-modal-wrapper .modal .modal-header .close-button:active {
+.nws-modal-wrapper .nws-modal .nws-modal-header .close-button:active {
   background: transparent;
 }
 
-.nws-modal-wrapper .modal .modal-header .close-button svg {
+.nws-modal-wrapper .nws-modal .nws-modal-header .close-button svg {
   pointer-events: none;
 }
 
-.nws-modal-wrapper .modal .modal-header .close-button:hover svg {
+.nws-modal-wrapper .nws-modal .nws-modal-header .close-button:hover svg {
   fill: var(--wallet-selector-close-button-color, var(--close-button-color));
   transition: all 0.2s ease-in;
 }
 
-.nws-modal-wrapper .modal .modal-header h2 {
+.nws-modal-wrapper .nws-modal .nws-modal-header h2 {
   color: var(--wallet-selector-heading-color, var(--heading-color));
   font-size: 22px;
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.nws-modal-wrapper .modal .modal-body input,
-.nws-modal-wrapper .modal .modal .modal-body button {
+.nws-modal-wrapper .nws-modal .nws-modal-body input,
+.nws-modal-wrapper .nws-modal .nws-modal .nws-modal-body button {
   background: inherit;
   font-size: 14.2px;
   font-family: inherit;
@@ -326,67 +326,67 @@
   cursor: pointer;
 }
 
-.nws-modal-wrapper .modal .action-buttons {
+.nws-modal-wrapper .nws-modal .action-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.nws-modal-wrapper .modal .action-buttons .left-button:hover {
+.nws-modal-wrapper .nws-modal .action-buttons .left-button:hover {
   background-color: var(--wallet-selector-dismiss-button-bg-hover, var(--dismiss-button-bg-hover));
   border-color: var(--wallet-selector-dismiss-button-border-color-hover, var(--dismiss-button-border-color-hover));
 }
 
-.nws-modal-wrapper .modal .action-buttons .right-button {
+.nws-modal-wrapper .nws-modal .action-buttons .right-button {
   color: var(--wallet-selector-confirm-button-color, var(--confirm-button-color));
   background-color: var(--wallet-selector-confirm-button-bg, var(--confirm-button-bg));
   border: 1px solid var(--wallet-selector-confirm-button-border-color, var(--confirm-button-border-color));
 }
 
-.nws-modal-wrapper .modal .action-buttons .right-button:hover {
+.nws-modal-wrapper .nws-modal .action-buttons .right-button:hover {
   background-color: var(--wallet-selector-confirm-button-bg-hover, var(--confirm-button-bg-hover));
 }
 
-.nws-modal-wrapper .modal .switch-network-message-wrapper .header h2 {
+.nws-modal-wrapper .nws-modal .switch-network-message-wrapper .header h2 {
   font-size: 18px;
   margin-top: 0;
   color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
-.nws-modal-wrapper .modal .switch-network-message-wrapper .content p {
+.nws-modal-wrapper .nws-modal .switch-network-message-wrapper .content p {
   font-size: 14.25px;
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list {
   display: flex;
   justify-content: center;
   flex-direction: column;
   margin-bottom: 16px;
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper input {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper input {
   margin-right: 8px;
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper input:focus {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper input:focus {
   border: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper input:focus-visible {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper input:focus-visible {
   border: none;
   outline: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper .input-error {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .input-error {
   border-color: var(--wallet-selector-error, var(--error)) !important;
 }
 
-.nws-modal-wrapper .modal .derivation-path-wrapper .error {
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .error {
   font-family: inherit;
   color: var(--wallet-selector-error, var(--error));
 }
 
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
   display: flex;
   margin-bottom: 16px;
   padding: 10px;
@@ -396,11 +396,11 @@
   color: var(--text-color);
 }
 
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control label {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control label {
   color: inherit;
 }
 
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
   padding: 8px;
   font-size: 14px;
   border-radius: 10px;
@@ -411,24 +411,24 @@
   color: inherit;
 }
 
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select option {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select option {
   background-color: var(--content-bg);
 }
 
-.nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .action-buttons {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .action-buttons {
   justify-content: flex-end;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper {
   margin-bottom: 20px;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .description {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
   margin: 0;
   list-style-type: none;
   padding: 0;
@@ -437,7 +437,7 @@
   gap: 10px;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li {
   display: flex;
   justify-content: center;
   padding: 1em;
@@ -447,17 +447,17 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li span {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li span {
   font-size: 14px;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li .wallet-content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -466,69 +466,69 @@
   margin-bottom: 10px;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box img {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li .wallet-content .wallet-img-box img {
   text-align: center;
   width: 100%;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li:hover {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li:hover {
   background-color: var(--wallet-selector-selected-wallet-bg-hover, var(--selected-wallet-bg-hover));
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.selected-wallet {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li.selected-wallet {
   background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li.deprecated-wallet div {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li.deprecated-wallet div {
   opacity: 50%;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .selected-wallet-text {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li .selected-wallet-text {
   text-align: center;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li .selected-wallet-text span {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li .selected-wallet-text span {
   font-size: 14px;
   font-weight: 500;
 }
 
-.nws-modal-wrapper .modal .wallet-options-wrapper .options-list li:hover {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list li:hover {
   box-shadow: 0 2px 10px 0 var(--wallet-selector-box-shadow-color, var(--box-shadow-color));
 }
 
-.nws-modal-wrapper .modal .info {
+.nws-modal-wrapper .nws-modal .info {
   margin-top: 20px;
 }
 
-.nws-modal-wrapper .modal .info span {
+.nws-modal-wrapper .nws-modal .info span {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 200ms ease-out;
 }
 
-.nws-modal-wrapper .modal .info .info-description {
+.nws-modal-wrapper .nws-modal .info .info-description {
   max-height: 0;
   transition: all 300ms ease-out;
   overflow: hidden;
 }
 
-.nws-modal-wrapper .modal .info .info-description p {
+.nws-modal-wrapper .nws-modal .info .info-description p {
   font-size: 14px;
   margin-bottom: 0;
 }
 
-.nws-modal-wrapper .modal .info .info-description.show-explanation {
+.nws-modal-wrapper .nws-modal .info .info-description.show-explanation {
   animation: inAnimation 350ms ease-in;
   max-height: 300px;
 }
 
-.nws-modal-wrapper .modal .info .info-description.hide-explanation {
+.nws-modal-wrapper .nws-modal .info .info-description.hide-explanation {
   animation: outAnimation 200ms ease-out;
   animation-fill-mode: forwards;
 }
 
-.nws-modal-wrapper .modal .connecting-wrapper .content {
+.nws-modal-wrapper .nws-modal .connecting-wrapper .content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -597,27 +597,27 @@
 }
 
 @media (max-width: 600px) {
-  .nws-modal-wrapper .nws-modal-wrapper .modal {
+  .nws-modal-wrapper .nws-modal-wrapper .nws-modal {
     width: 250px;
   }
 
-  .nws-modal-wrapper .nws-modal-wrapper .modal .derivation-path-wrapper .derivation-path-list input {
+  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list input {
     max-width: 140px;
   }
 
-  .nws-modal-wrapper .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control {
+  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
     flex-direction: column;
   }
 
-  .nws-modal-wrapper .nws-modal-wrapper .modal .choose-ledger-account-form-wrapper .form-control select {
+  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
     text-align: center;
   }
 }
 
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .modal #near-wallet img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .modal #math-wallet img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .modal #ledger img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .modal .wallet-not-installed-wrapper .math-wallet img {
+.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #near-wallet img,
+.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #math-wallet img,
+.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #ledger img,
+.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal .wallet-not-installed-wrapper .math-wallet img {
   filter: invert(1);
 }
 
@@ -627,10 +627,10 @@
 
 @media (prefers-color-scheme: dark) {
 
-  .nws-modal-wrapper .modal #near-wallet img,
-  .nws-modal-wrapper .modal #math-wallet img,
-  .nws-modal-wrapper .modal #ledger img,
-  .nws-modal-wrapper .modal .wallet-not-installed-wrapper .math-wallet img {
+  .nws-modal-wrapper .nws-modal #near-wallet img,
+  .nws-modal-wrapper .nws-modal #math-wallet img,
+  .nws-modal-wrapper .nws-modal #ledger img,
+  .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper .math-wallet img {
     filter: invert(1);
   }
 
@@ -819,7 +819,7 @@
   }
 }
 
-.nws-modal-wrapper .modal .modal-body .alert-message .connection button {
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection button {
   margin: 24px auto;
   font-style: normal;
   font-weight: 700;
@@ -839,7 +839,7 @@
   border: 0;
 }
 
-.nws-modal-wrapper .modal .modal-body .alert-message .connection .error-wrapper {
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error-wrapper {
   vertical-align: middle;
   align-items: center;
   display: flex;
@@ -857,7 +857,7 @@
   text-align: center;
 }
 
-.nws-modal-wrapper .modal .modal-body .alert-message .connection .error {
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error {
   color: #CE5A6F;
   vertical-align: middle;
   align-items: center;
@@ -876,7 +876,7 @@
   text-align: center;
 }
 
-.nws-modal-wrapper .modal .modal-body .alert-message .connection .success {
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .success {
   color: #4FD98F;
 }
 
