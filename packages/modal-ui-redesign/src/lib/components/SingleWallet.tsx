@@ -5,7 +5,6 @@ interface SingleWalletProps {
   iconUrl: string;
   title: string;
   description: string | null;
-  key: number;
   isLocationSidebar: boolean;
   selected: string;
   deprecated: string;
@@ -17,7 +16,6 @@ export const SingleWallet: React.FC<SingleWalletProps> = ({
   iconUrl,
   title,
   description,
-  key,
   selected,
   deprecated,
   isLocationSidebar,
@@ -28,7 +26,6 @@ export const SingleWallet: React.FC<SingleWalletProps> = ({
       className={`single-wallet ${selected} ${deprecated} ${
         isLocationSidebar ? "sidebar  " : ""
       } `}
-      key={key}
       data-id={id}
       onClick={selected ? undefined : onClick}
     >
