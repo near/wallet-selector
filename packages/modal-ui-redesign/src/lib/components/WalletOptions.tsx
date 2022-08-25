@@ -1,9 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import type {
-  WalletSelector,
-  ModuleState,
-  Wallet,
-} from "@near-wallet-selector/core";
+import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 
 import { SingleWallet } from "./SingleWallet";
 
