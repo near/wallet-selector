@@ -17,6 +17,9 @@
     "strictPropertyInitialization": false,
     "paths": {
       "@near-wallet-selector/core": ["packages/core/src/index.ts"],
+      "@near-wallet-selector/default-wallets": [
+        "packages/default-wallets/src/index.ts"
+      ],
       "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
@@ -28,6 +31,7 @@
       "@near-wallet-selector/my-near-wallet": [
         "packages/my-near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/near-snap": ["packages/near-snap/src/index.ts"],
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
@@ -41,9 +45,6 @@
       ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
-      ],
-      "@near-wallet-selector/default-wallets": [
-        "packages/default-wallets/src/index.ts"
       ]
     }
   },
