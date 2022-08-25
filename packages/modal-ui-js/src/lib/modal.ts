@@ -9,7 +9,7 @@ import type {
   ModalOptions,
   ModalRoute,
 } from "./modal.types";
-import { renderWalletOptions } from "./components/WalletOptions";
+import { renderWhatIsAWallet } from "./components/WhatIsAWallet";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
@@ -71,7 +71,7 @@ export const setupModal = (
         if (!modalState) {
           return;
         }
-        renderWalletOptions();
+        renderWhatIsAWallet();
         modalState.container.children[0].classList.add("open");
       },
       hide: () => {
