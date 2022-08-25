@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-@import "../../../dist/packages/modal-ui/styles.css";
+@import "../../../dist/packages/modal-ui-redesign/styles.css";
 
 html {
   --bg: #fff;
