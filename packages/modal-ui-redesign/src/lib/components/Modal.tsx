@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { WalletSelector } from "@near-wallet-selector/core";
+import type {
+  ModuleState,
+  Wallet,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
@@ -10,6 +14,9 @@ import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
+
+import { BackArrow } from "./BackArrow";
+import { WalletHome } from "./WalletHome";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -36,9 +43,16 @@ export const Modal: React.FC<ModalProps> = ({
   hide,
 }) => {
   const [route, setRoute] = useState<ModalRoute>({
-    name: "WalletOptions",
+    name: "WalletHome",
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [getWallet, setGetWallet] = useState(false);
+  const [activeModule, setActiveModule] = useState<ModuleState<Wallet> | null>(
+    null
+  );
+  const [getThreeWallets, setgetThreeWallets] = useState<Array<ModuleState>>(
+    []
+  );
 
   useEffect(() => {
     setRoute({
@@ -47,6 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
   }, [visible]);
 
   useEffect(() => {
+    getWalletMain();
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       if (networkId === selector.options.network.networkId) {
@@ -61,6 +76,22 @@ export const Modal: React.FC<ModalProps> = ({
     return () => subscription.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getWalletMain = () => {
+    const wallets = selector.store.getState();
+    const shorty = wallets.modules.filter((value) => {
+      if (
+        value.id === "my-near-wallet" ||
+        value.id === "sender" ||
+        value.id === "nightly"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    setgetThreeWallets(shorty);
+  };
 
   const handleDismissClick = useCallback(() => {
     setAlertMessage(null);
@@ -81,6 +112,75 @@ export const Modal: React.FC<ModalProps> = ({
     return () => window.removeEventListener("keydown", close);
   }, [handleDismissClick]);
 
+  const handleWalletClick = async (module: ModuleState) => {
+    try {
+      const { deprecated, available } = module.metadata;
+
+      if (module.type === "injected" && !available) {
+        setRoute({
+          name: "WalletNotInstalled",
+          params: { module: module },
+        });
+        return;
+      }
+
+      const wallet = await module.wallet();
+
+      if (deprecated) {
+        setAlertMessage(
+          `${module.metadata.name} is deprecated. Please select another wallet.`
+        );
+        setRoute({
+          name: "AlertMessage",
+          params: {
+            wallet: wallet,
+          },
+        });
+        return;
+      }
+
+      setActiveModule(module);
+
+      setRoute({
+        name: "WalletConnecting",
+        params: { wallet: wallet },
+      });
+
+      if (wallet.type === "hardware") {
+        setRoute({
+          name: "DerivationPath",
+          params: {
+            walletId: selector.store.getState().selectedWalletId || "ledger",
+          },
+        });
+        return;
+      }
+
+      await wallet.signIn({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+      });
+
+      handleDismissClick();
+    } catch (err) {
+      const { name } = module.metadata;
+      // setActiveModule(null);
+
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+
+      const wallet = await module.wallet();
+
+      setAlertMessage(`Failed to sign in with ${name}: ${message}`);
+      setRoute({
+        name: "AlertMessage",
+        params: {
+          wallet: wallet,
+        },
+      });
+    }
+  };
+
   if (!visible) {
     return null;
   }
@@ -92,105 +192,120 @@ export const Modal: React.FC<ModalProps> = ({
       }`}
     >
       <div className="modal-overlay" onClick={handleDismissClick} />
-      <div className="nws-modal">
-        <div className="nws-modal-header">
-          <h2>Connect Wallet</h2>
-          <CloseButton onClick={handleDismissClick} />
+      <div className="modal">
+        <div className="modal-left">
+          <div className="modal-header">
+            <h2>Connect Your Wallet</h2>
+          </div>
+          <div className="modal-body">
+            {
+              <WalletOptions
+                activeModule={activeModule}
+                setActiveModule={setActiveModule}
+                handleWalletClick={handleWalletClick}
+                selector={selector}
+              />
+            }
+          </div>
         </div>
-        <div className="nws-modal-body">
-          {route.name === "AlertMessage" && alertMessage && (
-            <AlertMessage
-              message={alertMessage}
-              onBack={() => {
-                setAlertMessage(null);
-                setRoute({
-                  name: "WalletOptions",
-                });
-              }}
-            />
-          )}
-          {route.name === "WalletOptions" && (
-            <WalletOptions
-              selector={selector}
-              options={options}
-              onWalletNotInstalled={(module) => {
-                setRoute({
-                  name: "WalletNotInstalled",
-                  params: { module: module },
-                });
-              }}
-              onConnectHardwareWallet={() => {
-                setRoute({
-                  name: "DerivationPath",
-                  params: {
-                    walletId:
-                      selector.store.getState().selectedWalletId || "ledger",
-                  },
-                });
-              }}
-              onConnecting={(wallet) => {
-                setRoute({
-                  name: "WalletConnecting",
-                  params: { wallet: wallet },
-                });
-              }}
-              onConnected={handleDismissClick}
-              onError={(err) => {
-                setAlertMessage(err.message);
-                setRoute({
-                  name: "AlertMessage",
-                });
-              }}
-            />
-          )}
-          {route.name === "DerivationPath" && (
-            <DerivationPath
-              selector={selector}
-              options={options}
-              onConnected={handleDismissClick}
-              params={route.params}
-              onBack={() =>
-                setRoute({
-                  name: "WalletOptions",
-                })
-              }
-              onError={(message) => {
-                setAlertMessage(message);
-                setRoute({
-                  name: "AlertMessage",
-                });
-              }}
-            />
-          )}
-          {route.name === "WalletNetworkChanged" && (
-            <WalletNetworkChanged
-              selector={selector}
-              onSwitchWallet={() =>
-                setRoute({
-                  name: "WalletOptions",
-                })
-              }
-              onDismiss={handleDismissClick}
-            />
-          )}
-          {route.name === "WalletNotInstalled" && (
-            <WalletNotInstalled
-              module={route.params?.module!}
-              onBack={() => {
-                setRoute({
-                  name: "WalletOptions",
-                });
-              }}
-            />
-          )}
-          {route.name === "WalletConnecting" && (
-            <WalletConnecting
-              wallet={route.params?.wallet}
-              onBack={() => {
-                setRoute({ name: "WalletOptions" });
-              }}
-            />
-          )}
+        <div className="modal-right">
+          {route.name === "WalletOptions" &&
+            (getWallet ? (
+              <div className={"modal-header"}>
+                <BackArrow
+                  onClick={() => {
+                    setGetWallet(!getWallet);
+                  }}
+                />
+                <h3 className={"middleTitle"}>Get a Wallet</h3>
+                <CloseButton onClick={handleDismissClick} />
+              </div>
+            ) : (
+              <div className={"modal-header"}>
+                <h3 className={"middleTitle"}>What is a Wallet?</h3>
+                <CloseButton onClick={handleDismissClick} />
+              </div>
+            ))}
+          <div className={"modal-body"}>
+            {route.name === "AlertMessage" && alertMessage && (
+              <AlertMessage
+                message={alertMessage}
+                wallet={route.params?.wallet}
+                onBack={() => {
+                  setAlertMessage(null);
+                  if (activeModule) {
+                    handleWalletClick(activeModule);
+                  } else {
+                    setRoute({
+                      name: "WalletOptions",
+                    });
+                  }
+                }}
+              />
+            )}
+            {route.name === "DerivationPath" && (
+              <DerivationPath
+                selector={selector}
+                options={options}
+                onConnected={handleDismissClick}
+                params={route.params}
+                onBack={() =>
+                  setRoute({
+                    name: "WalletOptions",
+                  })
+                }
+                onError={(message, wallet) => {
+                  setAlertMessage(message);
+                  setRoute({
+                    name: "AlertMessage",
+                    params: {
+                      wallet: wallet,
+                    },
+                  });
+                }}
+              />
+            )}
+            {route.name === "WalletNetworkChanged" && (
+              <WalletNetworkChanged
+                selector={selector}
+                onSwitchWallet={() =>
+                  setRoute({
+                    name: "WalletOptions",
+                  })
+                }
+                onDismiss={handleDismissClick}
+              />
+            )}
+            {route.name === "WalletNotInstalled" && (
+              <WalletNotInstalled
+                module={route.params?.module!}
+                onBack={() => {
+                  setRoute({
+                    name: "WalletOptions",
+                  });
+                }}
+              />
+            )}
+            {route.name === "WalletConnecting" && (
+              <WalletConnecting
+                wallet={route.params?.wallet}
+                onBack={() => {
+                  setRoute({
+                    name: "WalletOptions",
+                  });
+                }}
+              />
+            )}
+            {route.name === "WalletOptions" && (
+              <WalletHome
+                getWallet={getWallet}
+                getThreeWallets={getThreeWallets}
+                onClick={() => {
+                  setGetWallet(!getWallet);
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
