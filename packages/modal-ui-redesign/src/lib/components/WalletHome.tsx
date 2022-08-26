@@ -1,7 +1,6 @@
 import React from "react";
 import { WhatWallet } from "./WhatWallet";
 import Icon from "../images/black-white.jpg";
-import { SingleWallet } from "./SingleWallet";
 import { ModuleState } from "@near-wallet-selector/core";
 
 interface WalletHomeProps {
@@ -19,21 +18,21 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     <div>
       {getWallet ? (
         <div>
-          {getThreeWallets.map((value, key) => {
+          {getThreeWallets.map((module) => {
+            const { iconUrl, name, description } = module.metadata;
             return (
-              <SingleWallet
-                id={value.id}
-                iconUrl={value.metadata.iconUrl}
-                title={value.metadata.name}
-                description={value.metadata.description || ""}
-                key={key}
-                onClick={() => {
-                  alert("hide");
-                }}
-                deprecated={""}
-                selected={""}
-                isLocationSidebar={false}
-              />
+              <div className={`single-wallet`} key={module.id}>
+                <div className={"icon"}>
+                  <img src={iconUrl} alt={name} />
+                </div>
+                <div className={"content"}>
+                  <div className={"title"}>{name}</div>
+                  <div className={"description"}>{description}</div>
+                </div>
+                <div className={"button-get"}>
+                  <button className={"get-wallet"}>Get</button>
+                </div>
+              </div>
             );
           })}
         </div>

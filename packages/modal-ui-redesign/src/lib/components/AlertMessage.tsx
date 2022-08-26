@@ -5,7 +5,7 @@ import type { Wallet } from "@near-wallet-selector/core";
 interface AlertMessageProps {
   message: string;
   wallet?: Wallet;
-  onBack: () => void;
+  onBack: (retry: boolean) => void;
 }
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
@@ -21,7 +21,12 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
         </div>
         <h3 className="connecting-name">{wallet?.metadata.name}</h3>
         <div className="connecting-details">
-          <ConnectionResult err={message !== null} onBack={onBack} />
+          <ConnectionResult
+            err={message !== null}
+            onRetry={() => {
+              onBack(true);
+            }}
+          />
         </div>
       </div>
     </div>

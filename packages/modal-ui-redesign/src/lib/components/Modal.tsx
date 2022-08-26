@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type {
-  ModuleState,
-  Wallet,
-  WalletSelector,
-} from "@near-wallet-selector/core";
+import type { ModuleState, WalletSelector } from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
@@ -46,10 +42,9 @@ export const Modal: React.FC<ModalProps> = ({
     name: "WalletHome",
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [getWallet, setGetWallet] = useState(false);
-  const [activeModule, setActiveModule] = useState<ModuleState<Wallet> | null>(
-    null
-  );
+
   const [getThreeWallets, setgetThreeWallets] = useState<Array<ModuleState>>(
     []
   );
@@ -113,6 +108,7 @@ export const Modal: React.FC<ModalProps> = ({
   }, [handleDismissClick]);
 
   const handleWalletClick = async (module: ModuleState) => {
+    setSelectedWallet(module);
     try {
       const { deprecated, available } = module.metadata;
 
@@ -139,8 +135,6 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
-      setActiveModule(module);
-
       setRoute({
         name: "WalletConnecting",
         params: { wallet: wallet },
@@ -164,7 +158,6 @@ export const Modal: React.FC<ModalProps> = ({
       handleDismissClick();
     } catch (err) {
       const { name } = module.metadata;
-      // setActiveModule(null);
 
       const message =
         err instanceof Error ? err.message : "Something went wrong";
@@ -200,8 +193,6 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="nws-modal-body">
             {
               <WalletOptions
-                activeModule={activeModule}
-                setActiveModule={setActiveModule}
                 handleWalletClick={handleWalletClick}
                 selector={selector}
               />
@@ -231,15 +222,14 @@ export const Modal: React.FC<ModalProps> = ({
               <AlertMessage
                 message={alertMessage}
                 wallet={route.params?.wallet}
-                onBack={() => {
-                  setAlertMessage(null);
-                  if (activeModule) {
-                    handleWalletClick(activeModule);
-                  } else {
-                    setRoute({
-                      name: "WalletOptions",
-                    });
+                onBack={(retry) => {
+                  if (retry) {
+                    handleWalletClick(selectedWallet!);
                   }
+                  setAlertMessage(null);
+                  setRoute({
+                    name: "WalletOptions",
+                  });
                 }}
               />
             )}

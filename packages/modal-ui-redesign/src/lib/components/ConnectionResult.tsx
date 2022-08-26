@@ -2,12 +2,12 @@ import React from "react";
 
 interface ConnectionResultProps {
   err: boolean;
-  onBack: () => void;
+  onRetry: () => void;
 }
 
 export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   err,
-  onBack,
+  onRetry,
 }) => {
   return (
     <div className={"connection"}>
@@ -39,7 +39,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
             </svg>
             Connection Failed
           </div>
-          <button onClick={onBack}>Retry</button>
+          <button onClick={onRetry}>Retry</button>
         </div>
       ) : (
         <div className={"success"}>
