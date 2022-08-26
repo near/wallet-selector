@@ -45,10 +45,6 @@ export const Modal: React.FC<ModalProps> = ({
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [getWallet, setGetWallet] = useState(false);
 
-  const [getThreeWallets, setgetThreeWallets] = useState<Array<ModuleState>>(
-    []
-  );
-
   useEffect(() => {
     setRoute({
       name: "WalletOptions",
@@ -56,7 +52,6 @@ export const Modal: React.FC<ModalProps> = ({
   }, [visible]);
 
   useEffect(() => {
-    getWalletMain();
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       if (networkId === selector.options.network.networkId) {
@@ -71,22 +66,6 @@ export const Modal: React.FC<ModalProps> = ({
     return () => subscription.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getWalletMain = () => {
-    const wallets = selector.store.getState();
-    const shorty = wallets.modules.filter((value) => {
-      if (
-        value.id === "my-near-wallet" ||
-        value.id === "sender" ||
-        value.id === "nightly"
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    setgetThreeWallets(shorty);
-  };
 
   const handleDismissClick = useCallback(() => {
     setAlertMessage(null);
@@ -289,7 +268,7 @@ export const Modal: React.FC<ModalProps> = ({
             {route.name === "WalletOptions" && (
               <WalletHome
                 getWallet={getWallet}
-                getThreeWallets={getThreeWallets}
+                selector={selector}
                 onClick={() => {
                   setGetWallet(!getWallet);
                 }}
