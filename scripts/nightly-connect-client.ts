@@ -2,12 +2,13 @@
 import { sha256 } from 'js-sha256'
 import { transactions } from 'near-api-js'
 import { KeyPairEd25519 } from 'near-api-js/lib/utils'
-import { ClientNear } from '@nightlylabs/connect'
-import type { SignTransactionsRequest } from '@nightlylabs/connect'
+import { ClientNear } from '@nightlylabs/connect-near'
+import type { SignTransactionsRequest } from '@nightlylabs/connect-near'
+import { v4 } from 'uuid'
 
 // To run test you need to have running instance of the server
 const CLIENT_ADDRESS = 'wss://ncproxy.nightly.app/client'
-const SESSION_ID = 'nightlyconnect:ae54794a-ef2a-49b2-89cc-64cc0564b541?network=NEAR'.split(':')[1].split("?")[0]
+const SESSION_ID = 'nightlyconnect:03e03af0-8800-482e-8266-d22cc7d0d120?network=NEAR'.split(':')[1].split("?")[0]
 
 const alice_ed25519 = new KeyPairEd25519(
   '3zR44QTFXYHPErMnFYZYizFRFmyYajpfH9jLJnm4BQ67ndoQ5PpKsJDcG1BHBhKrat92ospVNfs4SRQ6Z8uXUGiM'
@@ -25,7 +26,8 @@ const main = async () => {
     await client.connect({
       publicKey: alice_ed25519.publicKey,
       accountId: accountId,
-      sessionId: SESSION_ID
+      sessionId: SESSION_ID,
+      token: v4()
     })
     client.on('newRequest', async (request) => {
       const signRequest = request as SignTransactionsRequest

@@ -4,7 +4,7 @@ import {
   AppNear,
   NETWORK,
   NightlyConnectModal,
-} from "@nightlylabs/connect";
+} from "@nightlylabs/connect-near";
 import {
   BridgeWallet,
   getActiveAccount,
@@ -15,6 +15,7 @@ import {
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 export interface NightlyConnectParams {
   appMetadata: AppMetadata;
@@ -215,7 +216,7 @@ export function setupNightlyConnect({
   appMetadata,
   timeout,
   url,
-  iconUrl = "./assets/nightly-connect.png",
+  iconUrl = icon,
   deprecated = false,
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
