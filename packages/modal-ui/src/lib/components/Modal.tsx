@@ -94,6 +94,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="modal-overlay" onClick={handleDismissClick} />
       <div className="nws-modal">
         <div className="nws-modal-header">
+          <h2>Test commit</h2>
           <h2>Connect Wallet</h2>
           <CloseButton onClick={handleDismissClick} />
         </div>
