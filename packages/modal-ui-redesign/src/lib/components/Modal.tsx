@@ -170,12 +170,10 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="modal-left-title">
             <h2>Connect Your Wallet</h2>
           </div>
-          <div className="nws-modal-body">
-            <WalletOptions
-              handleWalletClick={handleWalletClick}
-              selector={selector}
-            />
-          </div>
+          <WalletOptions
+            handleWalletClick={handleWalletClick}
+            selector={selector}
+          />
         </div>
         <div className="modal-right">
           <div className={"nws-modal-body"}>

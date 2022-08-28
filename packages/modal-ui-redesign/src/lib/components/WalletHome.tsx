@@ -50,7 +50,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         />
       </div>
       {route === "GetWallets" && (
-        <div style={{ marginTop: "91px" }}>
+        <div className="get-wallet-wrapper">
           {modules.map((module) => {
             const { iconUrl, name, description } = module.metadata;
             return (
@@ -71,7 +71,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         </div>
       )}
       {route === "WalletInfo" && (
-        <div style={{ marginTop: "91px" }}>
+        <div className="wallet-info-wrapper">
           <WhatWallet
             title="Secure & Manage Your Digital Assets"
             description="Safely store and transfer your crypto and NFTs."

@@ -291,6 +291,13 @@
   overflow: hidden;
 }
 
+.nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
+.nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
+.nws-modal-wrapper .nws-modal .connecting-wrapper{
+  margin-top: 91px;
+  padding: 0 28px;
+}
+
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what {
   display: flex;
   align-content: center;
@@ -353,7 +360,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
-  padding: 0 28px;
+  /*padding: 0 28px;*/
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body.get-wallet-body {
