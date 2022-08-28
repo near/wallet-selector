@@ -294,7 +294,8 @@
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
 .nws-modal-wrapper .nws-modal .connecting-wrapper,
-.nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper {
+.nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
+.nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
   margin-top: 91px;
   padding: 0 28px;
 }
@@ -474,14 +475,9 @@
  * Modal Switch Network Message Section/Wrapper
  */
 
-.nws-modal-wrapper .nws-modal .switch-network-message-wrapper .header h2 {
-  font-size: 18px;
-  margin-top: 0;
-  color: var(--wallet-selector-heading-color, var(--heading-color));
-}
 
-.nws-modal-wrapper .nws-modal .switch-network-message-wrapper .content p {
-  font-size: 14.25px;
+.nws-modal-wrapper .nws-modal .switch-network-message-wrapper .content .network-id {
+  color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
 /**

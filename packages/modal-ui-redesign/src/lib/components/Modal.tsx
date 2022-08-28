@@ -223,12 +223,12 @@ export const Modal: React.FC<ModalProps> = ({
             {route.name === "WalletNetworkChanged" && (
               <WalletNetworkChanged
                 selector={selector}
-                onSwitchWallet={() =>
+                onBack={() =>
                   setRoute({
                     name: "WalletHome",
                   })
                 }
-                onDismiss={handleDismissClick}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletNotInstalled" && (
