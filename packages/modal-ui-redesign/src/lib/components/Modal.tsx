@@ -239,6 +239,7 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletConnecting" && (

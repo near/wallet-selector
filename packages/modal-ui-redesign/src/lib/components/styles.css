@@ -293,7 +293,8 @@
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
-.nws-modal-wrapper .nws-modal .connecting-wrapper{
+.nws-modal-wrapper .nws-modal .connecting-wrapper,
+.nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper {
   margin-top: 91px;
   padding: 0 28px;
 }
