@@ -176,7 +176,7 @@ export const Modal: React.FC<ModalProps> = ({
           />
         </div>
         <div className="modal-right">
-          <div className={"nws-modal-body"}>
+          <div className="nws-modal-body">
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}

@@ -12,10 +12,10 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   onRetry,
 }) => {
   return (
-    <div className={"connection"}>
+    <div className="connection">
       {err ? (
-        <div className={"error-wrapper"}>
-          <div className={"error"}>
+        <div className="error-wrapper">
+          <div className="error">
             <svg
               width="24"
               height="24"
@@ -45,7 +45,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
           <button onClick={onRetry}>Retry</button>
         </div>
       ) : (
-        <div className={"success"}>
+        <div className="success">
           <svg
             width="24"
             height="24"

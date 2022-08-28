@@ -30,7 +30,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   return (
     <div className="wallet-options-wrapper">
-      <ul className={"options-list"}>
+      <ul className="options-list">
         {modules.reduce<Array<JSX.Element>>((result, module) => {
           const { selectedWalletId } = selector.store.getState();
           const { name, description, iconUrl, deprecated } = module.metadata;
@@ -45,15 +45,15 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 return handleWalletClick(module);
               }}
             >
-              <div className={"icon"}>
+              <div className="icon">
                 <img src={iconUrl} alt={name} />
               </div>
-              <div className={"content"}>
-                <div className={"title"}>{name}</div>
-                <div className={"description"}>{description}</div>
+              <div className="content">
+                <div className="title">{name}</div>
+                <div className="description">{description}</div>
               </div>
               {deprecated && (
-                <div className={"warning-triangle"}>
+                <div className="warning-triangle">
                   <svg
                     width="24"
                     height="24"
