@@ -1,11 +1,13 @@
 import React from "react";
 
 interface ConnectionResultProps {
+  message: string;
   err: boolean;
   onRetry: () => void;
 }
 
 export const ConnectionResult: React.FC<ConnectionResultProps> = ({
+  message,
   err,
   onRetry,
 }) => {
@@ -37,8 +39,9 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            Connection Failed
+            <span>Connection Failed</span>
           </div>
+          <p>{message}</p>
           <button onClick={onRetry}>Retry</button>
         </div>
       ) : (
