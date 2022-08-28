@@ -1,19 +1,23 @@
 import React from "react";
 import { Wallet } from "@near-wallet-selector/core";
 import LoadingIcon from "../images/connecting-loader.png";
+import { ModalHeader } from "./ModalHeader";
 
 interface WalletConnectingProps {
   wallet: Wallet | undefined;
   onBack: () => void;
+  onCloseModal: () => void;
 }
 
 export const WalletConnecting: React.FC<WalletConnectingProps> = ({
   wallet,
   onBack,
+  onCloseModal,
 }) => {
   return (
     <div className="connecting-wrapper">
-      <div className="content">
+      <ModalHeader title={" "} onCloseModal={onCloseModal} />
+      <div className="content" style={{ marginTop: "91px" }}>
         <div className="icon">
           <img src={wallet?.metadata.iconUrl} alt={wallet?.metadata.name} />
         </div>

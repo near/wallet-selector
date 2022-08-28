@@ -6,12 +6,10 @@ import type { ModalRoute } from "./Modal.types";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
-import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 
-import { BackArrow } from "./BackArrow";
 import { WalletHome } from "./WalletHome";
 
 interface ModalProps {
@@ -43,7 +41,6 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
-  const [getWallet, setGetWallet] = useState(false);
 
   useEffect(() => {
     setRoute({
@@ -165,8 +162,8 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div className="nws-modal-overlay" onClick={handleDismissClick} />
       <div className="nws-modal">
-        <div className="nws-modal-left">
-          <div className="nws-modal-header">
+        <div className="modal-left">
+          <div className="modal-left-title">
             <h2>Connect Your Wallet</h2>
           </div>
           <div className="nws-modal-body">
@@ -176,21 +173,7 @@ export const Modal: React.FC<ModalProps> = ({
             />
           </div>
         </div>
-        <div className="nws-modal-right">
-          <div className="nws-modal-header">
-            {getWallet && (
-              <BackArrow
-                onClick={() => {
-                  setGetWallet(!getWallet);
-                }}
-              />
-            )}
-            <h3 className="middleTitle">
-              {getWallet ? "Get a Wallet" : "What is a Wallet?"}
-            </h3>
-            <CloseButton onClick={handleDismissClick} />
-          </div>
-
+        <div className="modal-right">
           <div className={"nws-modal-body"}>
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
@@ -205,6 +188,7 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "DerivationPath" && (
@@ -258,15 +242,13 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletHome" && (
               <WalletHome
-                getWallet={getWallet}
                 selector={selector}
-                onClick={() => {
-                  setGetWallet(!getWallet);
-                }}
+                onCloseModal={handleDismissClick}
               />
             )}
           </div>
