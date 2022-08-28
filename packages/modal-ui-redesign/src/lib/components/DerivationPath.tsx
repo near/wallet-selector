@@ -124,7 +124,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(message, hardwareWallet!);
+      onError(message, wallet);
     } finally {
       setConnecting(false);
     }
@@ -192,6 +192,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           wallet={hardwareWallet}
           onBack={() => {
             setConnecting(false);
+          }}
+          onCloseModal={() => {
+            // TODO: Handle on close modal
           }}
         />
       </div>

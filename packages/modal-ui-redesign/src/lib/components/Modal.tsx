@@ -85,6 +85,12 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleWalletClick = async (module: ModuleState) => {
     setSelectedWallet(module);
+
+    const { selectedWalletId } = selector.store.getState();
+    if (selectedWalletId === module.id) {
+      return;
+    }
+
     try {
       const { deprecated, available } = module.metadata;
 
@@ -105,7 +111,7 @@ export const Modal: React.FC<ModalProps> = ({
         setRoute({
           name: "AlertMessage",
           params: {
-            wallet: wallet,
+            module: module,
           },
         });
         return;
@@ -138,13 +144,11 @@ export const Modal: React.FC<ModalProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      const wallet = await module.wallet();
-
       setAlertMessage(`Failed to sign in with ${name}: ${message}`);
       setRoute({
         name: "AlertMessage",
         params: {
-          wallet: wallet,
+          module: module,
         },
       });
     }
@@ -178,7 +182,7 @@ export const Modal: React.FC<ModalProps> = ({
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}
-                wallet={route.params?.wallet}
+                module={route.params?.module}
                 onBack={(retry) => {
                   if (retry) {
                     handleWalletClick(selectedWallet!);
@@ -203,11 +207,16 @@ export const Modal: React.FC<ModalProps> = ({
                   })
                 }
                 onError={(message, wallet) => {
+                  const { modules } = selector.store.getState();
+                  const findModule = modules.find(
+                    (module) => module.id === wallet.id
+                  );
+
                   setAlertMessage(message);
                   setRoute({
                     name: "AlertMessage",
                     params: {
-                      wallet: wallet,
+                      module: findModule!,
                     },
                   });
                 }}

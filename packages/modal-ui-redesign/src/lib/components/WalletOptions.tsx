@@ -42,7 +42,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               } sidebar`}
               key={module.id}
               onClick={() => {
-                return selected ? undefined : handleWalletClick(module);
+                return handleWalletClick(module);
               }}
             >
               <div className={"icon"}>
