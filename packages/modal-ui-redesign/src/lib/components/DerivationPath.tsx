@@ -47,7 +47,10 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   onCloseModal,
 }) => {
   const [route, setRoute] = useState<HardwareRoutes>("EnterDerivationPath");
-  const [derivationPath, setDerivationPath] = useState(DEFAULT_DERIVATION_PATH);
+  const [derivationPath, setDerivationPath] = useState<string>(
+    DEFAULT_DERIVATION_PATH
+  );
+  const [customDerivationPath, setCustomDerivationPath] = useState(1);
   const [accounts, setAccounts] = useState<Array<HardwareWalletAccountState>>(
     []
   );
@@ -116,6 +119,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const multipleAccounts = resolvedAccounts.length > 1;
 
       if (noAccounts) {
+        setHeaderTitle("No Accounts Found");
         setRoute("NoAccountsFound");
         return;
       }
@@ -209,10 +213,10 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   return (
     <Fragment>
       <div className="nws-modal-header-wrapper">
-        {route === "SpecifyHDPath" && (
+        {(route === "SpecifyHDPath" || route === "NoAccountsFound") && (
           <BackArrow
             onClick={() => {
-              if (route === "SpecifyHDPath") {
+              if (route === "SpecifyHDPath" || route === "NoAccountsFound") {
                 setHeaderTitle("Connect with Ledger");
                 setRoute("EnterDerivationPath");
               }
@@ -251,16 +255,82 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         )}
 
         {route === "SpecifyHDPath" && (
-          <div>
-            {/*<input*/}
-            {/*  type="text"*/}
-            {/*  placeholder="Derivation Path"*/}
-            {/*  value={derivationPath}*/}
-            {/*  onChange={(e) => {*/}
-            {/*    setDerivationPath(e.target.value);*/}
-            {/*  }}*/}
-            {/*  onKeyPress={handleEnterClick}*/}
-            {/*/>*/}
+          <div className="specify-path-wrapper">
+            <div className="change-path-wrapper">
+              <div className="display-path">
+                <span>{derivationPath.slice(0, -2)}</span>
+              </div>
+              <div className="change-path">
+                <div className="path-value">
+                  <span>{customDerivationPath}</span>
+                </div>
+                <div className="buttons-wrapper">
+                  <button
+                    onClick={() => {
+                      const newValue = customDerivationPath + 1;
+                      const path = derivationPath.slice(0, -2);
+                      setDerivationPath(`${path}${newValue}'`);
+                      setCustomDerivationPath(newValue);
+                    }}
+                  >
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 5.4762L5 1.4762L1 5.4762"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const newValue = customDerivationPath - 1;
+
+                      if (newValue < 0) {
+                        return;
+                      }
+
+                      const path = derivationPath.slice(0, -2);
+                      setDerivationPath(`${path}${newValue}'`);
+                      setCustomDerivationPath(newValue);
+                    }}
+                  >
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.52382L5 5.52382L9 1.52382"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p className="path-description">
+              Enter your preferred HD path, then scan for any active accounts.
+            </p>
+            <p className="what-link">What's this?</p>
+            <div className="action-buttons">
+              <button className="middleButton" onClick={handleValidateAccount}>
+                Scan
+              </button>
+            </div>
           </div>
         )}
 
@@ -281,16 +351,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               </a>{" "}
               or connect an another Ledger.
             </p>
-            <div className="action-buttons">
-              <button
-                className="left-button"
-                onClick={() => {
-                  setRoute("EnterDerivationPath");
-                }}
-              >
-                Back
-              </button>
-            </div>
           </div>
         )}
 

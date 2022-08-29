@@ -511,26 +511,69 @@
   margin-bottom: 16px;
 }
 
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper input {
-  margin-right: 8px;
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 91px;
 }
 
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper input:focus {
-  border: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .display-path {
+  background: #313030;
+  color: #606060;
+  padding: 16px;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  font-weight: 700;
 }
 
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper input:focus-visible {
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path {
+  background: #161616;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+  width: 63px;
+  padding: 0 5px;
+  border-radius: 8px;
+}
+
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path  .path-value {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.nws-modal-wrapper .nws-modal .specify-path-wrapper .path-description {
+  font-size: 14px;
+  margin-top: 24px;
+  text-align: center;
+  color: #C1C1C1;
+}
+
+.nws-modal-wrapper .nws-modal .specify-path-wrapper .what-link {
+  font-size: 14px;
+  text-align: center;
+  color: var(--selected-wallet-bg);
+  cursor: pointer;
+}
+
+
+
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper button {
+  padding: 0;
+  width: 23px;
+  background-color: #1E1E1E;
   border: none;
-  outline: 2px solid var(--wallet-selector-input-border-color-focus, var(--input-border-color-focus));
 }
 
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper .input-error {
-  border-color: var(--wallet-selector-error, var(--error)) !important;
-}
-
-.nws-modal-wrapper .nws-modal .derivation-path-wrapper .error {
-  font-family: inherit;
-  color: var(--wallet-selector-error, var(--error));
+.nws-modal-wrapper .nws-modal .no-accounts-found-wrapper {
+  margin-top: 50px;
+  font-size: 14px;
 }
 
 /**
