@@ -1,4 +1,4 @@
-import React, { Fragment, KeyboardEventHandler, useState } from "react";
+import React, { Fragment, useState } from "react";
 import type {
   HardwareWallet,
   HardwareWalletAccount,
