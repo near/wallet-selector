@@ -484,6 +484,26 @@
  * Modal Ledger Derivation Path Section/Wrapper
  */
 
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper {
+  padding: 0 26px;
+}
+
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image {
+  display: flex;
+  justify-content: center;
+  margin-top: 53px;
+  margin-bottom: 40px;
+}
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description {
+  font-size: 14px;
+  color: #C1C1C1;
+  text-align: center;
+}
+.nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description .specify-path {
+  color: var(--selected-wallet-bg);
+  cursor: pointer;
+}
+
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list {
   display: flex;
   justify-content: center;

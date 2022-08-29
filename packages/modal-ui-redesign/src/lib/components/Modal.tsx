@@ -218,6 +218,7 @@ export const Modal: React.FC<ModalProps> = ({
                     },
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletNetworkChanged" && (
