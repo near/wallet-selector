@@ -189,14 +189,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       });
   };
 
-  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    if (e.key === "Enter") {
-      await handleValidateAccount();
-    }
-  };
-
   if (connecting) {
     return (
       <div className="derivation-path-wrapper">
