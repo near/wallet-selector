@@ -10,6 +10,7 @@
   --wallet-option-border-color: #A7A7A730;
   --wallet-option-bg-hover: #EDEDED;
   --content-bg: #FFFFFF;
+  --change-path-bg: #EDEDED;
   --home-button-bg: #EDEDED;
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
@@ -35,6 +36,7 @@
   --wallet-option-border-color: #A7A7A730;
   --wallet-option-bg-hover: #313030;
   --content-bg: #232323;
+  --change-path-bg: #161616;
   --home-button-bg: #313030;
   --input-border-color-focus: #5F8AFA;
   --box-shadow-color: #26262630;
@@ -61,6 +63,7 @@
     --wallet-option-border-color: #A7A7A730;
     --wallet-option-bg-hover: #313030;
     --content-bg: #232323;
+    --change-path-bg: #161616;
     --home-button-bg: #313030;
     --input-border-color-focus: #5F8AFA;
     --box-shadow-color: #26262630;
@@ -518,7 +521,7 @@
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .display-path {
-  background: #313030;
+  background: var(--home-button-bg);
   color: #606060;
   padding: 16px;
   border-radius: 8px;
@@ -527,7 +530,7 @@
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path {
-  background: #161616;
+  background: var(--change-path-bg);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -567,7 +570,7 @@
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper button {
   padding: 0;
   width: 23px;
-  background-color: #1E1E1E;
+  background-color: var(--home-button-bg);
   border: none;
 }
 
@@ -580,14 +583,51 @@
  * Modal Wallet ChooseLedgerAccountForm/Wrapper
  */
 
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper p {
+  color: #C1C1C1;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper button{
+  color: var(--selected-wallet-bg);
+  border-radius: 20px;
+  font-size: 14px;
+  border-color: var(--selected-wallet-bg);
+  width: 78px;
+  padding: 6px 8px;
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .form {
+  margin-top: 96px;
+}
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
   display: flex;
+  flex-direction: column;
   margin-bottom: 16px;
   padding: 10px;
-  box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
-  justify-content: space-between;
-  align-items: center;
   color: var(--text-color);
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account {
+  border-bottom: 1px solid var(--sidebar-border-color);
+  padding: 16px 0;
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account input[type=checkbox] {
+  width: 25px;
+  -ms-transform: scale(2);
+  -moz-transform: scale(2);
+  -webkit-transform: scale(2);
+  -o-transform: scale(2);
+  transform: scale(1.7);
+  padding: 10px;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control label {
@@ -613,6 +653,19 @@
   justify-content: flex-end;
 }
 
+.nws-modal-wrapper .nws-modal .overview-wrapper p {
+  font-size: 14px;
+  text-align: center;
+  color: #C1C1C1;
+}
+
+.nws-modal-wrapper .nws-modal .overview-wrapper .accounts {
+  margin-top: 96px;
+}
+.nws-modal-wrapper .nws-modal .overview-wrapper .account {
+  border-bottom: 1px solid var(--sidebar-border-color);
+  padding: 16px 0;
+}
 
 /*
   Connecting Wrapper Section/Wrapper

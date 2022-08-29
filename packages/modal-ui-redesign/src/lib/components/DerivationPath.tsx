@@ -27,7 +27,7 @@ export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
 };
 
-type HardwareRoutes =
+export type HardwareRoutes =
   | "EnterDerivationPath"
   | "SpecifyHDPath"
   | "NoAccountsFound"
@@ -128,6 +128,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       if (!multipleAccounts) {
         setRoute("OverviewAccounts");
       } else {
+        setHeaderTitle("Select Your Accounts");
         setRoute("ChooseAccount");
       }
     } catch (err) {
@@ -213,10 +214,16 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   return (
     <Fragment>
       <div className="nws-modal-header-wrapper">
-        {(route === "SpecifyHDPath" || route === "NoAccountsFound") && (
+        {(route === "SpecifyHDPath" ||
+          route === "NoAccountsFound" ||
+          route === "ChooseAccount") && (
           <BackArrow
             onClick={() => {
-              if (route === "SpecifyHDPath" || route === "NoAccountsFound") {
+              if (
+                route === "SpecifyHDPath" ||
+                route === "NoAccountsFound" ||
+                route === "ChooseAccount"
+              ) {
                 setHeaderTitle("Connect with Ledger");
                 setRoute("EnterDerivationPath");
               }
@@ -379,7 +386,20 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
                 return [...selectedAccounts];
               });
+
+              const numberOfAccounts = acc.filter((a) => a.selected).length;
+              setHeaderTitle(
+                `Connecting ${numberOfAccounts} Account ${
+                  numberOfAccounts > 1 ? "s" : ""
+                }`
+              );
               setRoute("OverviewAccounts");
+            }}
+            onChangeRoute={(newRoute) => {
+              if (newRoute === "SpecifyHDPath") {
+                setHeaderTitle("Specify HD Path");
+              }
+              setRoute(newRoute);
             }}
           />
         )}
@@ -408,24 +428,27 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         )}
         {route === "OverviewAccounts" && (
           <div className="overview-wrapper">
-            <div className="overview-header">
-              <h4>Accounts</h4>
-            </div>
-            {accounts.map((account, index) => (
-              <div key={account.accountId}>
-                <div className="account">
-                  <span>{account.accountId}</span>
+            <p>
+              Overview the list of authorized account(s), complete sign in by
+              clicking the button below.
+            </p>
+            <div className="accounts">
+              {accounts.map((account, index) => (
+                <div key={account.accountId}>
+                  <div className="account">
+                    <span>{account.accountId}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             <div className="action-buttons">
               <button
-                className="right-button"
+                className="middleButton"
                 onClick={handleSignIn}
                 disabled={accounts.length === 0}
               >
-                Connect
+                Finish
               </button>
             </div>
           </div>
