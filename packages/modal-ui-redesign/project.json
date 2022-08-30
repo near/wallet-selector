@@ -1,0 +1,74 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/modal-ui-redesign/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/modal-ui-redesign",
+        "tsConfig": "packages/modal-ui-redesign/tsconfig.lib.json",
+        "project": "packages/modal-ui-redesign/package.json",
+        "entryFile": "packages/modal-ui-redesign/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/modal-ui-redesign/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/modal-ui-redesign/**/*.css",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/modal-ui-redesign/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/modal-ui-redesign"],
+      "options": {
+        "jestConfig": "packages/modal-ui-redesign/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "angular",
+        "commitMessageFormat": "chore(release): release version ${version}",
+        "syncVersions": true,
+        "skipProjectChangelog": true,
+        "skipRootChangelog": true,
+        "baseBranch": "main"
+      },
+      "configurations": {
+        "dev": {
+          "releaseAs": "prerelease",
+          "preid": "dev",
+          "skipRootChangelog": true
+        }
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": []
+}
