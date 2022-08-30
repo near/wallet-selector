@@ -157,6 +157,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           selected: true,
         },
       ]);
+      setHeaderTitle("Connecting 1 Account");
       setRoute("OverviewAccounts");
     } catch (err) {
       setConnecting(false);
@@ -381,7 +382,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
               const numberOfAccounts = acc.filter((a) => a.selected).length;
               setHeaderTitle(
-                `Connecting ${numberOfAccounts} Account ${
+                `Connecting ${numberOfAccounts} Account${
                   numberOfAccounts > 1 ? "s" : ""
                 }`
               );
@@ -410,7 +411,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             </div>
             <div className="action-buttons">
               <button
-                className="right-button"
+                className="middleButton"
                 onClick={handleAddCustomAccountId}
               >
                 Continue

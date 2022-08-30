@@ -585,6 +585,26 @@
   font-size: 14px;
 }
 
+.nws-modal-wrapper .nws-modal .enter-custom-account {
+  margin-top: 20px;
+}
+
+.nws-modal-wrapper .nws-modal .enter-custom-account p {
+  color: #C1C1C1;
+}
+
+.nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 90px;
+}
+.nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper input {
+  text-align: center;
+  border: 1px solid var(--confirm-button-bg-hover);
+  padding: 6px 8px;
+  border-radius: 50px;
+}
+
 /**
  * Modal Wallet ChooseLedgerAccountForm/Wrapper
  */
