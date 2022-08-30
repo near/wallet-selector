@@ -1,9 +1,66 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import {
+  HardwareWallet,
+  HardwareWalletAccount,
+  ModuleState,
+  Wallet,
+} from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
 import { renderWalletConnecting } from "./components/WalletConnecting";
 import { renderWalletConnectionFailed } from "./components/WalletConnectionFailed";
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
+
+export type HardwareWalletAccountState = HardwareWalletAccount & {
+  selected: boolean;
+};
+
+const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
+  if (!modalState) {
+    return [];
+  }
+
+  const response = await fetch(
+    `${modalState.selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to get account id from public key");
+  }
+
+  const accountIds = await response.json();
+
+  if (!Array.isArray(accountIds) || !accountIds.length) {
+    return [];
+  }
+
+  return accountIds;
+};
+
+const resolveAccounts = async (
+  wallet: Wallet
+): Promise<Array<HardwareWalletAccountState> | null> => {
+  if (!modalState) {
+    return [];
+  }
+
+  const publicKey = await (wallet as HardwareWallet).getPublicKey(
+    modalState.derivationPath
+  );
+  try {
+    const accountIds = await getAccountIds(publicKey);
+
+    return accountIds.map((accountId, index) => {
+      return {
+        derivationPath: modalState!.derivationPath,
+        publicKey,
+        accountId,
+        selected: index === 0,
+      };
+    });
+  } catch (e) {
+    return null;
+  }
+};
 
 export async function connectToWallet(module: ModuleState<Wallet>) {
   if (!modalState) {
@@ -24,24 +81,39 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
     }
 
     if (module.metadata.deprecated) {
-      return renderWalletConnectionFailed(module);
+      return renderWalletConnectionFailed(
+        module,
+        new Error("Wallet is depredacted")
+      );
     }
 
     const wallet = await module.wallet();
+
     await renderWalletConnecting(module);
 
     if (wallet.type === "hardware") {
-      return renderConnectHardwareWallet();
+      const accounts = await resolveAccounts(wallet);
+
+      if (!accounts || accounts.length < 1) {
+        // TODO: OPEN COMPONENT TO SET CUSTOM ACCCOUNT ID
+        return;
+      }
+
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        accounts,
+      });
+    } else {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+      });
     }
 
-    await wallet.signIn({
-      contractId: modalState.options.contractId,
-      methodNames: modalState.options.methodNames,
-    });
-
-    await renderWalletConnecting();
+    modalState.container.children[0].classList.remove("open");
   } catch (err) {
-    await renderWalletConnectionFailed(module);
+    await renderWalletConnectionFailed(module, err as Error);
   }
 }
 
@@ -52,13 +124,13 @@ export function renderModal() {
 
   modalState.container.innerHTML = `
     <div class="nws-modal-wrapper">
-      <div class="modal-overlay"></div>
-      <div class="modal">
+      <div class="nws-modal-overlay"></div>
+      <div class="nws-modal">
         <div class="modal-left">
-          <div class="modal-header">
+          <div class="nws-modal-header">
             <h2>Connect Your Wallet</h2>
           </div>
-          <div class="modal-body">
+          <div class="nws-modal-body">
             <div class="wallet-options-wrapper">
               <h4 class="description">Popular</h4>
               <ul class="options-list"></ul>
@@ -96,6 +168,9 @@ export function renderModal() {
     document
       .getElementById("module-" + module.id)
       ?.addEventListener("click", () => {
+        if (module.type === "hardware") {
+          return renderConnectHardwareWallet(module);
+        }
         connectToWallet(module);
       });
   }

@@ -12,6 +12,7 @@ import type {
 import { renderWhatIsAWallet } from "./components/WhatIsAWallet";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
+const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 let modalInstance: WalletSelectorModal | null = null;
 
@@ -21,6 +22,7 @@ type ModalState = {
   options: ModalOptions;
   route: ModalRoute;
   modules: Array<ModuleState<Wallet>>;
+  derivationPath: string;
 };
 
 export let modalState: ModalState | null = null;
@@ -45,6 +47,7 @@ export const setupModal = (
       name: "WalletOptions",
     },
     modules: [],
+    derivationPath: DEFAULT_DERIVATION_PATH,
   };
 
   modalState.selector.store.observable.subscribe((state) => {
