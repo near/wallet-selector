@@ -85,10 +85,17 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter,
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
-      //near_signTransaction
-      
-      const accountId = await getSnapAccounts()
-      const accessKey = await provider.viewAccessKey({accountId: accountId[0], publicKey: signerId!})
+
+      const accountId = await getSnapAccounts();
+
+      const publicKey = "ed25519:" + Buffer.from(accountId[0], "hex").toString();
+      console.log("accountId")
+      console.log(accountId[0])
+      console.log("publicKey")
+      console.log(publicKey)
+
+      const accessKey = await provider.viewAccessKey({accountId: accountId[0], publicKey})
+
       console.log("accessKey")
       console.log(accessKey)
 
