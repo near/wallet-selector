@@ -1,34 +1,45 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { ConnectionResult } from "./ConnectionResult";
-import type { Wallet } from "@near-wallet-selector/core";
+import type { ModuleState } from "@near-wallet-selector/core";
+import { ModalHeader } from "./ModalHeader";
 
 interface AlertMessageProps {
   message: string;
-  wallet?: Wallet;
+  module?: ModuleState;
   onBack: (retry: boolean) => void;
+  onCloseModal: () => void;
 }
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
   message,
-  wallet,
+  module,
   onBack,
+  onCloseModal,
 }) => {
   return (
-    <div className="alert-message connecting-wrapper">
-      <div className="content">
-        <div className="icon">
-          <img src={wallet?.metadata.iconUrl} alt={wallet?.metadata.name} />
-        </div>
-        <h3 className="connecting-name">{wallet?.metadata.name}</h3>
-        <div className="connecting-details">
-          <ConnectionResult
-            err={message !== null}
-            onRetry={() => {
-              onBack(true);
-            }}
-          />
+    <Fragment>
+      <ModalHeader title="" onCloseModal={onCloseModal} />
+      <div className="alert-message connecting-wrapper">
+        <div className="content">
+          <div className="icon">
+            <img src={module?.metadata.iconUrl} alt={module?.metadata.name} />
+          </div>
+          <h3 className="connecting-name">{module?.metadata.name}</h3>
+          {!module?.metadata.deprecated && module?.metadata.available ? (
+            <div className="connecting-details">
+              <ConnectionResult
+                message={message}
+                err={message !== null}
+                onRetry={() => {
+                  onBack(true);
+                }}
+              />
+            </div>
+          ) : (
+            <p style={{ textAlign: "center" }}>{message}</p>
+          )}
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };

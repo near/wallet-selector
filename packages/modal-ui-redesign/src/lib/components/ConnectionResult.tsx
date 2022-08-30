@@ -1,19 +1,21 @@
 import React from "react";
 
 interface ConnectionResultProps {
+  message: string;
   err: boolean;
   onRetry: () => void;
 }
 
 export const ConnectionResult: React.FC<ConnectionResultProps> = ({
+  message,
   err,
   onRetry,
 }) => {
   return (
-    <div className={"connection"}>
+    <div className="connection">
       {err ? (
-        <div className={"error-wrapper"}>
-          <div className={"error"}>
+        <div className="error-wrapper">
+          <div className="error">
             <svg
               width="24"
               height="24"
@@ -37,12 +39,13 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            Connection Failed
+            <span>Connection Failed</span>
           </div>
+          <p>{message}</p>
           <button onClick={onRetry}>Retry</button>
         </div>
       ) : (
-        <div className={"success"}>
+        <div className="success">
           <svg
             width="24"
             height="24"

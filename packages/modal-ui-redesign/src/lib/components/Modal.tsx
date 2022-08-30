@@ -6,12 +6,10 @@ import type { ModalRoute } from "./Modal.types";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
 import { AlertMessage } from "./AlertMessage";
-import { CloseButton } from "./CloseButton";
 import { DerivationPath } from "./DerivationPath";
 import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 
-import { BackArrow } from "./BackArrow";
 import { WalletHome } from "./WalletHome";
 
 interface ModalProps {
@@ -43,11 +41,10 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
-  const [getWallet, setGetWallet] = useState(false);
 
   useEffect(() => {
     setRoute({
-      name: "WalletOptions",
+      name: "WalletHome",
     });
   }, [visible]);
 
@@ -70,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({
   const handleDismissClick = useCallback(() => {
     setAlertMessage(null);
     setRoute({
-      name: "WalletOptions",
+      name: "WalletHome",
     });
     hide();
   }, [hide]);
@@ -88,6 +85,12 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleWalletClick = async (module: ModuleState) => {
     setSelectedWallet(module);
+
+    const { selectedWalletId } = selector.store.getState();
+    if (selectedWalletId === module.id) {
+      return;
+    }
+
     try {
       const { deprecated, available } = module.metadata;
 
@@ -108,7 +111,7 @@ export const Modal: React.FC<ModalProps> = ({
         setRoute({
           name: "AlertMessage",
           params: {
-            wallet: wallet,
+            module: module,
           },
         });
         return;
@@ -141,13 +144,11 @@ export const Modal: React.FC<ModalProps> = ({
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      const wallet = await module.wallet();
-
       setAlertMessage(`Failed to sign in with ${name}: ${message}`);
       setRoute({
         name: "AlertMessage",
         params: {
-          wallet: wallet,
+          module: module,
         },
       });
     }
@@ -165,51 +166,31 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div className="nws-modal-overlay" onClick={handleDismissClick} />
       <div className="nws-modal">
-        <div className="nws-modal-left">
-          <div className="nws-modal-header">
+        <div className="modal-left">
+          <div className="modal-left-title">
             <h2>Connect Your Wallet</h2>
           </div>
-          <div className="nws-modal-body">
-            {
-              <WalletOptions
-                handleWalletClick={handleWalletClick}
-                selector={selector}
-              />
-            }
-          </div>
+          <WalletOptions
+            handleWalletClick={handleWalletClick}
+            selector={selector}
+          />
         </div>
-        <div className="nws-modal-right">
-          {route.name === "WalletOptions" &&
-            (getWallet ? (
-              <div className={"nws-modal-header"}>
-                <BackArrow
-                  onClick={() => {
-                    setGetWallet(!getWallet);
-                  }}
-                />
-                <h3 className={"middleTitle"}>Get a Wallet</h3>
-                <CloseButton onClick={handleDismissClick} />
-              </div>
-            ) : (
-              <div className={"nws-modal-header"}>
-                <h3 className={"middleTitle"}>What is a Wallet?</h3>
-                <CloseButton onClick={handleDismissClick} />
-              </div>
-            ))}
-          <div className={"nws-modal-body"}>
+        <div className="modal-right">
+          <div className="nws-modal-body">
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}
-                wallet={route.params?.wallet}
+                module={route.params?.module}
                 onBack={(retry) => {
                   if (retry) {
                     handleWalletClick(selectedWallet!);
                   }
                   setAlertMessage(null);
                   setRoute({
-                    name: "WalletOptions",
+                    name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "DerivationPath" && (
@@ -220,29 +201,35 @@ export const Modal: React.FC<ModalProps> = ({
                 params={route.params}
                 onBack={() =>
                   setRoute({
-                    name: "WalletOptions",
+                    name: "WalletHome",
                   })
                 }
                 onError={(message, wallet) => {
+                  const { modules } = selector.store.getState();
+                  const findModule = modules.find(
+                    (module) => module.id === wallet.id
+                  );
+
                   setAlertMessage(message);
                   setRoute({
                     name: "AlertMessage",
                     params: {
-                      wallet: wallet,
+                      module: findModule!,
                     },
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletNetworkChanged" && (
               <WalletNetworkChanged
                 selector={selector}
-                onSwitchWallet={() =>
+                onBack={() =>
                   setRoute({
-                    name: "WalletOptions",
+                    name: "WalletHome",
                   })
                 }
-                onDismiss={handleDismissClick}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletNotInstalled" && (
@@ -250,9 +237,10 @@ export const Modal: React.FC<ModalProps> = ({
                 module={route.params?.module!}
                 onBack={() => {
                   setRoute({
-                    name: "WalletOptions",
+                    name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
             {route.name === "WalletConnecting" && (
@@ -260,18 +248,16 @@ export const Modal: React.FC<ModalProps> = ({
                 wallet={route.params?.wallet}
                 onBack={() => {
                   setRoute({
-                    name: "WalletOptions",
+                    name: "WalletHome",
                   });
                 }}
+                onCloseModal={handleDismissClick}
               />
             )}
-            {route.name === "WalletOptions" && (
+            {route.name === "WalletHome" && (
               <WalletHome
-                getWallet={getWallet}
                 selector={selector}
-                onClick={() => {
-                  setGetWallet(!getWallet);
-                }}
+                onCloseModal={handleDismissClick}
               />
             )}
           </div>
