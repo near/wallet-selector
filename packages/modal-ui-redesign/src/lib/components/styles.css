@@ -390,7 +390,7 @@
   line-height: 24px;
   border-color: #4F7CD1;
   display: block;
-  margin: 100px auto 12px auto;
+  margin: 75px auto 12px auto;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
@@ -997,16 +997,14 @@
   .nws-modal-wrapper .nws-modal .connecting-wrapper,
   .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
   .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
-    margin-top: 0;
+    margin-top: 20px;
+    padding: 0;
   }
-
 
   .nws-modal-wrapper .wallet-not-installed-wrapper > p {
-      margin: 20px  10px 40px 10px;
+      margin: 20px  0px 30px 0px;
       max-width: 500px;
   }
-
-
 
   .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
     display:none;
@@ -1019,7 +1017,6 @@
     max-width: 600px;
     margin: auto;
   }
-
 
   .nws-modal-wrapper .nws-modal-overlay {
     background: var(--wallet-selector-backdrop-bg, var(--bottom-section));
@@ -1035,6 +1032,7 @@
   .nws-modal-wrapper .nws-modal {
      width: 100%;
      display: block;
+     overflow: auto;
   }
 
   .nws-modal-wrapper .nws-modal .modal-left {
@@ -1132,11 +1130,21 @@
     text-overflow: ellipsis;
   }
 
-
   .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
     margin-top: 0;
   }
 
+  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,
+  .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description > p{
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 
