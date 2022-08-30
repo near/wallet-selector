@@ -370,10 +370,6 @@
   font-size: 18px;
 }
 
-.nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
-  /*padding: 0 28px;*/
-}
-
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body.get-wallet-body {
   padding-left: 32px;
   padding-right: 0;
@@ -938,9 +934,6 @@
 
 
 
-
-/****************************************************/
-
 .nws-modal-wrapper .nws-modal .connecting-wrapper .content {
   padding: 25px;
 }
@@ -1145,6 +1138,17 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+   ::-webkit-scrollbar{
+        height: 4px;
+        width: 4px;
+        background: var( --backdrop-bg);
+
+    }
+    ::-webkit-scrollbar-thumb:horizontal{
+        background: var( --close-button-fill-icon-color);
+        border-radius: 10px;
+    }
 }
 
 
