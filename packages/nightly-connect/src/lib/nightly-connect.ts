@@ -123,10 +123,35 @@ const NightlyConnect: WalletBehaviourFactory<
           return resolve(existingAccounts);
         }
 
+        let persistedId = localStorage.getItem("nightly-id-near");
+        const persistedPubkey = localStorage.getItem(
+          "nightly-connect-near-publickey"
+        );
+        const persistedAccountId = localStorage.getItem(
+          "nightly-connect-near-accountid"
+        );
+
+        if (
+          params.appMetadata.persistent !== false &&
+          persistedId !== null &&
+          (persistedPubkey === null || persistedAccountId === null)
+        ) {
+          localStorage.removeItem("nightly-id-near");
+          persistedId = null;
+        }
+
         try {
           AppNear.build({
             ...params,
             onUserConnect: (account) => {
+              localStorage.setItem(
+                "nightly-connect-near-publickey",
+                account.publicKey.toString()
+              );
+              localStorage.setItem(
+                "nightly-connect-near-accountid",
+                account.accountId.toString()
+              );
               _state.accounts.push(account);
               _state.modal.onClose = undefined;
               _state.modal.closeModal();
@@ -136,13 +161,30 @@ const NightlyConnect: WalletBehaviourFactory<
             client.ws.onclose = () => {
               _state.client = null;
               _state.accounts = [];
+              localStorage.removeItem("nightly-id-near");
+              localStorage.removeItem("nightly-connect-near-publickey");
               emitter.emit("signedOut", null);
             };
             _state.client = client;
-            _state.modal.openModal(client.sessionId, NETWORK.NEAR);
-            _state.modal.onClose = () => {
-              reject(new Error("User cancelled pairing"));
-            };
+
+            if (
+              params.appMetadata.persistent !== false &&
+              persistedId === client.sessionId &&
+              persistedPubkey !== null &&
+              persistedAccountId !== null
+            ) {
+              _state.accounts.push({
+                accountId: persistedAccountId,
+                publicKey: utils.PublicKey.from(persistedPubkey),
+              });
+              _state.modal.onClose = undefined;
+              resolve(getAccounts());
+            } else {
+              _state.modal.openModal(client.sessionId, NETWORK.NEAR);
+              _state.modal.onClose = () => {
+                reject(new Error("User cancelled pairing"));
+              };
+            }
           });
         } catch (err) {
           signOut();
