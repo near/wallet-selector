@@ -72,7 +72,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
      )}
      {route === "WalletInfo" && (
         <>
-         <div className="wallet-info-wrapper ">
+         <div className="wallet-info-wrapper what-wallet-hide">
            <WhatWallet
              title="Secure & Manage Your Digital Assets"
              description="Safely store and transfer your crypto and NFTs."
