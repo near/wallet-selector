@@ -38,7 +38,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           {modules.map((module) => {
             const { iconUrl, name, description } = module.metadata;
             return (
-              <div className="single-wallet" key={module.id}>
+              <div className="single-wallet-get" key={module.id}>
                 <div className="icon">
                   <img src={iconUrl} alt={name} />
                 </div>
@@ -54,21 +54,31 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           })}
         </div>
       ) : (
-        <div>
-          <WhatWallet
-            title="Secure & Manage Your Digital Assets"
-            description="Safely store and transfer your crypto and NFTs."
-            icon={Icon}
-          />
-          <WhatWallet
-            title="Log In to Any NEAR App"
-            description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
-            icon={Icon}
-          />
-          <button className="middleButton" onClick={onClick}>
-            Get a Wallet
-          </button>
-        </div>
+        <>
+          <div className="what-wallet-hide">
+            <WhatWallet
+              title="Secure & Manage Your Digital Assets"
+              description="Safely store and transfer your crypto and NFTs."
+              icon={Icon} />
+            <WhatWallet
+              title="Log In to Any NEAR App"
+              description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
+              icon={Icon} />
+            <button className="middleButton" onClick={onClick}>
+              Get a Wallet
+            </button>
+          </div>
+
+          <div className="what-wallet-mobile">
+            <p>
+              Use a wallet to secure and manage your NEAR assets, and to log in to any NEAR app without the need for usernames and passwords.
+            </p>
+            <button className="middleButton" onClick={onClick}>
+              Get a Wallet
+            </button>
+          </div>
+        </>
+
       )}
     </div>
   );
