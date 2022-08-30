@@ -7,8 +7,8 @@ import type { SignTransactionsRequest } from '@nightlylabs/connect-near'
 import { v4 } from 'uuid'
 
 // To run test you need to have running instance of the server
-const CLIENT_ADDRESS = 'wss://ncproxy.nightly.app/client'
-const SESSION_ID = 'nightlyconnect:03e03af0-8800-482e-8266-d22cc7d0d120?network=NEAR'.split(':')[1].split("?")[0]
+const CLIENT_ADDRESS = 'wss://relay.nightly.app/client'
+const SESSION_ID = 'nightlyconnect:1048e538-7702-4457-9f80-e53c7cc90523?network=NEAR'.split(':')[1].split("?")[0]
 
 const alice_ed25519 = new KeyPairEd25519(
   '3zR44QTFXYHPErMnFYZYizFRFmyYajpfH9jLJnm4BQ67ndoQ5PpKsJDcG1BHBhKrat92ospVNfs4SRQ6Z8uXUGiM'
