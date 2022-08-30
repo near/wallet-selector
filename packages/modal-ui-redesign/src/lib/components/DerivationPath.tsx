@@ -54,6 +54,10 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [accounts, setAccounts] = useState<Array<HardwareWalletAccountState>>(
     []
   );
+  const [selectedAccounts, setSelectedAccounts] = useState<
+    Array<HardwareWalletAccountState>
+  >([]);
+
   const [hardwareWallet, setHardwareWallet] = useState<Wallet>();
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
@@ -149,14 +153,16 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const publicKey = await (hardwareWallet as HardwareWallet).getPublicKey(
         derivationPath
       );
-      setAccounts([
+      const accountList = [
         {
           derivationPath: derivationPath,
           publicKey,
           accountId: customAccountId,
           selected: true,
         },
-      ]);
+      ];
+      setAccounts(accountList);
+      setSelectedAccounts(accountList);
       setHeaderTitle("Connecting 1 Account");
       setRoute("OverviewAccounts");
     } catch (err) {
@@ -170,13 +176,15 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   };
 
   const handleSignIn = () => {
-    const mapAccounts = accounts.map((account: HardwareWalletAccount) => {
-      return {
-        derivationPath: account.derivationPath,
-        publicKey: account.publicKey,
-        accountId: account.accountId,
-      };
-    });
+    const mapAccounts = selectedAccounts.map(
+      (account: HardwareWalletAccount) => {
+        return {
+          derivationPath: account.derivationPath,
+          publicKey: account.publicKey,
+          accountId: account.accountId,
+        };
+      }
+    );
 
     return hardwareWallet!
       .signIn({
@@ -188,6 +196,22 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       .catch((err) => {
         onError(`Error: ${err.message}`, hardwareWallet!);
       });
+  };
+
+  const handleOnBackButtonClick = () => {
+    if (
+      route === "SpecifyHDPath" ||
+      route === "NoAccountsFound" ||
+      route === "ChooseAccount"
+    ) {
+      setHeaderTitle("Connect with Ledger");
+      setRoute("EnterDerivationPath");
+    }
+
+    if (route === "OverviewAccounts") {
+      setHeaderTitle("Select Your Accounts");
+      setRoute("ChooseAccount");
+    }
   };
 
   if (connecting) {
@@ -209,19 +233,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       <div className="nws-modal-header-wrapper">
         {(route === "SpecifyHDPath" ||
           route === "NoAccountsFound" ||
-          route === "ChooseAccount") && (
-          <BackArrow
-            onClick={() => {
-              if (
-                route === "SpecifyHDPath" ||
-                route === "NoAccountsFound" ||
-                route === "ChooseAccount"
-              ) {
-                setHeaderTitle("Connect with Ledger");
-                setRoute("EnterDerivationPath");
-              }
-            }}
-          />
+          route === "ChooseAccount" ||
+          route === "OverviewAccounts") && (
+          <BackArrow onClick={handleOnBackButtonClick} />
         )}
         <ModalHeader title={headerTitle} onCloseModal={onCloseModal} />
       </div>
@@ -372,15 +386,10 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             }}
             onSubmit={(acc, e) => {
               e.preventDefault();
-              setAccounts((prevAccounts) => {
-                const selectedAccounts = prevAccounts.filter(
-                  (account) => account.selected
-                );
+              const selectedAcc = acc.filter((account) => account.selected);
+              setSelectedAccounts(selectedAcc);
 
-                return [...selectedAccounts];
-              });
-
-              const numberOfAccounts = acc.filter((a) => a.selected).length;
+              const numberOfAccounts = selectedAcc.length;
               setHeaderTitle(
                 `Connecting ${numberOfAccounts} Account${
                   numberOfAccounts > 1 ? "s" : ""
@@ -426,7 +435,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               clicking the button below.
             </p>
             <div className="accounts">
-              {accounts.map((account, index) => (
+              {selectedAccounts.map((account, index) => (
                 <div key={account.accountId}>
                   <div className="account">
                     <span>{account.accountId}</span>
