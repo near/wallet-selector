@@ -100,6 +100,9 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   const signOut = async () => {
+    clearPersistedSessionId();
+    clearPersistedSessionPublicKey();
+    clearPersistedSessionAccountId();
     _state.client?.ws.close();
   };
 
@@ -159,9 +162,6 @@ const NightlyConnect: WalletBehaviourFactory<
             client.ws.onclose = () => {
               _state.client = null;
               _state.accounts = [];
-              clearPersistedSessionId();
-              clearPersistedSessionPublicKey();
-              clearPersistedSessionAccountId();
               emitter.emit("signedOut", null);
             };
             _state.client = client;
