@@ -2,8 +2,16 @@ import { Signer, transactions as nearTransactions, utils } from "near-api-js";
 import {
   AppMetadata,
   AppNear,
+  clearPersistedSessionAccountId,
+  clearPersistedSessionId,
+  clearPersistedSessionPublicKey,
+  getPersistedSessionAccountId,
+  getPersistedSessionId,
+  getPersistedSessionPublicKey,
   NETWORK,
   NightlyConnectModal,
+  setPersistedSessionAccountId,
+  setPersistedSessionPublicKey,
 } from "@nightlylabs/connect-near";
 import {
   BridgeWallet,
@@ -123,20 +131,16 @@ const NightlyConnect: WalletBehaviourFactory<
           return resolve(existingAccounts);
         }
 
-        let persistedId = localStorage.getItem("nightly-id-near");
-        const persistedPubkey = localStorage.getItem(
-          "nightly-connect-near-publickey"
-        );
-        const persistedAccountId = localStorage.getItem(
-          "nightly-connect-near-accountid"
-        );
+        let persistedId = getPersistedSessionId();
+        const persistedPubkey = getPersistedSessionPublicKey();
+        const persistedAccountId = getPersistedSessionAccountId();
 
         if (
           params.appMetadata.persistent !== false &&
           persistedId !== null &&
           (persistedPubkey === null || persistedAccountId === null)
         ) {
-          localStorage.removeItem("nightly-id-near");
+          clearPersistedSessionId();
           persistedId = null;
         }
 
@@ -144,14 +148,8 @@ const NightlyConnect: WalletBehaviourFactory<
           AppNear.build({
             ...params,
             onUserConnect: (account) => {
-              localStorage.setItem(
-                "nightly-connect-near-publickey",
-                account.publicKey.toString()
-              );
-              localStorage.setItem(
-                "nightly-connect-near-accountid",
-                account.accountId.toString()
-              );
+              setPersistedSessionPublicKey(account.publicKey.toString());
+              setPersistedSessionAccountId(account.accountId.toString());
               _state.accounts.push(account);
               _state.modal.onClose = undefined;
               _state.modal.closeModal();
@@ -161,8 +159,9 @@ const NightlyConnect: WalletBehaviourFactory<
             client.ws.onclose = () => {
               _state.client = null;
               _state.accounts = [];
-              localStorage.removeItem("nightly-id-near");
-              localStorage.removeItem("nightly-connect-near-publickey");
+              clearPersistedSessionId();
+              clearPersistedSessionPublicKey();
+              clearPersistedSessionAccountId();
               emitter.emit("signedOut", null);
             };
             _state.client = client;

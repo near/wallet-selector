@@ -2371,10 +2371,10 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-14.0.6.tgz#a48185b584a528a59ce82217830673268ceee8c2"
   integrity sha512-mSmLqzRKxQgGiOhvJ8guvRLjXoTL17cVSWlL/Cz+Q3xc1bXa7537ZXBTQTEuZVU2ytdkniKc8l1HqXIx0pFNVQ==
 
-"@nightlylabs/connect-near@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.9.tgz#f469af6a4be72c58e2a791e555eca703f34a89ec"
-  integrity sha512-uFi100leO2v8ejehmo+Jsw957wLNewnqbwFh9MTD7OcfIXW7/fz7/AczacXQzqA6nGAsUn9v2xn5CM1Ufc65kA==
+"@nightlylabs/connect-near@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.10.tgz#16d163035167c9dd3f865cf63798fab047ab5208"
+  integrity sha512-oZ6hYHjXLvzC1IB/GTXOdUHnfYwOXVBHi2BV24lHmdZ3J/ZJCEFAja/sEnb1gAKZfz69i1/OihtB5BDwDqrOcQ==
   dependencies:
     "@nightlylabs/qr-code" "1.0.21"
     isomorphic-localstorage "0.0.4"
