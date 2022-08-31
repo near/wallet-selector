@@ -69,41 +69,42 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             );
           })}
         </div>
-     )}
-     {route === "WalletInfo" && (
+      )}
+      {route === "WalletInfo" && (
         <>
-         <div className="wallet-info-wrapper what-wallet-hide">
-           <WhatWallet
-             title="Secure & Manage Your Digital Assets"
-             description="Safely store and transfer your crypto and NFTs."
-             icon={Icon}
-           />
-           <WhatWallet
-             title="Log In to Any NEAR App"
-             description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
-             icon={Icon}
-           />
-           <button
-             className="middleButton"
-             onClick={() => {
-               setRoute("GetWallets");
-             }}
-           >
-             Get a Wallet
-           </button>
-         </div>
+          <div className="wallet-info-wrapper what-wallet-hide">
+            <WhatWallet
+              title="Secure & Manage Your Digital Assets"
+              description="Safely store and transfer your crypto and NFTs."
+              icon={Icon}
+            />
+            <WhatWallet
+              title="Log In to Any NEAR App"
+              description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
+              icon={Icon}
+            />
+            <button
+              className="middleButton"
+              onClick={() => {
+                setRoute("GetWallets");
+              }}
+            >
+              Get a Wallet
+            </button>
+          </div>
 
           <div className="what-wallet-mobile">
             <p>
-              Use a wallet to secure and manage your NEAR assets, and to log in to any NEAR app without the need for usernames and passwords.
+              Use a wallet to secure and manage your NEAR assets, and to log in
+              to any NEAR app without the need for usernames and passwords.
             </p>
             <button
-               className="middleButton"
-               onClick={() => {
-                 setRoute("GetWallets");
-               }}
-             >
-               Get a Wallet
+              className="middleButton"
+              onClick={() => {
+                setRoute("GetWallets");
+              }}
+            >
+              Get a Wallet
             </button>
           </div>
         </>
