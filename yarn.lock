@@ -2371,22 +2371,22 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-14.0.6.tgz#a48185b584a528a59ce82217830673268ceee8c2"
   integrity sha512-mSmLqzRKxQgGiOhvJ8guvRLjXoTL17cVSWlL/Cz+Q3xc1bXa7537ZXBTQTEuZVU2ytdkniKc8l1HqXIx0pFNVQ==
 
-"@nightlylabs/connect-near@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.8.tgz#55ed2cc070ee19e34812796f90e139f4291fd728"
-  integrity sha512-1tOIxRgNHcFdPvxPbyzGWCIFXIVx6Xsq2UDdpvGAaPrsGXTBrc/MraYTygtRRpoTUn295/LdyLGmhHZ4gAI1Uw==
+"@nightlylabs/connect-near@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.10.tgz#16d163035167c9dd3f865cf63798fab047ab5208"
+  integrity sha512-oZ6hYHjXLvzC1IB/GTXOdUHnfYwOXVBHi2BV24lHmdZ3J/ZJCEFAja/sEnb1gAKZfz69i1/OihtB5BDwDqrOcQ==
   dependencies:
-    "@nightlylabs/qr-code" "1.0.20"
+    "@nightlylabs/qr-code" "1.0.21"
     isomorphic-localstorage "0.0.4"
     isomorphic-ws "^4.0.1"
     near-api-js "^0.45.1"
     uuid "^8.3.2"
     ws "^8.8.0"
 
-"@nightlylabs/qr-code@1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.20.tgz#627d052117475da6859ace51cd101f4cbce4bf5f"
-  integrity sha512-odaOJBXXugZDPD9aId3SaXN0xXCszWafoGGbVId6FnaODxP34yTCrYkkz6alyKr9RDOpUiCg8hhAFpS81ob1Pw==
+"@nightlylabs/qr-code@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.21.tgz#c35db8befeac81e4c3afa57688c8c65eb1ada150"
+  integrity sha512-W4gOXG8SDQMYX+MLBUWFSZbiTjApY8CW+z0Lu8MZUqW5IwtyGHjZ2GgkwLo/3A9peIWiXrF/2a93E7cCCouzgw==
   dependencies:
     qrcode-generator "^1.4.3"
 

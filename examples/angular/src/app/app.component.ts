@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
           },
         }),
         setupNightlyConnect({
-          url: "wss://ncproxy.nightly.app/app",
+          url: "wss://relay.nightly.app/app",
           appMetadata: {
             additionalInfo: "",
             application: "NEAR Wallet Selector",
