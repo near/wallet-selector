@@ -67,6 +67,17 @@ export const setupModal = (
     modalState.modules = state.modules;
   });
 
+  const close = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      if (!modalState) {
+        return;
+      }
+
+      modalState.container.children[0].classList.remove("open");
+    }
+  };
+  window.addEventListener("keydown", close);
+
   renderModal();
 
   if (!modalInstance) {

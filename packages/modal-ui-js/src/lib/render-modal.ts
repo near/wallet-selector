@@ -173,6 +173,15 @@ export function renderModal() {
       });
   }
 
+  document
+    .querySelector(".nws-modal-overlay")
+    ?.addEventListener("click", () => {
+      if (!modalState) {
+        return;
+      }
+      modalState.container.children[0].classList.remove("open");
+    });
+
   document.addEventListener("click", (e) => {
     if (!modalState) {
       return;
