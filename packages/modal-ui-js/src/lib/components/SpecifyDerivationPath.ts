@@ -1,6 +1,12 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
+import { resolveAccounts } from "../render-modal";
 import { renderConnectHardwareWallet } from "./ConnectHardwareWallet";
+import { renderLedgerAccountsOverviewList } from "./LedgerAccountsOverviewList";
+import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
+import { renderNoLedgerAccountsFound } from "./NoLedgerAccountsFound";
+import { renderWalletConnecting } from "./WalletConnecting";
+import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
 
 export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
   if (!modalState) {
@@ -29,27 +35,93 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
           <div class="change-path-wrapper">
             <div class="display-path"><span>44'/397'/0'/0'/</span></div>
             <div class="change-path">
-              <div class="path-value"><span>1</span></div>
-              <div class="buttons-wrapper"><button><svg width="10" height="7" viewBox="0 0 10 7" fill="none"
+              <div class="path-value"><span id="derivation-path-index"></span></div>
+              <div class="buttons-wrapper">
+                <button id="increase-index-button">
+                  <svg width="10" height="7" viewBox="0 0 10 7" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path d="M9 5.4762L5 1.4762L1 5.4762" stroke="#4F7CD1" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round"></path>
-                  </svg></button><button><svg width="10" height="7" viewBox="0 0 10 7" fill="none"
+                  </svg>
+                </button>
+                <button id="decrease-index-button">
+                  <svg width="10" height="7" viewBox="0 0 10 7" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path d="M1 1.52382L5 5.52382L9 1.52382" stroke="#4F7CD1" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round"></path>
-                  </svg></button></div>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
           <p class="path-description">Enter your preferred HD path, then scan for any active accounts.</p>
           <p class="what-link">What's this?</p>
-          <div class="action-buttons"><button class="middleButton">Scan</button></div>
+          <div class="action-buttons"><button class="middleButton" id="scan-button">Scan</button></div>
         </div>
       </div>
     </div>
   `;
 
+  const derivationPathIndexElement = document.getElementById(
+    "derivation-path-index"
+  )!;
+
+  derivationPathIndexElement.innerText = modalState.derivationPath.slice(
+    -2,
+    -1
+  );
+
+  document
+    .getElementById("increase-index-button")
+    ?.addEventListener("click", () => {
+      if (!modalState) {
+        return;
+      }
+
+      const nextIndex = parseInt(derivationPathIndexElement!.innerText) + 1;
+      modalState.derivationPath =
+        modalState.derivationPath.slice(0, -2) + nextIndex.toString() + "'";
+      derivationPathIndexElement.innerText = nextIndex.toString();
+    });
+
+  document
+    .getElementById("decrease-index-button")
+    ?.addEventListener("click", () => {
+      if (!modalState) {
+        return;
+      }
+
+      const nextIndex = parseInt(derivationPathIndexElement!.innerText) - 1;
+      modalState.derivationPath =
+        modalState.derivationPath.slice(0, -2) + nextIndex.toString() + "'";
+      if (nextIndex >= 0) {
+        derivationPathIndexElement.innerText = nextIndex.toString();
+      }
+    });
+
   document.getElementById("back-button")?.addEventListener("click", () => {
     renderConnectHardwareWallet(module);
   });
+
+  document
+    .getElementById("scan-button")
+    ?.addEventListener("click", async () => {
+      try {
+        const wallet = await module.wallet();
+        renderWalletConnecting(module);
+        const accounts = await resolveAccounts(wallet);
+
+        if (!accounts || accounts.length < 1) {
+          return renderNoLedgerAccountsFound(module);
+        }
+
+        if (accounts.length === 1) {
+          renderLedgerAccountsOverviewList(module, accounts, accounts);
+        }
+
+        renderLedgerSelectAccount(module, accounts);
+      } catch (err) {
+        await renderWalletConnectionFailed(module, err as Error);
+      }
+    });
 }

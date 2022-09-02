@@ -1,5 +1,5 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
-import { modalState } from "../modal";
+import { DEFAULT_DERIVATION_PATH, modalState } from "../modal";
 import { connectToWallet } from "../render-modal";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
 
@@ -7,6 +7,8 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
   if (!modalState) {
     return;
   }
+
+  modalState.derivationPath = DEFAULT_DERIVATION_PATH;
 
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">

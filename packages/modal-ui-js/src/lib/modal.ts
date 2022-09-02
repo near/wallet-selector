@@ -10,9 +10,10 @@ import type {
   ModalRoute,
 } from "./modal.types";
 import { renderWhatIsAWallet } from "./components/WhatIsAWallet";
+import { renderWalletAccount } from "./components/WalletAccount";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
-const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
+export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 let modalInstance: WalletSelectorModal | null = null;
 
@@ -74,7 +75,17 @@ export const setupModal = (
         if (!modalState) {
           return;
         }
-        renderWhatIsAWallet();
+        renderModal();
+        const selectedWalletId =
+          modalState.selector.store.getState().selectedWalletId;
+        if (selectedWalletId) {
+          const module = modalState.modules.find(
+            (m) => m.id === selectedWalletId
+          );
+          renderWalletAccount(module);
+        } else {
+          renderWhatIsAWallet();
+        }
         modalState.container.children[0].classList.add("open");
       },
       hide: () => {

@@ -5,6 +5,9 @@ import {
   Wallet,
 } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
+import { renderLedgerAccountsOverviewList } from "./components/LedgerAccountsOverviewList";
+import { renderLedgerSelectAccount } from "./components/LedgerSelectAccount";
+import { renderNoLedgerAccountsFound } from "./components/NoLedgerAccountsFound";
 import { renderWalletConnecting } from "./components/WalletConnecting";
 import { renderWalletConnectionFailed } from "./components/WalletConnectionFailed";
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
@@ -36,7 +39,7 @@ const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   return accountIds;
 };
 
-const resolveAccounts = async (
+export const resolveAccounts = async (
   wallet: Wallet
 ): Promise<Array<HardwareWalletAccountState> | null> => {
   if (!modalState) {
@@ -67,14 +70,6 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
     return;
   }
 
-  document.querySelectorAll(".selected-wallet").forEach((element) => {
-    element.classList.remove("selected-wallet");
-  });
-
-  document
-    .getElementById("module-" + module.id)
-    ?.classList.add("selected-wallet");
-
   try {
     if (module.type === "injected" && !module.metadata.available) {
       return renderWalletNotInstalled(module);
@@ -95,21 +90,20 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
       const accounts = await resolveAccounts(wallet);
 
       if (!accounts || accounts.length < 1) {
-        // TODO: OPEN COMPONENT TO SET CUSTOM ACCCOUNT ID
-        return;
+        return renderNoLedgerAccountsFound(module);
       }
 
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        accounts,
-      });
-    } else {
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-      });
+      if (accounts.length === 1) {
+        return renderLedgerAccountsOverviewList(module, accounts, accounts);
+      } else {
+        return renderLedgerSelectAccount(module, accounts);
+      }
     }
+
+    await wallet.signIn({
+      contractId: modalState.options.contractId,
+      methodNames: modalState.options.methodNames,
+    });
 
     modalState.container.children[0].classList.remove("open");
   } catch (err) {
@@ -132,15 +126,7 @@ export function renderModal() {
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper">
-              <h4 class="description">Popular</h4>
               <ul class="options-list"></ul>
-            </div>
-            <div class="info">
-              <div class="info-description hide-explanation">
-                <p>Wallets are used to send, receive and store digital assets. There are different types of wallets. They can
-                  be an extension added to your browser, a hardware device plugged into your computer, web-based or an app on
-                  your mobile device.</p>
-              </div>
             </div>
           </div>
         </div>
@@ -155,7 +141,11 @@ export function renderModal() {
     document.querySelector(".options-list")?.insertAdjacentHTML(
       "beforeend",
       `
-        <div class="single-wallet sidebar" id="module-${module.id}">
+        <div class="single-wallet ${
+          module.id === modalState.selector.store.getState().selectedWalletId
+            ? "selected-wallet connected-wallet"
+            : ""
+        } sidebar" id="module-${module.id}">
           <div class="icon"><img src="${iconUrl}" alt="${name}"></div>
           <div class="content">
             <div class="title">${name}</div>
@@ -168,6 +158,14 @@ export function renderModal() {
     document
       .getElementById("module-" + module.id)
       ?.addEventListener("click", () => {
+        document.querySelectorAll(".selected-wallet").forEach((element) => {
+          element.classList.remove("selected-wallet");
+        });
+
+        document
+          .getElementById("module-" + module.id)
+          ?.classList.add("selected-wallet");
+
         if (module.type === "hardware") {
           return renderConnectHardwareWallet(module);
         }
