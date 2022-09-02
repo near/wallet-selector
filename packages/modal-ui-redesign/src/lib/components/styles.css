@@ -1,63 +1,34 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
 
 #near-wallet-selector-modal {
-  --backdrop-bg: #26262630;
-  --heading-color: #222222;
-  --text-color: #222222;
-  --sidebar-border-color: #EDEDED;
-  --selected-wallet-bg: #4F7CD1;
-  --selected-wallet-bg-hover: transparent;
-  --wallet-option-border-color: #A7A7A730;
-  --wallet-option-bg-hover: #EDEDED;
-  --content-bg: #FFFFFF;
-  --change-path-bg: #EDEDED;
-  --home-button-bg: #EDEDED;
-  --input-border-color-focus: #5F8AFA;
-  --box-shadow-color: #26262630;
-  --dismiss-button-bg-hover: #A7A7A730;
-  --dismiss-button-border-color-hover: inherit;
-  --confirm-button-color: #FFFFFF;
-  --confirm-button-bg: #5F8AFA;
-  --confirm-button-bg-hover: #5AA6FF;
-  --confirm-button-border-color: #5F8AFA;
-  --error: #DB5555;
-  --close-button-bg-color: #EDEDED;
-  --close-button-fill-icon-color: #9F9F9F;
-  --spinner-color: #676767;
-  --bottom-section: #ececec;
-  --mobile-text: #3e3e3e;
+    --backdrop-bg: #26262630;
+    --heading-color: #222222;
+    --text-color: #222222;
+    --sidebar-border-color: #EDEDED;
+    --selected-wallet-bg: #4F7CD1;
+    --selected-wallet-bg-hover: transparent;
+    --wallet-option-border-color: #A7A7A730;
+    --wallet-option-bg-hover: #EDEDED;
+    --content-bg: #FFFFFF;
+    --change-path-bg: #EDEDED;
+    --home-button-bg: #EDEDED;
+    --input-border-color-focus: #5F8AFA;
+    --box-shadow-color: #26262630;
+    --dismiss-button-bg-hover: #A7A7A730;
+    --dismiss-button-border-color-hover: inherit;
+    --confirm-button-color: #FFFFFF;
+    --confirm-button-bg: #5F8AFA;
+    --confirm-button-bg-hover: #5AA6FF;
+    --confirm-button-border-color: #5F8AFA;
+    --error: #DB5555;
+    --close-button-bg-color: #EDEDED;
+    --close-button-fill-icon-color: #9F9F9F;
+    --spinner-color: #676767;
+    --bottom-section: #ececec;
+    --mobile-text: #3e3e3e;
 }
 
 #near-wallet-selector-modal .dark-theme {
-  --backdrop-bg: #26262630;
-  --heading-color: #FFFFFF;
-  --text-color: #FFFFFF;
-  --sidebar-border-color: #313030;
-  --selected-wallet-bg: #4F7CD1;
-  --selected-wallet-bg-hover: #262626CC;
-  --wallet-option-border-color: #A7A7A730;
-  --wallet-option-bg-hover: #313030;
-  --content-bg: #232323;
-  --change-path-bg: #161616;
-  --home-button-bg: #313030;
-  --input-border-color-focus: #5F8AFA;
-  --box-shadow-color: #26262630;
-  --dismiss-button-bg-hover: #262626CC;
-  --dismiss-button-border-color-hover: #262626;
-  --confirm-button-color: #FFFFFF;
-  --confirm-button-bg: #5F8AFA;
-  --confirm-button-bg-hover: #5AA6FF;
-  --confirm-button-border-color: #5F8AFA;
-  --error: #DB5555;
-  --close-button-bg-color: #313030;
-  --close-button-fill-icon-color: #C1C1C1;
-  --spinner-color: #FFFFFF;
-  --bottom-section: #131313;
-  --mobile-text: #c1c1c1;
-}
-
-@media (prefers-color-scheme: dark) {
-  #near-wallet-selector-modal {
     --backdrop-bg: #26262630;
     --heading-color: #FFFFFF;
     --text-color: #FFFFFF;
@@ -83,7 +54,36 @@
     --spinner-color: #FFFFFF;
     --bottom-section: #131313;
     --mobile-text: #c1c1c1;
-  }
+}
+
+@media (prefers-color-scheme: dark) {
+    #near-wallet-selector-modal {
+        --backdrop-bg: #26262630;
+        --heading-color: #FFFFFF;
+        --text-color: #FFFFFF;
+        --sidebar-border-color: #313030;
+        --selected-wallet-bg: #4F7CD1;
+        --selected-wallet-bg-hover: #262626CC;
+        --wallet-option-border-color: #A7A7A730;
+        --wallet-option-bg-hover: #313030;
+        --content-bg: #232323;
+        --change-path-bg: #161616;
+        --home-button-bg: #313030;
+        --input-border-color-focus: #5F8AFA;
+        --box-shadow-color: #26262630;
+        --dismiss-button-bg-hover: #262626CC;
+        --dismiss-button-border-color-hover: #262626;
+        --confirm-button-color: #FFFFFF;
+        --confirm-button-bg: #5F8AFA;
+        --confirm-button-bg-hover: #5AA6FF;
+        --confirm-button-border-color: #5F8AFA;
+        --error: #DB5555;
+        --close-button-bg-color: #313030;
+        --close-button-fill-icon-color: #C1C1C1;
+        --spinner-color: #FFFFFF;
+        --bottom-section: #131313;
+        --mobile-text: #c1c1c1;
+    }
 }
 
 /**
@@ -91,28 +91,28 @@
  */
 
 .nws-modal-wrapper {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  visibility: hidden;
-  /*transition: visibility 0s linear 0.25s, opacity 0.25s 0s;*/
-  color: var(--wallet-selector-text-color, var(--text-color));
-  font-family: Manrope, sans-serif;
-  font-weight: 500;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    /*transition: visibility 0s linear 0.25s, opacity 0.25s 0s;*/
+    color: var(--wallet-selector-text-color, var(--text-color));
+    font-family: Manrope, sans-serif;
+    font-weight: 500;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .nws-modal-wrapper .nws-modal-overlay {
-  background: var(--wallet-selector-backdrop-bg, var(--backdrop-bg));
-  height: 100%;
-  width: 100%;
-  position: absolute;
+    background: var(--wallet-selector-backdrop-bg, var(--backdrop-bg));
+    height: 100%;
+    width: 100%;
+    position: absolute;
 }
 
 /**
@@ -120,23 +120,23 @@
  */
 
 .nws-modal-wrapper .nws-modal {
-  background: var(--wallet-selector-content-bg, var(--content-bg));
-  width: 812px;
-  max-width: 812px;
-  height: auto;
-  max-height: 70vh;
-  border-radius: 16px;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0px);
-  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
-  background-color: var(--wallet-selector-content-bg, var(--content-bg));
-  overflow-y: auto;
-  font-size: 16px;
-  line-height: 1.6;
-  overflow: hidden;
-  box-sizing: content-box;
-  display: inline-flex;
+    background: var(--wallet-selector-content-bg, var(--content-bg));
+    width: 812px;
+    max-width: 812px;
+    height: auto;
+    max-height: 70vh;
+    border-radius: 16px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0px);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+    background-color: var(--wallet-selector-content-bg, var(--content-bg));
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow: hidden;
+    box-sizing: content-box;
+    display: inline-flex;
 }
 
 /**
@@ -144,23 +144,24 @@
 */
 
 .nws-modal-wrapper .nws-modal .modal-left {
-  width: 35%;
-  border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
-  padding: 32px 24px;
-  height: 100%;
-  max-height: 70vh;
-  overflow: auto;
+    width: 35%;
+    border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
+    padding: 32px 24px;
+    height: 100%;
+    max-height: 70vh;
+    overflow: auto;
 }
+
 .nws-modal-wrapper .nws-modal .modal-left .modal-left-title h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--wallet-selector-heading-color, var(--heading-color));
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .nws-modal-wrapper .nws-modal .modal-left::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 /**
@@ -168,126 +169,137 @@
  */
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
-  margin-top: 0;
-  margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
-  margin: 0;
-  list-style-type: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+    margin: 0;
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
 }
 
 .single-wallet {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  align-content: center;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  column-gap: 24px;
-  padding: 12px;
-  cursor: pointer;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    column-gap: 24px;
+    padding: 12px;
+    cursor: pointer;
 }
 
 .single-wallet .icon {
-  height: 48px;
-  width: auto;
+    height: 48px;
+    width: auto;
 }
 
 .single-wallet .icon img {
-  width: 100%;
-  height: auto;
-  max-width: 48px;
+    width: 100%;
+    height: auto;
+    max-width: 48px;
 }
 
 .single-wallet .content {
-  width: 50%;
+    width: 50%;
 }
 
 .single-wallet .content .name {
-  font-family: inherit;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 24px;
-  color: #FFFFFF;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    color: #FFFFFF;
 }
 
 .single-wallet .content .description {
-  font-family: inherit;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  color: #C1C1C1;
-  line-height: 150%;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    color: #C1C1C1;
+    line-height: 150%;
 }
 
 .single-wallet .button-get {
-  margin-left: auto;
-  margin-right: 0;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar {
-  border-radius: 8px;
-  justify-content: flex-start;
-  column-gap: 12px;
-  cursor: pointer;
+    border-radius: 8px;
+    justify-content: flex-start;
+    column-gap: 12px;
+    cursor: pointer;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar:hover {
-  background-color: var(--wallet-selector-wallet-option-bg-hover, var(--wallet-option-bg-hover));
+    background-color: var(--wallet-selector-wallet-option-bg-hover, var(--wallet-option-bg-hover));
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet {
-  padding: 12px;
-  background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    padding: 12px;
+    background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.deprecated-wallet {
-  opacity: 0.4;
+    opacity: 0.4;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .warning-triangle {
-  display: flex;
+    display: flex;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .icon {
-  width: 40px;
-  height: 40px;
-  background-color: #FFF;
-  padding: 5px;
-  border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    background-color: #FFF;
+    padding: 5px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .icon .active-circle {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #47E586;
+    position: absolute;
+    top: -4px;
+    left: 40px;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content {
-  height: 32px;
-  width: auto;
+    height: 32px;
+    width: auto;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet .content .title {
-  color: white;
+    color: white;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .title {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 32px;
-  /* identical to box height, or 171% */
-  align-items: center;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 32px;
+    /* identical to box height, or 171% */
+    align-items: center;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .description {
-  display: none;
+    display: none;
 }
 
 /**
@@ -295,9 +307,9 @@
 */
 
 .nws-modal-wrapper .nws-modal .modal-right {
-  width: 65%;
-  padding: 32px;
-  overflow: hidden;
+    width: 65%;
+    padding: 32px;
+    overflow: hidden;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
@@ -305,59 +317,59 @@
 .nws-modal-wrapper .nws-modal .connecting-wrapper,
 .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
-  margin-top: 91px;
-  padding: 0 28px;
+    margin-top: 91px;
+    padding: 0 28px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what {
-  display: flex;
-  align-content: center;
-  flex-direction: row;
-  align-items: flex-start;
-  width: 100%;
-  gap: 32px;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
+    display: flex;
+    align-content: center;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    gap: 32px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
 }
 
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what+.wallet-what {
-  margin-top: 50px;
+.nws-modal-wrapper .nws-modal .modal-right .wallet-what + .wallet-what {
+    margin-top: 50px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side {
-  width: 15%;
-  padding-top: 9px;
-  padding-bottom: 9px;
+    width: 15%;
+    padding-top: 9px;
+    padding-bottom: 9px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img {
-  width: 100%;
-  height: auto;
-  max-height: 65px;
-  border-radius: 6px;
+    width: 100%;
+    height: auto;
+    max-height: 65px;
+    border-radius: 6px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side {
-  width: 80%;
+    width: 80%;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side h3 {
-  margin: 0 auto 8px 0;
-  font-family: inherit;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--wallet-selector-text-color, var(--text-color));
+    margin: 0 auto 8px 0;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--wallet-selector-text-color, var(--text-color));
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side p {
-  margin: 0;
-  font-family: inherit;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 150%;
+    margin: 0;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
 }
 
 /**
@@ -365,115 +377,115 @@
  */
 
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
-  text-align: center;
-  margin: 4px auto;
-  font-size: 18px;
+    text-align: center;
+    margin: 4px auto;
+    font-size: 18px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body.get-wallet-body {
-  padding-left: 32px;
-  padding-right: 0;
-  row-gap: 16px;
-  margin-top: 64px;
+    padding-left: 32px;
+    padding-right: 0;
+    row-gap: 16px;
+    margin-top: 64px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
-  background-color: #4F7CD1;
-  border-radius: 4px;
-  color: #FFFFFF;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 24px;
-  border-color: #4F7CD1;
-  display: block;
-  margin: 75px auto 12px auto;
+    background-color: #4F7CD1;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    border-color: #4F7CD1;
+    display: block;
+    margin: 75px auto 12px auto;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
-  margin: 4px 0;
-  background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
-  border-radius: 4px;
-  padding: 8px 24px;
-  border-width: 0;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 24px;
-  font-family: inherit;
-  color: #6494EE;
+    margin: 4px 0;
+    background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
+    border-radius: 4px;
+    padding: 8px 24px;
+    border-width: 0;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    font-family: inherit;
+    color: #6494EE;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header {
-  width: 100%;
-  display: flex;
-  flex: 1;
-  align-items: flex-start;
-  justify-content: space-between;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
-  border: 0;
-  cursor: pointer;
-  height: 32px;
-  padding: 4px;
-  background-color: var(--wallet-selector-close-button-bg-color, var(--close-button-bg-color));
-  border-radius: 50px;
+    border: 0;
+    cursor: pointer;
+    height: 32px;
+    padding: 4px;
+    background-color: var(--wallet-selector-close-button-bg-color, var(--close-button-bg-color));
+    border-radius: 50px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header .close-button svg {
-  fill: var(--wallet-selector-close-button-fill-icon-color, var(--close-button-fill-icon-color));
+    fill: var(--wallet-selector-close-button-fill-icon-color, var(--close-button-fill-icon-color));
 }
 
 .nws-modal-wrapper .nws-modal .back-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: block;
-  /* vertical-align: middle; */
-  border: none;
-  padding: 4px
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: block;
+    /* vertical-align: middle; */
+    border: none;
+    padding: 4px
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header .close-button:active {
-  background: transparent;
+    background: transparent;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header .close-button svg {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-header h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--wallet-selector-heading-color, var(--heading-color));
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .nws-modal-wrapper .nws-modal .action-buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .nws-modal-wrapper .nws-modal .action-buttons .left-button:hover {
-  background-color: var(--wallet-selector-dismiss-button-bg-hover, var(--dismiss-button-bg-hover));
-  border-color: var(--wallet-selector-dismiss-button-border-color-hover, var(--dismiss-button-border-color-hover));
+    background-color: var(--wallet-selector-dismiss-button-bg-hover, var(--dismiss-button-bg-hover));
+    border-color: var(--wallet-selector-dismiss-button-border-color-hover, var(--dismiss-button-border-color-hover));
 }
 
 .nws-modal-wrapper .nws-modal .action-buttons .right-button {
-  color: var(--wallet-selector-confirm-button-color, var(--confirm-button-color));
-  background-color: var(--wallet-selector-confirm-button-bg, var(--confirm-button-bg));
-  border: 1px solid var(--wallet-selector-confirm-button-border-color, var(--confirm-button-border-color));
+    color: var(--wallet-selector-confirm-button-color, var(--confirm-button-color));
+    background-color: var(--wallet-selector-confirm-button-bg, var(--confirm-button-bg));
+    border: 1px solid var(--wallet-selector-confirm-button-border-color, var(--confirm-button-border-color));
 }
 
 .nws-modal-wrapper .nws-modal .action-buttons .right-button:hover {
-  background-color: var(--wallet-selector-confirm-button-bg-hover, var(--confirm-button-bg-hover));
+    background-color: var(--wallet-selector-confirm-button-bg-hover, var(--confirm-button-bg-hover));
 }
 
 /**
@@ -482,7 +494,7 @@
 
 
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper .content .network-id {
-  color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
 /**
@@ -490,115 +502,117 @@
  */
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper {
-  padding: 0 26px;
+    padding: 0 26px;
 }
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image {
-  display: flex;
-  justify-content: center;
-  margin-top: 53px;
-  margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    margin-top: 53px;
+    margin-bottom: 40px;
 }
+
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description {
-  font-size: 14px;
-  color: #C1C1C1;
-  text-align: center;
+    font-size: 14px;
+    color: #C1C1C1;
+    text-align: center;
 }
+
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description .specify-path {
-  color: var(--selected-wallet-bg);
-  cursor: pointer;
+    color: var(--selected-wallet-bg);
+    cursor: pointer;
 }
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 16px;
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 91px;
+    display: flex;
+    justify-content: center;
+    margin-top: 91px;
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .display-path {
-  background: var(--home-button-bg);
-  color: #606060;
-  padding: 16px;
-  border-radius: 8px;
-  letter-spacing: 1px;
-  font-weight: 700;
+    background: var(--home-button-bg);
+    color: #606060;
+    padding: 16px;
+    border-radius: 8px;
+    letter-spacing: 1px;
+    font-weight: 700;
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path {
-  background: var(--change-path-bg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 10px;
-  width: 63px;
-  padding: 0 5px;
-  border-radius: 8px;
+    background: var(--change-path-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 10px;
+    width: 63px;
+    padding: 0 5px;
+    border-radius: 8px;
 }
 
-.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path  .path-value {
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
+.nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .path-value {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
 }
 
 .nws-modal-wrapper .nws-modal .specify-path-wrapper .path-description {
-  font-size: 14px;
-  margin-top: 24px;
-  text-align: center;
-  color: #C1C1C1;
+    font-size: 14px;
+    margin-top: 24px;
+    text-align: center;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .specify-path-wrapper .what-link {
-  font-size: 14px;
-  text-align: center;
-  color: var(--selected-wallet-bg);
-  cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    color: var(--selected-wallet-bg);
+    cursor: pointer;
 }
-
 
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper button {
-  padding: 0;
-  width: 23px;
-  background-color: var(--home-button-bg);
-  border: none;
+    padding: 0;
+    width: 23px;
+    background-color: var(--home-button-bg);
+    border: none;
 }
 
 .nws-modal-wrapper .nws-modal .no-accounts-found-wrapper {
-  margin-top: 50px;
-  font-size: 14px;
+    margin-top: 50px;
+    font-size: 14px;
 }
 
 .nws-modal-wrapper .nws-modal .enter-custom-account {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .nws-modal-wrapper .nws-modal .enter-custom-account p {
-  color: #C1C1C1;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 90px;
+    display: flex;
+    justify-content: center;
+    margin-top: 90px;
 }
+
 .nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper input {
-  text-align: center;
-  border: 1px solid var(--confirm-button-bg-hover);
-  padding: 6px 8px;
-  border-radius: 50px;
+    text-align: center;
+    border: 1px solid var(--confirm-button-bg-hover);
+    padding: 6px 8px;
+    border-radius: 50px;
 }
 
 /**
@@ -606,96 +620,98 @@
  */
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper p {
-  color: #C1C1C1;
-  font-size: 14px;
-  text-align: center;
-  margin-top: 20px;
+    color: #C1C1C1;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
-.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper button{
-  color: var(--selected-wallet-bg);
-  border-radius: 20px;
-  font-size: 14px;
-  border-color: var(--selected-wallet-bg);
-  width: 78px;
-  padding: 6px 8px;
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper button {
+    color: var(--selected-wallet-bg);
+    border-radius: 20px;
+    font-size: 14px;
+    border-color: var(--selected-wallet-bg);
+    width: 78px;
+    padding: 6px 8px;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .form {
-  margin-top: 96px;
+    margin-top: 96px;
 }
+
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-  padding: 10px;
-  color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    padding: 10px;
+    color: var(--text-color);
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account {
-  border-bottom: 1px solid var(--sidebar-border-color);
-  padding: 16px 0;
+    border-bottom: 1px solid var(--sidebar-border-color);
+    padding: 16px 0;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account input[type=checkbox] {
-  width: 25px;
-  -ms-transform: scale(2);
-  -moz-transform: scale(2);
-  -webkit-transform: scale(2);
-  -o-transform: scale(2);
-  transform: scale(1.7);
-  padding: 10px;
+    width: 25px;
+    -ms-transform: scale(2);
+    -moz-transform: scale(2);
+    -webkit-transform: scale(2);
+    -o-transform: scale(2);
+    transform: scale(1.7);
+    padding: 10px;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control label {
-  color: inherit;
+    color: inherit;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 10px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  text-align: right;
-  color: inherit;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    text-align: right;
+    color: inherit;
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select option {
-  background-color: var(--content-bg);
+    background-color: var(--content-bg);
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .action-buttons {
-  justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .nws-modal-wrapper .nws-modal .overview-wrapper p {
-  font-size: 14px;
-  text-align: center;
-  color: #C1C1C1;
+    font-size: 14px;
+    text-align: center;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .overview-wrapper .accounts {
-  margin-top: 96px;
+    margin-top: 96px;
 }
+
 .nws-modal-wrapper .nws-modal .overview-wrapper .account {
-  border-bottom: 1px solid var(--sidebar-border-color);
-  padding: 16px 0;
+    border-bottom: 1px solid var(--sidebar-border-color);
+    padding: 16px 0;
 }
 
 /*
   Connecting Wrapper Section/Wrapper
 */
 .nws-modal-wrapper .nws-modal .connecting-wrapper .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /**
@@ -703,119 +719,119 @@
  */
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .refresh-link {
-  color: #5f8afa;
-  cursor: pointer;
+    color: #5f8afa;
+    cursor: pointer;
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data p {
-  margin: 0 0 0 10px;
+    margin: 0 0 0 10px;
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box {
-  width: 40px;
-  height: 40px;
+    width: 40px;
+    height: 40px;
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box img {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
 .open {
-  opacity: 1;
-  visibility: visible;
-  transition: visibility 0s linear 0s, opacity 0.25s 0s;
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s linear 0s, opacity 0.25s 0s;
 }
 
 .nws-modal-wrapper .spinner {
-  margin-right: 10px;
-  --size: 160px;
-  --border: 6px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    margin-right: 10px;
+    --size: 160px;
+    --border: 6px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nws-modal-wrapper .spinner .icon {
-  width: calc(var(--size) / 1.2);
-  height: calc(var(--size) / 1.2);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.05) 0 10px 20px 0;
+    width: calc(var(--size) / 1.2);
+    height: calc(var(--size) / 1.2);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 10px 20px 0;
 }
 
 .nws-modal-wrapper .spinner img {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
 @keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 600px) {
-  .nws-modal-wrapper .nws-modal-wrapper .nws-modal {
-    width: 250px;
-  }
+    .nws-modal-wrapper .nws-modal-wrapper .nws-modal {
+        width: 250px;
+    }
 
-  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list input {
-    max-width: 140px;
-  }
+    .nws-modal-wrapper .nws-modal-wrapper .nws-modal .derivation-path-wrapper .derivation-path-list input {
+        max-width: 140px;
+    }
 
-  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
-    flex-direction: column;
-  }
+    .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control {
+        flex-direction: column;
+    }
 
-  .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
-    text-align: center;
-  }
+    .nws-modal-wrapper .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
+        text-align: center;
+    }
 }
 
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #near-wallet img,
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #math-wallet img,
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #ledger img,
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal .wallet-not-installed-wrapper .math-wallet img {
-  filter: invert(1);
+    filter: invert(1);
 }
 
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .spinner .icon {
-  box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
 
-  .nws-modal-wrapper .nws-modal #near-wallet img,
-  .nws-modal-wrapper .nws-modal #math-wallet img,
-  .nws-modal-wrapper .nws-modal #ledger img,
-  .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper .math-wallet img {
-    filter: invert(1);
-  }
+    .nws-modal-wrapper .nws-modal #near-wallet img,
+    .nws-modal-wrapper .nws-modal #math-wallet img,
+    .nws-modal-wrapper .nws-modal #ledger img,
+    .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper .math-wallet img {
+        filter: invert(1);
+    }
 
-  .nws-modal-wrapper .spinner .icon {
-    box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
-  }
+    .nws-modal-wrapper .spinner .icon {
+        box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
+    }
 }
 
 @keyframes outAnimation {
-  0% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 1;
+    }
 
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 /**
@@ -823,161 +839,157 @@
 */
 
 .connecting-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .connecting-wrapper .content .icon {
-  width: 80px;
-  height: 80px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px
 }
 
 .connecting-wrapper .content .icon img {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
 .connecting-wrapper .content .connecting-name {
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
-  display: flex;
-  align-items: center;
-  text-align: center;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
 }
 
 .connecting-wrapper .content .connecting-details {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  display: flex;
-  align-items: center;
-  margin-top: 40px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
 }
 
 .connecting-wrapper .content .connecting-details .spinner {
-  width: 25px;
-  height: auto;
-  animation: spinner 2s linear infinite;
+    width: 25px;
+    height: auto;
+    animation: spinner 2s linear infinite;
 }
 
 @keyframes spinner {
-  0% {
-    transform: rotate(0deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
 
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection button {
-  margin: 24px auto;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 24px;
-  display: flex;
-  color: #6494EE;
-  align-items: center;
-  padding: 8px 24px;
-  gap: 8px;
-  width: 86px;
-  height: 40px;
-  background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
-  border-radius: 4px;
-  border: 0;
+    margin: 24px auto;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    display: flex;
+    color: #6494EE;
+    align-items: center;
+    padding: 8px 24px;
+    gap: 8px;
+    width: 86px;
+    height: 40px;
+    background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
+    border-radius: 4px;
+    border: 0;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error-wrapper {
-  vertical-align: middle;
-  align-items: center;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  flex-direction: column;
-  column-gap: 12px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  text-align: center;
+    vertical-align: middle;
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    flex-direction: column;
+    column-gap: 12px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 150%;
+    text-align: center;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error {
-  color: #CE5A6F;
-  vertical-align: middle;
-  align-items: center;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  flex-direction: row;
-  column-gap: 12px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  text-align: center;
+    color: #CE5A6F;
+    vertical-align: middle;
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    flex-direction: row;
+    column-gap: 12px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 150%;
+    text-align: center;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .success {
-  color: #4FD98F;
+    color: #4FD98F;
 }
-
 
 
 .nws-modal-wrapper .nws-modal .connecting-wrapper .content {
-  padding: 25px;
+    padding: 25px;
 }
 
 .connecting-wrapper .content .connecting-details {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 
 .single-wallet-get {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  align-content: center;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  column-gap: 24px;
-  padding: 12px;
-  max-width: 450px;
-  margin: auto;
-  margin-top: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    column-gap: 24px;
+    padding: 12px;
+    max-width: 450px;
+    margin: auto;
+    margin-top: 20px;
 }
 
 .single-wallet-get .icon img {
-  width: 100%;
-  height: auto;
-  max-width: 48px;
+    width: 100%;
+    height: auto;
+    max-width: 48px;
 }
 
 
 .single-wallet-get .button-get {
-  margin-left: auto;
-  margin-right: 0;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 
-
-
-
 @media (min-width: 769px) {
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile {
-    display:none;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile {
+        display: none;
+    }
 }
 
 
@@ -985,168 +997,169 @@
 
 @media (max-width: 768px) {
 
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
-  .nws-modal-wrapper .nws-modal .connecting-wrapper,
-  .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
-  .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
-    margin-top: 20px;
-    padding: 0;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
+    .nws-modal-wrapper .nws-modal .connecting-wrapper,
+    .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
+    .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
+        margin-top: 20px;
+        padding: 0;
+    }
 
-  .nws-modal-wrapper .wallet-not-installed-wrapper > p {
-      margin: 20px  0px 30px 0px;
-      max-width: 500px;
-  }
+    .nws-modal-wrapper .wallet-not-installed-wrapper > p {
+        margin: 20px 0px 30px 0px;
+        max-width: 500px;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
-    display:none;
-}
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
+        display: none;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile p {
-    font-size: 14px;
-    margin-bottom: 0;
-    text-align: center;
-    max-width: 600px;
-    margin: auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile p {
+        font-size: 14px;
+        margin-bottom: 0;
+        text-align: center;
+        max-width: 600px;
+        margin: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal-overlay {
-    background: var(--wallet-selector-backdrop-bg, var(--bottom-section));
-    height: 100%;
-    width: 100%;
-    position: absolute;
-  }
+    .nws-modal-wrapper .nws-modal-overlay {
+        background: var(--wallet-selector-backdrop-bg, var(--bottom-section));
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left {
-    padding: 32px 12px;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left {
+        padding: 32px 12px;
+    }
 
-  .nws-modal-wrapper .nws-modal {
-     width: 100%;
-     display: block;
-     overflow: auto;
-  }
+    .nws-modal-wrapper .nws-modal {
+        width: 100%;
+        display: block;
+        overflow: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left {
-    width: 100%;
-    background-color: var(--wallet-selector-content-bg, var(--content-bg));
-  }
+    .nws-modal-wrapper .nws-modal .modal-left {
+        width: 100%;
+        background-color: var(--wallet-selector-content-bg, var(--content-bg));
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body {
-    display: flex;
-    overflow: auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body {
+        display: flex;
+        overflow: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body .wallet-options-wrapper{
-      display: flex;
-      margin: auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body .wallet-options-wrapper {
+        display: flex;
+        margin: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right {
-    width: 100%;
-    background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
-  }
+    .nws-modal-wrapper .nws-modal .modal-right {
+        width: 100%;
+        background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
-    text-align: center;
-    font-size: 16px;
-    margin: 4px auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
+        text-align: center;
+        font-size: 16px;
+        margin: 4px auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .content {
-    font-size: 14px;
-    text-align: center;
-    color: var(--mobile-text);
-    margin: 0
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .content {
+        font-size: 14px;
+        text-align: center;
+        color: var(--mobile-text);
+        margin: 0
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
-    margin-top: 10px;
-    padding: 0;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
+        margin-top: 10px;
+        padding: 0;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
-    margin: 25px auto 12px auto;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
+        margin: 25px auto 12px auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-header {
-    display: block;
-    font-size: 18px;
-    text-align: center;
-  }
+    .nws-modal-wrapper .nws-modal .modal-header {
+        display: block;
+        font-size: 18px;
+        text-align: center;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
-    position: absolute;
-    right: 30px;
-    top: 30px;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
+        position: absolute;
+        right: 30px;
+        top: 30px;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-header h2 {
-    font-size: 18px;
-    text-align: center;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-header h2 {
+        font-size: 18px;
+        text-align: center;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
-    display: none;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
+        display: none;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
-    display: flex;
-    overflow-x: auto;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
+        display: flex;
+        overflow-x: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .info {
-    display: none;
-    width: 90px;
-  }
+    .nws-modal-wrapper .nws-modal .info {
+        display: none;
+        width: 90px;
+    }
 
-  .single-wallet {
-    display: block;
-    width: 85px;
-  }
+    .single-wallet {
+        display: block;
+        width: 85px;
+    }
 
-  .single-wallet.sidebar .icon {
-    width: 56px;
-    height: 56px;
-    margin:auto;
-  }
+    .single-wallet.sidebar .icon {
+        width: 56px;
+        height: 56px;
+        margin: auto;
+    }
 
-  .single-wallet.sidebar .content {
-    width: auto;
-  }
+    .single-wallet.sidebar .content {
+        width: auto;
+    }
 
-  .single-wallet .content .title {
-    margin-top: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+    .single-wallet .content .title {
+        margin-top: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
-    margin-top: 0;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
+        margin-top: 0;
+    }
 
-  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,
-  .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
+    .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,
+    .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
 
-  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description > p{
-    max-width: 450px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+    .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description > p {
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-   ::-webkit-scrollbar{
+    ::-webkit-scrollbar {
         height: 4px;
         width: 4px;
-        background: var( --backdrop-bg);
+        background: var(--backdrop-bg);
 
     }
-    ::-webkit-scrollbar-thumb:horizontal{
-        background: var( --close-button-fill-icon-color);
+
+    ::-webkit-scrollbar-thumb:horizontal {
+        background: var(--close-button-fill-icon-color);
         border-radius: 10px;
     }
 }
