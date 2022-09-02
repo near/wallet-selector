@@ -76,7 +76,7 @@ export async function renderGetAWallet() {
     document.getElementById("wallets")?.insertAdjacentHTML(
       "beforeend",
       `
-    <div class="single-wallet">
+    <div class="single-wallet-get">
       <div class="icon">
       <img
           src="${filteredModules[i].metadata.iconUrl}"

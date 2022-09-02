@@ -117,7 +117,9 @@ export function renderModal() {
   }
 
   modalState.container.innerHTML = `
-    <div class="nws-modal-wrapper">
+    <div class="nws-modal-wrapper ${
+      modalState.options.theme === "dark" ? "dark-theme" : ""
+    }">
       <div class="nws-modal-overlay"></div>
       <div class="nws-modal">
         <div class="modal-left">
