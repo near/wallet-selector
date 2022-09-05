@@ -4,31 +4,30 @@ import {
   InjectedWallet,
   FinalExecutionOutcome
 } from "@near-wallet-selector/core";
-import { utils } from "near-api-js";
-import { SignedTransaction } from "near-api-js/lib/transaction";
-import { GetSnapsResponse } from "./types";
+import { createTransaction, SignedTransaction } from "near-api-js/lib/transaction";
+import { GetAccountPayload, GetSnapsResponse, Transaction } from "./types";
 
 
 
 const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter, id, logger, metadata, options, provider, storage, store, type }) => {
   // { emitter, id, logger, metadata, options, provider, storage, store, type }
-  console.log("provider")
-  console.log(provider)
-  console.log("options")
-  console.log(options)
+
+  // "npm@chainsafe/near-snap"
+  // "local:http://localhost:8081"
 
   const network = options.network.networkId as "testnet" | "mainnet";
 
-  async function getSnapAccounts(): Promise<string[]> {
-      let accounts: string[] = []
+  async function getSnapAccounts(): Promise<GetAccountPayload[]> {
+      let accounts: GetAccountPayload[] = []
         const snaps: GetSnapsResponse = await window.ethereum.request({
           method: "wallet_getSnaps",
         });
-
+        console.log("snaps")
+        console.log(snaps)
         //if snap is installed return account
-        if(snaps["npm:@chainsafe/near-snap"].id === "npm:@chainsafe/near-snap") {
-          const account: string = await window.ethereum.request({
-            method: 'wallet_snap_npm:@chainsafe/near-snap',
+        if(snaps["local:http://localhost:8081"]) {
+          const account: GetAccountPayload = await window.ethereum.request({
+            method: "wallet_snap_local:http://localhost:8081",
             params: [{ method: "near_getAccount", params: {network} }],
           });
           accounts = [account]
@@ -47,7 +46,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter,
           params: [
             {
               [`wallet_snap`]: {
-                'npm:@chainsafe/near-snap': {},
+                "local:http://localhost:8081": {},
               },
             },
           ],
@@ -59,15 +58,17 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter,
             console.log('Unexpected error:', error);
           }
       }
-
+      console.log("result")
+      console.log(result)
       if ((result as any).errors) {
         console.log('Snap installation failure :(', (result as any).errors);
       } else {
         console.log('Success!', result);
       }
-      const accounts = await getSnapAccounts();
-
-      return [{accountId: accounts[0]}];
+      const getAccountPayload = await getSnapAccounts();
+      console.log("getAccountPayload")
+      console.log(getAccountPayload)
+      return [{accountId: getAccountPayload[0].accountId}];
     },
 
     async signOut() {
@@ -76,8 +77,8 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter,
 
     async getAccounts() {
       // Return list of signed in accounts.
-      const accounts = await getSnapAccounts()
-      return [{accountId: accounts[0]}];
+      const getAccountPayload = await getSnapAccounts()
+      return [{accountId: getAccountPayload[0].accountId}];
     },
 
     async verifyOwner() {
@@ -85,48 +86,96 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({ emitter,
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
+      console.log("receiverId")
+      console.log(receiverId)
+      const accountPayload = await getSnapAccounts();
+      const {accountId, publicKey} = accountPayload[0];
 
-      const accountId = await getSnapAccounts();
-
-      const publicKey = "ed25519:" + Buffer.from(accountId[0], "hex").toString();
+      // const publicKey = "ed25519:" + Buffer.from(accountId[0], "hex").toString();
+      // const publicKey = utils.PublicKey.from("ed25519:" + Buffer.from(accountId[0], "hex").toString());
+      
       console.log("accountId")
-      console.log(accountId[0])
+      console.log(accountId)
       console.log("publicKey")
       console.log(publicKey)
 
-      const accessKey = await provider.viewAccessKey({accountId: accountId[0], publicKey})
+      const accessKey = await provider.viewAccessKey({accountId, publicKey})
 
       console.log("accessKey")
       console.log(accessKey)
+      const { contract } = store.getState();
 
-      const recentBlockHash = utils.serialize.base_decode(
-        accessKey.block_hash
-      );
+      if (!contract) {
+        throw new Error("Wallet not signed in");
+      }
 
+      console.log("transaction params")
+      console.log(receiverId || contract.contractId)
+      console.log(actions)
+      console.log(++accessKey.nonce)
+      console.log(accessKey.block_hash)
 
-      const result: [Uint8Array, SignedTransaction][] = await window.ethereum.request({
-        method: 'wallet_snap_npm:@chainsafe/near-snap',
+      const result: [Uint8Array, Uint8Array][] = await window.ethereum.request({
+        method: "wallet_snap_local:http://localhost:8081",
         params: [{ method: "near_signTransactions", params: {
           network,
           transactions: [
             {
-              receiverId,
+              receiverId: receiverId || contract.contractId,
               actions,
               nonce: ++accessKey.nonce,
-              recentBlockHash
+              recentBlockHash: accessKey.block_hash
             },
           ],
         } }],
       });
-      const finalResult: FinalExecutionOutcome = await provider.sendTransaction(result[0][1]);
 
+      console.log("result")
+      console.log(result)
+      const signedTx =  SignedTransaction.decode(Buffer.from(Object.values(result[0][1])))
+      console.log("signedTxDecoded")
+      console.log(signedTx)
+      
+      const finalResult: FinalExecutionOutcome = await provider.sendTransaction(signedTx);
+      console.log("finalResult")
+      console.log(finalResult)
       return finalResult;
     },
 
     async signAndSendTransactions({ transactions }) {
       //near_signTransactions
+
+      const accountPayload = await getSnapAccounts();
+      const {accountId, publicKey} = accountPayload[0];
+
+      const transactionsWithNoncePromise = async () => {
+        return Promise.all(transactions.map( async (transaction) => {
+          const {receiverId, actions, signerId} = transaction
+  
+          if(signerId) {
+            const accessKey = await provider.viewAccessKey({accountId, publicKey})
+
+            const nonce = ++accessKey.nonce;
+            return {
+              receiverId,
+              actions,
+              nonce,
+              recentBlockHash: accessKey.block_hash
+            } 
+            //signerId can be undifiend?
+          } else return {
+            receiverId: receiverId,
+            actions: actions,
+            nonce: 0,
+            recentBlockHash: "0",
+          }
+        }))
+      } 
+      const transactionsWithNonce = await transactionsWithNoncePromise();
+
+
       const result: [Uint8Array, SignedTransaction][] = await window.ethereum.request({
-        method: 'wallet_snap_npm:@chainsafe/near-snap',
+        method: "wallet_snap_local:http://localhost:8081",
         params: [{ method: "near_signTransactions", params: {
           network,
           transactions, //transactions missing: nonce, recentBlockhash
