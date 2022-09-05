@@ -4,15 +4,14 @@ import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 interface WalletOptionsProps {
   selector: WalletSelector;
   handleWalletClick: (module: ModuleState) => void;
-  selectedID: string | null;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   handleWalletClick,
-  selectedID,
 }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
+  const [activeWalletId, setActiveWalletId] = useState("");
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -23,6 +22,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         return current.metadata.deprecated ? 1 : -1;
       });
+
+      const { selectedWalletId } = selector.store.getState();
+      if (selectedWalletId) {
+        setActiveWalletId(selectedWalletId);
+      }
+
       setModules(state.modules);
     });
     return () => subscription.unsubscribe();
@@ -32,22 +37,29 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   return (
     <div className="wallet-options-wrapper">
       <ul className="options-list">
-        {modules.reduce<Array<JSX.Element>>((result, module) => {
+        {modules.reduce<Array<JSX.Element>>((result, module, index) => {
+          const { selectedWalletId } = selector.store.getState();
           const { name, description, iconUrl, deprecated } = module.metadata;
-          const selected = module.id === selectedID;
+          const selected = module.id === selectedWalletId;
+
           result.push(
             <li
-              className={`single-wallet ${selected ? "selected-wallet" : ""} ${
+              className={`single-wallet  ${
                 deprecated ? "deprecated-wallet" : ""
+              } ${
+                activeWalletId === module.id ? "selected-wallet" : ""
               } sidebar`}
               key={module.id}
               onClick={() => {
-                handleWalletClick(module);
+                if (module.id === modules[index].id) {
+                  setActiveWalletId(module.id!);
+                }
+                return handleWalletClick(module);
               }}
             >
-              <div className="icon">
+              <div className="icon" style={{}}>
                 <img src={iconUrl} alt={name} />
-                {selected ? <div className={"active-circle"}></div> : undefined}
+                {selected && <div className="active-circle"></div>}
               </div>
               <div className="content">
                 <div className="title">{name}</div>
