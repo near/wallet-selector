@@ -87,6 +87,21 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <div className="get-wallet-wrapper">
           {modules.map((module) => {
             const { iconUrl, name, description } = module.metadata;
+            let newDescription = "";
+            if (description === null) {
+              switch (module.id) {
+                case "my-near-wallet":
+                  newDescription =
+                    "The highly scalable, developer-friendly blockchain.";
+                  break;
+                case "sender":
+                  newDescription = "Browser extension wallet built on NEAR.";
+                  break;
+                case "nightly":
+                  newDescription = "Keep your funds safe with Nightly";
+                  break;
+              }
+            }
             return (
               <div className="single-wallet-get" key={module.id}>
                 <div className="icon">
@@ -94,7 +109,9 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 </div>
                 <div className="content">
                   <div className="title">{name}</div>
-                  <div className="description">{description}</div>
+                  <div className="description">
+                    {description != null ? description : newDescription}
+                  </div>
                 </div>
                 <div className="button-get">
                   <button

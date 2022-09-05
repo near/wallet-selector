@@ -4,11 +4,13 @@ import type { WalletSelector, ModuleState } from "@near-wallet-selector/core";
 interface WalletOptionsProps {
   selector: WalletSelector;
   handleWalletClick: (module: ModuleState) => void;
+  selectedID: string | null;
 }
 
 export const WalletOptions: React.FC<WalletOptionsProps> = ({
   selector,
   handleWalletClick,
+  selectedID,
 }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
 
@@ -21,7 +23,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         return current.metadata.deprecated ? 1 : -1;
       });
-
       setModules(state.modules);
     });
     return () => subscription.unsubscribe();
@@ -32,9 +33,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     <div className="wallet-options-wrapper">
       <ul className="options-list">
         {modules.reduce<Array<JSX.Element>>((result, module) => {
-          const { selectedWalletId } = selector.store.getState();
           const { name, description, iconUrl, deprecated } = module.metadata;
-          const selected = module.id === selectedWalletId;
+          const selected = module.id === selectedID;
           result.push(
             <li
               className={`single-wallet ${selected ? "selected-wallet" : ""} ${
@@ -42,11 +42,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               } sidebar`}
               key={module.id}
               onClick={() => {
-                return handleWalletClick(module);
+                handleWalletClick(module);
               }}
             >
               <div className="icon">
                 <img src={iconUrl} alt={name} />
+                {selected ? <div className={"active-circle"}></div> : undefined}
               </div>
               <div className="content">
                 <div className="title">{name}</div>

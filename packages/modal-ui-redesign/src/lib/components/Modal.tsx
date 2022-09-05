@@ -41,6 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
+  const [activeWalletID, setactiveWalletID] = useState<string | null>(null);
 
   useEffect(() => {
     setRoute({
@@ -85,12 +86,6 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleWalletClick = async (module: ModuleState) => {
     setSelectedWallet(module);
-
-    const { selectedWalletId } = selector.store.getState();
-    if (selectedWalletId === module.id) {
-      return;
-    }
-
     try {
       const { deprecated, available } = module.metadata;
 
@@ -131,6 +126,7 @@ export const Modal: React.FC<ModalProps> = ({
         });
         return;
       }
+      setactiveWalletID(module.id);
 
       await wallet.signIn({
         contractId: options.contractId,
@@ -173,6 +169,7 @@ export const Modal: React.FC<ModalProps> = ({
           <WalletOptions
             handleWalletClick={handleWalletClick}
             selector={selector}
+            selectedID={activeWalletID}
           />
         </div>
         <div className="modal-right">
