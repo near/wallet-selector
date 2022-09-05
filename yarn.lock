@@ -2371,13 +2371,13 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-14.0.6.tgz#a48185b584a528a59ce82217830673268ceee8c2"
   integrity sha512-mSmLqzRKxQgGiOhvJ8guvRLjXoTL17cVSWlL/Cz+Q3xc1bXa7537ZXBTQTEuZVU2ytdkniKc8l1HqXIx0pFNVQ==
 
-"@nightlylabs/connect-near@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.10.tgz#16d163035167c9dd3f865cf63798fab047ab5208"
-  integrity sha512-oZ6hYHjXLvzC1IB/GTXOdUHnfYwOXVBHi2BV24lHmdZ3J/ZJCEFAja/sEnb1gAKZfz69i1/OihtB5BDwDqrOcQ==
+"@nightlylabs/connect-near@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.13.tgz#f3742c79ad4bd88919a0b186e45720b13046f5a4"
+  integrity sha512-6xlBJaWqjE1EgVgbgIZv8rxJpxvtdtFy87A9r7l2L+yCYKa/+7ZwrPlThTxy1phGbouS493WjgDs0M/j1/If1g==
   dependencies:
     "@nightlylabs/qr-code" "1.0.21"
-    isomorphic-localstorage "0.0.4"
+    isomorphic-localstorage "0.0.8"
     isomorphic-ws "^4.0.1"
     near-api-js "^0.45.1"
     uuid "^8.3.2"
@@ -9472,10 +9472,10 @@ isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-isomorphic-localstorage@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/isomorphic-localstorage/-/isomorphic-localstorage-0.0.4.tgz#55c82492fcd2bab8536be4030dcd6b35749c0711"
-  integrity sha512-OQcHrlrkyEnj/15ySoNG1L65wbqsp7nqwj/e3kb9rZLKRhAbsxSj4RVWTIU1WeFkn91tZk3BrvUNy96kxYq+DQ==
+isomorphic-localstorage@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/isomorphic-localstorage/-/isomorphic-localstorage-0.0.8.tgz#2479e6e600ef27cce90ed11c14e309c97a605d93"
+  integrity sha512-ejzdUagHWEV/vaxazMt8oIzEIP83SrMsp4gT3fj379pJ6iw2gss0K8rcexTM7vwlopLzA/b9vNwQ7fyf67UuLA==
   dependencies:
     node-localstorage "^2.2.1"
 
