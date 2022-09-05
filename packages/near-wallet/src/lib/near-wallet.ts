@@ -47,7 +47,7 @@ export function setupNearWallet({
       metadata: {
         ...wallet.metadata,
         name: "NEAR Wallet",
-        description: null,
+        description: "Web wallet for NEAR Protocol",
         iconUrl,
         deprecated,
         available: true,
