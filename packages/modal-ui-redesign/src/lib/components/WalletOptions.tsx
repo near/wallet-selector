@@ -44,11 +44,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
           result.push(
             <li
-              className={`single-wallet  ${
-                deprecated ? "deprecated-wallet" : ""
-              } ${
+              className={`single-wallet ${
                 activeWalletId === module.id ? "selected-wallet" : ""
-              } sidebar`}
+              } ${deprecated ? "deprecated-wallet" : ""} sidebar`}
               key={module.id}
               onClick={() => {
                 if (module.id === modules[index].id) {

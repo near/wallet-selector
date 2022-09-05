@@ -324,6 +324,10 @@
     padding: 0 28px;
 }
 
+.nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
+  padding: 0;
+}
+
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what {
     display: flex;
     align-content: center;
@@ -978,6 +982,10 @@
     margin-top: 20px;
 }
 
+.single-wallet-get .icon {
+  min-width: 48px;
+}
+
 .single-wallet-get .icon img {
     width: 100%;
     height: auto;
@@ -991,7 +999,6 @@
     font-size: 14px;
     line-height: 24px;
     align-items: center;
-    color: #FFFFFF;
 }
 
 .single-wallet-get .description {
