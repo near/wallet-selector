@@ -25,19 +25,14 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
             <img src={module?.metadata.iconUrl} alt={module?.metadata.name} />
           </div>
           <h3 className="connecting-name">{module?.metadata.name}</h3>
-          {!module?.metadata.deprecated && module?.metadata.available ? (
-            <div className="connecting-details">
-              <ConnectionResult
-                message={message}
-                err={message !== null}
-                onRetry={() => {
-                  onBack(true);
-                }}
-              />
-            </div>
-          ) : (
-            <p style={{ textAlign: "center" }}>{message}</p>
-          )}
+          <ConnectionResult
+            module={module!}
+            message={message}
+            err={message !== null}
+            onRetry={() => {
+              onBack(true);
+            }}
+          />
         </div>
       </div>
     </Fragment>

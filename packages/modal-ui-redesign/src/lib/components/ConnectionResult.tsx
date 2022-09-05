@@ -1,12 +1,15 @@
 import React from "react";
+import { ModuleState } from "@near-wallet-selector/core";
 
 interface ConnectionResultProps {
+  module: ModuleState;
   message: string;
   err: boolean;
   onRetry: () => void;
 }
 
 export const ConnectionResult: React.FC<ConnectionResultProps> = ({
+  module,
   message,
   err,
   onRetry,
@@ -42,7 +45,9 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
             <span>Connection Failed</span>
           </div>
           <p>{message}</p>
-          <button onClick={onRetry}>Retry</button>
+          {module?.metadata.available && (
+            <button onClick={onRetry}>Retry</button>
+          )}
         </div>
       ) : (
         <div className="success">
