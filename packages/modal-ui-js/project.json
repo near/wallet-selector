@@ -4,14 +4,16 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/modal-ui-js",
-        "main": "packages/modal-ui-js/src/index.ts",
         "tsConfig": "packages/modal-ui-js/tsconfig.lib.json",
+        "project": "packages/modal-ui-js/package.json",
+        "entryFile": "packages/modal-ui-js/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/modal-ui-js/README.md",
