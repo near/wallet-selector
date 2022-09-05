@@ -2274,13 +2274,13 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@meteorwallet/sdk@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.3.0.tgz#d8f17d780c646caa3b96d08142705160dcaa29b2"
-  integrity sha512-eoMcLItP7pabA7E5tNY265fypQAwcjn/Ev6l/8Ag3hyJ5L8rkS5A+WPCVnWZCaE5HmXZyuiXhp5HTtjlR8u8mg==
+"@meteorwallet/sdk@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.6.0.tgz#006b77410a7874f0c9bfc0d693f199b561f39d19"
+  integrity sha512-oriaQ1gk1hpQx6V6BxsvUthDd0Bpmv3ho5Ap5pm9P0euEosWtFUVF1dTYndJE10qBG8yLW+EOOX1LZ8taXCiRA==
   dependencies:
-    is-mobile "^3.1.1"
-    near-api-js "^0.44.2"
+    nanoid "3.3.4"
+    query-string "^7.1.1"
 
 "@next/env@12.2.3":
   version "12.2.3"
@@ -2371,22 +2371,22 @@
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-14.0.6.tgz#a48185b584a528a59ce82217830673268ceee8c2"
   integrity sha512-mSmLqzRKxQgGiOhvJ8guvRLjXoTL17cVSWlL/Cz+Q3xc1bXa7537ZXBTQTEuZVU2ytdkniKc8l1HqXIx0pFNVQ==
 
-"@nightlylabs/connect-near@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.8.tgz#55ed2cc070ee19e34812796f90e139f4291fd728"
-  integrity sha512-1tOIxRgNHcFdPvxPbyzGWCIFXIVx6Xsq2UDdpvGAaPrsGXTBrc/MraYTygtRRpoTUn295/LdyLGmhHZ4gAI1Uw==
+"@nightlylabs/connect-near@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/connect-near/-/connect-near-0.0.13.tgz#f3742c79ad4bd88919a0b186e45720b13046f5a4"
+  integrity sha512-6xlBJaWqjE1EgVgbgIZv8rxJpxvtdtFy87A9r7l2L+yCYKa/+7ZwrPlThTxy1phGbouS493WjgDs0M/j1/If1g==
   dependencies:
-    "@nightlylabs/qr-code" "1.0.20"
-    isomorphic-localstorage "0.0.4"
+    "@nightlylabs/qr-code" "1.0.21"
+    isomorphic-localstorage "0.0.8"
     isomorphic-ws "^4.0.1"
     near-api-js "^0.45.1"
     uuid "^8.3.2"
     ws "^8.8.0"
 
-"@nightlylabs/qr-code@1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.20.tgz#627d052117475da6859ace51cd101f4cbce4bf5f"
-  integrity sha512-odaOJBXXugZDPD9aId3SaXN0xXCszWafoGGbVId6FnaODxP34yTCrYkkz6alyKr9RDOpUiCg8hhAFpS81ob1Pw==
+"@nightlylabs/qr-code@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@nightlylabs/qr-code/-/qr-code-1.0.21.tgz#c35db8befeac81e4c3afa57688c8c65eb1ada150"
+  integrity sha512-W4gOXG8SDQMYX+MLBUWFSZbiTjApY8CW+z0Lu8MZUqW5IwtyGHjZ2GgkwLo/3A9peIWiXrF/2a93E7cCCouzgw==
   dependencies:
     qrcode-generator "^1.4.3"
 
@@ -9472,10 +9472,10 @@ isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-isomorphic-localstorage@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/isomorphic-localstorage/-/isomorphic-localstorage-0.0.4.tgz#55c82492fcd2bab8536be4030dcd6b35749c0711"
-  integrity sha512-OQcHrlrkyEnj/15ySoNG1L65wbqsp7nqwj/e3kb9rZLKRhAbsxSj4RVWTIU1WeFkn91tZk3BrvUNy96kxYq+DQ==
+isomorphic-localstorage@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/isomorphic-localstorage/-/isomorphic-localstorage-0.0.8.tgz#2479e6e600ef27cce90ed11c14e309c97a605d93"
+  integrity sha512-ejzdUagHWEV/vaxazMt8oIzEIP83SrMsp4gT3fj379pJ6iw2gss0K8rcexTM7vwlopLzA/b9vNwQ7fyf67UuLA==
   dependencies:
     node-localstorage "^2.2.1"
 
@@ -11179,7 +11179,7 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-nanoid@^3.3.3, nanoid@^3.3.4:
+nanoid@3.3.4, nanoid@^3.3.3, nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
@@ -13064,6 +13064,16 @@ query-string@^6.13.5:
   version "6.14.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.14.1.tgz#7ac2dca46da7f309449ba0f86b1fd28255b0c86a"
   integrity sha512-XDxAeVmpfu1/6IjyT/gXHOl+S0vQ9owggJ30hhWKdHAsNPOcasn5o9BW0eejZqL2e4vMjhAxoW3jVHcD6mbcYw==
+  dependencies:
+    decode-uri-component "^0.2.0"
+    filter-obj "^1.1.0"
+    split-on-first "^1.0.0"
+    strict-uri-encode "^2.0.0"
+
+query-string@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-7.1.1.tgz#754620669db978625a90f635f12617c271a088e1"
+  integrity sha512-MplouLRDHBZSG9z7fpuAAcI7aAYjDLhtsiVZsevsfaHWDS2IDdORKbSd1kWUA+V4zyva/HZoSfpwnYMMQDhb0w==
   dependencies:
     decode-uri-component "^0.2.0"
     filter-obj "^1.1.0"

@@ -2,8 +2,16 @@ import { Signer, transactions as nearTransactions, utils } from "near-api-js";
 import {
   AppMetadata,
   AppNear,
+  clearPersistedSessionAccountId,
+  clearPersistedSessionId,
+  clearPersistedSessionPublicKey,
+  getPersistedSessionAccountId,
+  getPersistedSessionId,
+  getPersistedSessionPublicKey,
   NETWORK,
   NightlyConnectModal,
+  setPersistedSessionAccountId,
+  setPersistedSessionPublicKey,
 } from "@nightlylabs/connect-near";
 import {
   BridgeWallet,
@@ -92,6 +100,9 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   const signOut = async () => {
+    clearPersistedSessionId();
+    clearPersistedSessionPublicKey();
+    clearPersistedSessionAccountId();
     _state.client?.ws.close();
   };
 
@@ -123,10 +134,25 @@ const NightlyConnect: WalletBehaviourFactory<
           return resolve(existingAccounts);
         }
 
+        let persistedId = getPersistedSessionId();
+        const persistedPubkey = getPersistedSessionPublicKey();
+        const persistedAccountId = getPersistedSessionAccountId();
+
+        if (
+          params.appMetadata.persistent !== false &&
+          persistedId !== null &&
+          (persistedPubkey === null || persistedAccountId === null)
+        ) {
+          clearPersistedSessionId();
+          persistedId = null;
+        }
+
         try {
           AppNear.build({
             ...params,
             onUserConnect: (account) => {
+              setPersistedSessionPublicKey(account.publicKey.toString());
+              setPersistedSessionAccountId(account.accountId.toString());
               _state.accounts.push(account);
               _state.modal.onClose = undefined;
               _state.modal.closeModal();
@@ -139,10 +165,25 @@ const NightlyConnect: WalletBehaviourFactory<
               emitter.emit("signedOut", null);
             };
             _state.client = client;
-            _state.modal.openModal(client.sessionId, NETWORK.NEAR);
-            _state.modal.onClose = () => {
-              reject(new Error("User cancelled pairing"));
-            };
+
+            if (
+              params.appMetadata.persistent !== false &&
+              persistedId === client.sessionId &&
+              persistedPubkey !== null &&
+              persistedAccountId !== null
+            ) {
+              _state.accounts.push({
+                accountId: persistedAccountId,
+                publicKey: utils.PublicKey.from(persistedPubkey),
+              });
+              _state.modal.onClose = undefined;
+              resolve(getAccounts());
+            } else {
+              _state.modal.openModal(client.sessionId, NETWORK.NEAR);
+              _state.modal.onClose = () => {
+                reject(new Error("User cancelled pairing"));
+              };
+            }
           });
         } catch (err) {
           signOut();

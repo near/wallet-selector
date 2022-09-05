@@ -28,7 +28,7 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 
 const nightlyConnect = setupNightlyConnect({
-  url: "wss://ncproxy.nightly.app/app",
+  url: "wss://relay.nightly.app/app",
   appMetadata: {
     additionalInfo: "",
     application: "NEAR Wallet Selector",
