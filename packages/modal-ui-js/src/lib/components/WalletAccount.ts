@@ -1,14 +1,8 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
-import { modalState } from "../modal";
 
 export async function renderWalletAccount(
   module: ModuleState<Wallet> | null = null
 ) {
-  let wallet: Wallet | null = null;
-  if (module) {
-    wallet = await module.wallet();
-  }
-
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
     <div class="nws-modal-header">
@@ -25,25 +19,10 @@ export async function renderWalletAccount(
       </div>
       <div class="connecting-wrapper">
         <div class="content">
-          <div class="icon"><img src="${wallet?.metadata.iconUrl}" alt="${wallet?.metadata.name}"></div>
-          <h3 class="connecting-name">${wallet?.metadata.name}</h3>
+          <div class="icon"><img src="${module?.metadata.iconUrl}" alt="${module?.metadata.name}"></div>
+          <h3 class="connecting-name">${module?.metadata.name}</h3>
         </div>
       </div>
     </div>
   `;
-
-  document
-    .getElementById("disconnect-button")
-    ?.addEventListener("click", () => {
-      if (!modalState) {
-        return;
-      }
-
-      if (!wallet) {
-        return;
-      }
-
-      wallet.signOut();
-      modalState.container.children[0].classList.remove("open");
-    });
 }

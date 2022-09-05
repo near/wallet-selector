@@ -5,8 +5,6 @@ export async function renderWalletConnectionFailed(
   module: ModuleState<Wallet>,
   err: Error
 ) {
-  const wallet = await module.wallet();
-
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
       <div class="nws-modal-header">
@@ -23,10 +21,10 @@ export async function renderWalletConnectionFailed(
       </div>
       <div class="alert-message connecting-wrapper">
         <div class="content">
-          <div class="icon"><img src="${wallet.metadata.iconUrl}" alt="${
-    wallet.metadata.name
+          <div class="icon"><img src="${module.metadata.iconUrl}" alt="${
+    module.metadata.name
   }"></div>
-          <h3 class="connecting-name">${wallet.metadata.name}</h3>
+          <h3 class="connecting-name">${module.metadata.name}</h3>
           <div class="connecting-details">
             <div class="connection">
               <div class="error-wrapper">
@@ -37,9 +35,11 @@ export async function renderWalletConnectionFailed(
                     <path d="M6.75 6.75L17.25 17.25" stroke="#141414" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round"></path>
                   </svg>Connection Failed</div>
-                  <p>${
-                    err && err.message ? err.message : ""
-                  }</p><button id="retry-button">Retry</button>
+                  <p>${err && err.message ? err.message : ""}</p>${
+    !module?.metadata.deprecated && module?.metadata.available
+      ? "<button id='retry-button'>Retry</button>"
+      : ""
+  }
               </div>
             </div>
           </div>
