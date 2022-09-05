@@ -57,7 +57,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
                 return handleWalletClick(module);
               }}
             >
-              <div className="icon" style={{}}>
+              <div className="icon">
                 <img src={iconUrl} alt={name} />
                 {selected && <div className="active-circle"></div>}
               </div>

@@ -11,6 +11,7 @@ import { WalletConnecting } from "./WalletConnecting";
 import { WalletNotInstalled } from "./WalletNotInstalled";
 
 import { WalletHome } from "./WalletHome";
+import { WalletConnected } from "./WalletConnected";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -46,6 +47,18 @@ export const Modal: React.FC<ModalProps> = ({
     setRoute({
       name: "WalletHome",
     });
+
+    const { selectedWalletId, modules } = selector.store.getState();
+    if (selectedWalletId) {
+      const module = modules.find((m) => m.id === selectedWalletId);
+      setSelectedWallet(module);
+      setRoute({
+        name: "WalletConnected",
+        params: {
+          module,
+        },
+      });
+    }
   }, [visible]);
 
   useEffect(() => {
@@ -88,6 +101,12 @@ export const Modal: React.FC<ModalProps> = ({
 
     const { selectedWalletId } = selector.store.getState();
     if (selectedWalletId === module.id) {
+      setRoute({
+        name: "WalletConnected",
+        params: {
+          module,
+        },
+      });
       return;
     }
 
@@ -257,6 +276,12 @@ export const Modal: React.FC<ModalProps> = ({
             {route.name === "WalletHome" && (
               <WalletHome
                 selector={selector}
+                onCloseModal={handleDismissClick}
+              />
+            )}
+            {route.name === "WalletConnected" && (
+              <WalletConnected
+                module={selectedWallet!}
                 onCloseModal={handleDismissClick}
               />
             )}

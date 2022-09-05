@@ -25,6 +25,10 @@ export type WalletConnectingModalRouteParams = {
   wallet: Wallet;
 };
 
+export type WalletConnectedParams = {
+  module: ModuleState | undefined;
+};
+
 export type AlertMessageModalRoute = {
   name: "AlertMessage";
   params?: AlertMessageModalRouteParams;
@@ -59,6 +63,11 @@ export type WalletHome = {
   name: "WalletHome";
 };
 
+export type WalletConnected = {
+  name: "WalletConnected";
+  params?: WalletConnectedParams;
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
@@ -66,4 +75,5 @@ export type ModalRoute =
   | WalletNotInstalledModalRoute
   | WalletNetworkChangedModalRoute
   | WalletConnectingModalRoute
-  | WalletHome;
+  | WalletHome
+  | WalletConnected;
