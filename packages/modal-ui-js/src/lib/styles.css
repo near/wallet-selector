@@ -273,17 +273,20 @@
   position: relative;
 }
 
-.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet.connected-wallet .icon::before {
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.connected-wallet .icon::before {
   content: '';
   display: block;
   width: 10px;
   height: 10px;
   background-color: var(--connected-green);
-  border: 3px solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
   border-radius: 50%;
   position: absolute;
   top: -8px;
   right: -8px;
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet.connected-wallet .icon::before {
+  border: 3px solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
 
