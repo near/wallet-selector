@@ -26,6 +26,7 @@
   --spinner-color: #676767;
   --bottom-section: #ececec;
   --mobile-text: #3e3e3e;
+  --connected-green: #47E586;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -54,6 +55,7 @@
   --spinner-color: #FFFFFF;
   --bottom-section: #131313;
   --mobile-text: #c1c1c1;
+  --connected-green: #47E586;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -83,6 +85,7 @@
     --spinner-color: #FFFFFF;
     --bottom-section: #131313;
     --mobile-text: #c1c1c1;
+    --connected-green: #47E586;
   }
 }
 

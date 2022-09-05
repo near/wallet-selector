@@ -32,9 +32,11 @@ export function updateModalState(newModalState: ModalState) {
   modalState = newModalState;
 }
 
-const el = document.createElement("div");
-el.id = MODAL_ELEMENT_ID;
-document.body.appendChild(el);
+if (typeof window !== "undefined") {
+  const el = document.createElement("div");
+  el.id = MODAL_ELEMENT_ID;
+  document.body.appendChild(el);
+}
 
 export const setupModal = (
   selector: WalletSelector,

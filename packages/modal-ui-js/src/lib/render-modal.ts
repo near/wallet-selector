@@ -78,7 +78,7 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
     if (module.metadata.deprecated) {
       return renderWalletConnectionFailed(
         module,
-        new Error("Wallet is depredacted")
+        new Error("Wallet is deprecated")
       );
     }
 
