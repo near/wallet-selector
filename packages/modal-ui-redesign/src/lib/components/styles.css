@@ -350,7 +350,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side {
-    width: 80%;
+    width: 100%;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side h3 {
@@ -370,6 +370,8 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
+    word-break: break-word;
+    width: 80%;
 }
 
 /**
@@ -977,6 +979,27 @@
     width: 100%;
     height: auto;
     max-width: 48px;
+}
+
+.single-wallet-get .title {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    align-items: center;
+    color: #FFFFFF;
+}
+
+.single-wallet-get .description {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+    align-items: center;
+    color: #C1C1C1;
+
 }
 
 

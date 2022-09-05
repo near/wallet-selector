@@ -126,13 +126,13 @@ export const Modal: React.FC<ModalProps> = ({
         });
         return;
       }
+      setactiveWalletID(module.id);
 
       await wallet.signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
       });
 
-      setactiveWalletID(module.id);
       handleDismissClick();
     } catch (err) {
       const { name } = module.metadata;
