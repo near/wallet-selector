@@ -145,7 +145,7 @@ export const Modal: React.FC<ModalProps> = ({
         setRoute({
           name: "DerivationPath",
           params: {
-            walletId: selector.store.getState().selectedWalletId || "ledger",
+            walletId: wallet.id || "ledger",
           },
         });
         return;

@@ -64,22 +64,23 @@ These are the available css variables:
 --wallet-selector-backdrop-bg
 --wallet-selector-heading-color
 --wallet-selector-text-color
+--wallet-selector-sidebar-border-color
 --wallet-selector-selected-wallet-bg
 --wallet-selector-selected-wallet-bg-hover
---deprecated-wallet-bg
 --wallet-selector-wallet-option-border-color
+--wallet-selector-wallet-option-bg-hover
 --wallet-selector-content-bg
---wallet-selector-input-border-color-focus
---wallet-selector-box-shadow-color
---wallet-selector-dismiss-button-bg-hover
---wallet-selector-dismiss-button-border-color-hover
---wallet-selector-confirm-button-color
+--wallet-selector-change-path-bg
+--wallet-selector-home-button-bg
 --wallet-selector-confirm-button-bg
---wallet-selector-confirm-button-bg-hover
---wallet-selector-confirm-button-border-color
+--confirm-button-bg-hover
 --wallet-selector-error
---wallet-selector-close-button-color
+--wallet-selector-close-button-bg-color
+--wallet-selector-close-button-fill-icon-colo
 --wallet-selector-spinner-color
+--wallet-selector-bottom-section
+--wallet-selector-mobile-text
+--wallet-selector-connected-green
 ```
 
 Customizing css is done simply by updating the value of a variable in the root of your css file.
