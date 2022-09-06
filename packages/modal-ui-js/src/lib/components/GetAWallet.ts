@@ -64,13 +64,9 @@ export async function renderGetAWallet() {
     </div>
   `;
 
-  const filteredModules = modalState.modules.filter((module) => {
-    return (
-      module.id === "my-near-wallet" ||
-      module.id === "sender" ||
-      module.id === "nightly"
-    );
-  });
+  const filteredModules = modalState.modules.splice(0, 3);
+  // eslint-disable-next-line no-console
+  console.log(filteredModules);
 
   for (let i = 0; i < filteredModules.length; i++) {
     document.getElementById("wallets")?.insertAdjacentHTML(
