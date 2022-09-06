@@ -25,6 +25,25 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
             <img src={module?.metadata.iconUrl} alt={module?.metadata.name} />
           </div>
           <h3 className="connecting-name">{module?.metadata.name}</h3>
+          <div className="wallet-connected-success">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="12" fill="#51BD7C" />
+              <path
+                d="M7.75 12.75L10 15.25L16.25 8.75"
+                stroke="#232323"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>Connection Successful</span>
+          </div>
         </div>
       </div>
     </Fragment>

@@ -46,7 +46,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             <li
               className={`single-wallet ${
                 activeWalletId === module.id ? "selected-wallet" : ""
-              } ${deprecated ? "deprecated-wallet" : ""} sidebar`}
+              } ${selected ? "connected-wallet" : ""} ${
+                deprecated ? "deprecated-wallet" : ""
+              } sidebar`}
               key={module.id}
               onClick={() => {
                 if (module.id === modules[index].id) {
@@ -57,7 +59,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             >
               <div className="icon">
                 <img src={iconUrl} alt={name} />
-                {selected && <div className="active-circle"></div>}
               </div>
               <div className="content">
                 <div className="title">{name}</div>
