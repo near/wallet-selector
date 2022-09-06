@@ -49,7 +49,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ metadata, options, logger, store, params }) => {
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -159,7 +159,15 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("MeteorWallet:verifyOwner", { message });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const response = await _state.wallet.verifyOwner({
+        message,
+      });
+
+      if (response.success) {
+        return response.payload;
+      } else {
+        throw new Error(`Couldn't verify owner: ${response.message}`);
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -214,7 +222,8 @@ export function setupMeteorWallet({
       metadata: {
         available: true,
         name: "Meteor Wallet",
-        description: null,
+        description:
+          "Securely store and stake your NEAR tokens and compatible assets with Meteor.",
         iconUrl,
         deprecated,
         downloadUrl: "https://wallet.meteorwallet.app",

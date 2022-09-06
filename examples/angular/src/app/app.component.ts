@@ -9,8 +9,10 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupModal } from "@near-wallet-selector/modal-ui";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+// import { setupModal } from "@near-wallet-selector/modal-ui";
+// import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { setupModal } from "@near-wallet-selector/modal-ui-js";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -59,7 +61,7 @@ export class AppComponent implements OnInit {
           },
         }),
         setupNightlyConnect({
-          url: "wss://ncproxy.nightly.app/app",
+          url: "wss://relay.nightly.app/app",
           appMetadata: {
             additionalInfo: "",
             application: "NEAR Wallet Selector",

@@ -294,7 +294,8 @@ export function setupLedger({
       type: "hardware",
       metadata: {
         name: "Ledger",
-        description: null,
+        description:
+          "Protect crypto assets with the most popular hardware wallet.",
         iconUrl,
         deprecated,
         available: supported,

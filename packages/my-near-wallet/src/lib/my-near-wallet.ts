@@ -237,7 +237,8 @@ export function setupMyNearWallet({
       type: "browser",
       metadata: {
         name: "MyNearWallet",
-        description: null,
+        description:
+          "NEAR wallet to store, buy, send and stake assets for DeFi.",
         iconUrl,
         deprecated,
         available: true,

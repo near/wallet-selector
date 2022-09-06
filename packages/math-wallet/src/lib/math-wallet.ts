@@ -197,7 +197,7 @@ export const setupMathWallet = ({
       type: "injected",
       metadata: {
         name: "Math Wallet",
-        description: null,
+        description: "World's First Insured Crypto Wallet.",
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",

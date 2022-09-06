@@ -1,7 +1,7 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import { SessionTypes } from "@walletconnect/types/dist/cjs/sign-client/session";
+import { SessionTypes } from "@walletconnect/types";
 
 class WalletConnectClient {
   private client: Client;
@@ -21,7 +21,7 @@ class WalletConnectClient {
     this.client.on(event, callback);
 
     return {
-      remove: () => this.client.off(event, callback),
+      remove: () => this.client.removeListener(event, callback),
     };
   }
 

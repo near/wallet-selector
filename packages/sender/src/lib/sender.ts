@@ -304,7 +304,7 @@ export function setupSender({
       type: "injected",
       metadata: {
         name: "Sender",
-        description: null,
+        description: "Browser extension wallet built on NEAR.",
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
