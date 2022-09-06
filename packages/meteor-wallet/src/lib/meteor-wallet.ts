@@ -222,7 +222,8 @@ export function setupMeteorWallet({
       metadata: {
         available: true,
         name: "Meteor Wallet",
-        description: null,
+        description:
+          "Securely store and stake your NEAR tokens and compatible assets with Meteor.",
         iconUrl,
         deprecated,
         downloadUrl: "https://wallet.meteorwallet.app",

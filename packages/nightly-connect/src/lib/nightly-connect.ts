@@ -266,7 +266,7 @@ export function setupNightlyConnect({
       type: "bridge",
       metadata: {
         name: "Nightly Connect",
-        description: null,
+        description: "Upcoming cutting-edge crypto bridge wallet.",
         iconUrl: iconUrl,
         deprecated,
         available: true,

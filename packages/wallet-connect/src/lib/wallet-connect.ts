@@ -595,7 +595,7 @@ export function setupWalletConnect({
       type: "bridge",
       metadata: {
         name: "WalletConnect",
-        description: null,
+        description: "Bridge wallet for NEAR.",
         iconUrl,
         deprecated,
         available: true,
