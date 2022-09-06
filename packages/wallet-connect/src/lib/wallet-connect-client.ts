@@ -21,7 +21,7 @@ class WalletConnectClient {
     this.client.on(event, callback);
 
     return {
-      remove: () => this.client.off(event, callback),
+      remove: () => this.client.removeListener(event, callback),
     };
   }
 
