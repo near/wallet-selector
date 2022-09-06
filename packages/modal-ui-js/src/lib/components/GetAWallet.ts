@@ -64,7 +64,7 @@ export async function renderGetAWallet() {
     </div>
   `;
 
-  const filteredModules = modalState.modules.splice(0, 3);
+  const filteredModules = modalState.modules.slice(0, 3);
   // eslint-disable-next-line no-console
   console.log(filteredModules);
 
