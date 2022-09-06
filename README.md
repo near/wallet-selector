@@ -68,7 +68,7 @@ npm install \
   @near-wallet-selector/default-wallets
 ```
 
-Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
 ```bash
 # Using Yarn
