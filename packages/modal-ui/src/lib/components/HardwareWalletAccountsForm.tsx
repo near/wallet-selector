@@ -1,5 +1,8 @@
 import React from "react";
-import type { HardwareWalletAccountState } from "./DerivationPath";
+import type {
+  HardwareRoutes,
+  HardwareWalletAccountState,
+} from "./DerivationPath";
 
 interface FormProps {
   accounts: Array<HardwareWalletAccountState>;
@@ -8,12 +11,14 @@ interface FormProps {
     accounts: Array<HardwareWalletAccountState>,
     e: React.FormEvent<HTMLFormElement>
   ) => void;
+  onChangeRoute: (route: HardwareRoutes) => void;
 }
 
 const HardwareWalletAccountsForm: React.FC<FormProps> = ({
   accounts,
   onSelectedChanged,
   onSubmit,
+  onChangeRoute,
 }) => {
   return (
     <div className="choose-ledger-account-form-wrapper">
@@ -21,6 +26,15 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
         We found {accounts.length} accounts on your device. Select the
         account(s) you wish to connect.
       </p>
+      <div className="button-wrapper">
+        <button
+          onClick={() => {
+            onChangeRoute("SpecifyHDPath");
+          }}
+        >
+          HD.../0
+        </button>
+      </div>
       <form
         className="form"
         onSubmit={(e) => {
@@ -30,7 +44,7 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
         <div>
           <div className="nws-form-control">
             {accounts.map((account, index) => (
-              <div key={index}>
+              <div key={index} className="account">
                 <input
                   onChange={(e) => {
                     onSelectedChanged(index, e.target.checked);
@@ -49,11 +63,11 @@ const HardwareWalletAccountsForm: React.FC<FormProps> = ({
 
           <div className="action-buttons">
             <button
-              className="right-button"
+              className="middleButton"
               type="submit"
               disabled={!accounts.some((x) => x.selected)}
             >
-              Continue
+              Connect
             </button>
           </div>
         </div>
