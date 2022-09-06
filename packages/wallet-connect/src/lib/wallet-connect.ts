@@ -102,7 +102,16 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, provider, emitter, logger, metadata }) => {
+> = async ({
+  id,
+  options,
+  store,
+  params,
+  provider,
+  emitter,
+  logger,
+  metadata,
+}) => {
   const _state = await setupWalletConnectState(id, params);
 
   const getChainId = () => {
@@ -142,6 +151,7 @@ const WalletConnect: WalletBehaviourFactory<
       return accessKey;
     }
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { receiver_id, method_names } = accessKey.permission.FunctionCall;
 
     if (transaction.receiverId !== receiver_id) {
