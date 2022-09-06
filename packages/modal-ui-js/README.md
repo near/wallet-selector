@@ -87,7 +87,7 @@ Customizing css is done simply by updating the value of a variable in the root o
 
 ```css
 :root {
-  --wallet-selector-backdrop-bg: #26262630;
+  --backdrop-bg: #26262630;
 }
 ```
 
