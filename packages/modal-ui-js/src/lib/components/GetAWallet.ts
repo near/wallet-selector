@@ -65,8 +65,6 @@ export async function renderGetAWallet() {
   `;
 
   const filteredModules = modalState.modules.slice(0, 3);
-  // eslint-disable-next-line no-console
-  console.log(filteredModules);
 
   for (let i = 0; i < filteredModules.length; i++) {
     document.getElementById("wallets")?.insertAdjacentHTML(
