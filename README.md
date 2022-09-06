@@ -16,7 +16,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 [React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
-![Preview](./images/preview-img.PNG)
+![Preview](./images/preview-img.png)
 
 ## Installation and Usage
 
@@ -68,7 +68,7 @@ npm install \
   @near-wallet-selector/default-wallets
 ```
 
-Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
 ```bash
 # Using Yarn
