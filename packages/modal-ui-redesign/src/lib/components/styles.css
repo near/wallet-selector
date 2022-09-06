@@ -3,7 +3,7 @@
 #near-wallet-selector-modal {
     --backdrop-bg: #26262630;
     --heading-color: #222222;
-    --text-color: #676767;
+    --text-color: #222222;
     --sidebar-border-color: #EDEDED;
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: transparent;
@@ -12,8 +12,14 @@
     --content-bg: #FFFFFF;
     --change-path-bg: #EDEDED;
     --home-button-bg: #EDEDED;
+    --input-border-color-focus: #5F8AFA;
+    --box-shadow-color: #26262630;
+    --dismiss-button-bg-hover: #A7A7A730;
+    --dismiss-button-border-color-hover: inherit;
+    --confirm-button-color: #FFFFFF;
     --confirm-button-bg: #5F8AFA;
     --confirm-button-bg-hover: #5AA6FF;
+    --confirm-button-border-color: #5F8AFA;
     --error: #DB5555;
     --close-button-bg-color: #EDEDED;
     --close-button-fill-icon-color: #9F9F9F;
@@ -26,7 +32,7 @@
 #near-wallet-selector-modal .dark-theme {
     --backdrop-bg: #26262630;
     --heading-color: #FFFFFF;
-    --text-color: #C1C1C1;
+    --text-color: #FFFFFF;
     --sidebar-border-color: #313030;
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: #262626CC;
@@ -35,8 +41,14 @@
     --content-bg: #232323;
     --change-path-bg: #161616;
     --home-button-bg: #313030;
+    --input-border-color-focus: #5F8AFA;
+    --box-shadow-color: #26262630;
+    --dismiss-button-bg-hover: #262626CC;
+    --dismiss-button-border-color-hover: #262626;
+    --confirm-button-color: #FFFFFF;
     --confirm-button-bg: #5F8AFA;
     --confirm-button-bg-hover: #5AA6FF;
+    --confirm-button-border-color: #5F8AFA;
     --error: #DB5555;
     --close-button-bg-color: #313030;
     --close-button-fill-icon-color: #C1C1C1;
@@ -50,7 +62,7 @@
     #near-wallet-selector-modal {
         --backdrop-bg: #26262630;
         --heading-color: #FFFFFF;
-        --text-color: #C1C1C1;
+        --text-color: #FFFFFF;
         --sidebar-border-color: #313030;
         --selected-wallet-bg: #4F7CD1;
         --selected-wallet-bg-hover: #262626CC;
@@ -59,8 +71,14 @@
         --content-bg: #232323;
         --change-path-bg: #161616;
         --home-button-bg: #313030;
+        --input-border-color-focus: #5F8AFA;
+        --box-shadow-color: #26262630;
+        --dismiss-button-bg-hover: #262626CC;
+        --dismiss-button-border-color-hover: #262626;
+        --confirm-button-color: #FFFFFF;
         --confirm-button-bg: #5F8AFA;
         --confirm-button-bg-hover: #5AA6FF;
+        --confirm-button-border-color: #5F8AFA;
         --error: #DB5555;
         --close-button-bg-color: #313030;
         --close-button-fill-icon-color: #C1C1C1;
@@ -193,6 +211,7 @@
     width: 100%;
     height: auto;
     max-width: 48px;
+    z-index: 20;
 }
 
 .single-wallet .content {
@@ -213,6 +232,7 @@
     font-style: normal;
     font-weight: 700;
     font-size: 14px;
+    color: #C1C1C1;
     line-height: 150%;
 }
 
@@ -237,10 +257,6 @@
     background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
-.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet .content .title {
-  color: #FFFFFF;
-}
-
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.deprecated-wallet {
     opacity: 0.4;
 }
@@ -256,13 +272,14 @@
     padding: 5px;
     border-radius: 5px;
     position: relative;
+    z-index: 1;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .icon .active-circle {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--wallet-selector-connected-green, var(--connected-green));
+    background: #47E586;
     position: absolute;
     top: -4px;
     left: 40px;
@@ -273,6 +290,10 @@
     width: auto;
 }
 
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet .content .title {
+    color: white;
+}
+
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .title {
     font-style: normal;
     font-weight: 500;
@@ -280,7 +301,6 @@
     line-height: 32px;
     /* identical to box height, or 171% */
     align-items: center;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .description {
@@ -303,11 +323,16 @@
 .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
     margin-top: 91px;
-    padding: 0 28px;
 }
 
-.nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
-  padding: 0;
+.nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper {
+    margin: 91px auto 16px auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    row-gap: 56px;
+    padding: 0 28px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what {
@@ -321,9 +346,6 @@
     flex-wrap: nowrap;
 }
 
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what + .wallet-what {
-    margin-top: 50px;
-}
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side {
     width: 15%;
@@ -349,7 +371,7 @@
     font-weight: 700;
     font-size: 16px;
     line-height: 24px;
-    color: var(--wallet-selector-text-color, var(--heading-color));
+    color: var(--wallet-selector-text-color, var(--text-color));
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side p {
@@ -371,7 +393,6 @@
     text-align: center;
     margin: 4px auto;
     font-size: 18px;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body.get-wallet-body {
@@ -382,15 +403,16 @@
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
-    background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    background-color: #4F7CD1;
     border-radius: 4px;
     color: #FFFFFF;
     font-weight: 700;
     font-size: 14px;
     line-height: 24px;
-    border-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    border-color: #4F7CD1;
     display: block;
     margin: 75px auto 12px auto;
+    padding: 8px 24px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
@@ -465,6 +487,21 @@
     align-items: center;
 }
 
+.nws-modal-wrapper .nws-modal .action-buttons .left-button:hover {
+    background-color: var(--wallet-selector-dismiss-button-bg-hover, var(--dismiss-button-bg-hover));
+    border-color: var(--wallet-selector-dismiss-button-border-color-hover, var(--dismiss-button-border-color-hover));
+}
+
+.nws-modal-wrapper .nws-modal .action-buttons .right-button {
+    color: var(--wallet-selector-confirm-button-color, var(--confirm-button-color));
+    background-color: var(--wallet-selector-confirm-button-bg, var(--confirm-button-bg));
+    border: 1px solid var(--wallet-selector-confirm-button-border-color, var(--confirm-button-border-color));
+}
+
+.nws-modal-wrapper .nws-modal .action-buttons .right-button:hover {
+    background-color: var(--wallet-selector-confirm-button-bg-hover, var(--confirm-button-bg-hover));
+}
+
 /**
  * Modal Switch Network Message Section/Wrapper
  */
@@ -491,11 +528,12 @@
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description {
     font-size: 14px;
+    color: #C1C1C1;
     text-align: center;
 }
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description .specify-path {
-    color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    color: var(--selected-wallet-bg);
     cursor: pointer;
 }
 
@@ -542,6 +580,7 @@
     font-size: 14px;
     margin-top: 24px;
     text-align: center;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .specify-path-wrapper .what-link {
@@ -574,8 +613,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .enter-custom-account p {
-    text-align: center;
-    font-size: 14px;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper {
@@ -586,7 +624,6 @@
 
 .nws-modal-wrapper .nws-modal .enter-custom-account .input-wrapper input {
     text-align: center;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
     border: 1px solid var(--confirm-button-bg-hover);
     padding: 6px 8px;
     border-radius: 50px;
@@ -597,6 +634,7 @@
  */
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper p {
+    color: #C1C1C1;
     font-size: 14px;
     text-align: center;
     margin-top: 20px;
@@ -631,7 +669,6 @@
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account {
     border-bottom: 1px solid var(--sidebar-border-color);
     padding: 16px 0;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account input[type=checkbox] {
@@ -648,6 +685,21 @@
     color: inherit;
 }
 
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    text-align: right;
+    color: inherit;
+}
+
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control select option {
+    background-color: var(--content-bg);
+}
+
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .action-buttons {
     justify-content: flex-end;
 }
@@ -655,6 +707,7 @@
 .nws-modal-wrapper .nws-modal .overview-wrapper p {
     font-size: 14px;
     text-align: center;
+    color: #C1C1C1;
 }
 
 .nws-modal-wrapper .nws-modal .overview-wrapper .accounts {
@@ -664,7 +717,6 @@
 .nws-modal-wrapper .nws-modal .overview-wrapper .account {
     border-bottom: 1px solid var(--sidebar-border-color);
     padding: 16px 0;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 /*
@@ -829,7 +881,6 @@
     display: flex;
     align-items: center;
     text-align: center;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
 .connecting-wrapper .content .connecting-details {
@@ -841,9 +892,7 @@
     align-items: center;
     margin-top: 40px;
 }
-.connecting-wrapper .content .connecting-details span {
-  color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
-}
+
 .connecting-wrapper .content .connecting-details .spinner {
     width: 25px;
     height: auto;
@@ -933,26 +982,20 @@
     width: 100%;
     column-gap: 24px;
     padding: 12px;
-    max-width: 450px;
     margin: auto;
-    margin-top: 20px;
 }
 
 .single-wallet-get .icon {
-  min-width: 48px;
-  max-height: 48px;
-  width: 48px;
-  height: 48px;
-  background-color: #FFF;
-  padding: 5px;
-  border-radius: 4px;
-  position: relative;
+    width: auto;
+    height: 100%;
 }
 
 .single-wallet-get .icon img {
-    width: 100%;
-    height: auto;
     max-width: 48px;
+    vertical-align: middle;
+    padding: 8px 8px;
+    width: auto;
+    height: auto;
 }
 
 .single-wallet-get .title {
@@ -962,7 +1005,7 @@
     font-size: 14px;
     line-height: 24px;
     align-items: center;
-    color: var(--wallet-selector-heading-color, var(--heading-color));
+    color: #FFFFFF;
 }
 
 .single-wallet-get .description {
@@ -972,6 +1015,8 @@
     font-size: 14px;
     line-height: 150%;
     align-items: center;
+    color: #C1C1C1;
+
 }
 
 
@@ -981,22 +1026,22 @@
 }
 
 .connected-flag {
-  color: var(--connected-green);
-  border: 1px solid var(--connected-green);
-  border-radius: 50px;
-  padding: 3px 10px;
-  display: flex;
-  align-items: center;
+    color: var(--connected-green);
+    border: 1px solid var(--connected-green);
+    border-radius: 50px;
+    padding: 3px 10px;
+    display: flex;
+    align-items: center;
 }
 
 .connected-flag::before {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--connected-green);
-  margin-right: 5px;
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--connected-green);
+    margin-right: 5px;
 }
 
 
@@ -1177,3 +1222,6 @@
         border-radius: 10px;
     }
 }
+
+
+/*# sourceMappingURL=styles.css.map */
