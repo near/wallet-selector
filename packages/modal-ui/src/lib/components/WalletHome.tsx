@@ -25,13 +25,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      const filteredModules = state.modules.filter((module) => {
-        return (
-          module.id === "my-near-wallet" ||
-          module.id === "sender" ||
-          module.id === "nightly"
-        );
-      });
+      const filteredModules = state.modules.slice(0, 3);
 
       setModules(filteredModules);
     });

@@ -339,7 +339,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             <p className="path-description">
               Enter your preferred HD path, then scan for any active accounts.
             </p>
-            <p className="what-link">What's this?</p>
             <div className="action-buttons">
               <button className="middleButton" onClick={handleValidateAccount}>
                 Scan
