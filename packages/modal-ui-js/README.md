@@ -61,25 +61,26 @@ import "@near-wallet-selector/modal-ui-js/styles.css";
 These are the available css variables:
 
 ```css
---wallet-selector-backdrop-bg
---wallet-selector-heading-color
---wallet-selector-text-color
---wallet-selector-selected-wallet-bg
---wallet-selector-selected-wallet-bg-hover
---deprecated-wallet-bg
---wallet-selector-wallet-option-border-color
---wallet-selector-content-bg
---wallet-selector-input-border-color-focus
---wallet-selector-box-shadow-color
---wallet-selector-dismiss-button-bg-hover
---wallet-selector-dismiss-button-border-color-hover
---wallet-selector-confirm-button-color
---wallet-selector-confirm-button-bg
---wallet-selector-confirm-button-bg-hover
---wallet-selector-confirm-button-border-color
---wallet-selector-error
---wallet-selector-close-button-color
---wallet-selector-spinner-color
+--backdrop-bg
+--heading-color
+--text-color
+--sidebar-border-color
+--selected-wallet-bg
+--selected-wallet-bg-hover
+--wallet-option-border-color
+--wallet-option-bg-hover
+--content-bg
+--change-path-bg
+--home-button-bg
+--confirm-button-bg
+--confirm-button-bg-hover
+--error
+--close-button-bg-color
+--close-button-fill-icon-colo
+--spinner-color
+--bottom-section
+--mobile-text
+--connected-green
 ```
 
 Customizing css is done simply by updating the value of a variable in the root of your css file.
