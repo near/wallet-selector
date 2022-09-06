@@ -120,8 +120,17 @@
     font-size: 16px;
     line-height: 1.6;
     overflow: hidden;
-    box-sizing: content-box;
     display: inline-flex;
+}
+
+.nws-modal-wrapper .nws-modal * {
+  box-sizing: border-box;
+}
+
+.nws-modal-wrapper .nws-modal button {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: none;
 }
 
 /**
@@ -394,6 +403,7 @@
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
     background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    font: inherit;
     border-radius: 4px;
     color: #FFFFFF;
     font-weight: 700;
@@ -402,6 +412,7 @@
     border-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
     display: block;
     margin: 75px auto 12px auto;
+    border: 0.1em solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
@@ -440,6 +451,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .back-button {
+    background: transparent;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -620,9 +632,11 @@
 
 .nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .button-wrapper button {
     color: var(--selected-wallet-bg);
+    font-weight: 600;
+    background-color: transparent;
     border-radius: 20px;
     font-size: 14px;
-    border-color: var(--selected-wallet-bg);
+    border: 1px solid var(--selected-wallet-bg);
     width: 78px;
     padding: 6px 8px;
 }
@@ -920,6 +934,10 @@
     text-align: center;
 }
 
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error-wrapper .error svg {
+  color: var(--wallet-selector-content-bg,var(--content-bg));
+}
+
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .success {
     color: #4FD98F;
 }
@@ -936,6 +954,10 @@
 .connecting-wrapper .wallet-connected-success {
   display: flex;
   align-items: center;
+}
+
+.connecting-wrapper .wallet-connected-success svg{
+  color: var(--content-bg);
 }
 
 .connecting-wrapper .wallet-connected-success span {

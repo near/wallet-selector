@@ -36,7 +36,7 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
               <rect width="24" height="24" rx="12" fill="#51BD7C" />
               <path
                 d="M7.75 12.75L10 15.25L16.25 8.75"
-                stroke="#232323"
+                stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
