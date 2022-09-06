@@ -55,7 +55,6 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
             </div>
           </div>
           <p class="path-description">Enter your preferred HD path, then scan for any active accounts.</p>
-          <p class="what-link">What's this?</p>
           <div class="action-buttons"><button class="middleButton" id="scan-button">Scan</button></div>
         </div>
       </div>
