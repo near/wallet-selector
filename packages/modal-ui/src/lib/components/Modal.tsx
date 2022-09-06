@@ -92,12 +92,12 @@ export const Modal: React.FC<ModalProps> = ({
       }`}
     >
       <div className="modal-overlay" onClick={handleDismissClick} />
-      <div className="modal">
-        <div className="modal-header">
+      <div className="nws-modal">
+        <div className="nws-modal-header">
           <h2>Connect Wallet</h2>
           <CloseButton onClick={handleDismissClick} />
         </div>
-        <div className="modal-body">
+        <div className="nws-modal-body">
           {route.name === "AlertMessage" && alertMessage && (
             <AlertMessage
               message={alertMessage}

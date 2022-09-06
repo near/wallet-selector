@@ -9,6 +9,8 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import { Signer, utils, transactions as nearTransactions } from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -39,6 +41,7 @@ const isInstalled = () => {
   return waitFor(() => !!window.nightly!.near!).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
+  metadata,
   options,
   store,
   logger,
@@ -140,6 +143,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts().map(({ accountId }) => ({ accountId }));
     },
 
+    async verifyOwner({ message }) {
+      logger.log("Nightly:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -168,18 +177,24 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         options.network
       );
 
-      return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTxs.length; i++) {
+        results.push(await provider.sendTransaction(signedTxs[i]));
+      }
+
+      return results;
     },
   };
 };
 
 export interface NightlyWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 export function setupNightly({
-  iconUrl = "./assets/nightly.png",
+  iconUrl = icon,
+  deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
@@ -202,7 +217,7 @@ export function setupNightly({
         iconUrl,
         // Will replace we open beta with stable version
         downloadUrl: "https://www.nightly.app",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: Nightly,

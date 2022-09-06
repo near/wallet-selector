@@ -57,6 +57,11 @@
             "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/meteor-wallet/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/angular/src/styles.scss"],
@@ -68,7 +73,7 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumError": "2mb"
             },
             {
               "type": "anyComponentStyle",
@@ -128,6 +133,12 @@
       "options": {
         "jestConfig": "examples/angular/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "@nrwl/workspace:run-script",
+      "options": {
+        "script": "gh-pages -d dist/examples/angular"
       }
     }
   },

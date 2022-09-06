@@ -14,10 +14,12 @@ import type {
   Network,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import icon from "./icon";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface MyNearWalletState {
@@ -73,7 +75,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ options, store, params, logger }) => {
+> = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
   const cleanup = () => {
@@ -154,6 +156,33 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
+    async verifyOwner({ message, callbackUrl, meta }) {
+      logger.log("verifyOwner", { message });
+
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+      const locationUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const url = callbackUrl || locationUrl;
+
+      if (!url) {
+        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+      }
+
+      const encodedUrl = encodeURIComponent(url);
+      const extraMeta = meta ? `&meta=${meta}` : "";
+
+      window.location.replace(
+        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
+      );
+
+      return;
+    },
+
     async signAndSendTransaction({
       signerId,
       receiverId,
@@ -179,9 +208,6 @@ const MyNearWallet: WalletBehaviourFactory<
         receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
         walletCallbackUrl: callbackUrl,
-      }).then(() => {
-        // Suppress response since transactions with deposits won't actually
-        // return FinalExecutionOutcome.
       });
     },
 
@@ -202,7 +228,8 @@ const MyNearWallet: WalletBehaviourFactory<
 
 export function setupMyNearWallet({
   walletUrl,
-  iconUrl = "./assets/my-near-wallet-icon.png",
+  iconUrl = icon,
+  deprecated = false,
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     return {
@@ -212,7 +239,7 @@ export function setupMyNearWallet({
         name: "MyNearWallet",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

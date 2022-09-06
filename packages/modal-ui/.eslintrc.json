@@ -1,6 +1,9 @@
 {
   "extends": ["plugin:@nrwl/nx/react", "../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
+  "plugins": [
+    "react"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -8,7 +11,19 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "extends": [
+        "plugin:react/recommended"
+      ],
+      "rules": {
+        "react/jsx-uses-react": "error",
+        "react/react-in-jsx-scope": "error",
+        "react/jsx-no-target-blank": "off",
+        "react/no-unescaped-entities": "off",
+        "react/prop-types": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react/display-name": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
