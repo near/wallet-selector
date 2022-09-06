@@ -3,7 +3,8 @@
 * {
   box-sizing: border-box;
 }
-@import "../../../dist/packages/modal-ui/styles.css";
+
+@import "../../../dist/packages/modal-ui-js/styles.css";
 
 html {
   --bg: #fff;
@@ -17,7 +18,7 @@ html {
 
   background-color: var(--bg);
   color: var(--fg);
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   font-size: calc(.65em + 0.7vw);
   line-height: 1.3;
 
@@ -55,9 +56,11 @@ fieldset {
   display: flex;
   margin-bottom: 0.5em;
   width: 100%;
+
   label {
     margin-right: 0.5em;
   }
+
   input {
     caret-color: var(--secondary);
   }
@@ -67,13 +70,16 @@ label {
   color: var(--gray);
 }
 
-button, .highlight {
+button,
+.highlight {
   border-radius: 5px;
   border-color: var(--primary);
   border: 0.1em solid var(--primary);
   padding: 0.5em 1em;
 
-  &:hover, &:focus, &:focus-within {
+  &:hover,
+  &:focus,
+  &:focus-within {
     border-color: var(--secondary);
   }
 }
@@ -81,6 +87,7 @@ button, .highlight {
 input {
   border: none;
   flex: 1;
+
   &:read-only {
     color: var(--primary)
   }
@@ -92,7 +99,9 @@ input[type="number"] {
   margin: 0 1em;
   width: 4em;
   padding-left: 0.5em;
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     border-color: var(--secondary);
   }
 }
@@ -101,7 +110,8 @@ input[type="checkbox"] {
   margin: 0 1em;
 }
 
-button, input {
+button,
+input {
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -112,9 +122,12 @@ button, input {
 button {
   position: relative;
   transition: top 50ms;
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     top: -1px;
   }
+
   &:active {
     background: var(--secondary);
     border-color: var(--secondary);
