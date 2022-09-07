@@ -12,6 +12,7 @@ import { renderWalletConnecting } from "./components/WalletConnecting";
 import { renderWalletConnectionFailed } from "./components/WalletConnectionFailed";
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
+import { renderWalletAccount } from "./components/WalletAccount";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -67,6 +68,13 @@ export const resolveAccounts = async (
 
 export async function connectToWallet(module: ModuleState<Wallet>) {
   if (!modalState) {
+    return;
+  }
+
+  const { selectedWalletId } = modalState.selector.store.getState()
+
+  if (selectedWalletId) {
+    renderWalletAccount(module);
     return;
   }
 
