@@ -18,20 +18,34 @@ export async function renderWhatIsAWallet() {
             </button>
           </div>
         </div>
-        <div class="wallet-info-wrapper">
+
+        <div class="wallet-info-wrapper  what-wallet-hide">
           <div class="wallet-what">
             <div class="content-side">
               <h3>Secure &amp; Manage Your Digital Assets</h3>
               <p>Safely store and transfer your crypto and NFTs.</p>
             </div>
           </div>
+
           <div class="wallet-what">
-            <div class="content-side">
-              <h3>Log In to Any NEAR App</h3>
-              <p>No need to create new accounts or credentials. Connect your wallet and you are good to go!</p>
-            </div>
-          </div><button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+              <div class="content-side">
+                  <h3>Log In to Any NEAR App</h3>
+                  <p>No need to create new accounts or credentials. Connect your wallet and you are good to go!</p>
+              </div>
+          </div>
+
+            <div "button-spacing"></div>
+              <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
         </div>
+
+        <div class="what-wallet-mobile">
+          <p>
+            Use a wallet to secure and manage your NEAR assets, and to log in
+            to any NEAR app without the need for usernames and passwords.
+          </p>
+          <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+        </div>
+
       </div>
     </div>
   `;
