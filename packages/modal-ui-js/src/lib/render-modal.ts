@@ -71,7 +71,7 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
     return;
   }
 
-  const { selectedWalletId } = modalState.selector.store.getState()
+  const { selectedWalletId } = modalState.selector.store.getState();
 
   if (selectedWalletId) {
     renderWalletAccount(module);
@@ -115,7 +115,13 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
 
     modalState.container.children[0].classList.remove("open");
   } catch (err) {
-    await renderWalletConnectionFailed(module, err as Error);
+    const { name } = module.metadata;
+    const message = err instanceof Error ? err.message : "Something went wrong";
+
+    await renderWalletConnectionFailed(
+      module,
+      new Error(`Failed to sign in with ${name}: ${message}`)
+    );
   }
 }
 
