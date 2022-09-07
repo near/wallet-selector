@@ -413,6 +413,7 @@
   display: block;
   margin: 75px auto 12px auto;
   border: 0.1em solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+  padding: 8px 24px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
