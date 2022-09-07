@@ -73,7 +73,7 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
 
   const { selectedWalletId } = modalState.selector.store.getState();
 
-  if (selectedWalletId) {
+  if (selectedWalletId === module.id) {
     renderWalletAccount(module);
     return;
   }
