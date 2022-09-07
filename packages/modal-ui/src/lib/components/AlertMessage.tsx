@@ -19,7 +19,7 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
   return (
     <Fragment>
       <ModalHeader title="" onCloseModal={onCloseModal} />
-      <div className="alert-message connecting-wrapper">
+      <div className="alert-message connecting-wrapper connecting-wrapper-err">
         <div className="content">
           <div className="icon">
             <img src={module?.metadata.iconUrl} alt={module?.metadata.name} />

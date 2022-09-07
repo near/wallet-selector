@@ -118,6 +118,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
               icon={Icon}
             />
+            <div className="button-spacing"/>
             <button
               className="middleButton"
               onClick={() => {
@@ -129,6 +130,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           </div>
 
           <div className="what-wallet-mobile">
+
             <p>
               Use a wallet to secure and manage your NEAR assets, and to log in
               to any NEAR app without the need for usernames and passwords.

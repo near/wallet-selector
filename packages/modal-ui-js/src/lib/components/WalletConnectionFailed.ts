@@ -19,7 +19,7 @@ export async function renderWalletConnectionFailed(
           </svg>
         </button>
       </div>
-      <div class="alert-message connecting-wrapper">
+      <div class="alert-message connecting-wrapper connecting-wrapper-err">
         <div class="content">
           <div class="icon"><img src="${module.metadata.iconUrl}" alt="${
     module.metadata.name
