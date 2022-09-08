@@ -1075,9 +1075,6 @@
       margin: 45px
     }
 
-    .nws-modal-wrapper .nws-modal {
-      height: auto;
-    }
 
     .nws-modal-wrapper .nws-modal .modal-left {
       width: 40%;
@@ -1113,7 +1110,10 @@
     .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
     .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
         margin-top: 20px;
-        padding: 0;
+    }
+
+    .nws-modal-wrapper .nws-modal .modal-left .modal-left-title h2 {
+      text-align: center;
     }
 
     .nws-modal-wrapper .wallet-not-installed-wrapper > p {
@@ -1129,30 +1129,26 @@
         font-size: 14px;
         margin-bottom: 0;
         text-align: center;
-        max-width: 600px;
         margin: auto;
     }
 
-    .nws-modal-wrapper .nws-modal-overlay {
-        background: var(--wallet-selector-backdrop-bg, var(--bottom-section));
-        height: 100%;
-        width: 100%;
-        position: absolute;
-    }
 
-    .nws-modal-wrapper .nws-modal .modal-left {
-        padding: 32px 12px;
-    }
 
     .nws-modal-wrapper .nws-modal {
         width: 100%;
         display: block;
         overflow: auto;
+        bottom: 0;
+        height: 500px;
+        background: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
+        border-radius: 16px 16px 0px 0px;
     }
 
     .nws-modal-wrapper .nws-modal .modal-left {
         width: 100%;
         background-color: var(--wallet-selector-content-bg, var(--content-bg));
+        height: auto;
+        padding: 32px 12px;
     }
 
     .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body {
