@@ -46,15 +46,10 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupNearFiState();
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const cleanup = () => {};
-
   const signOut = async () => {
     if (!_state.wallet.isSignedIn()) {
       return;
     }
-
-    cleanup();
 
     const res = await _state.wallet.signOut();
 
@@ -251,7 +246,8 @@ export function setupNearFi({
       type: "injected",
       metadata: {
         name: "NearFi",
-        description: null,
+        description:
+          "NearFi Wallet allows users to store and manage their NEAR assets right on their phone. NearFi is an All-in-One wallet that acts as a portal for mobile users to access the NEAR ecosystem. All DeFi services on NEAR blockchain such as AMM, lending, margin DEX, stablecoin swap, and yield farming are all integrated.",
         iconUrl,
         downloadUrl: "https://nearfi.finance",
         deprecated: false,

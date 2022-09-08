@@ -90,7 +90,6 @@
     "rxjs": "^7.5.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4",
-    "sweetalert": "^2.1.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~14.0.0",

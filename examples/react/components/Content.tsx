@@ -12,7 +12,6 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import swal from 'sweetalert';
 
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
@@ -130,11 +129,8 @@ const Content: React.FC = () => {
           })
           .catch((err) => {
             try {
-              swal ( "Oops" ,  "" + err ,  "error" )
               //alert("fail " + err);
-            } catch(e) {
-
-            }
+            } catch (e) {}
             console.log("Failed to add message " + err);
 
             throw err;
