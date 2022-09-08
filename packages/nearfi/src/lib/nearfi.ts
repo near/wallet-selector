@@ -246,8 +246,7 @@ export function setupNearFi({
       type: "injected",
       metadata: {
         name: "NearFi",
-        description:
-          "NearFi Wallet allows users to store and manage their NEAR assets right on their phone. NearFi is an All-in-One wallet that acts as a portal for mobile users to access the NEAR ecosystem. All DeFi services on NEAR blockchain such as AMM, lending, margin DEX, stablecoin swap, and yield farming are all integrated.",
+        description: "Your NEAR DeFi experience On The Go",
         iconUrl,
         downloadUrl: "https://nearfi.finance",
         deprecated: false,
