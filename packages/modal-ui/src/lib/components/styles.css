@@ -108,8 +108,7 @@
     background: var(--wallet-selector-content-bg, var(--content-bg));
     width: 100%;
     max-width: 812px;
-    height: 70vh;
-    max-height: 520px;
+    height: 555px;
     border-radius: 16px;
     position: absolute;
     left: 50%;
@@ -142,7 +141,6 @@
     border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
     padding: 32px 24px;
     height: 100%;
-    max-height: 70vh;
     overflow: auto;
 }
 
@@ -300,7 +298,8 @@
     /* identical to box height, or 171% */
     align-items: center;
     color: var(--wallet-selector-heading-color, var(--heading-color));
-}
+    margin-left: 10px;
+  }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .description {
     display: none;
