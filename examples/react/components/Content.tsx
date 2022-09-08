@@ -124,14 +124,9 @@ const Content: React.FC = () => {
               },
             ],
           })
-          .then((ret) => {
-            alert("success ");
-          })
           .catch((err) => {
-            try {
-              //alert("fail " + err);
-            } catch (e) {}
-            console.log("Failed to add message " + err);
+            alert("Failed to add message");
+            console.log("Failed to add message");
 
             throw err;
           });
