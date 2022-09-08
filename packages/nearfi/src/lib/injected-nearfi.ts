@@ -136,6 +136,6 @@ export interface InjectedNearFi {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
-  log: (...msg: any) => void;
-  resolveSignInState: () => Promise<any>;
+  log: (...msg: Array<unknown>) => void;
+  resolveSignInState: () => Promise<unknown>;
 }
