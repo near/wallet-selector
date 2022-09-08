@@ -20,12 +20,16 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 
-const hereWallet = setupHereWallet({});
+const hereWallet = setupHereWallet();
 const selector = await setupWalletSelector({
   network: "testnet",
   modules: [hereWallet],
 });
 ```
+
+## Options
+
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to base64 from `src/icon.ts`
 
 ## Additional Methods
 
@@ -43,6 +47,21 @@ const isHereWallet = (w: Wallet): w is HereWallet =>
 if (isHereWallet(wallet)) {
   wallet.getAvailableBalance(); // correct typings
 }
+```
+
+## Assets
+
+Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
+
+```ts
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+import HereWalletIconUrl from "@near-wallet-selector/here-wallet/assets/here-wallet-icon.png";
+
+const hereWallet = setupHereWallet({ iconUrl: HereWalletIconUrl });
+const selector = await setupWalletSelector({
+  network: "testnet",
+  modules: [hereWallet],
+});
 ```
 
 ## License

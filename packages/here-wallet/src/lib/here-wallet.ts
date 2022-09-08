@@ -5,6 +5,7 @@ import type {
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import * as BN from "bn.js";
+import icon from "./icon";
 import {
   getHereBalance,
   HereConfiguration,
@@ -118,7 +119,10 @@ export const initHereWallet: WalletBehaviourFactory<
   };
 };
 
-export function setupHereWallet(): WalletModuleFactory<HereWallet> {
+export function setupHereWallet({
+  deprecated = false,
+  iconUrl = icon,
+} = {}): WalletModuleFactory<HereWallet> {
   return async ({ options }) => {
     const configuration = hereConfigurations[options.network.networkId];
     if (configuration == null) {
@@ -130,9 +134,9 @@ export function setupHereWallet(): WalletModuleFactory<HereWallet> {
       type: "browser",
       metadata: {
         name: "Here Wallet (mobile)",
-        description: "MOBILE WALLET FOR NEAR PROTOCOL",
-        iconUrl: "https://web.herewallet.app/assets/here.svg",
-        deprecated: false,
+        description: "Mobile wallet for NEAR Protocol",
+        iconUrl,
+        deprecated,
         available: true,
       },
       init: (config) => initHereWallet({ ...config, configuration }),

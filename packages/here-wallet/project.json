@@ -24,6 +24,11 @@
             "glob": "packages/here-wallet/README.md",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "packages/here-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
           }
         ]
       }

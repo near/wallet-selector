@@ -73,33 +73,39 @@ const transformTransactions = async (
   const { networkId, signer, provider } = account.connection;
   const localKey = await signer.getPublicKey(account.accountId, networkId);
 
-  return Promise.all(
-    transactions.map(async (transaction, index) => {
-      const actions = transaction.actions.map((action) => createAction(action));
-      const accessKey = await account.accessKeyForTransaction(
-        transaction.receiverId,
-        actions,
-        localKey
+  const transformed: Array<nearTransactions.Transaction> = [];
+  let index = 0;
+
+  for (const transaction of transactions) {
+    index += 1;
+
+    const actions = transaction.actions.map((action) => createAction(action));
+    const accessKey = await account.accessKeyForTransaction(
+      transaction.receiverId,
+      actions,
+      localKey
+    );
+
+    if (!accessKey) {
+      throw new Error(
+        `Failed to find matching key for transaction sent to ${transaction.receiverId}`
       );
+    }
 
-      if (!accessKey) {
-        throw new Error(
-          `Failed to find matching key for transaction sent to ${transaction.receiverId}`
-        );
-      }
-
-      const block = await provider.block({ finality: "final" });
-
-      return nearTransactions.createTransaction(
+    const block = await provider.block({ finality: "final" });
+    transformed.push(
+      nearTransactions.createTransaction(
         account.accountId,
         utils.PublicKey.from(accessKey.public_key),
         transaction.receiverId,
-        accessKey.access_key.nonce + index + 1,
+        accessKey.access_key.nonce + index,
         actions,
         utils.serialize.base_decode(block.header.hash)
-      );
-    })
-  );
+      )
+    );
+  }
+
+  return transformed;
 };
 
 export { setupWalletState, getHereBalance, transformTransactions };
