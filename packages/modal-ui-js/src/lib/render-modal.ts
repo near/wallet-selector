@@ -137,7 +137,7 @@ export function renderModal() {
       <div class="nws-modal-overlay"></div>
       <div class="nws-modal">
         <div class="modal-left">
-          <div class="nws-modal-header">
+          <div class="modal-left-title">
             <h2>Connect Your Wallet</h2>
           </div>
           <div class="nws-modal-body">
