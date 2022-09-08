@@ -236,7 +236,7 @@ export function setupNearFi({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    if (!mobile) {
+    if (!mobile || !installed) {
       return null;
     }
 
