@@ -50,6 +50,7 @@ export class AppComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupNearFi(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
