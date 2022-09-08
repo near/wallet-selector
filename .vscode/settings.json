@@ -5,5 +5,10 @@
     "source.fixAll.eslint":
     true
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#659bc4",
+    "titleBar.activeBackground": "#473d6a",
+    "titleBar.activeForeground": "#FDFAFE"
+  }
 }

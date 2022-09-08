@@ -34,7 +34,7 @@ export async function renderWhatIsAWallet() {
               </div>
           </div>
 
-            <div "button-spacing"></div>
+            <div class="button-spacing"></div>
               <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
         </div>
 

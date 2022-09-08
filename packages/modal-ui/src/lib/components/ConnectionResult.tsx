@@ -15,7 +15,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   onRetry,
 }) => {
   return (
-    <div className="connection">
+    <div className="connection connecting-details">
       {err ? (
         <div className="error-wrapper">
           <div className="error">
