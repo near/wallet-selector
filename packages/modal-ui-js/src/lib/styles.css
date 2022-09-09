@@ -106,10 +106,9 @@
 
 .nws-modal-wrapper .nws-modal {
   background: var(--wallet-selector-content-bg, var(--content-bg));
-  width: 812px;
   max-width: 812px;
-  height: auto;
-  max-height: 70vh;
+  height: 555px;
+  width: 100%;
   border-radius: 16px;
   position: absolute;
   left: 50%;
@@ -142,7 +141,6 @@
   border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
   padding: 32px 24px;
   height: 100%;
-  max-height: 70vh;
   overflow: auto;
 }
 
@@ -242,7 +240,6 @@
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet {
-  z-index: -1;
   padding: 12px;
   background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
@@ -301,6 +298,7 @@
   /* identical to box height, or 171% */
   align-items: center;
   color: var(--wallet-selector-heading-color, var(--heading-color));
+  margin-left: 10px;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .description {
@@ -314,7 +312,11 @@
 .nws-modal-wrapper .nws-modal .modal-right {
   width: 65%;
   padding: 32px;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.nws-modal-wrapper .nws-modal .modal-right::-webkit-scrollbar {
+    width: 10px;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
@@ -324,6 +326,11 @@
 .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
   margin-top: 91px;
   padding: 0 28px;
+}
+
+.nws-modal-wrapper .nws-modal .connecting-wrapper-err {
+    margin-top: 45px;
+    padding: 0 28px;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
@@ -411,8 +418,9 @@
   line-height: 24px;
   border-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
   display: block;
-  margin: 75px auto 12px auto;
+  margin: 25px auto 12px auto;
   border: 0.1em solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+  padding: 8px 24px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
@@ -1045,181 +1053,218 @@
   margin-right: 5px;
 }
 
+/************* Responsive and mobile **********/
+
+@media (min-width: 577px) {
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile {
+      display: none;
+    }
+}
 
 @media (min-width: 769px) {
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile {
-    display: none;
-  }
+    .button-spacing {
+      margin: 90px
+    }
+}
+
+@media (max-width: 768px) {
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper {
+      margin-top: 45px;
+    }
+
+    .button-spacing {
+      margin: 45px
+    }
+
+    .nws-modal-wrapper .nws-modal .modal-left {
+      width: 40%;
+      border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
+      padding: 32px 16px;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .nws-modal-wrapper .nws-modal .modal-right {
+      width: 60%;
+      padding: 32px 16px;
+      overflow: auto;
+    }
+
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper {
+      padding:  0 0 0 10px;
+    }
+
+   .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image {
+      margin-top: 30px;
+      margin-bottom: 35px;
+    }
 }
 
 
-/*************Queries for mobile **********/
 
-@media (max-width: 768px) {
 
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
-  .nws-modal-wrapper .nws-modal .connecting-wrapper,
-  .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
-  .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
-    margin-top: 20px;
-    padding: 0;
-  }
+@media (max-width: 576px) {
 
-  .nws-modal-wrapper .wallet-not-installed-wrapper>p {
-    margin: 20px 0px 30px 0px;
-    max-width: 500px;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper,
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper,
+    .nws-modal-wrapper .nws-modal .connecting-wrapper,
+    .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper,
+    .nws-modal-wrapper .nws-modal .switch-network-message-wrapper {
+      margin-top: 20px;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
-    display: none;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left .modal-left-title h2 {
+      text-align: center;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile p {
-    font-size: 14px;
-    margin-bottom: 0;
-    text-align: center;
-    max-width: 600px;
-    margin: auto;
-  }
+    .nws-modal-wrapper .wallet-not-installed-wrapper>p {
+      margin: 20px 0px 30px 0px;
+      max-width: 500px;
+    }
 
-  .nws-modal-wrapper .nws-modal-overlay {
-    background: var(--wallet-selector-backdrop-bg, var(--bottom-section));
-    height: 100%;
-    width: 100%;
-    position: absolute;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
+      display: none;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left {
-    padding: 32px 12px;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile p {
+      font-size: 14px;
+      margin-bottom: 0;
+      text-align: center;
+      margin: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal {
-    width: 100%;
-    display: block;
-    overflow: auto;
-  }
+    .nws-modal-wrapper .nws-modal {
+        width: 100%;
+        display: block;
+        overflow: auto;
+        bottom: 0;
+        height: 500px;
+        background: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
+        border-radius: 16px 16px 0px 0px;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left {
-    width: 100%;
-    background-color: var(--wallet-selector-content-bg, var(--content-bg));
-  }
+     .nws-modal-wrapper .nws-modal .modal-left {
+        width: 100%;
+        background-color: var(--wallet-selector-content-bg, var(--content-bg));
+        height: auto;
+        padding: 32px 12px;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body {
-    display: flex;
-    overflow: auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body {
+      display: flex;
+      overflow: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body .wallet-options-wrapper {
-    display: flex;
-    margin: auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-left .nws-modal-body .wallet-options-wrapper {
+      display: flex;
+      margin: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right {
-    width: 100%;
-    background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
-  }
+    .nws-modal-wrapper .nws-modal .modal-right {
+      width: 100%;
+      background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
-    text-align: center;
-    font-size: 16px;
-    margin: 4px auto;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
+      text-align: center;
+      font-size: 16px;
+      margin: 4px auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .content {
-    font-size: 14px;
-    text-align: center;
-    color: var(--mobile-text);
-    margin: 0
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .content {
+      font-size: 14px;
+      text-align: center;
+      color: var(--mobile-text);
+      margin: 0
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
-    margin-top: 10px;
-    padding: 0;
-  }
+    .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
+      margin-top: 10px;
+      padding: 0;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
-    margin: 25px auto 12px auto;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
+      margin: 25px auto 12px auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .modal-header {
-    display: block;
-    font-size: 18px;
-    text-align: center;
-  }
+    .nws-modal-wrapper .nws-modal .modal-header {
+      display: block;
+      font-size: 18px;
+      text-align: center;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
-    position: absolute;
-    right: 30px;
-    top: 30px;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-header .close-button {
+      position: absolute;
+      right: 30px;
+      top: 30px;
+    }
 
-  .nws-modal-wrapper .nws-modal .nws-modal-header h2 {
-    font-size: 18px;
-    text-align: center;
-  }
+    .nws-modal-wrapper .nws-modal .nws-modal-header h2 {
+      font-size: 18px;
+      text-align: center;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
-    display: none;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-options-wrapper .description {
+      display: none;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
-    display: flex;
-    overflow-x: auto;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list {
+      display: flex;
+      overflow-x: auto;
+    }
 
-  .nws-modal-wrapper .nws-modal .info {
-    display: none;
-    width: 90px;
-  }
+    .nws-modal-wrapper .nws-modal .info {
+      display: none;
+      width: 90px;
+    }
 
-  .single-wallet {
-    display: block;
-    width: 85px;
-  }
+    .single-wallet {
+      display: block;
+      width: 85px;
+    }
 
-  .single-wallet.sidebar .icon {
-    width: 56px;
-    height: 56px;
-    margin: auto;
-  }
+    .single-wallet.sidebar .icon {
+      width: 56px;
+      height: 56px;
+      margin: auto;
+    }
 
-  .single-wallet.sidebar .content {
-    width: auto;
-  }
+    .single-wallet.sidebar .content {
+      width: auto;
+    }
 
-  .single-wallet .content .title {
-    margin-top: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+    .single-wallet .content .title {
+      margin-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
-    margin-top: 0;
-  }
+    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
+      margin-top: 0;
+    }
 
-  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,
-  .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
+    .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,
+    .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
 
-  .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description>p {
-    max-width: 450px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+    .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description>p {
+      max-width: 450px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-  ::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
-    background: var(--backdrop-bg);
+    ::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+      background: var(--backdrop-bg);
 
-  }
+    }
 
-  ::-webkit-scrollbar-thumb:horizontal {
-    background: var(--close-button-fill-icon-color);
-    border-radius: 10px;
-  }
+    ::-webkit-scrollbar-thumb:horizontal {
+      background: var(--close-button-fill-icon-color);
+      border-radius: 10px;
+    }
 }
