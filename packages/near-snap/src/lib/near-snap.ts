@@ -37,33 +37,17 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   return {
     async signIn() {
       // Sign in to My Wallet for access to account(s).
-      let result;
-      try {
-        result = await window.ethereum.request({
-          method: "wallet_enable",
-          params: [
-            {
-              [`wallet_snap`]: {
-                "local:http://localhost:8081": {},
-              },
+      await window.ethereum.request({
+        method: "wallet_enable",
+        params: [
+          {
+            [`wallet_snap`]: {
+              "local:http://localhost:8081": {},
             },
-          ],
-        });
-      } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((error as any).code === 4001) {
-          console.log("The user rejected the request.");
-        } else {
-          console.log("Unexpected error:", error);
-        }
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((result as any).errors) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        console.log("Snap installation failure :(", (result as any).errors);
-      } else {
-        console.log("Success!", result);
-      }
+          },
+        ],
+      });
+
       const getAccountPayload = await getSnapAccounts();
 
       return [{ accountId: getAccountPayload[0].accountId }];
@@ -79,7 +63,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return [{ accountId: getAccountPayload[0].accountId }];
     },
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    async verifyOwner() {},
+    async verifyOwner() { },
 
     async signAndSendTransaction({ receiverId, actions }) {
       const accountPayload = await getSnapAccounts();
