@@ -15,7 +15,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   onRetry,
 }) => {
   return (
-    <div className="connection">
+    <div className="connection connecting-details">
       {err ? (
         <div className="error-wrapper">
           <div className="error">
@@ -42,7 +42,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Connection Failed</span>
+            Connection Failed
           </div>
           <p>{message}</p>
           {module?.metadata.available && (

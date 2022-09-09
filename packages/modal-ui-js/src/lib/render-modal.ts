@@ -12,6 +12,7 @@ import { renderWalletConnecting } from "./components/WalletConnecting";
 import { renderWalletConnectionFailed } from "./components/WalletConnectionFailed";
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
+import { renderWalletAccount } from "./components/WalletAccount";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -70,6 +71,13 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
     return;
   }
 
+  const { selectedWalletId } = modalState.selector.store.getState();
+
+  if (selectedWalletId === module.id) {
+    renderWalletAccount(module);
+    return;
+  }
+
   try {
     if (module.type === "injected" && !module.metadata.available) {
       return renderWalletNotInstalled(module);
@@ -107,7 +115,13 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
 
     modalState.container.children[0].classList.remove("open");
   } catch (err) {
-    await renderWalletConnectionFailed(module, err as Error);
+    const { name } = module.metadata;
+    const message = err instanceof Error ? err.message : "Something went wrong";
+
+    await renderWalletConnectionFailed(
+      module,
+      new Error(`Failed to sign in with ${name}: ${message}`)
+    );
   }
 }
 
@@ -123,7 +137,7 @@ export function renderModal() {
       <div class="nws-modal-overlay"></div>
       <div class="nws-modal">
         <div class="modal-left">
-          <div class="nws-modal-header">
+          <div class="modal-left-title">
             <h2>Connect Your Wallet</h2>
           </div>
           <div class="nws-modal-body">
