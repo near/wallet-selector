@@ -43,7 +43,7 @@ export async function renderWhatIsAWallet() {
             Use a wallet to secure and manage your NEAR assets, and to log in
             to any NEAR app without the need for usernames and passwords.
           </p>
-          <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+          <button class="middleButton" id="get-a-wallet-button-mobile">Get a Wallet</button>
         </div>
 
       </div>
@@ -55,4 +55,11 @@ export async function renderWhatIsAWallet() {
     ?.addEventListener("click", () => {
       renderGetAWallet();
     });
+
+  document
+    .getElementById("get-a-wallet-button-mobile")
+    ?.addEventListener("click", () => {
+      renderGetAWallet();
+    });
+
 }
