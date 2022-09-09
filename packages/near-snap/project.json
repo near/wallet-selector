@@ -4,13 +4,18 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/near-snap",
-        "main": "packages/near-snap/src/index.ts",
         "tsConfig": "packages/near-snap/tsconfig.lib.json",
-        "assets": [          {
+        "project": "packages/near-snap/package.json",
+        "entryFile": "packages/near-snap/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [          
+        {
           "glob": "packages/near-snap/README.md",
           "input": ".",
           "output": "."
