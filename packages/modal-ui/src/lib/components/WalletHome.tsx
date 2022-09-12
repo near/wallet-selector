@@ -25,7 +25,14 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      const filteredModules = state.modules.slice(0, 3);
+      const filterByID = (item: { type: string }) => {
+        if (item.type !== "bridge" && item.type !== "hardware") {
+          return true;
+        }
+        return false;
+      };
+
+      const filteredModules = state.modules.filter(filterByID).slice(0, 3);
 
       setModules(filteredModules);
     });

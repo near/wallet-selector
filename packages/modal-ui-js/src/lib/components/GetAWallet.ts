@@ -64,7 +64,14 @@ export async function renderGetAWallet() {
     </div>
   `;
 
-  const filteredModules = modalState.modules.slice(0, 3);
+  const filterByID = (item: { type: string }) => {
+    if (item.type !== "bridge" && item.type !== "hardware") {
+      return true;
+    }
+    return false;
+  };
+
+  const filteredModules = modalState.modules.filter(filterByID).slice(0, 3);
 
   for (let i = 0; i < filteredModules.length; i++) {
     document.getElementById("wallets")?.insertAdjacentHTML(
