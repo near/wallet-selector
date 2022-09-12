@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ledger",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "peerDependencies": {
     "near-api-js": "^0.44.2"
   }

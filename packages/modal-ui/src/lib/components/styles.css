@@ -1066,6 +1066,7 @@
 
 
 @media (max-width: 768px) {
+
     .nws-modal-wrapper .nws-modal .wallet-home-wrapper .wallet-info-wrapper {
       margin-top: 45px;
     }
@@ -1118,6 +1119,10 @@
     .nws-modal-wrapper .wallet-not-installed-wrapper > p {
         margin: 20px 0px 30px 0px;
         max-width: 500px;
+    }
+
+    .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
+      background-color: var(--wallet-selector-home-button-bg, var(--content-bg));
     }
 
     .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-hide {
