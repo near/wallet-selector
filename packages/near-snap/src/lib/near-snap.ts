@@ -3,8 +3,9 @@ import {
   WalletBehaviourFactory,
   InjectedWallet,
 } from "@near-wallet-selector/core";
+import { isMobile } from "is-mobile";
 import { enable, getSnapAccounts, signTransactions } from "./methods";
-import { hasMetaMask, isMetamaskSnapsSupported } from "./utils";
+import { isMetaMaskAvailable } from "./utils";
 
 const isDev = true;
 
@@ -85,15 +86,11 @@ export interface NearSnapParams {
 }
 
 export const setupNearSnap = ({
-  //TODO icon
   iconUrl = "./assets/near-snap-icon.png",
 }: NearSnapParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
-    if (!hasMetaMask()) {
-      return null; // throw new Error("Metamask is not installed");
-    }
-    if (!(await isMetamaskSnapsSupported())) {
-      return null; // throw new Error("Current Metamask version doesn't support snaps");
+    if (isMobile()) {
+      return null;
     }
 
     return {
@@ -104,8 +101,8 @@ export const setupNearSnap = ({
         description: null,
         iconUrl,
         deprecated: false,
-        downloadUrl: "https://www.npmjs.com/package/@chainsafe/near-snap",
-        available: true,
+        downloadUrl: "https://metamask.io/flask/",
+        available: await isMetaMaskAvailable(),
       },
       init: NearSnapWallet,
     };

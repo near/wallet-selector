@@ -47,3 +47,10 @@ export function mapAccounts(
 ): Array<Account> {
   return accounts.map(({ accountId }) => ({ accountId }));
 }
+
+export async function isMetaMaskAvailable(): Promise<boolean> {
+  if (!hasMetaMask()) {
+    return false;
+  }
+  return await isMetamaskSnapsSupported();
+}

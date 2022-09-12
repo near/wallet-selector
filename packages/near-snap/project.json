@@ -14,17 +14,18 @@
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "cjs"],
-        "assets": [          
-        {
-          "glob": "packages/near-snap/README.md",
-          "input": ".",
-          "output": "."
-        },
-        {
-          "glob": "packages/near-snap/assets/*",
-          "input": ".",
-          "output": "assets"
-        }]
+        "assets": [
+          {
+            "glob": "packages/near-snap/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/near-snap/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
       }
     },
     "lint": {
@@ -41,7 +42,13 @@
         "jestConfig": "packages/near-snap/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
-  "tags": []
+  "tags": ["injected-wallet"]
 }

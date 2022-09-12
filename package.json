@@ -48,7 +48,7 @@
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
-    "build:near-snap": "nx run-many --target=build --projects=default-wallets --configuration=production",
+    "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "serve:react": "nx serve react",
