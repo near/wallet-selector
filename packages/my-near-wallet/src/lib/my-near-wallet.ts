@@ -14,6 +14,7 @@ import type {
   Network,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import icon from "./icon";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -227,7 +228,7 @@ const MyNearWallet: WalletBehaviourFactory<
 
 export function setupMyNearWallet({
   walletUrl,
-  iconUrl = "./assets/my-near-wallet-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
@@ -236,7 +237,8 @@ export function setupMyNearWallet({
       type: "browser",
       metadata: {
         name: "MyNearWallet",
-        description: null,
+        description:
+          "NEAR wallet to store, buy, send and stake assets for DeFi.",
         iconUrl,
         deprecated,
         available: true,

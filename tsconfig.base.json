@@ -28,6 +28,9 @@
         "packages/meteor-wallet/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
+      "@near-wallet-selector/modal-ui-js": [
+        "packages/modal-ui-js/src/index.ts"
+      ],
       "@near-wallet-selector/my-near-wallet": [
         "packages/my-near-wallet/src/index.ts"
       ],

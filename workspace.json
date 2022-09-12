@@ -9,6 +9,7 @@
     "math-wallet": "packages/math-wallet",
     "meteor-wallet": "packages/meteor-wallet",
     "modal-ui": "packages/modal-ui",
+    "modal-ui-js": "packages/modal-ui-js",
     "my-near-wallet": "packages/my-near-wallet",
     "near-snap": "packages/near-snap",
     "near-wallet": "packages/near-wallet",

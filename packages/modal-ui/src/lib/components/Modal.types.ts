@@ -2,7 +2,7 @@ import type { Wallet } from "@near-wallet-selector/core";
 import { ModuleState } from "@near-wallet-selector/core";
 
 export type AlertMessageModalRouteParams = {
-  wallet: Wallet;
+  module: ModuleState;
 };
 
 export type WalletOptionsModalRouteParams = {
@@ -23,6 +23,10 @@ export type WalletNetworkChangedModalRouteParams = {
 
 export type WalletConnectingModalRouteParams = {
   wallet: Wallet;
+};
+
+export type WalletConnectedParams = {
+  module: ModuleState | undefined;
 };
 
 export type AlertMessageModalRoute = {
@@ -55,10 +59,21 @@ export type WalletConnectingModalRoute = {
   params?: WalletConnectingModalRouteParams;
 };
 
+export type WalletHome = {
+  name: "WalletHome";
+};
+
+export type WalletConnected = {
+  name: "WalletConnected";
+  params?: WalletConnectedParams;
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
   | DerivationPathModalRoute
   | WalletNotInstalledModalRoute
   | WalletNetworkChangedModalRoute
-  | WalletConnectingModalRoute;
+  | WalletConnectingModalRoute
+  | WalletHome
+  | WalletConnected;

@@ -10,6 +10,7 @@ import {
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedSender } from "./injected-sender";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -281,7 +282,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export function setupSender({
-  iconUrl = "./assets/sender-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
@@ -303,7 +304,7 @@ export function setupSender({
       type: "injected",
       metadata: {
         name: "Sender",
-        description: null,
+        description: "Browser extension wallet built on NEAR.",
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",

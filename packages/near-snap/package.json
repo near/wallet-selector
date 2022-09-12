@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/near-snap",
-  "version": "6.0.0",
+  "version": "7.0.2",
   "peerDependencies": {
     "near-api-js": "^0.44.2"
   }
