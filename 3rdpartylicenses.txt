@@ -1070,6 +1070,8 @@ Apache-2.0
 
 @near-wallet-selector/core
 
+@near-wallet-selector/default-wallets
+
 @near-wallet-selector/ledger
 
 @near-wallet-selector/math-wallet
