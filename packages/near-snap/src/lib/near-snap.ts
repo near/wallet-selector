@@ -7,7 +7,7 @@ import { isMobile } from "is-mobile";
 import { enable, getSnapAccounts, signTransactions } from "./methods";
 import { isMetaMaskAvailable } from "./utils";
 
-const isDev = true;
+const isDev = false;
 
 const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,

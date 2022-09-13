@@ -35,7 +35,7 @@ export function getSnapOrigin(isDev: boolean): string {
   if (isDev) {
     return "local:http://localhost:8081";
   }
-  return "npm@chainsafe/near-snap";
+  return "npm:@chainsafe/near-snap";
 }
 
 export function getSnapId(isDev: boolean): string {
