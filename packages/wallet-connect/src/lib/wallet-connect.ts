@@ -318,7 +318,7 @@ const WalletConnect: WalletBehaviourFactory<
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
-        method: "near_signAndSendTransactions",
+        method: "near_signTransactions",
         params: { transactions: txs.map((x) => x.encode()) },
       },
     });
