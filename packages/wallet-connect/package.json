@@ -1,4 +1,7 @@
 {
   "name": "@near-wallet-selector/wallet-connect",
-  "version": "7.0.2"
+  "version": "7.0.3",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "7.0.2",
+  "version": "7.0.3",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -71,7 +71,7 @@
     "@meteorwallet/sdk": "^0.6.0",
     "@nightlylabs/connect-near": "0.0.13",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
-    "@walletconnect/sign-client": "2.0.0-rc.2",
+    "@walletconnect/sign-client": "2.0.0-rc.3",
     "better-sqlite3": "^7.6.2",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
@@ -129,7 +129,7 @@
     "@types/w3c-web-usb": "^1.0.5",
     "@typescript-eslint/eslint-plugin": "5.13.0",
     "@typescript-eslint/parser": "5.13.0",
-    "@walletconnect/types": "^2.0.0-rc.2",
+    "@walletconnect/types": "^2.0.0-rc.3",
     "babel-jest": "27.2.3",
     "cypress": "^9.1.0",
     "eslint": "~8.15.0",
@@ -145,6 +145,7 @@
     "jest-mock-extended": "^2.0.6",
     "jest-preset-angular": "^12.2.0",
     "nx": "14.4.2",
+    "gh-pages": "^4.0.0",
     "prettier": "^2.7.1",
     "react-test-renderer": "18.2.0",
     "sass": "1.52.3",
