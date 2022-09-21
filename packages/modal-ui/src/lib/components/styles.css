@@ -448,7 +448,8 @@
     border: 0;
     cursor: pointer;
     height: 32px;
-    padding: 4px;
+    width: 32px;
+    padding: 0;
     background-color: var(--wallet-selector-close-button-bg-color, var(--close-button-bg-color));
     border-radius: 50px;
 }
