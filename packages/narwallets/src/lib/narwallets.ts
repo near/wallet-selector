@@ -15,11 +15,11 @@ import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { providers } from "near-api-js";
 
-declare global {
-  interface Window {
-    narwallets: InjectedNarwallets | undefined;
-  }
-}
+// declare global {
+//   interface Window {
+//     narwallets: InjectedNarwallets | undefined;
+//   }
+// }
 
 export interface NarwalletsParams {
   iconUrl?: string;
@@ -104,40 +104,38 @@ function removePendingPromise(callback: PendingPromises) {
   }
 }
 
-window.addEventListener("message", (event) => {
-  if (event.source != window) {
-    return;
-  }
-  if (event.data.type && (event.data.type == "nw") && event.data.dest && event.data.dest == "page" && event.data.result && event.data.result.id) {
-    const pendingPromise = findPendingPromiseById(event.data.result.id)
-    if(pendingPromise) {
-      removePendingPromise(pendingPromise)
-      if(pendingPromise.timeout) clearTimeout(pendingPromise.timeout)
-      if(event.data.error) {
-        pendingPromise.reject(event.data.error)
-      } else {
-        pendingPromise.resolve(event.data.result.data)
+const setupNarwalletsState = (): void => {
+  window.addEventListener("message", (event) => {
+    if (event.source != window) {
+      return;
+    }
+    
+    if (event.data.type && (event.data.type == "nw") && event.data.dest && event.data.dest == "page" && event.data.result && event.data.result.id) {
+      const pendingPromise = findPendingPromiseById(event.data.result.id)
+      if(pendingPromise) {
+        removePendingPromise(pendingPromise)
+        if(pendingPromise.timeout) clearTimeout(pendingPromise.timeout)
+        if(event.data.error) {
+          pendingPromise.reject(event.data.error)
+        } else {
+          pendingPromise.resolve(event.data.result.data)
+        }
       }
     }
-  }
-})
+  })
+  // let wallet = window.narwallets!;
 
-const setupNarwalletsState = (): NarwalletsState => {
-  let wallet = window.narwallets!;
-
-  return {
-    wallet,
-  };
+  // return {
+  //   wallet,
+  // };
 };
 
 const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
-  options,
   metadata,
   store,
-  emitter,
   logger,
 }) => {
-  const _state = setupNarwalletsState();
+  // const _state = setupNarwalletsState();
 
   const cleanup = () => {
     // for (const key in _state.wallet.callbacks) {
@@ -309,6 +307,7 @@ export function setupNarwallets({
   iconUrl = "./assets/narwallets-logo.png",
 }: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
+    setupNarwalletsState()
     const mobile = isMobile();
     const installed = await isInstalled();
     console.log(installed)
