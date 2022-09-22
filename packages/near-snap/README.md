@@ -27,9 +27,9 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 
-// Nightly for Wallet Selector can be setup without any params or it can take one optional param.
+// NearSnap for Wallet Selector can be setup without any params or it can take one optional param.
 const nearSnap = setupNearSnap({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
