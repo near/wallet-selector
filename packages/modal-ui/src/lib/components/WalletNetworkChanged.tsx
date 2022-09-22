@@ -1,41 +1,41 @@
-import React from "react";
+import React, { Fragment } from "react";
 import type { WalletSelector } from "@near-wallet-selector/core";
+import { ModalHeader } from "./ModalHeader";
+import { BackArrow } from "./BackArrow";
 
 interface WalletNetworkChangedProps {
   selector: WalletSelector;
-  onSwitchWallet: () => void;
-  onDismiss: () => void;
+  onBack: () => void;
+  onCloseModal: () => void;
 }
 
 export const WalletNetworkChanged: React.FC<WalletNetworkChangedProps> = ({
   selector,
-  onSwitchWallet,
-  onDismiss,
+  onBack,
+  onCloseModal,
 }) => {
   return (
-    <div className="switch-network-message-wrapper">
-      <div className="header">
-        <h2>You Must Change Networks</h2>
+    <Fragment>
+      <div className="nws-modal-header-wrapper">
+        <BackArrow onClick={onBack} />
+        <ModalHeader
+          title="You Must Change the Network"
+          onCloseModal={onCloseModal}
+        />
       </div>
-      <div className="content">
-        <p>
-          We've detected that you need to change your wallet's network to
-          <strong>{` ${selector.options.network.networkId}`}</strong> for this
-          dApp.
-        </p>
-        <p>
-          Some wallets may not support changing networks. If you can not change
-          networks you may consider switching to another wallet.
-        </p>
+      <div className="switch-network-message-wrapper">
+        <div className="content">
+          <p>
+            We've detected that you need to change your wallet's network to
+            <strong className="network-id">{` ${selector.options.network.networkId}`}</strong>{" "}
+            for this dApp.
+          </p>
+          <p>
+            Some wallets may not support changing networks. If you can not
+            change networks you may consider switching to another wallet.
+          </p>
+        </div>
       </div>
-      <div className="action-buttons">
-        <button className="left-button" onClick={onDismiss}>
-          Dismiss
-        </button>
-        <button className="right-button" onClick={onSwitchWallet}>
-          Switch Wallet
-        </button>
-      </div>
-    </div>
+    </Fragment>
   );
 };

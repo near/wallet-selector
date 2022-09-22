@@ -4,10 +4,12 @@
   "projects": {
     "angular": "examples/angular",
     "core": "packages/core",
+    "default-wallets": "packages/default-wallets",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
     "meteor-wallet": "packages/meteor-wallet",
     "modal-ui": "packages/modal-ui",
+    "modal-ui-js": "packages/modal-ui-js",
     "my-near-wallet": "packages/my-near-wallet",
     "near-wallet": "packages/near-wallet",
     "nightly": "packages/nightly",
@@ -16,7 +18,6 @@
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
-    "default-wallets": "packages/default-wallets",
     "coin98-wallet": "packages/coin98-wallet"
   }
 }
