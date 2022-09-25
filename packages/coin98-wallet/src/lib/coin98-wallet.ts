@@ -125,17 +125,6 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       throw new Error(`Method not supported by ${metadata.name}`);
 
-      const signed = await _state.wallet.near.signer.signMessage(
-        new Uint8Array(Buffer.from(encoded)),
-        accountId,
-        options.network.networkId
-      );
-
-      return {
-        ...data,
-        signature: Buffer.from(signed.signature).toString("base64"),
-        keyType: signed.publicKey.keyType,
-      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
