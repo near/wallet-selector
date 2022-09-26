@@ -19,24 +19,18 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-wallet-selector/core": [
-        "packages/core/src/index.ts"
-      ],
+      "@near-wallet-selector/core": ["packages/core/src/index.ts"],
       "@near-wallet-selector/default-wallets": [
         "packages/default-wallets/src/index.ts"
       ],
-      "@near-wallet-selector/ledger": [
-        "packages/ledger/src/index.ts"
-      ],
+      "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
       ],
       "@near-wallet-selector/meteor-wallet": [
         "packages/meteor-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/modal-ui": [
-        "dist/packages/modal-ui"
-      ],
+      "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"
       ],
