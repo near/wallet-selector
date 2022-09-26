@@ -25,7 +25,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
-      const filteredModules = state.modules.slice(0, 3);
+      const filterByType = (item: { type: string }) => {
+        return item.type !== "bridge" && item.type !== "hardware";
+      };
+
+      const filteredModules = state.modules.filter(filterByType).slice(0, 3);
 
       setModules(filteredModules);
     });
@@ -118,6 +122,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
               icon={Icon}
             />
+            <div className="button-spacing" />
             <button
               className="middleButton"
               onClick={() => {
@@ -127,7 +132,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               Get a Wallet
             </button>
           </div>
-
           <div className="what-wallet-mobile">
             <p>
               Use a wallet to secure and manage your NEAR assets, and to log in
