@@ -30,7 +30,7 @@ async function initWalletState(): Promise<WelldoneWalletState> {
 const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
-  // store,
+  store,
   provider,
   emitter,
   logger,
@@ -191,11 +191,13 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
+      const { contract } = store.getState();
+
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
       }
 
-      if (!_state.account) {
+      if (!_state.account || !contract) {
         throw new Error("Wallet not signed in");
       }
 
@@ -209,7 +211,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         accessKey.block_hash,
         {
           signerId,
-          receiverId,
+          receiverId: receiverId || contract.contractId,
           actions,
         }
       );
