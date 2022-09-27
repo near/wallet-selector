@@ -26,7 +26,7 @@ export interface SignAndSendTransactionParams {
 export interface WalletProvider {
   getAccount: () => Promise<string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  request: (args: RequestParams) => Promise<any>;
+  request: (chain: string, args: RequestParams) => Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on: (message: string, listener: (...args: Array<any>) => void) => void;
 }

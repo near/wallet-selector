@@ -39,10 +39,10 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const _getAccounts = async () => {
     if (_state.wallet) {
-      const res = await _state.wallet.request({
+      const res = await _state.wallet.request("near", {
         method: "dapp:accounts",
       });
-      return res["near"] ? [res["near"].address, res["near"].publicKey] : [];
+      return res["near"] ? [res["near"].address, res["near"].pubKey] : [];
     }
     return [];
   };
@@ -151,7 +151,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       if (_state.account) {
-        signOut();
+        await signOut();
       }
 
       const account = await _getAccounts();
@@ -214,12 +214,12 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         }
       );
 
-      const [txHash] = await _state.wallet.request({
+      const [txHash] = await _state.wallet.request("near", {
         method: "dapp:sendTransaction",
         params: [transaction],
       });
 
-      return _state.wallet.request({
+      return _state.wallet.request("near", {
         method: "tx",
         params: [txHash, signerId],
       });
@@ -244,7 +244,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         return convertTransaction(publicKey, nonce, accessKey.block_hash, tx);
       });
 
-      const txHashes = await _state.wallet.request({
+      const txHashes = await _state.wallet.request("near", {
         method: "dapp:sendTransaction",
         params: [...convertedTxs],
       });
@@ -253,7 +253,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       for (let i = 0; i < txHashes.length; i++) {
         results.push(
-          await _state.wallet.request({
+          await _state.wallet.request("near", {
             method: "tx",
             params: [txHashes[i], transactions[i].signerId],
           })
