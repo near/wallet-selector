@@ -55,6 +55,11 @@
             "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/welldone-wallet/assets/",
+            "output": "assets/"
           }
         ]
       },

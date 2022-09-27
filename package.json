@@ -17,7 +17,8 @@
     "ledger",
     "wallet-connect",
     "nightly-connect",
-    "meteor-wallet"
+    "meteor-wallet",
+    "welldone-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -44,6 +45,7 @@
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
+    "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
