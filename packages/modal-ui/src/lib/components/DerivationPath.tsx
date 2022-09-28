@@ -1,10 +1,17 @@
-import React, { ChangeEvent, KeyboardEventHandler, useState } from "react";
-import type { Wallet, WalletSelector } from "@near-wallet-selector/core";
+import React, { Fragment, useState } from "react";
+import type {
+  HardwareWallet,
+  HardwareWalletAccount,
+  Wallet,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 import type { ModalOptions } from "../modal.types";
 import type { DerivationPathModalRouteParams } from "./Modal.types";
-import type { HardwareWalletAccount } from "@near-wallet-selector/core";
 import HardwareWalletAccountsForm from "./HardwareWalletAccountsForm";
 import { WalletConnecting } from "./WalletConnecting";
+import { ModalHeader } from "./ModalHeader";
+import { BackArrow } from "./BackArrow";
+import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
 
 interface DerivationPathProps {
   selector: WalletSelector;
@@ -12,15 +19,21 @@ interface DerivationPathProps {
   onBack: () => void;
   onConnected: () => void;
   params: DerivationPathModalRouteParams;
-  onError: (message: string) => void;
+  onError: (message: string, wallet: Wallet) => void;
+  onCloseModal: () => void;
 }
 
-export interface HardwareWalletAccountState {
-  derivationPath: string;
-  publicKey: string;
-  accountIds: Array<string>;
-  selectedAccountId: string;
-}
+export type HardwareWalletAccountState = HardwareWalletAccount & {
+  selected: boolean;
+};
+
+export type HardwareRoutes =
+  | "EnterDerivationPath"
+  | "SpecifyHDPath"
+  | "NoAccountsFound"
+  | "ChooseAccount"
+  | "AddCustomAccountId"
+  | "OverviewAccounts";
 
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
@@ -31,47 +44,26 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   onConnected,
   params,
   onError,
+  onCloseModal,
 }) => {
-  const [derivationPaths, setDerivationPaths] = useState<
-    Array<{ path: string }>
-  >([{ path: DEFAULT_DERIVATION_PATH }]);
-
-  const [hardwareWalletAccounts, setHardwareWalletAccounts] = useState<
+  const [route, setRoute] = useState<HardwareRoutes>("EnterDerivationPath");
+  const [derivationPath, setDerivationPath] = useState<string>(
+    DEFAULT_DERIVATION_PATH
+  );
+  const [customDerivationPath, setCustomDerivationPath] = useState(1);
+  const [accounts, setAccounts] = useState<Array<HardwareWalletAccountState>>(
+    []
+  );
+  const [selectedAccounts, setSelectedAccounts] = useState<
     Array<HardwareWalletAccountState>
   >([]);
 
-  const [showMultipleAccountsSelect, setShowMultipleAccountsSelect] =
-    useState<boolean>(false);
-
-  const [connecting, setConnecting] = useState<boolean>(false);
   const [hardwareWallet, setHardwareWallet] = useState<Wallet>();
+  const [customAccountId, setCustomAccountId] = useState("");
+  const [connecting, setConnecting] = useState(false);
+  const [headerTitle, setHeaderTitle] = useState("Connect with Ledger");
 
-  const handleDerivationPathAdd = () => {
-    setDerivationPaths((prevDerivationPaths) => {
-      return [...prevDerivationPaths, { path: "" }];
-    });
-  };
-
-  const handleDerivationPathRemove = (index: number) => {
-    setDerivationPaths((prevDerivationPaths) => {
-      prevDerivationPaths.splice(index, 1);
-      return [...prevDerivationPaths];
-    });
-  };
-
-  const handleDerivationPathChange = (
-    index: number,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    setDerivationPaths((prevDerivationPaths) => {
-      prevDerivationPaths[index].path = e.target.value;
-      return [...prevDerivationPaths];
-    });
-  };
-
-  const getAccountIdsFromPublicKey = async (
-    publicKey: string
-  ): Promise<Array<string>> => {
+  const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const response = await fetch(
       `${selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
     );
@@ -83,54 +75,35 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     const accountIds = await response.json();
 
     if (!Array.isArray(accountIds) || !accountIds.length) {
-      throw new Error(
-        "Failed to find account linked for public key: " + publicKey
-      );
+      return [];
     }
 
     return accountIds;
   };
 
-  const resolveAccounts = async (wallet: Wallet) => {
-    const accounts: Array<HardwareWalletAccountState> = [];
+  const resolveAccounts = async (
+    wallet: Wallet
+  ): Promise<Array<HardwareWalletAccountState> | null> => {
+    const publicKey = await (wallet as HardwareWallet).getPublicKey(
+      derivationPath
+    );
+    try {
+      const accountIds = await getAccountIds(publicKey);
 
-    for (let i = 0; i < derivationPaths.length; i += 1) {
-      const derivationPath = derivationPaths[i].path;
-
-      if (wallet.type === "hardware") {
-        const publicKey = await wallet.getPublicKey(derivationPath);
-        const accountIds = await getAccountIdsFromPublicKey(publicKey);
-
-        accounts.push({
+      return accountIds.map((accountId, index) => {
+        return {
           derivationPath,
           publicKey,
-          accountIds,
-          selectedAccountId: accountIds[0],
-        });
-      }
-    }
-    return accounts;
-  };
-
-  const signIn = (
-    wallet: Wallet,
-    contractId: string,
-    methodNames: Array<string> | undefined,
-    accounts: Array<HardwareWalletAccount>
-  ) => {
-    return wallet
-      .signIn({
-        contractId,
-        methodNames,
-        accounts,
-      })
-      .then(() => onConnected())
-      .catch((err) => {
-        onError(`Error: ${err.message}`);
+          accountId,
+          selected: index === 0,
+        };
       });
+    } catch (e) {
+      return null;
+    }
   };
 
-  const handleConnectClick = async () => {
+  const handleValidateAccount = async () => {
     const wallet = await selector.wallet(params.walletId);
 
     if (wallet.type !== "hardware") {
@@ -141,76 +114,103 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     setHardwareWallet(wallet);
 
     try {
-      const accounts = await resolveAccounts(wallet);
-      const multipleAccounts = accounts.some((x) => x.accountIds.length > 1);
+      const resolvedAccounts = await resolveAccounts(wallet);
+      if (!resolvedAccounts) {
+        setRoute("AddCustomAccountId");
+        return;
+      }
+      const noAccounts = resolvedAccounts.length === 0;
+      const multipleAccounts = resolvedAccounts.length > 1;
+
+      if (noAccounts) {
+        setHeaderTitle("No Accounts Found");
+        setRoute("NoAccountsFound");
+        return;
+      }
+      setAccounts(resolvedAccounts);
 
       if (!multipleAccounts) {
-        const mapAccounts = accounts.map((account) => {
-          return {
-            derivationPath: account.derivationPath,
-            publicKey: account.publicKey,
-            accountId: account.accountIds[0],
-          };
-        });
-
-        return signIn(
-          wallet,
-          options.contractId,
-          options.methodNames,
-          mapAccounts
-        );
+        setRoute("OverviewAccounts");
       } else {
-        setConnecting(false);
-
-        setHardwareWalletAccounts(accounts);
-        setShowMultipleAccountsSelect(true);
+        setHeaderTitle("Select Your Accounts");
+        setRoute("ChooseAccount");
       }
     } catch (err) {
       setConnecting(false);
       const message =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(message);
+      onError(message, wallet);
     } finally {
       setConnecting(false);
     }
   };
 
-  const handleMultipleAccountsSignIn = async (
-    accounts: Array<HardwareWalletAccount>
-  ) => {
-    await signIn(
-      hardwareWallet!,
-      options.contractId,
-      options.methodNames,
-      accounts
-    );
+  const handleAddCustomAccountId = async () => {
+    try {
+      setConnecting(true);
+
+      const publicKey = await (hardwareWallet as HardwareWallet).getPublicKey(
+        derivationPath
+      );
+      const accountList = [
+        {
+          derivationPath: derivationPath,
+          publicKey,
+          accountId: customAccountId,
+          selected: true,
+        },
+      ];
+      setAccounts(accountList);
+      setSelectedAccounts(accountList);
+      setHeaderTitle("Connecting 1 Account");
+      setRoute("OverviewAccounts");
+    } catch (err) {
+      setConnecting(false);
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      onError(message, hardwareWallet!);
+    } finally {
+      setConnecting(false);
+    }
   };
 
-  const handleAccountChange = (
-    derivationPath: string,
-    selectedAccountId: string
-  ) => {
-    setHardwareWalletAccounts((accounts) => {
-      const mapAccounts = accounts.map((account) => {
-        const selectedId =
-          derivationPath === account.derivationPath
-            ? selectedAccountId
-            : account.selectedAccountId;
+  const handleSignIn = () => {
+    const mapAccounts = selectedAccounts.map(
+      (account: HardwareWalletAccount) => {
         return {
-          ...account,
-          selectedAccountId: selectedId,
+          derivationPath: account.derivationPath,
+          publicKey: account.publicKey,
+          accountId: account.accountId,
         };
+      }
+    );
+
+    return hardwareWallet!
+      .signIn({
+        contractId: options.contractId,
+        methodNames: options.methodNames,
+        accounts: mapAccounts,
+      })
+      .then(() => onConnected())
+      .catch((err) => {
+        onError(`Error: ${err.message}`, hardwareWallet!);
       });
-      return [...mapAccounts];
-    });
   };
 
-  const handleEnterClick: KeyboardEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    if (e.key === "Enter") {
-      await handleConnectClick();
+  const handleOnBackButtonClick = () => {
+    if (
+      route === "SpecifyHDPath" ||
+      route === "NoAccountsFound" ||
+      route === "ChooseAccount"
+    ) {
+      setHeaderTitle("Connect with Ledger");
+      setRoute("EnterDerivationPath");
+    }
+
+    if (route === "OverviewAccounts") {
+      setHeaderTitle("Select Your Accounts");
+      setRoute("ChooseAccount");
     }
   };
 
@@ -222,83 +222,239 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           onBack={() => {
             setConnecting(false);
           }}
+          onCloseModal={onCloseModal}
         />
       </div>
     );
   }
 
   return (
-    <div className="derivation-path-wrapper">
-      {showMultipleAccountsSelect ? (
-        <HardwareWalletAccountsForm
-          hardwareWalletAccounts={hardwareWalletAccounts}
-          onAccountChanged={(derivationPath, selectedAccountId) => {
-            handleAccountChange(derivationPath, selectedAccountId);
-          }}
-          onSubmit={(accounts, e) => {
-            e.preventDefault();
-            const mapAccounts = accounts.map((account) => {
-              return {
-                derivationPath: account.derivationPath,
-                publicKey: account.publicKey,
-                accountId: account.selectedAccountId,
-              };
-            });
-            handleMultipleAccountsSignIn(mapAccounts);
-          }}
-        />
-      ) : (
-        <div>
-          <p>
-            Make sure your device is plugged in, then enter an account id to
-            connect:
-          </p>
-          <div className="derivation-path-list">
-            {derivationPaths.map((path, index) => {
-              return (
-                <div key={index}>
-                  <input
-                    type="text"
-                    placeholder="Derivation Path"
-                    value={index === 0 ? derivationPaths[0].path : path.path}
-                    onChange={(e) => {
-                      handleDerivationPathChange(index, e);
-                    }}
-                    onKeyPress={handleEnterClick}
-                  />
+    <Fragment>
+      <div className="nws-modal-header-wrapper">
+        {(route === "SpecifyHDPath" ||
+          route === "NoAccountsFound" ||
+          route === "ChooseAccount" ||
+          route === "OverviewAccounts") && (
+          <BackArrow onClick={handleOnBackButtonClick} />
+        )}
+        <ModalHeader title={headerTitle} onCloseModal={onCloseModal} />
+      </div>
+      <div className="derivation-path-wrapper">
+        {route === "EnterDerivationPath" && (
+          <div className="enter-derivation-path">
+            <div className="ledger-image">
+              <LedgerDeviceIcon />
+            </div>
+            <div className="ledger-description">
+              <p>
+                Make sure your Ledger is connected securely, and that the NEAR
+                app is open on your device.
+              </p>
+              <p
+                className="specify-path"
+                onClick={() => {
+                  setHeaderTitle("Specify HD Path");
+                  setRoute("SpecifyHDPath");
+                }}
+              >
+                Specify HD Path
+              </p>
+            </div>
+            <div className="action-buttons">
+              <button className="middleButton" onClick={handleValidateAccount}>
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
 
-                  {index !== 0 && (
-                    <button
-                      type="button"
-                      title="Remove"
-                      onClick={() => handleDerivationPathRemove(index)}
-                    >
-                      -
-                    </button>
-                  )}
-                  {index === derivationPaths.length - 1 && (
-                    <button
-                      title="Add"
-                      type="button"
-                      onClick={() => handleDerivationPathAdd()}
-                    >
-                      +
-                    </button>
-                  )}
+        {route === "SpecifyHDPath" && (
+          <div className="specify-path-wrapper">
+            <div className="change-path-wrapper">
+              <div className="display-path">
+                <span>{derivationPath.slice(0, -2)}</span>
+              </div>
+              <div className="change-path">
+                <div className="path-value">
+                  <span>{customDerivationPath}</span>
                 </div>
+                <div className="buttons-wrapper">
+                  <button
+                    onClick={() => {
+                      const newValue = customDerivationPath + 1;
+                      const path = derivationPath.slice(0, -2);
+                      setDerivationPath(`${path}${newValue}'`);
+                      setCustomDerivationPath(newValue);
+                    }}
+                  >
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 5.4762L5 1.4762L1 5.4762"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const newValue = customDerivationPath - 1;
+
+                      if (newValue < 0) {
+                        return;
+                      }
+
+                      const path = derivationPath.slice(0, -2);
+                      setDerivationPath(`${path}${newValue}'`);
+                      setCustomDerivationPath(newValue);
+                    }}
+                  >
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.52382L5 5.52382L9 1.52382"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p className="path-description">
+              Enter your preferred HD path, then scan for any active accounts.
+            </p>
+            <div className="action-buttons">
+              <button className="middleButton" onClick={handleValidateAccount}>
+                Scan
+              </button>
+            </div>
+          </div>
+        )}
+
+        {route === "NoAccountsFound" && (
+          <div className="no-accounts-found-wrapper">
+            <p>
+              Can't found any account associated with this Ledger. Please create
+              a new NEAR account on{" "}
+              <a
+                href={`https://${
+                  selector.options.network.networkId === "testnet"
+                    ? "testnet"
+                    : "app"
+                }.mynearwallet.com/create`}
+                target="_blank"
+              >
+                MyNearWallet
+              </a>{" "}
+              or connect an another Ledger.
+            </p>
+          </div>
+        )}
+
+        {route === "ChooseAccount" && (
+          <HardwareWalletAccountsForm
+            accounts={accounts}
+            onSelectedChanged={(index, selected) => {
+              setAccounts((prevAccounts) => {
+                const updateAccounts = prevAccounts.map((account, idx) => {
+                  const selectedValue =
+                    index === idx ? selected : account.selected;
+                  return {
+                    ...account,
+                    selected: selectedValue,
+                  };
+                });
+                return [...updateAccounts];
+              });
+            }}
+            onSubmit={(acc, e) => {
+              e.preventDefault();
+              const selectedAcc = acc.filter((account) => account.selected);
+              setSelectedAccounts(selectedAcc);
+
+              const numberOfAccounts = selectedAcc.length;
+              setHeaderTitle(
+                `Connecting ${numberOfAccounts} Account${
+                  numberOfAccounts > 1 ? "s" : ""
+                }`
               );
-            })}
+              setRoute("OverviewAccounts");
+            }}
+            onChangeRoute={(newRoute) => {
+              if (newRoute === "SpecifyHDPath") {
+                setHeaderTitle("Specify HD Path");
+              }
+              setRoute(newRoute);
+            }}
+          />
+        )}
+        {route === "AddCustomAccountId" && (
+          <div className="enter-custom-account">
+            <p>Failed to automatically find account id. Provide it manually:</p>
+            <div className="input-wrapper">
+              <input
+                type="text"
+                placeholder="Account ID"
+                value={customAccountId}
+                onChange={(e) => {
+                  setCustomAccountId(e.target.value);
+                }}
+              />
+            </div>
+            <div className="action-buttons">
+              <button
+                className="middleButton"
+                onClick={handleAddCustomAccountId}
+              >
+                Continue
+              </button>
+            </div>
           </div>
-          <div className="action-buttons">
-            <button className="left-button" onClick={onBack}>
-              Back
-            </button>
-            <button className="right-button" onClick={handleConnectClick}>
-              Connect
-            </button>
+        )}
+        {route === "OverviewAccounts" && (
+          <div className="overview-wrapper">
+            <p>
+              Overview the list of authorized account(s), complete sign in by
+              clicking the button below.
+            </p>
+            <div className="accounts">
+              {selectedAccounts.map((account, index) => (
+                <div key={account.accountId}>
+                  <div className="account">
+                    <span>{account.accountId}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="action-buttons">
+              <button
+                className="middleButton"
+                onClick={handleSignIn}
+                disabled={accounts.length === 0}
+              >
+                Finish
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Fragment>
   );
 };

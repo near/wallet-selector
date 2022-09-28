@@ -1,20 +1,24 @@
 {
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "angular": "examples/angular",
     "core": "packages/core",
-    "modal-ui": "packages/modal-ui",
+    "default-wallets": "packages/default-wallets",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
-    "near-wallet": "packages/near-wallet",
+    "meteor-wallet": "packages/meteor-wallet",
+    "modal-ui": "packages/modal-ui",
+    "modal-ui-js": "packages/modal-ui-js",
     "my-near-wallet": "packages/my-near-wallet",
-    "sender": "packages/sender",
+    "near-wallet": "packages/near-wallet",
     "nightly": "packages/nightly",
-    "wallet-connect": "packages/wallet-connect",
     "nightly-connect": "packages/nightly-connect",
     "narwallets": "packages/narwallets",
-    "angular": "examples/angular",
     "react": "examples/react",
-    "wallet-utils": "packages/wallet-utils"
-    
+    "sender": "packages/sender",
+    "wallet-connect": "packages/wallet-connect",
+    "wallet-utils": "packages/wallet-utils",
+    "coin98-wallet": "packages/coin98-wallet"
   }
 }

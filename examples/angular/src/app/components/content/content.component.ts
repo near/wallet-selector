@@ -111,6 +111,23 @@ export class ContentComponent implements OnInit, OnDestroy {
     alert("Switched account to " + nextAccountId);
   }
 
+  async onVerifyOwner() {
+    const wallet = await this.selector.wallet();
+    try {
+      const owner = await wallet.verifyOwner({
+        message: "test message for verification",
+      });
+
+      if (owner) {
+        alert(`Signature for verification: ${JSON.stringify(owner)}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
+    }
+  }
+
   subscribeToEvents() {
     this.subscription = this.selector.store.observable
       .pipe(
@@ -206,6 +223,7 @@ export class ContentComponent implements OnInit, OnDestroy {
             message.value = "";
             donation.value = SUGGESTED_DONATION;
             fieldset.disabled = false;
+            multiple.checked = false;
             message.focus();
           })
           .catch((err) => {

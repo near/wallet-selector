@@ -1,5 +1,5 @@
 {
-  "root": "packages/wallet-connect",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-connect/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
         "entryFile": "packages/wallet-connect/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/wallet-connect/README.md",
@@ -39,7 +39,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/packages/wallet-connect"],
       "options": {
-        "jestConfig": "packages/wallet-connect/jest.config.js",
+        "jestConfig": "packages/wallet-connect/jest.config.ts",
         "passWithNoTests": true
       }
     },

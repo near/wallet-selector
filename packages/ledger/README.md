@@ -4,8 +4,15 @@ This is the [Ledger](https://www.ledger.com/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
+```bash
+# Using Yarn
+yarn add near-api-js@^0.44.2
+
+# Using NPM.
+npm install near-api-js@^0.44.2
+```
 ```bash
 # Using Yarn
 yarn add @near-wallet-selector/ledger
@@ -47,6 +54,9 @@ const ledger = setupLedger({
   iconUrl: ledgerIconUrl
 });
 ```
+
+## Known issues
+Existing dApps with Ledger support integrated may encounter this error `Device is already open`, it means your current integration and this package are conflicting and two ledger instances are being created. Avoid this scenario by supporting only this package.
 
 ## License
 

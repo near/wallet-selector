@@ -7,6 +7,7 @@ import {
   setupMyNearWallet,
   MyNearWalletParams,
 } from "@near-wallet-selector/my-near-wallet";
+import icon from "./icon";
 
 export type NearWalletParams = MyNearWalletParams;
 
@@ -27,7 +28,8 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 
 export function setupNearWallet({
   walletUrl,
-  iconUrl = "./assets/near-wallet-icon.png",
+  iconUrl = icon,
+  deprecated = false,
 }: NearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async (options) => {
     const wallet = await setupMyNearWallet({
@@ -45,9 +47,9 @@ export function setupNearWallet({
       metadata: {
         ...wallet.metadata,
         name: "NEAR Wallet",
-        description: null,
+        description: "Web wallet for NEAR Protocol",
         iconUrl,
-        deprecated: true,
+        deprecated,
         available: true,
       },
     };

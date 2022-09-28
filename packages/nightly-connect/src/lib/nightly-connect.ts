@@ -2,9 +2,17 @@ import { Signer, transactions as nearTransactions, utils } from "near-api-js";
 import {
   AppMetadata,
   AppNear,
+  clearPersistedSessionAccountId,
+  clearPersistedSessionId,
+  clearPersistedSessionPublicKey,
+  getPersistedSessionAccountId,
+  getPersistedSessionId,
+  getPersistedSessionPublicKey,
   NETWORK,
   NightlyConnectModal,
-} from "@nightlylabs/connect";
+  setPersistedSessionAccountId,
+  setPersistedSessionPublicKey,
+} from "@nightlylabs/connect-near";
 import {
   BridgeWallet,
   getActiveAccount,
@@ -14,6 +22,8 @@ import {
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 export interface NightlyConnectParams {
   appMetadata: AppMetadata;
@@ -43,7 +53,7 @@ const setupNightlyConnectState = (): NightlyConnectState => {
 const NightlyConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: NightlyConnectParams }
-> = async ({ store, params, logger, options, provider, emitter }) => {
+> = async ({ metadata, store, params, logger, options, provider, emitter }) => {
   const _state = setupNightlyConnectState();
 
   const getAccounts = () => {
@@ -90,6 +100,9 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   const signOut = async () => {
+    clearPersistedSessionId();
+    clearPersistedSessionPublicKey();
+    clearPersistedSessionAccountId();
     _state.client?.ws.close();
   };
 
@@ -121,10 +134,25 @@ const NightlyConnect: WalletBehaviourFactory<
           return resolve(existingAccounts);
         }
 
+        let persistedId = getPersistedSessionId();
+        const persistedPubkey = getPersistedSessionPublicKey();
+        const persistedAccountId = getPersistedSessionAccountId();
+
+        if (
+          params.appMetadata.persistent !== false &&
+          persistedId !== null &&
+          (persistedPubkey === null || persistedAccountId === null)
+        ) {
+          clearPersistedSessionId();
+          persistedId = null;
+        }
+
         try {
           AppNear.build({
             ...params,
             onUserConnect: (account) => {
+              setPersistedSessionPublicKey(account.publicKey.toString());
+              setPersistedSessionAccountId(account.accountId.toString());
               _state.accounts.push(account);
               _state.modal.onClose = undefined;
               _state.modal.closeModal();
@@ -137,10 +165,25 @@ const NightlyConnect: WalletBehaviourFactory<
               emitter.emit("signedOut", null);
             };
             _state.client = client;
-            _state.modal.openModal(client.sessionId, NETWORK.NEAR);
-            _state.modal.onClose = () => {
-              reject(new Error("User cancelled pairing"));
-            };
+
+            if (
+              params.appMetadata.persistent !== false &&
+              persistedId === client.sessionId &&
+              persistedPubkey !== null &&
+              persistedAccountId !== null
+            ) {
+              _state.accounts.push({
+                accountId: persistedAccountId,
+                publicKey: utils.PublicKey.from(persistedPubkey),
+              });
+              _state.modal.onClose = undefined;
+              resolve(getAccounts());
+            } else {
+              _state.modal.openModal(client.sessionId, NETWORK.NEAR);
+              _state.modal.onClose = () => {
+                reject(new Error("User cancelled pairing"));
+              };
+            }
           });
         } catch (err) {
           signOut();
@@ -153,6 +196,12 @@ const NightlyConnect: WalletBehaviourFactory<
 
     async getAccounts() {
       return getAccounts().map(({ accountId }) => ({ accountId }));
+    },
+
+    async verifyOwner({ message }) {
+      logger.log("NightlyConnect:verifyOwner", { message });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -188,22 +237,28 @@ const NightlyConnect: WalletBehaviourFactory<
         options.network
       );
 
-      return Promise.all(
-        signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
-      );
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTxs.length; i++) {
+        results.push(await provider.sendTransaction(signedTxs[i]));
+      }
+
+      return results;
     },
   };
 };
 
 export type SetupNightlyConnectParams = NightlyConnectParams & {
   iconUrl?: string;
+  deprecated?: boolean;
 };
 
 export function setupNightlyConnect({
   appMetadata,
   timeout,
   url,
-  iconUrl = "./assets/nightly-connect.png",
+  iconUrl = icon,
+  deprecated = false,
 }: SetupNightlyConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -211,9 +266,9 @@ export function setupNightlyConnect({
       type: "bridge",
       metadata: {
         name: "Nightly Connect",
-        description: null,
+        description: "Upcoming cutting-edge crypto bridge wallet.",
         iconUrl: iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: (options) => {

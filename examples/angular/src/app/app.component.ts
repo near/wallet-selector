@@ -1,16 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
-import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { setupModal } from "@near-wallet-selector/modal-ui";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+// import { setupModal } from "@near-wallet-selector/modal-ui";
+// import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { setupModal } from "@near-wallet-selector/modal-ui-js";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -43,12 +46,13 @@ export class AppComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
+        ...(await setupDefaultWallets()),
         setupNearWallet(),
-        setupMyNearWallet(),
         setupSender(),
         setupMathWallet(),
         setupNightly(),
-        setupLedger(),
+        setupMeteorWallet(),
+        setupCoin98Wallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
@@ -59,7 +63,7 @@ export class AppComponent implements OnInit {
           },
         }),
         setupNightlyConnect({
-          url: "wss://ncproxy.nightly.app/app",
+          url: "wss://relay.nightly.app/app",
           appMetadata: {
             additionalInfo: "",
             application: "NEAR Wallet Selector",
