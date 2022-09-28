@@ -63,6 +63,9 @@
       ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
+      ],
+      "@near-wallet-selector/coin98-wallet": [
+        "packages/coin98-wallet/src/index.ts"
       ]
     }
   },
