@@ -31,7 +31,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   store,
-  provider,
   emitter,
   logger,
 }) => {
@@ -47,30 +46,31 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return [];
   };
 
-  const _validateAccessKey = ({
+  const _validateAccessKey = async ({
     accountId,
     publicKey,
   }: ViewAccessKeyParams) => {
     logger.log("validateAccessKey", { accountId, publicKey });
-
-    return provider.viewAccessKey({ accountId, publicKey }).then(
-      (accessKey) => {
-        logger.log("validateAccessKey:accessKey", { accessKey });
-
-        if (accessKey.permission !== "FullAccess") {
-          throw new Error("Public key requires 'FullAccess' permission");
-        }
-
-        return accessKey;
+    if (!_state.wallet) {
+      throw new Error("Wallet is not installed");
+    }
+    const accessKey = await _state.wallet.request("near", {
+      method: "query",
+      params: {
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: accountId,
+        public_key: publicKey,
       },
-      (err) => {
-        if (err.type === "AccessKeyDoesNotExist") {
-          return null;
-        }
+    });
 
-        throw err;
-      }
-    );
+    logger.log("validateAccessKey:accessKey", { accessKey });
+
+    if (accessKey.permission !== "FullAccess") {
+      throw new Error("Public key requires 'FullAccess' permission");
+    }
+
+    return accessKey;
   };
 
   const convertActions = (actions: Array<Action>) => {
@@ -201,7 +201,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      const accessKey = await provider.viewAccessKey(_state.account);
+      const accessKey = await _validateAccessKey(_state.account);
 
       const nonce = accessKey.nonce + 1;
 
@@ -236,7 +236,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      const accessKey = await provider.viewAccessKey(_state.account);
+      const accessKey = await _validateAccessKey(_state.account);
       const publicKey = _state.account.publicKey;
 
       let nonce = accessKey.nonce;
