@@ -127,16 +127,18 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     if (_state.wallet) {
       _state.wallet.on("dapp:accountsChanged", async (newAccountId) => {
         logger.log("onAccountChange", newAccountId);
-        signOut();
+        await signOut();
       });
 
       _state.wallet.on("dapp:chainChanged", async (rpc) => {
         logger.log("onNetworkChange", rpc);
 
-        if (options.network.networkId !== rpc.networkId) {
-          signOut();
+        const networkId = rpc.split(":")[1] === "near" ? "mainnet" : "testnet";
 
-          emitter.emit("networkChanged", { networkId: rpc.networkId });
+        if (options.network.networkId !== networkId) {
+          await signOut();
+
+          emitter.emit("networkChanged", { networkId: networkId });
         }
       });
     }
