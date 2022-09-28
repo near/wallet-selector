@@ -10,10 +10,15 @@ import {
   Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
-import type { InjectedNarwallets, SignAndSendTransactionParams, SignAndSendTransactionResponse } from "./injected-narwallets";
+import type {
+  InjectedNarwallets,
+  SignAndSendTransactionParams,
+  SignAndSendTransactionResponse,
+} from "./injected-narwallets";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { providers } from "near-api-js";
+import { CLIENT_RENEG_LIMIT } from "tls";
 
 // declare global {
 //   interface Window {
@@ -30,99 +35,132 @@ interface NarwalletsState {
 }
 
 interface PendingPromises {
-  id: number
-  code: string
-  resolve: (value: any) => void
-  reject: (reason?: any) => void
-  timeout?: NodeJS.Timeout
+  id: number;
+  code: string;
+  resolve: (value: any) => void;
+  reject: (reason?: any) => void;
+  timeout?: NodeJS.Timeout;
 }
 
-let id: number = 0
-let pendingPromises: PendingPromises[] = []
+let id = 0;
+const pendingPromises: Array<PendingPromises> = [];
 
 const isInstalled = (): Promise<boolean> => {
   const code = "is-installed";
-  return sendToNarwallets(code, true)
+  return sendToNarwallets(code, true);
 };
 
 const isSignedIn = (): Promise<boolean> => {
   const code = "is-signed-in";
-  return sendToNarwallets(code, true)
+  return sendToNarwallets(code, true);
 };
 
 const getAccountId = (): Promise<string> => {
   const code = "get-account-id";
-  return sendToNarwallets(code, true)
+  return sendToNarwallets(code, true);
 };
 
 interface SignAndSendResponseError {
-  error: string
+  error: string;
 }
 
-const callSignAndSendTransaction = (params: SignAndSendTransactionParams): Promise<providers.FinalExecutionOutcome|SignAndSendResponseError> => {
+const callSignAndSendTransaction = (
+  params: SignAndSendTransactionParams
+): Promise<providers.FinalExecutionOutcome | SignAndSendResponseError> => {
   const code = "sign-and-send-transaction";
-  return sendToNarwallets(code, false, params)
+  return sendToNarwallets(code, false, params);
 };
 
-const callSignAndSendTransactions = (params: SignAndSendTransactionParams[]): Promise<providers.FinalExecutionOutcome[]|SignAndSendResponseError> => {
+const callSignAndSendTransactions = (
+  params: Array<SignAndSendTransactionParams>
+): Promise<
+  Array<providers.FinalExecutionOutcome> | SignAndSendResponseError
+> => {
   const code = "sign-and-send-transactions";
-  return sendToNarwallets(code, false, params)
+  return sendToNarwallets(code, false, params);
 };
 
-const sendToNarwallets = (code: string, withTimeout: boolean = false, params?: any): Promise<any> => {
+const sendToNarwallets = (
+  code: string,
+  withTimeout = false,
+  params?: any
+): Promise<any> => {
   const promise = new Promise<any>((resolve, reject) => {
-    id++
-    let promiseTimeout
-    if(withTimeout) {
+    id++;
+    let promiseTimeout;
+    if (withTimeout) {
       promiseTimeout = setTimeout(() => {
-          return reject(Error("timeout"));
+        return reject(Error("timeout"));
       }, 1000);
     }
-    pendingPromises.push({id, code, resolve, reject, timeout: promiseTimeout });
-    
+    pendingPromises.push({
+      id,
+      code,
+      resolve,
+      reject,
+      timeout: promiseTimeout,
+    });
+
     window.postMessage({
       id,
       src: "ws",
       type: "nw",
       code,
       dest: "ext",
-      params
+      params,
     });
-  })
-  return promise
+  });
+  return promise;
   // return waitFor(() => window.narwallets !== undefined).catch(() => false);
 };
 
-function findPendingPromiseById(id: number): PendingPromises|undefined {
-  return pendingPromises.filter(c => c.id == id)[0]
+function findPendingPromiseById(id: number): PendingPromises | undefined {
+  return pendingPromises.filter((c) => c.id == id)[0];
 }
 
 function removePendingPromise(callback: PendingPromises) {
   const index = pendingPromises.indexOf(callback);
-  if (index > -1) { // only splice array when item is found
-      pendingPromises.splice(index, 1); // 2nd parameter means remove one item only
+  if (index > -1) {
+    // only splice array when item is found
+    pendingPromises.splice(index, 1); // 2nd parameter means remove one item only
   }
 }
 
 const setupNarwalletsState = (): void => {
+  console.log("Setting message listener to window")
   window.addEventListener("message", (event) => {
     if (event.source != window) {
       return;
     }
-    
-    if (event.data.type && (event.data.type == "nw") && event.data.dest && event.data.dest == "page" && event.data.result && event.data.result.id) {
-      const pendingPromise = findPendingPromiseById(event.data.result.id)
-      if(pendingPromise) {
-        removePendingPromise(pendingPromise)
-        if(pendingPromise.timeout) clearTimeout(pendingPromise.timeout)
-        if(event.data.error) {
-          pendingPromise.reject(event.data.error)
+
+    console.log("Message received");
+    console.log("Event data:", event.data)
+    if (
+      event.data.type &&
+      event.data.type == "nw" &&
+      event.data.dest &&
+      event.data.dest == "page" &&
+      event.data.result &&
+      event.data.result.id
+    ) {
+      const pendingPromise = findPendingPromiseById(event.data.result.id);
+      if (!pendingPromise) {
+        console.log("Pending promise not found with id ", event.data.result.id);
+      }
+      if (pendingPromise) {
+        console.log("Peding promise found. Code:", pendingPromise.code)
+        removePendingPromise(pendingPromise);
+        if (pendingPromise.timeout) {
+          clearTimeout(pendingPromise.timeout);
+        }
+        if (event.data.error) {
+          pendingPromise.reject(event.data.error);
         } else {
-          pendingPromise.resolve(event.data.result.data)
+          pendingPromise.resolve(event.data.result.data);
         }
       }
     }
-  })
+  });
   // let wallet = window.narwallets!;
 
   // return {
@@ -150,9 +188,8 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
     cleanup();
 
-    const res = await sendToNarwallets("sign-out")
+    const res = await sendToNarwallets("sign-out");
     // const res = await _state.wallet.signOut();
-    console.log("DRes", res)
     if (res === true) {
       return;
     }
@@ -176,13 +213,10 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     //   logger.log("onAccountChange", newAccountId);
     //   emitter.emit("signedOut", null);
     // });
-
     // _state.wallet.on("rpcChanged", async (rpc) => {
     //   logger.log("onNetworkChange", rpc);
-
     //   if (options.network.networkId !== rpc.networkId) {
     //     await signOut();
-
     //     emitter.emit("signedOut", null);
     //     emitter.emit("networkChanged", { networkId: rpc.networkId });
     //   }
@@ -219,7 +253,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId">>
-  ): SignAndSendTransactionParams[] => {
+  ): Array<SignAndSendTransactionParams> => {
     return transactions.map((transaction) => {
       return {
         receiverId: transaction.receiverId,
@@ -235,24 +269,22 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
   return {
     // async signIn({ contractId, methodNames }) {
     async signIn() {
-      
-      const isUserSignedIn = await isSignedIn()
-      let code
-      if(!isUserSignedIn) {
+      const isUserSignedIn = await isSignedIn();
+      let code;
+      if (!isUserSignedIn) {
         code = "sign-in";
       } else {
         code = "get-account-id";
       }
-      const response = await sendToNarwallets(code)
-      console.log("Account id", response)
-      return [{ accountId: response }]
-      
+      const response = await sendToNarwallets(code);
+      console.log("Account id", response);
+      return [{ accountId: response }];
     },
 
     signOut,
 
-    async getAccounts(): Promise<Account[]> {
-      const accountId = await getAccountId()
+    async getAccounts(): Promise<Array<Account>> {
+      const accountId = await getAccountId();
       return [{ accountId }];
     },
 
@@ -261,17 +293,18 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const { contract } = store.getState();
 
-      if (!await isSignedIn() || !contract) {
+      if (!(await isSignedIn()) || !contract) {
         throw new Error("Wallet not signed in");
       }
       return callSignAndSendTransaction({
         receiverId: receiverId || contract.contractId,
         actions: transformActions(actions),
       }).then((res) => {
-        console.log("DResponse", res)
-        if ("error" in res) {
+        console.log("DResponse", res, typeof res);
+        if (typeof res === 'object' && "error" in res) {
           throw new Error(res.error);
         }
+        
 
         return res;
       });
@@ -280,25 +313,24 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      if (!await isSignedIn()) {
+      if (!(await isSignedIn())) {
         throw new Error("Wallet not signed in");
       }
 
       return callSignAndSendTransactions(
-          transformTransactions(transactions),
-        )
-        .then((res) => {
-          console.log("DSignAndSendTransactions", res)
-          if ("error" in res) {
-            throw new Error(res.error);
-          }
-          // Shouldn't happen but avoids inconsistent responses.
-          if (!res.length) {
-            throw new Error("Invalid response");
-          }
+        transformTransactions(transactions)
+      ).then((res) => {
+        console.log("DSignAndSendTransactions", res);
+        if ("error" in res) {
+          throw new Error(res.error);
+        }
+        // Shouldn't happen but avoids inconsistent responses.
+        if (!res.length) {
+          throw new Error("Invalid response");
+        }
 
-          return res;
-        });
+        return res;
+      });
     },
   };
 };
@@ -307,10 +339,10 @@ export function setupNarwallets({
   iconUrl = "./assets/narwallets-logo.png",
 }: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    setupNarwalletsState()
+    setupNarwalletsState();
     const mobile = isMobile();
     const installed = await isInstalled();
-    console.log(installed)
+    console.log(installed);
     if (mobile) {
       return null;
     }
