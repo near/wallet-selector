@@ -187,7 +187,44 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async verifyOwner({ message }) {
       logger.log("Welldone:verifyOwner", { message });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      const account = _state.account;
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+
+      const accountId = account.accountId;
+      const pubKey = utils.PublicKey.fromString(account.publicKey);
+      const block = await _state.wallet.request("near", {
+        method: "block",
+        params: {
+          finality: "final",
+        },
+      });
+
+      const data = {
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      };
+      const encoded = JSON.stringify(data);
+
+      const signed = await _state.wallet.request("near", {
+        method: "dapp:sign",
+        params: [encoded],
+      });
+
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
