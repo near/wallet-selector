@@ -223,7 +223,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return {
         ...data,
         signature: Buffer.from(signed.signature).toString("base64"),
-        keyType: signed.publicKey.keyType,
       };
     },
 
