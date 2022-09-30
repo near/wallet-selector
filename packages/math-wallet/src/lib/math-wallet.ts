@@ -12,6 +12,7 @@ import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -180,7 +181,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export const setupMathWallet = ({
-  iconUrl = "./assets/math-wallet-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
@@ -196,7 +197,7 @@ export const setupMathWallet = ({
       type: "injected",
       metadata: {
         name: "Math Wallet",
-        description: null,
+        description: "World's First Insured Crypto Wallet.",
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc",

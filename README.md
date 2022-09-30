@@ -4,6 +4,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 - [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
+- [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
@@ -17,7 +18,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 [React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
-![Preview](./images/preview-img.PNG)
+![Preview](./images/preview-img.png)
 
 ## Installation and Usage
 
@@ -48,6 +49,7 @@ yarn add \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
+  @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -62,6 +64,7 @@ npm install \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
+  @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -71,7 +74,7 @@ npm install \
   @near-wallet-selector/default-wallets
 ```
 
-Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
 ```bash
 # Using Yarn
@@ -89,6 +92,7 @@ import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
@@ -105,6 +109,7 @@ const selector = await setupWalletSelector({
     setupNearWallet(),
     setupMyNearWallet(),
     setupSender(),
+    setupHereWallet(),
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),
@@ -120,7 +125,7 @@ const selector = await setupWalletSelector({
       },
     }),
     setupNightlyConnect({
-      url: "wss://ncproxy.nightly.app/app",
+      url: "wss://relay.nightly.app/app",
       appMetadata: {
         additionalInfo: "",
         application: "NEAR Wallet Selector",

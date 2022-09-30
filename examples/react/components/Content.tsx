@@ -199,6 +199,7 @@ const Content: React.FC = () => {
               message.value = "";
               donation.value = SUGGESTED_DONATION;
               fieldset.disabled = false;
+              multiple.checked = false;
               message.focus();
             })
             .catch((err) => {
