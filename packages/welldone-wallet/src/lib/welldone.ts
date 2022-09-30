@@ -29,7 +29,6 @@ async function initWalletState(): Promise<WelldoneWalletState> {
 
 const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
-  metadata,
   store,
   emitter,
   logger,
