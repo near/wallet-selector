@@ -1075,6 +1075,20 @@
 
 .scan-qr-code .qr-code .copy-btn{
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--selected-wallet-bg);
+  font-size: 14px;
+}
+.scan-qr-code .qr-code .copy-btn svg{
+  margin-right: 5px;
+  width: 24px;
+  height: 24px;
+}
+.scan-qr-code .qr-code .notification{
+  font-size: 14px;
 }
 
 
@@ -1086,6 +1100,7 @@
     gap: 24px;
     padding:24px;
     bottom: 0;
+    font-size: 14px;
 }
 
 .scan-qr-code .footer .btn{

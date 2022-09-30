@@ -2,6 +2,7 @@ import React from "react";
 import { ModalHeader } from "./ModalHeader";
 import QRCode from "qrcode";
 import copy from "copy-to-clipboard";
+import CopyIcon from "./CopyIcon";
 
 interface ScanQRCodeProps {
   uri?: string;
@@ -57,6 +58,7 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
           <div className="notification">{notification}</div>
         ) : (
           <div className="copy-btn" onClick={copyToClipboard}>
+            <CopyIcon />
             Copy to clipboard
           </div>
         )}

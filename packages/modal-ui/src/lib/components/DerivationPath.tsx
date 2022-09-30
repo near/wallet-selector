@@ -193,7 +193,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         accounts: mapAccounts,
       })
       .then(() => onConnected())
-      .catch((err) => {
+      .catch((err: Error) => {
         onError(`Error: ${err.message}`, hardwareWallet!);
       });
   };
