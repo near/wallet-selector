@@ -56,6 +56,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       url = `https://wallet.${subdomain}near.org`;
     }
 
+    if (module.id === "xoth") {
+      const subdomain = networkId === "testnet" ? "testnet." : "";
+      url = `https://wallet.${subdomain}xoth.app`;
+    }
+
     if (
       (url === "" && module.type === "bridge") ||
       module.type === "hardware"

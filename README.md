@@ -11,6 +11,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
+- [Xoth](https://www.npmjs.com/package/@near-wallet-selector/xoth) - Browser wallet.
 
 ## Preview
 
