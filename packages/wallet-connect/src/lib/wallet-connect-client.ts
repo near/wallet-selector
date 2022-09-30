@@ -1,7 +1,5 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
-import QRCodeModal from "@walletconnect/qrcode-modal";
-import { SessionTypes } from "@walletconnect/types";
 
 class WalletConnectClient {
   private client: Client;
@@ -33,23 +31,7 @@ class WalletConnectClient {
   }
 
   async connect(params: EngineTypes.ConnectParams) {
-    return new Promise<SessionTypes.Struct>((resolve, reject) => {
-      this.client
-        .connect(params)
-        .then(({ uri, approval }) => {
-          if (uri) {
-            QRCodeModal.open(uri, () => {
-              reject(new Error("User cancelled pairing"));
-            });
-          }
-
-          approval()
-            .then(resolve)
-            .catch(reject)
-            .finally(() => QRCodeModal.close());
-        })
-        .catch(reject);
-    });
+    return await this.client.connect(params);
   }
 
   async request<Response>(

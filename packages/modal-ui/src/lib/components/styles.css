@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
+ @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
 
 #near-wallet-selector-modal {
     --backdrop-bg: #26262630;
@@ -1050,12 +1050,61 @@
     margin-right: 5px;
 }
 
+
+/************* Scan QR Code **********/
+.scan-qr-code{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.scan-qr-code .qr-code{
+    height: calc(100% - 200px);
+    border: 1px solid var(--wallet-selector-content-bg, var(--content-bg));
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 64px;
+}
+
+.scan-qr-code .qr-code svg{
+  width: 239px;
+  height: 239px;
+}
+
+.scan-qr-code .qr-code .copy-btn{
+  cursor: pointer;
+}
+
+
+.scan-qr-code .footer{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding:24px;
+    bottom: 0;
+}
+
+.scan-qr-code .footer .btn{
+  background: var(--home-button-bg);
+  color: var(--text-color)
+}
+
+
+
+
 /************* Responsive and mobile **********/
 
 @media (min-width: 577px) {
     .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body .what-wallet-mobile {
         display: none;
     }
+    .scan-qr-code .footer{
+      position: absolute;
+  }
 }
 
 @media (min-width: 769px) {
@@ -1186,6 +1235,7 @@
     .nws-modal-wrapper .nws-modal .modal-right .nws-modal-body {
         margin-top: 10px;
         padding: 0;
+        height: 100%;
     }
 
     .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {

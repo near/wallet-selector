@@ -43,7 +43,6 @@ export const setupWalletSelector = async (
           if (id) {
             throw new Error("Invalid wallet id");
           }
-
           throw new Error("No wallet selected");
         }
 
@@ -63,7 +62,6 @@ export const setupWalletSelector = async (
       },
       isSignedIn() {
         const { accounts } = store.getState();
-
         return Boolean(accounts.length);
       },
       on: (eventName, callback) => {

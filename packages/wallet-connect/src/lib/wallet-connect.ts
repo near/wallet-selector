@@ -17,6 +17,7 @@ import type {
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 import WalletConnectClient from "./wallet-connect-client";
 import icon from "./icon";
@@ -57,6 +58,7 @@ interface WalletConnectState {
   session: SessionTypes.Struct | null;
   keystore: keyStores.KeyStore;
   subscriptions: Array<Subscription>;
+  uri?: string;
 }
 
 const WC_METHODS = [
@@ -96,6 +98,7 @@ const setupWalletConnectState = async (
     session,
     keystore,
     subscriptions: [],
+    uri: "",
   };
 };
 
@@ -111,6 +114,7 @@ const WalletConnect: WalletBehaviourFactory<
   emitter,
   logger,
   metadata,
+  // handleSetURI,
 }) => {
   const _state = await setupWalletConnectState(id, params);
 
@@ -471,7 +475,7 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
-        _state.session = await _state.client.connect({
+        const { uri, approval } = await _state.client.connect({
           requiredNamespaces: {
             near: {
               chains: [getChainId()],
@@ -481,14 +485,27 @@ const WalletConnect: WalletBehaviourFactory<
           },
         });
 
-        await requestSignIn({ receiverId: contractId, methodNames });
+        const handleConnectionApproved = async () => {
+          _state.session = await approval();
 
-        setupEvents();
+          await requestSignIn({ receiverId: contractId, methodNames });
 
-        return getAccounts();
+          setupEvents();
+
+          return getAccounts();
+        };
+
+        const handleOpenDefaultModal = () => {
+          if (uri) {
+            QRCodeModal.open(uri, () => {
+              new Error("User cancelled pairing");
+            });
+          }
+        };
+
+        return { uri, handleConnectionApproved, handleOpenDefaultModal };
       } catch (err) {
         await signOut();
-
         throw err;
       }
     },

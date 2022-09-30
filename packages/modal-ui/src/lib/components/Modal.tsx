@@ -12,6 +12,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
+import ScanQRCode from "./ScanQRCode";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -151,6 +152,23 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
+      if (wallet.id === "wallet-connect") {
+        const { uri, handleConnectionApproved, handleOpenDefaultModal } =
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+          });
+        setRoute({
+          name: "ScanQRCode",
+          params: {
+            uri,
+            handleOpenDefaultModal,
+          },
+        });
+        await handleConnectionApproved();
+        return;
+      }
+
       await wallet.signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
@@ -238,6 +256,13 @@ export const Modal: React.FC<ModalProps> = ({
                   });
                 }}
                 onCloseModal={handleDismissClick}
+              />
+            )}
+            {route.name === "ScanQRCode" && (
+              <ScanQRCode
+                handleOpenDefaultModal={route.params?.handleOpenDefaultModal}
+                onCloseModal={handleDismissClick}
+                uri={route.params?.uri}
               />
             )}
             {route.name === "WalletNetworkChanged" && (

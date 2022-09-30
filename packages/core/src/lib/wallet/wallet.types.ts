@@ -55,7 +55,8 @@ export interface SignAndSendTransactionsParams {
 }
 
 interface BaseWalletBehaviour {
-  signIn(params: SignInParams): Promise<Array<Account>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signIn(params: SignInParams): Promise<Array<Account>> | any;
   signOut(): Promise<void>;
   getAccounts(): Promise<Array<Account>>;
   verifyOwner(params: VerifyOwnerParams): Promise<VerifiedOwner | void>;

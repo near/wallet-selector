@@ -1,4 +1,7 @@
 {
   "name": "@near-wallet-selector/modal-ui",
-  "version": "7.0.3"
+  "version": "7.0.3",
+  "dependencies": {
+    "react-qr-code": "^2.0.8"
+  }
 }

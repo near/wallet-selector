@@ -68,6 +68,14 @@ export type WalletConnected = {
   params?: WalletConnectedParams;
 };
 
+export type ScanQRCode = {
+  name: "ScanQRCode";
+  params?: {
+    uri: string;
+    handleOpenDefaultModal: () => void;
+  };
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
@@ -76,4 +84,5 @@ export type ModalRoute =
   | WalletNetworkChangedModalRoute
   | WalletConnectingModalRoute
   | WalletHome
-  | WalletConnected;
+  | WalletConnected
+  | ScanQRCode;
