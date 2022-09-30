@@ -30,10 +30,10 @@ const ScanQRCode: React.FC<ScanQRCodeProps> = ({
     const success = copy(uri);
     if (success) {
       setNotification("Copied to clipboard");
-      setInterval(() => setNotification(""), 1200);
+      setTimeout(() => setNotification(""), 1200);
     } else {
-      setNotification("Error");
-      setInterval(() => setNotification(""), 1200);
+      setNotification("Failed to copy to clipboard");
+      setTimeout(() => setNotification(""), 1200);
     }
   };
 
