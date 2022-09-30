@@ -1,6 +1,6 @@
 # @near-wallet-selector/xoth
 
-This is the [My NEAR Wallet](https://mynearwallet.com/) package for NEAR Wallet Selector.
+This is the [Xoth Wallet](https://xoth.app/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -25,17 +25,14 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupMyNearWallet } from "@near-wallet-selector/xoth";
+import { setupXothWallet } from "@near-wallet-selector/xoth";
 
 // My NEAR Wallet for Wallet Selector can be setup without any params or it can take two optional params.
-const myNearWallet = setupMyNearWallet({
-  walletUrl: "https://testnet.mynearwallet.com",
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
-});
+const xothWallet = setupXothWallet();
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [myNearWallet],
+  modules: [xothWallet],
 });
 ```
 
@@ -49,11 +46,11 @@ const selector = await setupWalletSelector({
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupMyNearWallet } from "@near-wallet-selector/xoth";
-import myNearWalletIconUrl from "@near-wallet-selector/xoth/assets/xoth-icon.png";
+import { setupXothWallet } from "@near-wallet-selector/xoth";
+import xothWalletIconUrl from "@near-wallet-selector/xoth/assets/xoth-icon.png";
 
-const myNearWallet = setupMyNearWallet({
-  iconUrl: myNearWalletIconUrl
+const xothWallet = setupXothWallet({
+  iconUrl: xothWalletIconUrl
 });
 ```
 
