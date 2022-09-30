@@ -13,6 +13,7 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -44,6 +45,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       modules: [
         ...(await setupDefaultWallets()),
         setupNearWallet(),
+        setupCoin98Wallet(),
         setupSender(),
         setupMathWallet(),
         setupNightly(),

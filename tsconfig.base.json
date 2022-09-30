@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -40,18 +43,28 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/nightly": ["packages/nightly/src/index.ts"],
+      "@near-wallet-selector/nightly": [
+        "packages/nightly/src/index.ts"
+      ],
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
       ],
-      "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
+      "@near-wallet-selector/sender": [
+        "packages/sender/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],
       "@near-wallet-selector/wallet-utils": [
         "packages/wallet-utils/src/index.ts"
+      ],
+      "@near-wallet-selector/coin98-wallet": [
+        "packages/coin98-wallet/src/index.ts"
       ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
