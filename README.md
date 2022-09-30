@@ -108,6 +108,7 @@ const selector = await setupWalletSelector({
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),
+    setupWelldoneWallet(),
     setupLedger(),
     setupWalletConnect({
       projectId: "c4f79cc...",
