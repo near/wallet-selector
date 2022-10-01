@@ -12,6 +12,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
+import { ScanQRCode } from "./ScanQRCode";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -42,11 +43,6 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
-
-  // TODO: remove eslint related comments after when all below variables are used properly.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [useDefaultQRModal, setUseDefaultQRModal] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
 
   useEffect(() => {
@@ -65,6 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
         },
       });
     }
+    setBridgeWalletUri("");
   }, [visible]);
 
   useEffect(() => {
@@ -102,7 +99,10 @@ export const Modal: React.FC<ModalProps> = ({
     return () => window.removeEventListener("keydown", close);
   }, [handleDismissClick]);
 
-  const handleWalletClick = async (module: ModuleState) => {
+  const handleWalletClick = async (
+    module: ModuleState,
+    defaultModal: boolean
+  ) => {
     setSelectedWallet(module);
 
     const { selectedWalletId } = selector.store.getState();
@@ -142,11 +142,6 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
-      setRoute({
-        name: "WalletConnecting",
-        params: { wallet: wallet },
-      });
-
       if (wallet.type === "hardware") {
         setRoute({
           name: "DerivationPath",
@@ -157,23 +152,28 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
-      if (wallet.type === "bridge") {
+      setRoute({
+        name: "WalletConnecting",
+        params: { wallet: wallet },
+      });
+
+      if (wallet.type === "bridge" && wallet.id === "wallet-connect") {
         const subscription = selector.on("uriChanged", ({ uri }) => {
-          // TODO: set uri for ScanQRCode route to build the QR Code and remove console.log below.
-          // eslint-disable-next-line no-console
-          console.log({ uri });
           setBridgeWalletUri(uri);
+          setRoute({
+            name: "ScanQRCode",
+            params: {
+              uri,
+              wallet,
+            },
+          });
         });
 
-        // TODO: Handle switching to ScanQRCode route.
-
-        if (wallet.id === "wallet-connect") {
-          await wallet.signIn({
-            contractId: options.contractId,
-            methodNames: options.methodNames,
-            defaultQRModal: useDefaultQRModal,
-          });
-        }
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+          defaultQRModal: defaultModal,
+        });
 
         subscription.remove();
         handleDismissClick();
@@ -219,7 +219,9 @@ export const Modal: React.FC<ModalProps> = ({
             <h2>Connect Your Wallet</h2>
           </div>
           <WalletOptions
-            handleWalletClick={handleWalletClick}
+            handleWalletClick={(module) => {
+              handleWalletClick(module, false);
+            }}
             selector={selector}
           />
         </div>
@@ -231,7 +233,7 @@ export const Modal: React.FC<ModalProps> = ({
                 module={route.params?.module}
                 onBack={(retry) => {
                   if (retry) {
-                    handleWalletClick(selectedWallet!);
+                    handleWalletClick(selectedWallet!, false);
                   }
                   setAlertMessage(null);
                   setRoute({
@@ -312,6 +314,16 @@ export const Modal: React.FC<ModalProps> = ({
               <WalletConnected
                 module={selectedWallet!}
                 onCloseModal={handleDismissClick}
+              />
+            )}
+
+            {route.name === "ScanQRCode" && (
+              <ScanQRCode
+                handleOpenDefaultModal={() => {
+                  handleWalletClick(selectedWallet!, true);
+                }}
+                onCloseModal={handleDismissClick}
+                uri={bridgeWalletUri}
               />
             )}
           </div>
