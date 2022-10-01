@@ -5,7 +5,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/narwallets",
         "tsConfig": "packages/narwallets/tsconfig.lib.json",
@@ -13,7 +15,10 @@
         "entryFile": "packages/narwallets/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "umd", "cjs"],
+        "format": [
+          "esm",
+          "cjs"
+        ],
         "assets": [
           {
             "glob": "packages/narwallets/README.md",
@@ -30,14 +35,20 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["packages/narwallets/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/narwallets/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/narwallets"],
+      "outputs": [
+        "coverage/packages/narwallets"
+      ],
       "options": {
         "jestConfig": "packages/narwallets/jest.config.js",
         "passWithNoTests": true
@@ -50,5 +61,7 @@
       }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": [
+    "injected-wallet"
+  ]
 }

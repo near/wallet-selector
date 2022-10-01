@@ -8,6 +8,7 @@ import {
   FunctionCallAction,
   Optional,
   Account,
+  VerifiedOwner,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type {
@@ -17,7 +18,7 @@ import type {
 } from "./injected-narwallets";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
-import { providers } from "near-api-js";
+import { providers, utils } from "near-api-js";
 import { CLIENT_RENEG_LIMIT } from "tls";
 
 // declare global {
@@ -169,8 +170,11 @@ const setupNarwalletsState = (): void => {
 };
 
 const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
+  options,
   metadata,
   store,
+  provider,
+  emitter,
   logger,
 }) => {
   // const _state = setupNarwalletsState();
@@ -286,6 +290,20 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     async getAccounts(): Promise<Array<Account>> {
       const accountId = await getAccountId();
       return [{ accountId }];
+    },
+
+    async verifyOwner({ message }) {
+      logger.log("Narwallets:verifyOwner", { message });
+      throw Error("TODO")
+      // check Sender implementation
+      return {
+        accountId: "",
+        message: "",
+        blockId: "",
+        publicKey: "",
+        signature: "",
+        keyType: 0 as utils.key_pair.KeyType,
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
