@@ -43,6 +43,12 @@ export const Modal: React.FC<ModalProps> = ({
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
 
+  // TODO: remove eslint related comments after when all below variables are used properly.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [useDefaultQRModal, setUseDefaultQRModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
+
   useEffect(() => {
     setRoute({
       name: "WalletHome",
@@ -148,6 +154,29 @@ export const Modal: React.FC<ModalProps> = ({
             walletId: wallet.id || "ledger",
           },
         });
+        return;
+      }
+
+      if (wallet.type === "bridge") {
+        const subscription = selector.on("uriChanged", ({ uri }) => {
+          // TODO: set uri for ScanQRCode route to build the QR Code and remove console.log below.
+          // eslint-disable-next-line no-console
+          console.log({ uri });
+          setBridgeWalletUri(uri);
+        });
+
+        // TODO: Handle switching to ScanQRCode route.
+
+        if (wallet.id === "wallet-connect") {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            defaultQRModal: useDefaultQRModal,
+          });
+        }
+
+        subscription.remove();
+        handleDismissClick();
         return;
       }
 

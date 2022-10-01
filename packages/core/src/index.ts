@@ -11,6 +11,7 @@ export type {
   Subscription,
   StorageService,
   JsonStorageService,
+  EventEmitterService,
 } from "./lib/services";
 export type { Optional } from "./lib/utils.types";
 

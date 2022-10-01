@@ -14,6 +14,8 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
+  WalletEvents,
+  EventEmitterService,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -71,9 +73,10 @@ const WC_EVENTS = ["chainChanged", "accountsChanged"];
 
 const setupWalletConnectState = async (
   id: string,
-  params: WalletConnectExtraOptions
+  params: WalletConnectExtraOptions,
+  emitter: EventEmitterService<WalletEvents>
 ): Promise<WalletConnectState> => {
-  const client = new WalletConnectClient();
+  const client = new WalletConnectClient(emitter);
   let session: SessionTypes.Struct | null = null;
   const keystore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
@@ -112,7 +115,7 @@ const WalletConnect: WalletBehaviourFactory<
   logger,
   metadata,
 }) => {
-  const _state = await setupWalletConnectState(id, params);
+  const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -463,7 +466,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async signIn({ contractId, methodNames = [] }) {
+    async signIn({ contractId, methodNames = [], defaultQRModal = true }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -471,15 +474,18 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
-        _state.session = await _state.client.connect({
-          requiredNamespaces: {
-            near: {
-              chains: [getChainId()],
-              methods: WC_METHODS,
-              events: WC_EVENTS,
+        _state.session = await _state.client.connect(
+          {
+            requiredNamespaces: {
+              near: {
+                chains: [getChainId()],
+                methods: WC_METHODS,
+                events: WC_EVENTS,
+              },
             },
           },
-        });
+          defaultQRModal
+        );
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
