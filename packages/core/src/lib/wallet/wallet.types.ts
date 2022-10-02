@@ -165,7 +165,7 @@ export type HardwareWallet = BaseWallet<
 // ----- Bridge Wallet ----- //
 
 export interface BridgeWalletSignInParams extends SignInParams {
-  defaultQRModal?: boolean;
+  qrCodeModal?: boolean;
 }
 
 export type BridgeWalletMetadata = BaseWalletMetadata;

@@ -466,7 +466,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async signIn({ contractId, methodNames = [], defaultQRModal = true }) {
+    async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -484,7 +484,7 @@ const WalletConnect: WalletBehaviourFactory<
               },
             },
           },
-          defaultQRModal
+          qrCodeModal
         );
 
         await requestSignIn({ receiverId: contractId, methodNames });

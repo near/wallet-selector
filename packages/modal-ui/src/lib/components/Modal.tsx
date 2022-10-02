@@ -101,7 +101,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleWalletClick = async (
     module: ModuleState,
-    defaultModal: boolean
+    qrCodeModal: boolean
   ) => {
     setSelectedWallet(module);
 
@@ -172,7 +172,7 @@ export const Modal: React.FC<ModalProps> = ({
         await wallet.signIn({
           contractId: options.contractId,
           methodNames: options.methodNames,
-          defaultQRModal: defaultModal,
+          qrCodeModal,
         });
 
         subscription.remove();
