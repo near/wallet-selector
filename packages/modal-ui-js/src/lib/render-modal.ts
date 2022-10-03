@@ -4,6 +4,7 @@ import {
   ModuleState,
   Wallet,
 } from "@near-wallet-selector/core";
+import { renderScanQRCode } from "./components/ScanQRCode";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
 import { renderLedgerAccountsOverviewList } from "./components/LedgerAccountsOverviewList";
 import { renderLedgerSelectAccount } from "./components/LedgerSelectAccount";
@@ -106,6 +107,18 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
       } else {
         return renderLedgerSelectAccount(module, accounts);
       }
+    }
+
+    if (module.id === "wallet-connect") {
+      const { uri, handleConnectionApproved, handleOpenDefaultModal } =
+        await wallet.signIn({
+          contractId: modalState.options.contractId,
+          methodNames: modalState.options.methodNames,
+        });
+      renderScanQRCode(module, { uri, handleOpenDefaultModal });
+      await handleConnectionApproved();
+
+      return;
     }
 
     await wallet.signIn({

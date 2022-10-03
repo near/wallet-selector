@@ -24,6 +24,7 @@ type ModalState = {
   route: ModalRoute;
   modules: Array<ModuleState<Wallet>>;
   derivationPath: string;
+  notification?: string;
 };
 
 export let modalState: ModalState | null = null;
