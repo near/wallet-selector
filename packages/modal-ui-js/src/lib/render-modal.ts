@@ -13,6 +13,7 @@ import { renderWalletConnectionFailed } from "./components/WalletConnectionFaile
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
+import { renderScanQRCode } from "./components/ScanQRCode";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -66,7 +67,10 @@ export const resolveAccounts = async (
   }
 };
 
-export async function connectToWallet(module: ModuleState<Wallet>) {
+export async function connectToWallet(
+  module: ModuleState<Wallet>,
+  qrCodeModal = false
+) {
   if (!modalState) {
     return;
   }
@@ -92,7 +96,7 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
 
     const wallet = await module.wallet();
 
-    await renderWalletConnecting(module);
+    renderWalletConnecting(module);
 
     if (wallet.type === "hardware") {
       const accounts = await resolveAccounts(wallet);
@@ -108,9 +112,30 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
       }
     }
 
+    if (wallet.type === "bridge") {
+      const subscription = modalState.selector.on("uriChanged", ({ uri }) => {
+        renderScanQRCode(module, {
+          uri,
+          handleOpenDefaultModal: () => {
+            connectToWallet(module, true);
+          },
+        });
+      });
+
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        qrCodeModal,
+      });
+
+      subscription.remove();
+      return;
+    }
+
     await wallet.signIn({
       contractId: modalState.options.contractId,
       methodNames: modalState.options.methodNames,
+      qrCodeModal,
     });
 
     modalState.container.children[0].classList.remove("open");
@@ -196,7 +221,7 @@ export function renderModal() {
         if (module.type === "hardware") {
           return renderConnectHardwareWallet(module);
         }
-        connectToWallet(module);
+        connectToWallet(module, false);
       });
   }
 
