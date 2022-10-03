@@ -68,20 +68,24 @@ export async function renderScanQRCode(
     connectToWallet(module, false);
   });
 
-  const setURICopyNotification = (message: string) => {
-    const copyBtnElement = document.getElementById("copy-uri-to-clipboard");
-    const notificationElement = document.getElementById(
-      "uri-copy-notification"
-    );
+  const copyBtnElement = document.getElementById("copy-uri-to-clipboard");
+  const notificationElement = document.getElementById("uri-copy-notification");
+
+  const showURICopyNotification = (message: string) => {
     if (notificationElement && copyBtnElement) {
       notificationElement.innerHTML = message;
-      if (message) {
-        copyBtnElement.style.display = "none";
-      } else {
-        copyBtnElement.style.display = "flex";
-      }
+      notificationElement.style.display = "flex";
+      copyBtnElement.style.display = "none";
     }
   };
+
+  const hideNotification = () => {
+    if (notificationElement && copyBtnElement) {
+      copyBtnElement.style.display = "flex";
+      notificationElement.style.display = "none";
+    }
+  };
+
   document
     .getElementById("copy-uri-to-clipboard")
     ?.addEventListener("click", () => {
@@ -90,11 +94,11 @@ export async function renderScanQRCode(
       }
       const success = copy(params.uri);
       if (success) {
-        setURICopyNotification("Copied to clipboard");
-        setTimeout(() => setURICopyNotification(""), 1200);
+        showURICopyNotification("Copied to clipboard");
+        setTimeout(() => hideNotification(), 1200);
       } else {
-        setURICopyNotification("Failed to copy to clipboard");
-        setTimeout(() => setURICopyNotification(""), 1200);
+        showURICopyNotification("Failed to copy to clipboard");
+        setTimeout(() => hideNotification(), 1200);
       }
     });
 

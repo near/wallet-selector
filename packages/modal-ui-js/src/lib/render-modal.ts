@@ -96,7 +96,7 @@ export async function connectToWallet(
 
     const wallet = await module.wallet();
 
-    renderWalletConnecting(module);
+    await renderWalletConnecting(module);
 
     if (wallet.type === "hardware") {
       const accounts = await resolveAccounts(wallet);
