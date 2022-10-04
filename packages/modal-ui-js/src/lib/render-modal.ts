@@ -13,6 +13,8 @@ import { renderWalletConnectionFailed } from "./components/WalletConnectionFaile
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
+// @ts-ignore
+import { translate } from "../../translate/translate";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -138,7 +140,7 @@ export function renderModal() {
       <div class="nws-modal">
         <div class="modal-left">
           <div class="modal-left-title">
-            <h2>Connect Your Wallet</h2>
+            <h2>${translate("wallet.Connect Your Wall")}</h2>
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper">

@@ -1,5 +1,6 @@
 import React from "react";
 import { ModuleState } from "@near-wallet-selector/core";
+import { useTranslation } from "react-i18next";
 
 interface ConnectionResultProps {
   module: ModuleState;
@@ -14,6 +15,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   err,
   onRetry,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="connection connecting-details">
       {err ? (
@@ -42,11 +44,11 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            Connection Failed
+            {t("wallet.Connection Failed")}
           </div>
           <p>{message}</p>
           {module?.metadata.available && (
-            <button onClick={onRetry}>Retry</button>
+            <button onClick={onRetry}>{t("ledger.Retry")}</button>
           )}
         </div>
       ) : (
@@ -67,7 +69,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
               strokeLinejoin="round"
             />
           </svg>
-          Connection Successful
+          {t("wallet.Connection Successful")}
         </div>
       )}
     </div>

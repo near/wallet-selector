@@ -15,6 +15,8 @@ import type {
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
+// @ts-ignore
+import { translate } from "../../../modal-ui-js/translate/translate";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -237,8 +239,9 @@ export function setupMyNearWallet({
       type: "browser",
       metadata: {
         name: "MyNearWallet",
-        description:
-          "NEAR wallet to store, buy, send and stake assets for DeFi.",
+        // description:
+        // "NEAR wallet to store, buy, send and stake assets for DeFi.",
+        description: translate("get.NEAR wallet to store"),
         iconUrl,
         deprecated,
         available: true,

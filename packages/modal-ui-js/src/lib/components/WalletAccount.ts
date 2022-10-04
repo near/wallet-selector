@@ -1,4 +1,6 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
+// @ts-ignore
+import { translate } from "../../../translate/translate";
 
 export async function renderWalletAccount(
   module: ModuleState<Wallet> | null = null
@@ -6,7 +8,11 @@ export async function renderWalletAccount(
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
     <div class="nws-modal-header">
-        <div><span class="connected-flag">Connected</span></div>
+        <div>
+          <span class="connected-flag">
+            ${translate("wallet.Connected")}
+          </span>
+          </div>
         <button class="close-button">
           <svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -19,9 +25,17 @@ export async function renderWalletAccount(
       </div>
       <div class="connecting-wrapper">
         <div class="content">
-          <div class="icon"><img src="${module?.metadata.iconUrl}" alt="${module?.metadata.name}"></div>
+          <div class="icon">
+            <img src="${module?.metadata.iconUrl}" alt="${
+    module?.metadata.name
+  }">
+          </div>
           <h3 class="connecting-name">${module?.metadata.name}</h3>
-          <div class="wallet-connected-success"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="12" fill="#51BD7C"></rect><path d="M7.75 12.75L10 15.25L16.25 8.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Connection Successful</span></div>
+          <div class="wallet-connected-success"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="12" fill="#51BD7C"></rect><path d="M7.75 12.75L10 15.25L16.25 8.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span>
+              ${translate("wallet.Connection Successful")}
+            </span>
+          </div>
         </div>
       </div>
     </div>

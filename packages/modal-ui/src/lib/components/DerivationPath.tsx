@@ -12,6 +12,7 @@ import { WalletConnecting } from "./WalletConnecting";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
+import { useTranslation } from "react-i18next";
 
 interface DerivationPathProps {
   selector: WalletSelector;
@@ -46,6 +47,8 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   onError,
   onCloseModal,
 }) => {
+  const { t } = useTranslation();
+
   const [route, setRoute] = useState<HardwareRoutes>("EnterDerivationPath");
   const [derivationPath, setDerivationPath] = useState<string>(
     DEFAULT_DERIVATION_PATH
@@ -61,7 +64,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [hardwareWallet, setHardwareWallet] = useState<Wallet>();
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
-  const [headerTitle, setHeaderTitle] = useState("Connect with Ledger");
+
+  const initalHeaderTitle = t("ledger.Connect with Ledger");
+  const [headerTitle, setHeaderTitle] = useState(initalHeaderTitle);
 
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const response = await fetch(
@@ -123,7 +128,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       const multipleAccounts = resolvedAccounts.length > 1;
 
       if (noAccounts) {
-        setHeaderTitle("No Accounts Found");
+        setHeaderTitle(t("ledger.No Accounts Found"));
         setRoute("NoAccountsFound");
         return;
       }
@@ -132,7 +137,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       if (!multipleAccounts) {
         setRoute("OverviewAccounts");
       } else {
-        setHeaderTitle("Select Your Accounts");
+        setHeaderTitle(t("ledger.Select Your Accounts"));
         setRoute("ChooseAccount");
       }
     } catch (err) {
@@ -163,7 +168,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       ];
       setAccounts(accountList);
       setSelectedAccounts(accountList);
-      setHeaderTitle("Connecting 1 Account");
+      setHeaderTitle(t("ledger.Connecting 1 Account"));
       setRoute("OverviewAccounts");
     } catch (err) {
       setConnecting(false);
@@ -204,12 +209,12 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       route === "NoAccountsFound" ||
       route === "ChooseAccount"
     ) {
-      setHeaderTitle("Connect with Ledger");
+      setHeaderTitle(t("ledger.Connect with Ledger"));
       setRoute("EnterDerivationPath");
     }
 
     if (route === "OverviewAccounts") {
-      setHeaderTitle("Select Your Accounts");
+      setHeaderTitle(t("ledger.Select Your Accounts"));
       setRoute("ChooseAccount");
     }
   };
@@ -246,23 +251,20 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               <LedgerDeviceIcon />
             </div>
             <div className="ledger-description">
-              <p>
-                Make sure your Ledger is connected securely, and that the NEAR
-                app is open on your device.
-              </p>
+              <p>{t("ledger.Make sure your Ledger")}</p>
               <p
                 className="specify-path"
                 onClick={() => {
-                  setHeaderTitle("Specify HD Path");
+                  setHeaderTitle(t("ledger.Specify HD Path"));
                   setRoute("SpecifyHDPath");
                 }}
               >
-                Specify HD Path
+                {t("ledger.Specify HD Path")}
               </p>
             </div>
             <div className="action-buttons">
               <button className="middleButton" onClick={handleValidateAccount}>
-                Continue
+                {t("ledger.Continue")}
               </button>
             </div>
           </div>
@@ -337,11 +339,11 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               </div>
             </div>
             <p className="path-description">
-              Enter your preferred HD path, then scan for any active accounts.
+              {t("ledger.Enter your preferred HD path")}
             </p>
             <div className="action-buttons">
               <button className="middleButton" onClick={handleValidateAccount}>
-                Scan
+                {t("ledger.Scan")}
               </button>
             </div>
           </div>
@@ -350,8 +352,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         {route === "NoAccountsFound" && (
           <div className="no-accounts-found-wrapper">
             <p>
-              Can't found any account associated with this Ledger. Please create
-              a new NEAR account on{" "}
+              {t("ledger.Can't find any account")}{" "}
               <a
                 href={`https://${
                   selector.options.network.networkId === "testnet"
@@ -362,7 +363,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               >
                 MyNearWallet
               </a>{" "}
-              or connect an another Ledger.
+              {t("ledger.or connect an another Ledger.")}
             </p>
           </div>
         )}
@@ -390,15 +391,15 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
               const numberOfAccounts = selectedAcc.length;
               setHeaderTitle(
-                `Connecting ${numberOfAccounts} Account${
-                  numberOfAccounts > 1 ? "s" : ""
-                }`
+                `${t("ledger.Connecting")} ${numberOfAccounts} ${t(
+                  "ledger.of Accounts"
+                )}`
               );
               setRoute("OverviewAccounts");
             }}
             onChangeRoute={(newRoute) => {
               if (newRoute === "SpecifyHDPath") {
-                setHeaderTitle("Specify HD Path");
+                setHeaderTitle(t("ledger.Specify HD Path"));
               }
               setRoute(newRoute);
             }}
@@ -406,7 +407,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
         )}
         {route === "AddCustomAccountId" && (
           <div className="enter-custom-account">
-            <p>Failed to automatically find account id. Provide it manually:</p>
+            <p>{t("ledger.Failed to automatically")}</p>
             <div className="input-wrapper">
               <input
                 type="text"
@@ -422,17 +423,14 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                 className="middleButton"
                 onClick={handleAddCustomAccountId}
               >
-                Continue
+                {t("ledger.Continue")}
               </button>
             </div>
           </div>
         )}
         {route === "OverviewAccounts" && (
           <div className="overview-wrapper">
-            <p>
-              Overview the list of authorized account(s), complete sign in by
-              clicking the button below.
-            </p>
+            <p>{t("ledger.Overview the list of authorized")}</p>
             <div className="accounts">
               {selectedAccounts.map((account, index) => (
                 <div key={account.accountId}>
@@ -449,7 +447,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                 onClick={handleSignIn}
                 disabled={accounts.length === 0}
               >
-                Finish
+                {t("ledger.Finish")}
               </button>
             </div>
           </div>

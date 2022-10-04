@@ -3,6 +3,8 @@ import { modalState } from "../modal";
 import { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerAccountsOverviewList } from "./LedgerAccountsOverviewList";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
+// @ts-ignore
+import { translate } from "../../../translate/translate";
 
 export async function renderLedgerSelectAccount(
   module: ModuleState<Wallet>,
@@ -20,7 +22,10 @@ export async function renderLedgerSelectAccount(
             </path>
           </svg></button>
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Select Your Accounts</h3><button class="close-button"><svg
+          <h3 class="middleTitle">${translate(
+            "ledger.Select Your Accounts"
+          )}</h3>
+            <button class="close-button"><svg
               xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path

@@ -1,6 +1,9 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 
+// @ts-ignore
+import { translate } from "../../../translate/translate";
+
 export function renderWalletNotInstalled(
   module: ModuleState<Wallet> & {
     metadata: {
@@ -32,12 +35,24 @@ export function renderWalletNotInstalled(
       <div class="wallet-not-installed-wrapper">
         <div class="wallet-data">
           <div class="wallet-icon-box"><img
-              src="${module.metadata.iconUrl}" alt="${module.metadata.name}"></div>
-          <p>${module.metadata.name}</p>
+              src="${module.metadata.iconUrl}" alt="${module.metadata.name}">
+          </div>
+          <p>
+            ${module.metadata.name}
+          </p>
         </div>
-        <p>You'll need to install ${module.metadata.name} to continue. After installing<span class="refresh-link" id="refresh-page-lint">&nbsp;refresh the
-            page.</span></p>
-        <div class="action-buttons"><button class="middleButton" id="download-button">Open ${module.metadata.name}</button></div>
+        <p>
+          ${translate("install.You'll need to install")} ${module.metadata.name}
+          ${translate("install.to continue. After installing")}
+          <span class="refresh-link" id="refresh-page-lint">&nbsp;
+            ${translate("install.refresh the page.")}
+          </span>
+        </p>
+        <div class="action-buttons">
+          <button class="middleButton" id="download-button">
+            ${translate("install.Open")} ${module.metadata.name}
+          </button>
+        </div>
       </div>
     </div>
   `;

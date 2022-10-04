@@ -2,6 +2,8 @@ import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { DEFAULT_DERIVATION_PATH, modalState } from "../modal";
 import { connectToWallet } from "../render-modal";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
+// @ts-ignore
+import { translate } from "../../../translate/translate";
 
 export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
   if (!modalState) {
@@ -14,7 +16,10 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
     <div class="nws-modal-body">
       <div class="nws-modal-header-wrapper">
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Connect with Ledger</h3><button class="close-button"><svg
+          <h3 class="middleTitle">
+            ${translate("ledger.Connect with Ledger")}
+          </h3>
+          <button class="close-button"><svg
               xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path
@@ -108,10 +113,14 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
               </defs>
             </svg></div>
           <div class="ledger-description">
-            <p>Make sure your Ledger is connected securely, and that the NEAR app is open on your device.</p>
-            <p class="specify-path" id="specify-derivation-path-button">Specify HD Path</p>
+            <p> ${translate("ledger.Make sure your Ledger")} </p>
+            <p class="specify-path" id="specify-derivation-path-button">${translate(
+              "ledger.Specify HD Path"
+            )}</p>
           </div>
-          <div class="action-buttons"><button class="middleButton" id="continue-button">Continue</button></div>
+          <div class="action-buttons"><button class="middleButton" id="continue-button">${translate(
+            "ledger.Continue"
+          )}</button></div>
         </div>
       </div>
     </div>

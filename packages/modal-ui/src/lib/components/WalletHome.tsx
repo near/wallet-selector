@@ -8,6 +8,7 @@ import {
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
+import { useTranslation } from "react-i18next";
 
 interface WalletHomeProps {
   selector: WalletSelector;
@@ -22,6 +23,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
@@ -77,7 +79,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           />
         )}
         <ModalHeader
-          title={route === "GetWallets" ? "Get a Wallet" : "What is a Wallet?"}
+          title={
+            route === "GetWallets"
+              ? t("wallet.Get a Wallet")
+              : t("wallet.What is a Wallet")
+          }
           onCloseModal={onCloseModal}
         />
       </div>
@@ -113,13 +119,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <>
           <div className="wallet-info-wrapper what-wallet-hide">
             <WhatWallet
-              title="Secure & Manage Your Digital Assets"
-              description="Safely store and transfer your crypto and NFTs."
+              title={t("wallet.Secure & Manage")}
+              description={t("wallet.Safely store")}
               icon={Icon}
             />
             <WhatWallet
-              title="Log In to Any NEAR App"
-              description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
+              title={t("wallet.Log In to Any")}
+              description={t("wallet.No need to create")}
               icon={Icon}
             />
             <div className="button-spacing" />
@@ -129,21 +135,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 setRoute("GetWallets");
               }}
             >
-              Get a Wallet
+              {t("wallet.Get a Wallet")}
             </button>
           </div>
           <div className="what-wallet-mobile">
-            <p>
-              Use a wallet to secure and manage your NEAR assets, and to log in
-              to any NEAR app without the need for usernames and passwords.
-            </p>
+            <p>{t("wallet.Use a wallet")}</p>
             <button
               className="middleButton"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              Get a Wallet
+              {t("wallet.Get a Wallet")}
             </button>
           </div>
         </>

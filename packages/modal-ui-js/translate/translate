@@ -1,0 +1,30 @@
+const en = require ('../src/locale/en.json')
+const es = require ('../src/locale/es.json')
+
+
+export const translate = (path) => {
+
+    //solves case of multiple dots in string
+    const [key, ...rest] = path.split('.')
+    const value = rest.join('.')
+
+    let lang = window.navigator.languages ? window.navigator.languages[0] : null;
+    lang = lang || window.navigator.language
+
+    let shortLang = lang;
+      if (shortLang.indexOf('-') !== -1)
+        shortLang = shortLang.split('-')[0];
+
+      if (shortLang.indexOf('_') !== -1)
+        shortLang = shortLang.split('_')[0];
+
+      //preferred language
+      let selectedlanguage = eval(shortLang)
+
+      //when specified language translations not present then fallbacklang translations loaded.
+      !selectedlanguage[key][value] ? shortLang = 'en' : shortLang ;
+
+      selectedlanguage = eval(shortLang)
+
+    return  selectedlanguage[key][value] || path
+}
