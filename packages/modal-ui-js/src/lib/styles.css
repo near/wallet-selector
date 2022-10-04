@@ -586,6 +586,11 @@
   cursor: pointer;
 }
 
+.nws-modal-wrapper .nws-modal .specify-path-wrapper .what-link a {
+  text-decoration: none;
+  color: var(--selected-wallet-bg);
+  font-size: 14px;
+}
 
 .nws-modal-wrapper .specify-path-wrapper .change-path-wrapper .change-path .buttons-wrapper {
   display: flex;
