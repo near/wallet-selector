@@ -5,23 +5,40 @@ import {
   WalletBehaviourFactory,
   Action,
   FinalExecutionOutcome,
+  waitFor,
+  JsonStorageService,
 } from "@near-wallet-selector/core";
 import {
   SignAndSendTransactionParams,
   ViewAccessKeyParams,
+  WalletProvider,
   WelldoneWalletParams,
   WelldoneWalletState,
 } from "./injected-welldone";
 import icon from "./icon";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
-async function initWalletState(): Promise<WelldoneWalletState> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const wallet = (window as any).dapp;
+export const STORAGE_ACCOUNT = "account";
 
-  if (wallet) {
+declare global {
+  interface Window {
+    dapp: WalletProvider | undefined;
+  }
+}
+
+const isInstalled = () => {
+  return waitFor(() => !!window.dapp).catch(() => false);
+};
+
+async function setupWalletState(
+  storage: JsonStorageService
+): Promise<WelldoneWalletState> {
+  const account = await storage.getItem<ViewAccessKeyParams>(STORAGE_ACCOUNT);
+  if (window.dapp) {
+    const wallet = window.dapp;
     return {
       wallet,
+      account: account ? account : undefined,
     };
   }
   return {};
@@ -32,8 +49,9 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   store,
   emitter,
   logger,
+  storage,
 }) => {
-  const _state = await initWalletState();
+  const _state = await setupWalletState(storage);
 
   const _getAccounts = async () => {
     if (_state.wallet) {
@@ -109,6 +127,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const cleanup = () => {
     if (_state.account) {
+      storage.removeItem(STORAGE_ACCOUNT);
       delete _state.account;
     }
   };
@@ -168,6 +187,11 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           `Public key (${account[1]}) is not registered with the account '${account[0]}'.`
         );
       }
+
+      await storage.setItem(STORAGE_ACCOUNT, {
+        accountId: account[0],
+        publicKey: account[1],
+      });
 
       _state.account = {
         accountId: account[0],
@@ -309,18 +333,19 @@ export function setupWelldoneWallet({
   deprecated = false,
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
+    const installed = await isInstalled();
+
     return {
       id: "welldone-wallet",
       type: "injected",
       metadata: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        available: !!(window as any).dapp,
         name: "WELLDONE Wallet",
         description: "WELLDONE Wallet for Multichains",
         iconUrl,
-        deprecated,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/welldone-wallet/bmkakpenjmcpfhhjadflneinmhboecjf",
+        deprecated,
+        available: installed,
       },
       init: WelldoneWallet,
     };
