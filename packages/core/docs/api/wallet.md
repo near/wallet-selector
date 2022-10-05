@@ -81,7 +81,7 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
-  - `qrCodeModal` (`boolean`): Required for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `qrCodeModal` (`boolean`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
 
 **Returns**
 
