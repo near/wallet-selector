@@ -8,7 +8,8 @@ import {
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface WalletHomeProps {
   selector: WalletSelector;
@@ -23,7 +24,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
-  const { t } = useTranslation();
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {

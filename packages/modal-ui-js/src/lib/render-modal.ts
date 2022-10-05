@@ -14,7 +14,7 @@ import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 // @ts-ignore
-import { translate } from "../../translate/translate";
+import { translate } from "../../translate/translate.js";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;

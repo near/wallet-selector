@@ -2,7 +2,8 @@ import React, { Fragment } from "react";
 import { ModuleState } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface WalletNotInstalledProps {
   module: ModuleState & {
@@ -19,7 +20,6 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
   onBack,
   onCloseModal,
 }) => {
-  const { t } = useTranslation();
   return (
     <Fragment>
       <div className="nws-modal-header-wrapper">
@@ -40,7 +40,8 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
             className="refresh-link"
             onClick={() => window.location.reload()}
           >
-            {" "}{t("install.refresh the page.")}
+            {" "}
+            {t("install.refresh the page.")}
           </span>
         </p>
         <div className="action-buttons">

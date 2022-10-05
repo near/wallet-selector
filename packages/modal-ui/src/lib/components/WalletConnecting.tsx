@@ -2,7 +2,8 @@ import React, { Fragment } from "react";
 import { Wallet } from "@near-wallet-selector/core";
 import LoadingIcon from "../images/connecting-loader.png";
 import { ModalHeader } from "./ModalHeader";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface WalletConnectingProps {
   wallet: Wallet | undefined;
@@ -14,7 +15,6 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
   wallet,
   onCloseModal,
 }) => {
-  const { t } = useTranslation();
   return (
     <Fragment>
       <ModalHeader title="" onCloseModal={onCloseModal} />

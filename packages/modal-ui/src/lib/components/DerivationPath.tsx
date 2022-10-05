@@ -12,7 +12,8 @@ import { WalletConnecting } from "./WalletConnecting";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface DerivationPathProps {
   selector: WalletSelector;
@@ -47,8 +48,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   onError,
   onCloseModal,
 }) => {
-  const { t } = useTranslation();
-
   const [route, setRoute] = useState<HardwareRoutes>("EnterDerivationPath");
   const [derivationPath, setDerivationPath] = useState<string>(
     DEFAULT_DERIVATION_PATH

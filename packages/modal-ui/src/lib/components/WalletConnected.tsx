@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import { ModuleState } from "@near-wallet-selector/core";
 import { CloseButton } from "./CloseButton";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface WalletConnectedProps {
   module: ModuleState;
@@ -12,7 +13,6 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
   module,
   onCloseModal,
 }) => {
-  const { t } = useTranslation();
   return (
     <Fragment>
       <div className="nws-modal-header">

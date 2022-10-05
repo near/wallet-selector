@@ -1,6 +1,7 @@
 import React from "react";
 import { ModuleState } from "@near-wallet-selector/core";
-import { useTranslation } from "react-i18next";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface ConnectionResultProps {
   module: ModuleState;
@@ -15,7 +16,6 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
   err,
   onRetry,
 }) => {
-  const { t } = useTranslation();
   return (
     <div className="connection connecting-details">
       {err ? (

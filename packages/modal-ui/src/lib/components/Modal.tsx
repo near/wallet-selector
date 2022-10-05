@@ -12,9 +12,8 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
-import "../i18n";
-import { useTranslation } from "react-i18next";
-// import { LanguageSelector } from "./LanguageSelector";
+// @ts-ignore
+import t from "../translate/translate";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -40,8 +39,6 @@ export const Modal: React.FC<ModalProps> = ({
   visible,
   hide,
 }) => {
-  const { t } = useTranslation();
-
   const [route, setRoute] = useState<ModalRoute>({
     name: "WalletHome",
   });
@@ -182,11 +179,7 @@ export const Modal: React.FC<ModalProps> = ({
   if (!visible) {
     return null;
   }
-/*
-  const changeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    i18n.changeLanguage(event.target.value!);
-  };
-*/
+
   return (
     <div
       className={`nws-modal-wrapper ${getThemeClass(options?.theme)} ${
@@ -199,7 +192,6 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="modal-left-title">
             <h2>{t("wallet.Connect Your Wallet")}</h2>
           </div>
-          {/* <LanguageSelector changeLanguage={changeLanguage} /> */}
           <WalletOptions
             handleWalletClick={handleWalletClick}
             selector={selector}
