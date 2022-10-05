@@ -9,9 +9,6 @@ import {
 } from "@near-wallet-selector/my-near-wallet";
 import icon from "./icon";
 
-// @ts-ignore
-import { translate } from "../../../modal-ui-js/translate/translate";
-
 export type NearWalletParams = MyNearWalletParams;
 
 const resolveWalletUrl = (network: Network, walletUrl?: string) => {
@@ -50,8 +47,7 @@ export function setupNearWallet({
       metadata: {
         ...wallet.metadata,
         name: "NEAR Wallet",
-        // description: "Web wallet for NEAR Protocol",
-        description: translate("get.Web wallet for"),
+        description: "Web wallet for NEAR Protocol",
         iconUrl,
         deprecated,
         available: true,

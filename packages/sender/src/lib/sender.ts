@@ -12,9 +12,6 @@ import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedSender } from "./injected-sender";
 import icon from "./icon";
 
-// @ts-ignore
-import { translate } from "../../../modal-ui-js/translate/translate";
-
 declare global {
   interface Window {
     near: InjectedSender | undefined;
@@ -307,8 +304,7 @@ export function setupSender({
       type: "injected",
       metadata: {
         name: "Sender",
-        // description: "Browser extension wallet built on NEAR.",
-        description: translate("get.Browser extension wallet"),
+        description: "Browser extension wallet built on NEAR.",
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
