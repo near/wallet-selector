@@ -30,7 +30,7 @@ export async function renderScanQRCode(
           <div>
               ${svg}
           </div>
-          <div  class="notification" id="uri-copy-notification"></div>
+          <div class="notification" id="uri-copy-notification"></div>
           <div class="copy-btn" id="copy-uri-to-clipboard">
               <svg
                 width="24"
@@ -74,7 +74,7 @@ export async function renderScanQRCode(
   const showURICopyNotification = (message: string) => {
     if (notificationElement && copyBtnElement) {
       notificationElement.innerHTML = message;
-      notificationElement.style.display = "flex";
+      notificationElement.style.display = "block";
       copyBtnElement.style.display = "none";
     }
   };

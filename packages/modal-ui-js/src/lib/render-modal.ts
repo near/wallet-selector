@@ -1,4 +1,5 @@
 import {
+  BridgeWallet,
   HardwareWallet,
   HardwareWalletAccount,
   ModuleState,
@@ -129,13 +130,13 @@ export async function connectToWallet(
       });
 
       subscription.remove();
+      modalState.container.children[0].classList.remove("open");
       return;
     }
 
     await wallet.signIn({
       contractId: modalState.options.contractId,
       methodNames: modalState.options.methodNames,
-      qrCodeModal,
     });
 
     modalState.container.children[0].classList.remove("open");

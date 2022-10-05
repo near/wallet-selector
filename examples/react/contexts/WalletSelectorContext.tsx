@@ -52,7 +52,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNightly(),
         setupMeteorWallet(),
         setupWalletConnect({
-          projectId: "88fb772e055e421763933a2908e4229a",
+          projectId: "c4f79cc...",
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",

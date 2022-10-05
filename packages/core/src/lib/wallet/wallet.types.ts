@@ -27,7 +27,6 @@ export interface Account {
 export interface SignInParams {
   contractId: string;
   methodNames?: Array<string>;
-  qrCodeModal?: boolean;
 }
 
 export interface VerifyOwnerParams {
