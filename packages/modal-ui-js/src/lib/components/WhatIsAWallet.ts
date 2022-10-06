@@ -1,6 +1,6 @@
-// @ts-ignore
-import { translate } from "../../../translate/translate";
 import { renderGetAWallet } from "./GetAWallet";
+// @ts-ignore
+import { translate } from "../translate/translate";
 
 export async function renderWhatIsAWallet() {
   document.querySelector(".modal-right")!.innerHTML = `

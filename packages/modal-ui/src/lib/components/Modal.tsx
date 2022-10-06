@@ -12,7 +12,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
-// @ts-ignore
+
 import t from "../translate/translate";
 
 interface ModalProps {

@@ -4,7 +4,7 @@ import { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
 // @ts-ignore
-import { translate } from "../../../translate/translate";
+import { translate } from "../translate/translate";
 
 export async function renderLedgerAccountsOverviewList(
   module: ModuleState<Wallet>,

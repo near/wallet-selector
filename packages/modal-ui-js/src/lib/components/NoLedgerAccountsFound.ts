@@ -1,7 +1,7 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./ConnectHardwareWallet";
 // @ts-ignore
-import { translate } from "../../../translate/translate";
+import { translate } from "../translate/translate";
 
 export async function renderNoLedgerAccountsFound(module: ModuleState<Wallet>) {
   document.querySelector(".modal-right")!.innerHTML = `

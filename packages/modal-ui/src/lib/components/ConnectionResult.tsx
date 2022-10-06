@@ -1,6 +1,6 @@
 import React from "react";
 import { ModuleState } from "@near-wallet-selector/core";
-// @ts-ignore
+
 import t from "../translate/translate";
 
 interface ConnectionResultProps {

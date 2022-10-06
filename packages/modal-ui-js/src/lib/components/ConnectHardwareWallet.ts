@@ -3,7 +3,7 @@ import { DEFAULT_DERIVATION_PATH, modalState } from "../modal";
 import { connectToWallet } from "../render-modal";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
 // @ts-ignore
-import { translate } from "../../../translate/translate";
+import { translate } from "../translate/translate";
 
 export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
   if (!modalState) {

@@ -8,7 +8,7 @@ import { renderNoLedgerAccountsFound } from "./NoLedgerAccountsFound";
 import { renderWalletConnecting } from "./WalletConnecting";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
 // @ts-ignore
-import { translate } from "../../../translate/translate";
+import { translate } from "../translate/translate";
 
 export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
   if (!modalState) {

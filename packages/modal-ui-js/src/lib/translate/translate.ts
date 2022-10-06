@@ -1,7 +1,7 @@
-import en from '../locale/en.json'
-import es from '../locale/es.json'
+var en = require('../locale/en.json')
+var es = require('../locale/es.json')
 
-const getLanguage = (languageCode) => {
+const getLanguage = (languageCode: string) => {
   switch(languageCode) {
     case "en":
       return en;
@@ -11,7 +11,7 @@ const getLanguage = (languageCode) => {
       return en;
   }
 }
-export const translate = (path) => {
+export const translate = (path: string) => {
 
     //solves case of multiple dots in string
     const [key, ...rest] = path.split('.')
