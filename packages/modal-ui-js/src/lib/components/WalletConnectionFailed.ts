@@ -1,6 +1,5 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { connectToWallet } from "../render-modal";
-// @ts-ignore
 import { translate } from "../translate/translate";
 
 export async function renderWalletConnectionFailed(

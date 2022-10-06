@@ -3,7 +3,6 @@ import { modalState } from "../modal";
 import { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
-// @ts-ignore
 import { translate } from "../translate/translate";
 
 export async function renderLedgerAccountsOverviewList(

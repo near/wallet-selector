@@ -1,22 +1,17 @@
 {
   "wallet": {
-    "xConnect Your Wallet": "ESS  Connect Your Wallet",
+    "Connect Your Wallet": "Connect Your Wallet",
     "What is a Wallet": "What is a Wallet?",
     "Secure & Manage": "Secure & Manage Your Digital Assets",
     "Safely store": "Safely store and transfer your crypto and NFTs.",
     "Log In to Any": "Log In to Any NEAR App",
     "No need to create": "No need to create new accounts or credentials. Connect your wallet and you are good to go!",
     "Use a wallet": "Use a wallet to secure and manage your NEAR assets, and to log in to any NEAR app without the need for usernames and passwords.",
-    "Get a Wallet": "ESS  Get a Wallet",
+    "Get a Wallet": "Get a Wallet",
     "Connection Failed": "Connection Failed",
     "Connection Successful": "Connection Successful",
     "Connected": "Connected",
     "Connecting to": "Connecting to"
-  },
-  "get": {
-    "NEAR wallet to store": "NEAR wallet to store, buy, send and stake assets for DeFi.",
-    "Web wallet for": "Web wallet for NEAR Protocol",
-    "Browser extension wallet": "Browser extension wallet built on NEAR."
   },
   "ledger": {
     "Connect with Ledger": "Connect with Ledger",

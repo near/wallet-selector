@@ -13,11 +13,6 @@
     "Connected": "Connected",
     "Connecting to": "Connecting to"
   },
-  "get": {
-    "NEAR wallet to store": "NEAR wallet to store, buy, send and stake assets for DeFi.",
-    "Web wallet for": "Web wallet for NEAR Protocol",
-    "Browser extension wallet": "Browser extension wallet built on NEAR."
-  },
   "ledger": {
     "Connect with Ledger": "Connect with Ledger",
     "Make sure your Ledger": "Make sure your Ledger is connected securely, and that the NEAR app is open on your device.",
@@ -30,12 +25,12 @@
     "Access denied to use Ledger device": "Access denied to use Ledger device",
     "No Accounts Found": "No Accounts Found",
     "Select Your Accounts": "Select Your Accounts",
-    "Connecting 1 Account": " ??? not used in js ???",
+    "Connecting 1 Account": "Connecting 1 Account",
     "Can't find any account": "Can't find any account associated with this Ledger. Please createa new NEAR account on",
     "or connect an another Ledger.": "or connect an another Ledger.",
     "Connecting": "Connecting",
     "of Accounts": "of Accounts",
-    "Failed to automatically": " ??? not used in js ???",
+    "Failed to automatically": "Failed to automatically find account id. Provide it manually:",
     "Overview the list of authorized": "Overview the list of authorized account(s), complete sign in by clicking the button below.",
     "Finish": "Finish"
   },

@@ -13,7 +13,6 @@ import { renderWalletConnectionFailed } from "./components/WalletConnectionFaile
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
-// @ts-ignore
 import { translate } from "./translate/translate";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {

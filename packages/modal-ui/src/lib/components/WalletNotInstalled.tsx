@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { ModuleState } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-// @ts-ignore
-import t from "../translate/translate";
+import { translate } from "../translate/translate";
 
 interface WalletNotInstalledProps {
   module: ModuleState & {
@@ -34,14 +33,14 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
           <p>{module.metadata.name}</p>
         </div>
         <p>
-          {t("install.You'll need to install")} {module.metadata.name}{" "}
-          {t("install.to continue. After installing")}
+          {translate("install.You'll need to install")} {module.metadata.name}{" "}
+          {translate("install.to continue. After installing")}
           <span
             className="refresh-link"
             onClick={() => window.location.reload()}
           >
             {" "}
-            {t("install.refresh the page.")}
+            {translate("install.refresh the page.")}
           </span>
         </p>
         <div className="action-buttons">
@@ -55,7 +54,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
               window.open(module.metadata.downloadUrl, "_blank");
             }}
           >
-            {t("install.Open")} {module.metadata.name}
+            {translate("install.Open")} {module.metadata.name}
           </button>
         </div>
       </div>

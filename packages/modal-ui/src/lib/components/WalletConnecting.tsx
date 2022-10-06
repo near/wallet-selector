@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { Wallet } from "@near-wallet-selector/core";
 import LoadingIcon from "../images/connecting-loader.png";
 import { ModalHeader } from "./ModalHeader";
-// @ts-ignore
-import t from "../translate/translate";
+import { translate } from "../translate/translate";
 
 interface WalletConnectingProps {
   wallet: Wallet | undefined;
@@ -29,7 +28,7 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
               <img src={LoadingIcon} alt="loading-icon" />
             </div>
             <span>
-              {t("wallet.Connecting to")} {wallet?.metadata.name}...
+              {translate("wallet.Connecting to")} {wallet?.metadata.name}...
             </span>
           </div>
         </div>

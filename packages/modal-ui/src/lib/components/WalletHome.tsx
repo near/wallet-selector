@@ -8,8 +8,7 @@ import {
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-// @ts-ignore
-import t from "../translate/translate";
+import { translate } from "../translate/translate";
 
 interface WalletHomeProps {
   selector: WalletSelector;
@@ -81,8 +80,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <ModalHeader
           title={
             route === "GetWallets"
-              ? t("wallet.Get a Wallet")
-              : t("wallet.What is a Wallet")
+              ? translate("wallet.Get a Wallet")
+              : translate("wallet.What is a Wallet")
           }
           onCloseModal={onCloseModal}
         />
@@ -119,13 +118,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <>
           <div className="wallet-info-wrapper what-wallet-hide">
             <WhatWallet
-              title={t("wallet.Secure & Manage")}
-              description={t("wallet.Safely store")}
+              title={translate("wallet.Secure & Manage")}
+              description={translate("wallet.Safely store")}
               icon={Icon}
             />
             <WhatWallet
-              title={t("wallet.Log In to Any")}
-              description={t("wallet.No need to create")}
+              title={translate("wallet.Log In to Any")}
+              description={translate("wallet.No need to create")}
               icon={Icon}
             />
             <div className="button-spacing" />
@@ -135,18 +134,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 setRoute("GetWallets");
               }}
             >
-              {t("wallet.Get a Wallet")}
+              {translate("wallet.Get a Wallet")}
             </button>
           </div>
           <div className="what-wallet-mobile">
-            <p>{t("wallet.Use a wallet")}</p>
+            <p>{translate("wallet.Use a wallet")}</p>
             <button
               className="middleButton"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              {t("wallet.Get a Wallet")}
+              {translate("wallet.Get a Wallet")}
             </button>
           </div>
         </>

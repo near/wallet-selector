@@ -13,11 +13,6 @@
     "Connected": "Connected",
     "Connecting to": "Connecting to"
   },
-  "get": {
-    "NEAR wallet to store": "NEAR wallet to store, buy, send and stake assets for DeFi.",
-    "Web wallet for": "Web wallet for NEAR Protocol",
-    "Browser extension wallet": "Browser extension wallet built on NEAR."
-  },
   "ledger": {
     "Connect with Ledger": "Connect with Ledger",
     "Make sure your Ledger": "Make sure your Ledger is connected securely, and that the NEAR app is open on your device.",

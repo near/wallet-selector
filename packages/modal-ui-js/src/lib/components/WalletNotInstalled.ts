@@ -1,7 +1,5 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
-
-// @ts-ignore
 import { translate } from "../translate/translate";
 
 export function renderWalletNotInstalled(

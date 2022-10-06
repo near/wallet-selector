@@ -13,7 +13,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 
-import t from "../translate/translate";
+import { translate } from "../translate/translate";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -190,7 +190,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="nws-modal">
         <div className="modal-left">
           <div className="modal-left-title">
-            <h2>{t("wallet.Connect Your Wallet")}</h2>
+            <h2>{translate("wallet.Connect Your Wallet")}</h2>
           </div>
           <WalletOptions
             handleWalletClick={handleWalletClick}

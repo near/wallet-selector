@@ -1,5 +1,4 @@
 import { renderGetAWallet } from "./GetAWallet";
-// @ts-ignore
 import { translate } from "../translate/translate";
 
 export async function renderWhatIsAWallet() {
