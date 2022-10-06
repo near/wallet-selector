@@ -17,6 +17,7 @@
     "ledger",
     "wallet-connect",
     "nightly-connect",
+    "nearfi",
     "meteor-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
@@ -43,6 +44,7 @@
     "build:here-wallet": "nx run-many --target=build --projects=here-wallet --configuration=production",
     "build:my-near-wallet": "nx run-many --target=build --projects=my-near-wallet --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
+    "build:nearfi": "nx run-many --target=build --projects=nearfi --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
@@ -51,13 +53,14 @@
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
-    "serve:react": "nx serve react",
+    "serve:react": "nx serve react --host=0.0.0.0",
     "serve:angular": "nx serve angular",
     "prepack": "yarn build:core && yarn build:all",
     "test": "nx run-many --target=test --all",
     "postinstall": "ngcc --properties es2020 browser module main"
   },
   "dependencies": {
+
     "@angular/animations": "~14.0.0",
     "@angular/common": "~14.0.0",
     "@angular/compiler": "~14.0.0",

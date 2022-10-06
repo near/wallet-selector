@@ -12,6 +12,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
+- [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 
 ## Preview
 
@@ -47,6 +48,7 @@ yarn add \
   @near-wallet-selector/near-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
+  @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -61,6 +63,7 @@ npm install \
   @near-wallet-selector/near-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
+  @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -97,6 +100,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -110,6 +114,7 @@ const selector = await setupWalletSelector({
     setupNightly(),
     setupMeteorWallet(),
     setupLedger(),
+    setupNearFi(),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {

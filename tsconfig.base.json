@@ -46,6 +46,9 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/nearfi": [
+        "packages/nearfi/src/index.ts"
+      ],
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
       ],

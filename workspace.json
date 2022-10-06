@@ -11,6 +11,7 @@
     "modal-ui": "packages/modal-ui",
     "modal-ui-js": "packages/modal-ui-js",
     "my-near-wallet": "packages/my-near-wallet",
+    "nearfi": "packages/nearfi",
     "near-wallet": "packages/near-wallet",
     "nightly": "packages/nightly",
     "nightly-connect": "packages/nightly-connect",
