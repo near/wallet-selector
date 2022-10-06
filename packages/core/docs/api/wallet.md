@@ -198,7 +198,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
 
 Signs the message and verifies the owner. Message is not sent to blockchain.
 
-> Note: This feature is currently supported only by MyNearWallet on **testnet**. Sender can sign messages when unlocked.
+> Note: This feature is currently supported only by MyNearWallet, Meteor Wallet and WalletConnect on **testnet**. Sender can sign messages when unlocked.
 **Example**
 
 ```ts
