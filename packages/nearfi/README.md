@@ -13,6 +13,7 @@ yarn add near-api-js@^0.44.2
 # Using NPM.
 npm install near-api-js@^0.44.2
 ```
+
 ```bash
 # Using Yarn
 yarn add @near-wallet-selector/nearfi
