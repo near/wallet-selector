@@ -62,6 +62,14 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
           <p class="path-description">
             ${translate("ledger.Enter your preferred HD path")}
           </p>
+          <p class="what-link">
+            <a
+              href="https://www.ledger.com/academy/crypto/what-are-hierarchical-deterministic-hd-wallets"
+              target="_blank"
+            >
+              What's this?
+            </a>
+          </p>
           <div class="action-buttons">
             <button class="middleButton" id="scan-button">
             ${translate("ledger.Scan")}

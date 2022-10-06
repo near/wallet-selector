@@ -12,6 +12,7 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { CONTRACT_ID } from "../constants";
@@ -48,11 +49,12 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupNearWallet(),
         setupCoin98Wallet(),
         setupSender(),
+        setupNearFi(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
         setupWalletConnect({
-          projectId: "test...",
+          projectId: "c4f79cc...",
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",
@@ -73,7 +75,6 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     });
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
-
     setAccounts(state.accounts);
 
     window.selector = _selector;

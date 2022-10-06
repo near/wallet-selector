@@ -55,6 +55,6 @@ export async function renderWalletConnectionFailed(
   `;
 
   document.getElementById("retry-button")?.addEventListener("click", () => {
-    connectToWallet(module);
+    connectToWallet(module, false);
   });
 }
