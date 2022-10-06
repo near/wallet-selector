@@ -16,6 +16,7 @@ import type {
   Transaction,
   WalletEvents,
   EventEmitterService,
+  VerifiedOwner,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -67,6 +68,7 @@ const WC_METHODS = [
   "near_getAccounts",
   "near_signTransaction",
   "near_signTransactions",
+  "near_verifyOwner",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -105,16 +107,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({
-  id,
-  options,
-  store,
-  params,
-  provider,
-  emitter,
-  logger,
-  metadata,
-}) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -233,6 +226,17 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_getAccounts",
         params: {},
+      },
+    });
+  };
+
+  const requestVerifyOwner = async (accountId: string, message: string) => {
+    return _state.client.request<VerifiedOwner>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_verifyOwner",
+        params: { accountId, message },
       },
     });
   };
@@ -508,7 +512,19 @@ const WalletConnect: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("WalletConnect:verifyOwner", { message });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const { contract } = store.getState();
+
+      if (!_state.session || !contract) {
+        throw new Error("Wallet not signed in");
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      return requestVerifyOwner(account.accountId, message);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
