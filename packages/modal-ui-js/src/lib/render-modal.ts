@@ -1,5 +1,4 @@
 import {
-  BridgeWallet,
   HardwareWallet,
   HardwareWalletAccount,
   ModuleState,
