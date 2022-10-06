@@ -196,6 +196,10 @@ export class WalletModules {
       this.emitter.emit("networkChanged", { walletId: module.id, networkId });
     });
 
+    emitter.on("uriChanged", ({ uri }) => {
+      this.emitter.emit("uriChanged", { walletId: module.id, uri });
+    });
+
     return emitter;
   }
 
