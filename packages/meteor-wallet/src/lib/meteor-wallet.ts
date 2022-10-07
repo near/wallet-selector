@@ -74,14 +74,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
 
-    for (const trx of transactions) {
-      if (trx.signerId !== account.accountId) {
-        throw new Error(
-          `Transaction had a signerId which didn't match the currently logged in account`
-        );
-      }
-    }
-
     return Promise.all(
       transactions.map(async (transaction, index) => {
         const actions = transaction.actions.map((action) =>
