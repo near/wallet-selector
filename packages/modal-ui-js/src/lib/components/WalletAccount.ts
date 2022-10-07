@@ -1,5 +1,5 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderWalletAccount(
   module: ModuleState<Wallet> | null = null

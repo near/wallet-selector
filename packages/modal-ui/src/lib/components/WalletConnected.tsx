@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { ModuleState } from "@near-wallet-selector/core";
 import { CloseButton } from "./CloseButton";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface WalletConnectedProps {
   module: ModuleState;

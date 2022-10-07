@@ -1,7 +1,6 @@
 import React from "react";
 import { ModuleState } from "@near-wallet-selector/core";
-
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface ConnectionResultProps {
   module: ModuleState;

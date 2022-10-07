@@ -7,7 +7,7 @@ import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
 import { renderNoLedgerAccountsFound } from "./NoLedgerAccountsFound";
 import { renderWalletConnecting } from "./WalletConnecting";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
   if (!modalState) {

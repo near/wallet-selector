@@ -1,5 +1,5 @@
 import { renderGetAWallet } from "./GetAWallet";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderWhatIsAWallet() {
   document.querySelector(".modal-right")!.innerHTML = `

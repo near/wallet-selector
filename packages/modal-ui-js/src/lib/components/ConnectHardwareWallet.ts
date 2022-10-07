@@ -2,7 +2,7 @@ import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { DEFAULT_DERIVATION_PATH, modalState } from "../modal";
 import { connectToWallet } from "../render-modal";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
   if (!modalState) {

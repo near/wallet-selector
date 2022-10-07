@@ -13,8 +13,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
-
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface ModalProps {
   selector: WalletSelector;

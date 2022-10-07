@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Wallet } from "@near-wallet-selector/core";
 import LoadingIcon from "../images/connecting-loader.png";
 import { ModalHeader } from "./ModalHeader";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface WalletConnectingProps {
   wallet: Wallet | undefined;

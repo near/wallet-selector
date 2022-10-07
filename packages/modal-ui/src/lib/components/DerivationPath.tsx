@@ -12,7 +12,7 @@ import { WalletConnecting } from "./WalletConnecting";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface DerivationPathProps {
   selector: WalletSelector;

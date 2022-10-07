@@ -14,7 +14,7 @@ import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
-import { translate } from "./translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;

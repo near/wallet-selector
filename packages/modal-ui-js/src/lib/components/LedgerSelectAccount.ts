@@ -3,7 +3,7 @@ import { modalState } from "../modal";
 import { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerAccountsOverviewList } from "./LedgerAccountsOverviewList";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderLedgerSelectAccount(
   module: ModuleState<Wallet>,

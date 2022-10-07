@@ -1,6 +1,6 @@
 import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 export function renderWalletNotInstalled(
   module: ModuleState<Wallet> & {

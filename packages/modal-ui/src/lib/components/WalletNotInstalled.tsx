@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { ModuleState } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-import { translate } from "../translate/translate";
+import { translate } from "@near-wallet-selector/core";
 
 interface WalletNotInstalledProps {
   module: ModuleState & {
