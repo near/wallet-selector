@@ -16,6 +16,7 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { CONTRACT_ID } from "../constants";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 
 declare global {
   interface Window {
@@ -53,8 +54,9 @@ export class AppComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
-        setupNearFi(),
+        setupHereWallet(),
         setupCoin98Wallet(),
+        setupNearFi(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
