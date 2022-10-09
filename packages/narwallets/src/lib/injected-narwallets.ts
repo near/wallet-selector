@@ -1,5 +1,6 @@
 // Empty string if we haven't signed in before.
 import { providers } from "near-api-js";
+import { SignAndSendTransactionParams } from "packages/core/src/lib/wallet";
 
 interface AccessKey {
   publicKey: {
@@ -60,17 +61,18 @@ export interface SendMoneyParams {
   amount: string;
 }
 
-export interface Action {
-  methodName: string;
-  args: object;
-  gas: string;
-  deposit: string;
-}
+// export interface Action {
+//   methodName: string;
+//   args: object;
+//   gas: string;
+//   deposit: string;
+// }
 
-export interface SignAndSendTransactionParams {
-  receiverId: string;
-  actions: Array<Action>;
-}
+// export interface SignAndSendTransactionParams {
+//   signerId: string;
+//   receiverId: string;
+//   actions: Array<Action>;
+// }
 
 // Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
