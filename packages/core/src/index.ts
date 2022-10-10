@@ -61,6 +61,7 @@ export type {
   DeleteKeyAction,
   DeleteAccountAction,
   AddKeyPermission,
+  Web3AuthWallet,
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";

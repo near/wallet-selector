@@ -181,19 +181,33 @@ export type BridgeWallet = BaseWallet<
   BridgeWalletBehaviour
 >;
 
+// ----- Web3Auth Wallet ----- //
+
+export type Web3AuthWalletMetadata = BaseWalletMetadata;
+
+export type Web3AuthWalletBehaviour = BaseWalletBehaviour;
+
+export type Web3AuthWallet = BaseWallet<
+  "web3auth",
+  Web3AuthWalletMetadata,
+  Web3AuthWalletBehaviour
+>;
+
 // ----- Misc ----- //
 
 export type WalletMetadata =
   | BrowserWalletMetadata
   | InjectedWalletMetadata
   | HardwareWalletMetadata
-  | BridgeWalletMetadata;
+  | BridgeWalletMetadata
+  | Web3AuthWalletMetadata;
 
 export type Wallet =
   | BrowserWallet
   | InjectedWallet
   | HardwareWallet
-  | BridgeWallet;
+  | BridgeWallet
+  | Web3AuthWallet;
 
 export type WalletType = Wallet["type"];
 

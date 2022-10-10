@@ -46,7 +46,14 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import "zone.js"; // Included with Angular CLI.
+import "stream-http";
+import "crypto-browserify";
+import "stream-browserify";
+import "assert";
+import "https-browserify";
+import "os-browserify";
+import "url";
+import "zone.js";
 (window as any).global = window;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

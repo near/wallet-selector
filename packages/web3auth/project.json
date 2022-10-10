@@ -1,0 +1,67 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/web3auth/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/web3auth",
+        "tsConfig": "packages/web3auth/tsconfig.lib.json",
+        "project": "packages/web3auth/package.json",
+        "entryFile": "packages/web3auth/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": [
+          "esm",
+          "cjs"
+        ],
+        "assets": [
+          {
+            "glob": "packages/web3auth/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/web3auth/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/web3auth/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/web3auth"
+      ],
+      "options": {
+        "jestConfig": "packages/web3auth/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": [
+    "bridge-wallet"
+  ]
+}
