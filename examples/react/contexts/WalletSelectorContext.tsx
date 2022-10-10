@@ -45,14 +45,14 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       debug: true,
       modules: [
         ...(await setupDefaultWallets()),
-        setupHereWallet(),
         setupNearWallet(),
-        setupCoin98Wallet(),
         setupSender(),
-        setupNearFi(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupHereWallet(),
+        setupCoin98Wallet(),
+        setupNearFi(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

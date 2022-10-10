@@ -12,6 +12,7 @@ import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ declare global {
 
 export interface Coin98WalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface Coin98WalletState {
@@ -175,7 +177,8 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export const setupCoin98Wallet = ({
-  iconUrl = "./assets/coin98-wallet-icon.png",
+  iconUrl = icon,
+  deprecated = false,
 }: Coin98WalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
@@ -195,7 +198,7 @@ export const setupCoin98Wallet = ({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: Coin98Wallet,

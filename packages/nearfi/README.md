@@ -39,6 +39,9 @@ const selector = await setupWalletSelector({
 });
 ```
 
+> Note: NearFi wallet option is available only in the in-built browser of NearFi mobile app. 
+
+
 ## Options
 
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nearfi-icon.png`.
