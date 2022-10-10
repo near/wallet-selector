@@ -14,8 +14,13 @@ import type {
   Network,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import { isMobile } from "is-mobile";
 import icon from "./icon";
+
+declare global {
+  interface Window {
+    xoth: object | undefined;
+  }
+}
 
 export interface XothWalletParams {
   walletUrl?: string;
@@ -233,9 +238,7 @@ export function setupXothWallet({
   deprecated = false,
 }: XothWalletParams = {}): WalletModuleFactory<BrowserWallet> | null {
   return async () => {
-    const mobile = isMobile();
-
-    if (!mobile) {
+    if (!window.xoth) {
       return null;
     }
 

@@ -53,7 +53,8 @@ yarn add \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets
+  @near-wallet-selector/default-wallets \
+  @near-wallet-selector/xoth
 
 # Using NPM.
 npm install \
@@ -66,7 +67,8 @@ npm install \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets
+  @near-wallet-selector/default-wallets \
+  @near-wallet-selector/xoth
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -94,6 +96,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
+import { setupXothWallet } from "@near-wallet-selector/xoth";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -124,6 +127,7 @@ const selector = await setupWalletSelector({
         icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
       },
     }),
+    setupXothWallet()
   ],
 });
 
