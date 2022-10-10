@@ -19,6 +19,7 @@ declare global {
 
 export interface NearFiParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface NearFiState {
@@ -226,6 +227,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export function setupNearFi({
   iconUrl = "./assets/nearfi-icon.png",
+  deprecated = false,
 }: NearFiParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
@@ -249,7 +251,7 @@ export function setupNearFi({
         description: "Your NEAR DeFi experience On The Go",
         iconUrl,
         downloadUrl: "https://nearfi.finance",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: NearFi,
