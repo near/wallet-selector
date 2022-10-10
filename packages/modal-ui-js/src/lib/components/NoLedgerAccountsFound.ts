@@ -12,7 +12,7 @@ export async function renderNoLedgerAccountsFound(module: ModuleState<Wallet>) {
           </svg></button>
         <div class="nws-modal-header">
           <h3 class="middleTitle">
-            ${translate("ledger.No Accounts Found")}
+            ${translate("modal.ledger.noAccountsFound")}
           </h3>
           <button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -27,9 +27,9 @@ export async function renderNoLedgerAccountsFound(module: ModuleState<Wallet>) {
       <div class="derivation-path-wrapper">
         <div class="no-accounts-found-wrapper">
           <p>
-            ${translate("ledger.Can't find any account")}
+            ${translate("modal.ledger.cantFindAnyAccount")}
             <a href="https://testnet.mynearwallet.com/create" target="_blank">MyNearWallet</a>
-            ${translate("ledger.or connect an another Ledger.")}
+            ${translate("modal.ledger.orConnectAnAnotherLedger")}
           </p>
         </div>
       </div>

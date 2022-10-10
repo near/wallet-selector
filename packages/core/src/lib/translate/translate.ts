@@ -1,5 +1,7 @@
 import en from "../locale/en.json";
 import es from "../locale/es.json";
+import fr from "../locale/fr.json";
+import de from "../locale/de.json";
 
 const getLanguage = (languageCode: string) => {
   switch (languageCode) {
@@ -7,6 +9,10 @@ const getLanguage = (languageCode: string) => {
       return en;
     case "es":
       return es;
+    case "fr":
+      return fr;
+    case "de":
+      return de;
     default:
       return en;
   }

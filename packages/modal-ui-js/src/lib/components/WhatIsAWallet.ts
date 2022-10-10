@@ -7,7 +7,9 @@ export async function renderWhatIsAWallet() {
       <div class="wallet-home-wrapper">
         <div class="nws-modal-header-wrapper">
           <div class="nws-modal-header">
-            <h3 class="middleTitle">${translate("wallet.What is a Wallet")}</h3>
+            <h3 class="middleTitle">${translate(
+              "modal.wallet.whatIsAWallet"
+            )}</h3>
             <button class="close-button">
               <svg
                 xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -23,30 +25,30 @@ export async function renderWhatIsAWallet() {
         <div class="wallet-info-wrapper  what-wallet-hide">
           <div class="wallet-what">
             <div class="content-side">
-              <h3>${translate("wallet.Secure & Manage")}</h3>
-              <p>${translate("wallet.Safely store")}</p>
+              <h3>${translate("modal.wallet.secure&Manage")}</h3>
+              <p>${translate("modal.wallet.safelyStore")}</p>
             </div>
           </div>
 
           <div class="wallet-what">
             <div class="content-side">
-              <h3>${translate("wallet.Log In to Any")}</h3>
-              <p>${translate("wallet.No need to create")}</p>
+              <h3>${translate("modal.wallet.logInToAny")}</h3>
+              <p>${translate("modal.wallet.noNeedToCreate")}</p>
             </div>
           </div>
 
             <div class="button-spacing"></div>
               <button class="middleButton" id="get-a-wallet-button">
-                ${translate("wallet.Get a Wallet")}
+                ${translate("modal.wallet.getAWallet")}
               </button>
         </div>
 
         <div class="what-wallet-mobile">
           <p>
-            ${translate("wallet.Use a wallet")}
+            ${translate("modal.wallet.useAWallet")}
           </p>
           <button class="middleButton" id="get-a-wallet-button-mobile">
-            ${translate("wallet.Get a Wallet")}
+            ${translate("modal.wallet.getAWallet")}
           </button>
         </div>
 

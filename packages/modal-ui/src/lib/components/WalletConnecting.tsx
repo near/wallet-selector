@@ -28,7 +28,8 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
               <img src={LoadingIcon} alt="loading-icon" />
             </div>
             <span>
-              {translate("wallet.Connecting to")} {wallet?.metadata.name}...
+              {translate("modal.wallet.connectingTo")} {wallet?.metadata.name}
+              ...
             </span>
           </div>
         </div>

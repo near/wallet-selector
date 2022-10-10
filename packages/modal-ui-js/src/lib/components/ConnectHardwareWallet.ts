@@ -16,7 +16,7 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
       <div class="nws-modal-header-wrapper">
         <div class="nws-modal-header">
           <h3 class="middleTitle">
-            ${translate("ledger.Connect with Ledger")}
+            ${translate("modal.ledger.connectWithLedger")}
           </h3>
           <button class="close-button"><svg
               xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -112,13 +112,13 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
               </defs>
             </svg></div>
           <div class="ledger-description">
-            <p> ${translate("ledger.Make sure your Ledger")} </p>
+            <p> ${translate("modal.ledger.makeSureYourLedger")} </p>
             <p class="specify-path" id="specify-derivation-path-button">${translate(
-              "ledger.Specify HD Path"
+              "modal.ledger.specifyHDPath"
             )}</p>
           </div>
           <div class="action-buttons"><button class="middleButton" id="continue-button">${translate(
-            "ledger.Continue"
+            "modal.ledger.continue"
           )}</button></div>
         </div>
       </div>

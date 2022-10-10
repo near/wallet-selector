@@ -17,7 +17,7 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
       <div className="nws-modal-header">
         <div>
           <span className="connected-flag">
-            {translate("wallet.Connected")}
+            {translate("modal.wallet.connected")}
           </span>
         </div>
         <CloseButton onClick={onCloseModal} />
@@ -45,7 +45,7 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            <span>{translate("wallet.Connection Successful")}</span>
+            <span>{translate("modal.wallet.connectionSuccessful")}</span>
           </div>
         </div>
       </div>

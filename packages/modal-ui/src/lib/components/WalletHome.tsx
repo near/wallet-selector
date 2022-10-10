@@ -80,8 +80,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <ModalHeader
           title={
             route === "GetWallets"
-              ? translate("wallet.Get a Wallet")
-              : translate("wallet.What is a Wallet")
+              ? translate("modal.wallet.getAWallet")
+              : translate("modal.wallet.whatIsAWallet")
           }
           onCloseModal={onCloseModal}
         />
@@ -118,13 +118,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <>
           <div className="wallet-info-wrapper what-wallet-hide">
             <WhatWallet
-              title={translate("wallet.Secure & Manage")}
-              description={translate("wallet.Safely store")}
+              title={translate("modal.wallet.secure&Manage")}
+              description={translate("modal.wallet.safelyStore")}
               icon={Icon}
             />
             <WhatWallet
-              title={translate("wallet.Log In to Any")}
-              description={translate("wallet.No need to create")}
+              title={translate("modal.wallet.logInToAny")}
+              description={translate("modal.wallet.noNeedToCreate")}
               icon={Icon}
             />
             <div className="button-spacing" />
@@ -134,18 +134,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 setRoute("GetWallets");
               }}
             >
-              {translate("wallet.Get a Wallet")}
+              {translate("modal.wallet.getAWallet")}
             </button>
           </div>
           <div className="what-wallet-mobile">
-            <p>{translate("wallet.Use a wallet")}</p>
+            <p>{translate("modal.wallet.useAWallet")}</p>
             <button
               className="middleButton"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              {translate("wallet.Get a Wallet")}
+              {translate("modal.wallet.getAWallet")}
             </button>
           </div>
         </>

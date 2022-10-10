@@ -23,7 +23,7 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
           </svg></button>
         <div class="nws-modal-header">
           <h3 class="middleTitle">
-            ${translate("ledger.Specify HD Path")}
+            ${translate("modal.ledger.specifyHDPath")}
           </h3>
           <button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -60,7 +60,7 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
             </div>
           </div>
           <p class="path-description">
-            ${translate("ledger.Enter your preferred HD path")}
+            ${translate("modal.ledger.enterYourPreferredHDPath")}
           </p>
           <p class="what-link">
             <a
@@ -72,7 +72,7 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
           </p>
           <div class="action-buttons">
             <button class="middleButton" id="scan-button">
-            ${translate("ledger.Scan")}
+            ${translate("modal.ledger.scan")}
             </button>
           </div>
         </div>

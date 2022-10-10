@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import copy from "copy-to-clipboard";
 import { ModalHeader } from "./ModalHeader";
 import { CopyIcon } from "./CopyIcon";
+import { translate } from "@near-wallet-selector/core";
 
 interface ScanQRCodeProps {
   uri?: string;
@@ -28,10 +29,10 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
     }
     const success = copy(uri);
     if (success) {
-      setNotification("Copied to clipboard");
+      setNotification(translate("modal.qr.copiedToClipboard"));
       setTimeout(() => setNotification(""), 1200);
     } else {
-      setNotification("Failed to copy to clipboard");
+      setNotification(translate("modal.qr.failedToCopy"));
       setTimeout(() => setNotification(""), 1200);
     }
   };
@@ -47,7 +48,7 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
   return (
     <section className="scan-qr-code">
       <ModalHeader
-        title="Scan with Your Mobile Device"
+        title={translate("modal.qr.scanWithYourMobile")}
         onCloseModal={onCloseModal}
       />
 
@@ -58,14 +59,14 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
         ) : (
           <div className="copy-btn" onClick={copyToClipboard}>
             <CopyIcon />
-            Copy to clipboard
+            {translate("modal.qr.copyToClipboard")}
           </div>
         )}
       </section>
       <footer className="footer">
-        <p>Prefer the official WalletConnect dialogue?</p>
+        <p>{translate("modal.qr.preferTheOfficial")}</p>
         <button className="btn" onClick={handleOpenDefaultModal}>
-          Open
+          {translate("modal.qr.open")}
         </button>
       </footer>
     </section>

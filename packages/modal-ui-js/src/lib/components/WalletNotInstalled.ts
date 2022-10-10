@@ -40,15 +40,17 @@ export function renderWalletNotInstalled(
           </p>
         </div>
         <p>
-          ${translate("install.You'll need to install")} ${module.metadata.name}
-          ${translate("install.to continue. After installing")}
+          ${translate("modal.install.youllNeedToInstall")} ${
+    module.metadata.name
+  }
+          ${translate("modal.install.toContinueAfterInstalling")}
           <span class="refresh-link" id="refresh-page-lint">&nbsp;
-            ${translate("install.refresh the page.")}
+            ${translate("modal.install.refreshThePage")}
           </span>
         </p>
         <div class="action-buttons">
           <button class="middleButton" id="download-button">
-            ${translate("install.Open")} ${module.metadata.name}
+            ${translate("modal.install.open")} ${module.metadata.name}
           </button>
         </div>
       </div>

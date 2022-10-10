@@ -164,7 +164,7 @@ export function renderModal() {
       <div class="nws-modal">
         <div class="modal-left">
           <div class="modal-left-title">
-            <h2>${translate("wallet.Connect Your Wallet")}</h2>
+            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper">

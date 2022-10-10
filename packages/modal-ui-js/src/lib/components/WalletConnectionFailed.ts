@@ -36,13 +36,13 @@ export async function renderWalletConnectionFailed(
                     <path d="M6.75 6.75L17.25 17.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round"></path>
                   </svg>
-                  ${translate("wallet.Connection Failed")}
+                  ${translate("modal.wallet.connectionFailed")}
                 </div>
                   <p>${err && err.message ? err.message : ""}</p>
                   ${
                     !module?.metadata.deprecated && module?.metadata.available
                       ? `<button id='retry-button'>${translate(
-                          "ledger.Retry"
+                          "modal.ledger.retry"
                         )}</button>`
                       : ""
                   }

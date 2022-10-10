@@ -20,10 +20,10 @@ export async function renderLedgerAccountsOverviewList(
           </svg>
       </button>
         <div class="nws-modal-header">
-          <h3 class="middleTitle">${translate("ledger.Connecting")} ${
+          <h3 class="middleTitle">${translate("modal.ledger.connecting")} ${
     selectedAccounts.length
   } ${translate(
-    "ledger.of Accounts"
+    "modal.ledger.ofAccounts"
   )}</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -36,12 +36,12 @@ export async function renderLedgerAccountsOverviewList(
       <div class="derivation-path-wrapper">
         <div class="overview-wrapper">
           <p>
-            ${translate("ledger.Overview the list of authorized")}
+            ${translate("modal.ledger.overviewTheListOfAuthorized")}
           </p>
           <div class="accounts" id="accounts"></div>
           <div class="action-buttons">
             <button class="middleButton" id="finish-button">
-              ${translate("ledger.Finish")}
+              ${translate("modal.ledger.finish")}
             </button>
           </div>
         </div>

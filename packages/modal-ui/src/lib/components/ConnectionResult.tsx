@@ -43,11 +43,11 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            {translate("wallet.Connection Failed")}
+            {translate("modal.wallet.connectionFailed")}
           </div>
           <p>{message}</p>
           {module?.metadata.available && (
-            <button onClick={onRetry}>{translate("ledger.Retry")}</button>
+            <button onClick={onRetry}>{translate("modal.ledger.retry")}</button>
           )}
         </div>
       ) : (
@@ -68,7 +68,7 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
               strokeLinejoin="round"
             />
           </svg>
-          {translate("wallet.Connection Successful")}
+          {translate("modal.wallet.connectionSuccessful")}
         </div>
       )}
     </div>

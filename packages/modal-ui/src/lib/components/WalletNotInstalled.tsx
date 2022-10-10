@@ -33,14 +33,14 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
           <p>{module.metadata.name}</p>
         </div>
         <p>
-          {translate("install.You'll need to install")} {module.metadata.name}{" "}
-          {translate("install.to continue. After installing")}
+          {translate("modal.install.youllNeedToInstall")} {module.metadata.name}{" "}
+          {translate("modal.install.toContinueAfterInstalling")}
           <span
             className="refresh-link"
             onClick={() => window.location.reload()}
           >
             {" "}
-            {translate("install.refresh the page.")}
+            {translate("modal.install.refreshThePage")}
           </span>
         </p>
         <div className="action-buttons">
@@ -54,7 +54,7 @@ export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({
               window.open(module.metadata.downloadUrl, "_blank");
             }}
           >
-            {translate("install.Open")} {module.metadata.name}
+            {translate("modal.install.open")} {module.metadata.name}
           </button>
         </div>
       </div>

@@ -218,7 +218,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="nws-modal">
         <div className="modal-left">
           <div className="modal-left-title">
-            <h2>{translate("wallet.Connect Your Wallet")}</h2>
+            <h2>{translate("modal.wallet.connectYourWallet")}</h2>
           </div>
           <WalletOptions
             handleWalletClick={(module) => {
