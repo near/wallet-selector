@@ -56,6 +56,10 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       url = `https://wallet.${subdomain}near.org`;
     }
 
+    if (module.id === "here-wallet") {
+      url = "https://herewallet.app/";
+    }
+
     if (
       (url === "" && module.type === "bridge") ||
       module.type === "hardware"
