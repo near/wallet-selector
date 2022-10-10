@@ -12,6 +12,7 @@ import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -176,7 +177,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export const setupCoin98Wallet = ({
-  iconUrl = "./assets/coin98-wallet-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: Coin98WalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {

@@ -10,6 +10,7 @@ import {
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
+import icon from "./icon";
 
 declare global {
   interface Window {
@@ -226,7 +227,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export function setupNearFi({
-  iconUrl = "./assets/nearfi-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: NearFiParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
