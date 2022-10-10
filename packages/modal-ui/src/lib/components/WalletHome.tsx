@@ -118,7 +118,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <>
           <div className="wallet-info-wrapper what-wallet-hide">
             <WhatWallet
-              title={translate("modal.wallet.secure&Manage")}
+              title={translate("modal.wallet.secureAndManage")}
               description={translate("modal.wallet.safelyStore")}
               icon={Icon}
             />

@@ -25,7 +25,7 @@ export async function renderWhatIsAWallet() {
         <div class="wallet-info-wrapper  what-wallet-hide">
           <div class="wallet-what">
             <div class="content-side">
-              <h3>${translate("modal.wallet.secure&Manage")}</h3>
+              <h3>${translate("modal.wallet.secureAndManage")}</h3>
               <p>${translate("modal.wallet.safelyStore")}</p>
             </div>
           </div>
