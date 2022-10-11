@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "module": "esnext",
     "lib": [
@@ -19,11 +20,15 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-wallet-selector/core": ["packages/core/src/index.ts"],
+      "@near-wallet-selector/core": [
+        "packages/core/src/index.ts"
+      ],
       "@near-wallet-selector/default-wallets": [
         "packages/default-wallets/src/index.ts"
       ],
-      "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
+      "@near-wallet-selector/ledger": [
+        "packages/ledger/src/index.ts"
+      ],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
       ],
@@ -33,7 +38,9 @@
       "@near-wallet-selector/welldone-wallet": [
         "packages/welldone-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
+      "@near-wallet-selector/modal-ui": [
+        "dist/packages/modal-ui"
+      ],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"
       ],
@@ -42,6 +49,12 @@
       ],
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/nearfi": [
+        "packages/nearfi/src/index.ts"
+      ],
+      "@near-wallet-selector/here-wallet": [
+        "packages/here-wallet/src/index.ts"
       ],
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"

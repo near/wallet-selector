@@ -35,6 +35,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/nearfi/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/nightly/assets/",
             "output": "assets/"
           },
