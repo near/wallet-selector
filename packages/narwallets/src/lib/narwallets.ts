@@ -3,36 +3,14 @@ import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
-  Action,
-  Transaction,
-  FunctionCallAction,
-  Optional,
   Account,
-  VerifiedOwner,
 } from "@near-wallet-selector/core";
-//import { waitFor } from "@near-wallet-selector/core";
-import type {
-  InjectedNarwallets,
-  SignAndSendTransactionResponse,
-} from "./injected-narwallets";
-import { fileURLToPath } from "url";
-import { resolve } from "path";
-import { providers, utils } from "near-api-js";
-import { CLIENT_RENEG_LIMIT } from "tls";
-import { SignAndSendTransactionParams } from "packages/core/src/lib/wallet";
-
-// declare global {
-//   interface Window {
-//     narwallets: InjectedNarwallets | undefined;
-//   }
-// }
+import { providers } from "near-api-js";
+import { SignAndSendTransactionParams } from "packages/core/src/lib/wallet/";
+import { logger } from "packages/core/src/lib/services";
 
 export interface NarwalletsParams {
   iconUrl?: string;
-}
-
-interface NarwalletsState {
-  wallet: InjectedNarwallets;
 }
 
 interface PendingPromises {
@@ -43,41 +21,43 @@ interface PendingPromises {
   timeout?: NodeJS.Timeout;
 }
 
+const NARWALLETS_CODES = {
+  SIGN_IN: "sign-in",
+  IS_INSTALLED: "is-installed",
+  IS_SIGNED_IN: "is-signed-in",
+  SIGN_OUT: "sign-out",
+  GET_ACCOUNT_ID: "get-account-id",
+  SIGN_AND_SEND_TRANSACTION: "sign-and-send-transaction",
+  SIGN_AND_SEND_TRANSACTIONS: "sign-and-send-transactions" 
+}
+
 let id = 0;
 const pendingPromises: Array<PendingPromises> = [];
 
 const isInstalled = async (): Promise<boolean> => {
-  const code = "is-installed";
   // Note: sendToNarwallets throws if not installed
   try {
-    await sendToNarwallets(code, true);
+    await sendToNarwallets(NARWALLETS_CODES.IS_INSTALLED, true);
   }
   catch (ex) {
-    console.log(ex)
+    logger.log(ex)
     return false
   }
   return true;
 };
 
 const isSignedIn = (): Promise<boolean> => {
-  const code = "is-signed-in";
-  return sendToNarwallets(code, true);
+  return sendToNarwallets(NARWALLETS_CODES.IS_SIGNED_IN, true);
 };
 
 const getAccountId = (): Promise<string> => {
-  const code = "get-account-id";
-  return sendToNarwallets(code, true);
+  return sendToNarwallets(NARWALLETS_CODES.GET_ACCOUNT_ID, true);
 };
-
-interface SignAndSendResponseError {
-  error: string;
-}
 
 const callSignAndSendTransaction = (
   params: SignAndSendTransactionParams
 ): Promise<providers.FinalExecutionOutcome> => {
-  const code = "sign-and-send-transaction";
-  return sendToNarwallets(code, false, params);
+  return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTION, false, params);
 };
 
 const callSignAndSendTransactions = (
@@ -85,8 +65,7 @@ const callSignAndSendTransactions = (
 ): Promise<
   Array<providers.FinalExecutionOutcome>
 > => {
-  const code = "sign-and-send-transactions";
-  return sendToNarwallets(code, false, params);
+  return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
 };
 
 const sendToNarwallets = (
@@ -120,7 +99,6 @@ const sendToNarwallets = (
     });
   });
   return promise;
-  // return waitFor(() => window.narwallets !== undefined).catch(() => false);
 };
 
 function findPendingPromiseById(id: number): PendingPromises | undefined {
@@ -136,16 +114,12 @@ function removePendingPromise(callback: PendingPromises) {
 }
 
 const setupNarwalletsState = (): void => {
-
-  console.log("setupNarwalletsState: Setting message listener to window")
-
-  // receive response from the extension content_script
   window.addEventListener("message", (event) => {
     if (event.source != window) {
       return;
     }
     const { data } = event
-    // msg shoudl be directed to the page (response from the extension, relayed from the content script)
+    // msg should be directed to the page (response from the extension, relayed from the content script)
     if (!data || data.dest !== "page") {
       return
     }
@@ -163,7 +137,6 @@ const setupNarwalletsState = (): void => {
         if (pendingPromise.timeout) {
           clearTimeout(pendingPromise.timeout);
         }
-        // result : {err, data}
         if (!data.result) {
           pendingPromise.reject("result is empty");
         }
@@ -175,11 +148,6 @@ const setupNarwalletsState = (): void => {
       }
     }
   });
-  // let wallet = window.narwallets!;
-
-  // return {
-  //   wallet,
-  // };
 };
 
 const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
@@ -190,13 +158,8 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
   emitter,
   logger,
 }) => {
-  // const _state = setupNarwalletsState();
 
-  const cleanup = () => {
-    // for (const key in _state.wallet.callbacks) {
-    //   _state.wallet.remove(key);
-    // }
-  };
+  const cleanup = () => {};
 
   const signOut = async () => {
     if (!(await isSignedIn())) {
@@ -205,8 +168,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
     cleanup();
 
-    const res = await sendToNarwallets("sign-out");
-    // const res = await _state.wallet.signOut();
+    const res = await sendToNarwallets(NARWALLETS_CODES.SIGN_OUT);
     if (res === true) {
       return;
     }
@@ -225,30 +187,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     logger.error(error);
   };
 
-  const setupEvents = () => {
-    // _state.wallet.on("accountChanged", async (newAccountId) => {
-    //   logger.log("onAccountChange", newAccountId);
-    //   emitter.emit("signedOut", null);
-    // });
-    // _state.wallet.on("rpcChanged", async (rpc) => {
-    //   logger.log("onNetworkChange", rpc);
-    //   if (options.network.networkId !== rpc.networkId) {
-    //     await signOut();
-    //     emitter.emit("signedOut", null);
-    //     emitter.emit("networkChanged", { networkId: rpc.networkId });
-    //   }
-    // });
-  };
-
-  // const getAccountId = () => {
-  //   const accountId = _state.wallet.getAccountId();
-
-  //   if (!accountId) {
-  //     return [];
-  //   }
-
-  //   return [{ accountId }];
-  // };
+  const setupEvents = () => {};
 
   // const isValidActions = (
   //   actions: Array<Action>
@@ -290,12 +229,11 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       const isUserSignedIn = await isSignedIn();
       let code;
       if (!isUserSignedIn) {
-        code = "sign-in";
+        code = NARWALLETS_CODES.SIGN_IN;
       } else {
-        code = "get-account-id";
+        code = NARWALLETS_CODES.GET_ACCOUNT_ID;
       }
       const response = await sendToNarwallets(code);
-      console.log("Account id", response);
       return [{ accountId: response }];
     },
 
@@ -310,14 +248,21 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("Narwallets:verifyOwner", { message });
       throw Error("TODO")
       // check Sender implementation
-      return {
-        accountId: "",
-        message: "",
-        blockId: "",
-        publicKey: "",
-        signature: "",
-        keyType: 0 as utils.key_pair.KeyType,
-      }
+      // const account = getActiveAccount(store.getState());
+      // if (!account) {
+      //   throw new Error("No active account");
+      // }
+      // const accountId = account.accountId;
+      // const pubKey = await _state.wallet.signer.getPublicKey(accountId);
+
+      // return {
+      //   accountId,
+      //   message,
+      //   blockId: "",
+      //   publicKey: "",
+      //   signature: "",
+      //   keyType: 0 as utils.key_pair.KeyType,
+      // }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

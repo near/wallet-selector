@@ -1,14 +1,7 @@
 // Empty string if we haven't signed in before.
 import { providers } from "near-api-js";
+import { Action } from "near-api-js/lib/transaction";
 import { SignAndSendTransactionParams } from "packages/core/src/lib/wallet";
-
-interface AccessKey {
-  publicKey: {
-    data: Uint8Array;
-    keyType: number;
-  };
-  secretKey: string;
-}
 
 export interface RequestSignInResponse {
   accountId: string;
@@ -61,26 +54,11 @@ export interface SendMoneyParams {
   amount: string;
 }
 
-// export interface Action {
-//   methodName: string;
-//   args: object;
-//   gas: string;
-//   deposit: string;
-// }
-
-// export interface SignAndSendTransactionParams {
-//   signerId: string;
-//   receiverId: string;
-//   actions: Array<Action>;
-// }
-
-// Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  // response?: Array<providers.FinalExecutionOutcome>;
   response?: Array<providers.FinalExecutionOutcome>;
   type: "narwallets-wallet-extensionResult";
 }
@@ -115,9 +93,7 @@ export interface InjectedNarwallets {
   callbacks: Record<keyof NarwalletsEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
-  requestSignIn: (
-    // params: RequestSignInParams
-  ) => Promise<RequestSignInResponse>;
+  requestSignIn: () => Promise<RequestSignInResponse>;
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: boolean;
   remove: (event: string) => void;
@@ -125,7 +101,6 @@ export interface InjectedNarwallets {
     event: Event,
     callback: NarwalletsEvents[Event]
   ) => void;
-  // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (
     params: SignAndSendTransactionParams
