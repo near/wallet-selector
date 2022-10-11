@@ -24,7 +24,6 @@ export const initHereWallet: WalletBehaviourFactory<
   { configuration: HereConfiguration }
 > = async ({ store, logger, options, configuration }) => {
   const _state = await setupWalletState(configuration, options.network);
-  const cleanup = () => _state.keyStore.clear();
 
   const getAccounts = () => {
     const accountId: string | null = _state.wallet.getAccountId();
@@ -61,8 +60,6 @@ export const initHereWallet: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async getAccounts() {

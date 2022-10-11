@@ -135,8 +135,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
-
-    await _state.keystore.clear();
   };
 
   const validateAccessKey = (
@@ -413,12 +411,6 @@ const WalletConnect: WalletBehaviourFactory<
         },
       },
     });
-
-    for (let i = 0; i < limitedAccessAccounts.length; i += 1) {
-      const { accountId } = limitedAccessAccounts[i];
-
-      await _state.keystore.removeKey(options.network.networkId, accountId);
-    }
   };
 
   const signOut = async () => {
