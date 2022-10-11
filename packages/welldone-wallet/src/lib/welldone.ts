@@ -1,4 +1,4 @@
-import { transactions as Transactions, utils } from "near-api-js";
+import { Signer, transactions as Transactions, utils } from "near-api-js";
 import {
   WalletModuleFactory,
   InjectedWallet,
@@ -132,8 +132,15 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
-  const getAccounts = async () => {
-    return _state.account ? [{ accountId: _state.account.accountId }] : [];
+  const getAccounts = () => {
+    return _state.account
+      ? [
+          {
+            accountId: _state.account.accountId,
+            publicKey: _state.account.publicKey,
+          },
+        ]
+      : [];
   };
 
   const signOut = async () => {
@@ -162,9 +169,50 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
+  const signer: Signer = {
+    createKey: () => {
+      throw new Error("Not implemented");
+    },
+    getPublicKey: async (accountId) => {
+      const accounts = getAccounts();
+      const account = accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find public key for account");
+      }
+
+      return utils.PublicKey.from(account.publicKey);
+    },
+    signMessage: async (message, accountId) => {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      const accounts = getAccounts();
+      const account = accounts.find((a) => a.accountId === accountId);
+
+      if (!account) {
+        throw new Error("Failed to find account for signing");
+      }
+      try {
+        const encoded = message.toString();
+
+        const signed = await _state.wallet.request("near", {
+          method: "dapp:sign",
+          params: [encoded],
+        });
+
+        return signed;
+      } catch (err) {
+        logger.log("Failed to sign message");
+        logger.error(err);
+      }
+    },
+  };
+
   return {
     async signIn() {
-      const existingAccounts = await getAccounts();
+      const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
@@ -203,9 +251,11 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    signOut,
+    async getAccounts() {
+      return getAccounts();
+    },
 
-    getAccounts,
+    signOut,
 
     async verifyOwner({ message }) {
       logger.log("Welldone:verifyOwner", { message });
@@ -238,10 +288,10 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       };
       const encoded = JSON.stringify(data);
 
-      const signed = await _state.wallet.request("near", {
-        method: "dapp:sign",
-        params: [encoded],
-      });
+      const signed = await signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
+        accountId
+      );
 
       return {
         ...data,
