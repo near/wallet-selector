@@ -41,7 +41,7 @@ export const signTransactions = async (
 
     const transaction = nearTransactions.createTransaction(
       transactions[i].signerId,
-      utils.PublicKey.from(publicKey.toString()),
+      publicKey,
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       actions,

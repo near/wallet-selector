@@ -1,15 +1,19 @@
 import type { SignClientTypes } from "@walletconnect/types";
-import type {
+import {
   WalletModuleFactory,
   WalletBehaviourFactory,
+  Network,
+  getActiveAccount,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
 
 import icon from "./icon";
 import { Account, Web3AuthWallet } from "@near-wallet-selector/core";
 import Web3AuthClient from "./web3auth-client";
-import { KeyPair } from "near-api-js";
-import { base_encode } from "near-api-js/lib/utils/serialize";
+import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
 import { SafeEventEmitterProvider } from "@web3auth/base";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 
 export interface Web3AuthParams {
   clientId: string;
@@ -31,34 +35,103 @@ interface Web3AuthState {
   client: Web3AuthClient;
   keyPair: KeyPair | null;
   provider: SafeEventEmitterProvider | null;
+  signer: InMemorySigner;
+  keyStore: keyStores.InMemoryKeyStore;
 }
 
-const CLIENT_ID =
-  "BBE9-ElJNfwuEElRtEyiJxYssfim4alrWwDdGbThQ8ji5GGFOOVzHn3d4xi0xQKJtGAjVCeBYRELjAe8t2z0SH4";
+const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
+  return Buffer.from(publicKeyData).toString("hex");
+};
 
-const setupWeb3AuthState = async (clientId: string): Promise<Web3AuthState> => {
-  const client = new Web3AuthClient(clientId);
+const getKeyPair = async (
+  provider: SafeEventEmitterProvider,
+  keyStore: keyStores.InMemoryKeyStore,
+  network: Network
+) => {
+  const privateKey = await provider.request<string>({
+    method: "private_key",
+  });
+
+  if (!privateKey) {
+    throw new Error("No private key found");
+  }
+
+  // eslint-disable-next-line no-console
+  console.log("privateKey", utils.serialize.base_encode(privateKey));
+
+  const keyPair = utils.key_pair.KeyPairEd25519.fromString(
+    utils.serialize.base_encode(privateKey)
+  );
+  const accountId = getAccountIdFromPublicKey(keyPair.getPublicKey().data);
+
+  keyStore.setKey(network.networkId, accountId, keyPair);
+
+  return keyPair;
+};
+
+const setupWeb3AuthState = async (
+  clientId: string,
+  network: Network
+): Promise<Web3AuthState> => {
+  const client = new Web3AuthClient(clientId, network);
+  await client.init();
+
+  const keyStore = new keyStores.InMemoryKeyStore();
+  const signer = new InMemorySigner(keyStore);
+
+  let keyPair = null;
+  const provider = client.getProvider();
+
+  if (provider) {
+    keyPair = await getKeyPair(provider, keyStore, network);
+  }
 
   return {
     client,
-    provider: null,
-    keyPair: null,
+    provider,
+    keyPair,
+    signer,
+    keyStore,
   };
 };
 
 const Web3Auth: WalletBehaviourFactory<
   Web3AuthWallet,
   { params: Web3AuthExtraOptions }
-> = async () => {
-  const _state = await setupWeb3AuthState(CLIENT_ID);
+> = async ({ logger, options, provider, store, params }) => {
+  const _state = await setupWeb3AuthState(params.clientId, options.network);
+
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+  ): Array<Transaction> => {
+    const { contract } = store.getState();
+
+    if (!contract) {
+      throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
+    }
+
+    return transactions.map((transaction) => {
+      return {
+        signerId: transaction.signerId || account.accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
+      };
+    });
+  };
 
   function getAccounts(): Array<Account> {
     if (!_state.keyPair) {
-      throw new Error("Not logged in");
+      return [];
     }
 
-    const publicKey = _state.keyPair.getPublicKey().toString();
-    const accountId = Buffer.from(publicKey).toString("hex");
+    const publicKey = _state.keyPair.getPublicKey().data;
+    const accountId = getAccountIdFromPublicKey(publicKey);
 
     return [{ accountId }];
   }
@@ -71,15 +144,11 @@ const Web3Auth: WalletBehaviourFactory<
         throw new Error("No provider found");
       }
 
-      const privateKey = await _state.provider.request<string>({
-        method: "private_key",
-      });
-
-      if (!privateKey) {
-        throw new Error("No private key found");
-      }
-
-      _state.keyPair = KeyPair.fromString(base_encode(privateKey));
+      _state.keyPair = await getKeyPair(
+        _state.provider,
+        _state.keyStore,
+        options.network
+      );
 
       return getAccounts();
     },
@@ -92,8 +161,19 @@ const Web3Auth: WalletBehaviourFactory<
     verifyOwner: () => {
       throw new Error("Method not supported");
     },
-    signAndSendTransaction: () => {
-      throw new Error("Method not supported");
+    signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ signerId, receiverId, actions }]),
+        _state.signer,
+        options.network
+      );
+
+      logger.log("_state.signer", _state.signer);
+      logger.log("signedTx", { signedTx });
+
+      return provider.sendTransaction(signedTx);
     },
     signAndSendTransactions: () => {
       throw new Error("Method not supported");

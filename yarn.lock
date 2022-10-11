@@ -5026,7 +5026,7 @@
     "@web3auth/base" "^2.1.3"
     bs58 "^5.0.0"
 
-"@web3auth/base@^2.1.3":
+"@web3auth/base@^2.1.2", "@web3auth/base@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3auth/base/-/base-2.1.3.tgz#b534d559d352b83c8a8627d5902b48a35a9a928b"
   integrity sha512-4/ECf/BCLLp+pBLtDcYV0ImyKtjzZK0IOad7Wgs4UQedy1Lxdv8N9FxJULvQ8xXsl5wCxIE/kxJtP2HbEvWf9g==
@@ -5075,7 +5075,7 @@
     "@web3auth/base" "^2.1.3"
     "@web3auth/base-evm-adapter" "^2.1.3"
 
-"@web3auth/openlogin-adapter@^2.1.3":
+"@web3auth/openlogin-adapter@^2.1.2", "@web3auth/openlogin-adapter@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3auth/openlogin-adapter/-/openlogin-adapter-2.1.3.tgz#0ab406267087dd08137859a7e8fd12d3092b8587"
   integrity sha512-c7bVecadoKpsGfBBvxtAC1bI9RER9HCgl7MgC+MMrZEg2luPN1ks1equG8CDl4VoBTS14aOOiGCfbjFXM1qW7g==
@@ -5162,7 +5162,7 @@
     "@web3auth/base-evm-adapter" "^2.1.3"
     "@web3auth/ethereum-provider" "^2.1.3"
 
-"@web3auth/web3auth@^2.1.3":
+"@web3auth/web3auth@^2.1.2":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3auth/web3auth/-/web3auth-2.1.3.tgz#ca52fef665d05a6b97eed671c74cb62bc7fc055a"
   integrity sha512-i3+jqOdgZruz+ouYCHg4Pi6RjpJMiSzABb16KmfxzMlMJnQYyaFKS13i0GCgq57jsUkKe6FWzYNkhIIDs5G5RA==

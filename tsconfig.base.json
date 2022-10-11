@@ -73,6 +73,18 @@
       ],
       "@near-wallet-selector/coin98-wallet": [
         "packages/coin98-wallet/src/index.ts"
+      ],
+      "crypto": [
+        "./node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "./node_modules/stream-browserify"
+      ],
+      "https": [
+        "./node_modules/https-browserify"
+      ],
+      "os": [
+        "./node_modules/os-browserify"
       ]
     }
   },
