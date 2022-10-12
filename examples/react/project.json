@@ -30,6 +30,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/nearfi/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/nightly/assets/",
             "output": "assets/"
           },
@@ -60,9 +65,14 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/coin98-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/xoth/assets/",
             "output": "assets/"
-          }
+          },
         ]
       },
       "configurations": {

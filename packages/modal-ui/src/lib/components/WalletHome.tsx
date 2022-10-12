@@ -60,6 +60,10 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       const subdomain = networkId === "testnet" ? "testnet." : "";
       url = `https://wallet.${subdomain}xoth.app`;
     }
+    
+    if (module.id === "here-wallet") {
+      url = "https://herewallet.app/";
+    }
 
     if (
       (url === "" && module.type === "bridge") ||

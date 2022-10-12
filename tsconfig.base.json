@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "module": "esnext",
     "lib": [
@@ -43,6 +44,12 @@
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/nearfi": [
+        "packages/nearfi/src/index.ts"
+      ],
+      "@near-wallet-selector/here-wallet": [
+        "packages/here-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"
       ],
@@ -63,6 +70,9 @@
       ],
       "@near-wallet-selector/my-near-wallet": [
         "packages/my-near-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/coin98-wallet": [
+        "packages/coin98-wallet/src/index.ts"
       ]
     }
   },

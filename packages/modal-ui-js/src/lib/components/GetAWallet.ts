@@ -29,6 +29,9 @@ function goToWallet(module: ModuleState) {
     const subdomain = networkId === "testnet" ? "testnet." : "";
     url = `https://wallet.${subdomain}xoth.app`;
   }
+  if (module.id === "here-wallet") {
+    url = "https://herewallet.app/";
+  }
 
   if ((url === "" && module.type === "bridge") || module.type === "hardware") {
     return;

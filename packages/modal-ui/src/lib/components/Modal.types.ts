@@ -29,6 +29,11 @@ export type WalletConnectedParams = {
   module: ModuleState | undefined;
 };
 
+export type ScanQRCodeParams = {
+  wallet: Wallet;
+  uri: string | undefined;
+};
+
 export type AlertMessageModalRoute = {
   name: "AlertMessage";
   params?: AlertMessageModalRouteParams;
@@ -68,6 +73,11 @@ export type WalletConnected = {
   params?: WalletConnectedParams;
 };
 
+export type ScanQRCode = {
+  name: "ScanQRCode";
+  params?: ScanQRCodeParams;
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
@@ -76,4 +86,5 @@ export type ModalRoute =
   | WalletNetworkChangedModalRoute
   | WalletConnectingModalRoute
   | WalletHome
-  | WalletConnected;
+  | WalletConnected
+  | ScanQRCode;
