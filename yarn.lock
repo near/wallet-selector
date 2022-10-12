@@ -2221,13 +2221,14 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@jscutlery/semver@^2.25.2":
-  version "2.25.2"
-  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-2.25.2.tgz#e3c93a4a66f3149e20554c7909d799327b3fdc75"
-  integrity sha512-F5vpPHDN20e4kQxoalia+SnUk0xX/GZ798WAv6vxVFqV5Zw0RABUqnGQfDVSv9lbjm//eBeUvQmBd9f3A6y32g==
+"@jscutlery/semver@^2.27.1":
+  version "2.27.1"
+  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-2.27.1.tgz#d1979cc21cd92094b6f47fbae1642fcf052a7be7"
+  integrity sha512-uApRqj8Pc2CG9BbN/ZiWFz9xNq14XDueJZQnhsdO0B9CYoAZqCEoKLbToM7yRXkQ/ZRg7uV3xkrFYEWXVl1K8Q==
   dependencies:
+    detect-indent "6.1.0"
     inquirer "8.2.4"
-    rxjs "7.5.5"
+    rxjs "7.5.6"
     standard-version "9.5.0"
 
 "@ledgerhq/devices@^6.27.1":
@@ -6944,7 +6945,7 @@ detect-browser@5.3.0, detect-browser@^5.1.0, detect-browser@^5.3.0:
   resolved "https://registry.yarnpkg.com/detect-browser/-/detect-browser-5.3.0.tgz#9705ef2bddf46072d0f7265a1fe300e36fe7ceca"
   integrity sha512-53rsFbGdwMwlF7qvCt0ypLM5V5/Mbl0szB7GPN8y9NCcbknYOeVVXdrXEq+90IwAfrrzt6Hd+u2E2ntakICU8w==
 
-detect-indent@^6.0.0:
+detect-indent@6.1.0, detect-indent@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.1.0.tgz#592485ebbbf6b3b1ab2be175c8393d04ca0d57e6"
   integrity sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
@@ -13777,10 +13778,10 @@ rxjs@6, rxjs@6.6.7, rxjs@^6.5.4:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@7.5.5, rxjs@^7.5.1, rxjs@^7.5.5:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
-  integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
+rxjs@7.5.6, rxjs@^7.5.1, rxjs@^7.5.5:
+  version "7.5.6"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.6.tgz#0446577557862afd6903517ce7cae79ecb9662bc"
+  integrity sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw==
   dependencies:
     tslib "^2.1.0"
 
