@@ -4,11 +4,14 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 // import { setupModal } from "@near-wallet-selector/modal-ui";
 // import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
@@ -51,6 +54,9 @@ export class AppComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupHereWallet(),
+        setupCoin98Wallet(),
+        setupNearFi(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

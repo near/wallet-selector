@@ -86,6 +86,7 @@ export type WalletEvents = {
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
+  uriChanged: { uri: string };
 };
 
 // ----- Browser Wallet ----- //
@@ -163,9 +164,16 @@ export type HardwareWallet = BaseWallet<
 
 // ----- Bridge Wallet ----- //
 
+export interface BridgeWalletSignInParams extends SignInParams {
+  qrCodeModal?: boolean;
+}
+
 export type BridgeWalletMetadata = BaseWalletMetadata;
 
-export type BridgeWalletBehaviour = BaseWalletBehaviour;
+export type BridgeWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  { signIn(params: BridgeWalletSignInParams): Promise<Array<Account>> }
+>;
 
 export type BridgeWallet = BaseWallet<
   "bridge",

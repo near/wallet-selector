@@ -61,11 +61,6 @@ const setupWalletState = async (
 
   const wallet = new WalletConnection(near, "near_app");
 
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
-
   return {
     wallet,
     keyStore,
@@ -77,10 +72,6 @@ const MyNearWallet: WalletBehaviourFactory<
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
-
-  const cleanup = () => {
-    _state.keyStore.clear();
-  };
 
   const getAccounts = () => {
     const accountId: string | null = _state.wallet.getAccountId();
@@ -148,8 +139,6 @@ const MyNearWallet: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async getAccounts() {

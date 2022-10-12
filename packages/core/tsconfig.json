@@ -28,6 +28,6 @@
     "isolatedModules": true,
     "incremental": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": true
   }
 }

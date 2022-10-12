@@ -14,6 +14,9 @@ import type {
   BridgeWallet,
   Subscription,
   Transaction,
+  WalletEvents,
+  EventEmitterService,
+  VerifiedOwner,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -65,15 +68,17 @@ const WC_METHODS = [
   "near_getAccounts",
   "near_signTransaction",
   "near_signTransactions",
+  "near_verifyOwner",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
 
 const setupWalletConnectState = async (
   id: string,
-  params: WalletConnectExtraOptions
+  params: WalletConnectExtraOptions,
+  emitter: EventEmitterService<WalletEvents>
 ): Promise<WalletConnectState> => {
-  const client = new WalletConnectClient();
+  const client = new WalletConnectClient(emitter);
   let session: SessionTypes.Struct | null = null;
   const keystore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
@@ -102,17 +107,8 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({
-  id,
-  options,
-  store,
-  params,
-  provider,
-  emitter,
-  logger,
-  metadata,
-}) => {
-  const _state = await setupWalletConnectState(id, params);
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
+  const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
     if (params.chainId) {
@@ -139,8 +135,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
-
-    await _state.keystore.clear();
   };
 
   const validateAccessKey = (
@@ -230,6 +224,17 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_getAccounts",
         params: {},
+      },
+    });
+  };
+
+  const requestVerifyOwner = async (accountId: string, message: string) => {
+    return _state.client.request<VerifiedOwner>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_verifyOwner",
+        params: { accountId, message },
       },
     });
   };
@@ -406,12 +411,6 @@ const WalletConnect: WalletBehaviourFactory<
         },
       },
     });
-
-    for (let i = 0; i < limitedAccessAccounts.length; i += 1) {
-      const { accountId } = limitedAccessAccounts[i];
-
-      await _state.keystore.removeKey(options.network.networkId, accountId);
-    }
   };
 
   const signOut = async () => {
@@ -463,7 +462,7 @@ const WalletConnect: WalletBehaviourFactory<
   }
 
   return {
-    async signIn({ contractId, methodNames = [] }) {
+    async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
@@ -471,15 +470,18 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
-        _state.session = await _state.client.connect({
-          requiredNamespaces: {
-            near: {
-              chains: [getChainId()],
-              methods: WC_METHODS,
-              events: WC_EVENTS,
+        _state.session = await _state.client.connect(
+          {
+            requiredNamespaces: {
+              near: {
+                chains: [getChainId()],
+                methods: WC_METHODS,
+                events: WC_EVENTS,
+              },
             },
           },
-        });
+          qrCodeModal
+        );
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
@@ -502,7 +504,19 @@ const WalletConnect: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("WalletConnect:verifyOwner", { message });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const { contract } = store.getState();
+
+      if (!_state.session || !contract) {
+        throw new Error("Wallet not signed in");
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      return requestVerifyOwner(account.accountId, message);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
