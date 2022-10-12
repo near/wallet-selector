@@ -116,7 +116,7 @@
     "@nrwl/react": "14.4.2",
     "@nrwl/tao": "13.8.5",
     "@nrwl/web": "^14.4.2",
-    "@nrwl/workspace": "14.4.2",
+    "@nrwl/workspace": "14.8.4",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^9.0.0",
