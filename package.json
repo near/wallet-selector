@@ -151,7 +151,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "gh-pages": "^4.0.0",
     "jest": "27.5.1",
-    "jest-mock-extended": "^2.0.6",
+    "jest-mock-extended": "^3.0.1",
     "jest-preset-angular": "^12.2.0",
     "nx": "14.4.2",
     "prettier": "^2.7.1",
