@@ -1,3 +1,5 @@
+import { Web3AuthParams } from "./wallet-selector.types";
+
 export type NetworkId = "mainnet" | "testnet";
 
 export interface Network {
@@ -11,4 +13,5 @@ export interface Network {
 export interface Options {
   network: Network;
   debug: boolean;
+  web3auth?: Web3AuthParams;
 }

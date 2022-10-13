@@ -1,15 +1,13 @@
 import type { SignClientTypes } from "@walletconnect/types";
-import {
-  WalletModuleFactory,
-  WalletBehaviourFactory,
+import type {
   Network,
-  getActiveAccount,
   Optional,
   Transaction,
+  Web3AuthBehaviourFactory,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
-import icon from "./icon";
-import { Account, Web3AuthWallet } from "@near-wallet-selector/core";
+import { Account } from "@near-wallet-selector/core";
 import Web3AuthClient from "./web3auth-client";
 import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
 import { SafeEventEmitterProvider } from "@web3auth/base";
@@ -18,17 +16,7 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 export interface Web3AuthParams {
   clientId: string;
   metadata: SignClientTypes.Metadata;
-  relayUrl?: string;
   iconUrl?: string;
-  chainId?: string;
-  deprecated?: boolean;
-}
-
-interface Web3AuthExtraOptions {
-  chainId?: string;
-  clientId: string;
-  metadata: SignClientTypes.Metadata;
-  relayUrl: string;
 }
 
 interface Web3AuthState {
@@ -95,11 +83,20 @@ const setupWeb3AuthState = async (
   };
 };
 
-const Web3Auth: WalletBehaviourFactory<
-  Web3AuthWallet,
-  { params: Web3AuthExtraOptions }
-> = async ({ logger, options, provider, store, params }) => {
-  const _state = await setupWeb3AuthState(params.clientId, options.network);
+const Web3Auth: Web3AuthBehaviourFactory = async ({
+  logger,
+  options,
+  provider,
+  store,
+}) => {
+  if (!options.web3auth) {
+    throw new Error("No 'web3auth' option set");
+  }
+
+  const _state = await setupWeb3AuthState(
+    options.web3auth.clientId,
+    options.network
+  );
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
@@ -181,36 +178,4 @@ const Web3Auth: WalletBehaviourFactory<
   };
 };
 
-export function setupWeb3Auth({
-  clientId,
-  metadata,
-  chainId,
-  relayUrl = "wss://relay.walletconnect.com",
-  iconUrl = icon,
-  deprecated = false,
-}: Web3AuthParams): WalletModuleFactory<Web3AuthWallet> {
-  return async () => {
-    return {
-      id: "web3auth",
-      type: "web3auth",
-      metadata: {
-        name: "Web3Auth",
-        description: "Bridge wallet for NEAR.",
-        iconUrl,
-        deprecated,
-        available: true,
-      },
-      init: (options) => {
-        return Web3Auth({
-          ...options,
-          params: {
-            clientId,
-            metadata,
-            relayUrl,
-            chainId,
-          },
-        });
-      },
-    };
-  };
-}
+export default Web3Auth;

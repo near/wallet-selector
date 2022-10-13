@@ -1120,6 +1120,26 @@
   color: var(--text-color)
 }
 
+.web3auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.web3auth div {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.web3auth div+div {
+  margin-left: 30px;
+}
+
+.web3auth div img {
+  width: 100%;
+}
+
 
 /************* Responsive and mobile **********/
 

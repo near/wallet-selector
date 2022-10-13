@@ -27,6 +27,7 @@ export type {
   WalletModule,
   WalletBehaviourFactory,
   WalletBehaviourOptions,
+  Web3AuthBehaviourFactory,
   Wallet,
   WalletType,
   WalletMetadata,

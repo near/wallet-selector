@@ -36,6 +36,20 @@ export async function renderWhatIsAWallet() {
 
             <div class="button-spacing"></div>
               <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+          <div class="web3auth">
+            <div>
+              <img id="web3auth-google" src="./assets/google.png" alt="google icon" />
+            </div>
+            <div>
+              <img id="web3auth-facebook" src="./assets/google.png" alt="facebook icon" />
+            </div>
+            <div>
+              <img id="web3auth-discord" src="./assets/google.png" alt="discord icon" />
+            </div>
+            <div>
+              <img id="web3auth-github" src="./assets/google.png" alt="github icon" />
+            </div>
+          </div>
         </div>
 
         <div class="what-wallet-mobile">

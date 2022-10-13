@@ -1,4 +1,4 @@
-import { Network, NetworkId } from "@near-wallet-selector/core";
+import type { Network, NetworkId } from "@near-wallet-selector/core";
 import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
 import { Web3Auth } from "@web3auth/web3auth";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";

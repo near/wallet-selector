@@ -193,21 +193,35 @@ export type Web3AuthWallet = BaseWallet<
   Web3AuthWalletBehaviour
 >;
 
+export interface Web3AuthBehaviourOptions<Variation extends Web3AuthWallet> {
+  id: Variation["id"];
+  type: Variation["type"];
+  metadata: Variation["metadata"];
+  options: Options;
+  store: ReadOnlyStore;
+  provider: ProviderService;
+  emitter: EventEmitterService<WalletEvents>;
+  logger: LoggerService;
+  storage: JsonStorageService;
+}
+
+export type Web3AuthBehaviourFactory = (
+  options: Web3AuthBehaviourOptions<Web3AuthWallet>
+) => Promise<Omit<Web3AuthWallet, "id" | "type" | "metadata">>;
+
 // ----- Misc ----- //
 
 export type WalletMetadata =
   | BrowserWalletMetadata
   | InjectedWalletMetadata
   | HardwareWalletMetadata
-  | BridgeWalletMetadata
-  | Web3AuthWalletMetadata;
+  | BridgeWalletMetadata;
 
 export type Wallet =
   | BrowserWallet
   | InjectedWallet
   | HardwareWallet
-  | BridgeWallet
-  | Web3AuthWallet;
+  | BridgeWallet;
 
 export type WalletType = Wallet["type"];
 

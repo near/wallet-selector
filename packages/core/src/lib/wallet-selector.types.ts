@@ -6,9 +6,33 @@ import type { Subscription, StorageService } from "./services";
 export interface WalletSelectorParams {
   network: NetworkId | Network;
   modules: Array<WalletModuleFactory>;
+  web3auth?: Web3AuthParams;
   storage?: StorageService;
   debug?: boolean;
 }
+
+export type LOGIN_PROVIDER_TYPE =
+  | "jwt"
+  | "google"
+  | "facebook"
+  | "reddit"
+  | "discord"
+  | "twitch"
+  | "apple"
+  | "line"
+  | "github"
+  | "kakao"
+  | "linkedin"
+  | "twitter"
+  | "weibo"
+  | "wechat"
+  | "email_passwordless"
+  | "webauthn";
+
+export type Web3AuthParams = {
+  clientId: string;
+  providers: Array<LOGIN_PROVIDER_TYPE>;
+};
 
 export type WalletSelectorStore = ReadOnlyStore;
 
