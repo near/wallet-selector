@@ -1,4 +1,4 @@
-import { Network, NetworkId } from "@near-wallet-selector/core";
+import { Network, NetworkId } from "../options.types";
 import { CHAIN_NAMESPACES, WALLET_ADAPTERS } from "@web3auth/base";
 import { Web3Auth } from "@web3auth/web3auth";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
@@ -32,9 +32,9 @@ class Web3AuthClient {
     return await this.web3auth.initModal();
   }
 
-  async connect() {
+  async connect(provider: string | undefined) {
     return await this.web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-      loginProvider: "",
+      loginProvider: provider || "",
     });
   }
 

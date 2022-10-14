@@ -7,6 +7,7 @@ import type {
 } from "./wallet-selector.types";
 import { EventEmitter, Logger, Provider, WalletModules } from "./services";
 import type { Wallet } from "./wallet";
+import { setupWeb3Auth } from "./web3auth/web3auth";
 
 let walletSelectorInstance: WalletSelector | null = null;
 
@@ -15,6 +16,10 @@ export const setupWalletSelector = async (
 ): Promise<WalletSelector> => {
   const { options, storage } = resolveOptions(params);
   Logger.debug = options.debug;
+
+  if (params.web3auth) {
+    params.modules.push(setupWeb3Auth(params.web3auth));
+  }
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage);

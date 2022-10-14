@@ -37,12 +37,16 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   return (
     <div className="wallet-options-wrapper">
       <ul className="options-list">
-        {modules.reduce<Array<JSX.Element>>((result, module, index) => {
+        {modules.map((module) => {
           const { selectedWalletId } = selector.store.getState();
           const { name, description, iconUrl, deprecated } = module.metadata;
           const selected = module.id === selectedWalletId;
 
-          result.push(
+          if (module.type === "web3auth") {
+            return null;
+          }
+
+          return (
             <li
               className={`single-wallet ${
                 activeWalletId === module.id ? "selected-wallet" : ""
@@ -51,8 +55,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               } sidebar`}
               key={module.id}
               onClick={() => {
-                if (module.id === modules[index].id) {
-                  setActiveWalletId(module.id!);
+                if (selected) {
+                  setActiveWalletId(module.id);
                 }
                 return handleWalletClick(module);
               }}
@@ -96,8 +100,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               )}
             </li>
           );
-
-          return result;
         }, [])}
       </ul>
     </div>
