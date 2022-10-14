@@ -324,6 +324,7 @@ export const Modal: React.FC<ModalProps> = ({
                 }}
                 onCloseModal={handleDismissClick}
                 uri={bridgeWalletUri}
+                wallet={selectedWallet!}
               />
             )}
           </div>
