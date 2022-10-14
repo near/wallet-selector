@@ -195,11 +195,11 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find account for signing");
       }
       try {
-        const encoded = message.toString();
+        const decoded = new TextDecoder("utf-8").decode(message);
 
         const signed = await _state.wallet.request("near", {
           method: "dapp:sign",
-          params: [encoded],
+          params: [decoded],
         });
 
         return signed;
