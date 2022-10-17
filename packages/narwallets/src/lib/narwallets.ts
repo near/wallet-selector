@@ -264,7 +264,7 @@ export function setupNarwallets({
         description: null,
         iconUrl,
         downloadUrl:
-          "https://chrome.google.com/webstore/detail/narwallets-v3/ipbomjpcpbebobdnkoogngmknkohncjd",
+          "https://chrome.google.com/webstore/detail/narwallets-v4/lkpeokpdkmcdaiadpmnnpimlgmdobkdj",
         deprecated: false,
         available: installed,
       },
