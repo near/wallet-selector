@@ -126,7 +126,7 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   return {
-    async signIn() {
+    async signIn({ qrCodeModal = true }) {
       return new Promise((resolve, reject) => {
         const existingAccounts = getAccounts();
 
@@ -179,10 +179,15 @@ const NightlyConnect: WalletBehaviourFactory<
               _state.modal.onClose = undefined;
               resolve(getAccounts());
             } else {
-              _state.modal.openModal(client.sessionId, NETWORK.NEAR);
-              _state.modal.onClose = () => {
-                reject(new Error("User cancelled pairing"));
-              };
+              if (qrCodeModal) {
+                _state.modal.openModal(client.sessionId, NETWORK.NEAR);
+                _state.modal.onClose = () => {
+                  reject(new Error("User cancelled pairing"));
+                };
+              } else {
+                const uri = `nightlyconnect:${client.sessionId}?network=${NETWORK.NEAR}`;
+                emitter.emit("uriChanged", { uri });
+              }
             }
           });
         } catch (err) {

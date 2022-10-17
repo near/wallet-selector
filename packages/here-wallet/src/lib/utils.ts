@@ -44,11 +44,6 @@ const setupWalletState = async (
 
   const wallet = new WalletConnection(near, "here_app");
 
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
-
   return { wallet, keyStore };
 };
 
