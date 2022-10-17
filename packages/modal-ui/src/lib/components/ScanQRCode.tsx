@@ -67,7 +67,9 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
         )}
       </section>
       <footer className="footer">
-        <p>{translate("modal.qr.preferTheOfficial")} {wallet.metadata.name}?</p>
+        <p>
+          {translate("modal.qr.preferTheOfficial")} {wallet.metadata.name}?
+        </p>
         <button className="btn" onClick={handleOpenDefaultModal}>
           {translate("modal.qr.open")}
         </button>
