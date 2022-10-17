@@ -4,11 +4,15 @@ import {
   WalletBehaviourFactory,
   InjectedWallet,
   Account,
+  Action,
 } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
-import { SignAndSendTransactionParams } from "packages/core/src/lib/wallet/";
-import { logger } from "packages/core/src/lib/services";
 
+export interface SignAndSendTransactionParams {
+  signerId?: string;
+  receiverId?: string;
+  actions: Array<Action>;
+}
 export interface NarwalletsParams {
   iconUrl?: string;
 }
@@ -16,6 +20,7 @@ export interface NarwalletsParams {
 interface PendingPromises {
   id: number;
   code: string;
+  // Note: the result from different action may give different results, like boolean or FinalExecutionOutcome. Since the response may be many things, we're leaving any here
   resolve: (value: any) => void;
   reject: (reason?: any) => void;
   timeout?: NodeJS.Timeout;
@@ -40,7 +45,6 @@ const isInstalled = async (): Promise<boolean> => {
     await sendToNarwallets(NARWALLETS_CODES.IS_INSTALLED, true);
   }
   catch (ex) {
-    logger.log(ex)
     return false
   }
   return true;
@@ -114,6 +118,8 @@ function removePendingPromise(callback: PendingPromises) {
 }
 
 const setupNarwalletsState = (): void => {
+
+  // receive response from the extension content_script
   window.addEventListener("message", (event) => {
     if (event.source != window) {
       return;
@@ -124,15 +130,9 @@ const setupNarwalletsState = (): void => {
       return
     }
 
-    console.log("Message received");
-    console.log("Event data:", data)
     if (data.id && data.type == "nw") {
       const pendingPromise = findPendingPromiseById(data.id);
-      if (!pendingPromise) {
-        console.log("Pending promise not found with id ", data.id);
-      }
       if (pendingPromise) {
-        console.log("Peding promise found. Code:", pendingPromise.code)
         removePendingPromise(pendingPromise);
         if (pendingPromise.timeout) {
           clearTimeout(pendingPromise.timeout);
@@ -159,16 +159,13 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
   logger,
 }) => {
 
-  const cleanup = () => {};
-
   const signOut = async () => {
     if (!(await isSignedIn())) {
       return;
     }
 
-    cleanup();
-
-    const res = await sendToNarwallets(NARWALLETS_CODES.SIGN_OUT);
+    const res = await sendToNarwallets("sign-out");
+    // const res = await _state.wallet.signOut();
     if (res === true) {
       return;
     }
@@ -187,44 +184,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     logger.error(error);
   };
 
-  const setupEvents = () => {};
-
-  // const isValidActions = (
-  //   actions: Array<Action>
-  // ): actions is Array<FunctionCallAction> => {
-  //   return actions.every((x) => x.type === "FunctionCall");
-  // };
-
-  // const transformActions = (actions: Array<Action>) => {
-  //   const validActions = isValidActions(actions);
-
-  //   if (!validActions) {
-  //     throw new Error(
-  //       `Only 'FunctionCall' actions types are supported by ${metadata.name}`
-  //     );
-  //   }
-
-  //   return actions.map((x) => x.params);
-  // };
-
-  // const transformTransactions = (
-  //   transactions: Array<Optional<Transaction, "signerId">>
-  // ): Array<SignAndSendTransactionParams> => {
-  //   return transactions.map((transaction) => {
-  //     return {
-  //       signerId: transaction.signerId,
-  //       receiverId: transaction.receiverId,
-  //       actions: transformActions(transaction.actions),
-  //     };
-  //   });
-  // };
-
-  if (await isSignedIn()) {
-    setupEvents();
-  }
-
   return {
-    // async signIn({ contractId, methodNames }) {
     async signIn() {
       const isUserSignedIn = await isSignedIn();
       let code;
@@ -246,23 +206,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async verifyOwner({ message }) {
       logger.log("Narwallets:verifyOwner", { message });
-      throw Error("TODO")
-      // check Sender implementation
-      // const account = getActiveAccount(store.getState());
-      // if (!account) {
-      //   throw new Error("No active account");
-      // }
-      // const accountId = account.accountId;
-      // const pubKey = await _state.wallet.signer.getPublicKey(accountId);
-
-      // return {
-      //   accountId,
-      //   message,
-      //   blockId: "",
-      //   publicKey: "",
-      //   signature: "",
-      //   keyType: 0 as utils.key_pair.KeyType,
-      // }
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -270,10 +214,6 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const { contract, accounts } = store.getState();
 
-      // if (!(await isSignedIn()) || !contract) {
-      //   throw new Error("Wallet not signed in");
-      // }
-      // test: avoid a call to isSignedIn
       if (!accounts || accounts.length == 0 || !contract) {
         throw new Error("Wallet not signed in");
       }
@@ -281,46 +221,23 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return callSignAndSendTransaction({
         signerId,
         receiverId: receiverId || contract.contractId,
-        //actions: transformActions(actions)
         actions: actions
-      })// .then((res) => {
-      //   console.log("DResponse", res, typeof res);
-      //   if (typeof res === 'object' && "error" in res) {
-      //     throw new Error(res.error);
-      //   }
-
-      //   return res;
-      // });
+      })
     },
 
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
       const { contract, accounts } = store.getState();
-      // if (!(await isSignedIn()) || !contract) {
-      //   throw new Error("Wallet not signed in");
-      // }
+      
       // test: avoid a call to isSignedIn
       if (!accounts || accounts.length == 0 || !contract) {
         throw new Error("Wallet not signed in");
       }
 
-      return callSignAndSendTransactions(
-        //transformTransactions(transactions)
+      return callSignAndSendTransactions(  
         transactions
       )
-      // ).then((res) => {
-      //   console.log("DSignAndSendTransactions", res);
-      //   if ("error" in res) {
-      //     throw new Error(res.error);
-      //   }
-      //   // Shouldn't happen but avoids inconsistent responses.
-      //   if (!res.length) {
-      //     throw new Error("Invalid response");
-      //   }
-
-      //   return res;
-      // });
     },
   };
 };
