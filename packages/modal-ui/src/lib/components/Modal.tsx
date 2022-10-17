@@ -157,7 +157,7 @@ export const Modal: React.FC<ModalProps> = ({
         params: { wallet: wallet },
       });
 
-      if (wallet.type === "bridge" && wallet.id === "wallet-connect") {
+      if (wallet.type === "bridge") {
         const subscription = selector.on("uriChanged", ({ uri }) => {
           setBridgeWalletUri(uri);
           setRoute({
@@ -324,6 +324,7 @@ export const Modal: React.FC<ModalProps> = ({
                 }}
                 onCloseModal={handleDismissClick}
                 uri={bridgeWalletUri}
+                wallet={selectedWallet!}
               />
             )}
           </div>

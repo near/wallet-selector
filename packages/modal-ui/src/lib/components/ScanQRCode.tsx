@@ -3,8 +3,10 @@ import QRCode from "qrcode";
 import copy from "copy-to-clipboard";
 import { ModalHeader } from "./ModalHeader";
 import { CopyIcon } from "./CopyIcon";
+import { ModuleState, Wallet } from "@near-wallet-selector/core";
 
 interface ScanQRCodeProps {
+  wallet: ModuleState<Wallet>;
   uri?: string;
   onCloseModal: () => void;
   handleOpenDefaultModal?: () => void;
@@ -15,6 +17,7 @@ async function formatQRCodeImage(data: string) {
 }
 
 export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
+  wallet,
   uri,
   onCloseModal,
   handleOpenDefaultModal,
@@ -63,7 +66,7 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
         )}
       </section>
       <footer className="footer">
-        <p>Prefer the official WalletConnect dialogue?</p>
+        <p>Prefer the official {wallet.metadata.name} dialogue?</p>
         <button className="btn" onClick={handleOpenDefaultModal}>
           Open
         </button>
