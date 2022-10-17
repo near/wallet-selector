@@ -70,7 +70,7 @@
     "@angular/platform-browser-dynamic": "~14.0.0",
     "@angular/router": "~14.0.0",
     "@jscutlery/semver": "^2.25.2",
-    "@ledgerhq/hw-transport": "6.27.1",
+    "@ledgerhq/hw-transport": "6.27.6",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@meteorwallet/sdk": "^0.6.0",
     "@nightlylabs/connect-near": "0.0.13",
