@@ -38,7 +38,15 @@
     "install": {
       "youllNeedToInstall": "You'll need to install",
       "toContinueAfterInstalling": "to continue. After installing",
-      "refreshThePage.": "refresh the page.",
+      "refreshThePage": "refresh the page.",
+      "open": "Open"
+    },
+    "qr": {
+      "copiedToClipboard": "Copied to clipboard",
+      "failedToCopy": "Failed to copy to clipboard",
+      "scanWithYourMobile": "Scan with Your Mobile Device",
+      "copyToClipboard": " Copy to clipboard",
+      "preferTheOfficial": "Prefer the official WalletConnect dialogue?",
       "open": "Open"
     }
   }

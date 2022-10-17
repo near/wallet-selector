@@ -9,7 +9,7 @@ export async function renderWalletAccount(
     <div class="nws-modal-header">
         <div>
           <span class="connected-flag">
-            ${translate("modal.wallet.Connected")}
+            ${translate("modal.wallet.connected")}
           </span>
           </div>
         <button class="close-button">

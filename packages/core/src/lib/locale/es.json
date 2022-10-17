@@ -1,15 +1,15 @@
 {
   "modal": {
     "wallet": {
-      "connectYourWallet":"Conecta Tu Billetera",
+      "connectYourWallet": "Conecta Tu Billetera",
       "whatIsAWallet": "¿Que es una Billetera?",
       "secureAndManage": "Resguarda y Administrar Tus Activos Digitales",
-      "safelyStore":"Almacena de forma segura y transfiere tus cryptos y NFT's",
+      "safelyStore": "Almacena de forma segura y transfiere tus cryptos y NFT's",
       "logInToAny": "Inicie sesión en Cualquier Aplicacion NEAR",
       "noNeedToCreate": "No es necesario crear nuevas cuentas o credenciales, ¡Conecta tu billetera y listo!",
       "getAWallet": "Obten una Billetera",
       "useAWallet": "Usa tu Billetera para resguardar y administrar tus activos en NEAR, e Iniciar sesión en cualquier aplicacion NEAR sin la necesidad de nombres de usuarios y contraseñas",
-      "connectionFailed":"Conexión Fallida",
+      "connectionFailed": "Conexión Fallida",
       "connectionSuccessful": "Conexión Existosa",
       "connected": "Conectado",
       "connectingTo": "Conectando a "
@@ -38,16 +38,16 @@
     "install": {
       "youllNeedToInstall": "Tendrás que instalar",
       "toContinueAfterInstalling": "Para continuar, Despues de instalar",
-      "refreshThePage.": "Recarga la pagina",
-      "open":"Abrir"
+      "refreshThePage": "Recarga la pagina",
+      "open": "Abrir"
     },
     "qr": {
       "copiedToClipboard": "Copiado al Portapapeles",
       "failedToCopy": "Falló la copia al Portapapeles",
       "scanWithYourMobile": "Busca con tu dispositivo movil",
-      "copyToClipboard": " Copiar al Portapapeles" ,
+      "copyToClipboard": " Copiar al Portapapeles",
       "preferTheOfficial": "¿Prefires el diálogo oficial de WalletConnect?",
-      "open":"Abrir"
+      "open": "Abrir"
     }
   }
 }

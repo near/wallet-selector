@@ -38,7 +38,7 @@
     "install": {
       "youllNeedToInstall": "You'll need to install",
       "toContinueAfterInstalling": "to continue. After installing",
-      "refreshThePage.": "refresh the page.",
+      "refreshThePage": "refresh the page.",
       "open": "Open"
     },
     "qr": {
