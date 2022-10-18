@@ -170,4 +170,4 @@ Wallets shall checkbox a statement of compliance to be maintained on the walletâ
 
 # Default Wallet List Criteria:
 
-To be included in the default wallet list, a wallet project must have met the Wallet Product Criteria, the Wallet Product Criteria, and completed an audit.
+To be included in the default wallet list, a wallet project must have met the Wallet Product Criteria, the Wallet Security Criteria, and completed an audit.
