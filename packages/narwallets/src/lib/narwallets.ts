@@ -7,6 +7,7 @@ import {
   Action,
 } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
+import icon from "./icon";
 
 export interface SignAndSendTransactionParams {
   signerId?: string;
@@ -15,10 +16,11 @@ export interface SignAndSendTransactionParams {
 }
 export interface NarwalletsParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 interface PendingPromises {
-  id: number;
+  id_wallet_selector: number;
   code: string;
   // Note: the result from different action may give different results, like boolean or FinalExecutionOutcome. Since the response may be many things, we're leaving any here
   resolve: (value: any) => void;
@@ -38,6 +40,39 @@ const NARWALLETS_CODES = {
 
 let id = 0;
 const pendingPromises: Array<PendingPromises> = [];
+
+const sendToNarwallets = (
+  code: string,
+  withTimeout = false,
+  params?: any
+): Promise<any> => {
+  const promise = new Promise<any>((resolve, reject) => {
+    id++;
+    let promiseTimeout;
+    if (withTimeout) {
+      promiseTimeout = setTimeout(() => {
+        return reject(Error("timeout"));
+      }, 2000);
+    }
+    pendingPromises.push({
+      id_wallet_selector: id,
+      code,
+      resolve,
+      reject,
+      timeout: promiseTimeout,
+    });
+
+    window.postMessage({
+      id,
+      src: "ws",
+      type: "nw",
+      code,
+      dest: "ext",
+      params,
+    });
+  });
+  return promise;
+};
 
 const isInstalled = async (): Promise<boolean> => {
   // Note: sendToNarwallets throws if not installed
@@ -72,41 +107,8 @@ const callSignAndSendTransactions = (
   return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
 };
 
-const sendToNarwallets = (
-  code: string,
-  withTimeout = false,
-  params?: any
-): Promise<any> => {
-  const promise = new Promise<any>((resolve, reject) => {
-    id++;
-    let promiseTimeout;
-    if (withTimeout) {
-      promiseTimeout = setTimeout(() => {
-        return reject(Error("timeout"));
-      }, 2000);
-    }
-    pendingPromises.push({
-      id,
-      code,
-      resolve,
-      reject,
-      timeout: promiseTimeout,
-    });
-
-    window.postMessage({
-      id,
-      src: "ws",
-      type: "nw",
-      code,
-      dest: "ext",
-      params,
-    });
-  });
-  return promise;
-};
-
 function findPendingPromiseById(id: number): PendingPromises | undefined {
-  return pendingPromises.filter((c) => c.id == id)[0];
+  return pendingPromises.filter((c) => c.id_wallet_selector == id)[0];
 }
 
 function removePendingPromise(callback: PendingPromises) {
@@ -151,11 +153,8 @@ const setupNarwalletsState = (): void => {
 };
 
 const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
-  options,
   metadata,
   store,
-  provider,
-  emitter,
   logger,
 }) => {
 
@@ -243,7 +242,8 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export function setupNarwallets({
-  iconUrl = "./assets/narwallets-logo.png",
+  iconUrl = icon,
+  deprecated = false,
 }: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
 
@@ -265,7 +265,7 @@ export function setupNarwallets({
         iconUrl,
         downloadUrl:
           "https://chrome.google.com/webstore/detail/narwallets-v4/lkpeokpdkmcdaiadpmnnpimlgmdobkdj",
-        deprecated: false,
+        deprecated,
         available: installed,
       },
       init: Narwallets,
