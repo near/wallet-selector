@@ -159,8 +159,8 @@ export async function connectToWallet(
 
     await renderWalletConnectionFailed(
       module,
-      loginProvider,
-      new Error(`Failed to sign in with ${name}: ${message}`)
+      new Error(`Failed to sign in with ${name}: ${message}`),
+      loginProvider
     );
   }
 }

@@ -7,8 +7,8 @@ import { connectToWallet } from "../render-modal";
 
 export async function renderWalletConnectionFailed(
   module: ModuleState<Wallet>,
-  loginProvider: Web3AuthLoginProvider,
-  err: Error
+  err: Error,
+  loginProvider?: Web3AuthLoginProvider
 ) {
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
