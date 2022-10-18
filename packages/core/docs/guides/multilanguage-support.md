@@ -1,17 +1,15 @@
  #  Multi language support
 
 - Languages are detected from browser language settings.
-- If user preffered languages is not supported, english is rendered as default. 
+- If user preffered language is not supported, english is rendered as default. 
 
  ## How to use
 
 - Language files are located in locale folder in `packages\core\src\lib\locale`
-- In order for translations to be used `translate` function should be used, 
+- In order for text to be translated `translate` function should be used 
   as in example below
+- Can be extended when needed following `packageName.section.translationKey`structure
 
-### From locale file in `packages\core\src\lib\locale\en.json`
-
-- can be extended when needed following `packageName.secton.translationKey`structure
   ```ts
   {
   "modal": {
@@ -23,25 +21,26 @@
   }
   ```
 
-###  In file where translation is used
+- File where translated text is rendered 
 
   ```ts
   import { translate } from "@near-wallet-selector/core";
 
   // Text that will be translated
   translate("modal.wallet.connectYourWallet")
-> Note:should be wrapped accordingly e.g. 
-  <p>${translation("modal.wallet.whatIsAWallet")}</p>
+  
+  > Note:should be wrapped accordingly ex. 
+  <p>${translate("modal.wallet.whatIsAWallet")}</p>
 
   ```
 
 ## Adding new language
 - Language files are located in locale folder in `packages\core\src\lib\locale`
 - Files are named after ISO 639-1: two-letter language code
-- Following pattern is used in locale files :
+- Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
 
   ```ts
-    "package name" : {
+    "packageName" : {
       "section": {
         "translationKey : "text to be rendered"
       }
