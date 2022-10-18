@@ -1,7 +1,7 @@
 version: 2
 updates:
-  - package-ecosystem: "npm" 
-    directory: "/" 
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "dev"
@@ -36,4 +36,3 @@ updates:
       - dependency-name: "@walletconnect/types"
       - dependency-name: "gh-pages"
       - dependency-name: "uuid"
-
