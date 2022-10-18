@@ -7,6 +7,8 @@ import {
   FinalExecutionOutcome,
   waitFor,
   JsonStorageService,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
 import {
   SignAndSendTransactionParams,
@@ -16,7 +18,10 @@ import {
   WelldoneWalletState,
 } from "./injected-welldone";
 import icon from "./icon";
-import { createAction } from "@near-wallet-selector/wallet-utils";
+import {
+  createAction,
+  signTransactions,
+} from "@near-wallet-selector/wallet-utils";
 
 export const STORAGE_ACCOUNT = "account";
 
@@ -50,6 +55,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   emitter,
   logger,
   storage,
+  provider,
 }) => {
   const _state = await setupWalletState(storage);
 
@@ -195,6 +201,18 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find account for signing");
       }
       try {
+        const tx = Transactions.Transaction.decode(Buffer.from(message));
+        const serializedTx = Buffer.from(tx.encode()).toString("hex");
+        const signed = await _state.wallet.request("near", {
+          method: "dapp:sign",
+          params: ["0x" + serializedTx],
+        });
+
+        return {
+          signature: Buffer.from(signed.signature.substr(2), "hex"),
+          publicKey: utils.PublicKey.from(signed.publicKey),
+        };
+      } catch (err) {
         const decoded = new TextDecoder("utf-8").decode(message);
 
         const signed = await _state.wallet.request("near", {
@@ -202,12 +220,31 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           params: [decoded],
         });
 
-        return signed;
-      } catch (err) {
-        logger.log("Failed to sign message");
-        logger.error(err);
+        return {
+          signature: Buffer.from(signed.signature.substr(2), "hex"),
+          publicKey: utils.PublicKey.from(signed.publicKey),
+        };
       }
     },
+  };
+
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+  ): Array<Transaction> => {
+    const accounts = getAccounts();
+    const { contract } = store.getState();
+
+    if (!accounts.length || !contract) {
+      throw new Error("Wallet not signed in");
+    }
+
+    return transactions.map((transaction) => {
+      return {
+        signerId: transaction.signerId || accounts[0].accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
+      };
+    });
   };
 
   return {
@@ -303,39 +340,19 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
       const { contract } = store.getState();
+      const accounts = getAccounts();
 
-      if (!_state.wallet) {
-        throw new Error("Wallet is not installed");
-      }
-
-      if (!_state.account || !contract) {
+      if (!accounts.length || !contract) {
         throw new Error("Wallet not signed in");
       }
 
-      const accessKey = await _validateAccessKey(_state.account);
-
-      const nonce = accessKey.nonce + 1;
-
-      const transaction = convertTransaction(
-        _state.account.publicKey,
-        nonce,
-        accessKey.block_hash,
-        {
-          signerId,
-          receiverId: receiverId || contract.contractId,
-          actions,
-        }
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ signerId, receiverId, actions }]),
+        signer,
+        options.network
       );
 
-      const [txHash] = await _state.wallet.request("near", {
-        method: "dapp:sendTransaction",
-        params: [transaction],
-      });
-
-      return _state.wallet.request("near", {
-        method: "tx",
-        params: [txHash, signerId],
-      });
+      return provider.sendTransaction(signedTx);
     },
 
     async signAndSendTransactions({ transactions }) {
