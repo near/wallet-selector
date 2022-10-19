@@ -20,4 +20,5 @@ npm publish dist/packages/meteor-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/here-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/coin98-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/nearfi --tag "${TAG}" --otp "${OTP}"
+npm publish dist/packages/opto-wallet --tag "${TAG}" --otp "${OTP}"
 

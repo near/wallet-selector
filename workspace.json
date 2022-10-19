@@ -20,6 +20,7 @@
     "here-wallet": "packages/here-wallet",
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
-    "coin98-wallet": "packages/coin98-wallet"
+    "coin98-wallet": "packages/coin98-wallet",
+    "opto-wallet": "packages/opto-wallet"
   }
 }

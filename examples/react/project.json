@@ -5,7 +5,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "root": "examples/react",
@@ -65,6 +67,11 @@
             "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/opto-wallet/assets/",
+            "output": "assets/"
           }
         ]
       },
@@ -93,9 +100,13 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "examples/react/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },

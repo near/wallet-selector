@@ -51,6 +51,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       url = `https://${subdomain}.mynearwallet.com`;
     }
 
+    if (module.id === "opto-wallet") {
+      const subdomain = networkId === "testnet" ? "app.testnet" : "app";
+      url = `https://${subdomain}.optowallet.com`;
+    }
+
     if (module.id === "near-wallet") {
       const subdomain = networkId === "testnet" ? "testnet." : "";
       url = `https://wallet.${subdomain}near.org`;
