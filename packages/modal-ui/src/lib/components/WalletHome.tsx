@@ -81,6 +81,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           />
         )}
         <ModalHeader
+          isOpen={route === "GetWallets" ? true : false}
           title={route === "GetWallets" ? "Get a Wallet" : "What is a Wallet?"}
           onCloseModal={onCloseModal}
         />
