@@ -353,16 +353,16 @@
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side {
-    width: 15%;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    width: 56px;
+    height: 56px;
+    padding: 8px;
+    background: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
+    border-radius: 12px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img {
-    width: 100%;
-    height: auto;
-    max-height: 65px;
-    border-radius: 6px;
+    height: 40px;
+    width: 40px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side {

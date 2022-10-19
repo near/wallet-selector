@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
-import Icon from "../images/black-white.jpg";
+import IconKey from "../images/key.png";
+import IconCoins from "../images/coins.png";
 import {
   InjectedWallet,
   ModuleState,
@@ -119,12 +120,12 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             <WhatWallet
               title="Secure & Manage Your Digital Assets"
               description="Safely store and transfer your crypto and NFTs."
-              icon={Icon}
+              icon={IconKey}
             />
             <WhatWallet
               title="Log In to Any NEAR App"
               description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
-              icon={Icon}
+              icon={IconCoins}
             />
             <div className="button-spacing" />
             <button
