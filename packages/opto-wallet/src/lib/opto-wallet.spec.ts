@@ -7,6 +7,12 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { BrowserWallet } from "../../../core/src/lib/wallet";
 
+declare global {
+  interface Window {
+    opto: object | undefined;
+  }
+}
+
 const createOptoWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>();
@@ -53,6 +59,7 @@ afterEach(() => {
 
 describe("signIn", () => {
   it("sign into near wallet", async () => {
+    window.opto = {};
     const { wallet, nearApiJs } = await createOptoWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -63,6 +70,7 @@ describe("signIn", () => {
 
 describe("signOut", () => {
   it("sign out of near wallet", async () => {
+    window.opto = {};
     const { wallet, walletConnection } = await createOptoWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -74,6 +82,7 @@ describe("signOut", () => {
 
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
+    window.opto = {};
     const { wallet, walletConnection } = await createOptoWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -87,6 +96,7 @@ describe("getAccounts", () => {
 describe("signAndSendTransaction", () => {
   // TODO: Figure out why imports to core are returning undefined.
   it.skip("signs and sends transaction", async () => {
+    window.opto = {};
     const { wallet, walletConnection, account } = await createOptoWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });

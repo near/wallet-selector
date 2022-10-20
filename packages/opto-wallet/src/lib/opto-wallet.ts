@@ -12,7 +12,6 @@ import type {
   Transaction,
   Optional,
   Network,
-  InjectedWallet,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
