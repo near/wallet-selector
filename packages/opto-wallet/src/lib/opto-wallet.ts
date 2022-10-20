@@ -228,10 +228,10 @@ export function setupOptoWallet({
 }: OptoWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     if (!window.opto) {
-      return Promise.resolve(null);
+      return null;
     }
 
-    return Promise.resolve({
+    return {
       id: "opto-wallet",
       type: "browser",
       metadata: {
@@ -249,6 +249,6 @@ export function setupOptoWallet({
           },
         });
       },
-    });
+    };
   };
 }
