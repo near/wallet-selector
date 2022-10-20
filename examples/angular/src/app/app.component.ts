@@ -48,8 +48,11 @@ export class AppComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        ...(await setupDefaultWallets()),
-        setupNearWallet(),
+        // ...(await setupDefaultWallets()),
+        setupNearWallet({
+          successUrl: "https://aurora.dev",
+          failureUrl: "https://aurora.dev/asd",
+        }),
         setupSender(),
         setupMathWallet(),
         setupNightly(),

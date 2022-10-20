@@ -91,7 +91,15 @@ export type WalletEvents = {
 
 // ----- Browser Wallet ----- //
 
-export type BrowserWalletMetadata = BaseWalletMetadata;
+export type BrowserWalletMetadata = BaseWalletMetadata & {
+  successUrl?: string;
+  failureUrl?: string;
+};
+
+export interface BrowserWalletSignInParams extends SignInParams {
+  successUrl?: string;
+  failureUrl?: string;
+}
 
 export interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
@@ -106,6 +114,7 @@ export interface BrowserWalletSignAndSendTransactionsParams
 export type BrowserWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
+    signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;

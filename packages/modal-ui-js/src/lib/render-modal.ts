@@ -133,6 +133,19 @@ export async function connectToWallet(
       return;
     }
 
+    if (wallet.type === "browser") {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        successUrl: wallet.metadata.successUrl,
+        failureUrl: wallet.metadata.failureUrl,
+      });
+
+      modalState.container.children[0].classList.remove("open");
+
+      return;
+    }
+
     await wallet.signIn({
       contractId: modalState.options.contractId,
       methodNames: modalState.options.methodNames,
