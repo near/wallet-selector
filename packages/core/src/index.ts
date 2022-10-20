@@ -3,7 +3,6 @@ export type {
   WalletSelectorParams,
   WalletSelectorEvents,
   WalletSelectorStore,
-  Web3AuthParams,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 

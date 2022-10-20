@@ -6,6 +6,7 @@ import {
   ModuleState,
   WalletSelector,
   Web3AuthLoginProvider,
+  Web3AuthWallet,
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
@@ -26,6 +27,9 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
   onCloseModal,
   handleWalletClick,
 }) => {
+  const [web3AuthProviders, setWeb3AuthProviders] = useState<
+    Array<Web3AuthLoginProvider>
+  >([]);
   const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [topThreeModules, setTopThreeModules] = useState<Array<ModuleState>>(
     []
@@ -76,8 +80,25 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     window.open(url, "_blank");
   };
 
+  useEffect(() => {
+    const web3AuthModule = modules.find(
+      (module) => module.type === "web3auth" && module.id === "web3auth"
+    );
+
+    if (web3AuthModule) {
+      web3AuthModule.wallet().then(async (wallet) => {
+        const providers = await (wallet as Web3AuthWallet).getProviders();
+        if (providers) {
+          setWeb3AuthProviders(providers);
+        }
+      });
+    }
+  }, [modules]);
+
   const onWeb3AuthProviderClick = (loginProvider: Web3AuthLoginProvider) => {
-    const web3AuthModule = modules.find((module) => module.id === "web3auth");
+    const web3AuthModule = modules.find(
+      (module) => module.type === "web3auth" && module.id === "web3auth"
+    );
 
     if (!web3AuthModule) {
       return;
@@ -153,8 +174,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             </button>
           </div>
           <div className="web3auth" id="web3auth">
-            {selector.options.web3auth &&
-              selector.options.web3auth.loginProviders.map((loginProvider) => {
+            {web3AuthProviders &&
+              web3AuthProviders.map((loginProvider) => {
                 return (
                   <div
                     className="web3auth-provider"

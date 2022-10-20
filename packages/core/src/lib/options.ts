@@ -33,7 +33,6 @@ export const resolveOptions = (params: WalletSelectorParams) => {
   const options: Options = {
     network: resolveNetwork(params.network),
     debug: params.debug || false,
-    web3auth: params.web3auth,
   };
 
   return {

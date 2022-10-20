@@ -1,14 +1,17 @@
 import {
   ModuleState,
   Wallet,
-  Web3AuthParams,
+  Web3AuthLoginProvider,
+  Web3AuthWallet,
 } from "@near-wallet-selector/core";
 import { renderGetAWallet } from "./GetAWallet";
 import { modalState } from "../modal";
 import { connectToWallet } from "../render-modal";
 
-function renderWeb3AuthSection(web3authParams: Web3AuthParams | undefined) {
-  if (!web3authParams || web3authParams.loginProviders.length < 1) {
+function renderWeb3AuthSection(
+  loginProviders: Array<Web3AuthLoginProvider> | undefined
+) {
+  if (!loginProviders || loginProviders.length < 1) {
     return;
   }
 
@@ -18,7 +21,7 @@ function renderWeb3AuthSection(web3authParams: Web3AuthParams | undefined) {
     return;
   }
 
-  web3authParams.loginProviders.forEach((provider) => {
+  loginProviders.forEach((provider) => {
     web3authElement.insertAdjacentHTML(
       "beforeend",
       `
@@ -59,8 +62,6 @@ export async function renderWhatIsAWallet() {
     return;
   }
 
-  const web3authParams = modalState.selector.options.web3auth;
-
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
       <div class="wallet-home-wrapper">
@@ -96,20 +97,6 @@ export async function renderWhatIsAWallet() {
 
             <div class="button-spacing"></div>
               <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
-          <div class="web3auth">
-            <div>
-              <img id="web3auth-google" src="./assets/google.png" alt="google icon" />
-            </div>
-            <div>
-              <img id="web3auth-facebook" src="./assets/google.png" alt="facebook icon" />
-            </div>
-            <div>
-              <img id="web3auth-discord" src="./assets/google.png" alt="discord icon" />
-            </div>
-            <div>
-              <img id="web3auth-github" src="./assets/google.png" alt="github icon" />
-            </div>
-          </div>
         </div>
 
         <div class="web3auth" id="web3auth"></div>
@@ -126,7 +113,16 @@ export async function renderWhatIsAWallet() {
     </div>
   `;
 
-  renderWeb3AuthSection(web3authParams);
+  const web3authModule = modalState.modules.find(
+    (module: ModuleState<Wallet>) =>
+      module.type === "web3auth" && module.id === "web3auth"
+  );
+
+  if (web3authModule) {
+    const wallet = await web3authModule.wallet();
+    const web3AuthProviders = await (wallet as Web3AuthWallet).getProviders();
+    renderWeb3AuthSection(web3AuthProviders);
+  }
 
   document
     .getElementById("get-a-wallet-button")

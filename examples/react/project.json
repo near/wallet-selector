@@ -55,6 +55,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/web3auth/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/nightly-connect/assets/",
             "output": "assets/"
           },

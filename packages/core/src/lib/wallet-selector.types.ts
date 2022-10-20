@@ -1,8 +1,4 @@
-import type {
-  Wallet,
-  WalletModuleFactory,
-  Web3AuthLoginProvider,
-} from "./wallet/wallet.types";
+import type { Wallet, WalletModuleFactory } from "./wallet/wallet.types";
 import type { ReadOnlyStore } from "./store.types";
 import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
@@ -10,39 +6,9 @@ import type { Subscription, StorageService } from "./services";
 export interface WalletSelectorParams {
   network: NetworkId | Network;
   modules: Array<WalletModuleFactory>;
-  web3auth?: Web3AuthParams;
   storage?: StorageService;
   debug?: boolean;
-  web3auth?: Web3AuthParams;
 }
-
-export interface Web3AuthParams {
-  clientId: string;
-  loginProviders: Array<Web3AuthLoginProvider>;
-}
-
-export type LOGIN_PROVIDER_TYPE =
-  | "jwt"
-  | "google"
-  | "facebook"
-  | "reddit"
-  | "discord"
-  | "twitch"
-  | "apple"
-  | "line"
-  | "github"
-  | "kakao"
-  | "linkedin"
-  | "twitter"
-  | "weibo"
-  | "wechat"
-  | "email_passwordless"
-  | "webauthn";
-
-export type Web3AuthParams = {
-  clientId: string;
-  providers: Array<LOGIN_PROVIDER_TYPE>;
-};
 
 export type WalletSelectorStore = ReadOnlyStore;
 

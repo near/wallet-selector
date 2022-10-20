@@ -1,17 +1,19 @@
-import { Network } from "../options.types";
-import { Web3AuthParams } from "../wallet-selector.types";
-
 import Web3AuthClient from "./web3auth-client";
 import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
 import { SafeEventEmitterProvider } from "@web3auth/base";
-import { icon } from "./icon";
 import {
-  Account,
-  WalletBehaviourFactory,
   WalletModuleFactory,
+  WalletBehaviourFactory,
+  Network,
   Web3AuthLoginProvider,
+  Account,
   Web3AuthWallet,
-} from "../wallet/wallet.types";
+  getActiveAccount,
+  Optional,
+  Transaction,
+} from "@near-wallet-selector/core";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import { icon } from "./icon";
 
 interface Web3AuthExtraOptions {
   clientId: string;
@@ -24,6 +26,11 @@ interface Web3AuthState {
   provider: SafeEventEmitterProvider | null;
   signer: InMemorySigner;
   keyStore: keyStores.InMemoryKeyStore;
+}
+
+export interface Web3AuthParams {
+  clientId: string;
+  loginProviders: Array<Web3AuthLoginProvider>;
 }
 
 const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
@@ -82,8 +89,32 @@ const setupWeb3AuthState = async (
 const Web3Auth: WalletBehaviourFactory<
   Web3AuthWallet,
   { params: Web3AuthExtraOptions }
-> = async ({ options, params }) => {
+> = async ({ options, params, store, logger, provider }) => {
   const _state = await setupWeb3AuthState(params.clientId, options.network);
+
+  const transformTransactions = (
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+  ): Array<Transaction> => {
+    const { contract } = store.getState();
+
+    if (!contract) {
+      throw new Error("Wallet not signed in");
+    }
+
+    const account = getActiveAccount(store.getState());
+
+    if (!account) {
+      throw new Error("No active account");
+    }
+
+    return transactions.map((transaction) => {
+      return {
+        signerId: transaction.signerId || account.accountId,
+        receiverId: transaction.receiverId || contract.contractId,
+        actions: transaction.actions,
+      };
+    });
+  };
 
   function getAccounts(): Array<Account> {
     if (!_state.keyPair) {
@@ -118,11 +149,25 @@ const Web3Auth: WalletBehaviourFactory<
     getAccounts: async () => {
       return getAccounts();
     },
+    getProviders: async () => {
+      return params.loginProviders;
+    },
     verifyOwner: () => {
       throw new Error("Method not supported");
     },
-    signAndSendTransaction: async () => {
-      throw new Error("Method not supported");
+    signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
+      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ signerId, receiverId, actions }]),
+        _state.signer,
+        options.network
+      );
+
+      logger.log("_state.signer", _state.signer);
+      logger.log("signedTx", { signedTx });
+
+      return provider.sendTransaction(signedTx);
     },
     signAndSendTransactions: () => {
       throw new Error("Method not supported");

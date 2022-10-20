@@ -207,7 +207,9 @@ export type Web3AuthWalletMetadata = BaseWalletMetadata;
 export type Web3AuthWalletBehaviour = Modify<
   BaseWalletBehaviour,
   { signIn(params: Web3AuthWalletSignInParams): Promise<Array<Account>> }
->;
+> & {
+  getProviders(): Promise<Array<Web3AuthLoginProvider> | undefined>;
+};
 
 export type Web3AuthWallet = BaseWallet<
   "web3auth",
@@ -243,7 +245,8 @@ export type Wallet =
   | BrowserWallet
   | InjectedWallet
   | HardwareWallet
-  | BridgeWallet;
+  | BridgeWallet
+  | Web3AuthWallet;
 
 export type WalletType = Wallet["type"];
 
