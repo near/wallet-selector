@@ -1,24 +1,3 @@
-<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
-import type { SignClientTypes } from "@walletconnect/types";
-import type {
-  Network,
-  Optional,
-  Transaction,
-  Web3AuthBehaviourFactory,
-} from "@near-wallet-selector/core";
-import { getActiveAccount } from "@near-wallet-selector/core";
-
-import { Account } from "@near-wallet-selector/core";
-import Web3AuthClient from "./web3auth-client";
-import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
-import { SafeEventEmitterProvider } from "@web3auth/base";
-import { signTransactions } from "@near-wallet-selector/wallet-utils";
-
-export interface Web3AuthParams {
-  clientId: string;
-  metadata: SignClientTypes.Metadata;
-  iconUrl?: string;
-=======
 import { Network } from "../options.types";
 import { Web3AuthParams } from "../wallet-selector.types";
 
@@ -37,7 +16,6 @@ import {
 interface Web3AuthExtraOptions {
   clientId: string;
   loginProviders: Array<Web3AuthLoginProvider>;
->>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts
 }
 
 interface Web3AuthState {
@@ -101,28 +79,11 @@ const setupWeb3AuthState = async (
   };
 };
 
-<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
-const Web3Auth: Web3AuthBehaviourFactory = async ({
-  logger,
-  options,
-  provider,
-  store,
-}) => {
-  if (!options.web3auth) {
-    throw new Error("No 'web3auth' option set");
-  }
-
-  const _state = await setupWeb3AuthState(
-    options.web3auth.clientId,
-    options.network
-  );
-=======
 const Web3Auth: WalletBehaviourFactory<
   Web3AuthWallet,
   { params: Web3AuthExtraOptions }
 > = async ({ options, params }) => {
   const _state = await setupWeb3AuthState(params.clientId, options.network);
->>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts
 
   function getAccounts(): Array<Account> {
     if (!_state.keyPair) {
@@ -169,9 +130,6 @@ const Web3Auth: WalletBehaviourFactory<
   };
 };
 
-<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
-export default Web3Auth;
-=======
 export function setupWeb3Auth({
   clientId,
   loginProviders,
@@ -199,4 +157,3 @@ export function setupWeb3Auth({
     };
   };
 }
->>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts
