@@ -5,6 +5,7 @@ import {
   InjectedWallet,
   ModuleState,
   WalletSelector,
+  Web3AuthLoginProvider,
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
@@ -12,6 +13,10 @@ import { BackArrow } from "./BackArrow";
 interface WalletHomeProps {
   selector: WalletSelector;
   onCloseModal: () => void;
+  handleWalletClick: (
+    module: ModuleState,
+    loginProvider: Web3AuthLoginProvider
+  ) => void;
 }
 
 type WalletHomeRoutes = "WalletInfo" | "GetWallets";
@@ -19,8 +24,12 @@ type WalletHomeRoutes = "WalletInfo" | "GetWallets";
 export const WalletHome: React.FC<WalletHomeProps> = ({
   selector,
   onCloseModal,
+  handleWalletClick,
 }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
+  const [topThreeModules, setTopThreeModules] = useState<Array<ModuleState>>(
+    []
+  );
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
 
   useEffect(() => {
@@ -29,9 +38,10 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         return item.type !== "bridge" && item.type !== "hardware";
       };
 
-      const filteredModules = state.modules.filter(filterByType).slice(0, 3);
+      const filteredModules = state.modules.filter(filterByType);
 
       setModules(filteredModules);
+      setTopThreeModules(filteredModules.slice(0, 3));
     });
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +76,16 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     window.open(url, "_blank");
   };
 
+  const onWeb3AuthProviderClick = (loginProvider: Web3AuthLoginProvider) => {
+    const web3AuthModule = modules.find((module) => module.id === "web3auth");
+
+    if (!web3AuthModule) {
+      return;
+    }
+
+    handleWalletClick(web3AuthModule, loginProvider);
+  };
+
   return (
     <div className="wallet-home-wrapper">
       <div className="nws-modal-header-wrapper">
@@ -83,7 +103,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       </div>
       {route === "GetWallets" && (
         <div className="get-wallet-wrapper">
-          {modules.map((module) => {
+          {topThreeModules.map((module) => {
             const { iconUrl, name, description } = module.metadata;
             return (
               <div className="single-wallet-get" key={module.id}>
@@ -131,6 +151,25 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             >
               Get a Wallet
             </button>
+          </div>
+          <div className="web3auth" id="web3auth">
+            {selector.options.web3auth &&
+              selector.options.web3auth.loginProviders.map((loginProvider) => {
+                return (
+                  <div
+                    className="web3auth-provider"
+                    key={loginProvider}
+                    onClick={() => {
+                      onWeb3AuthProviderClick(loginProvider);
+                    }}
+                  >
+                    <img
+                      src={`https://images.web3auth.io/login-${loginProvider}.svg`}
+                      alt={`${loginProvider} icon`}
+                    />
+                  </div>
+                );
+              })}
           </div>
           <div className="what-wallet-mobile">
             <p>

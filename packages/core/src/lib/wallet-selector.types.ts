@@ -1,4 +1,8 @@
-import type { Wallet, WalletModuleFactory } from "./wallet/wallet.types";
+import type {
+  Wallet,
+  WalletModuleFactory,
+  Web3AuthLoginProvider,
+} from "./wallet/wallet.types";
 import type { ReadOnlyStore } from "./store.types";
 import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
@@ -9,6 +13,12 @@ export interface WalletSelectorParams {
   web3auth?: Web3AuthParams;
   storage?: StorageService;
   debug?: boolean;
+  web3auth?: Web3AuthParams;
+}
+
+export interface Web3AuthParams {
+  clientId: string;
+  loginProviders: Array<Web3AuthLoginProvider>;
 }
 
 export type LOGIN_PROVIDER_TYPE =

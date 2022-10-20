@@ -3,6 +3,7 @@ export type {
   WalletSelectorParams,
   WalletSelectorEvents,
   WalletSelectorStore,
+  Web3AuthParams,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
@@ -63,6 +64,7 @@ export type {
   DeleteAccountAction,
   AddKeyPermission,
   Web3AuthWallet,
+  Web3AuthLoginProvider,
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";

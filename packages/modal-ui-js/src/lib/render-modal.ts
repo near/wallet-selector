@@ -1,8 +1,9 @@
-import {
+import type {
   HardwareWallet,
   HardwareWalletAccount,
   ModuleState,
   Wallet,
+  Web3AuthLoginProvider,
 } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
 import { renderLedgerAccountsOverviewList } from "./components/LedgerAccountsOverviewList";
@@ -69,7 +70,8 @@ export const resolveAccounts = async (
 
 export async function connectToWallet(
   module: ModuleState<Wallet>,
-  qrCodeModal = false
+  qrCodeModal = false,
+  loginProvider = "google" as Web3AuthLoginProvider
 ) {
   if (!modalState) {
     return;
@@ -90,13 +92,25 @@ export async function connectToWallet(
     if (module.metadata.deprecated) {
       return renderWalletConnectionFailed(
         module,
-        new Error("Wallet is deprecated")
+        new Error("Wallet is deprecated"),
+        loginProvider
       );
     }
 
     const wallet = await module.wallet();
 
     await renderWalletConnecting(module);
+
+    if (wallet.type === "web3auth") {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        loginProvider,
+      });
+
+      modalState.container.children[0].classList.remove("open");
+      return;
+    }
 
     if (wallet.type === "hardware") {
       const accounts = await resolveAccounts(wallet);
@@ -145,7 +159,8 @@ export async function connectToWallet(
 
     await renderWalletConnectionFailed(
       module,
-      new Error(`Failed to sign in with ${name}: ${message}`)
+      new Error(`Failed to sign in with ${name}: ${message}`),
+      loginProvider
     );
   }
 }
@@ -178,6 +193,11 @@ export function renderModal() {
 
   for (let i = 0; i < modalState.modules.length; i++) {
     const module = modalState.modules[i];
+
+    if (module.type === "web3auth") {
+      continue;
+    }
+
     const { name, description, iconUrl } = module.metadata;
     document.querySelector(".options-list")?.insertAdjacentHTML(
       "beforeend",

@@ -11,7 +11,6 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
-- [Web3Auth](https://www.npmjs.com/package/@near-wallet-selector/web3auth) - Web3Auth wallet.
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 
@@ -56,7 +55,6 @@ yarn add \
   @near-wallet-selector/meteor-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/web3auth \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/default-wallets
 
@@ -72,7 +70,6 @@ npm install \
   @near-wallet-selector/meteor-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/web3auth \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/default-wallets
 ```
@@ -101,7 +98,6 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupWeb3Auth } from "@near-wallet-selector/web3auth";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
@@ -118,7 +114,6 @@ const selector = await setupWalletSelector({
     setupNightly(),
     setupMeteorWallet(),
     setupLedger(),
-    setupWeb3Auth(),
     setupNearFi(),
     setupWalletConnect({
       projectId: "c4f79cc...",
@@ -139,6 +134,10 @@ const selector = await setupWalletSelector({
       },
     }),
   ],
+  web3auth: {
+    clientId: "<CLIENT_ID>",
+    providers: ["google", "discord", "github"]
+  }
 });
 
 const modal = setupModal(selector, {

@@ -183,9 +183,31 @@ export type BridgeWallet = BaseWallet<
 
 // ----- Web3Auth Wallet ----- //
 
+export type Web3AuthLoginProvider =
+  | "google"
+  | "facebook"
+  | "twitter"
+  | "reddit"
+  | "discord"
+  | "twitch"
+  | "apple"
+  | "line"
+  | "github"
+  | "kakao"
+  | "linkedin"
+  | "weibo"
+  | "wechat";
+
+export interface Web3AuthWalletSignInParams extends SignInParams {
+  loginProvider?: Web3AuthLoginProvider;
+}
+
 export type Web3AuthWalletMetadata = BaseWalletMetadata;
 
-export type Web3AuthWalletBehaviour = BaseWalletBehaviour;
+export type Web3AuthWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  { signIn(params: Web3AuthWalletSignInParams): Promise<Array<Account>> }
+>;
 
 export type Web3AuthWallet = BaseWallet<
   "web3auth",

@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { ModuleState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  ModuleState,
+  WalletSelector,
+  Web3AuthLoginProvider,
+} from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
@@ -43,6 +47,8 @@ export const Modal: React.FC<ModalProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
+  const [selectedLoginProvider, setSelectedLoginProvider] =
+    useState<Web3AuthLoginProvider>();
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
 
   useEffect(() => {
@@ -101,9 +107,11 @@ export const Modal: React.FC<ModalProps> = ({
 
   const handleWalletClick = async (
     module: ModuleState,
-    qrCodeModal: boolean
+    qrCodeModal: boolean,
+    loginProvider?: Web3AuthLoginProvider
   ) => {
     setSelectedWallet(module);
+    setSelectedLoginProvider(loginProvider);
 
     const { selectedWalletId } = selector.store.getState();
     if (selectedWalletId === module.id) {
@@ -139,6 +147,16 @@ export const Modal: React.FC<ModalProps> = ({
             module: module,
           },
         });
+        return;
+      }
+
+      if (wallet.type === "web3auth") {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+          loginProvider,
+        });
+        handleDismissClick();
         return;
       }
 
@@ -233,7 +251,11 @@ export const Modal: React.FC<ModalProps> = ({
                 module={route.params?.module}
                 onBack={(retry) => {
                   if (retry) {
-                    handleWalletClick(selectedWallet!, false);
+                    handleWalletClick(
+                      selectedWallet!,
+                      false,
+                      selectedLoginProvider
+                    );
                   }
                   setAlertMessage(null);
                   setRoute({
@@ -308,6 +330,9 @@ export const Modal: React.FC<ModalProps> = ({
               <WalletHome
                 selector={selector}
                 onCloseModal={handleDismissClick}
+                handleWalletClick={(module, loginProvider) => {
+                  handleWalletClick(module, false, loginProvider);
+                }}
               />
             )}
             {route.name === "WalletConnected" && (

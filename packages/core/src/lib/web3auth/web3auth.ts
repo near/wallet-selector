@@ -1,3 +1,4 @@
+<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
 import type { SignClientTypes } from "@walletconnect/types";
 import type {
   Network,
@@ -17,6 +18,26 @@ export interface Web3AuthParams {
   clientId: string;
   metadata: SignClientTypes.Metadata;
   iconUrl?: string;
+=======
+import { Network } from "../options.types";
+import { Web3AuthParams } from "../wallet-selector.types";
+
+import Web3AuthClient from "./web3auth-client";
+import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
+import { SafeEventEmitterProvider } from "@web3auth/base";
+import { icon } from "./icon";
+import {
+  Account,
+  WalletBehaviourFactory,
+  WalletModuleFactory,
+  Web3AuthLoginProvider,
+  Web3AuthWallet,
+} from "../wallet/wallet.types";
+
+interface Web3AuthExtraOptions {
+  clientId: string;
+  loginProviders: Array<Web3AuthLoginProvider>;
+>>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts
 }
 
 interface Web3AuthState {
@@ -43,9 +64,6 @@ const getKeyPair = async (
   if (!privateKey) {
     throw new Error("No private key found");
   }
-
-  // eslint-disable-next-line no-console
-  console.log("privateKey", utils.serialize.base_encode(privateKey));
 
   const keyPair = utils.key_pair.KeyPairEd25519.fromString(
     utils.serialize.base_encode(privateKey)
@@ -83,6 +101,7 @@ const setupWeb3AuthState = async (
   };
 };
 
+<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
 const Web3Auth: Web3AuthBehaviourFactory = async ({
   logger,
   options,
@@ -97,30 +116,13 @@ const Web3Auth: Web3AuthBehaviourFactory = async ({
     options.web3auth.clientId,
     options.network
   );
-
-  const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
-  ): Array<Transaction> => {
-    const { contract } = store.getState();
-
-    if (!contract) {
-      throw new Error("Wallet not signed in");
-    }
-
-    const account = getActiveAccount(store.getState());
-
-    if (!account) {
-      throw new Error("No active account");
-    }
-
-    return transactions.map((transaction) => {
-      return {
-        signerId: transaction.signerId || account.accountId,
-        receiverId: transaction.receiverId || contract.contractId,
-        actions: transaction.actions,
-      };
-    });
-  };
+=======
+const Web3Auth: WalletBehaviourFactory<
+  Web3AuthWallet,
+  { params: Web3AuthExtraOptions }
+> = async ({ options, params }) => {
+  const _state = await setupWeb3AuthState(params.clientId, options.network);
+>>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts
 
   function getAccounts(): Array<Account> {
     if (!_state.keyPair) {
@@ -134,8 +136,8 @@ const Web3Auth: Web3AuthBehaviourFactory = async ({
   }
 
   return {
-    signIn: async () => {
-      _state.provider = await _state.client.connect();
+    signIn: async ({ loginProvider }) => {
+      _state.provider = await _state.client.connect(loginProvider);
 
       if (!_state.provider) {
         throw new Error("No provider found");
@@ -158,19 +160,8 @@ const Web3Auth: Web3AuthBehaviourFactory = async ({
     verifyOwner: () => {
       throw new Error("Method not supported");
     },
-    signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
-      logger.log("signAndSendTransaction", { signerId, receiverId, actions });
-
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ signerId, receiverId, actions }]),
-        _state.signer,
-        options.network
-      );
-
-      logger.log("_state.signer", _state.signer);
-      logger.log("signedTx", { signedTx });
-
-      return provider.sendTransaction(signedTx);
+    signAndSendTransaction: async () => {
+      throw new Error("Method not supported");
     },
     signAndSendTransactions: () => {
       throw new Error("Method not supported");
@@ -178,4 +169,34 @@ const Web3Auth: Web3AuthBehaviourFactory = async ({
   };
 };
 
+<<<<<<< HEAD:packages/web3auth/src/lib/web3auth.ts
 export default Web3Auth;
+=======
+export function setupWeb3Auth({
+  clientId,
+  loginProviders,
+}: Web3AuthParams): WalletModuleFactory<Web3AuthWallet> {
+  return async () => {
+    return {
+      id: "web3auth",
+      type: "web3auth",
+      metadata: {
+        name: "Web3Auth",
+        description: "Connect to dApps with social logins.",
+        iconUrl: icon,
+        deprecated: false,
+        available: true,
+      },
+      init: (options) => {
+        return Web3Auth({
+          ...options,
+          params: {
+            clientId,
+            loginProviders,
+          },
+        });
+      },
+    };
+  };
+}
+>>>>>>> 5f41e445d73cb02fb93a3d639f6dccce760b8de4:packages/core/src/lib/web3auth/web3auth.ts

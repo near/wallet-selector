@@ -72,6 +72,11 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
           },
         }),
       ],
+      web3auth: {
+        clientId:
+          "BBkxbA5ahj1Qna3tDsdwtfhFrc_yPqTECkByqkVnUr64Uuh_Ga3TnW4eVuZfQXElCOCviU_Hfih4jWiSIsAs970",
+        loginProviders: ["google", "facebook", "twitter", "reddit", "discord"],
+      },
     });
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();

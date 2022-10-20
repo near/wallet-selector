@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
       web3auth: {
         clientId:
           "BBkxbA5ahj1Qna3tDsdwtfhFrc_yPqTECkByqkVnUr64Uuh_Ga3TnW4eVuZfQXElCOCviU_Hfih4jWiSIsAs970",
-        providers: ["google"],
+        loginProviders: ["google", "facebook", "twitter", "reddit", "discord"],
       },
     });
 
