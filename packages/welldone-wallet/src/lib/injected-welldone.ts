@@ -5,13 +5,6 @@ export interface WelldoneWalletParams {
   deprecated?: boolean;
 }
 
-export interface RequestParams {
-  jsonrpc?: "2.0";
-  id?: number;
-  method: string;
-  params?: object;
-}
-
 export interface ViewAccessKeyParams {
   accountId: string;
   publicKey: string;
@@ -21,6 +14,13 @@ export interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
   actions: Array<Action>;
+}
+
+interface RequestParams {
+  jsonrpc?: "2.0";
+  id?: number;
+  method: string;
+  params?: object;
 }
 
 export interface WalletProvider {
