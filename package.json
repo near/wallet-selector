@@ -12,6 +12,7 @@
     "near-wallet",
     "my-near-wallet",
     "sender",
+    "neth",
     "math-wallet",
     "nightly",
     "ledger",
@@ -44,6 +45,7 @@
     "build:here-wallet": "nx run-many --target=build --projects=here-wallet --configuration=production",
     "build:my-near-wallet": "nx run-many --target=build --projects=my-near-wallet --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
+    "build:neth": "nx run-many --target=build --projects=neth --configuration=production",
     "build:nearfi": "nx run-many --target=build --projects=nearfi --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
@@ -93,7 +95,12 @@
     "regenerator-runtime": "0.13.10",
     "rxjs": "^7.5.5",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "@metamask/detect-provider": "^2.0.0",
+    "bs58": "^5.0.0",
+    "ethers": "^5.7.2",
+    "near-seed-phrase": "^0.2.0",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~14.0.0",

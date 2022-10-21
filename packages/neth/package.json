@@ -1,0 +1,10 @@
+{
+  "name": "@near-wallet-selector/neth",
+  "version": "0.5.0",
+  "description": "control NEAR accounts with ETH accounts",
+  "author": "mattlockyer",
+  "license": "MIT",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2"
+  }
+}
