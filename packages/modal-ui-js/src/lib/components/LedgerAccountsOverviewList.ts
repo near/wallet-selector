@@ -3,6 +3,7 @@ import { modalState } from "../modal";
 import { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderLedgerAccountsOverviewList(
   module: ModuleState<Wallet>,
@@ -19,7 +20,11 @@ export async function renderLedgerAccountsOverviewList(
           </svg>
       </button>
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Connecting ${selectedAccounts.length} Account</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
+          <h3 class="middleTitle">${translate("modal.ledger.connecting")} ${
+    selectedAccounts.length
+  } ${translate(
+    "modal.ledger.ofAccounts"
+  )}</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path
@@ -30,9 +35,15 @@ export async function renderLedgerAccountsOverviewList(
       </div>
       <div class="derivation-path-wrapper">
         <div class="overview-wrapper">
-          <p>Overview the list of authorized account(s), complete sign in by clicking the button below.</p>
+          <p>
+            ${translate("modal.ledger.overviewTheListOfAuthorized")}
+          </p>
           <div class="accounts" id="accounts"></div>
-          <div class="action-buttons"><button class="middleButton" id="finish-button">Finish</button></div>
+          <div class="action-buttons">
+            <button class="middleButton" id="finish-button">
+              ${translate("modal.ledger.finish")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

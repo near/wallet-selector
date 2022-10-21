@@ -4,7 +4,7 @@ import type {
   BrowserWallet,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import * as BN from "bn.js";
+import BN from "bn.js";
 import icon from "./icon";
 import {
   getHereBalance,
