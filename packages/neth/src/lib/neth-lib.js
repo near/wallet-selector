@@ -325,12 +325,14 @@ export const handleKeys = async () => {
 		console.warn(e)
 		return logger(`Key rotation failed. ${REFRESH_MSG}`);
 	}
-	return await handleCheckAccount(null, ethAddress);
+	return await handleCheckAccount({ ethAddress });
 };
 
 /// waterfall check everything about account and fill in missing pieces
 
-export const handleCheckAccount = async (signer, ethAddress, fundingAccountCB, fundingErrorCB, postFundingCB) => {
+export const handleCheckAccount = async ({
+	signer, ethAddress, fundingAccountCB, fundingErrorCB, postFundingCB
+}) => {
 	let { newAccountId, newSecretKey } = setupFromStorage();
 
 	const mapAccountId = await getNearMap(ethAddress);
