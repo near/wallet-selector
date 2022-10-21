@@ -3,6 +3,9 @@
 - Languages are detected from browser language settings.
 - If user preffered language is not supported, english is rendered as default. 
 
+## Supported language
+- Spanish 
+
  ## How to use
 
 - Language files are located in locale folder in `packages\core\src\lib\locale`
