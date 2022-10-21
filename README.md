@@ -45,36 +45,10 @@ Next, you'll need to install the wallets you want to support:
 
 ```bash
 # Using Yarn
-yarn add \
-  @near-wallet-selector/near-wallet \
-  @near-wallet-selector/my-near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/nearfi \
-  @near-wallet-selector/here-wallet \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/nightly \
-  @near-wallet-selector/meteor-wallet \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets \
-  @near-wallet-selector/coin98-wallet
+yarn add @near-wallet-selector/near-wallet @near-wallet-selector/my-near-wallet @near-wallet-selector/sender @near-wallet-selector/nearfi @near-wallet-selector/here-wallet @near-wallet-selector/math-wallet @near-wallet-selector/nightly @near-wallet-selector/meteor-wallet @near-wallet-selector/ledger @near-wallet-selector/wallet-connect @near-wallet-selector/nightly-connect @near-wallet-selector/default-wallets @near-wallet-selector/coin98-wallet
 
 # Using NPM.
-npm install \
-  @near-wallet-selector/near-wallet \
-  @near-wallet-selector/my-near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/nearfi \
-  @near-wallet-selector/here-wallet \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/nightly \
-  @near-wallet-selector/meteor-wallet \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets \
-  @near-wallet-selector/coin98-wallet
+npm install @near-wallet-selector/near-wallet @near-wallet-selector/my-near-wallet @near-wallet-selector/sender @near-wallet-selector/nearfi @near-wallet-selector/here-wallet @near-wallet-selector/math-wallet @near-wallet-selector/nightly @near-wallet-selector/meteor-wallet @near-wallet-selector/ledger @near-wallet-selector/wallet-connect @near-wallet-selector/nightly-connect @near-wallet-selector/default-wallets @near-wallet-selector/coin98-wallet
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
