@@ -35,7 +35,7 @@ const NARWALLETS_CODES = {
   SIGN_OUT: "sign-out",
   GET_ACCOUNT_ID: "get-account-id",
   SIGN_AND_SEND_TRANSACTION: "sign-and-send-transaction",
-  SIGN_AND_SEND_TRANSACTIONS: "sign-and-send-transactions" 
+  SIGN_AND_SEND_TRANSACTIONS: "sign-and-send-transactions"
 }
 
 let id = 0;
@@ -90,7 +90,7 @@ const isSignedIn = (): Promise<boolean> => {
 };
 
 const getAccountId = (): Promise<string> => {
-  return sendToNarwallets(NARWALLETS_CODES.GET_ACCOUNT_ID, true);
+  return sendToNarwallets(NARWALLETS_CODES.GET_ACCOUNT_ID, false);
 };
 
 const callSignAndSendTransaction = (
@@ -107,11 +107,11 @@ const callSignAndSendTransactions = (
   return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
 };
 
-function findPendingPromiseById(id: number): PendingPromises | undefined {
-  return pendingPromises.filter((c) => c.id_wallet_selector == id)[0];
+const findPendingPromiseById = (id: number): PendingPromises | undefined => {
+  return pendingPromises.filter((c) => c.id_wallet_selector === id)[0];
 }
 
-function removePendingPromise(callback: PendingPromises) {
+const removePendingPromise = (callback: PendingPromises) => {
   const index = pendingPromises.indexOf(callback);
   if (index > -1) {
     // only splice array when item is found
@@ -123,7 +123,7 @@ const setupNarwalletsState = (): void => {
 
   // receive response from the extension content_script
   window.addEventListener("message", (event) => {
-    if (event.source != window) {
+    if (event.source !== window) {
       return;
     }
     const { data } = event
@@ -132,7 +132,7 @@ const setupNarwalletsState = (): void => {
       return
     }
 
-    if (data.id && data.type == "nw") {
+    if (data.id && data.type === "nw") {
       const pendingPromise = findPendingPromiseById(data.id);
       if (pendingPromise) {
         removePendingPromise(pendingPromise);
@@ -213,7 +213,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const { contract, accounts } = store.getState();
 
-      if (!accounts || accounts.length == 0 || !contract) {
+      if (!accounts || accounts.length === 0 || !contract) {
         throw new Error("Wallet not signed in");
       }
 
@@ -228,23 +228,23 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signAndSendTransactions", { transactions });
 
       const { contract, accounts } = store.getState();
-      
+
       // test: avoid a call to isSignedIn
-      if (!accounts || accounts.length == 0 || !contract) {
+      if (!accounts || accounts.length === 0 || !contract) {
         throw new Error("Wallet not signed in");
       }
 
-      return callSignAndSendTransactions(  
+      return callSignAndSendTransactions(
         transactions
       )
     },
   };
 };
 
-export function setupNarwallets({
+export const setupNarwallets = ({
   iconUrl = icon,
   deprecated = false,
-}: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> {
+}: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
 
     const mobile = isMobile();
