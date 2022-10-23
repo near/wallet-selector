@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
 import Icon from "../images/black-white.jpg";
-import {
+import type {
   InjectedWallet,
   ModuleState,
   WalletSelector,

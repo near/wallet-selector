@@ -4,7 +4,7 @@ import copy from "copy-to-clipboard";
 import { ModalHeader } from "./ModalHeader";
 import { CopyIcon } from "./CopyIcon";
 import { translate } from "@near-wallet-selector/core";
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 
 interface ScanQRCodeProps {
   wallet: ModuleState<Wallet>;

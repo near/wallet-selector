@@ -6,9 +6,9 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import BN from "bn.js";
 import icon from "./icon";
+import type { HereConfiguration } from "./utils";
 import {
   getHereBalance,
-  HereConfiguration,
   hereConfigurations,
   setupWalletState,
   transformTransactions,

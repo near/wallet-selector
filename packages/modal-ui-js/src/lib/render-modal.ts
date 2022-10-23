@@ -1,4 +1,4 @@
-import {
+import type {
   HardwareWallet,
   HardwareWalletAccount,
   ModuleState,

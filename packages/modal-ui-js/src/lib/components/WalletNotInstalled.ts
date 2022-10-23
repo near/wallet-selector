@@ -1,4 +1,4 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { translate } from "@near-wallet-selector/core";
 

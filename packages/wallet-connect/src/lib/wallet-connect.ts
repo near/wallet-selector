@@ -1,12 +1,11 @@
+import type { KeyPair, providers } from "near-api-js";
 import {
   InMemorySigner,
-  KeyPair,
   keyStores,
   transactions as nearTransactions,
-  providers,
   utils,
 } from "near-api-js";
-import { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,

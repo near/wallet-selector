@@ -1,6 +1,5 @@
-import { providers, utils } from "near-api-js";
-
-import {
+import type { providers, utils } from "near-api-js";
+import type {
   EventEmitterService,
   LoggerService,
   ProviderService,

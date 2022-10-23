@@ -1,4 +1,4 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./ConnectHardwareWallet";
 import { translate } from "@near-wallet-selector/core";
 

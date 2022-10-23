@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import Big from "big.js";
-import type { Account } from "../../interfaces/account";
+import { Account } from "../../interfaces/account";
 
 export type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };

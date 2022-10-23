@@ -1,6 +1,6 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
-import { HardwareWalletAccountState } from "../render-modal";
+import type { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerAccountsOverviewList } from "./LedgerAccountsOverviewList";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
 import { translate } from "@near-wallet-selector/core";
