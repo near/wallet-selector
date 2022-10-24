@@ -84,6 +84,11 @@
             "glob": "**/*",
             "input": "packages/opto-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/xdefi/assets/",
+            "output": "assets/"
           }
         ],
         "styles": [
