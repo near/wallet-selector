@@ -85,7 +85,7 @@
     "is-mobile": "^3.1.1",
     "near-api-js": "^0.44.2",
     "next": "12.2.3",
-    "ngx-deploy-npm": "^4.1.1",
+    "ngx-deploy-npm": "^4.3.0",
     "qrcode": "^1.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
