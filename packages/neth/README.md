@@ -1,4 +1,4 @@
-# @near-wallet-selector/sender
+# @near-wallet-selector/neth
 
 This is the [NETH](https://neth.app) package for NEAR Wallet Selector.
 
@@ -25,7 +25,7 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupSender } from "@near-wallet-selector/neth";
+import { setupNeth } from "@near-wallet-selector/neth";
 
 // NETH for Wallet Selector can be setup without any params or it can take one optional param.
 const neth = setupNeth({
@@ -40,7 +40,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/sender-icon.png`.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to the neth logo.
 
 ## Assets
 

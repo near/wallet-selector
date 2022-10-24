@@ -7,7 +7,7 @@ import {
   waitFor,
 } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { nearWalletIcon } from "../assets/icons";
+import { nethIcon } from "../assets/icons";
 import {
   getNear,
   signIn,
@@ -48,11 +48,12 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   initConnection(options.network);
 
   const cover = document.createElement("div");
-  const coverImg = document.createElement("img");
-  coverImg.src = nearWalletIcon;
-  cover.className = "modal-overlay-standalone";
+  cover.style.width = "100%";
+  cover.style.height = "100vh";
+  cover.style.zIndex = "999999";
+  cover.style.position = "fixed";
+  cover.style.background = "rgba(0, 0, 0, 0.5)";
   cover.style.display = "none";
-  cover.appendChild(coverImg);
   document.body.appendChild(cover);
 
   const isValidActions = (
@@ -155,7 +156,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export function setupNeth({
   useModalCover = false,
-  iconUrl = nearWalletIcon,
+  iconUrl = nethIcon,
 }: NethParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     // const mobile = isMobile();

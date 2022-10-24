@@ -64,9 +64,9 @@ const del = (k) => localStorage.removeItem(k);
 const defaultLogger = (args) => console.log(...args);
 
 /// NEAR setup
-const keyStore = new BrowserLocalStorageKeyStore();
-let near, logger, connection, networkId, contractAccount, accountSuffix;
+let near, keyStore, logger, connection, networkId, contractAccount, accountSuffix;
 export const initConnection = (network, logFn) => {
+	keyStore = new BrowserLocalStorageKeyStore();
 	near = new Near({
 		...network,
 		deps: { keyStore },
