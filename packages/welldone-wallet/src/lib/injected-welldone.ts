@@ -1,4 +1,4 @@
-import { Action } from "@near-wallet-selector/core";
+import type { Action } from "@near-wallet-selector/core";
 
 export interface WelldoneWalletParams {
   iconUrl?: string;
