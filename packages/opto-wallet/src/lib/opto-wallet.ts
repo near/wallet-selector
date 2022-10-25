@@ -16,20 +16,24 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
-export interface MyNearWalletParams {
+declare global {
+  interface Window {
+    opto: object | undefined;
+  }
+}
+
+export interface OptoWalletParams {
   walletUrl?: string;
   iconUrl?: string;
   deprecated?: boolean;
-  successUrl?: string;
-  failureUrl?: string;
 }
 
-interface MyNearWalletState {
+interface OptoWalletState {
   wallet: WalletConnection;
   keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
-interface MyNearWalletExtraOptions {
+interface OptoWalletExtraOptions {
   walletUrl: string;
 }
 
@@ -40,18 +44,18 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 
   switch (network.networkId) {
     case "mainnet":
-      return "https://app.mynearwallet.com";
+      return "https://app.optowallet.com";
     case "testnet":
-      return "https://testnet.mynearwallet.com";
+      return "https://app.testnet.optowallet.com";
     default:
       throw new Error("Invalid wallet url");
   }
 };
 
 const setupWalletState = async (
-  params: MyNearWalletExtraOptions,
+  params: OptoWalletExtraOptions,
   network: Network
-): Promise<MyNearWalletState> => {
+): Promise<OptoWalletState> => {
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
   const near = await connect({
@@ -69,9 +73,9 @@ const setupWalletState = async (
   };
 };
 
-const MyNearWallet: WalletBehaviourFactory<
+const OptoWallet: WalletBehaviourFactory<
   BrowserWallet,
-  { params: MyNearWalletExtraOptions }
+  { params: OptoWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
@@ -125,19 +129,14 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({
-        contractId,
-        methodNames,
-        successUrl,
-        failureUrl,
-      });
+      await _state.wallet.requestSignIn({ contractId, methodNames });
 
       return getAccounts();
     },
@@ -222,29 +221,28 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 };
 
-export function setupMyNearWallet({
+export function setupOptoWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
-  successUrl = "",
-  failureUrl = "",
-}: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
+}: OptoWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
+    if (!window.opto) {
+      return null;
+    }
+
     return {
-      id: "my-near-wallet",
+      id: "opto-wallet",
       type: "browser",
       metadata: {
-        name: "MyNearWallet",
-        description:
-          "NEAR wallet to store, buy, send and stake assets for DeFi.",
+        name: "OptoWallet",
+        description: "Have Sign of your Crypto with Opto Wallet.",
         iconUrl,
         deprecated,
         available: true,
-        successUrl,
-        failureUrl,
       },
       init: (options) => {
-        return MyNearWallet({
+        return OptoWallet({
           ...options,
           params: {
             walletUrl: resolveWalletUrl(options.options.network, walletUrl),

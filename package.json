@@ -18,7 +18,9 @@
     "wallet-connect",
     "nightly-connect",
     "nearfi",
-    "meteor-wallet"
+    "meteor-wallet",
+    "welldone-wallet",
+    "opto-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -47,8 +49,10 @@
     "build:nearfi": "nx run-many --target=build --projects=nearfi --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
+    "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
+    "build:opto-wallet": "nx run-many --target=build --projects=opto-wallet --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
@@ -60,7 +64,6 @@
     "postinstall": "ngcc --properties es2020 browser module main"
   },
   "dependencies": {
-
     "@angular/animations": "~14.0.0",
     "@angular/common": "~14.0.0",
     "@angular/compiler": "~14.0.0",
