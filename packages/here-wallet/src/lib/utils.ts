@@ -1,6 +1,6 @@
 import { Network, Optional, Transaction } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import * as BN from "bn.js";
+import BN from "bn.js";
 import {
   utils,
   connect,

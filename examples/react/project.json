@@ -65,6 +65,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/welldone-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
             "output": "assets/"
           },

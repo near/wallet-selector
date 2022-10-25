@@ -1,6 +1,7 @@
 import { InjectedWallet, ModuleState } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
+import { translate } from "@near-wallet-selector/core";
 
 function goToWallet(module: ModuleState) {
   if (!modalState) {
@@ -57,7 +58,9 @@ export async function renderGetAWallet() {
             </svg>
         </button>
           <div class="nws-modal-header">
-            <h3 class="middleTitle">Get a Wallet</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
+            <h3 class="middleTitle">${translate(
+              "modal.wallet.getAWallet"
+            )}</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
                 height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
                 <path d="M0 0h24v24H0z" fill="none"></path>
                 <path

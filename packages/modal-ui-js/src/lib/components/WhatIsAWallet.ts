@@ -1,4 +1,5 @@
 import { renderGetAWallet } from "./GetAWallet";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderWhatIsAWallet() {
   document.querySelector(".modal-right")!.innerHTML = `
@@ -6,7 +7,9 @@ export async function renderWhatIsAWallet() {
       <div class="wallet-home-wrapper">
         <div class="nws-modal-header-wrapper">
           <div class="nws-modal-header">
-            <h3 class="middleTitle">What is a Wallet?</h3>
+            <h3 class="middleTitle">${translate(
+              "modal.wallet.whatIsAWallet"
+            )}</h3>
             <button class="close-button">
               <svg
                 xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -22,28 +25,31 @@ export async function renderWhatIsAWallet() {
         <div class="wallet-info-wrapper  what-wallet-hide">
           <div class="wallet-what">
             <div class="content-side">
-              <h3>Secure &amp; Manage Your Digital Assets</h3>
-              <p>Safely store and transfer your crypto and NFTs.</p>
+              <h3>${translate("modal.wallet.secureAndManage")}</h3>
+              <p>${translate("modal.wallet.safelyStore")}</p>
             </div>
           </div>
 
           <div class="wallet-what">
-              <div class="content-side">
-                  <h3>Log In to Any NEAR App</h3>
-                  <p>No need to create new accounts or credentials. Connect your wallet and you are good to go!</p>
-              </div>
+            <div class="content-side">
+              <h3>${translate("modal.wallet.logInToAny")}</h3>
+              <p>${translate("modal.wallet.noNeedToCreate")}</p>
+            </div>
           </div>
 
             <div class="button-spacing"></div>
-              <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+              <button class="middleButton" id="get-a-wallet-button">
+                ${translate("modal.wallet.getAWallet")}
+              </button>
         </div>
 
         <div class="what-wallet-mobile">
           <p>
-            Use a wallet to secure and manage your NEAR assets, and to log in
-            to any NEAR app without the need for usernames and passwords.
+            ${translate("modal.wallet.useAWallet")}
           </p>
-          <button class="middleButton" id="get-a-wallet-button-mobile">Get a Wallet</button>
+          <button class="middleButton" id="get-a-wallet-button-mobile">
+            ${translate("modal.wallet.getAWallet")}
+          </button>
         </div>
 
       </div>
