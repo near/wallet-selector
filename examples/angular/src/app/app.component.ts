@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -51,7 +50,6 @@ export class AppComponent implements OnInit {
       debug: true,
       modules: [
         ...(await setupDefaultWallets()),
-        setupNearWallet(),
         setupSender(),
         setupMathWallet(),
         setupNightly(),

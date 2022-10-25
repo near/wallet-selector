@@ -30,11 +30,15 @@ export function setupNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
+  successUrl = "",
+  failureUrl = "",
 }: NearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async (options) => {
     const wallet = await setupMyNearWallet({
       walletUrl: resolveWalletUrl(options.options.network, walletUrl),
       iconUrl,
+      successUrl,
+      failureUrl,
     })(options);
 
     if (!wallet) {

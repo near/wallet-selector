@@ -182,6 +182,19 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
+      if (wallet.type === "browser") {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+          successUrl: wallet.metadata.successUrl,
+          failureUrl: wallet.metadata.failureUrl,
+        });
+
+        handleDismissClick();
+
+        return;
+      }
+
       await wallet.signIn({
         contractId: options.contractId,
         methodNames: options.methodNames,
