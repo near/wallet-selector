@@ -17,6 +17,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
+import { SignInToCreateWallet } from "./SignInToCreateWallet";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -151,12 +152,18 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "web3auth") {
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          loginProvider,
+        // await wallet.signIn({
+        //   contractId: options.contractId,
+        //   methodNames: options.methodNames,
+        //   loginProvider,
+        // });
+        // handleDismissClick();
+        setRoute({
+          name: "SignInToCreateWallet",
+          params: {
+            wallet,
+          },
         });
-        handleDismissClick();
         return;
       }
 
@@ -330,9 +337,6 @@ export const Modal: React.FC<ModalProps> = ({
               <WalletHome
                 selector={selector}
                 onCloseModal={handleDismissClick}
-                handleWalletClick={(module, loginProvider) => {
-                  handleWalletClick(module, false, loginProvider);
-                }}
               />
             )}
             {route.name === "WalletConnected" && (
@@ -350,6 +354,9 @@ export const Modal: React.FC<ModalProps> = ({
                 onCloseModal={handleDismissClick}
                 uri={bridgeWalletUri}
               />
+            )}
+            {route.name === "SignInToCreateWallet" && (
+              <SignInToCreateWallet onCloseModal={handleDismissClick} />
             )}
           </div>
         </div>

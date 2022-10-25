@@ -1120,27 +1120,6 @@
   color: var(--text-color)
 }
 
-.web3auth {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px;
-}
-
-.web3auth-provider {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  background-color: white;
-  border: 2px solid var(--selected-wallet-bg);
-  border-radius: 50%;
-}
-
-.web3auth-provider img {
-  width: 100%;
-}
-
 /************* Responsive and mobile **********/
 
 @media (min-width: 577px) {

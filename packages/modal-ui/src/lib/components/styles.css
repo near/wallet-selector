@@ -1116,25 +1116,115 @@
   color: var(--text-color)
 }
 
-.web3auth {
+.web3auth-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 75%;
+  margin: 0 auto;
+}
+
+.web3auth-options {
+  margin-top: 2.5em;
+}
+
+.web3auth-options-heading {
+  color: #9BA1A6;
+  font-size: 14px;
+  margin-bottom: .5em;
+}
+
+.web3auth-options-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1em;
+}
+
+.web3auth-options-list .web3auth-option {
+  display: flex;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #9C9C9C99;
+  background-color: #151718;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.web3auth-options-list .web3auth-option > img {
+  display: block;
+  width: 30px;
+  margin: auto;
+}
+
+.web3auth-options-list .web3auth-option-toggle {
+  display: flex;
+  width: 60px;
+  height: 60px;
+  background-color: #1A1D1E;
+  border-radius: 8px;
+  grid-column-start: 5;
+  grid-row-start: 1;
+  cursor: pointer;
+}
+
+.web3auth-option-toggle > div {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.web3auth-option-toggle img {
+  display: block;
+  width: 25px;
+}
+
+.web3auth-option-toggle span {
+  color: #9BA1A6;
+  font-size: 14px;
+}
+
+.web3auth-login-with-email {
+  margin-top: 3em;
+}
+
+.web3auth-login-with-email input {
+  background: #151718;
+  border: 2px solid #4C5155;
+  border-radius: 8px;
+  padding: .75em 1em;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.nws-modal-wrapper .nws-modal .web3auth-login-with-email button {
+  background-color: #3A3F42;
+  color: #9BA1A6;
+  width: 100%;
+  text-align: center;
+  font-weight: 700;
+  padding: .75em 1em;
+}
+
+.web3auth-info {
+  margin-top: 5em;
+  text-align: center;
+}
+
+.web3auth-info-description {
+  margin: .5em 0;
+  font-size: 10px;
+  font-style: italic;
+  color: #787F85;
+}
+
+.web3auth-info-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px;
-}
-
-.web3auth-provider {
-  width: 40px;
-  height: 40px;
+  gap: .25em;
+  font-size: 14px;
   cursor: pointer;
-  background-color: white;
-  border: 2px solid var(--selected-wallet-bg);
-  border-radius: 50%;
-}
-
-.web3auth-provider img {
-  width: 100%;
 }
 
 /************* Responsive and mobile **********/

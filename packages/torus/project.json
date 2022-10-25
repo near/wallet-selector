@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/web3auth/src",
+  "sourceRoot": "packages/torus/src",
   "projectType": "library",
   "targets": {
     "build": {
@@ -9,10 +9,10 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/packages/web3auth",
-        "tsConfig": "packages/web3auth/tsconfig.lib.json",
-        "project": "packages/web3auth/package.json",
-        "entryFile": "packages/web3auth/src/index.ts",
+        "outputPath": "dist/packages/torus",
+        "tsConfig": "packages/torus/tsconfig.lib.json",
+        "project": "packages/torus/package.json",
+        "entryFile": "packages/torus/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": [
@@ -21,12 +21,12 @@
         ],
         "assets": [
           {
-            "glob": "packages/web3auth/README.md",
+            "glob": "packages/torus/README.md",
             "input": ".",
             "output": "."
           },
           {
-            "glob": "packages/web3auth/assets/*",
+            "glob": "packages/torus/assets/*",
             "input": ".",
             "output": "assets"
           }
@@ -40,17 +40,17 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "packages/web3auth/**/*.ts"
+          "packages/torus/**/*.ts"
         ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": [
-        "coverage/packages/web3auth"
+        "coverage/packages/torus"
       ],
       "options": {
-        "jestConfig": "packages/web3auth/jest.config.ts",
+        "jestConfig": "packages/torus/jest.config.ts",
         "passWithNoTests": true
       }
     },

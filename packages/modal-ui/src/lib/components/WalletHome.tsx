@@ -5,8 +5,6 @@ import {
   InjectedWallet,
   ModuleState,
   WalletSelector,
-  Web3AuthLoginProvider,
-  Web3AuthWallet,
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
@@ -14,10 +12,6 @@ import { BackArrow } from "./BackArrow";
 interface WalletHomeProps {
   selector: WalletSelector;
   onCloseModal: () => void;
-  handleWalletClick: (
-    module: ModuleState,
-    loginProvider: Web3AuthLoginProvider
-  ) => void;
 }
 
 type WalletHomeRoutes = "WalletInfo" | "GetWallets";
@@ -25,12 +19,7 @@ type WalletHomeRoutes = "WalletInfo" | "GetWallets";
 export const WalletHome: React.FC<WalletHomeProps> = ({
   selector,
   onCloseModal,
-  handleWalletClick,
 }) => {
-  const [web3AuthProviders, setWeb3AuthProviders] = useState<
-    Array<Web3AuthLoginProvider>
-  >([]);
-  const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [topThreeModules, setTopThreeModules] = useState<Array<ModuleState>>(
     []
   );
@@ -44,7 +33,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 
       const filteredModules = state.modules.filter(filterByType);
 
-      setModules(filteredModules);
       setTopThreeModules(filteredModules.slice(0, 3));
     });
     return () => subscription.unsubscribe();
@@ -78,33 +66,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     }
 
     window.open(url, "_blank");
-  };
-
-  useEffect(() => {
-    const web3AuthModule = modules.find(
-      (module) => module.type === "web3auth" && module.id === "web3auth"
-    );
-
-    if (web3AuthModule) {
-      web3AuthModule.wallet().then(async (wallet) => {
-        const providers = await (wallet as Web3AuthWallet).getProviders();
-        if (providers) {
-          setWeb3AuthProviders(providers);
-        }
-      });
-    }
-  }, [modules]);
-
-  const onWeb3AuthProviderClick = (loginProvider: Web3AuthLoginProvider) => {
-    const web3AuthModule = modules.find(
-      (module) => module.type === "web3auth" && module.id === "web3auth"
-    );
-
-    if (!web3AuthModule) {
-      return;
-    }
-
-    handleWalletClick(web3AuthModule, loginProvider);
   };
 
   return (
@@ -172,25 +133,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             >
               Get a Wallet
             </button>
-          </div>
-          <div className="web3auth" id="web3auth">
-            {web3AuthProviders &&
-              web3AuthProviders.map((loginProvider) => {
-                return (
-                  <div
-                    className="web3auth-provider"
-                    key={loginProvider}
-                    onClick={() => {
-                      onWeb3AuthProviderClick(loginProvider);
-                    }}
-                  >
-                    <img
-                      src={`https://images.web3auth.io/login-${loginProvider}.svg`}
-                      alt={`${loginProvider} icon`}
-                    />
-                  </div>
-                );
-              })}
           </div>
           <div className="what-wallet-mobile">
             <p>

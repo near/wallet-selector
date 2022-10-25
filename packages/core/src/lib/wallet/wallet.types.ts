@@ -181,7 +181,7 @@ export type BridgeWallet = BaseWallet<
   BridgeWalletBehaviour
 >;
 
-// ----- Web3Auth Wallet ----- //
+// ----- Torus Wallet ----- //
 
 export type Web3AuthLoginProvider =
   | "google"
@@ -207,9 +207,7 @@ export type Web3AuthWalletMetadata = BaseWalletMetadata;
 export type Web3AuthWalletBehaviour = Modify<
   BaseWalletBehaviour,
   { signIn(params: Web3AuthWalletSignInParams): Promise<Array<Account>> }
-> & {
-  getProviders(): Promise<Array<Web3AuthLoginProvider> | undefined>;
-};
+>;
 
 export type Web3AuthWallet = BaseWallet<
   "web3auth",

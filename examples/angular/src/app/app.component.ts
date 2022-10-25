@@ -10,7 +10,7 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupWeb3Auth } from "@near-wallet-selector/web3auth";
+import { setupTorus } from "@near-wallet-selector/torus";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 // import { setupModal } from "@near-wallet-selector/modal-ui";
 // import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
@@ -65,16 +65,9 @@ export class AppComponent implements OnInit {
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
           },
         }),
-        setupWeb3Auth({
+        setupTorus({
           clientId:
             "BBkxbA5ahj1Qna3tDsdwtfhFrc_yPqTECkByqkVnUr64Uuh_Ga3TnW4eVuZfQXElCOCviU_Hfih4jWiSIsAs970",
-          loginProviders: [
-            "google",
-            "facebook",
-            "twitter",
-            "reddit",
-            "discord",
-          ],
         }),
         setupNightlyConnect({
           url: "wss://relay.nightly.app/app",

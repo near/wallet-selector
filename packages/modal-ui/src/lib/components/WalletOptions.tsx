@@ -42,10 +42,6 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           const { name, description, iconUrl, deprecated } = module.metadata;
           const selected = module.id === selectedWalletId;
 
-          if (module.type === "web3auth") {
-            return null;
-          }
-
           return (
             <li
               className={`single-wallet ${

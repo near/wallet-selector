@@ -5,7 +5,6 @@ import {
   WalletModuleFactory,
   WalletBehaviourFactory,
   Network,
-  Web3AuthLoginProvider,
   Account,
   Web3AuthWallet,
   getActiveAccount,
@@ -15,22 +14,22 @@ import {
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { icon } from "./icon";
 
-interface Web3AuthExtraOptions {
+interface TorusExtraOptions {
   clientId: string;
-  loginProviders: Array<Web3AuthLoginProvider>;
 }
 
-interface Web3AuthState {
+interface TorusState {
   client: Web3AuthClient;
   keyPair: KeyPair | null;
   provider: SafeEventEmitterProvider | null;
   signer: InMemorySigner;
-  keyStore: keyStores.InMemoryKeyStore;
+  keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
-export interface Web3AuthParams {
+export interface TorusParams {
   clientId: string;
-  loginProviders: Array<Web3AuthLoginProvider>;
+  iconUrl?: string;
+  deprecated?: boolean;
 }
 
 const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
@@ -39,7 +38,7 @@ const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
 
 const getKeyPair = async (
   provider: SafeEventEmitterProvider,
-  keyStore: keyStores.InMemoryKeyStore,
+  keyStore: keyStores.BrowserLocalStorageKeyStore,
   network: Network
 ) => {
   const privateKey = await provider.request<string>({
@@ -53,6 +52,7 @@ const getKeyPair = async (
   const keyPair = utils.key_pair.KeyPairEd25519.fromString(
     utils.serialize.base_encode(privateKey)
   );
+
   const accountId = getAccountIdFromPublicKey(keyPair.getPublicKey().data);
 
   keyStore.setKey(network.networkId, accountId, keyPair);
@@ -60,14 +60,14 @@ const getKeyPair = async (
   return keyPair;
 };
 
-const setupWeb3AuthState = async (
+const setupTorusState = async (
   clientId: string,
   network: Network
-): Promise<Web3AuthState> => {
+): Promise<TorusState> => {
   const client = new Web3AuthClient(clientId, network);
   await client.init();
 
-  const keyStore = new keyStores.InMemoryKeyStore();
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
   const signer = new InMemorySigner(keyStore);
 
   let keyPair = null;
@@ -86,11 +86,11 @@ const setupWeb3AuthState = async (
   };
 };
 
-const Web3Auth: WalletBehaviourFactory<
+const Torus: WalletBehaviourFactory<
   Web3AuthWallet,
-  { params: Web3AuthExtraOptions }
+  { params: TorusExtraOptions }
 > = async ({ options, params, store, logger, provider }) => {
-  const _state = await setupWeb3AuthState(params.clientId, options.network);
+  const _state = await setupTorusState(params.clientId, options.network);
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
@@ -149,14 +149,43 @@ const Web3Auth: WalletBehaviourFactory<
     getAccounts: async () => {
       return getAccounts();
     },
-    getProviders: async () => {
-      return params.loginProviders;
-    },
     verifyOwner: () => {
       throw new Error("Method not supported");
     },
     signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
+
+      // eslint-disable-next-line no-console
+      console.log("signer", _state.signer);
+
+      const key2 = await _state.signer.keyStore.getKey(
+        "testnet",
+        "6663313630643838363965303231363435613466333533333036623630623565"
+      );
+
+      // eslint-disable-next-line no-console
+      console.log("key", key2);
+
+      function str2ab(text: string) {
+        return new TextEncoder().encode(text);
+      }
+
+      const message = "aaaa";
+
+      const encodedMessage = str2ab(message);
+
+      // eslint-disable-next-line no-console
+      console.log("encodedMessage", encodedMessage);
+
+      const signature = await key2.sign(encodedMessage);
+
+      // eslint-disable-next-line no-console
+      console.log("signature", signature);
+
+      const verify = await key2.verify(encodedMessage, signature.signature);
+
+      // eslint-disable-next-line no-console
+      console.log("verify", verify);
 
       const [signedTx] = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
@@ -175,27 +204,27 @@ const Web3Auth: WalletBehaviourFactory<
   };
 };
 
-export function setupWeb3Auth({
+export function setupTorus({
   clientId,
-  loginProviders,
-}: Web3AuthParams): WalletModuleFactory<Web3AuthWallet> {
+  iconUrl = icon,
+  deprecated = false,
+}: TorusParams): WalletModuleFactory<Web3AuthWallet> {
   return async () => {
     return {
-      id: "web3auth",
+      id: "torus",
       type: "web3auth",
       metadata: {
-        name: "Web3Auth",
+        name: "Torus Wallet",
         description: "Connect to dApps with social logins.",
-        iconUrl: icon,
-        deprecated: false,
+        iconUrl,
+        deprecated,
         available: true,
       },
       init: (options) => {
-        return Web3Auth({
+        return Torus({
           ...options,
           params: {
             clientId,
-            loginProviders,
           },
         });
       },

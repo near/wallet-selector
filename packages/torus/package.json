@@ -1,5 +1,5 @@
 {
-  "name": "@near-wallet-selector/web3auth",
+  "name": "@near-wallet-selector/torus",
   "version": "7.0.3",
   "peerDependencies": {
     "near-api-js": "^0.44.2"

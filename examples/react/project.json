@@ -55,7 +55,7 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/web3auth/assets/",
+            "input": "packages/torus/assets/",
             "output": "assets/"
           },
           {

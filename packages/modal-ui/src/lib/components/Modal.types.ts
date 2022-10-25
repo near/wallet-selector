@@ -34,6 +34,10 @@ export type ScanQRCodeParams = {
   uri: string | undefined;
 };
 
+export type SignInToCreateWalletParams = {
+  wallet: Wallet;
+};
+
 export type AlertMessageModalRoute = {
   name: "AlertMessage";
   params?: AlertMessageModalRouteParams;
@@ -78,6 +82,11 @@ export type ScanQRCode = {
   params?: ScanQRCodeParams;
 };
 
+export type SignInToCreateWallet = {
+  name: "SignInToCreateWallet";
+  params?: SignInToCreateWalletParams;
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
@@ -87,4 +96,5 @@ export type ModalRoute =
   | WalletConnectingModalRoute
   | WalletHome
   | WalletConnected
-  | ScanQRCode;
+  | ScanQRCode
+  | SignInToCreateWallet;

@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: "web3auth",
+  displayName: "torus",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -11,5 +11,5 @@ export default {
     "^.+\\.[tj]s$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/web3auth",
+  coverageDirectory: "../../coverage/packages/torus",
 };

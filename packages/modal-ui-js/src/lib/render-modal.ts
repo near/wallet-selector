@@ -194,10 +194,6 @@ export function renderModal() {
   for (let i = 0; i < modalState.modules.length; i++) {
     const module = modalState.modules[i];
 
-    if (module.type === "web3auth") {
-      continue;
-    }
-
     const { name, description, iconUrl } = module.metadata;
     document.querySelector(".options-list")?.insertAdjacentHTML(
       "beforeend",

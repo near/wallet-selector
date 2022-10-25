@@ -1,61 +1,5 @@
-import {
-  ModuleState,
-  Wallet,
-  Web3AuthLoginProvider,
-  Web3AuthWallet,
-} from "@near-wallet-selector/core";
 import { renderGetAWallet } from "./GetAWallet";
 import { modalState } from "../modal";
-import { connectToWallet } from "../render-modal";
-
-function renderWeb3AuthSection(
-  loginProviders: Array<Web3AuthLoginProvider> | undefined
-) {
-  if (!loginProviders || loginProviders.length < 1) {
-    return;
-  }
-
-  const web3authElement = document.getElementById("web3auth");
-
-  if (!web3authElement) {
-    return;
-  }
-
-  loginProviders.forEach((provider) => {
-    web3authElement.insertAdjacentHTML(
-      "beforeend",
-      `
-        <div class="web3auth-provider" data-provider="${provider}">
-          <img src="https://images.web3auth.io/login-${provider}.svg" alt="${provider} icon" />
-        </div>
-      `
-    );
-
-    const providerElement = document.querySelector(
-      `[data-provider=${provider}]`
-    );
-
-    if (!providerElement) {
-      return;
-    }
-
-    providerElement.addEventListener("click", () => {
-      if (!modalState) {
-        return;
-      }
-
-      const web3authModule = modalState.modules.find(
-        (module: ModuleState<Wallet>) => module.id === "web3auth"
-      );
-
-      if (!web3authModule) {
-        return;
-      }
-
-      connectToWallet(web3authModule, false, provider);
-    });
-  });
-}
 
 export async function renderWhatIsAWallet() {
   if (!modalState) {
@@ -112,17 +56,6 @@ export async function renderWhatIsAWallet() {
       </div>
     </div>
   `;
-
-  const web3authModule = modalState.modules.find(
-    (module: ModuleState<Wallet>) =>
-      module.type === "web3auth" && module.id === "web3auth"
-  );
-
-  if (web3authModule) {
-    const wallet = await web3authModule.wallet();
-    const web3AuthProviders = await (wallet as Web3AuthWallet).getProviders();
-    renderWeb3AuthSection(web3AuthProviders);
-  }
 
   document
     .getElementById("get-a-wallet-button")

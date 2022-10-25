@@ -14,7 +14,7 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupWeb3Auth } from "@near-wallet-selector/web3auth";
+import { setupTorus } from "@near-wallet-selector/torus";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { CONTRACT_ID } from "../constants";
 
@@ -54,16 +54,9 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
-        setupWeb3Auth({
+        setupTorus({
           clientId:
             "BBkxbA5ahj1Qna3tDsdwtfhFrc_yPqTECkByqkVnUr64Uuh_Ga3TnW4eVuZfQXElCOCviU_Hfih4jWiSIsAs970",
-          loginProviders: [
-            "google",
-            "facebook",
-            "twitter",
-            "reddit",
-            "discord",
-          ],
         }),
         setupWalletConnect({
           projectId: "c4f79cc...",

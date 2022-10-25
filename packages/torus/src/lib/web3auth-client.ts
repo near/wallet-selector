@@ -19,6 +19,9 @@ class Web3AuthClient {
         network: network.networkId as NetworkId,
         uxMode: "popup",
       },
+      loginSettings: {
+        curve: "ed25519",
+      },
     });
 
     this.web3auth.configureAdapter(openloginAdapter);

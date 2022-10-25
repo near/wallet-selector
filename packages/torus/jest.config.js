@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "web3auth",
+  displayName: "torus",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
