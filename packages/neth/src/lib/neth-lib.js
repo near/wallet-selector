@@ -787,7 +787,8 @@ export const getEthereum = async () => {
 		})
 	} catch (e) {
 		console.warn(e)
-		if (e?.data?.originalError?.code !== 4902) throw e
+		const code = e?.code || e?.data?.originalError?.code
+		if (code !== 4902) throw e
 
 		try {
 			await window.ethereum.request({
@@ -805,8 +806,8 @@ export const getEthereum = async () => {
 				}],
 			})
 		} catch (e) {
-			console.warn(e)
-			alert('Error adding chain. Clear your browser and privacy data and try again please.')
+			alert('Error adding chain. Please click "Choose Ethereum Account" and add the Aurora Network to continue.')
+			throw e
 		}
 	}
 
