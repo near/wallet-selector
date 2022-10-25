@@ -1,12 +1,10 @@
-import {
+import type {
   WalletModuleFactory,
   BrowserWallet,
   Network,
 } from "@near-wallet-selector/core";
-import {
-  setupMyNearWallet,
-  MyNearWalletParams,
-} from "@near-wallet-selector/my-near-wallet";
+import type { MyNearWalletParams } from "@near-wallet-selector/my-near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import icon from "./icon";
 
 export type NearWalletParams = MyNearWalletParams;

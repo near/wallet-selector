@@ -4,7 +4,7 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
 import type { ProviderService } from "../../../core/src/lib/services";
-import { LedgerClient } from "./ledger-client";
+import type { LedgerClient } from "./ledger-client";
 
 const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";

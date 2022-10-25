@@ -4,7 +4,7 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import { Transaction } from "@near-wallet-selector/core";
+import type { Transaction } from "@near-wallet-selector/core";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";

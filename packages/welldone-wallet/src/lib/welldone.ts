@@ -1,16 +1,17 @@
-import { Signer, transactions as Transactions, utils } from "near-api-js";
-import {
+import type { Signer } from "near-api-js";
+import { transactions as Transactions, utils } from "near-api-js";
+import type {
   WalletModuleFactory,
   InjectedWallet,
   WalletBehaviourFactory,
   Action,
   FinalExecutionOutcome,
-  waitFor,
   JsonStorageService,
   Optional,
   Transaction,
 } from "@near-wallet-selector/core";
-import {
+import { waitFor } from "@near-wallet-selector/core";
+import type {
   SignAndSendTransactionParams,
   ViewAccessKeyParams,
   WalletProvider,
