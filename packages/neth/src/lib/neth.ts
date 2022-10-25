@@ -1,13 +1,11 @@
 import type {
-	WalletModuleFactory,
-	InjectedWallet,
-	Action,
-	FunctionCallAction,
-	WalletBehaviourFactory,
+  WalletModuleFactory,
+  InjectedWallet,
+  Action,
+  FunctionCallAction,
+  WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
-import {
-	waitFor,
-} from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { nethIcon } from "../assets/icons";
 import {
