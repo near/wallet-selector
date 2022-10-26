@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
-import IconKey from "../images/key.png";
-import IconCoins from "../images/coins.png";
+import IconKey from "../images/key.svg";
+import IconCoins from "../images/wallet-alt.svg";
 import {
   InjectedWallet,
   ModuleState,
