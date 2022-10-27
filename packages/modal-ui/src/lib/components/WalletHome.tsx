@@ -30,7 +30,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         return item.type !== "bridge" && item.type !== "hardware";
       };
 
-      const filteredModules = state.modules.filter(filterByType).slice(0, 3);
+      const filteredModules = state.modules.filter(filterByType).slice(0, 6);
 
       setModules(filteredModules);
     });
@@ -98,25 +98,37 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       {route === "GetWallets" && (
         <div className="get-wallet-wrapper">
           {modules.map((module) => {
-            const { iconUrl, name, description } = module.metadata;
+            const { iconUrl, name } = module.metadata;
+            const { type } = module;
+            let typeFullName = "";
+            switch (type) {
+              case "bridge":
+                typeFullName = "Bridge wallet";
+                break;
+              case "injected":
+                typeFullName = "Injected wallet";
+                break;
+              case "browser":
+                typeFullName = "Browser Extension";
+                break;
+              case "hardware":
+                typeFullName = "Hardware wallet";
+                break;
+            }
             return (
-              <div className="single-wallet-get" key={module.id}>
+              <div
+                className="single-wallet-get"
+                key={module.id}
+                onClick={() => {
+                  goToWallet(module);
+                }}
+              >
                 <div className="icon">
                   <img src={iconUrl} alt={name} />
                 </div>
                 <div className="content">
                   <div className="title">{name}</div>
-                  <div className="description">{description}</div>
-                </div>
-                <div className="button-get">
-                  <button
-                    className="get-wallet"
-                    onClick={() => {
-                      goToWallet(module);
-                    }}
-                  >
-                    Get
-                  </button>
+                  <div className="type">{typeFullName}</div>
                 </div>
               </div>
             );
