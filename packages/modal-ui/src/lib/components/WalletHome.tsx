@@ -8,10 +8,12 @@ import {
 } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
+import PlusCircleIcon from "../images/plus-circle.svg";
 
 interface WalletHomeProps {
   selector: WalletSelector;
   onCloseModal: () => void;
+  onSignInToCreateWallet: () => void;
 }
 
 type WalletHomeRoutes = "WalletInfo" | "GetWallets";
@@ -19,6 +21,7 @@ type WalletHomeRoutes = "WalletInfo" | "GetWallets";
 export const WalletHome: React.FC<WalletHomeProps> = ({
   selector,
   onCloseModal,
+  onSignInToCreateWallet,
 }) => {
   const [topThreeModules, setTopThreeModules] = useState<Array<ModuleState>>(
     []
@@ -133,6 +136,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             >
               Get a Wallet
             </button>
+            <div
+              className="web3auth-info-action"
+              onClick={onSignInToCreateWallet}
+            >
+              <span>View more social login options</span>
+              <img src={PlusCircleIcon} alt="plus in circle" />
+            </div>
           </div>
           <div className="what-wallet-mobile">
             <p>

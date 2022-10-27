@@ -196,10 +196,12 @@ export type Web3AuthLoginProvider =
   | "kakao"
   | "linkedin"
   | "weibo"
-  | "wechat";
+  | "wechat"
+  | "email_passwordless";
 
 export interface Web3AuthWalletSignInParams extends SignInParams {
   loginProvider?: Web3AuthLoginProvider;
+  email?: string;
 }
 
 export type Web3AuthWalletMetadata = BaseWalletMetadata;

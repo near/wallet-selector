@@ -35,9 +35,18 @@ class Web3AuthClient {
     return await this.web3auth.initModal();
   }
 
-  async connect(provider: string | undefined) {
+  async connect(provider?: string, email?: string) {
+    let extraLoginOptions;
+
+    if (provider === "email_passwordless" && email) {
+      extraLoginOptions = {
+        login_hint: email,
+      };
+    }
+
     return await this.web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
       loginProvider: provider || "",
+      extraLoginOptions,
     });
   }
 

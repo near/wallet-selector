@@ -128,8 +128,8 @@ const Torus: WalletBehaviourFactory<
   }
 
   return {
-    signIn: async ({ loginProvider }) => {
-      _state.provider = await _state.client.connect(loginProvider);
+    signIn: async ({ loginProvider, email }) => {
+      _state.provider = await _state.client.connect(loginProvider, email);
 
       if (!_state.provider) {
         throw new Error("No provider found");
