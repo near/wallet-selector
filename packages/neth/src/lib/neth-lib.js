@@ -16,7 +16,7 @@ const {
 	},
 } = nearAPI;
 
-const NETH_SITE_URL = 'neardefi.github.io/neth'
+export const NETH_SITE_URL = 'https://neth.app'
 
 const NETWORK = {
 	testnet: {
@@ -79,6 +79,17 @@ export const initConnection = (network, logFn) => {
 	networkId = network.networkId;
 	contractAccount = new Account(connection, networkId === "mainnet" ? "near" : networkId);
 	accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
+
+	const cover = document.createElement("div");
+	cover.style.display = "none";
+	cover.style.width = "100%";
+	cover.style.height = "100vh";
+	cover.style.zIndex = '999999';
+	cover.style.position = 'fixed';
+	cover.style.top = '0';
+	cover.style.background = 'rgba(0, 0, 0, 0.5)';
+	document.body.appendChild(cover);
+	return cover;
 };
 export const getConnection = () => {
 	return { near, connection, keyStore, networkId, contractAccount, accountSuffix };
@@ -823,8 +834,10 @@ export const getEthereum = async () => {
 
 export const switchEthereum = async () => {
 	const provider = await detectEthereumProvider()
-	const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
 	await provider.send("wallet_requestPermissions", [{ eth_accounts: {} }]);
+	const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+	const signer = ethersProvider.getSigner();
+	return { signer, ethAddress: await signer.getAddress() };
 };
 
 /// near
@@ -926,11 +939,25 @@ const promptValidAccountId = async (msg) => {
 };
 
 export const getAppKey = async ({ signer, ethAddress: eth_address }) => {
+
 	let accountId = await getNearMap(eth_address);
 	if (!accountId) {
-		const nethURL = `https://neardefi.github.io/neth/${networkId === 'testnet' ? '?network=testnet' : ''}`
-		window.prompt(`Ethereum account is not connected to a NETH account. To set up a NETH account visit`, nethURL)
-		return false
+
+		const tryAgain = window.confirm(`Ethereum account ${eth_address} is not connected to a NETH account. Would you like to try another Ethereum account?`)
+
+		if (tryAgain) {
+			try {
+				const { signer, ethAddress } = await switchEthereum()
+				return await getAppKey({ signer, ethAddress })
+			} catch (e) {
+				console.warn(e)
+			}
+			return
+		}
+
+		const nethURL = `${NETH_SITE_URL}/${networkId === 'testnet' ? '?network=testnet' : ''}`
+		window.prompt(`We couldn't find a NETH account. To set up a NETH account visit`, nethURL)
+		
 		// throw new Error(`Ethereum account is not connected to a NETH account. To set up a NETH account visit: ${nethURL}`)
 		// /// prompt for near account name and auto deploy
 		// const newAccountId = await promptValidAccountId(

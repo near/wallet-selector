@@ -15,6 +15,7 @@ import {
   verifyOwner,
   signAndSendTransactions,
   initConnection,
+  NETH_SITE_URL,
 } from "./neth-lib";
 export { initConnection } from "./neth-lib";
 
@@ -45,16 +46,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   provider,
 }) => {
-  initConnection(options.network);
-
-  const cover = document.createElement("div");
-  cover.style.width = "100%";
-  cover.style.height = "100vh";
-  cover.style.zIndex = "999999";
-  cover.style.position = "fixed";
-  cover.style.background = "rgba(0, 0, 0, 0.5)";
-  cover.style.display = "none";
-  document.body.appendChild(cover);
+  const cover = initConnection(options.network);
 
   const isValidActions = (
     actions: Array<Action>
@@ -164,10 +156,6 @@ export function setupNeth({
 
     useCover = useModalCover;
 
-    if (!installed) {
-      return null;
-    }
-
     await waitFor(() => !!window.near?.isSignedIn(), { timeout: 300 }).catch(
       () => false
     );
@@ -179,9 +167,9 @@ export function setupNeth({
         name: "NETH Account",
         description: null,
         iconUrl,
-        downloadUrl: "https://neardefi.github.io/neth",
+        downloadUrl: NETH_SITE_URL,
         deprecated: false,
-        available: true,
+        available: installed,
       },
       init: Neth,
     };
