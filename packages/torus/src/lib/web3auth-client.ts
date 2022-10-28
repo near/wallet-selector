@@ -11,11 +11,17 @@ class Web3AuthClient {
       clientId,
       chainConfig: {
         chainNamespace: CHAIN_NAMESPACES.OTHER,
+        rpcTarget: network.nodeUrl,
+        displayName: "Near Protocol",
+        blockExplorer: network.explorerUrl,
+        ticker: "NEAR",
+        tickerName: "NEAR",
       },
     });
 
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: {
+        clientId,
         network: network.networkId as NetworkId,
         uxMode: "popup",
       },

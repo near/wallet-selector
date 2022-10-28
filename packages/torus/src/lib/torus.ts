@@ -155,46 +155,11 @@ const Torus: WalletBehaviourFactory<
     signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      // eslint-disable-next-line no-console
-      console.log("signer", _state.signer);
-
-      const key2 = await _state.signer.keyStore.getKey(
-        "testnet",
-        "6663313630643838363965303231363435613466333533333036623630623565"
-      );
-
-      // eslint-disable-next-line no-console
-      console.log("key", key2);
-
-      function str2ab(text: string) {
-        return new TextEncoder().encode(text);
-      }
-
-      const message = "aaaa";
-
-      const encodedMessage = str2ab(message);
-
-      // eslint-disable-next-line no-console
-      console.log("encodedMessage", encodedMessage);
-
-      const signature = await key2.sign(encodedMessage);
-
-      // eslint-disable-next-line no-console
-      console.log("signature", signature);
-
-      const verify = await key2.verify(encodedMessage, signature.signature);
-
-      // eslint-disable-next-line no-console
-      console.log("verify", verify);
-
       const [signedTx] = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
         _state.signer,
         options.network
       );
-
-      logger.log("_state.signer", _state.signer);
-      logger.log("signedTx", { signedTx });
 
       return provider.sendTransaction(signedTx);
     },
