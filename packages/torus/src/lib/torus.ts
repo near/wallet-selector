@@ -10,9 +10,11 @@ import {
   getActiveAccount,
   Optional,
   Transaction,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { icon } from "./icon";
+import { getED25519Key } from "@toruslabs/openlogin-ed25519";
 
 interface TorusExtraOptions {
   clientId: string;
@@ -23,7 +25,7 @@ interface TorusState {
   keyPair: KeyPair | null;
   provider: SafeEventEmitterProvider | null;
   signer: InMemorySigner;
-  keyStore: keyStores.BrowserLocalStorageKeyStore;
+  keyStore: keyStores.InMemoryKeyStore;
 }
 
 export interface TorusParams {
@@ -38,7 +40,7 @@ const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
 
 const getKeyPair = async (
   provider: SafeEventEmitterProvider,
-  keyStore: keyStores.BrowserLocalStorageKeyStore,
+  keyStore: keyStores.InMemoryKeyStore,
   network: Network
 ) => {
   const privateKey = await provider.request<string>({
@@ -49,8 +51,10 @@ const getKeyPair = async (
     throw new Error("No private key found");
   }
 
+  const finalPrivKey = getED25519Key(privateKey).sk;
+
   const keyPair = utils.key_pair.KeyPairEd25519.fromString(
-    utils.serialize.base_encode(privateKey)
+    utils.serialize.base_encode(finalPrivKey)
   );
 
   const accountId = getAccountIdFromPublicKey(keyPair.getPublicKey().data);
@@ -67,7 +71,7 @@ const setupTorusState = async (
   const client = new Web3AuthClient(clientId, network);
   await client.init();
 
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const keyStore = new keyStores.InMemoryKeyStore();
   const signer = new InMemorySigner(keyStore);
 
   let keyPair = null;
@@ -163,8 +167,22 @@ const Torus: WalletBehaviourFactory<
 
       return provider.sendTransaction(signedTx);
     },
-    signAndSendTransactions: () => {
-      throw new Error("Method not supported");
+    signAndSendTransactions: async ({ transactions }) => {
+      logger.log("signAndSendTransactions", { transactions });
+
+      const signedTransactions = await signTransactions(
+        transformTransactions(transactions),
+        _state.signer,
+        options.network
+      );
+
+      const results: Array<FinalExecutionOutcome> = [];
+
+      for (let i = 0; i < signedTransactions.length; i++) {
+        results.push(await provider.sendTransaction(signedTransactions[i]));
+      }
+
+      return results;
     },
   };
 };

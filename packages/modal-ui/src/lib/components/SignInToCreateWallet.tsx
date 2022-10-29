@@ -23,16 +23,17 @@ type SignInToCreateWalletProps = {
 
 const loginProviders: Array<Web3AuthLoginProvider> = [
   "google",
-  "twitter",
   "facebook",
+  "twitter",
+  "reddit",
   "discord",
-  "discord",
-  "discord",
-  "discord",
-  "discord",
-  "discord",
-  "discord",
+  "twitch",
+  "apple",
+  "line",
   "github",
+  "kakao",
+  "linkedin",
+  "weibo",
   "wechat",
 ];
 
@@ -114,7 +115,12 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
         <div className="web3auth-options">
           <div className="web3auth-options-heading">Continue with</div>
           {showMoreOptions && existingAccount && (
-            <div className="web3auth-continue-with-existing">
+            <div
+              className="web3auth-continue-with-existing"
+              onClick={() => {
+                onSignInHandler(existingAccount.typeOfLogin);
+              }}
+            >
               <div className="web3auth-continue-with-existing-content">
                 <div
                   className="web3auth-existing-image"
