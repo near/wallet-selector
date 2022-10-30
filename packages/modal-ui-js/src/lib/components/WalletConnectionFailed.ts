@@ -1,14 +1,9 @@
-import {
-  ModuleState,
-  Wallet,
-  Web3AuthLoginProvider,
-} from "@near-wallet-selector/core";
+import { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { connectToWallet } from "../render-modal";
 
 export async function renderWalletConnectionFailed(
   module: ModuleState<Wallet>,
-  err: Error,
-  loginProvider?: Web3AuthLoginProvider
+  err: Error
 ) {
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
@@ -54,6 +49,6 @@ export async function renderWalletConnectionFailed(
   `;
 
   document.getElementById("retry-button")?.addEventListener("click", () => {
-    connectToWallet(module, false, loginProvider);
+    connectToWallet(module, false);
   });
 }

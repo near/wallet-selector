@@ -3,7 +3,6 @@ import type {
   HardwareWalletAccount,
   ModuleState,
   Wallet,
-  Web3AuthLoginProvider,
 } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
 import { renderLedgerAccountsOverviewList } from "./components/LedgerAccountsOverviewList";
@@ -15,6 +14,7 @@ import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
+import { renderSignInToCreateWallet } from "./components/SignInToCreateWallet";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -70,8 +70,7 @@ export const resolveAccounts = async (
 
 export async function connectToWallet(
   module: ModuleState<Wallet>,
-  qrCodeModal = false,
-  loginProvider = "google" as Web3AuthLoginProvider
+  qrCodeModal = false
 ) {
   if (!modalState) {
     return;
@@ -92,25 +91,18 @@ export async function connectToWallet(
     if (module.metadata.deprecated) {
       return renderWalletConnectionFailed(
         module,
-        new Error("Wallet is deprecated"),
-        loginProvider
+        new Error("Wallet is deprecated")
       );
+    }
+
+    if (module.type === "web3auth") {
+      renderSignInToCreateWallet(module);
+      return;
     }
 
     const wallet = await module.wallet();
 
     await renderWalletConnecting(module);
-
-    if (wallet.type === "web3auth") {
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        loginProvider,
-      });
-
-      modalState.container.children[0].classList.remove("open");
-      return;
-    }
 
     if (wallet.type === "hardware") {
       const accounts = await resolveAccounts(wallet);
@@ -159,8 +151,7 @@ export async function connectToWallet(
 
     await renderWalletConnectionFailed(
       module,
-      new Error(`Failed to sign in with ${name}: ${message}`),
-      loginProvider
+      new Error(`Failed to sign in with ${name}: ${message}`)
     );
   }
 }

@@ -120,13 +120,6 @@ export const Modal: React.FC<ModalProps> = ({
     try {
       const { deprecated, available } = module.metadata;
 
-      if (module.type === "web3auth") {
-        setRoute({
-          name: "SignInToCreateWallet",
-        });
-        return;
-      }
-
       if (module.type === "injected" && !available) {
         setRoute({
           name: "WalletNotInstalled",
@@ -134,8 +127,6 @@ export const Modal: React.FC<ModalProps> = ({
         });
         return;
       }
-
-      const wallet = await module.wallet();
 
       if (deprecated) {
         setAlertMessage(
@@ -149,6 +140,15 @@ export const Modal: React.FC<ModalProps> = ({
         });
         return;
       }
+
+      if (module.type === "web3auth") {
+        setRoute({
+          name: "SignInToCreateWallet",
+        });
+        return;
+      }
+
+      const wallet = await module.wallet();
 
       if (wallet.type === "hardware") {
         setRoute({
