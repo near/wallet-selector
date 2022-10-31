@@ -96,6 +96,7 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 - `InjectedWallet`: Sender & Math Wallet
 - `HardwareWallet`: Ledger
 - `BridgeWallet`: WalletConnect
+- `Web3AuthWallet`: Torus Wallet
 
 ## Methods
 

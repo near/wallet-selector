@@ -236,9 +236,6 @@ export async function renderSignInToCreateWallet(module: ModuleState<Wallet>) {
         return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log("value", continueWithEmailInput.value);
-
       signIn(module, "email_passwordless", continueWithEmailInput.value);
     });
   }

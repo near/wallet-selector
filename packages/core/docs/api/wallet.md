@@ -35,6 +35,7 @@ There are four wallet types:
 - "injected" (`InjectedWallet`)
 - "hardware" (`HardwareWallet`)
 - "bridge" (`BridgeWallet`)
+- "web3auth" (`Web3AuthWallet`)
 
 **Example**
 
@@ -80,8 +81,10 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
 - `params` (`object`)
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
-  - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
-  - `qrCodeModal` (`boolean`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
+  - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `loginProvider` (`string?`): Required for web3auth wallets (e.g Torus Wallet). This indicates with login provider will be used to connect (e.g google, facebook...).
+  - `email` (`string`): Optional for web3auth wallets (e.g Torus Wallet). When the `loginProvider` is `"email_passwordless"`, the `email` parameter needs to be provided to indicate which email address will be used to log in with.
 
 **Returns**
 
@@ -133,6 +136,15 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 (async () => {
   const wallet = await selector.wallet("wallet-connect");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
+})();
+
+// WalletConnect.
+(async () => {
+  const wallet = await selector.wallet("torus");
+  const accounts = await wallet.signIn({
+    contractId: "test.testnet",
+    loginProvider: "google"
+  });
 })();
 ```
 
