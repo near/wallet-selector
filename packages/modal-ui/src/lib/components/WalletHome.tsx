@@ -154,7 +154,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               className="web3auth-info-action"
               onClick={onSignInToCreateWallet}
             >
-              <span>Login with Social</span>
+              <span>{translate("modal.wallet.loginWithSocial")}</span>
               <img src={PlusCircleIcon} alt="plus in circle" />
             </div>
           </div>
@@ -168,6 +168,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             >
               {translate("modal.wallet.getAWallet")}
             </button>
+            <div
+              className="web3auth-info-action"
+              onClick={onSignInToCreateWallet}
+            >
+              <span>{translate("modal.wallet.loginWithSocial")}</span>
+              <img src={PlusCircleIcon} alt="plus in circle" />
+            </div>
           </div>
         </>
       )}

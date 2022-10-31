@@ -97,7 +97,7 @@ function renderProviderList(module: ModuleState<Wallet>) {
   if (web3authOptionsListElement) {
     web3authOptionsListElement.innerHTML = "";
 
-    providers.forEach((provider) => {
+    providers.forEach((provider, i) => {
       web3authOptionsListElement.insertAdjacentHTML(
         "beforeend",
         `<div class="web3auth-option" id="web3auth-option-${provider}"><img src="https://images.web3auth.io/login-${provider}.svg" ${
@@ -109,18 +109,23 @@ function renderProviderList(module: ModuleState<Wallet>) {
         ?.addEventListener("click", () => {
           signIn(module, provider);
         });
+
+      if (i === 3) {
+        web3authOptionsListElement.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="web3auth-option-toggle" id="web3auth-option-toggle">
+              <div>
+                <img src="${
+                  showMore ? toggleLessIcon : toggleMoreIcon
+                }" alt="icon">
+                <span>${showMore ? "Less" : "More"}</span>
+              </div>
+            </div>
+            `
+        );
+      }
     });
-    web3authOptionsListElement.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="web3auth-option-toggle" id="web3auth-option-toggle">
-        <div>
-          <img src="${showMore ? toggleLessIcon : toggleMoreIcon}" alt="icon">
-          <span>${showMore ? "Less" : "More"}</span>
-        </div>
-      </div>
-      `
-    );
   }
 
   const web3authOptionToggleElement = document.getElementById(

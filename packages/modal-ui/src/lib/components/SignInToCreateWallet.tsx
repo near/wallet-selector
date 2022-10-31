@@ -149,10 +149,7 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
             </div>
           )}
           <div className="web3auth-options-list">
-            {(showMoreOptions
-              ? loginProviders
-              : loginProviders.slice(0, 4)
-            ).map((provider, i) => {
+            {loginProviders.slice(0, 4).map((provider, i) => {
               return (
                 <div
                   key={i}
@@ -184,6 +181,30 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
                 <span>{showMoreOptions ? "Less" : "More"}</span>
               </div>
             </div>
+            {showMoreOptions &&
+              loginProviders.slice(4).map((provider, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="web3auth-option"
+                    onClick={() => {
+                      onSignInHandler(provider);
+                    }}
+                  >
+                    <img
+                      src={`https://images.web3auth.io/login-${provider}.svg`}
+                      style={
+                        provider === "github"
+                          ? {
+                              filter: "brightness(0)", // Github icon is barely visible in dark mode
+                            }
+                          : undefined
+                      }
+                      alt={`${provider} icon`}
+                    />
+                  </div>
+                );
+              })}
           </div>
           {!showMoreOptions && (
             <div className="web3auth-login-with-email">

@@ -1150,9 +1150,9 @@
 }
 
 .nws-modal-wrapper .nws-modal .web3auth-options-list {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: 55px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
   gap: 1em;
 }
 
@@ -1178,8 +1178,6 @@
   height: 55px;
   background-color: var(--web3auth-background-color);
   border-radius: 8px;
-  grid-column-start: 5;
-  grid-row-start: 1;
   cursor: pointer;
 }
 
