@@ -9,6 +9,7 @@ import type {
   Web3AuthLoginProvider,
   Web3AuthWallet,
 } from "@near-wallet-selector/core";
+import { translate } from "@near-wallet-selector/core";
 import type { ModalRoute } from "./Modal.types";
 import type { ModalOptions } from "../modal.types";
 import { BackArrow } from "./BackArrow";
@@ -110,13 +111,15 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
           }}
         />
         <ModalHeader
-          title={"Sign In to Create a Wallet"}
+          title={translate("modal.wallet.signInToCreateWallet")}
           onCloseModal={onCloseModal}
         />
       </div>
       <div className="web3auth-content">
         <div className="web3auth-options">
-          <div className="web3auth-options-heading">Continue with</div>
+          <div className="web3auth-options-heading">
+            {translate("modal.wallet.continueWith")}
+          </div>
           {showMoreOptions && existingAccount && (
             <div
               className="web3auth-continue-with-existing"
@@ -133,7 +136,7 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
                 ></div>
                 <div>
                   <div>
-                    Continue with existing{" "}
+                    {translate("modal.wallet.continueWithExisting")}{" "}
                     <span className="web3auth-existing-type-of-login">
                       {existingAccount.typeOfLogin}
                     </span>
@@ -186,7 +189,7 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
             <div className="web3auth-login-with-email">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={translate("modal.wallet.enterYourEmail")}
                 value={email}
                 onChange={onEmailChangeHandler}
               />
@@ -196,7 +199,7 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
                   onSignInHandler("email_passwordless", email);
                 }}
               >
-                Continue with email
+                {translate("modal.wallet.continueWithEmail")}
               </button>
             </div>
           )}
@@ -206,7 +209,7 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
             <img src={Web3AuthLogo} alt="web3auth logo" />
           </div>
           <div className="web3auth-info-description">
-            Web3Auth does not store any data related to your social logins.
+            {translate("modal.wallet.web3authDescription")}
           </div>
         </div>
       </div>

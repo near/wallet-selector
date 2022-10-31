@@ -12,7 +12,14 @@
       "connectionFailed": "Connection Failed",
       "connectionSuccessful": "Connection Successful",
       "connected": "Connected",
-      "connectingTo": "Connecting to"
+      "connectingTo": "Connecting to",
+      "loginWithSocial": "Login with Social",
+      "signInToCreateWallet": "Sign In to Create a Wallet",
+      "continueWith": "Continue with",
+      "continueWithExisting": "Continue with existing",
+      "enterYourEmail": "Enter your email",
+      "continueWithEmail": "Continue with email",
+      "web3authDescription": "Web3Auth does not store any data related to your social logins."
     },
     "ledger": {
       "connectWithLedger": "Connect with Ledger",
