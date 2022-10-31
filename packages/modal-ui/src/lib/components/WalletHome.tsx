@@ -140,7 +140,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               className="web3auth-info-action"
               onClick={onSignInToCreateWallet}
             >
-              <span>View more social login options</span>
+              <span>Login with Social</span>
               <img src={PlusCircleIcon} alt="plus in circle" />
             </div>
           </div>

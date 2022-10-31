@@ -96,7 +96,7 @@ export async function connectToWallet(
     }
 
     if (module.type === "web3auth") {
-      renderSignInToCreateWallet(module);
+      renderSignInToCreateWallet();
       return;
     }
 

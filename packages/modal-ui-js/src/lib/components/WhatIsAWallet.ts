@@ -1,5 +1,6 @@
 import { renderGetAWallet } from "./GetAWallet";
 import { modalState } from "../modal";
+import { renderSignInToCreateWallet } from "./SignInToCreateWallet";
 
 export async function renderWhatIsAWallet() {
   if (!modalState) {
@@ -39,8 +40,16 @@ export async function renderWhatIsAWallet() {
               </div>
           </div>
 
-            <div class="button-spacing"></div>
-              <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+          <div class="button-spacing"></div>
+
+          <button class="middleButton" id="get-a-wallet-button">Get a Wallet</button>
+
+          <div class="web3auth-info-action" id="web3auth-info-action">
+            <span>Login with Social</span>
+            <img
+              src="data:image/svg+xml,%3csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cg clip-path='url(%23clip0_1419_5840)'%3e%3cpath d='M7 12.8333C10.2217 12.8333 12.8333 10.2217 12.8333 7C12.8333 3.77834 10.2217 1.16666 7 1.16666C3.77834 1.16666 1.16667 3.77834 1.16667 7C1.16667 10.2217 3.77834 12.8333 7 12.8333Z' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M7 4.66666V9.33333' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M4.66667 7H9.33334' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/g%3e%3cdefs%3e%3cclipPath id='clip0_1419_5840'%3e%3crect width='14' height='14' fill='white'/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e"
+              alt="plus in circle">
+          </div>
         </div>
 
         <div class="web3auth" id="web3auth"></div>
@@ -51,6 +60,12 @@ export async function renderWhatIsAWallet() {
             to any NEAR app without the need for usernames and passwords.
           </p>
           <button class="middleButton" id="get-a-wallet-button-mobile">Get a Wallet</button>
+          <div class="web3auth-info-action" id="web3auth-info-action">
+            <span>Login with Social</span>
+            <img
+              src="data:image/svg+xml,%3csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cg clip-path='url(%23clip0_1419_5840)'%3e%3cpath d='M7 12.8333C10.2217 12.8333 12.8333 10.2217 12.8333 7C12.8333 3.77834 10.2217 1.16666 7 1.16666C3.77834 1.16666 1.16667 3.77834 1.16667 7C1.16667 10.2217 3.77834 12.8333 7 12.8333Z' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M7 4.66666V9.33333' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M4.66667 7H9.33334' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/g%3e%3cdefs%3e%3cclipPath id='clip0_1419_5840'%3e%3crect width='14' height='14' fill='white'/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e"
+              alt="plus in circle">
+          </div>
         </div>
 
       </div>
@@ -67,5 +82,11 @@ export async function renderWhatIsAWallet() {
     .getElementById("get-a-wallet-button-mobile")
     ?.addEventListener("click", () => {
       renderGetAWallet();
+    });
+
+  document
+    .getElementById("web3auth-info-action")
+    ?.addEventListener("click", () => {
+      renderSignInToCreateWallet();
     });
 }

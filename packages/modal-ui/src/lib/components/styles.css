@@ -1201,7 +1201,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .web3auth-login-with-email {
-  margin-top: 3em;
+  margin: 3em 0;
 }
 
 .nws-modal-wrapper .nws-modal .web3auth-login-with-email input {
@@ -1223,7 +1223,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .web3auth-info {
-  margin-top: 5em;
+  margin-top: 3em;
   text-align: center;
 }
 

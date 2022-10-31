@@ -19,8 +19,6 @@ const toggleMoreIcon =
   "data:image/svg+xml,%3csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.5 5V19' stroke='%239BA1A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M5.5 12H19.5' stroke='%239BA1A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e";
 const toggleLessIcon =
   "data:image/svg+xml,%3csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5 12H19' stroke='%239BA1A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e";
-const minusInCircleIcon =
-  "data:image/svg+xml,%3csvg width='15' height='14' viewBox='0 0 15 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M7.50002 12.8333C10.7217 12.8333 13.3334 10.2217 13.3334 7C13.3334 3.77834 10.7217 1.16666 7.50002 1.16666C4.27836 1.16666 1.66669 3.77834 1.66669 7C1.66669 10.2217 4.27836 12.8333 7.50002 12.8333Z' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M5.16669 7H9.83335' stroke='%23C1C1C1' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e";
 
 let showMore = false;
 
@@ -101,7 +99,9 @@ function renderProviderList(module: ModuleState<Wallet>) {
     providers.forEach((provider) => {
       web3authOptionsListElement.insertAdjacentHTML(
         "beforeend",
-        `<div class="web3auth-option" id="web3auth-option-${provider}"><img src="https://images.web3auth.io/login-${provider}.svg" alt="${provider} icon"></div>`
+        `<div class="web3auth-option" id="web3auth-option-${provider}"><img src="https://images.web3auth.io/login-${provider}.svg" ${
+          provider === "github" ? 'style="filter: brightness(0)"' : ""
+        } alt="${provider} icon"></div>`
       );
       document
         .getElementById("web3auth-option-" + provider)
@@ -170,19 +170,28 @@ function renderProviderList(module: ModuleState<Wallet>) {
   }
 }
 
-export async function renderSignInToCreateWallet(module: ModuleState<Wallet>) {
+export async function renderSignInToCreateWallet() {
   if (!modalState) {
     return;
   }
 
+  const module = modalState.modules.find((m) => m.id === "torus");
+
+  if (!module) {
+    return;
+  }
+
   document.querySelector(".modal-right")!.innerHTML = `
-    <div class="nws-modal-header">
-      <h3 class="middleTitle">Sign In to Create a Wallet</h3><button class="close-button"><svg
-          xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
-          <path d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
-          </path>
-        </svg></button>
+    <div class="nws-modal-header-wrapper">
+      <button class="back-button" id="back-button"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 13L1 7L7 1" stroke="#6494EE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      <div class="nws-modal-header">
+        <h3 class="middleTitle">Sign In to Create a Wallet</h3><button class="close-button"><svg
+            xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
+            <path d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+            </path>
+          </svg></button>
+      </div>
     </div>
     <div class="web3auth-content">
       <div class="web3auth-options">
@@ -212,10 +221,6 @@ export async function renderSignInToCreateWallet(module: ModuleState<Wallet>) {
         src="${web3authLogoIcon}"
         alt="web3auth logo"></div>
         <div class="web3auth-info-description">Web3Auth does not store any data related to your social logins.</div>
-        <div class="web3auth-info-action" id="web3auth-info-action"><span>View less social login options</span><img
-        src="${minusInCircleIcon}"
-        alt="minus in circle">
-        </div>
       </div>
     </div>
   `;
@@ -240,10 +245,10 @@ export async function renderSignInToCreateWallet(module: ModuleState<Wallet>) {
     });
   }
 
-  const web3authInfoAction = document.getElementById("web3auth-info-action");
+  const backButtonElement = document.getElementById("back-button");
 
-  if (web3authInfoAction) {
-    web3authInfoAction.addEventListener("click", () => {
+  if (backButtonElement) {
+    backButtonElement.addEventListener("click", () => {
       renderWhatIsAWallet();
     });
   }

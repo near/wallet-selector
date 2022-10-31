@@ -242,6 +242,7 @@ export const Modal: React.FC<ModalProps> = ({
                 onBack={(retry) => {
                   if (retry) {
                     handleWalletClick(selectedWallet!, false);
+                    return;
                   }
                   setAlertMessage(null);
                   setRoute({

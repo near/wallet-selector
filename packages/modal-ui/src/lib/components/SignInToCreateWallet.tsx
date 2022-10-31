@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ModalHeader } from "./ModalHeader";
 import Web3AuthLogo from "../images/web3auth-logo.svg";
-import MinusCircleIcon from "../images/minus-circle.svg";
 import PlusIcon from "../images/plus.svg";
 import MinusIcon from "../images/minus.svg";
 import {
@@ -12,6 +11,7 @@ import {
 } from "@near-wallet-selector/core";
 import { ModalRoute } from "./Modal.types";
 import { ModalOptions } from "../modal.types";
+import { BackArrow } from "./BackArrow";
 
 type SignInToCreateWalletProps = {
   onCloseModal: () => void;
@@ -66,12 +66,6 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
     setShowMoreOptions(!showMoreOptions);
   }
 
-  function onViewLessSocialLoginsHandler() {
-    setRoute({
-      name: "WalletHome",
-    });
-  }
-
   async function onSignInHandler(
     provider: Web3AuthLoginProvider,
     emailValue?: string
@@ -107,10 +101,19 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
 
   return (
     <div className="web3auth-sign-in">
-      <ModalHeader
-        title={"Sign In to Create a Wallet"}
-        onCloseModal={onCloseModal}
-      />
+      <div className="nws-modal-header-wrapper">
+        <BackArrow
+          onClick={() => {
+            setRoute({
+              name: "WalletHome",
+            });
+          }}
+        />
+        <ModalHeader
+          title={"Sign In to Create a Wallet"}
+          onCloseModal={onCloseModal}
+        />
+      </div>
       <div className="web3auth-content">
         <div className="web3auth-options">
           <div className="web3auth-options-heading">Continue with</div>
@@ -157,6 +160,13 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
                 >
                   <img
                     src={`https://images.web3auth.io/login-${provider}.svg`}
+                    style={
+                      provider === "github"
+                        ? {
+                            filter: "brightness(0)", // Github icon is barely visible in dark mode
+                          }
+                        : undefined
+                    }
                     alt={`${provider} icon`}
                   />
                 </div>
@@ -197,13 +207,6 @@ export const SignInToCreateWallet: React.FC<SignInToCreateWalletProps> = ({
           </div>
           <div className="web3auth-info-description">
             Web3Auth does not store any data related to your social logins.
-          </div>
-          <div
-            className="web3auth-info-action"
-            onClick={onViewLessSocialLoginsHandler}
-          >
-            <span>View less social login options</span>
-            <img src={MinusCircleIcon} alt="minus in circle" />
           </div>
         </div>
       </div>

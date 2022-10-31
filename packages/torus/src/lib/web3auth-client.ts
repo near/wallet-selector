@@ -17,7 +17,6 @@ class Web3AuthClient {
         ticker: "NEAR",
         tickerName: "NEAR",
       },
-      storageKey: "local",
     });
 
     const openloginAdapter = new OpenloginAdapter({
