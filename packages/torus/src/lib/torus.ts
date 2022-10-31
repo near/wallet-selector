@@ -1,13 +1,14 @@
 import Web3AuthClient from "./web3auth-client";
-import { InMemorySigner, KeyPair, keyStores, utils } from "near-api-js";
-import { SafeEventEmitterProvider } from "@web3auth/base";
-import {
+import type { KeyPair } from "near-api-js";
+import { InMemorySigner, keyStores, utils } from "near-api-js";
+import type { SafeEventEmitterProvider } from "@web3auth/base";
+import { getActiveAccount } from "@near-wallet-selector/core";
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   Network,
   Account,
   Web3AuthWallet,
-  getActiveAccount,
   Optional,
   Transaction,
   FinalExecutionOutcome,

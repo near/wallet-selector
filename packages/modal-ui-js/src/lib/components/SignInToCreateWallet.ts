@@ -1,4 +1,4 @@
-import {
+import type {
   ModuleState,
   Wallet,
   Web3AuthLoginProvider,

@@ -91,7 +91,7 @@
       ],
       "os": [
         "./node_modules/os-browserify"
-      ],
+      ]
     }
   },
   "exclude": [

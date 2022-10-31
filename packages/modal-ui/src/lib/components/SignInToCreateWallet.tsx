@@ -3,14 +3,14 @@ import { ModalHeader } from "./ModalHeader";
 import Web3AuthLogo from "../images/web3auth-logo.svg";
 import PlusIcon from "../images/plus.svg";
 import MinusIcon from "../images/minus.svg";
-import {
+import type {
   ModuleState,
   Wallet,
   Web3AuthLoginProvider,
   Web3AuthWallet,
 } from "@near-wallet-selector/core";
-import { ModalRoute } from "./Modal.types";
-import { ModalOptions } from "../modal.types";
+import type { ModalRoute } from "./Modal.types";
+import type { ModalOptions } from "../modal.types";
 import { BackArrow } from "./BackArrow";
 
 type SignInToCreateWalletProps = {
