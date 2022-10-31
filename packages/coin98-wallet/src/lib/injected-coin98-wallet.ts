@@ -1,4 +1,4 @@
-import { Signer } from "near-api-js/lib/signer";
+import type { Signer } from "near-api-js/lib/signer";
 
 interface IConnectParams {
   prefix: string;

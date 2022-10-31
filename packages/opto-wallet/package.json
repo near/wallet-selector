@@ -1,0 +1,7 @@
+{
+  "name": "@near-wallet-selector/opto-wallet",
+  "version": "7.1.0",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2"
+  }
+}

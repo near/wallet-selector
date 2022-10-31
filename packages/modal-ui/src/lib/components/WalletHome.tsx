@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
 import Icon from "../images/black-white.jpg";
-import {
+import type {
   InjectedWallet,
   ModuleState,
   WalletSelector,
@@ -9,6 +9,7 @@ import {
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import PlusCircleIcon from "../images/plus-circle.svg";
+import { translate } from "@near-wallet-selector/core";
 
 interface WalletHomeProps {
   selector: WalletSelector;
@@ -56,9 +57,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       url = `https://${subdomain}.mynearwallet.com`;
     }
 
+    if (module.id === "opto-wallet") {
+      const subdomain = networkId === "testnet" ? "app.testnet" : "app";
+      url = `https://${subdomain}.optowallet.com`;
+    }
+
     if (module.id === "near-wallet") {
       const subdomain = networkId === "testnet" ? "testnet." : "";
       url = `https://wallet.${subdomain}near.org`;
+    }
+
+    if (module.id === "here-wallet") {
+      url = "https://herewallet.app/";
     }
 
     if (
@@ -82,7 +92,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           />
         )}
         <ModalHeader
-          title={route === "GetWallets" ? "Get a Wallet" : "What is a Wallet?"}
+          title={
+            route === "GetWallets"
+              ? translate("modal.wallet.getAWallet")
+              : translate("modal.wallet.whatIsAWallet")
+          }
           onCloseModal={onCloseModal}
         />
       </div>
@@ -118,13 +132,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <>
           <div className="wallet-info-wrapper what-wallet-hide">
             <WhatWallet
-              title="Secure & Manage Your Digital Assets"
-              description="Safely store and transfer your crypto and NFTs."
+              title={translate("modal.wallet.secureAndManage")}
+              description={translate("modal.wallet.safelyStore")}
               icon={Icon}
             />
             <WhatWallet
-              title="Log In to Any NEAR App"
-              description="No need to create new accounts or credentials. Connect your wallet and you are good to go!"
+              title={translate("modal.wallet.logInToAny")}
+              description={translate("modal.wallet.noNeedToCreate")}
               icon={Icon}
             />
             <div className="button-spacing" />
@@ -134,7 +148,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 setRoute("GetWallets");
               }}
             >
-              Get a Wallet
+              {translate("modal.wallet.getAWallet")}
             </button>
             <div
               className="web3auth-info-action"
@@ -145,17 +159,14 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             </div>
           </div>
           <div className="what-wallet-mobile">
-            <p>
-              Use a wallet to secure and manage your NEAR assets, and to log in
-              to any NEAR app without the need for usernames and passwords.
-            </p>
+            <p>{translate("modal.wallet.useAWallet")}</p>
             <button
               className="middleButton"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              Get a Wallet
+              {translate("modal.wallet.getAWallet")}
             </button>
           </div>
         </>

@@ -85,6 +85,8 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
   - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
   - `loginProvider` (`string?`): Required for web3auth wallets (e.g Torus Wallet). This indicates with login provider will be used to connect (e.g google, facebook...).
   - `email` (`string`): Optional for web3auth wallets (e.g Torus Wallet). When the `loginProvider` is `"email_passwordless"`, the `email` parameter needs to be provided to indicate which email address will be used to log in with.
+  - `successUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+  - `failureUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
 
 **Returns**
 

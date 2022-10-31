@@ -1,17 +1,20 @@
-import { Component, OnInit } from "@angular/core";
-import { setupWalletSelector } from "@near-wallet-selector/core";
+import type { OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupTorus } from "@near-wallet-selector/torus";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 // import { setupModal } from "@near-wallet-selector/modal-ui";
 // import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
@@ -49,13 +52,15 @@ export class AppComponent implements OnInit {
       debug: true,
       modules: [
         ...(await setupDefaultWallets()),
-        setupNearWallet(),
         setupSender(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
-        setupNearFi(),
+        setupWelldoneWallet(),
+        setupHereWallet(),
         setupCoin98Wallet(),
+        setupNearFi(),
+        setupOptoWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

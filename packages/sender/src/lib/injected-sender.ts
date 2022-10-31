@@ -1,7 +1,7 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
-import { Account, providers } from "near-api-js";
+import type { Account, providers } from "near-api-js";
 
 interface AccessKey {
   publicKey: {

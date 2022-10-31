@@ -1,5 +1,6 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { connectToWallet } from "../render-modal";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderWalletConnectionFailed(
   module: ModuleState<Wallet>,
@@ -34,12 +35,17 @@ export async function renderWalletConnectionFailed(
                       stroke-linejoin="round"></path>
                     <path d="M6.75 6.75L17.25 17.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round"></path>
-                  </svg>Connection Failed</div>
-                  <p>${err && err.message ? err.message : ""}</p>${
-    !module?.metadata.deprecated && module?.metadata.available
-      ? "<button id='retry-button'>Retry</button>"
-      : ""
-  }
+                  </svg>
+                  ${translate("modal.wallet.connectionFailed")}
+                </div>
+                  <p>${err && err.message ? err.message : ""}</p>
+                  ${
+                    !module?.metadata.deprecated && module?.metadata.available
+                      ? `<button id='retry-button'>${translate(
+                          "modal.ledger.retry"
+                        )}</button>`
+                      : ""
+                  }
               </div>
             </div>
           </div>

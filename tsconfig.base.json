@@ -35,6 +35,9 @@
       "@near-wallet-selector/meteor-wallet": [
         "packages/meteor-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/welldone-wallet": [
+        "packages/welldone-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/modal-ui": [
         "dist/packages/modal-ui"
       ],
@@ -74,6 +77,9 @@
       "@near-wallet-selector/coin98-wallet": [
         "packages/coin98-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/opto-wallet": [
+        "packages/opto-wallet/src/index.ts"
+      ],
       "crypto": [
         "./node_modules/crypto-browserify"
       ],
@@ -85,7 +91,7 @@
       ],
       "os": [
         "./node_modules/os-browserify"
-      ]
+      ],
     }
   },
   "exclude": [

@@ -1,12 +1,11 @@
+import type { KeyPair, providers } from "near-api-js";
 import {
   InMemorySigner,
-  KeyPair,
   keyStores,
   transactions as nearTransactions,
-  providers,
   utils,
 } from "near-api-js";
-import { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -135,8 +134,6 @@ const WalletConnect: WalletBehaviourFactory<
 
     _state.subscriptions = [];
     _state.session = null;
-
-    await _state.keystore.clear();
   };
 
   const validateAccessKey = (
@@ -413,12 +410,6 @@ const WalletConnect: WalletBehaviourFactory<
         },
       },
     });
-
-    for (let i = 0; i < limitedAccessAccounts.length; i += 1) {
-      const { accountId } = limitedAccessAccounts[i];
-
-      await _state.keystore.removeKey(options.network.networkId, accountId);
-    }
   };
 
   const signOut = async () => {

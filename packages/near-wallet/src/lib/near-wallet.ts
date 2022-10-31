@@ -1,12 +1,10 @@
-import {
+import type {
   WalletModuleFactory,
   BrowserWallet,
   Network,
 } from "@near-wallet-selector/core";
-import {
-  setupMyNearWallet,
-  MyNearWalletParams,
-} from "@near-wallet-selector/my-near-wallet";
+import type { MyNearWalletParams } from "@near-wallet-selector/my-near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import icon from "./icon";
 
 export type NearWalletParams = MyNearWalletParams;
@@ -30,11 +28,15 @@ export function setupNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
+  successUrl = "",
+  failureUrl = "",
 }: NearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async (options) => {
     const wallet = await setupMyNearWallet({
       walletUrl: resolveWalletUrl(options.options.network, walletUrl),
       iconUrl,
+      successUrl,
+      failureUrl,
     })(options);
 
     if (!wallet) {

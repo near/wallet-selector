@@ -1,7 +1,7 @@
+import type { Signer } from "near-api-js";
 import {
   utils,
   transactions as nearTransactions,
-  Signer,
   providers,
 } from "near-api-js";
 import type { Network, Transaction } from "@near-wallet-selector/core";
