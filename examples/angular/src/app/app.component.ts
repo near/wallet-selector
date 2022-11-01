@@ -84,6 +84,13 @@ export class AppComponent implements OnInit {
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
 
+    _selector.on("signedIn", (e) => {
+      console.log("::::: IN", e);
+    });
+    _selector.on("signedOut", (e) => {
+      console.log("::::: OUT", e);
+    });
+
     this.accounts = state.accounts;
     this.accountId =
       state.accounts.find((account) => account.active)?.accountId || null;
