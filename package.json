@@ -126,7 +126,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "13.3.0",
     "@testing-library/react-hooks": "^7.0.2",
-    "@types/big.js": "^6.1.5",
+    "@types/big.js": "^6.1.6",
     "@types/bn.js": "^5.1.0",
     "@types/gh-pages": "^3.2.1",
     "@types/jest": "27.4.1",
