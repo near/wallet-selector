@@ -1,5 +1,5 @@
 import React from "react";
-import { ModuleState } from "@near-wallet-selector/core";
+import type { ModuleState } from "@near-wallet-selector/core";
 import { translate } from "@near-wallet-selector/core";
 
 interface ConnectionResultProps {

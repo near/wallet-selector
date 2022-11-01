@@ -151,7 +151,7 @@ selector.setActiveAccount("sometestaccount.testnet");
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `networkChanged | uriChanged`.
+- `event` (`string`): Name of the event. This can be: `signedIn | signedOut | accountsChanged | networkChanged | uriChanged`.
 - `callback` (`Function`): Handler to be triggered when the `event` fires.
 
 **Returns**

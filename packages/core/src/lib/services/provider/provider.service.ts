@@ -4,7 +4,7 @@ import type {
   BlockReference,
   QueryResponseKind,
 } from "near-api-js/lib/providers/provider";
-import { SignedTransaction } from "near-api-js/lib/transaction";
+import type { SignedTransaction } from "near-api-js/lib/transaction";
 import type {
   ProviderService,
   QueryParams,

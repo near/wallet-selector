@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { ModuleState } from "@near-wallet-selector/core";
+import type { ModuleState } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { translate } from "@near-wallet-selector/core";

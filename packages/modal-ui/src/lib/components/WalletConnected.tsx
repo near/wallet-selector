@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { ModuleState } from "@near-wallet-selector/core";
+import type { ModuleState } from "@near-wallet-selector/core";
 import { CloseButton } from "./CloseButton";
 import { translate } from "@near-wallet-selector/core";
 

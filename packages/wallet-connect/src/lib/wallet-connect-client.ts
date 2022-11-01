@@ -1,7 +1,7 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import { SessionTypes } from "@walletconnect/types";
+import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
   WalletEvents,

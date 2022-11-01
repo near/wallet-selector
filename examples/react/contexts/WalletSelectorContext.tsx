@@ -11,11 +11,13 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
+import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -51,12 +53,17 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupWelldoneWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
+<<<<<<< HEAD
         setupNeth({
           gas: '50000000000000'
         }),
+=======
+        setupOptoWallet(),
+>>>>>>> upstream/dev
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

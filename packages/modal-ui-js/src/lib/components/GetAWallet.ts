@@ -1,4 +1,4 @@
-import { InjectedWallet, ModuleState } from "@near-wallet-selector/core";
+import type { InjectedWallet, ModuleState } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
 import { translate } from "@near-wallet-selector/core";
@@ -19,6 +19,11 @@ function goToWallet(module: ModuleState) {
   if (module.id === "my-near-wallet") {
     const subdomain = networkId === "testnet" ? "testnet" : "app";
     url = `https://${subdomain}.mynearwallet.com`;
+  }
+
+  if (module.id === "opto-wallet") {
+    const subdomain = networkId === "testnet" ? "app.testnet" : "app";
+    url = `https://${subdomain}.optowallet.com`;
   }
 
   if (module.id === "near-wallet") {

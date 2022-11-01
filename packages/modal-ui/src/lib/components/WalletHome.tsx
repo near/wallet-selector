@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
 import Icon from "../images/black-white.jpg";
-import {
+import type {
   InjectedWallet,
   ModuleState,
   WalletSelector,
@@ -50,6 +50,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     if (module.id === "my-near-wallet") {
       const subdomain = networkId === "testnet" ? "testnet" : "app";
       url = `https://${subdomain}.mynearwallet.com`;
+    }
+
+    if (module.id === "opto-wallet") {
+      const subdomain = networkId === "testnet" ? "app.testnet" : "app";
+      url = `https://${subdomain}.optowallet.com`;
     }
 
     if (module.id === "near-wallet") {
