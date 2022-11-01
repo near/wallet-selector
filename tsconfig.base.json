@@ -62,6 +62,9 @@
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],
+      "@near-wallet-selector/neth": [
+        "packages/neth/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],

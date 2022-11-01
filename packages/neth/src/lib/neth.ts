@@ -13,6 +13,7 @@ import {
   signIn,
   signOut,
   verifyOwner,
+  isSignedIn,
   signAndSendTransactions,
   initConnection,
   NETH_SITE_URL,
@@ -21,9 +22,6 @@ export { initConnection } from "./neth-lib";
 
 declare global {
   interface Window {
-    near: {
-      isSignedIn: () => boolean;
-    };
     ethereum: { chainId: string };
   }
 }
@@ -43,6 +41,7 @@ let useCover = false;
 const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   logger,
+  store,
   options,
   provider,
 }) => {
@@ -64,6 +63,41 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
     }
 
     return actions.map((x) => x.params);
+  };
+
+  const signTransactions = async (transactions) => {
+    logger.log("NETH:signAndSendTransactions", { transactions });
+
+    const { contract } = store.getState();
+
+    if (!isSignedIn() || !contract) {
+      throw new Error("Wallet not signed in");
+    }
+
+    if (useCover) {
+      cover.style.display = "block";
+    }
+
+    const transformedTxs = transactions.map(({ receiverId, actions }) => ({
+      receiverId: receiverId || contract.contractId,
+      actions: transformActions(actions),
+    }));
+
+    let res;
+    try {
+      res = await signAndSendTransactions({
+        transactions: transformedTxs,
+      });
+    } catch (e) {
+      /// user cancelled or near network error
+      // console.warn(e);
+    }
+
+    if (useCover) {
+      cover.style.display = "none";
+    }
+
+    return res;
   };
 
   // return the wallet interface for wallet-selector
@@ -99,50 +133,11 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
       return [{ accountId }];
     },
 
-    async signAndSendTransaction({ receiverId, actions }) {
-      logger.log("NETH:signAndSendTransaction", {
-        receiverId,
-        actions,
-      });
+    signAndSendTransaction: async ({ receiverId, actions }) =>
+      signTransactions([{ receiverId, actions }]),
 
-      return signAndSendTransactions({
-        transactions: [
-          {
-            receiverId,
-            actions: transformActions(actions),
-          },
-        ],
-      });
-    },
-
-    async signAndSendTransactions({ transactions }) {
-      logger.log("NETH:signAndSendTransactions", { transactions });
-
-      if (useCover) {
-        cover.style.display = "block";
-      }
-
-      const transformedTxs = transactions.map(({ receiverId, actions }) => ({
-        receiverId,
-        actions: transformActions(actions),
-      }));
-
-      let res;
-      try {
-        res = await signAndSendTransactions({
-          transactions: transformedTxs,
-        });
-      } catch (e) {
-        /// user cancelled or near network error
-        // console.warn(e);
-      }
-
-      if (useCover) {
-        cover.style.display = "none";
-      }
-
-      return res;
-    },
+    signAndSendTransactions: async ({ transactions }) =>
+      signTransactions(transactions),
   };
 };
 
@@ -156,9 +151,7 @@ export function setupNeth({
 
     useCover = useModalCover;
 
-    await waitFor(() => !!window.near?.isSignedIn(), { timeout: 300 }).catch(
-      () => false
-    );
+    await waitFor(() => !!isSignedIn(), { timeout: 300 }).catch(() => false);
 
     return {
       id: "neth",
