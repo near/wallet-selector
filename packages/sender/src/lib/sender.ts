@@ -85,9 +85,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   const setupEvents = () => {
     _state.wallet.on("accountChanged", async (newAccountId) => {
       logger.log("onAccountChange", newAccountId);
-      emitter.emit("accountsChanged", {
-        accounts: [{ accountId: newAccountId }],
-      });
+      emitter.emit("signedOut", null);
     });
 
     _state.wallet.on("rpcChanged", async (rpc) => {
@@ -96,6 +94,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       if (options.network.networkId !== rpc.networkId) {
         await signOut();
 
+        emitter.emit("signedOut", null);
         emitter.emit("networkChanged", { networkId: rpc.networkId });
       }
     });
