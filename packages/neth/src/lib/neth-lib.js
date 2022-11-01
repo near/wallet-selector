@@ -36,7 +36,7 @@ const ATTEMPT_ACCOUNT_ID = '__ATTEMPT_ACCOUNT_ID';
 const ATTEMPT_ETH_ADDRESS = '__ATTEMPT_ETH_ADDRESS';
 const APP_KEY_SECRET = '__APP_KEY_SECRET';
 const APP_KEY_ACCOUNT_ID = '__APP_KEY_ACCOUNT_ID';
-const gas = '200000000000000';
+const defaultGas = '200000000000000';
 const half_gas = '50000000000000';
 /// this is the new account amount 0.21 for account name, keys, contract and 0.01 for mapping contract storage cost
 const MIN_NEW_ACCOUNT = parseNearAmount('0.4');
@@ -64,8 +64,9 @@ const del = (k) => localStorage.removeItem(k);
 const defaultLogger = (args) => console.log(...args);
 
 /// NEAR setup
-let near, keyStore, logger, connection, networkId, contractAccount, accountSuffix;
-export const initConnection = (network, logFn) => {
+let near, gas, keyStore, logger, connection, networkId, contractAccount, accountSuffix;
+export const initConnection = ({ network, gas: _gas = defaultGas, logFn = defaultLogger }) => {
+	gas = _gas
 	keyStore = new BrowserLocalStorageKeyStore();
 	near = new Near({
 		...network,
@@ -73,7 +74,6 @@ export const initConnection = (network, logFn) => {
 	});
 	logger = (...args) => {
 		if (logFn) logFn(args)
-		defaultLogger(args)
 	};
 	connection = near.connection;
 	networkId = network.networkId;

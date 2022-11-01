@@ -54,7 +54,9 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupNeth(),
+        setupNeth({
+          gas: '50000000000000'
+        }),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

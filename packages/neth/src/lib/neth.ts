@@ -29,6 +29,7 @@ declare global {
 export interface NethParams {
   useModalCover?: boolean;
   iconUrl?: string;
+  gas?: string;
 }
 
 const isInstalled = async () => {
@@ -37,6 +38,7 @@ const isInstalled = async () => {
 };
 
 let useCover = false;
+let customGas;
 
 const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
@@ -45,7 +47,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   provider,
 }) => {
-  const cover = initConnection(options.network);
+  const cover = initConnection({ network: options.network, gas: customGas });
 
   const isValidActions = (
     actions: Array<Action>
@@ -143,13 +145,14 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export function setupNeth({
   useModalCover = false,
+  gas,
   iconUrl = nethIcon,
 }: NethParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    // const mobile = isMobile();
-    const installed = await isInstalled();
-
     useCover = useModalCover;
+    customGas = gas;
+
+    const installed = await isInstalled();
 
     await waitFor(() => !!isSignedIn(), { timeout: 300 }).catch(() => false);
 
