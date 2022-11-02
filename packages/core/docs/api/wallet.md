@@ -190,9 +190,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
 **Parameters**
 - `params` (`object`)
   - `message` (`string`): The message requested sign. Defaults to `verify owner` string.
-  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This is the callback url once the signing is approved. Defaults to `window.location.href`.
-  - `meta` (`string?`): Applicable to browser wallets (e.g. MyNearWallet) extra data that will be passed to the callback url once the signing is approved.
-
+  
 **Returns**
 - `Promise<void | VerifiedOwner>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
 
