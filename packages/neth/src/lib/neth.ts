@@ -44,10 +44,16 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   logger,
   store,
+  storage,
   options,
   provider,
 }) => {
-  const cover = initConnection({ network: options.network, gas: customGas });
+  const cover = initConnection({
+    network: options.network,
+    gas: customGas,
+    logger,
+    storage,
+  });
 
   const isValidActions = (
     actions: Array<Action>
@@ -72,7 +78,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
     const { contract } = store.getState();
 
-    if (!isSignedIn() || !contract) {
+    if (!(await isSignedIn()) || !contract) {
       throw new Error("Wallet not signed in");
     }
 
@@ -126,7 +132,6 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async verifyOwner({ message }) {
       logger.log("NETH:verifyOwner", { message });
-
       verifyOwner({ message, provider, account: null });
     },
 
