@@ -101,15 +101,19 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             const { iconUrl, name } = module.metadata;
             const { type } = module;
             let typeFullName = "";
+            let haveQR,
+              haveLink = false;
             switch (type) {
               case "bridge":
                 typeFullName = "Bridge wallet";
                 break;
               case "injected":
                 typeFullName = "Injected wallet";
+                haveLink = true;
                 break;
               case "browser":
                 typeFullName = "Browser Extension";
+                haveQR = true;
                 break;
               case "hardware":
                 typeFullName = "Hardware wallet";
@@ -123,6 +127,91 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                   goToWallet(module);
                 }}
               >
+                <div className={"small-icon"}>
+                  {haveQR ? (
+                    <svg
+                      width="18"
+                      height="16"
+                      viewBox="0 0 18 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.22224 1.33334H1.44446V6.66668H7.22224V1.33334Z"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M15.8889 1.33334H10.1111V6.66668H15.8889V1.33334Z"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M7.22224 9.33334H1.44446V14.6667H7.22224V9.33334Z"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10.1111 13.1429V14.6667H15.8889M10.1111 9.33334V10.8572H12.5873V9.33334H15.8889V12.381"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <rect
+                        x="3.61108"
+                        y="3.33334"
+                        width="1.44444"
+                        height="1.33333"
+                        fill="#4C5155"
+                      />
+                      <rect
+                        x="3.61108"
+                        y="11.3333"
+                        width="1.44444"
+                        height="1.33333"
+                        fill="#4C5155"
+                      />
+                      <rect
+                        x="12.2778"
+                        y="3.33334"
+                        width="1.44445"
+                        height="1.33333"
+                        fill="#4C5155"
+                      />
+                    </svg>
+                  ) : null}
+                  {haveLink ? (
+                    <svg
+                      width="18"
+                      height="16"
+                      viewBox="0 0 18 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13 8.66667V12.6667C13 13.0203 12.8478 13.3594 12.577 13.6095C12.3061 13.8595 11.9387 14 11.5556 14H3.61113C3.22804 14 2.86064 13.8595 2.58975 13.6095C2.31887 13.3594 2.16669 13.0203 2.16669 12.6667V5.33333C2.16669 4.97971 2.31887 4.64057 2.58975 4.39052C2.86064 4.14048 3.22804 4 3.61113 4H7.94447"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10.8333 2H15.1666V6"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M7.22223 9.33333L15.1667 2"
+                        stroke="#4C5155"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : null}
+                </div>
                 <div className="icon">
                   <img src={iconUrl} alt={name} />
                 </div>
