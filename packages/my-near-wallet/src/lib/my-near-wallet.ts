@@ -72,7 +72,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ metadata, options, store, params, logger }) => {
+> = async ({ options, store, params, logger, provider }) => {
   const _state = await setupWalletState(params, options.network);
 
   const getAccounts = () => {
@@ -89,7 +89,7 @@ const MyNearWallet: WalletBehaviourFactory<
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
     const account = _state.wallet.account();
-    const { networkId, signer, provider } = account.connection;
+    const { networkId, signer } = account.connection;
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
 
@@ -152,7 +152,7 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({ message, callbackUrl, meta }) {
+    async verifyOwner({ message }) {
       logger.log("verifyOwner", { message });
 
       const account = _state.wallet.account();
@@ -160,23 +160,35 @@ const MyNearWallet: WalletBehaviourFactory<
       if (!account) {
         throw new Error("Wallet not signed in");
       }
-      const locationUrl =
-        typeof window !== "undefined" ? window.location.href : "";
 
-      const url = callbackUrl || locationUrl;
+      const networkId = options.network.networkId;
+      const accountId = account.accountId;
+      const pubKey = await account.connection.signer.getPublicKey(
+        accountId,
+        networkId
+      );
+      const block = await provider.block({ finality: "final" });
 
-      if (!url) {
-        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
-      }
+      const data = {
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      };
+      const encoded = JSON.stringify(data);
 
-      const encodedUrl = encodeURIComponent(url);
-      const extraMeta = meta ? `&meta=${meta}` : "";
-
-      window.location.replace(
-        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
+      const signed = await account.connection.signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
+        accountId,
+        networkId
       );
 
-      return;
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
     },
 
     async signAndSendTransaction({

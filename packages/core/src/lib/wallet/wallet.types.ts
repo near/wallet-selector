@@ -30,8 +30,6 @@ export interface SignInParams {
 
 export interface VerifyOwnerParams {
   message: string;
-  callbackUrl?: string;
-  meta?: string;
 }
 
 export interface VerifiedOwner {
