@@ -31,6 +31,7 @@ const NETWORK = {
 	}
 }
 
+const WS_STORAGE_NAMESPACE = 'near-wallet-selector:neth:'
 const REFRESH_MSG = `Please refresh the page and try again.`
 const ATTEMPT_SECRET_KEY = '__ATTEMPT_SECRET_KEY';
 const ATTEMPT_ACCOUNT_ID = '__ATTEMPT_ACCOUNT_ID';
@@ -935,10 +936,7 @@ export const verifyOwner = async ({ message, provider, account }) => {
 
 export const isSignedIn = async () => {
 	/// init defaultStorage here because it's not initialized until initConnection
-	const storage = defaultStorage('near-wallet-selector:neth:')
-
-	console.log(await storage.getItem(APP_KEY_SECRET), await storage.getItem(APP_KEY_ACCOUNT_ID))
-
+	const storage = defaultStorage(WS_STORAGE_NAMESPACE)
 	return !!await storage.getItem(APP_KEY_SECRET) || !!await storage.getItem(APP_KEY_ACCOUNT_ID);
 };
 

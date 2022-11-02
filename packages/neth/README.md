@@ -29,7 +29,10 @@ import { setupNeth } from "@near-wallet-selector/neth";
 
 // NETH for Wallet Selector can be setup without any params or it can take one optional param.
 const neth = setupNeth({
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
+  useModalCover?: boolean; // cover screen with rgba(0, 0, 0, 0.5) mask while signing and awaiting transaction outcome
+  iconUrl?: string; // default NETH icon included
+  gas?: string; // default 200 Tgas for each NETH transaction (bundling can include multiple "inner" transactions)
+  bundleTransactions?: boolean; // default true
 });
 
 const selector = await setupWalletSelector({
