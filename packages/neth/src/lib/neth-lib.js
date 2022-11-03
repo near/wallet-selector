@@ -33,6 +33,7 @@ const NETWORK = {
 
 const WS_STORAGE_NAMESPACE = 'near-wallet-selector:neth:'
 const REFRESH_MSG = `Please refresh the page and try again.`
+const TX_ARGS_ATTEMPT = '__TX_ARGS_ATTEMPT';
 const ATTEMPT_SECRET_KEY = '__ATTEMPT_SECRET_KEY';
 const ATTEMPT_ACCOUNT_ID = '__ATTEMPT_ACCOUNT_ID';
 const ATTEMPT_ETH_ADDRESS = '__ATTEMPT_ETH_ADDRESS';
@@ -103,6 +104,10 @@ export const initConnection = ({
 	cover.style.top = '0';
 	cover.style.background = 'rgba(0, 0, 0, 0.5)';
 	document.body.appendChild(cover);
+
+	/// recovery from unbundled TXs that haven't been broadcast yet
+	broadcastTXs()
+
 	return cover;
 };
 export const getConnection = () => {
@@ -878,6 +883,7 @@ export const getNear = async () => {
 	const account = new Account(connection, accountId);
 	const keyPair = KeyPair.fromString(secretKey);
 	keyStore.setKey(networkId, accountId, keyPair);
+		
 	return { account, accountId, keyPair, secretKey };
 };
 
@@ -1011,7 +1017,36 @@ export const getAppKey = async ({ signer, ethAddress: eth_address }) => {
 	return { publicKey, secretKey, account };
 };
 
-export const signAndSendTransactions = async ({ transactions }) => {
+const broadcastTXs = async () => {
+	const { account, accountId } = await getNear();
+	let args = await storage.getItem(TX_ARGS_ATTEMPT)
+	if (!args || args.length === 0) return
+
+	let res = []
+	while (args.length > 0) {
+		const currentArgs = args.shift()
+		logger.log("NETH: broadcasting tx", currentArgs);
+		try {
+			const tx = await account.functionCall({
+				contractId: accountId,
+				methodName: "execute",
+				args: currentArgs,
+				gas,
+			})
+			await storage.setItem(TX_ARGS_ATTEMPT, args)
+			res.push(tx);
+		} catch(e) {
+			logger.log("NETH: ERROR broadcasting tx", e);
+		}
+	}
+	args = await storage.getItem(TX_ARGS_ATTEMPT)
+	if (args.length === 0) {
+		await storage.removeItem(TX_ARGS_ATTEMPT)
+	}
+	return res
+}
+
+export const signAndSendTransactions = async ({ transactions, bundle }) => {
 	const { signer } = await getEthereum();
 	const { account, accountId } = await getNear();
 
@@ -1020,19 +1055,28 @@ export const signAndSendTransactions = async ({ transactions }) => {
 		actions: convertActions(actions, accountId, receiverId),
 	}));
 
-	const nonce = parseInt(await account.viewFunction(accountId, "get_nonce"), 16).toString();
-	const args = await ethSignJson(signer, {
-		nonce,
-		receivers,
-		transactions: transformedTxs,
-	});
+	const nonce = parseInt(await account.viewFunction(accountId, "get_nonce"), 16);
+	let args = []
+	if (!bundle) {
+        for (let i = 0; i < transformedTxs.length; i++) {
+			args.push(await ethSignJson(signer, {
+				nonce: (nonce + i).toString(),
+				receivers: [receivers[i]],
+				transactions: [transformedTxs[i]],
+			}));
+		}
+	} else {
+		args.push(await ethSignJson(signer, {
+			nonce: nonce.toString(),
+			receivers,
+			transactions: transformedTxs,
+		}));
+	}
 
-	const res = await account.functionCall({
-		contractId: accountId,
-		methodName: "execute",
-		args,
-		gas,
-	});
+	await storage.setItem(TX_ARGS_ATTEMPT, args)
+
+	const res = await broadcastTXs()
+
 	return res;
 };
 

@@ -32,7 +32,7 @@ const neth = setupNeth({
   useModalCover?: boolean; // cover screen with rgba(0, 0, 0, 0.5) mask while signing and awaiting transaction outcome
   iconUrl?: string; // default NETH icon included
   gas?: string; // default 200 Tgas for each NETH transaction (bundling can include multiple "inner" transactions)
-  bundleTransactions?: boolean; // default true
+  bundle?: boolean; // default true
 });
 
 const selector = await setupWalletSelector({

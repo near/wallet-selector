@@ -95,23 +95,14 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
     let res;
     try {
-      if (bundle) {
-        res = await signAndSendTransactions({
-          transactions: transformedTxs,
-        });
-      } else {
-        res = [];
-        for (let i = 0; i < transformedTxs.length; i++) {
-          res.push(
-            await signAndSendTransactions({
-              transactions: [transformedTxs[i]],
-            })
-          );
-        }
-      }
+      res = await signAndSendTransactions({
+        transactions: transformedTxs,
+        bundle,
+      });
     } catch (e) {
-      /// user cancelled or near network error
+      /// "user rejected signing" or near network error
       logger.log("NETH:signAndSendTransactions Error", e);
+      throw e;
     }
 
     if (useCover) {
