@@ -60,7 +60,9 @@ export class AppComponent implements OnInit {
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupNeth(),
+        setupNeth({
+          bundle: false,
+        }),
         setupOptoWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",

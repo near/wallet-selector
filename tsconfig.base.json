@@ -79,7 +79,9 @@
       ],
       "@near-wallet-selector/opto-wallet": [
         "packages/opto-wallet/src/index.ts"
-      ]
+      ],
+      "crypto": ["node_modules/crypto-browserify"],
+      "stream": ["node_modules/stream-browserify"]
     }
   },
   "exclude": [

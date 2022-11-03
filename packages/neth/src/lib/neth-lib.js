@@ -1039,10 +1039,7 @@ const broadcastTXs = async () => {
 			logger.log("NETH: ERROR broadcasting tx", e);
 		}
 	}
-	args = await storage.getItem(TX_ARGS_ATTEMPT)
-	if (args.length === 0) {
-		await storage.removeItem(TX_ARGS_ATTEMPT)
-	}
+	await storage.removeItem(TX_ARGS_ATTEMPT)
 	return res
 }
 
