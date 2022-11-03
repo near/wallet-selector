@@ -8,16 +8,18 @@ import type {
 import { EventEmitter, Logger, Provider, WalletModules } from "./services";
 import type { Wallet } from "./wallet";
 
-let walletSelectorInstance: WalletSelector | null = null;
+export type WalletSelectorNetworks = {
+  [networkId: string]: WalletSelector;
+};
 
-export const setupWalletSelector = async (
-  params: WalletSelectorParams
-): Promise<WalletSelector> => {
+const walletSelectorInstances: WalletSelectorNetworks = {};
+
+async function createWalletSelectorInstance(params: WalletSelectorParams) {
   const { options, storage } = resolveOptions(params);
   Logger.debug = options.debug;
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = await createStore(storage);
+  const store = await createStore(storage, options.network);
   const walletModules = new WalletModules({
     factories: params.modules,
     storage,
@@ -29,51 +31,61 @@ export const setupWalletSelector = async (
 
   await walletModules.setup();
 
-  if (!walletSelectorInstance) {
-    walletSelectorInstance = {
-      options,
-      store: store.toReadOnly(),
-      wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
-        const { selectedWalletId } = store.getState();
-        const wallet = await walletModules.getWallet<Variation>(
-          id || selectedWalletId
-        );
+  walletSelectorInstances[options.network.networkId] = {
+    options,
+    store: store.toReadOnly(),
+    wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet<Variation>(
+        id || selectedWalletId
+      );
 
-        if (!wallet) {
-          if (id) {
-            throw new Error("Invalid wallet id");
-          }
-
-          throw new Error("No wallet selected");
+      if (!wallet) {
+        if (id) {
+          throw new Error("Invalid wallet id");
         }
 
-        return wallet;
-      },
-      setActiveAccount: (accountId: string) => {
-        const { accounts } = store.getState();
+        throw new Error("No wallet selected");
+      }
 
-        if (!accounts.some((account) => account.accountId === accountId)) {
-          throw new Error("Invalid account id");
-        }
+      return wallet;
+    },
+    setActiveAccount: (accountId: string) => {
+      const { accounts } = store.getState();
 
-        store.dispatch({
-          type: "SET_ACTIVE_ACCOUNT",
-          payload: { accountId },
-        });
-      },
-      isSignedIn() {
-        const { accounts } = store.getState();
+      if (!accounts.some((account) => account.accountId === accountId)) {
+        throw new Error("Invalid account id");
+      }
 
-        return Boolean(accounts.length);
-      },
-      on: (eventName, callback) => {
-        return emitter.on(eventName, callback);
-      },
-      off: (eventName, callback) => {
-        emitter.off(eventName, callback);
-      },
-    };
+      store.dispatch({
+        type: "SET_ACTIVE_ACCOUNT",
+        payload: { accountId },
+      });
+    },
+    isSignedIn() {
+      const { accounts } = store.getState();
+
+      return Boolean(accounts.length);
+    },
+    on: (eventName, callback) => {
+      return emitter.on(eventName, callback);
+    },
+    off: (eventName, callback) => {
+      emitter.off(eventName, callback);
+    },
+  };
+}
+
+export const setupWalletSelector = async (
+  params: Array<WalletSelectorParams> | WalletSelectorParams
+): Promise<WalletSelectorNetworks> => {
+  if (params instanceof Array) {
+    for (let i = 0; i < params.length; i++) {
+      await createWalletSelectorInstance(params[i]);
+    }
+  } else {
+    await createWalletSelectorInstance(params);
   }
 
-  return walletSelectorInstance;
+  return walletSelectorInstances;
 };

@@ -72,17 +72,21 @@ export class WalletModules {
   private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
-      PENDING_SELECTED_WALLET_ID
+      PENDING_SELECTED_WALLET_ID + ":" + this.options.network.networkId
     );
     const pendingContract = await jsonStorage.getItem<ContractState>(
-      PENDING_CONTRACT
+      PENDING_CONTRACT + ":" + this.options.network.networkId
     );
 
     if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
-      await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
-      await jsonStorage.removeItem(PENDING_CONTRACT);
+      await jsonStorage.removeItem(
+        PENDING_SELECTED_WALLET_ID + ":" + this.options.network.networkId
+      );
+      await jsonStorage.removeItem(
+        PENDING_CONTRACT + ":" + this.options.network.networkId
+      );
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
@@ -146,8 +150,14 @@ export class WalletModules {
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
-        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
+        await jsonStorage.setItem(
+          PENDING_SELECTED_WALLET_ID + ":" + this.options.network.networkId,
+          walletId
+        );
+        await jsonStorage.setItem<ContractState>(
+          PENDING_CONTRACT + ":" + this.options.network.networkId,
+          contract
+        );
       }
 
       return;

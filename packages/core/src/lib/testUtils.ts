@@ -37,7 +37,7 @@ export const mockWallet = async <Variation extends Wallet>(
     ...deps?.options,
   });
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = await createStore(storage);
+  const store = await createStore(storage, options.network);
   const walletModules = new WalletModules({
     factories: [factory],
     storage,

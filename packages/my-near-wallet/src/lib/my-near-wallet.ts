@@ -61,7 +61,7 @@ const setupWalletState = async (
     headers: {},
   });
 
-  const wallet = new WalletConnection(near, "near_app");
+  const wallet = new WalletConnection(near, network.networkId + "_near_app");
 
   return {
     wallet,

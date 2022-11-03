@@ -1,6 +1,10 @@
 import type { OnInit } from "@angular/core";
 import { Component } from "@angular/core";
-import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import type {
+  WalletSelector,
+  AccountState,
+  WalletSelectorNetworks,
+} from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupSender } from "@near-wallet-selector/sender";
@@ -33,6 +37,7 @@ declare global {
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
+  networkSelectors: WalletSelectorNetworks;
   selector: WalletSelector;
   modal: WalletSelectorModal;
   accountId: string | null;
@@ -45,43 +50,10 @@ export class AppComponent implements OnInit {
     });
   }
 
-  async initialize() {
-    const _selector = await setupWalletSelector({
-      network: "testnet",
-      debug: true,
-      modules: [
-        ...(await setupDefaultWallets()),
-        setupSender(),
-        setupMathWallet(),
-        setupNightly(),
-        setupMeteorWallet(),
-        setupWelldoneWallet(),
-        setupHereWallet(),
-        setupCoin98Wallet(),
-        setupNearFi(),
-        setupOptoWallet(),
-        setupWalletConnect({
-          projectId: "c4f79cc...",
-          metadata: {
-            name: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            url: "https://github.com/near/wallet-selector",
-            icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-          },
-        }),
-      ],
-    });
+  setNetwork(networkId: string, contractId: string) {
+    const _selector = this.networkSelectors[networkId];
 
-    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const _modal = setupModal(_selector, { contractId });
     const state = _selector.store.getState();
 
     this.accounts = state.accounts;
@@ -93,5 +65,51 @@ export class AppComponent implements OnInit {
 
     this.selector = _selector;
     this.modal = _modal;
+  }
+
+  async initialize() {
+    this.networkSelectors = await setupWalletSelector([
+      {
+        network: "testnet",
+        debug: true,
+        modules: [
+          ...(await setupDefaultWallets()),
+          setupSender(),
+          setupMathWallet(),
+          setupNightly(),
+          setupMeteorWallet(),
+          setupWelldoneWallet(),
+          setupHereWallet(),
+          setupCoin98Wallet(),
+          setupNearFi(),
+          setupOptoWallet(),
+          setupWalletConnect({
+            projectId: "c4f79cc...",
+            metadata: {
+              name: "NEAR Wallet Selector",
+              description: "Example dApp used by NEAR Wallet Selector",
+              url: "https://github.com/near/wallet-selector",
+              icons: ["https://avatars.githubusercontent.com/u/37784886"],
+            },
+          }),
+          setupNightlyConnect({
+            url: "wss://relay.nightly.app/app",
+            appMetadata: {
+              additionalInfo: "",
+              application: "NEAR Wallet Selector",
+              description: "Example dApp used by NEAR Wallet Selector",
+              icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+            },
+          }),
+        ],
+      },
+      {
+        network: "mainnet",
+        debug: true,
+        modules: [...(await setupDefaultWallets()), setupSender()],
+      },
+    ]);
+
+    this.setNetwork("testnet", CONTRACT_ID);
   }
 }

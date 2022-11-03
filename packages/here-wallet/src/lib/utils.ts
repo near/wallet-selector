@@ -46,7 +46,7 @@ const setupWalletState = async (
     ...network,
   });
 
-  const wallet = new WalletConnection(near, "here_app");
+  const wallet = new WalletConnection(near, network.networkId + "_here_app");
 
   return { wallet, keyStore };
 };

@@ -8,6 +8,7 @@ import type {
   WalletSelectorAction,
 } from "./store.types";
 import { PACKAGE_NAME, CONTRACT, SELECTED_WALLET_ID } from "./constants";
+import type { Network } from "./options.types";
 
 const reducer = (
   state: WalletSelectorState,
@@ -120,13 +121,18 @@ const reducer = (
   }
 };
 
-export const createStore = async (storage: StorageService): Promise<Store> => {
+export const createStore = async (
+  storage: StorageService,
+  network: Network
+): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    contract: await jsonStorage.getItem(CONTRACT),
-    selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
+    contract: await jsonStorage.getItem(CONTRACT + ":" + network.networkId),
+    selectedWalletId: await jsonStorage.getItem(
+      SELECTED_WALLET_ID + ":" + network.networkId
+    ),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -154,8 +160,18 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
 
   let prevState = state$.getValue();
   state$.subscribe((state) => {
-    syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
-    syncStorage(prevState, state, CONTRACT, "contract");
+    syncStorage(
+      prevState,
+      state,
+      SELECTED_WALLET_ID + ":" + network.networkId,
+      "selectedWalletId"
+    );
+    syncStorage(
+      prevState,
+      state,
+      CONTRACT + ":" + network.networkId,
+      "contract"
+    );
     prevState = state;
   });
 

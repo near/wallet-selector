@@ -4,6 +4,7 @@ export type {
   WalletSelectorEvents,
   WalletSelectorStore,
 } from "./lib/wallet-selector.types";
+export type { WalletSelectorNetworks } from "./lib/wallet-selector";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
 export type { Network, NetworkId } from "./lib/options.types";
