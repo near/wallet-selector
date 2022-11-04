@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type {
   WalletModuleFactory,
   InjectedWallet,
@@ -22,7 +23,12 @@ export { initConnection } from "./neth-lib";
 
 declare global {
   interface Window {
-    ethereum: { chainId: string };
+    contractPath: string | null;
+    ethereum: {
+      chainId: string;
+      // eslint-disable-next-line
+      request: any;
+    };
   }
 }
 
