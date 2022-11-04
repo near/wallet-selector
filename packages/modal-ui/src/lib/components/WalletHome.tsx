@@ -231,12 +231,12 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             <WhatWallet
               title={translate("modal.wallet.secureAndManage")}
               description={translate("modal.wallet.safelyStore")}
-              icon={Icon}
+              icon={IconKey}
             />
             <WhatWallet
               title={translate("modal.wallet.logInToAny")}
               description={translate("modal.wallet.noNeedToCreate")}
-              icon={Icon}
+              icon={IconCoins}
             />
             <div className="button-spacing" />
             <button
