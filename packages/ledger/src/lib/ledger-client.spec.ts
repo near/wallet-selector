@@ -1,7 +1,7 @@
-import { DeepPartial } from "ts-essentials";
+import type { DeepPartial } from "ts-essentials";
 import { mock } from "jest-mock-extended";
-import Transport from "@ledgerhq/hw-transport";
-import TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import type Transport from "@ledgerhq/hw-transport";
+import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import { transactions, utils } from "near-api-js";
 import { BN } from "bn.js";
 

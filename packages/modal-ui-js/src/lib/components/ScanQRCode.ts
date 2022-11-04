@@ -1,4 +1,5 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
+import { translate } from "@near-wallet-selector/core";
 
 import { connectToWallet } from "../render-modal";
 import copy from "copy-to-clipboard";
@@ -18,7 +19,9 @@ export async function renderScanQRCode(
   document.querySelector(".modal-right")!.innerHTML = `
       <section class="scan-qr-code">
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Scan with Your Mobile Device</h3>
+          <h3 class="middleTitle">${translate(
+            "modal.qr.scanWithYourMobile"
+          )}</h3>
           <button class="close-button">
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
                 <path d="M0 0h24v24H0z" fill="none"></path>
@@ -54,12 +57,14 @@ export async function renderScanQRCode(
                   stroke-linejoin="round"
                 ></path>
               </svg>
-              Copy to clipboard
+              ${translate("modal.qr.copyToClipboard")}
             </div>
       </section>
       <footer class="footer">
-        <p>Prefer the official WalletConnect dialogue?</p>
-        <button class="btn" id="default-modal-trigger">Open</button>
+        <p>${translate("modal.qr.preferTheOfficial")}</p>
+        <button class="btn" id="default-modal-trigger">${translate(
+          "modal.qr.open"
+        )}</button>
       </footer>
     </section>
   `;
@@ -94,10 +99,10 @@ export async function renderScanQRCode(
       }
       const success = copy(params.uri);
       if (success) {
-        showURICopyNotification("Copied to clipboard");
+        showURICopyNotification(translate("modal.qr.copiedToClipboard"));
         setTimeout(() => hideNotification(), 1200);
       } else {
-        showURICopyNotification("Failed to copy to clipboard");
+        showURICopyNotification(translate("modal.qr.failedToCopy"));
         setTimeout(() => hideNotification(), 1200);
       }
     });

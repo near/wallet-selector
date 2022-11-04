@@ -4,11 +4,11 @@ import type {
   BrowserWallet,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import * as BN from "bn.js";
+import BN from "bn.js";
 import icon from "./icon";
+import type { HereConfiguration } from "./utils";
 import {
   getHereBalance,
-  HereConfiguration,
   hereConfigurations,
   setupWalletState,
   transformTransactions,
@@ -35,14 +35,19 @@ export const initHereWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({ contractId, methodNames });
+      await _state.wallet.requestSignIn({
+        contractId,
+        methodNames,
+        successUrl,
+        failureUrl,
+      });
       return getAccounts();
     },
 
@@ -119,6 +124,8 @@ export const initHereWallet: WalletBehaviourFactory<
 export function setupHereWallet({
   deprecated = false,
   iconUrl = icon,
+  successUrl = "",
+  failureUrl = "",
 } = {}): WalletModuleFactory<HereWallet> {
   return async ({ options }) => {
     const configuration = hereConfigurations[options.network.networkId];
@@ -135,6 +142,8 @@ export function setupHereWallet({
         iconUrl,
         deprecated,
         available: true,
+        successUrl,
+        failureUrl,
       },
       init: (config) => initHereWallet({ ...config, configuration }),
     };
