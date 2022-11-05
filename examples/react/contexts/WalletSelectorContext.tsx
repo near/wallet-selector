@@ -58,7 +58,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupCoin98Wallet(),
         setupNearFi(),
         setupNeth({
-          gas: "100000000000000",
+          gas: "300000000000000",
           bundle: false,
         }),
         setupOptoWallet(),

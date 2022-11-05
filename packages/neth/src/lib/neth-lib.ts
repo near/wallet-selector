@@ -885,6 +885,10 @@ const ethSignJson = async (signer, json) => {
         if (!action.args) {
           return;
         }
+        if (Buffer.isBuffer(action.args)) {
+          action.args = "0x" + action.args.toString("hex");
+          return;
+        }
         Object.entries(action.args).forEach(([key, value]) => {
           /// TODO include check on value to determine valid account_id to be replaced
 
