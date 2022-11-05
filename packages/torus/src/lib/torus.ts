@@ -1,32 +1,27 @@
-import Web3AuthClient from "./web3auth-client";
-import type { KeyPair } from "near-api-js";
-import { InMemorySigner, keyStores, utils } from "near-api-js";
-import type { SafeEventEmitterProvider } from "@web3auth/base";
-import { getActiveAccount } from "@near-wallet-selector/core";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   Network,
   Account,
   Web3AuthWallet,
+  JsonStorageService,
   Optional,
   Transaction,
-  FinalExecutionOutcome,
+  ProviderService,
 } from "@near-wallet-selector/core";
-import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import { sha256 } from "js-sha256";
+import { utils } from "near-api-js";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 import { icon } from "./icon";
-import { getED25519Key } from "@toruslabs/openlogin-ed25519";
+
+const WEB3AUTH_RELAY_URL = "http://localhost:3006";
 
 interface TorusExtraOptions {
   clientId: string;
 }
 
 interface TorusState {
-  client: Web3AuthClient;
-  keyPair: KeyPair | null;
-  provider: SafeEventEmitterProvider | null;
-  signer: InMemorySigner;
-  keyStore: keyStores.InMemoryKeyStore;
+  accounts: Array<Account>;
 }
 
 export interface TorusParams {
@@ -35,121 +30,141 @@ export interface TorusParams {
   deprecated?: boolean;
 }
 
-const getAccountIdFromPublicKey = (publicKeyData: Uint8Array) => {
-  return Buffer.from(publicKeyData).toString("hex");
-};
-
-const getKeyPair = async (
-  provider: SafeEventEmitterProvider,
-  keyStore: keyStores.InMemoryKeyStore,
+const resolvePendingSignIn = async (
+  storage: JsonStorageService,
   network: Network
 ) => {
-  const privateKey = await provider.request<string>({
-    method: "private_key",
-  });
+  const url = new URL(window.location.href);
 
-  if (!privateKey) {
-    throw new Error("No private key found");
+  const verificationBase64 = url.searchParams.get("web3authVerify");
+  const signature = url.searchParams.get("signature");
+
+  if (!verificationBase64 || !signature) {
+    return;
   }
 
-  const finalPrivKey = getED25519Key(privateKey).sk;
-
-  const keyPair = utils.key_pair.KeyPairEd25519.fromString(
-    utils.serialize.base_encode(finalPrivKey)
+  const verificationObject = JSON.parse(
+    Buffer.from(verificationBase64, "base64").toString()
   );
 
-  const accountId = getAccountIdFromPublicKey(keyPair.getPublicKey().data);
+  const publicKeyString = `ed25519:${utils.serialize.base_encode(
+    Buffer.from(verificationObject.publicKey, "base64")
+  )}`;
 
-  keyStore.setKey(network.networkId, accountId, keyPair);
+  const createdPublicKey = utils.PublicKey.from(publicKeyString);
 
-  return keyPair;
+  const verifiedSignature = createdPublicKey.verify(
+    new Uint8Array(sha256.array(JSON.stringify(verificationObject))),
+    Buffer.from(signature, "base64")
+  );
+
+  if (verifiedSignature) {
+    const accounts: Array<Account> = [
+      {
+        accountId: verificationObject.accountId,
+      },
+    ];
+
+    await storage.setItem("web3auth_accounts:" + network.networkId, accounts);
+  }
+
+  url.searchParams.delete("web3authVerify");
+  url.searchParams.delete("signature");
+  url.searchParams.delete("contractId");
+
+  window.location.assign(url.toString());
+};
+
+const resolvePendingSignTransaction = async (provider: ProviderService) => {
+  const url = new URL(window.location.href);
+
+  const encodedSignedTransaction = url.searchParams.get("signedTransaction");
+
+  if (!encodedSignedTransaction) {
+    return;
+  }
+
+  const signedTx = SignedTransaction.decode(
+    Buffer.from(encodedSignedTransaction, "base64")
+  );
+
+  await provider.sendTransaction(signedTx);
+
+  url.searchParams.delete("signedTransaction");
+
+  window.location.assign(url.toString());
 };
 
 const setupTorusState = async (
-  clientId: string,
-  network: Network
+  storage: JsonStorageService,
+  network: Network,
+  provider: ProviderService
 ): Promise<TorusState> => {
-  const client = new Web3AuthClient(clientId, network);
-  await client.init();
+  await resolvePendingSignIn(storage, network);
+  await resolvePendingSignTransaction(provider);
 
-  const keyStore = new keyStores.InMemoryKeyStore();
-  const signer = new InMemorySigner(keyStore);
-
-  let keyPair = null;
-  const provider = client.getProvider();
-
-  if (provider) {
-    keyPair = await getKeyPair(provider, keyStore, network);
-  }
+  const accounts = await storage.getItem<Array<Account>>(
+    "web3auth_accounts:" + network.networkId
+  );
 
   return {
-    client,
-    provider,
-    keyPair,
-    signer,
-    keyStore,
+    accounts: accounts || [],
   };
 };
 
 const Torus: WalletBehaviourFactory<
   Web3AuthWallet,
   { params: TorusExtraOptions }
-> = async ({ options, params, store, logger, provider }) => {
-  const _state = await setupTorusState(params.clientId, options.network);
+> = async ({ options, params, logger, storage, store, provider }) => {
+  const _state = await setupTorusState(storage, options.network, provider);
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Array<Transaction> => {
+    const accounts = _state.accounts;
     const { contract } = store.getState();
 
-    if (!contract) {
+    if (!accounts.length || !contract) {
       throw new Error("Wallet not signed in");
-    }
-
-    const account = getActiveAccount(store.getState());
-
-    if (!account) {
-      throw new Error("No active account");
     }
 
     return transactions.map((transaction) => {
       return {
-        signerId: transaction.signerId || account.accountId,
+        signerId: transaction.signerId || accounts[0].accountId,
         receiverId: transaction.receiverId || contract.contractId,
         actions: transaction.actions,
       };
     });
   };
 
+  const cleanup = () => {
+    storage.removeItem("web3auth_accounts:" + options.network.networkId);
+  };
+
   function getAccounts(): Array<Account> {
-    if (!_state.keyPair) {
-      return [];
-    }
-
-    const publicKey = _state.keyPair.getPublicKey().data;
-    const accountId = getAccountIdFromPublicKey(publicKey);
-
-    return [{ accountId }];
+    return _state.accounts;
   }
 
   return {
     signIn: async ({ loginProvider, email }) => {
-      _state.provider = await _state.client.connect(loginProvider, email);
-
-      if (!_state.provider) {
-        throw new Error("No provider found");
-      }
-
-      _state.keyPair = await getKeyPair(
-        _state.provider,
-        _state.keyStore,
-        options.network
-      );
+      const url = new URL(WEB3AUTH_RELAY_URL);
+      url.searchParams.set("action", "signIn");
+      url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("clientId", params.clientId);
+      url.searchParams.set("loginProvider", loginProvider || "");
+      url.searchParams.set("email", email || "");
+      window.location.assign(url.toString());
 
       return getAccounts();
     },
     signOut: async () => {
-      return _state.client.disconnect();
+      cleanup();
+
+      const url = new URL(WEB3AUTH_RELAY_URL);
+      url.searchParams.set("action", "signOut");
+      url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("clientId", params.clientId);
+      window.location.assign(url.toString());
     },
     getAccounts: async () => {
       return getAccounts();
@@ -160,30 +175,38 @@ const Torus: WalletBehaviourFactory<
     signAndSendTransaction: async ({ signerId, receiverId, actions }) => {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ signerId, receiverId, actions }]),
-        _state.signer,
-        options.network
-      );
+      const [transaction] = transformTransactions([
+        {
+          signerId,
+          receiverId,
+          actions,
+        },
+      ]);
 
-      return provider.sendTransaction(signedTx);
+      const url = new URL(WEB3AUTH_RELAY_URL);
+      url.searchParams.set("action", "signTransaction");
+      url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("clientId", params.clientId);
+      url.searchParams.set(
+        "transaction",
+        Buffer.from(JSON.stringify(transaction)).toString("base64")
+      );
+      window.location.assign(url.toString());
     },
     signAndSendTransactions: async ({ transactions }) => {
       logger.log("signAndSendTransactions", { transactions });
 
-      const signedTransactions = await signTransactions(
-        transformTransactions(transactions),
-        _state.signer,
-        options.network
+      const url = new URL(WEB3AUTH_RELAY_URL);
+      url.searchParams.set("action", "signTransaction");
+      url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("clientId", params.clientId);
+      url.searchParams.set(
+        "transaction",
+        Buffer.from(
+          JSON.stringify(transformTransactions(transactions))
+        ).toString("base64")
       );
-
-      const results: Array<FinalExecutionOutcome> = [];
-
-      for (let i = 0; i < signedTransactions.length; i++) {
-        results.push(await provider.sendTransaction(signedTransactions[i]));
-      }
-
-      return results;
+      window.location.assign(url.toString());
     },
   };
 };

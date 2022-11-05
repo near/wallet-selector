@@ -145,7 +145,7 @@ export class WalletModules {
       const module = this.getModule(walletId)!;
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
-      if (module.type === "browser") {
+      if (module.type === "browser" || module.type === "web3auth") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
         await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
       }

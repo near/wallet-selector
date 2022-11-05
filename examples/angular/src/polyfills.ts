@@ -50,7 +50,8 @@ import "zone.js";
 (window as any).global = window;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 global.Buffer = global.Buffer || require("buffer").Buffer;
-global.process = global.process || require("process");
+
+(window as any).process = { env: {} };
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

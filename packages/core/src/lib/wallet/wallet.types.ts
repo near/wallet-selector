@@ -216,7 +216,15 @@ export type Web3AuthWalletMetadata = BaseWalletMetadata;
 
 export type Web3AuthWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { signIn(params: Web3AuthWalletSignInParams): Promise<Array<Account>> }
+  {
+    signIn(params: Web3AuthWalletSignInParams): Promise<Array<Account>>;
+    signAndSendTransaction(
+      params: SignAndSendTransactionParams
+    ): Promise<FinalExecutionOutcome | void>;
+    signAndSendTransactions(
+      params: SignAndSendTransactionsParams
+    ): Promise<FinalExecutionOutcome | void>;
+  }
 >;
 
 export type Web3AuthWallet = BaseWallet<

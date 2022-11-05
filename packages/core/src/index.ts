@@ -67,6 +67,7 @@ export type {
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+export type { ProviderService } from "./lib/services/provider/provider.service.types";
 
 export { waitFor, getActiveAccount } from "./lib/helpers";
 
