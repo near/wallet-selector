@@ -34,7 +34,7 @@
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: #262626CC;
     --wallet-option-border-color: #A7A7A730;
-    --wallet-option-bg-hover: #313030;
+    --wallet-option-bg-hover: #4f7cd029;
     --content-bg: #232323;
     --change-path-bg: #161616;
     --home-button-bg: #313030;
@@ -60,7 +60,7 @@
         --selected-wallet-bg: #4F7CD1;
         --selected-wallet-bg-hover: #262626CC;
         --wallet-option-border-color: #A7A7A730;
-        --wallet-option-bg-hover: #313030;
+        --wallet-option-bg-hover: #4f7cd029;
         --content-bg: #232323;
         --change-path-bg: #161616;
         --home-button-bg: #313030;
@@ -242,7 +242,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar:hover {
-  background-color: var(--wallet-selector-wallet-option-bg-hover, var(--wallet-option-bg-hover));
+    background-color: var(--wallet-selector-wallet-option-bg-hover, var(--wallet-option-bg-hover));
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet {
