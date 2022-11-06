@@ -7,11 +7,9 @@ import type {
   JsonStorageService,
   Optional,
   Transaction,
-  ProviderService,
 } from "@near-wallet-selector/core";
 import { sha256 } from "js-sha256";
 import { utils } from "near-api-js";
-import { SignedTransaction } from "near-api-js/lib/transaction";
 import { icon } from "./icon";
 
 const WEB3AUTH_RELAY_URL = "http://localhost:3006";
@@ -75,33 +73,11 @@ const resolvePendingSignIn = async (
   window.location.assign(url.toString());
 };
 
-const resolvePendingSignTransaction = async (provider: ProviderService) => {
-  const url = new URL(window.location.href);
-
-  const encodedSignedTransaction = url.searchParams.get("signedTransaction");
-
-  if (!encodedSignedTransaction) {
-    return;
-  }
-
-  const signedTx = SignedTransaction.decode(
-    Buffer.from(encodedSignedTransaction, "base64")
-  );
-
-  await provider.sendTransaction(signedTx);
-
-  url.searchParams.delete("signedTransaction");
-
-  window.location.assign(url.toString());
-};
-
 const setupTorusState = async (
   storage: JsonStorageService,
-  network: Network,
-  provider: ProviderService
+  network: Network
 ): Promise<TorusState> => {
   await resolvePendingSignIn(storage, network);
-  await resolvePendingSignTransaction(provider);
 
   const accounts = await storage.getItem<Array<Account>>(
     "web3auth_accounts:" + network.networkId
@@ -115,8 +91,8 @@ const setupTorusState = async (
 const Torus: WalletBehaviourFactory<
   Web3AuthWallet,
   { params: TorusExtraOptions }
-> = async ({ options, params, logger, storage, store, provider }) => {
-  const _state = await setupTorusState(storage, options.network, provider);
+> = async ({ options, params, logger, storage, store }) => {
+  const _state = await setupTorusState(storage, options.network);
 
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
@@ -184,12 +160,12 @@ const Torus: WalletBehaviourFactory<
       ]);
 
       const url = new URL(WEB3AUTH_RELAY_URL);
-      url.searchParams.set("action", "signTransaction");
+      url.searchParams.set("action", "signAndSendTransactions");
       url.searchParams.set("originUrl", window.location.href);
       url.searchParams.set("clientId", params.clientId);
       url.searchParams.set(
-        "transaction",
-        Buffer.from(JSON.stringify(transaction)).toString("base64")
+        "transactions",
+        Buffer.from(JSON.stringify([transaction])).toString("base64")
       );
       window.location.assign(url.toString());
     },
@@ -197,11 +173,11 @@ const Torus: WalletBehaviourFactory<
       logger.log("signAndSendTransactions", { transactions });
 
       const url = new URL(WEB3AUTH_RELAY_URL);
-      url.searchParams.set("action", "signTransaction");
+      url.searchParams.set("action", "signAndSendTransactions");
       url.searchParams.set("originUrl", window.location.href);
       url.searchParams.set("clientId", params.clientId);
       url.searchParams.set(
-        "transaction",
+        "transactions",
         Buffer.from(
           JSON.stringify(transformTransactions(transactions))
         ).toString("base64")
