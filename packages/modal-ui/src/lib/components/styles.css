@@ -1143,6 +1143,13 @@
   height: 100%;
 }
 
+.scan-qr-code .qr-code > div:first-of-type {
+   padding: 20px;
+   margin-bottom: 20px;
+   border-radius: 16px;
+   background: #fff;
+ }
+
 .scan-qr-code .qr-code{
   height: calc(100% - 200px);
   border: 1px solid var(--wallet-selector-content-bg, var(--content-bg));
