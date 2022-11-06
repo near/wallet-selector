@@ -399,6 +399,10 @@
     width: 40px;
 }
 
+.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side svg {
+  opacity: 0.7;
+}
+
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side {
     width: 100%;
 }

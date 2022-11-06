@@ -15,6 +15,7 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
   return (
     <Fragment>
       <div className="nws-modal-header">
+        <h3 className="middleTitle"></h3>
         <CloseButton onClick={onCloseModal} />
       </div>
       <div className="connecting-wrapper">
