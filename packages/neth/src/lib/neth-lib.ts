@@ -220,11 +220,7 @@ const createAccount = async ({
     PublicKey.from(fundingAccountPubKey).data
   ).toString("hex");
   if (fundingAccountCB) {
-    Buffer.from(
-      fundingAccountCB(PublicKey.from(fundingAccountPubKey).data).toString(
-        "hex"
-      )
-    );
+    fundingAccountCB(implicitAccountId);
   }
 
   /// wait for implicit funding here and then continue to createAccount
