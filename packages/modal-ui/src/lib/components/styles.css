@@ -8,7 +8,7 @@
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: transparent;
     --wallet-option-border-color: #A7A7A730;
-    --wallet-option-bg-hover: #EDEDED;
+    --wallet-option-bg-hover: #4F7CD129;
     --content-bg: #FFFFFF;
     --change-path-bg: #EDEDED;
     --home-button-bg: #EDEDED;
@@ -22,8 +22,14 @@
     --mobile-text: #3e3e3e;
     --connected-green: #47E586;
     --wallet-title-color: #FFFFFF;
-    --wallet-type-color: #C1C1C1;
     --gradient-dark-icon: transparent;
+    --get-wallet-option-bg-color: #F8F9FA;
+    --get-wallet-option-bg-color-hover: #4F7CD129;
+    --get-wallet-option-border-color: #F1F3F5;
+    --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
+    --secondary-button-bg-color: #4F7CD129;
+    --secondary-button-border-color: #4F7CD129;
+    --secondary-button-text-color: #4F7CD1;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -34,7 +40,7 @@
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: #262626CC;
     --wallet-option-border-color: #A7A7A730;
-    --wallet-option-bg-hover: #4f7cd029;
+    --wallet-option-bg-hover: #4F7CD129;
     --content-bg: #232323;
     --change-path-bg: #161616;
     --home-button-bg: #313030;
@@ -48,7 +54,13 @@
     --mobile-text: #c1c1c1;
     --connected-green: #47E586;
     --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
-
+    --get-wallet-option-bg-color: #0000001F;
+    --get-wallet-option-bg-color-hover: #4F7CD129;
+    --get-wallet-option-border-color: #313030;
+    --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
+    --secondary-button-bg-color: #4F7CD129;
+    --secondary-button-border-color: #4F7CD1;
+    --secondary-button-text-color: #FFFFFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -60,7 +72,7 @@
         --selected-wallet-bg: #4F7CD1;
         --selected-wallet-bg-hover: #262626CC;
         --wallet-option-border-color: #A7A7A730;
-        --wallet-option-bg-hover: #4f7cd029;
+        --wallet-option-bg-hover: #4F7CD129;
         --content-bg: #232323;
         --change-path-bg: #161616;
         --home-button-bg: #313030;
@@ -73,7 +85,14 @@
         --bottom-section: #131313;
         --mobile-text: #c1c1c1;
         --connected-green: #47E586;
-    --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
+        --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
+        --get-wallet-option-bg-color: #0000001F;
+        --get-wallet-option-bg-color-hover: #4F7CD129;
+        --get-wallet-option-border-color: #313030;
+        --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
+        --secondary-button-bg-color: #4F7CD129;
+        --secondary-button-border-color:#4F7CD1;
+        --secondary-button-text-color: #FFFFFF;
     }
 }
 
@@ -931,14 +950,14 @@
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection button {
     padding: 10px 24px;
     gap: 8px;
-    background: rgba(79, 124, 209, 0.16);
-    border: 1px solid #4F7CD1;
+    background: var(--secondary-button-bg-color);
+    border: 1px solid var(--secondary-button-border-color);
     border-radius: 4px;
     font-style: normal;
     font-weight: 700;
     font-size: 14px;
     line-height: 24px;
-    color: var(--wallet-title-color);
+    color: var(--secondary-button-text-color);
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error-wrapper {
@@ -1017,20 +1036,27 @@
     max-width: 450px;
     margin: auto;
     align-content: center;
-    border: 1px solid #313030;
-    filter: drop-shadow(0px 2px 2px rgba(17, 22, 24, 0.04));
+    border: 1px solid var(--get-wallet-option-border-color);
+    box-shadow: var(--get-wallet-option-box-shadow);
     border-radius: 8px;
     position: relative;
-    background-color: #242424;
+    background-color: var(--get-wallet-option-bg-color);
+    cursor: pointer;
+}
+
+.single-wallet-get:hover {
+  background: var(--get-wallet-option-bg-color-hover);
 }
 
 .single-wallet-get .icon {
     min-width: 32px;
     max-height: 32px;
+    margin-bottom: 8px;
     width: 32px;
     height: 32px;
-    margin-bottom: 8px;
-    border-radius: 4px;
+    background-color: #FFF;
+    padding: 5px;
+    border-radius: 5px;
     position: relative;
 }
 
@@ -1047,7 +1073,7 @@
     font-size: 14px;
     line-height: 24px;
     align-items: center;
-    color: var(--wallet-title-color, var(--heading-color));
+    color: var(--heading-color);
     text-align: center;
 }
 
@@ -1055,9 +1081,8 @@
     font-weight: 400;
     font-size: 10px;
     line-height: 12px;
-    font-style: italic;
     margin-top: 0;
-    color: var(--wallet-type-color);
+    color: var(--text-color);
     text-align: center;
 }
 
@@ -1067,6 +1092,13 @@
     right: 8px;
 }
 
+.single-wallet-get .small-icon svg {
+  color: #4C5155;
+}
+
+.single-wallet-get:hover .small-icon svg {
+  color: #4F7CD1;
+}
 
 .single-wallet-get .description {
     font-family: inherit;
@@ -1155,8 +1187,10 @@
 }
 
 .scan-qr-code .footer .btn {
-    background: var(--home-button-bg);
-    color: var(--text-color);
+    background: var(--secondary-button-bg-color);
+    color: var(--secondary-button-text-color);
+    border: 1px solid var(--secondary-button-border-color);
+    border-radius: 4px;
     font-weight: 700;
     font-size: 14px;
     line-height: 24px;
@@ -1283,7 +1317,11 @@
 
     .nws-modal-wrapper .nws-modal .modal-right {
         width: 100%;
-        background-color: var(--content-bg);
+        background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
+    }
+
+    .connecting-wrapper .content .icon .green-dot {
+      border-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
     }
 
     .nws-modal-wrapper .nws-modal .modal-right .nws-modal-header h3.middleTitle {
@@ -1362,10 +1400,11 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-left: 0 !important;
     }
 
-    .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
-        margin-top: 0;
+    .single-wallet-get:hover {
+      background-color: #4F7CD129;
     }
 
     .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-image,

@@ -31,7 +31,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         return item.type !== "bridge" && item.type !== "hardware";
       };
 
-      const filteredModules = state.modules.filter(filterByType).slice(0, 6);
+      const filteredModules = state.modules.filter(filterByType);
 
       setModules(filteredModules);
     });
@@ -77,6 +77,43 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     window.open(url, "_blank");
   };
 
+  const getTypeNameAndIcon = (
+    walletId: string,
+    type: string
+  ): { typeFullName: string; qrIcon: boolean } => {
+    switch (type) {
+      case "injected":
+        if (walletId === "nearfi") {
+          return {
+            typeFullName: "Wallet Extension",
+            qrIcon: true,
+          };
+        }
+
+        return {
+          typeFullName: "Wallet Extension",
+          qrIcon: false,
+        };
+      case "browser":
+        if (walletId === "here-wallet") {
+          return {
+            typeFullName: "Web Wallet",
+            qrIcon: true,
+          };
+        }
+
+        return {
+          typeFullName: "Web Wallet",
+          qrIcon: false,
+        };
+      default:
+        return {
+          typeFullName: "Web Wallet",
+          qrIcon: false,
+        };
+    }
+  };
+
   return (
     <div className="wallet-home-wrapper">
       <div className="nws-modal-header-wrapper">
@@ -100,36 +137,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <div className="get-wallet-wrapper">
           {modules.map((module) => {
             const { iconUrl, name } = module.metadata;
-            const { type } = module;
-            let typeFullName = "";
-            let haveQR,
-              haveLink = false;
-            switch (type) {
-              case "bridge":
-                typeFullName = "Bridge wallet";
-                break;
-              case "injected":
-                typeFullName = "Injected wallet";
-                haveLink = true;
-                break;
-              case "browser":
-                typeFullName = "Browser Extension";
-                haveQR = true;
-                break;
-              case "hardware":
-                typeFullName = "Hardware wallet";
-                break;
-            }
+            const { type, id } = module;
+            const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
             return (
               <div
-                className="single-wallet-get"
+                className={`single-wallet-get ${module.id}`}
                 key={module.id}
                 onClick={() => {
                   goToWallet(module);
                 }}
               >
                 <div className={"small-icon"}>
-                  {haveQR ? (
+                  {qrIcon && (
                     <svg
                       width="18"
                       height="16"
@@ -139,19 +158,19 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                     >
                       <path
                         d="M7.22224 1.33334H1.44446V6.66668H7.22224V1.33334Z"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
                         d="M15.8889 1.33334H10.1111V6.66668H15.8889V1.33334Z"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
                         d="M7.22224 9.33334H1.44446V14.6667H7.22224V9.33334Z"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
@@ -183,8 +202,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                         fill="#4C5155"
                       />
                     </svg>
-                  ) : null}
-                  {haveLink ? (
+                  )}
+                  {!qrIcon && (
                     <svg
                       width="18"
                       height="16"
@@ -194,24 +213,24 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                     >
                       <path
                         d="M13 8.66667V12.6667C13 13.0203 12.8478 13.3594 12.577 13.6095C12.3061 13.8595 11.9387 14 11.5556 14H3.61113C3.22804 14 2.86064 13.8595 2.58975 13.6095C2.31887 13.3594 2.16669 13.0203 2.16669 12.6667V5.33333C2.16669 4.97971 2.31887 4.64057 2.58975 4.39052C2.86064 4.14048 3.22804 4 3.61113 4H7.94447"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
                         d="M10.8333 2H15.1666V6"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
                         d="M7.22223 9.33333L15.1667 2"
-                        stroke="#4C5155"
+                        stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                     </svg>
-                  ) : null}
+                  )}
                 </div>
                 <div className="icon">
                   <img src={iconUrl} alt={name} />
