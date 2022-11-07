@@ -13,7 +13,6 @@ import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 // import { setupModal } from "@near-wallet-selector/modal-ui";
@@ -62,9 +61,6 @@ export class AppComponent implements OnInit {
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupNeth({
-          bundle: false,
-        }),
         setupOptoWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
