@@ -118,7 +118,7 @@ export function renderConnectHardwareWallet(module: ModuleState<Wallet>) {
   `;
 
   document.getElementById("continue-button")?.addEventListener("click", () => {
-    connectToWallet(module);
+    connectToWallet(module, false);
   });
 
   document

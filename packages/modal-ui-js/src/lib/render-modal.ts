@@ -13,6 +13,7 @@ import { renderWalletConnectionFailed } from "./components/WalletConnectionFaile
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
+import { renderScanQRCode } from "./components/ScanQRCode";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -66,7 +67,10 @@ export const resolveAccounts = async (
   }
 };
 
-export async function connectToWallet(module: ModuleState<Wallet>) {
+export async function connectToWallet(
+  module: ModuleState<Wallet>,
+  qrCodeModal = false
+) {
   if (!modalState) {
     return;
   }
@@ -106,6 +110,27 @@ export async function connectToWallet(module: ModuleState<Wallet>) {
       } else {
         return renderLedgerSelectAccount(module, accounts);
       }
+    }
+
+    if (wallet.type === "bridge") {
+      const subscription = modalState.selector.on("uriChanged", ({ uri }) => {
+        renderScanQRCode(module, {
+          uri,
+          handleOpenDefaultModal: () => {
+            connectToWallet(module, true);
+          },
+        });
+      });
+
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        qrCodeModal,
+      });
+
+      subscription.remove();
+      modalState.container.children[0].classList.remove("open");
+      return;
     }
 
     await wallet.signIn({
@@ -196,7 +221,7 @@ export function renderModal() {
         if (module.type === "hardware") {
           return renderConnectHardwareWallet(module);
         }
-        connectToWallet(module);
+        connectToWallet(module, false);
       });
   }
 
