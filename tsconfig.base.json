@@ -65,6 +65,9 @@
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],
+      "@near-wallet-selector/neth": [
+        "packages/neth/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],
@@ -76,7 +79,9 @@
       ],
       "@near-wallet-selector/opto-wallet": [
         "packages/opto-wallet/src/index.ts"
-      ]
+      ],
+      "crypto": ["node_modules/crypto-browserify"],
+      "stream": ["node_modules/stream-browserify"]
     }
   },
   "exclude": [

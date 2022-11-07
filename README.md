@@ -10,6 +10,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Welldone Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
+- [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
@@ -62,7 +63,8 @@ yarn add \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/opto-wallet
+  @near-wallet-selector/opto-wallet \
+  @near-wallet-selector/neth
 
 # Using NPM.
 npm install \
@@ -80,7 +82,8 @@ npm install \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/opto-wallet
+  @near-wallet-selector/opto-wallet \
+  @near-wallet-selector/neth
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -113,6 +116,7 @@ import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupNeth } from "@near-wallet-selector/neth";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -130,6 +134,7 @@ const selector = await setupWalletSelector({
     setupNearFi(),
     setupCoin98Wallet(),
     setupOptoWallet(),
+    setupNeth(),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {
