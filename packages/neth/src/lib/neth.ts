@@ -33,10 +33,16 @@ declare global {
 }
 
 export interface NethParams {
-  useModalCover?: boolean; // cover screen with rgba(0, 0, 0, 0.5) mask while signing and awaiting transaction outcome
-  iconUrl?: string; // default NETH icon included
-  gas?: string; // default 200 Tgas for each NETH transaction (bundling can include multiple "inner" transactions)
-  bundle?: boolean; // default true
+  // default NETH icon included
+  iconUrl?: string;
+  // default 200 Tgas - for each NETH transaction (bundling can include multiple "inner" transactions)
+  gas?: string;
+  // default false - cover screen with rgba(0, 0, 0, 0.5) mask while signing and awaiting transaction outcome
+  useModalCover?: boolean;
+  // default true - signAndSendTransactions will be bundled into 1 NETH TX
+  bundle?: boolean;
+  // default false
+  deprecated?: boolean;
 }
 
 const isInstalled = async () => {
@@ -159,10 +165,11 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 };
 
 export function setupNeth({
+  iconUrl = nethIcon,
+  gas,
   useModalCover = false,
   bundle: _bundle = true,
-  gas,
-  iconUrl = nethIcon,
+  deprecated = false,
 }: NethParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     useCover = useModalCover;
@@ -184,6 +191,7 @@ export function setupNeth({
         deprecated: false,
         available: installed,
       },
+      deprecated,
       init: Neth,
     };
   };
