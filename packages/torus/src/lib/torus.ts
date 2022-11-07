@@ -126,6 +126,7 @@ const Torus: WalletBehaviourFactory<
       const url = new URL(WEB3AUTH_RELAY_URL);
       url.searchParams.set("action", "signIn");
       url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("networkId", options.network.networkId);
       url.searchParams.set("clientId", params.clientId);
       url.searchParams.set("loginProvider", loginProvider || "");
       url.searchParams.set("email", email || "");
@@ -139,6 +140,7 @@ const Torus: WalletBehaviourFactory<
       const url = new URL(WEB3AUTH_RELAY_URL);
       url.searchParams.set("action", "signOut");
       url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("networkId", options.network.networkId);
       url.searchParams.set("clientId", params.clientId);
       window.location.assign(url.toString());
     },
@@ -162,6 +164,7 @@ const Torus: WalletBehaviourFactory<
       const url = new URL(WEB3AUTH_RELAY_URL);
       url.searchParams.set("action", "signAndSendTransactions");
       url.searchParams.set("originUrl", window.location.href);
+      url.searchParams.set("networkId", options.network.networkId);
       url.searchParams.set("clientId", params.clientId);
       url.searchParams.set(
         "transactions",
