@@ -1,6 +1,6 @@
 # @near-wallet-selector/welldone
 
-This is the [Sender](https://chrome.google.com/webstore/detail/welldone-wallet-for-multi/bmkakpenjmcpfhhjadflneinmhboecjf) package for NEAR Wallet Selector.
+This is the [Welldone](https://chrome.google.com/webstore/detail/welldone-wallet-for-multi/bmkakpenjmcpfhhjadflneinmhboecjf) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -50,7 +50,7 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import welldoneIconUrl from "@near-wallet-selector/welldone-wallet/assets/welldone-wallet.png";
 
-const sender = setupWelldoneWallet({
+const welldone = setupWelldoneWallet({
   iconUrl: welldoneIconUrl
 });
 ```
