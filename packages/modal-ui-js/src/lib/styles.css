@@ -539,6 +539,7 @@
   position: absolute;
   bottom: 15px;
   right: 50px;
+  display: none;
 }
 
 .nws-modal-wrapper .nws-modal .lang-selector {
