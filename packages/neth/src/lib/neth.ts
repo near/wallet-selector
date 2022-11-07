@@ -148,7 +148,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async verifyOwner({ message }) {
       logger.log("NETH:verifyOwner", { message });
-      verifyOwner({ message, provider, account: null });
+      return verifyOwner({ message, provider, account: null });
     },
 
     async getAccounts() {
