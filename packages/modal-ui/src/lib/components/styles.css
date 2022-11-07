@@ -873,25 +873,11 @@
     }
 }
 
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #near-wallet img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #math-wallet img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal #ledger img,
-.nws-modal-wrapper .nws-modal-wrapper.dark-theme .nws-modal .wallet-not-installed-wrapper .math-wallet img {
-    filter: invert(1);
-}
-
 .nws-modal-wrapper .nws-modal-wrapper.dark-theme .spinner .icon {
     box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
-
-    .nws-modal-wrapper .nws-modal #near-wallet img,
-    .nws-modal-wrapper .nws-modal #math-wallet img,
-    .nws-modal-wrapper .nws-modal #ledger img,
-    .nws-modal-wrapper .nws-modal .wallet-not-installed-wrapper .math-wallet img {
-        filter: invert(1);
-    }
 
     .nws-modal-wrapper .spinner .icon {
         box-shadow: 0 10px 20px 0 rgba(255, 255, 255, 0.05);
