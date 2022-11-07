@@ -1,4 +1,5 @@
-import React, { FormEventHandler } from "react";
+import type { FormEventHandler } from "react";
+import React from "react";
 import Big from "big.js";
 
 import type { Account } from "../interfaces";

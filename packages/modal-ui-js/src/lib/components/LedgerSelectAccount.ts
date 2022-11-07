@@ -1,8 +1,9 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
-import { HardwareWalletAccountState } from "../render-modal";
+import type { HardwareWalletAccountState } from "../render-modal";
 import { renderLedgerAccountsOverviewList } from "./LedgerAccountsOverviewList";
 import { renderSpecifyDerivationPath } from "./SpecifyDerivationPath";
+import { translate } from "@near-wallet-selector/core";
 
 export async function renderLedgerSelectAccount(
   module: ModuleState<Wallet>,
@@ -20,7 +21,10 @@ export async function renderLedgerSelectAccount(
             </path>
           </svg></button>
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Select Your Accounts</h3><button class="close-button"><svg
+          <h3 class="middleTitle">${translate(
+            "modal.ledger.selectYourAccounts"
+          )}</h3>
+            <button class="close-button"><svg
               xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path

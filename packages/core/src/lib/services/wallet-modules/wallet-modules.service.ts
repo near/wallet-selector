@@ -19,7 +19,7 @@ import {
   PENDING_SELECTED_WALLET_ID,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import { ProviderService } from "../provider/provider.service.types";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -157,6 +157,13 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
+    this.emitter.emit("signedIn", {
+      walletId,
+      contractId,
+      methodNames,
+      accounts,
+    });
+
     this.store.dispatch({
       type: "WALLET_CONNECTED",
       payload: { walletId, contract, accounts },
@@ -164,6 +171,8 @@ export class WalletModules {
   }
 
   private onWalletSignedOut(walletId: string) {
+    this.emitter.emit("signedOut", { walletId });
+
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
@@ -182,6 +191,8 @@ export class WalletModules {
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
+      this.emitter.emit("accountsChanged", { walletId: module.id, accounts });
+
       if (!accounts.length) {
         return this.signOutWallet(module.id);
       }

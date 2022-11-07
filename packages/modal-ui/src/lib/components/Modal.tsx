@@ -13,6 +13,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
+import { translate } from "@near-wallet-selector/core";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -62,6 +63,7 @@ export const Modal: React.FC<ModalProps> = ({
       });
     }
     setBridgeWalletUri("");
+    // eslint-disable-next-line
   }, [visible]);
 
   useEffect(() => {
@@ -157,7 +159,7 @@ export const Modal: React.FC<ModalProps> = ({
         params: { wallet: wallet },
       });
 
-      if (wallet.type === "bridge" && wallet.id === "wallet-connect") {
+      if (wallet.type === "bridge") {
         const subscription = selector.on("uriChanged", ({ uri }) => {
           setBridgeWalletUri(uri);
           setRoute({
@@ -177,6 +179,19 @@ export const Modal: React.FC<ModalProps> = ({
 
         subscription.remove();
         handleDismissClick();
+        return;
+      }
+
+      if (wallet.type === "browser") {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+          successUrl: wallet.metadata.successUrl,
+          failureUrl: wallet.metadata.failureUrl,
+        });
+
+        handleDismissClick();
+
         return;
       }
 
@@ -216,7 +231,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="nws-modal">
         <div className="modal-left">
           <div className="modal-left-title">
-            <h2>Connect Your Wallet</h2>
+            <h2>{translate("modal.wallet.connectYourWallet")}</h2>
           </div>
           <WalletOptions
             handleWalletClick={(module) => {
@@ -324,6 +339,7 @@ export const Modal: React.FC<ModalProps> = ({
                 }}
                 onCloseModal={handleDismissClick}
                 uri={bridgeWalletUri}
+                wallet={selectedWallet!}
               />
             )}
           </div>
