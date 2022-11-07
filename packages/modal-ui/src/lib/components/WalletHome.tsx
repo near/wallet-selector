@@ -278,6 +278,12 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               {translate("modal.wallet.getAWallet")}
             </button>
           </div>
+          <div className="lang-selector-wrapper">
+            <select className="lang-selector" name="lang">
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+            </select>
+          </div>
         </>
       )}
     </div>

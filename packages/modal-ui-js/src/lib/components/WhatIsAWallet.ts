@@ -64,6 +64,13 @@ export async function renderWhatIsAWallet() {
           </button>
         </div>
 
+        <div class="lang-selector-wrapper">
+          <select class="lang-selector" name="lang">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
+
       </div>
     </div>
   `;

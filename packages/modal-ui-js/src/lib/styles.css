@@ -21,7 +21,6 @@
   --bottom-section: #ececec;
   --mobile-text: #3e3e3e;
   --connected-green: #47E586;
-  --wallet-title-color: #FFFFFF;
   --gradient-dark-icon: transparent;
   --get-wallet-option-bg-color: #F8F9FA;
   --get-wallet-option-bg-color-hover: #4F7CD129;
@@ -425,7 +424,6 @@
   font-size: 14px;
   line-height: 150%;
   word-break: break-word;
-  width: 80%;
 }
 
 /**
@@ -535,6 +533,42 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.nws-modal-wrapper .nws-modal .lang-selector-wrapper {
+  position: absolute;
+  bottom: 15px;
+  right: 50px;
+}
+
+.nws-modal-wrapper .nws-modal .lang-selector {
+  appearance: none;
+  background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjc1IDE5LjI1TDE2IDEyLjc1TDE5LjI1IDE5LjI1IiBzdHJva2U9IiNDMUMxQzEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE0IDE3LjI1SDE4IiBzdHJva2U9IiNDMUMxQzEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTQuNzUgNi43NUgxMy4yNSIgc3Ryb2tlPSIjQzFDMUMxIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik05IDYuNVY0Ljc1IiBzdHJva2U9IiNDMUMxQzEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTExLjI1IDYuNzVDMTEuMjUgNi43NSAxMS4yNSA5LjI1IDkuMjUgMTEuMjVDNy4yNSAxMy4yNSA0Ljc1IDEzLjI1IDQuNzUgMTMuMjUiIHN0cm9rZT0iI0MxQzFDMSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTIuMjUgMTMuMjVDMTIuMjUgMTMuMjUgOS43NSAxMy4yNSA3Ljc1IDExLjI1QzcuMzQ1NTEgMTAuODQ1NSA2Ljc1IDkuNzUgNi43NSA5Ljc1IiBzdHJva2U9IiNDMUMxQzEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==") 5px center / 20px 20px no-repeat transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 16px;
+  height: 32px;
+  outline: none;
+  padding-right: 54px;
+  position: relative;
+  user-select: none;
+  width: 54px;
+  z-index: 1;
+  text-indent: 54px;
+}
+
+.nws-modal-wrapper .nws-modal .lang-selector-wrapper::after {
+  content: "";
+  border-color: rgb(114, 114, 122);
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  top: calc(50% - 10px);
+  transform: rotate(135deg) translateY(-50%);
+  height: 7px;
+  width: 7px;
 }
 
 /**
