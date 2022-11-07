@@ -151,7 +151,7 @@ selector.setActiveAccount("sometestaccount.testnet");
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `networkChanged`.
+- `event` (`string`): Name of the event. This can be: `networkChanged | uriChanged`.
 - `callback` (`Function`): Handler to be triggered when the `event` fires.
 
 **Returns**
@@ -177,7 +177,7 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `networkChanged`.
+- `event` (`string`): Name of the event. This can be: `networkChanged | uriChanged`.
 - `callback` (`Function`): Original handler passed to `.on(event, callback)`.
 
 **Returns**

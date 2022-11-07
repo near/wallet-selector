@@ -155,7 +155,7 @@ const Content: React.FC = () => {
       }
 
       return wallet.signAndSendTransactions({ transactions }).catch((err) => {
-        alert("Failed to add messages");
+        alert("Failed to add messages exception " + err);
         console.log("Failed to add messages");
 
         throw err;
@@ -199,6 +199,7 @@ const Content: React.FC = () => {
               message.value = "";
               donation.value = SUGGESTED_DONATION;
               fieldset.disabled = false;
+              multiple.checked = false;
               message.focus();
             })
             .catch((err) => {

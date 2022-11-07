@@ -14,6 +14,7 @@ import type {
   Network,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import icon from "./icon";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -60,11 +61,6 @@ const setupWalletState = async (
 
   const wallet = new WalletConnection(near, "near_app");
 
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
-
   return {
     wallet,
     keyStore,
@@ -76,10 +72,6 @@ const MyNearWallet: WalletBehaviourFactory<
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
-
-  const cleanup = () => {
-    _state.keyStore.clear();
-  };
 
   const getAccounts = () => {
     const accountId: string | null = _state.wallet.getAccountId();
@@ -147,8 +139,6 @@ const MyNearWallet: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async getAccounts() {
@@ -227,7 +217,7 @@ const MyNearWallet: WalletBehaviourFactory<
 
 export function setupMyNearWallet({
   walletUrl,
-  iconUrl = "./assets/my-near-wallet-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
@@ -236,7 +226,8 @@ export function setupMyNearWallet({
       type: "browser",
       metadata: {
         name: "MyNearWallet",
-        description: null,
+        description:
+          "NEAR wallet to store, buy, send and stake assets for DeFi.",
         iconUrl,
         deprecated,
         available: true,

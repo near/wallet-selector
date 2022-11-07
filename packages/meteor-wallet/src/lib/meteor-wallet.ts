@@ -21,6 +21,7 @@ import {
   MeteorWalletState,
 } from "./meteor-wallet-types";
 import { createAction } from "@near-wallet-selector/wallet-utils";
+import icon from "./icon";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
@@ -48,12 +49,8 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ metadata, options, logger, store, params }) => {
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
-
-  const cleanup = () => {
-    _state.keyStore.clear();
-  };
 
   const getAccounts = () => {
     const accountId = _state.wallet.getAccountId();
@@ -72,14 +69,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     const { networkId, signer, provider } = account.connection;
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
-
-    for (const trx of transactions) {
-      if (trx.signerId !== account.accountId) {
-        throw new Error(
-          `Transaction had a signerId which didn't match the currently logged in account`
-        );
-      }
-    }
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
@@ -139,8 +128,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         await _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async isSignedIn() {
@@ -158,7 +145,15 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("MeteorWallet:verifyOwner", { message });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const response = await _state.wallet.verifyOwner({
+        message,
+      });
+
+      if (response.success) {
+        return response.payload;
+      } else {
+        throw new Error(`Couldn't verify owner: ${response.message}`);
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -203,7 +198,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 };
 
 export function setupMeteorWallet({
-  iconUrl = "./assets/meteor-icon.png",
+  iconUrl = icon,
   deprecated = false,
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
@@ -213,7 +208,8 @@ export function setupMeteorWallet({
       metadata: {
         available: true,
         name: "Meteor Wallet",
-        description: null,
+        description:
+          "Securely store and stake your NEAR tokens and compatible assets with Meteor.",
         iconUrl,
         deprecated,
         downloadUrl: "https://wallet.meteorwallet.app",
