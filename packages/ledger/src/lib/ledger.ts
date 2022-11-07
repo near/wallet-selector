@@ -13,7 +13,8 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
-import { Signer, utils } from "near-api-js";
+import type { Signer } from "near-api-js";
+import { utils } from "near-api-js";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 

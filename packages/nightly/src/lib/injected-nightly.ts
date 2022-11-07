@@ -1,8 +1,8 @@
-import {
+import type {
   SignedTransaction as NearSignedTransaction,
   Transaction as NearTransaction,
 } from "near-api-js/lib/transaction";
-import { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
+import type { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
 export interface NearAccount {
   accountId: string;
   publicKey: NearPublicKey;

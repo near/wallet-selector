@@ -20,6 +20,8 @@ export interface MyNearWalletParams {
   walletUrl?: string;
   iconUrl?: string;
   deprecated?: boolean;
+  successUrl?: string;
+  failureUrl?: string;
 }
 
 interface MyNearWalletState {
@@ -123,14 +125,19 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({ contractId, methodNames });
+      await _state.wallet.requestSignIn({
+        contractId,
+        methodNames,
+        successUrl,
+        failureUrl,
+      });
 
       return getAccounts();
     },
@@ -219,6 +226,8 @@ export function setupMyNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
+  successUrl = "",
+  failureUrl = "",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     return {
@@ -231,6 +240,8 @@ export function setupMyNearWallet({
         iconUrl,
         deprecated,
         available: true,
+        successUrl,
+        failureUrl,
       },
       init: (options) => {
         return MyNearWallet({

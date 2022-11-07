@@ -3,11 +3,14 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
   WalletSelectorStore,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
-import { Optional, Transaction, waitFor } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
-import { Signer, utils, transactions as nearTransactions } from "near-api-js";
+import type { Signer } from "near-api-js";
+import { utils, transactions as nearTransactions } from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";

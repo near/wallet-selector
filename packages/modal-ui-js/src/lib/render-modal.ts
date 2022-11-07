@@ -1,4 +1,4 @@
-import {
+import type {
   HardwareWallet,
   HardwareWalletAccount,
   ModuleState,
@@ -14,6 +14,7 @@ import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
 import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
+import { translate } from "@near-wallet-selector/core";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -133,6 +134,19 @@ export async function connectToWallet(
       return;
     }
 
+    if (wallet.type === "browser") {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+        successUrl: wallet.metadata.successUrl,
+        failureUrl: wallet.metadata.failureUrl,
+      });
+
+      modalState.container.children[0].classList.remove("open");
+
+      return;
+    }
+
     await wallet.signIn({
       contractId: modalState.options.contractId,
       methodNames: modalState.options.methodNames,
@@ -163,7 +177,7 @@ export function renderModal() {
       <div class="nws-modal">
         <div class="modal-left">
           <div class="modal-left-title">
-            <h2>Connect Your Wallet</h2>
+            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper">

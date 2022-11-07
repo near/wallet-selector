@@ -5,13 +5,13 @@ import type {
 } from "./provider.service.types";
 import { mock } from "jest-mock-extended";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
+import type { JsonRpcProvider } from "near-api-js/lib/providers";
 import { providers } from "near-api-js";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
 } from "./provider.service.mocks";
-import { SignedTransaction } from "near-api-js/lib/transaction";
+import type { SignedTransaction } from "near-api-js/lib/transaction";
 import type {
   BlockReference,
   BlockResult,
