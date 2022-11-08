@@ -1,0 +1,54 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/dojo/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/dojo",
+        "tsConfig": "packages/dojo/tsconfig.lib.json",
+        "project": "packages/dojo/package.json",
+        "entryFile": "packages/dojo/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/dojo/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/dojo/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/dojo/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/dojo"],
+      "options": {
+        "jestConfig": "packages/dojo/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}

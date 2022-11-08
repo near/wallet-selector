@@ -18,6 +18,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupDojo } from "@near-wallet-selector/dojo";
 import { CONTRACT_ID } from "../constants";
 
 declare global {
@@ -62,6 +63,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
           bundle: false,
         }),
         setupOptoWallet(),
+        setupDojo(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

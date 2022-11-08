@@ -23,6 +23,7 @@
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
     "coin98-wallet": "packages/coin98-wallet",
-    "opto-wallet": "packages/opto-wallet"
+    "opto-wallet": "packages/opto-wallet",
+    "dojo": "packages/dojo"
   }
 }

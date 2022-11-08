@@ -50,6 +50,7 @@
     "build:neth": "nx run-many --target=build --projects=neth --configuration=production",
     "build:nearfi": "nx run-many --target=build --projects=nearfi --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
+    "build:dojo": "nx run-many --target=build --projects=dojo --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
     "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
