@@ -181,22 +181,19 @@ const Content: React.FC = () => {
     }
   };
 
+  interface InputElements extends EventTarget {
+    elements: {
+      fieldset: HTMLFieldSetElement;
+      message: HTMLInputElement;
+      donation: HTMLInputElement;
+      multiple: HTMLInputElement;
+      button: HTMLButtonElement;
+    };
+  }
+  
   const handleSubmit = useCallback(
     async (e: SubmitEvent) => {
-      e.preventDefault();
-
-      // TODO: Fix the typing so that target.elements exists..
-      // @ts-ignore.
-
-      interface InputElements extends EventTarget {
-        elements: {
-          fieldset: HTMLFieldSetElement;
-          message: HTMLInputElement;
-          donation: HTMLInputElement;
-          multiple: HTMLInputElement;
-          button: HTMLButtonElement;
-        };
-      }
+      e.preventDefault();   
 
       const { fieldset, message, donation, multiple } = (e.target as InputElements).elements;
 
