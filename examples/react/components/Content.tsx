@@ -187,7 +187,18 @@ const Content: React.FC = () => {
 
       // TODO: Fix the typing so that target.elements exists..
       // @ts-ignore.
-      const { fieldset, message, donation, multiple } = e.target.elements;
+
+      interface InputElements extends EventTarget {
+        elements: {
+          fieldset: HTMLFieldSetElement;
+          message: HTMLInputElement;
+          donation: HTMLInputElement;
+          multiple: HTMLInputElement;
+          button: HTMLButtonElement;
+        };
+      }
+
+      const { fieldset, message, donation, multiple } = (e.target as InputElements).elements;
 
       fieldset.disabled = true;
 
