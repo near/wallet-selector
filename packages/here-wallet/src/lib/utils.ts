@@ -34,10 +34,24 @@ export const hereConfigurations: Record<string, HereConfiguration> = {
   },
 };
 
+const updateStorageCompatibility = (networkId: string) => {
+  const signedInUser = window.localStorage.getItem("here_app_wallet_auth_key");
+
+  if (signedInUser) {
+    window.localStorage.setItem(
+      networkId + "_here_app_wallet_auth_key",
+      signedInUser
+    );
+    window.localStorage.removeItem("here_app_wallet_auth_key");
+  }
+};
+
 const setupWalletState = async (
   config: HereConfiguration,
   network: Network
 ): Promise<HereWalletState> => {
+  updateStorageCompatibility(network.networkId);
+
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
   const near = await connect({
     keyStore,

@@ -8,6 +8,7 @@ import type {
   HardwareWallet,
   Transaction,
   Optional,
+  Network,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 
@@ -41,11 +42,28 @@ export interface LedgerParams {
 
 export const STORAGE_ACCOUNTS = "accounts";
 
-const setupLedgerState = async (
+const updateStorageCompatibility = async (
+  networkId: string,
   storage: JsonStorageService
-): Promise<LedgerState> => {
+) => {
   const accounts = await storage.getItem<Array<LedgerAccount>>(
     STORAGE_ACCOUNTS
+  );
+
+  if (accounts) {
+    await storage.setItem(STORAGE_ACCOUNTS + ":" + networkId, accounts);
+    await storage.removeItem(STORAGE_ACCOUNTS);
+  }
+};
+
+const setupLedgerState = async (
+  network: Network,
+  storage: JsonStorageService
+): Promise<LedgerState> => {
+  await updateStorageCompatibility(network.networkId, storage);
+
+  const accounts = await storage.getItem<Array<LedgerAccount>>(
+    STORAGE_ACCOUNTS + ":" + network.networkId
   );
 
   return {
@@ -63,7 +81,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   storage,
   metadata,
 }) => {
-  const _state = await setupLedgerState(storage);
+  const _state = await setupLedgerState(options.network, storage);
 
   const signer: Signer = {
     createKey: () => {
@@ -109,7 +127,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     _state.subscriptions = [];
     _state.accounts = [];
 
-    storage.removeItem(STORAGE_ACCOUNTS);
+    storage.removeItem(STORAGE_ACCOUNTS + ":" + options.network.networkId);
   };
 
   const signOut = async () => {
@@ -209,7 +227,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         });
       }
 
-      await storage.setItem(STORAGE_ACCOUNTS, ledgerAccounts);
+      await storage.setItem(
+        STORAGE_ACCOUNTS + ":" + options.network.networkId,
+        ledgerAccounts
+      );
       _state.accounts = ledgerAccounts;
 
       return getAccounts();

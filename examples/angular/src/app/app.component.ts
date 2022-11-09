@@ -22,7 +22,7 @@ import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 // import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
-import { CONTRACT_ID } from "../constants";
+import { MAINNET_CONTRACT_ID, TESTNET_CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -42,6 +42,8 @@ export class AppComponent implements OnInit {
   modal: WalletSelectorModal;
   accountId: string | null;
   accounts: Array<AccountState> = [];
+  contractId = TESTNET_CONTRACT_ID;
+  networkId = "testnet";
 
   async ngOnInit() {
     await this.initialize().catch((err) => {
@@ -50,10 +52,13 @@ export class AppComponent implements OnInit {
     });
   }
 
-  setNetwork(networkId: string, contractId: string) {
+  setNetwork(networkId: string) {
+    this.contractId =
+      networkId === "mainnet" ? MAINNET_CONTRACT_ID : TESTNET_CONTRACT_ID;
+
     const _selector = this.networkSelectors[networkId];
 
-    const _modal = setupModal(_selector, { contractId });
+    const _modal = setupModal(_selector, { contractId: this.contractId });
     const state = _selector.store.getState();
 
     this.accounts = state.accounts;
@@ -105,11 +110,11 @@ export class AppComponent implements OnInit {
       },
       {
         network: "mainnet",
-        debug: true,
+        debug: false,
         modules: [...(await setupDefaultWallets()), setupSender()],
       },
     ]);
 
-    this.setNetwork("testnet", CONTRACT_ID);
+    this.setNetwork(this.networkId);
   }
 }

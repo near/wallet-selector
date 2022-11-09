@@ -1,9 +1,16 @@
+<div>
+  <select [ngModel]="networkId" (change)="onNetworkChange($event)">
+    <option value="testnet">Testnet</option>
+    <option value="mainnet">Mainnet</option>
+  </select>
+</div>
+<br>
+
 <ng-container *ngIf="account">
   <div>
     <button (click)="signOut()">Log out</button>
     <button (click)="switchWallet()">Switch Wallet</button>
     <button (click)="onVerifyOwner()">Verify Owner</button>
-    <button (click)="setNetworkToMainnet()">Switch Network</button>
     <button *ngIf="accounts.length > 1" (click)="switchAccount()">
       Switch Account
     </button>
@@ -20,6 +27,5 @@
 
 <ng-container *ngIf="!accountId">
   <button (click)="signIn()">Log In</button>
-  <button (click)="setNetworkToMainnet()">Switch Network</button>
   <near-wallet-selector-sign-in></near-wallet-selector-sign-in>
 </ng-container>

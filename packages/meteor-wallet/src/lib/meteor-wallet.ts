@@ -24,10 +24,25 @@ import {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
+const updateStorageCompatibility = (networkId: string) => {
+  const signedInUser = window.localStorage.getItem(
+    "near_app_meteor_wallet_auth_key"
+  );
+
+  if (signedInUser) {
+    window.localStorage.setItem(
+      networkId + "_near_app_meteor_wallet_auth_key",
+      signedInUser
+    );
+    window.localStorage.removeItem("near_app_meteor_wallet_auth_key");
+  }
+};
+
 const setupWalletState = async (
-  params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
+  updateStorageCompatibility(network.networkId);
+
   const keyStore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
@@ -39,7 +54,10 @@ const setupWalletState = async (
     headers: {},
   });
 
-  const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
+  const wallet = new MeteorWalletSdk({
+    near,
+    appKeyPrefix: network.networkId + "_near_app",
+  });
 
   return {
     wallet,
@@ -50,8 +68,8 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params }) => {
-  const _state = await setupWalletState(params, options.network);
+> = async ({ options, logger, store }) => {
+  const _state = await setupWalletState(options.network);
 
   const getAccounts = () => {
     const accountId = _state.wallet.getAccountId();

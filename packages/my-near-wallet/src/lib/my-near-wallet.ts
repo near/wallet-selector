@@ -48,10 +48,24 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   }
 };
 
+const updateStorageCompatibility = (networkId: string) => {
+  const signedInUser = window.localStorage.getItem("near_app_wallet_auth_key");
+
+  if (signedInUser) {
+    window.localStorage.setItem(
+      networkId + "_near_app_wallet_auth_key",
+      signedInUser
+    );
+    window.localStorage.removeItem("near_app_wallet_auth_key");
+  }
+};
+
 const setupWalletState = async (
   params: MyNearWalletExtraOptions,
   network: Network
 ): Promise<MyNearWalletState> => {
+  updateStorageCompatibility(network.networkId);
+
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
   const near = await connect({

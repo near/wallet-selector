@@ -5,8 +5,43 @@ import type {
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { EventEmitter, Logger, Provider, WalletModules } from "./services";
+import type { StorageService } from "./services";
+import {
+  EventEmitter,
+  JsonStorage,
+  Logger,
+  Provider,
+  WalletModules,
+} from "./services";
 import type { Wallet } from "./wallet";
+import { CONTRACT, PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
+import type { ContractState } from "./store.types";
+
+// this function is needed because the network switching feature was added
+// it will update the storage to use new naming convention that uses network id
+async function updateStorageCompatibility(storage: StorageService) {
+  const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
+
+  const selectedWalletId = await jsonStorage.getItem<string>(
+    SELECTED_WALLET_ID
+  );
+  const contract = await jsonStorage.getItem<ContractState>(CONTRACT);
+
+  if (!selectedWalletId || !contract) {
+    return;
+  }
+
+  const detectedNetworkId =
+    contract.contractId.split(".")[1] === "near" ? "mainnet" : "testnet";
+
+  await jsonStorage.setItem(
+    SELECTED_WALLET_ID + ":" + detectedNetworkId,
+    selectedWalletId
+  );
+  await jsonStorage.setItem(CONTRACT + ":" + detectedNetworkId, contract);
+  await jsonStorage.removeItem(SELECTED_WALLET_ID);
+  await jsonStorage.removeItem(CONTRACT);
+}
 
 export type WalletSelectorNetworks = {
   [networkId: string]: WalletSelector;
@@ -17,6 +52,8 @@ const walletSelectorInstances: WalletSelectorNetworks = {};
 async function createWalletSelectorInstance(params: WalletSelectorParams) {
   const { options, storage } = resolveOptions(params);
   Logger.debug = options.debug;
+
+  await updateStorageCompatibility(storage);
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage, options.network);

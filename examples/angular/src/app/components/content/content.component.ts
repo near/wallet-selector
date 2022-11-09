@@ -13,7 +13,6 @@ import type { Account } from "../../interfaces/account";
 import type { Subscription } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import { CONTRACT_ID } from "../../../constants";
 import {
   WalletSelector,
   WalletSelectorNetworks,
@@ -34,7 +33,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() accounts: Array<AccountState>;
   @Input() accountId: string | null;
   @Input() networkSelectors: WalletSelectorNetworks;
-  @Input() setNetwork: (networkId: string, contractId: string) => void;
+  @Input() setNetwork: (networkId: string) => void;
+  @Input() contractId: string;
+  @Input() networkId: string;
 
   account: Account | null;
   messages: Array<Message>;
@@ -42,7 +43,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     const [messages, account] = await Promise.all([
-      this.getMessages(CONTRACT_ID),
+      this.getMessages(this.contractId),
       this.getAccount(),
     ]);
 
@@ -52,17 +53,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.subscribeToEvents();
   }
 
-  async setNetworkToMainnet() {
-    let contractId = CONTRACT_ID;
-    if (this.selector.options.network.networkId === "testnet") {
-      contractId = "guest-book.near";
-      this.setNetwork("mainnet", "guest-book.near");
-    } else {
-      this.setNetwork("testnet", CONTRACT_ID);
-    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async onNetworkChange(e: any) {
+    this.networkId = e.target.value;
+    this.setNetwork(this.networkId);
 
     const [messages, account] = await Promise.all([
-      this.getMessages(contractId),
+      this.getMessages(this.contractId),
       this.getAccount(),
     ]);
 
@@ -245,7 +242,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
     this.addMessages(message.value, donation.value || "0", multiple.checked)
       .then(() => {
-        return this.getMessages(CONTRACT_ID)
+        return this.getMessages(this.contractId)
           .then((nextMessages) => {
             this.messages = nextMessages;
             message.value = "";

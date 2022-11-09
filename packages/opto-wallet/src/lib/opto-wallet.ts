@@ -52,10 +52,24 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   }
 };
 
+const updateStorageCompatibility = (networkId: string) => {
+  const signedInUser = window.localStorage.getItem("near_app_wallet_auth_key");
+
+  if (signedInUser) {
+    window.localStorage.setItem(
+      networkId + "_near_app_wallet_auth_key",
+      signedInUser
+    );
+    window.localStorage.removeItem("near_app_wallet_auth_key");
+  }
+};
+
 const setupWalletState = async (
   params: OptoWalletExtraOptions,
   network: Network
 ): Promise<OptoWalletState> => {
+  updateStorageCompatibility(network.networkId);
+
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
   const near = await connect({
@@ -65,7 +79,7 @@ const setupWalletState = async (
     headers: {},
   });
 
-  const wallet = new WalletConnection(near, network.networkId + "_opto_app");
+  const wallet = new WalletConnection(near, network.networkId + "_near_app");
 
   return {
     wallet,
