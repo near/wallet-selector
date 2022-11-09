@@ -1,8 +1,10 @@
 import { resolveOptions } from "./options";
 import { createStore } from "./store";
 import type {
-  WalletSelector,
+  SetupWalletSelectorParams,
+  SetupWalletSelectorResponse,
   WalletSelectorEvents,
+  WalletSelectorNetworks,
   WalletSelectorParams,
 } from "./wallet-selector.types";
 import type { StorageService } from "./services";
@@ -42,10 +44,6 @@ async function updateStorageCompatibility(storage: StorageService) {
   await jsonStorage.removeItem(SELECTED_WALLET_ID);
   await jsonStorage.removeItem(CONTRACT);
 }
-
-export type WalletSelectorNetworks = {
-  [networkId: string]: WalletSelector;
-};
 
 const walletSelectorInstances: WalletSelectorNetworks = {};
 
@@ -111,18 +109,20 @@ async function createWalletSelectorInstance(params: WalletSelectorParams) {
       emitter.off(eventName, callback);
     },
   };
+
+  return walletSelectorInstances[options.network.networkId];
 }
 
-export const setupWalletSelector = async (
-  params: Array<WalletSelectorParams> | WalletSelectorParams
-): Promise<WalletSelectorNetworks> => {
+export const setupWalletSelector = async <T extends SetupWalletSelectorParams>(
+  params: T
+): Promise<SetupWalletSelectorResponse<T>> => {
   if (params instanceof Array) {
     for (let i = 0; i < params.length; i++) {
       await createWalletSelectorInstance(params[i]);
     }
+    return walletSelectorInstances as SetupWalletSelectorResponse<T>;
   } else {
-    await createWalletSelectorInstance(params);
+    const selector = await createWalletSelectorInstance(params);
+    return selector as SetupWalletSelectorResponse<T>;
   }
-
-  return walletSelectorInstances;
 };

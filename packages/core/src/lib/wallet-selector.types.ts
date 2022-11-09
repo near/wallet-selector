@@ -51,3 +51,17 @@ export interface WalletSelector {
     callback: (event: WalletSelectorEvents[EventName]) => void
   ): void;
 }
+
+export type WalletSelectorNetworks = {
+  [networkId: string]: WalletSelector;
+};
+
+export type SetupWalletSelectorParams =
+  | WalletSelectorParams
+  | Array<WalletSelectorParams>;
+
+export type SetupWalletSelectorResponse<T> = T extends WalletSelectorParams
+  ? WalletSelector
+  : T extends Array<WalletSelectorParams>
+  ? WalletSelectorNetworks
+  : never;
