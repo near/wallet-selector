@@ -2563,14 +2563,14 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@jscutlery/semver@^2.27.1":
-  version "2.27.1"
-  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-2.27.1.tgz#d1979cc21cd92094b6f47fbae1642fcf052a7be7"
-  integrity sha512-uApRqj8Pc2CG9BbN/ZiWFz9xNq14XDueJZQnhsdO0B9CYoAZqCEoKLbToM7yRXkQ/ZRg7uV3xkrFYEWXVl1K8Q==
+"@jscutlery/semver@^2.27.2":
+  version "2.27.2"
+  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-2.27.2.tgz#b45bb0632c2ee1b748873e42d01b2d97186306f6"
+  integrity sha512-xT8Ps2gaQgnn/7tXgkM9eMvS1GzWAQpusjpqzk39fdyfMeTsewyp+nFZ+24ZRlxNkPMS0TmIxvC1JLeh1f0vDg==
   dependencies:
     detect-indent "6.1.0"
-    inquirer "8.2.4"
-    rxjs "7.5.6"
+    inquirer "8.2.5"
+    rxjs "7.5.7"
     standard-version "9.5.0"
 
 "@ledgerhq/devices@^6.27.1":
@@ -9886,6 +9886,27 @@ inquirer@8.2.4:
     through "^2.3.6"
     wrap-ansi "^7.0.0"
 
+inquirer@8.2.5:
+  version "8.2.5"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-8.2.5.tgz#d8654a7542c35a9b9e069d27e2df4858784d54f8"
+  integrity sha512-QAgPDQMEgrDssk1XiwwHoOGYF9BAbUcc1+j+FhEvaOt8/cKRqyLn0U5qA6F74fGhTMGxf92pOvPBeh29jQJDTQ==
+  dependencies:
+    ansi-escapes "^4.2.1"
+    chalk "^4.1.1"
+    cli-cursor "^3.1.0"
+    cli-width "^3.0.0"
+    external-editor "^3.0.3"
+    figures "^3.0.0"
+    lodash "^4.17.21"
+    mute-stream "0.0.8"
+    ora "^5.4.1"
+    run-async "^2.4.0"
+    rxjs "^7.5.5"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+    through "^2.3.6"
+    wrap-ansi "^7.0.0"
+
 internal-slot@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/internal-slot/-/internal-slot-1.0.3.tgz#7347e307deeea2faac2ac6205d4bc7d34967f59c"
@@ -14475,14 +14496,7 @@ rxjs@6, rxjs@6.6.7, rxjs@^6.5.4:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@7.5.6:
-  version "7.5.6"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.6.tgz#0446577557862afd6903517ce7cae79ecb9662bc"
-  integrity sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw==
-  dependencies:
-    tslib "^2.1.0"
-
-rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.5.7:
+rxjs@7.5.7, rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.5.7:
   version "7.5.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
   integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
