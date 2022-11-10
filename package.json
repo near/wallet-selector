@@ -79,7 +79,7 @@
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.6.0",
-    "@nightlylabs/connect-near": "0.0.13",
+    "@nightlylabs/connect-near": "0.0.14",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
     "@walletconnect/sign-client": "2.1.1",
     "better-sqlite3": "^7.6.2",
