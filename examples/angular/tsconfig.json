@@ -19,9 +19,10 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
+	  "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
