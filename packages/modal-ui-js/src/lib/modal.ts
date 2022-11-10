@@ -58,13 +58,34 @@ export const setupModal = (
       return;
     }
 
-    state.modules.sort((current, next) => {
-      if (current.metadata.deprecated === next.metadata.deprecated) {
-        return 0;
-      }
+    if (selector.options.optimizeWalletOrder) {
+      state.modules.sort((current, next) => {
+        if (current.metadata.deprecated === next.metadata.deprecated) {
+          return 0;
+        }
 
-      return current.metadata.deprecated ? 1 : -1;
-    });
+        return current.metadata.deprecated ? 1 : -1;
+      });
+
+      state.modules.sort((current, next) => {
+        if (next.metadata.available === current.metadata.available) {
+          return 0;
+        }
+
+        return next.metadata.available ? 1 : -1;
+      });
+
+      if (selector.store.getState().lastSignedInWallet) {
+        state.modules.unshift(
+          state.modules.splice(
+            state.modules.findIndex(
+              (m) => m.id === selector.store.getState().lastSignedInWallet
+            ),
+            1
+          )[0]
+        );
+      }
+    }
 
     modalState.modules = state.modules;
   });

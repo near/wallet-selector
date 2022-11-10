@@ -14,6 +14,7 @@ import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
+  LAST_SIGNED_IN_WALLET,
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
@@ -227,6 +228,11 @@ export class WalletModules {
         contractId,
         methodNames,
       });
+
+      const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+      if (wallet.id) {
+        await jsonStorage.setItem(LAST_SIGNED_IN_WALLET, wallet.id);
+      }
 
       return accounts;
     };

@@ -7,7 +7,12 @@ import type {
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
-import { PACKAGE_NAME, CONTRACT, SELECTED_WALLET_ID } from "./constants";
+import {
+  PACKAGE_NAME,
+  CONTRACT,
+  SELECTED_WALLET_ID,
+  LAST_SIGNED_IN_WALLET,
+} from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -127,6 +132,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     accounts: [],
     contract: await jsonStorage.getItem(CONTRACT),
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
+    lastSignedInWallet: await jsonStorage.getItem(LAST_SIGNED_IN_WALLET),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -156,6 +162,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
   state$.subscribe((state) => {
     syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
     syncStorage(prevState, state, CONTRACT, "contract");
+    syncStorage(prevState, state, LAST_SIGNED_IN_WALLET, "lastSignedInWallet");
     prevState = state;
   });
 
