@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { WhatWallet } from "./WhatWallet";
-import IconKey from "../images/key.svg";
-import IconCoins from "../images/wallet-alt.svg";
+
 import type {
   InjectedWallet,
   ModuleState,
@@ -10,6 +9,13 @@ import type {
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { translate } from "@near-wallet-selector/core";
+
+
+import IconKey from "../images/key.svg";
+import IconKeyLight from "../images/key-light.svg";
+import IconWallet from "../images/wallet-alt.svg";
+import IconWalletLight from "../images/wallet-alt-light.svg";
+
 
 interface WalletHomeProps {
   selector: WalletSelector;
@@ -251,11 +257,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
               title={translate("modal.wallet.secureAndManage")}
               description={translate("modal.wallet.safelyStore")}
               icon={IconKey}
+              iconLight={IconKeyLight}
             />
             <WhatWallet
               title={translate("modal.wallet.logInToAny")}
               description={translate("modal.wallet.noNeedToCreate")}
-              icon={IconCoins}
+              icon={IconWallet}
+              iconLight={IconWalletLight}
             />
             <div className="button-spacing" />
             <button

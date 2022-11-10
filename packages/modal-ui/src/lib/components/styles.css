@@ -21,7 +21,7 @@
     --bottom-section: #ececec;
     --mobile-text: #3e3e3e;
     --connected-green: #47E586;
-    --gradient-dark-icon: transparent;
+    --gradient-dark-icon: radial-gradient(297.59% 179.46% at 91.67% -25%, #AEC2EA 0%, #95D1E4 100%);
     --get-wallet-option-bg-color: #F8F9FA;
     --get-wallet-option-bg-color-hover: #4F7CD129;
     --get-wallet-option-border-color: #F1F3F5;
@@ -29,6 +29,8 @@
     --secondary-button-bg-color: #4F7CD129;
     --secondary-button-border-color: #4F7CD129;
     --secondary-button-text-color: #4F7CD1;
+    --display-light: block;
+    --display-dark: none;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -92,6 +94,8 @@
         --secondary-button-bg-color: #4F7CD129;
         --secondary-button-border-color:#4F7CD1;
         --secondary-button-text-color: #FFFFFF;
+        --display-light: none;
+        --display-dark: block;
     }
 }
 
@@ -358,16 +362,18 @@
 }
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
-    padding: 0;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-content: flex-start;
-    align-items: center;
-    justify-content: center;
-    display: flex;
+    display: grid;
+    grid-area: auto;
+    /* grid-column: auto; */
+    /* grid-row: auto; */
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: auto;
+    grid-area: auto;
+    /* width: 100%; */
+    /* height: 100%; */
+    grid: auto;
+    gap: 8px;
     margin-top: 28px;
-    row-gap: 8px;
-    column-gap: 8px;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what {
@@ -395,8 +401,17 @@
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img {
     height: 40px;
+    display: none;
     width: 40px;
 }
+
+.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img.display-dark{
+    display: var(--display-dark);
+}
+.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img.display-light{
+    display: var(--display-light);
+}
+
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side svg {
   opacity: 0.7;
@@ -1055,10 +1070,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    width: 30%;
+    width: 100%;
     flex-grow: 1;
     padding: 14px;
-    max-width: 450px;
+    height: auto;
     margin: auto;
     align-content: center;
     border: 1px solid var(--get-wallet-option-border-color);
@@ -1067,6 +1082,7 @@
     position: relative;
     background-color: var(--get-wallet-option-bg-color);
     cursor: pointer;
+    margin-top: 0px;
 }
 
 .single-wallet-get:hover {
