@@ -26,13 +26,32 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupSenderWallet } from "@near-wallet-selector/sender";
 
 // The entire set of options can be found in the section below.
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [setupNearWallet()],
+  modules: [setupMyNearWallet()],
 });
+
+console.log(selector); // WalletSelector
+
+// for multiple network support
+const selectors = await setupWalletSelector([
+  {
+    network: "testnet",
+    debug: true,
+    modules: [setupMyNearWallet(), setupSenderWallet()],
+  },
+  {
+    network: "mainnet",
+    debug: false,
+    modules: [setupMyNearWallet()],
+  }
+]);
+
+console.log(selectors); // { "testnet": WalletSelector, "mainnet": WalletSelector }
 ```
 
 ## Options
