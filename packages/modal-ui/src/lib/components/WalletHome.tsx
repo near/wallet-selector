@@ -10,12 +10,10 @@ import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { translate } from "@near-wallet-selector/core";
 
-
 import IconKey from "../images/key.svg";
 import IconKeyLight from "../images/key-light.svg";
 import IconWallet from "../images/wallet-alt.svg";
 import IconWalletLight from "../images/wallet-alt-light.svg";
-
 
 interface WalletHomeProps {
   selector: WalletSelector;
