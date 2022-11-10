@@ -1,14 +1,16 @@
-/* eslint-disable no-console */
 import type {
   InjectedWallet,
   WalletBehaviourFactory,
   WalletModuleFactory,
   WalletSelectorStore,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
-import { Optional, Transaction, waitFor } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
-import { Signer, utils, transactions as nearTransactions } from "near-api-js";
+import type { Signer } from "near-api-js";
+import { utils, transactions as nearTransactions } from "near-api-js";
 import type { NearDojo, InjectedDojo } from "./injected-dojo";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
@@ -26,7 +28,6 @@ interface DojoState {
 const setupDojoState = async (
   store: WalletSelectorStore
 ): Promise<DojoState> => {
-  console.log(store, "setup dojo store");
   const { selectedWalletId } = store.getState();
   const wallet = window.dojo!.near!;
 
@@ -50,11 +51,7 @@ const Dojo: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
 }) => {
   const _state = await setupDojoState(store);
-  console.log(
-    "dojo function call",
 
-    _state
-  );
   const getAccounts = () => {
     const { accountId, publicKey } = _state.wallet.account;
 
@@ -135,7 +132,7 @@ const Dojo: WalletBehaviourFactory<InjectedWallet> = async ({
       if (existingAccounts.length) {
         return existingAccounts;
       }
-      console.log("sign in from dojo", existingAccounts);
+
       await _state.wallet.connect();
 
       return getAccounts();
@@ -214,7 +211,6 @@ export function setupDojo({
       timeout: 300,
     }).catch(() => false);
 
-    console.log("setting up dojo....");
     return {
       id: "dojo",
       type: "injected",
