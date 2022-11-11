@@ -339,6 +339,14 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
             <p className="path-description">
               Enter your preferred HD path, then scan for any active accounts.
             </p>
+            <p className="what-link">
+              <a
+                href="https://www.ledger.com/academy/crypto/what-are-hierarchical-deterministic-hd-wallets"
+                target="_blank"
+              >
+                What's this?
+              </a>
+            </p>
             <div className="action-buttons">
               <button className="middleButton" onClick={handleValidateAccount}>
                 Scan

@@ -35,6 +35,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/nearfi/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/nightly/assets/",
             "output": "assets/"
           },
@@ -61,6 +66,11 @@
           {
             "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/coin98-wallet/assets/",
             "output": "assets/"
           }
         ],
@@ -138,7 +148,7 @@
     "deploy": {
       "executor": "@nrwl/workspace:run-script",
       "options": {
-        "script": "gh-pages -d dist/examples/angular"
+        "script": "gh-pages -d ./dist/examples/angular"
       }
     }
   },

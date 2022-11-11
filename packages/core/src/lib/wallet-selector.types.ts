@@ -14,6 +14,7 @@ export type WalletSelectorStore = ReadOnlyStore;
 
 export type WalletSelectorEvents = {
   networkChanged: { walletId: string; networkId: string };
+  uriChanged: { walletId: string; uri: string };
 };
 
 export interface WalletSelector {

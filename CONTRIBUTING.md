@@ -72,7 +72,7 @@ Criteria for Including New Wallets for Wallet Selector
 A wallet project must have comply the following product criteria to listed on Wallet Selector.
 
 1. Non-custodial: The user controls their fund.
-2. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards. (Injected Wallet https://github.com/near/NEPs/pull/370 and  Bridged Wallet https://github.com/near/NEPs/pull/368)
+2. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards. (Injected Wallet https://github.com/near/NEPs/pull/408 and  Bridged Wallet https://github.com/near/NEPs/pull/368)
 3. Ease of use: The wallet product provides a usable interface for the end users. Please provide a user guide.
 4. Ability to recover accounts: The wallet product allows users to be able to recover accounts.
 5. Actively maintained: The wallet is actively maintained by a team and can provide user support.
@@ -166,3 +166,8 @@ Wallets shall checkbox a statement of compliance to be maintained on the walletâ
 
 41. Communication between infrastructure elements should be secured to the maximum extent possible.
     Please link to your the statement on your website or GitHub repo showing a statement of compliance. Please put link below (even if it is a placeholder).
+
+
+# Default Wallet List Criteria:
+
+To be included in the default wallet list, a wallet project must have met the Wallet Product Criteria, the Wallet Security Criteria, and completed an audit.
