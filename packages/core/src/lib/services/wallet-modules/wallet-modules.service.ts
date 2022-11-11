@@ -14,7 +14,7 @@ import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
-  LAST_SIGNED_IN_WALLET,
+  RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
@@ -231,7 +231,21 @@ export class WalletModules {
 
       const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
       if (wallet.id) {
-        await jsonStorage.setItem(LAST_SIGNED_IN_WALLET, wallet.id);
+        let recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
+          RECENTLY_SIGNED_IN_WALLETS
+        );
+
+        if (!recentlySignedInWallets) {
+          recentlySignedInWallets = [];
+        }
+
+        if (!recentlySignedInWallets.includes(wallet.id)) {
+          recentlySignedInWallets.unshift(wallet.id);
+          await jsonStorage.setItem(
+            RECENTLY_SIGNED_IN_WALLETS,
+            recentlySignedInWallets.slice(0, 5)
+          );
+        }
       }
 
       return accounts;

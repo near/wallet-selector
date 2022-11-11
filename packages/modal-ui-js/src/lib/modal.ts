@@ -74,17 +74,6 @@ export const setupModal = (
 
         return next.metadata.available ? 1 : -1;
       });
-
-      if (selector.store.getState().lastSignedInWallet) {
-        state.modules.unshift(
-          state.modules.splice(
-            state.modules.findIndex(
-              (m) => m.id === selector.store.getState().lastSignedInWallet
-            ),
-            1
-          )[0]
-        );
-      }
     }
 
     modalState.modules = state.modules;

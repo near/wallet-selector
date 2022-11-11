@@ -23,7 +23,7 @@ export interface WalletSelectorState {
   modules: Array<ModuleState>;
   accounts: Array<AccountState>;
   selectedWalletId: string | null;
-  lastSignedInWallet: string | null;
+  recentlySignedInWallets: Array<string>;
 }
 
 export type WalletSelectorAction =
