@@ -13,10 +13,8 @@ import type { Account } from "../../interfaces/account";
 import type { Subscription } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import {
-  WalletSelector,
-  WalletSelectorNetworks,
-} from "@near-wallet-selector/core";
+import { WalletSelector } from "@near-wallet-selector/core";
+import { WalletSelectorNetworks } from "../../app.component";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

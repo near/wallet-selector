@@ -1,10 +1,6 @@
 import type { OnInit } from "@angular/core";
 import { Component } from "@angular/core";
-import type {
-  WalletSelector,
-  AccountState,
-  WalletSelectorNetworks,
-} from "@near-wallet-selector/core";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupSender } from "@near-wallet-selector/sender";
@@ -33,13 +29,17 @@ declare global {
   }
 }
 
+export type WalletSelectorNetworks = {
+  [networkId: string]: WalletSelector;
+};
+
 @Component({
   selector: "near-wallet-selector-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  networkSelectors: WalletSelectorNetworks;
+  networkSelectors: WalletSelectorNetworks = {};
   selector: WalletSelector;
   modal: WalletSelectorModal;
   accountId: string | null;
@@ -75,51 +75,50 @@ export class AppComponent implements OnInit {
   }
 
   async initialize() {
-    this.networkSelectors = await setupWalletSelector([
-      {
-        network: "testnet",
-        debug: true,
-        modules: [
-          ...(await setupDefaultWallets()),
-          setupNearWallet(),
-          setupSender(),
-          setupMathWallet(),
-          setupNightly(),
-          setupMeteorWallet(),
-          setupWelldoneWallet(),
-          setupHereWallet(),
-          setupCoin98Wallet(),
-          setupNearFi(),
-          setupNeth({
-            bundle: false,
-          }),
-          setupOptoWallet(),
-          setupWalletConnect({
-            projectId: "c4f79cc...",
-            metadata: {
-              name: "NEAR Wallet Selector",
-              description: "Example dApp used by NEAR Wallet Selector",
-              url: "https://github.com/near/wallet-selector",
-              icons: ["https://avatars.githubusercontent.com/u/37784886"],
-            },
-          }),
-          setupNightlyConnect({
-            url: "wss://relay.nightly.app/app",
-            appMetadata: {
-              additionalInfo: "",
-              application: "NEAR Wallet Selector",
-              description: "Example dApp used by NEAR Wallet Selector",
-              icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-            },
-          }),
-        ],
-      },
-      {
-        network: "mainnet",
-        debug: false,
-        modules: [...(await setupDefaultWallets()), setupSender()],
-      },
-    ]);
+    this.networkSelectors["testnet"] = await setupWalletSelector({
+      network: "testnet",
+      debug: true,
+      modules: [
+        ...(await setupDefaultWallets()),
+        setupNearWallet(),
+        setupSender(),
+        setupMathWallet(),
+        setupNightly(),
+        setupMeteorWallet(),
+        setupWelldoneWallet(),
+        setupHereWallet(),
+        setupCoin98Wallet(),
+        setupNearFi(),
+        setupNeth({
+          bundle: false,
+        }),
+        setupOptoWallet(),
+        setupWalletConnect({
+          projectId: "c4f79cc...",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
+        setupNightlyConnect({
+          url: "wss://relay.nightly.app/app",
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
+        }),
+      ],
+    });
+
+    this.networkSelectors["mainnet"] = await setupWalletSelector({
+      network: "mainnet",
+      debug: false,
+      modules: [...(await setupDefaultWallets()), setupSender()],
+    });
 
     this.setNetwork(this.networkId);
   }
