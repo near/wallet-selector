@@ -7,7 +7,12 @@ interface WhatRow {
   iconLight: string;
 }
 
-export const WhatWallet: React.FC<WhatRow> = ({ title, description, icon, iconLight }) => {
+export const WhatWallet: React.FC<WhatRow> = ({
+  title,
+  description,
+  icon,
+  iconLight,
+}) => {
   return (
     <div className="wallet-what">
       <div className={"icon-side"}>
