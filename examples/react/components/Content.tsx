@@ -5,7 +5,6 @@ import type {
   CodeResult,
 } from "near-api-js/lib/providers/provider";
 import type { Transaction } from "@near-wallet-selector/core";
-
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import { CONTRACT_ID } from "../constants";
@@ -15,6 +14,10 @@ import Messages from "./Messages";
 
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
+
+export type Submitted = SubmitEvent & {
+  target: { elements: { [key: string]: HTMLInputElement } };
+};
 
 const Content: React.FC = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -181,21 +184,11 @@ const Content: React.FC = () => {
     }
   };
 
-  interface InputElements extends EventTarget {
-    elements: {
-      fieldset: HTMLFieldSetElement;
-      message: HTMLInputElement;
-      donation: HTMLInputElement;
-      multiple: HTMLInputElement;
-      button: HTMLButtonElement;
-    };
-  }
-  
   const handleSubmit = useCallback(
-    async (e: SubmitEvent) => {
-      e.preventDefault();   
+    async (e: Submitted) => {
+      e.preventDefault();
 
-      const { fieldset, message, donation, multiple } = (e.target as InputElements).elements;
+      const { fieldset, message, donation, multiple } = e.target!.elements;
 
       fieldset.disabled = true;
 
@@ -253,7 +246,7 @@ const Content: React.FC = () => {
       </div>
       <Form
         account={account}
-        onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
+        onSubmit={(e) => handleSubmit(e as unknown as Submitted)}
       />
       <Messages messages={messages} />
     </Fragment>
