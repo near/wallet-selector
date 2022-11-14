@@ -22,7 +22,13 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { modules, accounts, contract, selectedWalletId } = action.payload;
+      const {
+        modules,
+        accounts,
+        contract,
+        selectedWalletId,
+        recentlySignedInWallets,
+      } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
         return {
@@ -37,10 +43,12 @@ const reducer = (
         accounts: accountStates,
         contract,
         selectedWalletId,
+        recentlySignedInWallets,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts } = action.payload;
+      const { walletId, contract, accounts, recentlySignedInWallets } =
+        action.payload;
 
       if (!accounts.length) {
         return state;
@@ -62,6 +70,7 @@ const reducer = (
         contract,
         accounts: accountStates,
         selectedWalletId: walletId,
+        recentlySignedInWallets,
       };
     }
     case "WALLET_DISCONNECTED": {

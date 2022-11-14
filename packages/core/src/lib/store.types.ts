@@ -34,6 +34,7 @@ export type WalletSelectorAction =
         accounts: Array<Account>;
         contract: ContractState | null;
         selectedWalletId: string | null;
+        recentlySignedInWallets: Array<string>;
       };
     }
   | {
@@ -42,6 +43,7 @@ export type WalletSelectorAction =
         walletId: string;
         contract: ContractState;
         accounts: Array<Account>;
+        recentlySignedInWallets: Array<string>;
       };
     }
   | {

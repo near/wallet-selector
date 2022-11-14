@@ -96,10 +96,14 @@ export class WalletModules {
           });
         }
 
+        const recentlySignedInWalletsFromPending =
+          await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+
         return {
           accounts,
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
+          recentlySignedInWallets: recentlySignedInWalletsFromPending,
         };
       }
     }
@@ -112,14 +116,43 @@ export class WalletModules {
         accounts: [],
         contract: null,
         selectedWalletId: null,
+        recentlySignedInWallets: [],
       };
     }
+
+    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+      selectedWalletId!
+    );
 
     return {
       accounts,
       contract,
       selectedWalletId,
+      recentlySignedInWallets,
     };
+  }
+
+  private async setWalletAsRecentlySignedIn(walletId: string) {
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+
+    let recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
+      RECENTLY_SIGNED_IN_WALLETS
+    );
+
+    if (!recentlySignedInWallets) {
+      recentlySignedInWallets = [];
+    }
+
+    if (!recentlySignedInWallets.includes(walletId)) {
+      recentlySignedInWallets.unshift(walletId);
+      recentlySignedInWallets = recentlySignedInWallets.slice(0, 5);
+      await jsonStorage.setItem(
+        RECENTLY_SIGNED_IN_WALLETS,
+        recentlySignedInWallets
+      );
+    }
+
+    return recentlySignedInWallets;
   }
 
   private async signOutWallet(walletId: string) {
@@ -158,26 +191,30 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
+    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+      walletId
+    );
+
+    this.store.dispatch({
+      type: "WALLET_CONNECTED",
+      payload: { walletId, contract, accounts, recentlySignedInWallets },
+    });
+
     this.emitter.emit("signedIn", {
       walletId,
       contractId,
       methodNames,
       accounts,
     });
-
-    this.store.dispatch({
-      type: "WALLET_CONNECTED",
-      payload: { walletId, contract, accounts },
-    });
   }
 
   private onWalletSignedOut(walletId: string) {
-    this.emitter.emit("signedOut", { walletId });
-
     this.store.dispatch({
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
     });
+
+    this.emitter.emit("signedOut", { walletId });
   }
 
   private setupWalletEmitter(module: WalletModule) {
@@ -228,25 +265,6 @@ export class WalletModules {
         contractId,
         methodNames,
       });
-
-      const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-      if (wallet.id) {
-        let recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
-          RECENTLY_SIGNED_IN_WALLETS
-        );
-
-        if (!recentlySignedInWallets) {
-          recentlySignedInWallets = [];
-        }
-
-        if (!recentlySignedInWallets.includes(wallet.id)) {
-          recentlySignedInWallets.unshift(wallet.id);
-          await jsonStorage.setItem(
-            RECENTLY_SIGNED_IN_WALLETS,
-            recentlySignedInWallets.slice(0, 5)
-          );
-        }
-      }
 
       return accounts;
     };
@@ -355,7 +373,7 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, contract, selectedWalletId } =
+    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
 
     this.store.dispatch({
@@ -365,6 +383,7 @@ export class WalletModules {
         accounts,
         contract,
         selectedWalletId,
+        recentlySignedInWallets,
       },
     });
   }
