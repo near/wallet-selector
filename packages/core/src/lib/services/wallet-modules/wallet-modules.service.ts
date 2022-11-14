@@ -111,24 +111,24 @@ export class WalletModules {
     const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
+    const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
+      RECENTLY_SIGNED_IN_WALLETS
+    );
+
     if (!accounts.length) {
       return {
         accounts: [],
         contract: null,
         selectedWalletId: null,
-        recentlySignedInWallets: [],
+        recentlySignedInWallets: recentlySignedInWallets || [],
       };
     }
-
-    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
-      selectedWalletId!
-    );
 
     return {
       accounts,
       contract,
       selectedWalletId,
-      recentlySignedInWallets,
+      recentlySignedInWallets: recentlySignedInWallets || [],
     };
   }
 
