@@ -362,7 +362,6 @@
 
 .nws-modal-wrapper .nws-modal .wallet-home-wrapper .get-wallet-wrapper {
     margin: 20px 0 0 0;
-    list-style-type: none;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
