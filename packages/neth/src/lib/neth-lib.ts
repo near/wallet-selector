@@ -104,8 +104,9 @@ export const initConnection = ({
   keyStore = new BrowserLocalStorageKeyStore();
   near = new Near({
     ...network,
-    deps: { keyStore },
+    keyStore,
   });
+
   connection = near.connection;
   networkId = network.networkId;
   contractAccount = new Account(
@@ -1019,6 +1020,7 @@ export const getNear = async () => {
     }
     return await getNear();
   }
+
   const account = new Account(connection, accountId);
   const keyPair = KeyPair.fromString(secretKey);
   keyStore.setKey(networkId, accountId, keyPair);
