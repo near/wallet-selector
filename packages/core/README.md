@@ -44,6 +44,7 @@ const selector = await setupWalletSelector({
   - `explorerUrl` (`string`): Custom URL for the NEAR explorer.
   - `indexerUrl` (`string`): Custom URL for the Indexer service.
 - `debug` (`boolean?`): Enable internal logging for debugging purposes. Defaults to `false`.
+- `optimizeWalletOrder` (`boolean?`): Enable automatic wallet order. Reorders last signed in wallet on top, then installed wallets over not installed and deprecated wallets.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
 

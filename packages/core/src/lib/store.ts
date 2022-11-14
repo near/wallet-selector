@@ -7,8 +7,13 @@ import type {
   WalletSelectorState,
   WalletSelectorAction,
 } from "./store.types";
-import { PACKAGE_NAME, CONTRACT, SELECTED_WALLET_ID } from "./constants";
 import type { Network } from "./options.types";
+import {
+  PACKAGE_NAME,
+  CONTRACT,
+  SELECTED_WALLET_ID,
+  RECENTLY_SIGNED_IN_WALLETS,
+} from "./constants";
 
 const reducer = (
   state: WalletSelectorState,
@@ -18,7 +23,13 @@ const reducer = (
 
   switch (action.type) {
     case "SETUP_WALLET_MODULES": {
-      const { modules, accounts, contract, selectedWalletId } = action.payload;
+      const {
+        modules,
+        accounts,
+        contract,
+        selectedWalletId,
+        recentlySignedInWallets,
+      } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
         return {
@@ -33,10 +44,12 @@ const reducer = (
         accounts: accountStates,
         contract,
         selectedWalletId,
+        recentlySignedInWallets,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts } = action.payload;
+      const { walletId, contract, accounts, recentlySignedInWallets } =
+        action.payload;
 
       if (!accounts.length) {
         return state;
@@ -58,6 +71,7 @@ const reducer = (
         contract,
         accounts: accountStates,
         selectedWalletId: walletId,
+        recentlySignedInWallets,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -129,10 +143,10 @@ export const createStore = async (
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    contract: await jsonStorage.getItem(CONTRACT + ":" + network.networkId),
-    selectedWalletId: await jsonStorage.getItem(
-      SELECTED_WALLET_ID + ":" + network.networkId
-    ),
+    contract: await jsonStorage.getItem(CONTRACT),
+    selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
+    recentlySignedInWallets:
+      (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -171,6 +185,12 @@ export const createStore = async (
       state,
       CONTRACT + ":" + network.networkId,
       "contract"
+    );
+    syncStorage(
+      prevState,
+      state,
+      RECENTLY_SIGNED_IN_WALLETS,
+      "recentlySignedInWallets"
     );
     prevState = state;
   });
