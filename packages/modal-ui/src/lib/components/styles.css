@@ -29,8 +29,7 @@
     --secondary-button-bg-color: #4F7CD129;
     --secondary-button-border-color: #4F7CD129;
     --secondary-button-text-color: #4F7CD1;
-    --display-light: block;
-    --display-dark: none;
+    --what-wallet-icon-color: #FFFFFF;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -62,6 +61,7 @@
     --secondary-button-bg-color: #4F7CD129;
     --secondary-button-border-color: #4F7CD1;
     --secondary-button-text-color: #FFFFFF;
+    --what-wallet-icon-color: #568FFC;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -94,8 +94,7 @@
         --secondary-button-bg-color: #4F7CD129;
         --secondary-button-border-color:#4F7CD1;
         --secondary-button-text-color: #FFFFFF;
-        --display-light: none;
-        --display-dark: block;
+        --what-wallet-icon-color: #568FFC;
     }
 }
 
@@ -391,21 +390,8 @@
     padding: 8px;
     background: var(--gradient-dark-icon);
     border-radius: 12px;
+    color: var(--what-wallet-icon-color);
 }
-
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img {
-    height: 40px;
-    display: none;
-    width: 40px;
-}
-
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img.display-dark{
-    display: var(--display-dark);
-}
-.nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side img.display-light{
-    display: var(--display-light);
-}
-
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side svg {
   opacity: 0.7;
