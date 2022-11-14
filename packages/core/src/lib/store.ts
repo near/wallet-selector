@@ -143,8 +143,10 @@ export const createStore = async (
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    contract: await jsonStorage.getItem(CONTRACT),
-    selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
+    contract: await jsonStorage.getItem(CONTRACT + ":" + network.networkId),
+    selectedWalletId: await jsonStorage.getItem(
+      SELECTED_WALLET_ID + ":" + network.networkId
+    ),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
   };
