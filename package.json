@@ -41,6 +41,7 @@
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",
     "build:modal-ui": "nx run-many --target=build --projects=modal-ui --configuration=production",
+    "build:modal-ui-js": "nx run-many --target=build --projects=modal-ui-js --configuration=production",
     "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
     "build:math-wallet": "nx run-many --target=build --projects=math-wallet --configuration=production",
     "build:near-wallet": "nx run-many --target=build --projects=near-wallet --configuration=production",
