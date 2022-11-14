@@ -37,28 +37,30 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
           return next.metadata.available ? 1 : -1;
         });
-      }
 
-      const { selectedWalletId } = selector.store.getState();
-      if (selectedWalletId) {
-        setActiveWalletId(selectedWalletId);
-      }
-
-      const moreWallets: Array<ModuleState<Wallet>> = [];
-      const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
-
-      state.modules.forEach((module) => {
-        if (
-          selector.store.getState().recentlySignedInWallets.includes(module.id)
-        ) {
-          recentlySignedInWallets.push(module);
-        } else {
-          moreWallets.push(module);
+        const { selectedWalletId } = selector.store.getState();
+        if (selectedWalletId) {
+          setActiveWalletId(selectedWalletId);
         }
-      });
 
-      setRecentModules(recentlySignedInWallets);
-      setMoreModules(moreWallets);
+        const moreWallets: Array<ModuleState<Wallet>> = [];
+        const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
+
+        state.modules.forEach((module) => {
+          if (
+            selector.store
+              .getState()
+              .recentlySignedInWallets.includes(module.id)
+          ) {
+            recentlySignedInWallets.push(module);
+          } else {
+            moreWallets.push(module);
+          }
+        });
+
+        setRecentModules(recentlySignedInWallets);
+        setMoreModules(moreWallets);
+      }
 
       setModules(state.modules);
     });
