@@ -23,6 +23,7 @@ export interface WalletSelectorState {
   modules: Array<ModuleState>;
   accounts: Array<AccountState>;
   selectedWalletId: string | null;
+  recentlySignedInWallets: Array<string>;
 }
 
 export type WalletSelectorAction =
@@ -33,6 +34,7 @@ export type WalletSelectorAction =
         accounts: Array<Account>;
         contract: ContractState | null;
         selectedWalletId: string | null;
+        recentlySignedInWallets: Array<string>;
       };
     }
   | {
@@ -41,6 +43,7 @@ export type WalletSelectorAction =
         walletId: string;
         contract: ContractState;
         accounts: Array<Account>;
+        recentlySignedInWallets: Array<string>;
       };
     }
   | {
