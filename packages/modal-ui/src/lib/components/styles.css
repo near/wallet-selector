@@ -279,6 +279,7 @@
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet {
     padding: 12px;
     background-color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+    outline: none;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.selected-wallet .content .title {
