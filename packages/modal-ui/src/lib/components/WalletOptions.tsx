@@ -77,6 +77,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         result.push(
           <li
+            tabIndex={0}
             className={`single-wallet ${
               activeWalletId === module.id ? "selected-wallet" : ""
             } ${selected ? "connected-wallet" : ""} ${

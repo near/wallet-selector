@@ -8,7 +8,8 @@
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: transparent;
     --wallet-option-border-color: #A7A7A730;
-    --wallet-option-bg-hover: #4F7CD129;
+    --wallet-option-bg-hover: #6494ee3d;
+    --wallet-option-outline-color: #6494EE;
     --content-bg: #FFFFFF;
     --change-path-bg: #EDEDED;
     --home-button-bg: #EDEDED;
@@ -23,8 +24,9 @@
     --connected-green: #47E586;
     --gradient-dark-icon: radial-gradient(297.59% 179.46% at 91.67% -25%, #AEC2EA 0%, #95D1E4 100%);
     --get-wallet-option-bg-color: #F8F9FA;
-    --get-wallet-option-bg-color-hover: #4F7CD129;
-    --get-wallet-option-border-color: #F1F3F5;
+    --get-wallet-option-bg-color-hover: #6494ee3d;
+    --get-wallet-option-border-color: #C1C1C1;
+    --get-wallet-outline-color: #6494EE;
     --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
     --secondary-button-bg-color: #4F7CD129;
     --secondary-button-border-color: #4F7CD129;
@@ -40,7 +42,8 @@
     --selected-wallet-bg: #4F7CD1;
     --selected-wallet-bg-hover: #262626CC;
     --wallet-option-border-color: #A7A7A730;
-    --wallet-option-bg-hover: #4F7CD129;
+    --wallet-option-bg-hover: #4f7cd13d;
+    --wallet-option-outline-color: #4F7CD1;
     --content-bg: #232323;
     --change-path-bg: #161616;
     --home-button-bg: #313030;
@@ -55,8 +58,9 @@
     --connected-green: #47E586;
     --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
     --get-wallet-option-bg-color: #0000001F;
-    --get-wallet-option-bg-color-hover: #4F7CD129;
+    --get-wallet-option-bg-color-hover: #4f7cd13d;
     --get-wallet-option-border-color: #313030;
+    --get-wallet-outline-color: #4F7CD1;
     --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
     --secondary-button-bg-color: #4F7CD129;
     --secondary-button-border-color: #4F7CD1;
@@ -73,7 +77,8 @@
         --selected-wallet-bg: #4F7CD1;
         --selected-wallet-bg-hover: #262626CC;
         --wallet-option-border-color: #A7A7A730;
-        --wallet-option-bg-hover: #4F7CD129;
+        --wallet-option-bg-hover: #4f7cd13d;
+        --wallet-option-outline-color: #4F7CD1;
         --content-bg: #232323;
         --change-path-bg: #161616;
         --home-button-bg: #313030;
@@ -88,8 +93,9 @@
         --connected-green: #47E586;
         --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
         --get-wallet-option-bg-color: #0000001F;
-        --get-wallet-option-bg-color-hover: #4F7CD129;
+        --get-wallet-option-bg-color-hover: #4f7cd13d;
         --get-wallet-option-border-color: #313030;
+        --get-wallet-outline-color: #4F7CD1;
         --get-wallet-option-box-shadow: 0px 2px 2px rgba(17, 22, 24, 0.04);
         --secondary-button-bg-color: #4F7CD129;
         --secondary-button-border-color:#4F7CD1;
@@ -216,6 +222,10 @@
     column-gap: 24px;
     padding: 12px;
     cursor: pointer;
+}
+
+.single-wallet:focus-within {
+  outline: var(--wallet-option-outline-color) solid 2px;
 }
 
 .single-wallet .icon {
@@ -1070,6 +1080,10 @@
 
 .single-wallet-get:hover {
   background: var(--get-wallet-option-bg-color-hover);
+}
+
+.single-wallet-get:focus-within {
+  outline: var(--get-wallet-outline-color) solid 2px;
 }
 
 .single-wallet-get .icon {

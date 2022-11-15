@@ -139,6 +139,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
             return (
               <div
+                tabIndex={0}
                 className={`single-wallet-get ${module.id}`}
                 key={module.id}
                 onClick={() => {
