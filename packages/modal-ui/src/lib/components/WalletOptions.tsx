@@ -82,7 +82,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               activeWalletId === module.id ? "selected-wallet" : ""
             } ${selected ? "connected-wallet" : ""} ${
               deprecated ? "deprecated-wallet" : ""
-            } sidebar`}
+            } sidebar ${module.id}`}
             key={module.id}
             onClick={() => {
               if (module.id === modulesToRender[index].id) {
