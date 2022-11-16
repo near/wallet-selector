@@ -12,7 +12,12 @@
       "connectionFailed": "Connection Failed",
       "connectionSuccessful": "Connection Successful",
       "connected": "Connected",
-      "connectingTo": "Connecting to"
+      "connectingTo": "Connecting to",
+      "connectingMessage": {
+        "injected": "Confirm the connection in the extension window",
+        "browser": "Confirm the connection in the wallet after redirect",
+        "hardware": "Confirm the connection in the ledger device"
+      }
     },
     "ledger": {
       "connectWithLedger": "Connect with Ledger",

@@ -953,6 +953,11 @@
     color: var(--wallet-selector-heading-color, var(--heading-color));
 }
 
+.connecting-wrapper .content .connecting-message {
+  font-size: 14px;
+  margin-top: 16px;
+}
+
 .connecting-wrapper .content .connecting-details {
     font-style: normal;
     font-weight: 500;

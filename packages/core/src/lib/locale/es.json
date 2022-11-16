@@ -12,7 +12,12 @@
       "connectionFailed": "Conexión Fallida",
       "connectionSuccessful": "Conexión Existosa",
       "connected": "Conectado",
-      "connectingTo": "Conectando a "
+      "connectingTo": "Conectando a ",
+      "connectingMessage": {
+        "injected": "Confirme la conexión en la ventana de extensión",
+        "browser": "Confirme la conexión en la billetera después de la redirección",
+        "hardware": "Confirme la conexión en el dispositivo de libro mayor"
+      }
     },
     "ledger": {
       "connectWithLedger": "Conectar con Ledger",
