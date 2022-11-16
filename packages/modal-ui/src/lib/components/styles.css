@@ -1462,7 +1462,7 @@
 
     .single-wallet {
         display: block;
-        width: 85px;
+        max-width: 64px;
     }
 
     .single-wallet.sidebar .icon {
