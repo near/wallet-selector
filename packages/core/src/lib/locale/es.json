@@ -33,7 +33,7 @@
       "selectYourAccounts": "Selecciona tus cuentas",
       "connecting1Account": "Conectando a 1 cuenta",
       "cantFindAnyAccount": "No se pudo encontrar ninguna cuenta asociada con este ledger,Por favor crea una nueva cuenta en NEAR",
-      "orConnectAnAnotherLedger.": "o conecta otro ledger",
+      "orConnectAnAnotherLedger": "o conecta otro ledger",
       "connecting": "Conectando",
       "ofAccounts": "de Cuentas",
       "failedToAutomatically": "No se pudo encontrar automaticamente el id de la cuenta,Ingresalo manualmente:",
