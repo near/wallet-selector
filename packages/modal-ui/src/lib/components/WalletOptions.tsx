@@ -85,7 +85,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             } sidebar`}
             key={module.id}
             onClick={() => {
-              if (module.id === modules[index].id) {
+              if (module.id === modulesToRender[index].id) {
                 setActiveWalletId(module.id!);
               }
               return handleWalletClick(module);
