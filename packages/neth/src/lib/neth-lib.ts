@@ -1,13 +1,12 @@
-/*eslint @typescript-eslint/no-use-before-define: 1*/
-/*eslint @typescript-eslint/no-explicit-any: 1*/
-/*eslint @typescript-eslint/naming-convention: 1*/
-// @ts-nocheck
 
 import { ethers } from "ethers";
 import detectEthereumProvider from "@metamask/detect-provider";
 import * as nearAPI from "near-api-js";
+// @ts-ignore
 import { generateSeedPhrase } from "near-seed-phrase";
 import BN from "bn.js";
+// TODO: CHECK THIS
+import { keyStores } from "near-api-js";
 
 const {
   Near,
@@ -22,7 +21,7 @@ const {
 } = nearAPI;
 
 export const NETH_SITE_URL = "https://neth.app";
-export const PREV_NETH_SITE_URL = "neardefi.github.io/neth";
+const PREV_NETH_SITE_URL = "neardefi.github.io/neth";
 
 const NETWORK = {
   testnet: {
@@ -49,15 +48,15 @@ const halfGas = "50000000000000";
 /// this is the new account amount 0.21 for account name, keys, contract and 0.01 for mapping contract storage cost
 const MIN_NEW_ACCOUNT = parseNearAmount("0.4");
 const MIN_NEW_ACCOUNT_THRESH = parseNearAmount("0.49");
-export const MIN_NEW_ACCOUNT_ASK = parseNearAmount("0.5");
+// export const MIN_NEW_ACCOUNT_ASK = parseNearAmount("0.5");
 const FUNDING_CHECK_TIMEOUT = 5000;
 /// lkmfawl
 
 const attachedDepositMapping = parseNearAmount("0.05");
 
 /// Helpers
-const defaultStorage = (prefix = "") => ({
-  getItem: (k) => {
+const defaultStorage =  (prefix = "") => ({
+  getItem: (k: string) => {
     const v = localStorage.getItem(prefix + k);
     if (v?.charAt(0) !== "{") {
       return v;
@@ -68,45 +67,77 @@ const defaultStorage = (prefix = "") => ({
       //   logger.log(e);
     }
   },
-  setItem: (k, v) =>
+
+  setItem: (k: string, v: string) =>
     localStorage.setItem(
       prefix + k,
       typeof v === "string" ? v : JSON.stringify(v)
     ),
-  removeItem: (k) => localStorage.removeItem(prefix + k),
+
+  removeItem: (k: string) => localStorage.removeItem(prefix + k),
 });
 const defaultLogger = () => ({
-  // eslint-disable-next-line
-  log: (args) => console.log(...args),
+  log: (args: string) => console.log(...args),
 });
 
 /// NEAR setup
-let near,
-  gas,
-  keyStore,
-  logger,
-  storage,
-  connection,
-  networkId,
-  contractAccount,
-  accountSuffix;
+let
+  near: nearAPI.Near,
+  gas: string,
+  keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore,
+  logger: { log: any; },
+  storage: { setItem: any; removeItem: any; getItem: any; },
+  connection: nearAPI.Connection,
+  networkId: string,
+  contractAccount: nearAPI.Account,
+  accountSuffix: string
+
+interface InitConnection {
+  style: {
+    display: string,
+    width: string,
+    height: string,
+    zIndex: string,
+    position: string,
+    top: string,
+    background: string
+  },
+  near: nearAPI.Near,
+  gas: string,
+  keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore,
+  logger: { log: any; },
+  storage: { setItem: any; removeItem: any; getItem: any; },
+  connection: nearAPI.Connection,
+  networkId: string,
+  contractAccount: nearAPI.Account,
+  accountSuffix: string,
+
+  network: string,
+  // if network object is used then it fixes line 190 but makes error on 184
+  // network : {
+  //   options: string
+  //   networkId: string;
+  // }
+}
 
 export const initConnection = ({
   network,
   gas: _gas = defaultGas,
   logger: _logger = defaultLogger(),
   storage: _storage = defaultStorage(),
-}) => {
+}: InitConnection )   => {
   gas = _gas;
   logger = _logger;
   storage = _storage;
 
   keyStore = new BrowserLocalStorageKeyStore();
   near = new Near({
+    // @ts-ignore error TS2698: Spread types may only be created from object types.
     ...network,
     keyStore,
   });
   connection = near.connection;
+  // @ts-ignore
   networkId = network.networkId;
   contractAccount = new Account(
     connection,
@@ -130,20 +161,21 @@ export const initConnection = ({
   return cover;
 };
 
-export const getConnection = () => {
-  return {
-    near,
-    connection,
-    keyStore,
-    networkId,
-    contractAccount,
-    accountSuffix,
-  };
-};
+// export const getConnection = () => {
+//   return {
+//     near,
+//     connection,
+//     keyStore,
+//     networkId,
+//     contractAccount,
+//     accountSuffix,
+//   };
+// };
 
 /// helpers
 
-export const accountExists = async (accountId, ethAddress = null) => {
+
+const accountExists = async (accountId: string, ethAddress = null) => {
   try {
     const account = new nearAPI.Account(connection, accountId);
     await account.state();
@@ -164,46 +196,58 @@ export const accountExists = async (accountId, ethAddress = null) => {
   }
 };
 
-const buf2hex = (buf) => ethers.utils.hexlify(buf).substring(2);
-const pub2hex = (publicKey) =>
+// const buf2hex = (buf: number | bigint | ethers.utils.BytesLike | ethers.utils.Hexable) => ethers.utils.hexlify(buf).substring(2);
+
+const pub2hex = (publicKey: string) =>
   ethers.utils.hexlify(PublicKey.fromString(publicKey).data).substring(2);
 
 /// account creation and connection flow
 
-export const handleCreate = async (
-  signer,
-  ethAddress,
-  newAccountId,
-  fundingAccountCB,
-  fundingErrorCB,
-  postFundingCB
-) => {
-  if (
-    (networkId === "testnet" && newAccountId.indexOf(".near") > -1) ||
-    (networkId === "mainnet" && newAccountId.indexOf(".testnet") > -1)
-  ) {
-    return alert(
-      "Invalid account name. You do not need to add any .near or .testnet. Please try again."
-    );
-  }
+// export const handleCreate = async (
+//   signer,
+//   ethAddress,
+//   newAccountId,
+//   fundingAccountCB,
+//   fundingErrorCB,
+//   postFundingCB
+// ) => {
+//   if (
+//     (networkId === "testnet" && newAccountId.indexOf(".near") > -1) ||
+//     (networkId === "mainnet" && newAccountId.indexOf(".testnet") > -1)
+//   ) {
+//     return alert(
+//       "Invalid account name. You do not need to add any .near or .testnet. Please try again."
+//     );
+//   }
 
-  /// get keypair from eth sig entropy for the near-eth account
-  const { publicKey: fundingAccountPubKey, secretKey: new_secret_key } =
-    await keyPairFromEthSig(signer, fundingKeyPayload());
-  /// store attempt in localStorage so we can recover and retry / resume contract deployment
-  await storage.setItem(ATTEMPT_ACCOUNT_ID, newAccountId);
-  await storage.setItem(ATTEMPT_SECRET_KEY, new_secret_key);
-  await storage.setItem(ATTEMPT_ETH_ADDRESS, ethAddress);
+//   /// get keypair from eth sig entropy for the near-eth account
+//   const { publicKey: fundingAccountPubKey, secretKey: new_secret_key } =
+//     await keyPairFromEthSig(signer, fundingKeyPayload());
+//   /// store attempt in localStorage so we can recover and retry / resume contract deployment
+//   await storage.setItem(ATTEMPT_ACCOUNT_ID, newAccountId);
+//   await storage.setItem(ATTEMPT_SECRET_KEY, new_secret_key);
+//   await storage.setItem(ATTEMPT_ETH_ADDRESS, ethAddress);
 
-  return await createAccount({
-    signer,
-    newAccountId,
-    fundingAccountPubKey,
-    fundingAccountCB,
-    fundingErrorCB,
-    postFundingCB,
-  });
-};
+//   return await createAccount({
+//     signer,
+//     newAccountId,
+//     fundingAccountPubKey,
+//     fundingAccountCB,
+//     fundingErrorCB,
+//     postFundingCB,
+//   });
+// };
+
+type CreateAccount = {
+signer: null,
+newAccountId: string
+fundingAccountPubKey: string,
+fundingAccountCB : null | ((arg0: string )=> void) ,
+fundingErrorCB : null | ((arg0: string, arg1: string )=> void),
+postFundingCB:  null | (()=> void)
+}
+
+
 
 const createAccount = async ({
   signer,
@@ -212,7 +256,7 @@ const createAccount = async ({
   fundingAccountCB,
   fundingErrorCB,
   postFundingCB,
-}) => {
+} : CreateAccount ) : Promise<void>=> {
   // const { publicKey, secretKey } = parseSeedPhrase(process.env.REACT_APP_FUNDING_SEED_PHRASE);
   /// assumes implicit is funded, otherwise will warn and cycle here
 
@@ -224,7 +268,7 @@ const createAccount = async ({
   }
 
   /// wait for implicit funding here and then continue to createAccount
-  const checkImplicitFunded = async () => {
+  const checkImplicitFunded = async () : Promise<boolean>=> {
     logger.log("checking for funding of implicit account", implicitAccountId);
     const account = new Account(connection, implicitAccountId);
     try {
@@ -284,13 +328,15 @@ const createAccount = async ({
 
   try {
     await account.functionCall({
-      contractId: NETWORK[networkId].ROOT_ACCOUNT_ID,
+      contractId: NETWORK[networkId as keyof typeof NETWORK].ROOT_ACCOUNT_ID,
       methodName: "create_account",
       args: {
         new_account_id: newAccountId,
         new_public_key,
       },
-      gas,
+      // gas,
+      //TODO: Check this, was just gas
+       gas: new BN(gas as string),
       attachedDeposit: new BN(MIN_NEW_ACCOUNT as string),
     });
   } catch (e) {
@@ -312,7 +358,7 @@ const createAccount = async ({
   return await handleMapping();
 };
 
-export const handleCancelFunding = async (fundingAccountId) => {
+const handleCancelFunding = async (fundingAccountId: string | undefined)  => {
   const { account } = await setupFromStorage(fundingAccountId);
   const refundAccountId = window.prompt(
     `There was an error creating the account. You need to refund and try again. Please enter the account you funded from. MAKE SURE IT IS CORRECT. THIS CANNOT BE UNDONE.`
@@ -321,6 +367,7 @@ export const handleCancelFunding = async (fundingAccountId) => {
   try {
     await account.deleteAccount(refundAccountId as string);
   } catch (e) {
+
     logger.log("Cannot delete implicit");
   } finally {
     /// delete attempt
@@ -330,14 +377,21 @@ export const handleCancelFunding = async (fundingAccountId) => {
   }
 };
 
-export const handleMapping = async () => {
+interface Mapping {
+  gas: number;
+}
+
+const handleMapping = async () : Promise<void> => {
   const { account, ethAddress } = await setupFromStorage();
   try {
     await account.functionCall({
-      contractId: NETWORK[networkId].MAP_ACCOUNT_ID,
+      contractId: NETWORK[networkId as keyof typeof NETWORK ].MAP_ACCOUNT_ID,
       methodName: "set",
       args: { eth_address: ethAddress },
+      // @ts-ignore
       gas,
+      // TODO: Check is below correct
+      // gas: new BN(gas as string),
       attachedDeposit: new BN(attachedDepositMapping as string),
     });
     logger.log(`Account mapping successful`);
@@ -348,7 +402,7 @@ export const handleMapping = async () => {
   return await handleDeployContract();
 };
 
-export const handleDeployContract = async () => {
+const handleDeployContract = async () : Promise<void> => {
   const { account } = await setupFromStorage();
 
   const contractPath = window?.contractPath;
@@ -369,7 +423,7 @@ export const handleDeployContract = async () => {
   return await handleSetupContract();
 };
 
-export const handleSetupContract = async () => {
+const handleSetupContract = async () : Promise<void> => {
   const { account, ethAddress } = await setupFromStorage();
 
   try {
@@ -377,7 +431,10 @@ export const handleSetupContract = async () => {
       contractId: account.accountId,
       methodName: "setup",
       args: { eth_address: ethAddress },
+      // @ts-ignore
       gas,
+        // TODO: Check is below correct
+      // gas: new BN(gas as string),
     });
     logger.log(`Contract setup successfully.`);
   } catch (e) {
@@ -388,7 +445,7 @@ export const handleSetupContract = async () => {
   return await handleKeys();
 };
 
-export const handleKeys = async () => {
+const handleKeys = async () : Promise<void>=> {
   const { account, newAccountId, ethAddress } = await setupFromStorage();
   const accessKeys = await account.getAccessKeys();
   // keys are done
@@ -418,18 +475,26 @@ export const handleKeys = async () => {
     logger.log(e);
     return logger.log(`Key rotation failed. ${REFRESH_MSG}`);
   }
-  return await handleCheckAccount({ ethAddress });
+// @ts-ignore TODO: COULDNT FIX
+  return {ethAddress} = await handleCheckAccount({ ethAddress });
 };
 
+type HandleCheckAccount = {
+  signer: null,
+  ethAddress: null ,
+  fundingAccountCB: null,
+  fundingErrorCB: null,
+  postFundingCB: null,
+}
 /// waterfall check everything about account and fill in missing pieces
 
-export const handleCheckAccount = async ({
+const handleCheckAccount = async ({
   signer = null,
   ethAddress = null,
   fundingAccountCB = null,
   fundingErrorCB = null,
   postFundingCB = null,
-}) => {
+}: HandleCheckAccount) => {
   const setup = await setupFromStorage();
   let { newAccountId } = setup;
   const { newSecretKey } = setup;
@@ -459,7 +524,7 @@ export const handleCheckAccount = async ({
 
   logger.log("Checking account address mapping.");
   const mapRes = await account.viewFunction(
-    NETWORK[networkId].MAP_ACCOUNT_ID,
+    NETWORK[networkId as keyof typeof NETWORK].MAP_ACCOUNT_ID,
     "get_eth",
     {
       account_id: newAccountId,
@@ -511,7 +576,7 @@ export const handleCheckAccount = async ({
 
 /// on same domain as setup
 
-export const hasAppKey = (accessKeys) =>
+const hasAppKey = (accessKeys: any[]) =>
   accessKeys.some((k) => {
     const functionCallPermission = k?.access_key?.permission?.FunctionCall;
     return (
@@ -520,7 +585,7 @@ export const hasAppKey = (accessKeys) =>
     );
   });
 
-export const handleRefreshAppKey = async (signer, ethAddress) => {
+const handleRefreshAppKey = async (signer: string, ethAddress: string) => {
   const { account, accountId } = await getUnlimitedKeyAccount(
     signer,
     ethAddress
@@ -590,165 +655,165 @@ export const handleRefreshAppKey = async (signer, ethAddress) => {
   return { publicKey: public_key, secretKey };
 };
 
-export const handleUpdateContract = async (signer, ethAddress) => {
-  const { account, accountId } = await getUnlimitedKeyAccount(
-    signer,
-    ethAddress
-  );
+// export const handleUpdateContract = async (signer, ethAddress) => {
+//   const { account, accountId } = await getUnlimitedKeyAccount(
+//     signer,
+//     ethAddress
+//   );
 
-  const contractPath = window?.contractPath;
-  const ab = await fetch(contractPath as string).then((res) =>
-    res.arrayBuffer()
-  );
-  const contractBytes = new Uint8Array(ab);
-  const actions = [
-    {
-      type: "DeployContract",
-      code: buf2hex(contractBytes),
-    },
-  ];
-  const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
-    16
-  ).toString();
-  const args = await ethSignJson(signer, {
-    nonce,
-    receivers: [accountId],
-    transactions: [
-      {
-        actions,
-      },
-    ],
-  });
-  const res = await account.functionCall({
-    contractId: accountId,
-    methodName: "execute",
-    args,
-    gas,
-  });
-  if (res?.status?.SuccessValue !== "") {
-    return logger.log(`Redeply contract unsuccessful. ${REFRESH_MSG}`);
-  }
-};
+//   const contractPath = window?.contractPath;
+//   const ab = await fetch(contractPath as string).then((res) =>
+//     res.arrayBuffer()
+//   );
+//   const contractBytes = new Uint8Array(ab);
+//   const actions = [
+//     {
+//       type: "DeployContract",
+//       code: buf2hex(contractBytes),
+//     },
+//   ];
+//   const nonce = parseInt(
+//     await account.viewFunction(accountId, "get_nonce"),
+//     16
+//   ).toString();
+//   const args = await ethSignJson(signer, {
+//     nonce,
+//     receivers: [accountId],
+//     transactions: [
+//       {
+//         actions,
+//       },
+//     ],
+//   });
+//   const res = await account.functionCall({
+//     contractId: accountId,
+//     methodName: "execute",
+//     args,
+//     gas,
+//   });
+//   if (res?.status?.SuccessValue !== "") {
+//     return logger.log(`Redeply contract unsuccessful. ${REFRESH_MSG}`);
+//   }
+// };
 
 /// account disconnecting flow
 
-export const handleDisconnect = async (signer, ethAddress) => {
-  const { account, accountId, secretKey } = await getUnlimitedKeyAccount(
-    signer,
-    ethAddress
-  );
+// export const handleDisconnect = async (signer, ethAddress) => {
+//   const { account, accountId, secretKey } = await getUnlimitedKeyAccount(
+//     signer,
+//     ethAddress
+//   );
 
-  const {
-    seedPhrase,
-    publicKey,
-    secretKey: newSecretKey,
-  } = generateSeedPhrase();
-  const _seedPhrase = window.prompt(
-    "Copy this down and keep it safe!!! This is your new seed phrase!!!",
-    seedPhrase
-  );
-  if (seedPhrase !== _seedPhrase) {
-    return alert(
-      "There was an error copying seed phrase. Nothing has been done. Please try again."
-    );
-  }
-  const oldUnlimitedKey = KeyPair.fromString(secretKey);
+//   const {
+//     seedPhrase,
+//     publicKey,
+//     secretKey: newSecretKey,
+//   } = generateSeedPhrase();
+//   const _seedPhrase = window.prompt(
+//     "Copy this down and keep it safe!!! This is your new seed phrase!!!",
+//     seedPhrase
+//   );
+//   if (seedPhrase !== _seedPhrase) {
+//     return alert(
+//       "There was an error copying seed phrase. Nothing has been done. Please try again."
+//     );
+//   }
+//   const oldUnlimitedKey = KeyPair.fromString(secretKey);
 
-  const actions = [
-    {
-      type: "DeleteKey",
-      public_key: pub2hex(oldUnlimitedKey.getPublicKey().toString()),
-    },
-    {
-      type: "AddKey",
-      public_key: pub2hex(publicKey),
-      // special case will add full access key
-      allowance: "0",
-    },
-    {
-      type: "FunctionCall",
-      method_name: "remove_storage",
-      args: "",
-      amount: "0",
-      gas: halfGas,
-    },
-    {
-      type: "DeployContract",
-      code: "",
-    },
-  ];
-  /// check keys, find old app key, delete that first
-  const accessKeys = await account.getAccessKeys();
-  if (
-    accessKeys.some((k) => {
-      const functionCallPermission = k?.access_key?.permission?.FunctionCall;
-      return (
-        functionCallPermission?.allowance !== null &&
-        functionCallPermission?.method_names[0] === "execute"
-      );
-    })
-  ) {
-    const appKeyNonce = parseInt(
-      await account.viewFunction(accountId, "get_app_key_nonce"),
-      16
-    ).toString();
-    const { publicKey: oldPublicKey } = await keyPairFromEthSig(
-      signer,
-      appKeyPayload(accountId, appKeyNonce)
-    );
-    const oldPublicKeyHex = pub2hex(oldPublicKey);
-    actions.unshift({
-      type: "DeleteKey",
-      public_key: oldPublicKeyHex,
-    });
-  }
+//   const actions = [
+//     {
+//       type: "DeleteKey",
+//       public_key: pub2hex(oldUnlimitedKey.getPublicKey().toString()),
+//     },
+//     {
+//       type: "AddKey",
+//       public_key: pub2hex(publicKey),
+//       // special case will add full access key
+//       allowance: "0",
+//     },
+//     {
+//       type: "FunctionCall",
+//       method_name: "remove_storage",
+//       args: "",
+//       amount: "0",
+//       gas: halfGas,
+//     },
+//     {
+//       type: "DeployContract",
+//       code: "",
+//     },
+//   ];
+//   /// check keys, find old app key, delete that first
+//   const accessKeys = await account.getAccessKeys();
+//   if (
+//     accessKeys.some((k) => {
+//       const functionCallPermission = k?.access_key?.permission?.FunctionCall;
+//       return (
+//         functionCallPermission?.allowance !== null &&
+//         functionCallPermission?.method_names[0] === "execute"
+//       );
+//     })
+//   ) {
+//     const appKeyNonce = parseInt(
+//       await account.viewFunction(accountId, "get_app_key_nonce"),
+//       16
+//     ).toString();
+//     const { publicKey: oldPublicKey } = await keyPairFromEthSig(
+//       signer,
+//       appKeyPayload(accountId, appKeyNonce)
+//     );
+//     const oldPublicKeyHex = pub2hex(oldPublicKey);
+//     actions.unshift({
+//       type: "DeleteKey",
+//       public_key: oldPublicKeyHex,
+//     });
+//   }
 
-  /// get args for execute call
-  const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
-    16
-  ).toString();
-  const args = await ethSignJson(signer, {
-    nonce,
-    receivers: [accountId],
-    transactions: [
-      {
-        actions,
-      },
-    ],
-  });
-  const res = await account.functionCall({
-    contractId: accountId,
-    methodName: "execute",
-    args,
-    gas,
-  });
+//   /// get args for execute call
+//   const nonce = parseInt(
+//     await account.viewFunction(accountId, "get_nonce"),
+//     16
+//   ).toString();
+//   const args = await ethSignJson(signer, {
+//     nonce,
+//     receivers: [accountId],
+//     transactions: [
+//       {
+//         actions,
+//       },
+//     ],
+//   });
+//   const res = await account.functionCall({
+//     contractId: accountId,
+//     methodName: "execute",
+//     args,
+//     gas,
+//   });
 
-  if (res?.status?.SuccessValue !== "") {
-    return logger.log("app key rotation unsuccessful");
-  }
+//   if (res?.status?.SuccessValue !== "") {
+//     return logger.log("app key rotation unsuccessful");
+//   }
 
-  // remove the mapping (can do this later if user has FAK)
+//   // remove the mapping (can do this later if user has FAK)
 
-  keyStore.setKey(networkId, accountId, newSecretKey);
-  try {
-    const mapRes = await account.functionCall({
-      contractId: NETWORK[networkId].MAP_ACCOUNT_ID,
-      methodName: "del",
-      args: {},
-      gas,
-    });
-    logger.log(mapRes);
-    if (mapRes?.status?.SuccessValue !== "") {
-      logger.log("account mapping removal failed");
-    }
-  } catch (e) {
-    logger.log(e);
-  }
+//   keyStore.setKey(networkId, accountId, newSecretKey);
+//   try {
+//     const mapRes = await account.functionCall({
+//       contractId: NETWORK[networkId].MAP_ACCOUNT_ID,
+//       methodName: "del",
+//       args: {},
+//       gas,
+//     });
+//     logger.log(mapRes);
+//     if (mapRes?.status?.SuccessValue !== "") {
+//       logger.log("account mapping removal failed");
+//     }
+//   } catch (e) {
+//     logger.log(e);
+//   }
 
-  return { account };
-};
+//   return { account };
+// };
 
 /// helpers for account creation and connection domain
 
@@ -769,11 +834,16 @@ const setupFromStorage = async (accountId = "") => {
 };
 
 const getUnlimitedKeyAccount = async (
-  signer,
-  ethAddress,
+  signer: string,
+  ethAddress: string,
   tryPrevUrl = false
-) => {
-  let accountId,
+): Promise<{
+  account: any,
+  accountId: any,
+  secretKey: any
+}> => {
+  let accountId: string,
+
     secretKey = await storage.getItem(ATTEMPT_SECRET_KEY);
   // if unlimited allowance access key is not in localStorage user will have to sign to generate it
   if (!secretKey) {
@@ -805,23 +875,23 @@ const getUnlimitedKeyAccount = async (
  * The access key payloads, unlimited and limited
  */
 
-const appKeyPayload = (accountId, appKeyNonce) => ({
+const appKeyPayload = (accountId: any, appKeyNonce: string) => ({
   WARNING: `Creating key for: ${accountId}`,
   nonce: appKeyNonce,
   description: `ONLY sign this on apps you trust! This key CAN use up to 1 N for transactions.`,
 });
 
-const unlimitedKeyPayload = (accountId, tryPrevUrl) => ({
+const unlimitedKeyPayload = (accountId: string, tryPrevUrl: boolean) => ({
   WARNING: `Creates a key with access to your (new) paired NEAR Account: ${accountId}`,
   description: `ONLY sign this message on this website: ${
     tryPrevUrl ? PREV_NETH_SITE_URL : NETH_SITE_URL
   }`,
 });
 
-const fundingKeyPayload = () => ({
-  WARNING: `This creates a full access key in your localStorage to a funding account you will be sending NEAR to.`,
-  description: `ONLY sign this message on this website: ${NETH_SITE_URL}`,
-});
+// const fundingKeyPayload = () => ({
+//   WARNING: `This creates a full access key in your localStorage to a funding account you will be sending NEAR to.`,
+//   description: `ONLY sign this message on this website: ${NETH_SITE_URL}`,
+// });
 
 /**
  * main domain, types and eth signTypedData method
@@ -840,7 +910,7 @@ const RECEIVER_MARKER = "|~-_NETH~-_-~RECEIVER_-~|";
 const PREFIX = "|NETH_";
 const SUFFIX = "_NETH|";
 
-const pack = (elements) =>
+const pack = (elements: any[]) =>
   elements
     .map((el) => {
       const str =
@@ -861,7 +931,26 @@ const pack = (elements) =>
     })
     .join("");
 
-const ethSignJson = async (signer, json) => {
+      interface EthSignJsonReturn {
+          sig: any;
+          msg: {
+            nonce: string;
+            receivers:  string | any [] ;
+            transactions: any;
+          };
+        }
+
+    const ethSignJson = async (
+      // TODO: Check how to make inerface instead
+      signer: any |  null,
+      json:
+      {
+        nonce: string;
+        receivers: any[] | string;
+        transactions: any
+      },
+    ) :
+    Promise<EthSignJsonReturn> => {
   const Transaction: Array<any> = [];
   const types = { Transaction };
   Object.entries(json).forEach(([k]) => {
@@ -877,7 +966,7 @@ const ethSignJson = async (signer, json) => {
 
   if (json.transactions) {
     Object.values(json.transactions).forEach((tx: any, i) => {
-      tx.actions.forEach((action) => {
+        tx.actions.forEach((action: { args: any  }) => {
         if (!action.args) {
           return;
         }
@@ -890,6 +979,7 @@ const ethSignJson = async (signer, json) => {
 
           if (/receiver_id|account_id/g.test(key)) {
             action.args[key] = RECEIVER_MARKER;
+            // @ts-ignore
             json.receivers.splice(i + 1, 0, value);
           }
         });
@@ -897,15 +987,18 @@ const ethSignJson = async (signer, json) => {
     });
 
     json.transactions = pack(
-      json.transactions.map(({ actions }) => pack(actions))
+      // @ts-ignore
+      json.transactions.map(({ actions } : {actions: any}) => pack(actions))
     );
   }
   if (json.receivers) {
     const numReceivers = json.receivers.length.toString();
     json.receivers =
       HEADER_OFFSET +
+      // @ts-ignore
       json.receivers.join(",").length.toString().padStart(HEADER_PAD, "0") +
       "__" +
+      // @ts-ignore
       json.receivers.join(",");
     json.receivers =
       json.receivers.substring(0, 4) +
@@ -923,7 +1016,11 @@ const ethSignJson = async (signer, json) => {
   return args;
 };
 
-const keyPairFromEthSig = async (signer, json) => {
+const keyPairFromEthSig = async (
+  signer: string | null,
+  json: any
+    ) => {
+
   const { sig } = await ethSignJson(signer, json);
   const sigHash = ethers.utils.id(sig);
   /// use 32 bytes of entropy from hash of signature to create NEAR keyPair
@@ -936,7 +1033,7 @@ const keyPairFromEthSig = async (signer, json) => {
 
 /// ethereum
 
-export const getEthereum = async () => {
+const getEthereum = async () => {
   const provider = await detectEthereumProvider();
 
   if (!provider) {
@@ -990,7 +1087,7 @@ export const getEthereum = async () => {
   return { signer, ethAddress: await signer.getAddress() };
 };
 
-export const switchEthereum = async () => {
+const switchEthereum = async () => {
   const provider = (await detectEthereumProvider()) as any;
   await provider.send("wallet_requestPermissions", [{ eth_accounts: {} }]);
   const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -1000,21 +1097,31 @@ export const switchEthereum = async () => {
 
 /// near
 
-export const getNearMap = async (eth_address) => {
+const getNearMap = async (eth_address: string | null) => {
   return contractAccount.viewFunction(
-    NETWORK[networkId].MAP_ACCOUNT_ID,
+    NETWORK[networkId as keyof typeof NETWORK].MAP_ACCOUNT_ID,
     "get_near",
     { eth_address }
   );
 };
 
-export const getNear = async () => {
+interface GetNear {
+    account: any,
+    accountId: any,
+    keyPair: any,
+    secretKey: any
+    }
+
+export const getNear = async () : Promise<GetNear> => {
   const secretKey = await storage.getItem(APP_KEY_SECRET);
   const accountId = await storage.getItem(APP_KEY_ACCOUNT_ID);
   if (!secretKey || !accountId) {
     const ethRes: any = await getEthereum();
     const res = await getAppKey(ethRes);
+
     if (!res) {
+      // TODO: Check how to add false to type
+      // @ts-ignore
       return false;
     }
     return await getNear();
@@ -1038,8 +1145,8 @@ export const signOut = async () => {
   return { accountId };
 };
 
-export const verifyOwner = async ({ message, provider, account }) => {
-  let accountId;
+export const verifyOwner = async ({ message, provider, account }: { message: any, provider: any, account: any }): Promise<{ signature: string; accountId: any; message: any; blockId: any; publicKey: string; keyType: any; }> => {
+  let accountId: any;
   if (!account) {
     ({ account, accountId } = await getNear());
   } else {
@@ -1109,7 +1216,7 @@ export const isSignedIn = async () => {
 //   return newAccountId;
 // };
 
-export const getAppKey = async ({ signer, ethAddress: eth_address }) => {
+const getAppKey = async ({ signer, ethAddress: eth_address }:{ signer: any, ethAddress: any }): Promise<any> => {
   const accountId = await getNearMap(eth_address);
 
   if (!accountId) {
@@ -1192,13 +1299,13 @@ const broadcastTXs = async () => {
   return res;
 };
 
-export const signAndSendTransactions = async ({ transactions, bundle }) => {
+export const signAndSendTransactions = async ({ transactions, bundle } : { transactions: any, bundle: any }) => {
   const ethRes: any = await getEthereum();
   const { signer } = ethRes;
   const { account, accountId } = await getNear();
+  const receivers = transactions.map(({ receiverId }: { receiverId: any }) => receiverId);
 
-  const receivers = transactions.map(({ receiverId }) => receiverId);
-  const transformedTxs = transactions.map(({ receiverId, actions }) => ({
+  const transformedTxs = transactions.map(({ receiverId, actions } : { receiverId: any, actions: any }) => ({
     actions: convertActions(actions, accountId, receiverId),
   }));
 
@@ -1236,7 +1343,7 @@ export const signAndSendTransactions = async ({ transactions, bundle }) => {
 
 /// helpers
 
-export const convertActions = (actions, accountId, receiverId) =>
+const convertActions = (actions: any[], accountId: any, receiverId: any) =>
   actions.map((_action) => {
     const { enum: type } = _action;
     const {

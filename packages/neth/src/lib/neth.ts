@@ -1,10 +1,11 @@
-// @ts-nocheck
 import type {
   WalletModuleFactory,
   InjectedWallet,
   Action,
   FunctionCallAction,
   WalletBehaviourFactory,
+  Optional,
+  Transaction,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
@@ -19,7 +20,7 @@ import {
   initConnection,
   NETH_SITE_URL,
 } from "./neth-lib";
-export { initConnection } from "./neth-lib";
+// export { initConnection } from "./neth-lib";
 
 declare global {
   interface Window {
@@ -32,7 +33,7 @@ declare global {
   }
 }
 
-export interface NethParams {
+interface NethParams {
   // default NETH icon included
   iconUrl?: string;
   // default 200 Tgas - for each NETH transaction (bundling can include multiple "inner" transactions)
@@ -43,6 +44,7 @@ export interface NethParams {
   bundle?: boolean;
   // default false
   deprecated?: boolean;
+  customGas?: string;
 }
 
 const isInstalled = async () => {
@@ -52,8 +54,8 @@ const isInstalled = async () => {
 
 let bundle = true;
 let useCover = false;
-let customGas;
-
+let customGas = "";
+// @ts-ignore
 const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   logger,
@@ -63,6 +65,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
 }) => {
   const cover = initConnection({
+    // @ts-ignore
     network: options.network,
     gas: customGas,
     logger,
@@ -87,7 +90,9 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
     return actions.map((x) => x.params);
   };
 
-  const signTransactions = async (transactions) => {
+  const signTransactions = async (
+    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+  ) => {
     logger.log("NETH:signAndSendTransactions", { transactions });
 
     const { contract } = store.getState();
@@ -164,15 +169,20 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 };
 
-export function setupNeth({
-  iconUrl = nethIcon,
-  gas,
-  useModalCover = false,
-  bundle: _bundle = true,
-  deprecated = false,
-}: NethParams = {}): WalletModuleFactory<InjectedWallet> {
+export function setupNeth(
+  {
+    iconUrl = nethIcon,
+    gas,
+    useModalCover = false,
+    bundle: _bundle = true,
+    deprecated = false,
+  }: NethParams = {}
+): WalletModuleFactory<InjectedWallet> {
   return async () => {
     useCover = useModalCover;
+    //  error  'customGas' is assigned a value but never used
+    //@typescript-eslint/no-unused-vars
+    // @ts-ignore
     customGas = gas;
     bundle = _bundle;
 
