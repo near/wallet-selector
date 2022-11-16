@@ -32,6 +32,8 @@
     --secondary-button-border-color: #4F7CD129;
     --secondary-button-text-color: #4F7CD1;
     --what-wallet-icon-color: #FFFFFF;
+    --deprecated-icon-bg-color: #D7E2F7;
+    --deprecated-icon-bg-color-selected: #4F7CD1;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -66,6 +68,8 @@
     --secondary-button-border-color: #4F7CD1;
     --secondary-button-text-color: #FFFFFF;
     --what-wallet-icon-color: #568FFC;
+    --deprecated-icon-bg-color: #2F394E;
+    --deprecated-icon-bg-color-selected: #4F7CD1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -101,6 +105,8 @@
         --secondary-button-border-color:#4F7CD1;
         --secondary-button-text-color: #FFFFFF;
         --what-wallet-icon-color: #568FFC;
+        --deprecated-icon-bg-color: #2F394E;
+        --deprecated-icon-bg-color-selected: #4F7CD1;
     }
 }
 
@@ -286,12 +292,31 @@
     color: #FFFFFF;
 }
 
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.deprecated-wallet .icon,
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.deprecated-wallet .title {
+  opacity: 0.4;
+}
+
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar.deprecated-wallet {
-    opacity: 0.4;
+    position: relative;
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .warning-triangle {
     display: flex;
+    position: absolute;
+    top: 2px;
+    left: 42px;
+    background: var(--content-bg);
+    border-top-left-radius: 63px;
+    border-bottom-left-radius: 10px;
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar:hover .warning-triangle {
+    background-color: var(--deprecated-icon-bg-color);
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.selected-wallet.sidebar .warning-triangle {
+  background-color: var(--deprecated-icon-bg-color-selected);
 }
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .icon {
