@@ -44,11 +44,12 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
           result.push(
             <li
+              tabIndex={0}
               className={`single-wallet ${
                 activeWalletId === module.id ? "selected-wallet" : ""
               } ${selected ? "connected-wallet" : ""} ${
                 deprecated ? "deprecated-wallet" : ""
-              } sidebar`}
+              } sidebar ${module.id}`}
               key={module.id}
               onClick={() => {
                 if (module.id === modules[index].id) {
@@ -67,8 +68,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
               {deprecated && (
                 <div className="warning-triangle">
                   <svg
-                    width="24"
-                    height="24"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
