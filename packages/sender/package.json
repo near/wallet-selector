@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/sender",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "peerDependencies": {
     "near-api-js": "^0.44.2"
   }

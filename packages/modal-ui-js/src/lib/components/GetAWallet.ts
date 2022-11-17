@@ -126,7 +126,7 @@ export async function renderGetAWallet() {
     document.getElementById("wallets")?.insertAdjacentHTML(
       "beforeend",
       `
-    <div class="single-wallet-get ${filteredModules[i].id}" id="${
+    <div tabindex="0" class="single-wallet-get ${filteredModules[i].id}" id="${
         filteredModules[i].id
       }">
       <div class="small-icon">
