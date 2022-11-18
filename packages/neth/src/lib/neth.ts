@@ -19,6 +19,7 @@ import {
   initConnection,
   NETH_SITE_URL,
 } from "./neth-lib";
+import isMobile from "is-mobile";
 export { initConnection } from "./neth-lib";
 
 declare global {
@@ -176,9 +177,14 @@ export function setupNeth({
     customGas = gas;
     bundle = _bundle;
 
+    const mobile = isMobile();
     const installed = await isInstalled();
 
     await waitFor(() => !!isSignedIn(), { timeout: 300 }).catch(() => false);
+
+    if (mobile) {
+      return null;
+    }
 
     return {
       id: "neth",
