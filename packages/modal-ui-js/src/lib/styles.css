@@ -1395,6 +1395,10 @@
     background-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
   }
 
+  .nws-modal-wrapper .nws-modal .connecting-wrapper .content {
+    padding-top: 0;
+  }
+
   .connecting-wrapper .content .icon .green-dot {
     border-color: var(--wallet-selector-mobile-bottom-section, var(--bottom-section));
   }
@@ -1453,6 +1457,8 @@
     display: flex;
     overflow: auto;
     padding-block: 10px;
+    grid-gap: 0;
+    gap: 0;
   }
 
   .nws-modal-wrapper .nws-modal .info {
@@ -1462,7 +1468,8 @@
 
   .single-wallet {
     display: block;
-    max-width: 64px;
+    min-width: 76px;
+    max-width: 76px;
   }
 
   .single-wallet.sidebar .icon {
@@ -1481,6 +1488,10 @@
     margin-top: 10px;
     text-align: center;
     margin-left: 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .single-wallet.wallet-connect, .single-wallet.my-near-wallet {
