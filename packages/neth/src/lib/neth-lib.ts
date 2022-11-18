@@ -45,11 +45,13 @@ const ATTEMPT_ETH_ADDRESS = "__ATTEMPT_ETH_ADDRESS";
 const APP_KEY_SECRET = "__APP_KEY_SECRET";
 const APP_KEY_ACCOUNT_ID = "__APP_KEY_ACCOUNT_ID";
 const defaultGas = "200000000000000";
-const halfGas = "50000000000000";
+// @typescript-eslint/no-unused-vars
+// const halfGas = "50000000000000";
 /// this is the new account amount 0.21 for account name, keys, contract and 0.01 for mapping contract storage cost
 const MIN_NEW_ACCOUNT = parseNearAmount("0.4");
 const MIN_NEW_ACCOUNT_THRESH = parseNearAmount("0.49");
-const MIN_NEW_ACCOUNT_ASK = parseNearAmount("0.5");
+// @typescript-eslint/no-unused-vars
+// const MIN_NEW_ACCOUNT_ASK = parseNearAmount("0.5");
 const FUNDING_CHECK_TIMEOUT = 5000;
 /// lkmfawl
 
@@ -88,8 +90,9 @@ let near,
   storage,
   connection,
   networkId,
-  contractAccount,
-  accountSuffix;
+  contractAccount;
+//@typescript-eslint/no-unused-vars
+//accountSuffix;
 
 export const initConnection = ({
   network,
@@ -112,7 +115,8 @@ export const initConnection = ({
     connection,
     networkId === "mainnet" ? "near" : networkId
   );
-  accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
+  // @typescript-eslint/no-unused-vars
+  //accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
 
   const cover = document.createElement("div");
   cover.style.display = "none";
