@@ -19,7 +19,6 @@ import {
   initConnection,
   NETH_SITE_URL,
 } from "./neth-lib";
-export { initConnection } from "./neth-lib";
 
 declare global {
   interface Window {
