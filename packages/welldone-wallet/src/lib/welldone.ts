@@ -407,7 +407,7 @@ export function setupWelldoneWallet({
       id: "welldone-wallet",
       type: "injected",
       metadata: {
-        name: "WELLDONE Wallet",
+        name: "Welldone Wallet",
         description: "WELLDONE Wallet for Multichains",
         iconUrl,
         downloadUrl:
