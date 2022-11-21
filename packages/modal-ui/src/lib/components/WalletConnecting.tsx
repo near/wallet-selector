@@ -32,6 +32,11 @@ export const WalletConnecting: React.FC<WalletConnectingProps> = ({
               ...
             </span>
           </div>
+          <div className="connecting-message">
+            <span>
+              {translate(`modal.wallet.connectingMessage.${wallet?.type}`)}
+            </span>
+          </div>
         </div>
       </div>
     </Fragment>

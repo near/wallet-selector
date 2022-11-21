@@ -23,6 +23,7 @@ import {
   createAction,
   signTransactions,
 } from "@near-wallet-selector/wallet-utils";
+import isMobile from "is-mobile";
 
 export const STORAGE_ACCOUNT = "account";
 
@@ -401,13 +402,18 @@ export function setupWelldoneWallet({
   deprecated = false,
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
+    const mobile = isMobile();
     const installed = await isInstalled();
+
+    if (mobile) {
+      return null;
+    }
 
     return {
       id: "welldone-wallet",
       type: "injected",
       metadata: {
-        name: "WELLDONE Wallet",
+        name: "Welldone Wallet",
         description: "WELLDONE Wallet for Multichains",
         iconUrl,
         downloadUrl:
