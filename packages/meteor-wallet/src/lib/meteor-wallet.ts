@@ -195,6 +195,10 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         transactions: await transformTransactions(transactions),
       });
     },
+
+    importAccountsByEncryptedUrl(encryptedAccountData) {
+      return `https://wallet.meteorwallet.app/batch-import?network=${options.network.networkId}#${encryptedAccountData}`;
+    },
   };
 };
 

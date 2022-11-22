@@ -219,6 +219,12 @@ const MyNearWallet: WalletBehaviourFactory<
         callbackUrl,
       });
     },
+
+    importAccountsByEncryptedUrl(encryptedAccountData) {
+      return `${resolveWalletUrl(
+        options.network
+      )}/batch-import#${encryptedAccountData}`;
+    },
   };
 };
 

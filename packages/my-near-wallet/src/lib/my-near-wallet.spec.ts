@@ -111,3 +111,17 @@ describe("signAndSendTransaction", () => {
     expect(result).toEqual(null);
   });
 });
+
+describe("importAccountsByEncryptedUrl", () => {
+  it("returns import url", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    expect(wallet.importAccountsByEncryptedUrl).toBeDefined();
+
+    const url =
+      wallet.importAccountsByEncryptedUrl &&
+      (await wallet.importAccountsByEncryptedUrl("test"));
+
+    expect(url).toEqual("https://testnet.mynearwallet.com/batch-import#test");
+  });
+});
