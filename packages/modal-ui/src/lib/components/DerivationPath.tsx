@@ -24,11 +24,11 @@ interface DerivationPathProps {
   onCloseModal: () => void;
 }
 
-type HardwareWalletAccountState = HardwareWalletAccount & {
+export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
 };
 
-type HardwareRoutes =
+export type HardwareRoutes =
   | "EnterDerivationPath"
   | "SpecifyHDPath"
   | "NoAccountsFound"
