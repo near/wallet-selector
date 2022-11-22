@@ -26,7 +26,7 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
-export interface NightlyConnectParams {
+interface NightlyConnectParams {
   appMetadata: AppMetadata;
   url?: string;
   timeout?: number;

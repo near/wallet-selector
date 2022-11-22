@@ -1,11 +1,11 @@
 import type { Wallet } from "@near-wallet-selector/core";
 import type { ModuleState } from "@near-wallet-selector/core";
 
-export type AlertMessageModalRouteParams = {
+type AlertMessageModalRouteParams = {
   module: ModuleState;
 };
 
-export type WalletOptionsModalRouteParams = {
+type WalletOptionsModalRouteParams = {
   wallet: Wallet;
 };
 
@@ -13,67 +13,67 @@ export type DerivationPathModalRouteParams = {
   walletId: string;
 };
 
-export type WalletNotInstalledModalRouteParams = {
+type WalletNotInstalledModalRouteParams = {
   module: ModuleState;
 };
 
-export type WalletNetworkChangedModalRouteParams = {
+type WalletNetworkChangedModalRouteParams = {
   wallet: Wallet;
 };
 
-export type WalletConnectingModalRouteParams = {
+type WalletConnectingModalRouteParams = {
   wallet: Wallet;
 };
 
-export type WalletConnectedParams = {
+type WalletConnectedParams = {
   module: ModuleState | undefined;
 };
 
-export type ScanQRCodeParams = {
+type ScanQRCodeParams = {
   wallet: Wallet;
   uri: string | undefined;
 };
 
-export type AlertMessageModalRoute = {
+type AlertMessageModalRoute = {
   name: "AlertMessage";
   params?: AlertMessageModalRouteParams;
 };
 
-export type WalletOptionsModalRoute = {
+type WalletOptionsModalRoute = {
   name: "WalletOptions";
   params?: WalletOptionsModalRouteParams;
 };
 
-export type DerivationPathModalRoute = {
+type DerivationPathModalRoute = {
   name: "DerivationPath";
   params: DerivationPathModalRouteParams;
 };
 
-export type WalletNotInstalledModalRoute = {
+type WalletNotInstalledModalRoute = {
   name: "WalletNotInstalled";
   params?: WalletNotInstalledModalRouteParams;
 };
 
-export type WalletNetworkChangedModalRoute = {
+type WalletNetworkChangedModalRoute = {
   name: "WalletNetworkChanged";
   params?: WalletNetworkChangedModalRouteParams;
 };
 
-export type WalletConnectingModalRoute = {
+type WalletConnectingModalRoute = {
   name: "WalletConnecting";
   params?: WalletConnectingModalRouteParams;
 };
 
-export type WalletHome = {
+type WalletHome = {
   name: "WalletHome";
 };
 
-export type WalletConnected = {
+type WalletConnected = {
   name: "WalletConnected";
   params?: WalletConnectedParams;
 };
 
-export type ScanQRCode = {
+type ScanQRCode = {
   name: "ScanQRCode";
   params?: ScanQRCodeParams;
 };
