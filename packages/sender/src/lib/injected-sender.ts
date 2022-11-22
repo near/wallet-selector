@@ -1,6 +1,7 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
+import type { NetworkId } from "@near-wallet-selector/core";
 import type { Account, providers } from "near-api-js";
 
 interface AccessKey {
@@ -119,6 +120,11 @@ interface SenderEvents {
   rpcChanged: (response: RpcChangedResponse) => void;
 }
 
+export interface batchImportParams {
+  keystore: string;
+  network: NetworkId;
+}
+
 export interface InjectedSender {
   isSender: boolean;
   callbacks: Record<keyof SenderEvents, unknown>;
@@ -143,4 +149,5 @@ export interface InjectedSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
+  batchImport: (params: batchImportParams) => void;
 }

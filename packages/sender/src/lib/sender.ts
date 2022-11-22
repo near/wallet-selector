@@ -278,6 +278,20 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
+
+    importAccountsInSecureContext(accountData) {
+      if (window && window.near && window.near.isSender) {
+        window.near.batchImport({
+          keystore: accountData,
+          network: options.network.networkId,
+        });
+      } else {
+        window.open(
+          "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg?utm_source=chrome-ntp-icon",
+          "_blank"
+        );
+      }
+    },
   };
 };
 
