@@ -53,12 +53,12 @@ export const setupModal = (
     derivationPath: DEFAULT_DERIVATION_PATH,
   };
 
-  modalState.selector.store.observable.subscribe((state) => {
+  modalState.selector.getStore().observable.subscribe((state) => {
     if (!modalState) {
       return;
     }
 
-    if (selector.options.optimizeWalletOrder) {
+    if (selector.getOptions().optimizeWalletOrder) {
       state.modules.sort((current, next) => {
         if (current.metadata.deprecated === next.metadata.deprecated) {
           return 0;
@@ -99,8 +99,9 @@ export const setupModal = (
           return;
         }
         renderModal();
-        const selectedWalletId =
-          modalState.selector.store.getState().selectedWalletId;
+        const selectedWalletId = modalState.selector
+          .getStore()
+          .getState().selectedWalletId;
         if (selectedWalletId) {
           const module = modalState.modules.find(
             (m) => m.id === selectedWalletId

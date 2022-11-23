@@ -14,7 +14,6 @@ import type { Subscription } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { WalletSelector } from "@near-wallet-selector/core";
-import { WalletSelectorNetworks } from "../../app.component";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -30,8 +29,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() modal: WalletSelectorModal;
   @Input() accounts: Array<AccountState>;
   @Input() accountId: string | null;
-  @Input() networkSelectors: WalletSelectorNetworks;
-  @Input() setNetwork: (networkId: string) => void;
   @Input() contractId: string;
   @Input() networkId: string;
 
@@ -51,29 +48,12 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.subscribeToEvents();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async onNetworkChange(e: any) {
-    this.networkId = e.target.value;
-    this.setNetwork(this.networkId);
-
-    const [messages, account] = await Promise.all([
-      this.getMessages(this.contractId),
-      this.getAccount(),
-    ]);
-
-    this.account = account;
-    this.messages = messages;
-
-    this.subscription?.unsubscribe();
-    this.subscribeToEvents();
-  }
-
   async getAccount() {
     if (!this.accountId) {
       return null;
     }
 
-    const { network } = this.selector.options;
+    const { network } = this.selector.getOptions();
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
@@ -106,7 +86,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages(contractId: string) {
-    const { network } = this.selector.options;
+    const { network } = this.selector.getOptions();
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
@@ -152,8 +132,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   subscribeToEvents() {
-    this.subscription = this.selector.store.observable
-      .pipe(
+    this.subscription = this.selector
+      .getStore()
+      .observable.pipe(
         map((state) => state.accounts),
         distinctUntilChanged()
       )
@@ -171,7 +152,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   async addMessages(message: string, donation: string, multiple: boolean) {
-    const { contract } = this.selector.store.getState();
+    const { contract } = this.selector.getStore().getState();
     const wallet = await this.selector.wallet();
 
     if (!multiple) {

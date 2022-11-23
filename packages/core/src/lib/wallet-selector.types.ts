@@ -33,8 +33,8 @@ export type WalletSelectorEvents = {
 };
 
 export interface WalletSelector {
-  options: Options;
-  store: WalletSelectorStore;
+  getOptions(): Options;
+  getStore(): WalletSelectorStore;
 
   wallet<Variation extends Wallet = Wallet>(id?: string): Promise<Variation>;
 

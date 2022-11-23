@@ -15,7 +15,8 @@ import {
 } from "./services";
 import type { Wallet } from "./wallet";
 import { CONTRACT, PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
-import type { ContractState } from "./store.types";
+import type { ContractState, Store } from "./store.types";
+import type { Options } from "./options.types";
 
 // this function is needed because the network switching feature was added
 // it will update the storage to use new naming convention that uses network id
@@ -43,31 +44,77 @@ async function updateStorageCompatibility(storage: StorageService) {
   await jsonStorage.removeItem(CONTRACT);
 }
 
+type WalletModulesNetwork = {
+  walletModules: WalletModules;
+  options: Options;
+  store: Store;
+};
+
+const walletModulesNetworks: Array<WalletModulesNetwork> = [];
+let activeNetworkId: string | null = null;
+
+function getActiveWalletModule() {
+  if (!activeNetworkId) {
+    throw new Error("Active network id is null");
+  }
+
+  const walletModule = walletModulesNetworks.find(
+    (walletModuleNetwork) =>
+      walletModuleNetwork.options.network.networkId === activeNetworkId
+  );
+
+  if (!walletModule) {
+    throw new Error("Wallet module not found");
+  }
+
+  return walletModule;
+}
+
 export const setupWalletSelector = async (
-  params: WalletSelectorParams
+  listOfParams: Array<WalletSelectorParams>
 ): Promise<WalletSelector> => {
-  const { options, storage } = resolveOptions(params);
-  Logger.debug = options.debug;
-
-  await updateStorageCompatibility(storage);
-
   const emitter = new EventEmitter<WalletSelectorEvents>();
-  const store = await createStore(storage, options.network);
-  const walletModules = new WalletModules({
-    factories: params.modules,
-    storage,
-    options,
-    store,
-    emitter,
-    provider: new Provider(options.network.nodeUrl),
-  });
 
-  await walletModules.setup();
+  for (let i = 0; i < listOfParams.length; i++) {
+    const params = listOfParams[i];
+
+    const { options, storage } = resolveOptions(params);
+    Logger.debug = options.debug;
+
+    await updateStorageCompatibility(storage);
+
+    const store = await createStore(storage, options.network);
+    const walletModules = new WalletModules({
+      factories: params.modules,
+      storage,
+      options,
+      store,
+      emitter,
+      provider: new Provider(options.network.nodeUrl),
+    });
+
+    await walletModules.setup();
+
+    walletModulesNetworks.push({
+      walletModules,
+      options,
+      store,
+    });
+  }
+
+  activeNetworkId = walletModulesNetworks[0].options.network.networkId;
 
   return {
-    options,
-    store: store.toReadOnly(),
+    getOptions: () => {
+      const { options } = getActiveWalletModule();
+      return options;
+    },
+    getStore: () => {
+      const { store } = getActiveWalletModule();
+      return store.toReadOnly();
+    },
     wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+      const { store, walletModules } = getActiveWalletModule();
       const { selectedWalletId } = store.getState();
       const wallet = await walletModules.getWallet<Variation>(
         id || selectedWalletId
@@ -84,6 +131,7 @@ export const setupWalletSelector = async (
       return wallet;
     },
     setActiveAccount: (accountId: string) => {
+      const { store } = getActiveWalletModule();
       const { accounts } = store.getState();
 
       if (!accounts.some((account) => account.accountId === accountId)) {
@@ -96,6 +144,7 @@ export const setupWalletSelector = async (
       });
     },
     isSignedIn() {
+      const { store } = getActiveWalletModule();
       const { accounts } = store.getState();
 
       return Boolean(accounts.length);

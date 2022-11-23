@@ -180,7 +180,8 @@
     border-right: 1px solid var(--wallet-selector-sidebar-border-color, var(--sidebar-border-color));
     padding: 32px 24px;
     height: 100%;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .nws-modal-wrapper .nws-modal .modal-left .modal-left-title h2 {

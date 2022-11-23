@@ -1,11 +1,3 @@
-<div>
-  <select [ngModel]="networkId" (change)="onNetworkChange($event)">
-    <option value="testnet">Testnet</option>
-    <option value="mainnet">Mainnet</option>
-  </select>
-</div>
-<br>
-
 <ng-container *ngIf="account">
   <div>
     <button (click)="signOut()">Log out</button>

@@ -51,7 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
       name: "WalletHome",
     });
 
-    const { selectedWalletId, modules } = selector.store.getState();
+    const { selectedWalletId, modules } = selector.getStore().getState();
     if (selectedWalletId) {
       const module = modules.find((m) => m.id === selectedWalletId);
       setSelectedWallet(module);
@@ -69,7 +69,7 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
-      if (networkId === selector.options.network.networkId) {
+      if (networkId === selector.getOptions().network.networkId) {
         return handleDismissClick();
       }
 
@@ -107,7 +107,7 @@ export const Modal: React.FC<ModalProps> = ({
   ) => {
     setSelectedWallet(module);
 
-    const { selectedWalletId } = selector.store.getState();
+    const { selectedWalletId } = selector.getStore().getState();
     if (selectedWalletId === module.id) {
       setRoute({
         name: "WalletConnected",
@@ -239,6 +239,14 @@ export const Modal: React.FC<ModalProps> = ({
             }}
             selector={selector}
           />
+          <div className="change-network">
+            <div className="change-network-title">Change Network</div>
+            <div className="change-network-selected">Testnet</div>
+            <div className="change-network-options">
+              <div>Mainnet</div>
+              <div>Testnet</div>
+            </div>
+          </div>
         </div>
         <div className="modal-right">
           <div className="nws-modal-body">
@@ -270,7 +278,7 @@ export const Modal: React.FC<ModalProps> = ({
                   })
                 }
                 onError={(message, wallet) => {
-                  const { modules } = selector.store.getState();
+                  const { modules } = selector.getStore().getState();
                   const findModule = modules.find(
                     (module) => module.id === wallet.id
                   );

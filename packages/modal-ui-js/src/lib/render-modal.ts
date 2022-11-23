@@ -26,7 +26,9 @@ const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   }
 
   const response = await fetch(
-    `${modalState.selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
+    `${
+      modalState.selector.getOptions().network.indexerUrl
+    }/publicKey/ed25519:${publicKey}/accounts`
   );
 
   if (!response.ok) {
@@ -76,7 +78,7 @@ export async function connectToWallet(
     return;
   }
 
-  const { selectedWalletId } = modalState.selector.store.getState();
+  const { selectedWalletId } = modalState.selector.getStore().getState();
 
   if (selectedWalletId === module.id) {
     renderWalletAccount(module);
@@ -179,7 +181,8 @@ function renderOptionsList(
       "beforeend",
       `
         <div tabindex="0" class="single-wallet ${
-          module.id === modalState.selector.store.getState().selectedWalletId
+          module.id ===
+          modalState.selector.getStore().getState().selectedWalletId
             ? "selected-wallet connected-wallet"
             : ""
         } sidebar ${module.metadata.deprecated ? "deprecated-wallet" : ""} ${
@@ -251,7 +254,8 @@ export function renderModal() {
 
   modalState.modules.forEach((module) => {
     if (
-      modalState?.selector.store
+      modalState?.selector
+        .getStore()
         .getState()
         .recentlySignedInWallets.includes(module.id)
     ) {
@@ -262,7 +266,7 @@ export function renderModal() {
   });
 
   if (
-    modalState.selector.options.optimizeWalletOrder &&
+    modalState.selector.getOptions().optimizeWalletOrder &&
     recentlySignedInWallets.length > 0
   ) {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
