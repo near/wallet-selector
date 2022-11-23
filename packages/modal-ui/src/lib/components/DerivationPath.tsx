@@ -36,7 +36,7 @@ export type HardwareRoutes =
   | "AddCustomAccountId"
   | "OverviewAccounts";
 
-export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
+const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
 
 export const DerivationPath: React.FC<DerivationPathProps> = ({
   selector,

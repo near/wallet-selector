@@ -64,7 +64,8 @@
     "serve:angular": "nx serve angular",
     "prepack": "yarn build:core && yarn build:all",
     "test": "nx run-many --target=test --all",
-    "postinstall": "ngcc --properties es2020 browser module main"
+    "postinstall": "ngcc --properties es2020 browser module main",
+    "find:unused": "ts-prune -p tsprune.json"
   },
   "dependencies": {
     "@angular/animations": "~14.0.0",
@@ -102,8 +103,8 @@
     "react-dom": "18.2.0",
     "react-qr-code": "^2.0.8",
     "regenerator-runtime": "0.13.10",
-    "stream-browserify": "^3.0.0",
     "rxjs": "^7.5.7",
+    "stream-browserify": "^3.0.0",
     "tslib": "^2.3.0",
     "tweetnacl": "^1.0.3",
     "zone.js": "~0.11.4"
@@ -174,6 +175,7 @@
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
     "typescript": "~4.7.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ts-prune": "^0.10.3"
   }
 }

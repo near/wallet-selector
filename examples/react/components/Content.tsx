@@ -13,7 +13,7 @@ import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
 
-export type Submitted = SubmitEvent & {
+type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
 };
 

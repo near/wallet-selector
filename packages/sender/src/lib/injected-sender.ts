@@ -11,16 +11,16 @@ interface AccessKey {
   secretKey: string;
 }
 
-export interface RequestSignInResponse {
+interface RequestSignInResponse {
   accessKey: AccessKey;
   error: string | { type: string };
   notificationId: number;
   type: "sender-wallet-result";
 }
 
-export type SignOutResponse = true | { error: string | { type: string } };
+type SignOutResponse = true | { error: string | { type: string } };
 
-export interface RpcInfo {
+interface RpcInfo {
   explorerUrl: string;
   helperUrl: string;
   index: number;
@@ -32,20 +32,20 @@ export interface RpcInfo {
   wrapNearContract: string;
 }
 
-export interface GetRpcResponse {
+interface GetRpcResponse {
   method: "getRpc";
   notificationId: number;
   rpc: RpcInfo;
   type: "sender-wallet-result";
 }
 
-export interface RequestSignInParams {
+interface RequestSignInParams {
   contractId: string;
   methodNames?: Array<string>;
   amount?: string; // in yoctoⓃ
 }
 
-export interface RpcChangedResponse {
+interface RpcChangedResponse {
   explorerUrl: string;
   helperUrl: string;
   index: number;
@@ -57,24 +57,24 @@ export interface RpcChangedResponse {
   wrapNearContract: string;
 }
 
-export interface SendMoneyParams {
+interface SendMoneyParams {
   receiverId: string;
   amount: string;
 }
 
-export interface Action {
+interface Action {
   methodName: string;
   args: object;
   gas: string;
   deposit: string;
 }
 
-export interface SignAndSendTransactionParams {
+interface SignAndSendTransactionParams {
   receiverId: string;
   actions: Array<Action>;
 }
 
-export interface FunctionCallError {
+interface FunctionCallError {
   error: {
     index: number;
     kind: object;
@@ -85,7 +85,7 @@ export interface FunctionCallError {
 }
 
 // Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
-export interface SignAndSendTransactionResponse {
+interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
@@ -94,7 +94,7 @@ export interface SignAndSendTransactionResponse {
   type: "sender-wallet-extensionResult";
 }
 
-export interface SignAndSendTransactionsResponse {
+interface SignAndSendTransactionsResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
@@ -103,16 +103,16 @@ export interface SignAndSendTransactionsResponse {
   type: "sender-wallet-extensionResult";
 }
 
-export interface Transaction {
+interface Transaction {
   receiverId: string;
   actions: Array<Action>;
 }
 
-export interface RequestSignTransactionsParams {
+interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-export interface SenderEvents {
+interface SenderEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;
