@@ -100,10 +100,6 @@ export interface BrowserWalletSignInParams extends SignInParams {
   failureUrl?: string;
 }
 
-export interface AccountImportEncryptedParams {
-  encryptedAccountJson: string;
-}
-
 export interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
   callbackUrl?: string;
@@ -117,9 +113,7 @@ export interface BrowserWalletSignAndSendTransactionsParams
 export type BrowserWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
-    importAccountsByEncryptedUrl?(
-      params: AccountImportEncryptedParams
-    ): Promise<void>;
+    buildImportAccountsUrl?(): string;
     importAccountsInSecureContext?: never;
     signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
     signAndSendTransaction(
@@ -155,7 +149,7 @@ export interface AccountImportSecureContextParams {
 export type InjectedWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
-    importAccountsByEncryptedUrl?: never;
+    buildImportAccountsUrl?: never;
     importAccountsInSecureContext?(
       params: AccountImportSecureContextParams
     ): Promise<void>;
