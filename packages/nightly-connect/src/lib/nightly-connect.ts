@@ -85,6 +85,7 @@ const NightlyConnect: WalletBehaviourFactory<
 
       try {
         const tx = nearTransactions.Transaction.decode(Buffer.from(message));
+        // @ts-ignore
         const signedTx = await _state.client!.signTransaction(tx);
 
         return {
