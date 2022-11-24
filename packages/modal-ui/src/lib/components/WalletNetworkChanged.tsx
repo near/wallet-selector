@@ -27,9 +27,7 @@ export const WalletNetworkChanged: React.FC<WalletNetworkChangedProps> = ({
         <div className="content">
           <p>
             We've detected that you need to change your wallet's network to
-            <strong className="network-id">{` ${
-              selector.getOptions().network.networkId
-            }`}</strong>{" "}
+            <strong className="network-id">{` ${selector.options.network.networkId}`}</strong>{" "}
             for this dApp.
           </p>
           <p>

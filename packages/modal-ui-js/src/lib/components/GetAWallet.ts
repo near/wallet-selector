@@ -8,7 +8,7 @@ function goToWallet(module: ModuleState) {
     return;
   }
 
-  const { networkId } = modalState.selector.getOptions().network;
+  const { networkId } = modalState.selector.options.network;
   let url = "";
 
   if (module.type === "injected") {

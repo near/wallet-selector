@@ -52,7 +52,7 @@ export const Modal: React.FC<ModalProps> = ({
       name: "WalletHome",
     });
 
-    const { selectedWalletId, modules } = selector.getStore().getState();
+    const { selectedWalletId, modules } = selector.store.getState();
     if (selectedWalletId) {
       const module = modules.find((m) => m.id === selectedWalletId);
       setSelectedWallet(module);
@@ -70,7 +70,7 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
-      if (networkId === selector.getOptions().network.networkId) {
+      if (networkId === selector.options.network.networkId) {
         return handleDismissClick();
       }
 
@@ -108,7 +108,7 @@ export const Modal: React.FC<ModalProps> = ({
   ) => {
     setSelectedWallet(module);
 
-    const { selectedWalletId } = selector.getStore().getState();
+    const { selectedWalletId } = selector.store.getState();
     if (selectedWalletId === module.id) {
       setRoute({
         name: "WalletConnected",
@@ -274,7 +274,7 @@ export const Modal: React.FC<ModalProps> = ({
                   })
                 }
                 onError={(message, wallet) => {
-                  const { modules } = selector.getStore().getState();
+                  const { modules } = selector.store.getState();
                   const findModule = modules.find(
                     (module) => module.id === wallet.id
                   );

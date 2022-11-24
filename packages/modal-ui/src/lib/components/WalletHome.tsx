@@ -24,7 +24,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
 
   useEffect(() => {
-    const subscription = selector.getStore().observable.subscribe((state) => {
+    const subscription = selector.store.observable.subscribe((state) => {
       const filterByType = (item: { type: string }) => {
         return item.type !== "bridge" && item.type !== "hardware";
       };
@@ -38,7 +38,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
   }, []);
 
   const goToWallet = (module: ModuleState) => {
-    const { networkId } = selector.getOptions().network;
+    const { networkId } = selector.options.network;
     let url = "";
 
     if (module.type === "injected") {

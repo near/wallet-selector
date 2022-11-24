@@ -15,8 +15,7 @@ import {
 } from "./services";
 import type { Wallet } from "./wallet";
 import { CONTRACT, PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
-import type { ContractState, Store } from "./store.types";
-import type { Options } from "./options.types";
+import type { ContractState } from "./store.types";
 
 // this function is needed because the network switching feature was added
 // it will update the storage to use new naming convention that uses network id
@@ -44,31 +43,7 @@ async function updateStorageCompatibility(storage: StorageService) {
   await jsonStorage.removeItem(CONTRACT);
 }
 
-type WalletModulesNetwork = {
-  walletModules: WalletModules;
-  options: Options;
-  store: Store;
-};
-
-export const walletModuleNetworks: Array<WalletModulesNetwork> = [];
-let activeNetworkId: string | null = null;
-
-function getActiveWalletModule() {
-  if (!activeNetworkId) {
-    throw new Error("Active network id is null");
-  }
-
-  const walletModule = walletModuleNetworks.find(
-    (walletModuleNetwork) =>
-      walletModuleNetwork.options.network.networkId === activeNetworkId
-  );
-
-  if (!walletModule) {
-    throw new Error("Wallet module not found");
-  }
-
-  return walletModule;
-}
+export const walletSelectors: Array<WalletSelector> = [];
 
 export const setupWalletSelector = async (
   listOfParams: Array<WalletSelectorParams>
@@ -95,81 +70,71 @@ export const setupWalletSelector = async (
 
     await walletModules.setup();
 
-    walletModuleNetworks.push({
-      walletModules,
+    walletSelectors.push({
       options,
       store,
+      wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
+        const { selectedWalletId } = store.getState();
+        const wallet = await walletModules.getWallet<Variation>(
+          id || selectedWalletId
+        );
+
+        if (!wallet) {
+          if (id) {
+            throw new Error("Invalid wallet id");
+          }
+
+          throw new Error("No wallet selected");
+        }
+
+        return wallet;
+      },
+      setActiveAccount: (accountId: string) => {
+        const { accounts } = store.getState();
+
+        if (!accounts.some((account) => account.accountId === accountId)) {
+          throw new Error("Invalid account id");
+        }
+
+        store.dispatch({
+          type: "SET_ACTIVE_ACCOUNT",
+          payload: { accountId },
+        });
+      },
+      setActiveNetwork: (networkId: string) => {
+        const selector = walletSelectors.find(
+          (s) => s.options.network.networkId === networkId
+        );
+        if (!selector) {
+          throw new Error("No " + networkId + " network");
+        }
+
+        emitter.emit("networkChanged", {
+          walletId: store.getState().selectedWalletId,
+          networkId,
+          selector,
+        });
+        window.localStorage.setItem("ACTIVE_NETWORK_ID", networkId);
+      },
+      isSignedIn() {
+        const { accounts } = store.getState();
+
+        return Boolean(accounts.length);
+      },
+      on: (eventName, callback) => {
+        return emitter.on(eventName, callback);
+      },
+      off: (eventName, callback) => {
+        emitter.off(eventName, callback);
+      },
     });
   }
 
-  activeNetworkId = walletModuleNetworks[0].options.network.networkId;
+  // if (window.localStorage.getItem("ACTIVE_NETWORK_ID")) {
+  //   activeNetworkId = window.localStorage.getItem("ACTIVE_NETWORK_ID");
+  // } else {
+  //   activeNetworkId = walletModuleNetworks[0].options.network.networkId;
+  // }
 
-  return {
-    getOptions: () => {
-      const { options } = getActiveWalletModule();
-      return options;
-    },
-    getStore: () => {
-      const { store } = getActiveWalletModule();
-      return store.toReadOnly();
-    },
-    wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
-      const { store, walletModules } = getActiveWalletModule();
-      const { selectedWalletId } = store.getState();
-      const wallet = await walletModules.getWallet<Variation>(
-        id || selectedWalletId
-      );
-
-      if (!wallet) {
-        if (id) {
-          throw new Error("Invalid wallet id");
-        }
-
-        throw new Error("No wallet selected");
-      }
-
-      return wallet;
-    },
-    setActiveAccount: (accountId: string) => {
-      const { store } = getActiveWalletModule();
-      const { accounts } = store.getState();
-
-      if (!accounts.some((account) => account.accountId === accountId)) {
-        throw new Error("Invalid account id");
-      }
-
-      store.dispatch({
-        type: "SET_ACTIVE_ACCOUNT",
-        payload: { accountId },
-      });
-    },
-    setActiveNetwork: (networkId: string) => {
-      if (
-        !walletModuleNetworks.find(
-          (network) => network.options.network.networkId === networkId
-        )
-      ) {
-        throw new Error("No " + networkId + " network");
-      }
-
-      const { store } = getActiveWalletModule();
-      activeNetworkId = networkId;
-      emitter.emit("networkChanged", {
-        walletId: store.getState().selectedWalletId,
-        networkId,
-      });
-    },
-    isSignedIn() {
-      const { store } = getActiveWalletModule();
-      const { accounts } = store.getState();
-
-      return Boolean(accounts.length);
-    },
-    on: (eventName, callback) => {
-      return emitter.on(eventName, callback);
-    },
-    off: (eventName, callback) => {
-      emitter.off(eventName, callback);
-    },
-  };
+  return walletSelectors[0];
 };

@@ -31,6 +31,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   @Input() accountId: string | null;
   @Input() contractId: string;
   @Input() networkId: string;
+  @Input() setNetwork: (networkId: string) => void;
 
   account: Account | null;
   messages: Array<Message>;
@@ -46,6 +47,22 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.messages = messages;
 
     this.subscribeToEvents();
+
+    this.selector.on("networkChanged", async ({ networkId, selector }) => {
+      if (selector) {
+        this.selector = selector;
+      }
+      this.setNetwork(networkId);
+      const [_messages, _account] = await Promise.all([
+        this.getMessages(this.contractId),
+        this.getAccount(),
+      ]);
+
+      this.account = _account;
+      this.messages = _messages;
+
+      this.subscribeToEvents();
+    });
   }
 
   async getAccount() {
@@ -53,7 +70,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    const { network } = this.selector.getOptions();
+    const { network } = this.selector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
@@ -86,7 +103,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   getMessages(contractId: string) {
-    const { network } = this.selector.getOptions();
+    const { network } = this.selector.options;
     const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
     return provider
@@ -132,9 +149,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   subscribeToEvents() {
-    this.subscription = this.selector
-      .getStore()
-      .observable.pipe(
+    this.subscription = this.selector.store.observable
+      .pipe(
         map((state) => state.accounts),
         distinctUntilChanged()
       )
@@ -152,7 +168,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   async addMessages(message: string, donation: string, multiple: boolean) {
-    const { contract } = this.selector.getStore().getState();
+    const { contract } = this.selector.store.getState();
     const wallet = await this.selector.wallet();
 
     if (!multiple) {

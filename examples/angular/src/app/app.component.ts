@@ -50,11 +50,12 @@ export class AppComponent implements OnInit {
   }
 
   setNetwork(networkId: string) {
+    console.log("this.selector", this.selector);
     this.contractId =
       networkId === "mainnet" ? MAINNET_CONTRACT_ID : TESTNET_CONTRACT_ID;
 
     const _modal = setupModal(this.selector, { contractId: this.contractId });
-    const state = this.selector.getStore().getState();
+    const state = this.selector.store.getState();
 
     this.accounts = state.accounts;
     this.accountId =
@@ -113,11 +114,14 @@ export class AppComponent implements OnInit {
       },
     ]);
 
-    this.selector.on("networkChanged", ({ networkId }) => {
-      console.log("this.selector.networkChanged");
-      this.setNetwork(networkId);
-    });
+    // this.selector.on("networkChanged", ({ networkId, selector }) => {
+    //   console.log("this.selector.networkChanged", networkId);
+    //   if (selector) {
+    //     this.selector = selector;
+    //   }
+    //   this.setNetwork(networkId);
+    // });
 
-    this.setNetwork(this.selector.getOptions().network.networkId);
+    this.setNetwork(this.selector.options.network.networkId);
   }
 }

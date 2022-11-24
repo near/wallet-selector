@@ -69,7 +69,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const response = await fetch(
       `${
-        selector.getOptions().network.indexerUrl
+        selector.options.network.indexerUrl
       }/publicKey/ed25519:${publicKey}/accounts`
     );
 
@@ -363,7 +363,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
               {translate("modal.ledger.cantFindAnyAccount")}{" "}
               <a
                 href={`https://${
-                  selector.getOptions().network.networkId === "testnet"
+                  selector.options.network.networkId === "testnet"
                     ? "testnet"
                     : "app"
                 }.mynearwallet.com/create`}

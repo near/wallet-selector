@@ -28,13 +28,17 @@ export type WalletSelectorEvents = {
     walletId: string;
   };
   accountsChanged: { walletId: string; accounts: Array<Account> };
-  networkChanged: { walletId: string | null; networkId: string };
+  networkChanged: {
+    walletId: string | null;
+    networkId: string;
+    selector?: WalletSelector;
+  };
   uriChanged: { walletId: string; uri: string };
 };
 
 export interface WalletSelector {
-  getOptions(): Options;
-  getStore(): WalletSelectorStore;
+  options: Options;
+  store: WalletSelectorStore;
 
   wallet<Variation extends Wallet = Wallet>(id?: string): Promise<Variation>;
 

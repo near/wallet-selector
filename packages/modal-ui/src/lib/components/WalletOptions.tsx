@@ -20,8 +20,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   const [activeWalletId, setActiveWalletId] = useState("");
 
   useEffect(() => {
-    const subscription = selector.getStore().observable.subscribe((state) => {
-      if (selector.getOptions().optimizeWalletOrder) {
+    const subscription = selector.store.observable.subscribe((state) => {
+      if (selector.options.optimizeWalletOrder) {
         state.modules.sort((current, next) => {
           if (current.metadata.deprecated === next.metadata.deprecated) {
             return 0;
@@ -38,7 +38,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           return next.metadata.available ? 1 : -1;
         });
 
-        const { selectedWalletId } = selector.getStore().getState();
+        const { selectedWalletId } = selector.store.getState();
         if (selectedWalletId) {
           setActiveWalletId(selectedWalletId);
         }
@@ -48,8 +48,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
         state.modules.forEach((module) => {
           if (
-            selector
-              .getStore()
+            selector.store
               .getState()
               .recentlySignedInWallets.includes(module.id)
           ) {
@@ -72,7 +71,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   function renderOptionsList(modulesToRender: Array<ModuleState<Wallet>>) {
     return modulesToRender.reduce<Array<JSX.Element>>(
       (result, module, index) => {
-        const { selectedWalletId } = selector.getStore().getState();
+        const { selectedWalletId } = selector.store.getState();
         const { name, description, iconUrl, deprecated } = module.metadata;
         const selected = module.id === selectedWalletId;
 
@@ -140,8 +139,8 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   return (
     <div className="wallet-options">
-      {selector.getOptions().optimizeWalletOrder &&
-      selector.getStore().getState().recentlySignedInWallets.length > 0 ? (
+      {selector.options.optimizeWalletOrder &&
+      selector.store.getState().recentlySignedInWallets.length > 0 ? (
         <div className="wallet-options-wrapper">
           <div className="options-list-section">
             <div className="options-list-section-header">Recent</div>

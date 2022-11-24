@@ -1,5 +1,5 @@
 import type { WalletSelector } from "@near-wallet-selector/core";
-import { walletModuleNetworks } from "@near-wallet-selector/core";
+import { walletSelectors } from "@near-wallet-selector/core";
 import React, { useState } from "react";
 
 interface ChangeNetworkProps {
@@ -13,7 +13,7 @@ export const ChangeNetwork: React.FC<ChangeNetworkProps> = ({ selector }) => {
     return (
       <div
         className={`network-option ${
-          selector.getOptions().network.networkId === networkId
+          selector.options.network.networkId === networkId
             ? networkId === "mainnet"
               ? "mainnet"
               : "other"
@@ -93,7 +93,7 @@ export const ChangeNetwork: React.FC<ChangeNetworkProps> = ({ selector }) => {
     <div className="change-network">
       <div className="change-network-title">Change Network</div>
       <div className="change-network-selected" onClick={toggleShowOptions}>
-        {renderNetworkOption(selector.getOptions().network.networkId)}
+        {renderNetworkOption(selector.options.network.networkId)}
         <svg
           width="24"
           height="24"
@@ -112,7 +112,7 @@ export const ChangeNetwork: React.FC<ChangeNetworkProps> = ({ selector }) => {
       </div>
       {showOptions && (
         <div className="change-network-options">
-          {walletModuleNetworks.map((network, i) => {
+          {walletSelectors.map((network, i) => {
             return (
               <div
                 key={i}
