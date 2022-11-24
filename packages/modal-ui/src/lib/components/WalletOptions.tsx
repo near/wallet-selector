@@ -139,7 +139,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
   }
 
   return (
-    <div>
+    <div className="wallet-options">
       {selector.getOptions().optimizeWalletOrder &&
       selector.getStore().getState().recentlySignedInWallets.length > 0 ? (
         <div className="wallet-options-wrapper">

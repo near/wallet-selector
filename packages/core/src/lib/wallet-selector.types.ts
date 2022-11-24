@@ -28,7 +28,7 @@ export type WalletSelectorEvents = {
     walletId: string;
   };
   accountsChanged: { walletId: string; accounts: Array<Account> };
-  networkChanged: { walletId: string; networkId: string };
+  networkChanged: { walletId: string | null; networkId: string };
   uriChanged: { walletId: string; uri: string };
 };
 
@@ -41,6 +41,7 @@ export interface WalletSelector {
   isSignedIn(): boolean;
 
   setActiveAccount(accountId: string): void;
+  setActiveNetwork(networkId: string): void;
 
   on<EventName extends keyof WalletSelectorEvents>(
     eventName: EventName,

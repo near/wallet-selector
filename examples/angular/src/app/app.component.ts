@@ -114,6 +114,7 @@ export class AppComponent implements OnInit {
     ]);
 
     this.selector.on("networkChanged", ({ networkId }) => {
+      console.log("this.selector.networkChanged");
       this.setNetwork(networkId);
     });
 

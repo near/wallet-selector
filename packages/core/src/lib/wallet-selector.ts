@@ -50,7 +50,7 @@ type WalletModulesNetwork = {
   store: Store;
 };
 
-const walletModulesNetworks: Array<WalletModulesNetwork> = [];
+export const walletModuleNetworks: Array<WalletModulesNetwork> = [];
 let activeNetworkId: string | null = null;
 
 function getActiveWalletModule() {
@@ -58,7 +58,7 @@ function getActiveWalletModule() {
     throw new Error("Active network id is null");
   }
 
-  const walletModule = walletModulesNetworks.find(
+  const walletModule = walletModuleNetworks.find(
     (walletModuleNetwork) =>
       walletModuleNetwork.options.network.networkId === activeNetworkId
   );
@@ -95,14 +95,14 @@ export const setupWalletSelector = async (
 
     await walletModules.setup();
 
-    walletModulesNetworks.push({
+    walletModuleNetworks.push({
       walletModules,
       options,
       store,
     });
   }
 
-  activeNetworkId = walletModulesNetworks[0].options.network.networkId;
+  activeNetworkId = walletModuleNetworks[0].options.network.networkId;
 
   return {
     getOptions: () => {
@@ -141,6 +141,22 @@ export const setupWalletSelector = async (
       store.dispatch({
         type: "SET_ACTIVE_ACCOUNT",
         payload: { accountId },
+      });
+    },
+    setActiveNetwork: (networkId: string) => {
+      if (
+        !walletModuleNetworks.find(
+          (network) => network.options.network.networkId === networkId
+        )
+      ) {
+        throw new Error("No " + networkId + " network");
+      }
+
+      const { store } = getActiveWalletModule();
+      activeNetworkId = networkId;
+      emitter.emit("networkChanged", {
+        walletId: store.getState().selectedWalletId,
+        networkId,
       });
     },
     isSignedIn() {

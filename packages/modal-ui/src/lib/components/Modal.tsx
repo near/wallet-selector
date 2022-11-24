@@ -14,6 +14,7 @@ import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
 import { translate } from "@near-wallet-selector/core";
+import { ChangeNetwork } from "./ChangeNetwork";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -230,23 +231,18 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="nws-modal-overlay" onClick={handleDismissClick} />
       <div className="nws-modal">
         <div className="modal-left">
-          <div className="modal-left-title">
-            <h2>{translate("modal.wallet.connectYourWallet")}</h2>
-          </div>
-          <WalletOptions
-            handleWalletClick={(module) => {
-              handleWalletClick(module, false);
-            }}
-            selector={selector}
-          />
-          <div className="change-network">
-            <div className="change-network-title">Change Network</div>
-            <div className="change-network-selected">Testnet</div>
-            <div className="change-network-options">
-              <div>Mainnet</div>
-              <div>Testnet</div>
+          <div className="modal-left-options-wrapper">
+            <div className="modal-left-title">
+              <h2>{translate("modal.wallet.connectYourWallet")}</h2>
             </div>
+            <WalletOptions
+              handleWalletClick={(module) => {
+                handleWalletClick(module, false);
+              }}
+              selector={selector}
+            />
           </div>
+          <ChangeNetwork selector={selector} />
         </div>
         <div className="modal-right">
           <div className="nws-modal-body">
