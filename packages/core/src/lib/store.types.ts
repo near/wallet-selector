@@ -64,12 +64,6 @@ export type WalletSelectorAction =
       payload: {
         accountId: string;
       };
-    }
-  | {
-      type: "NETWORK_CHANGED";
-      payload: {
-        networkId: string;
-      };
     };
 
 export interface ReadOnlyStore {

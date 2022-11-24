@@ -4,6 +4,7 @@ import type {
   ModuleState,
   Wallet,
 } from "@near-wallet-selector/core";
+import { walletSelectors } from "@near-wallet-selector/core";
 import { renderConnectHardwareWallet } from "./components/ConnectHardwareWallet";
 import { renderLedgerAccountsOverviewList } from "./components/LedgerAccountsOverviewList";
 import { renderLedgerSelectAccount } from "./components/LedgerSelectAccount";
@@ -222,6 +223,82 @@ function renderOptionsList(
   }
 }
 
+function renderNetworkOption(networkId: string) {
+  if (!modalState) {
+    return;
+  }
+
+  return `
+    <div
+      class="network-option ${
+        modalState.selector.options.network.networkId === networkId
+          ? networkId === "mainnet"
+            ? "mainnet"
+            : "other"
+          : ""
+      }-network"
+    >
+      ${
+        networkId === "mainnet"
+          ? `<svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g clipPath="url(#clip0_2345_15104)">
+            <path
+              d="M8.00016 1.3335L1.3335 4.66683L8.00016 8.00016L14.6668 4.66683L8.00016 1.3335Z"
+              stroke="#00BF89"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M1.3335 11.3335L8.00016 14.6668L14.6668 11.3335"
+              stroke="#00BF89"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M1.3335 8L8.00016 11.3333L14.6668 8"
+              stroke="#00BF89"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_2345_15104">
+              <rect width="16" height="16" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>`
+          : `<svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.6665 12L14.6665 8L10.6665 4"
+            stroke="#C1C1C1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M5.3335 4L1.3335 8L5.3335 12"
+            stroke="#C1C1C1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>`
+      }
+      <span>${networkId}</span>
+    </div>
+  `;
+}
+
 export function renderModal() {
   if (!modalState) {
     return;
@@ -234,17 +311,90 @@ export function renderModal() {
       <div class="nws-modal-overlay"></div>
       <div class="nws-modal">
         <div class="modal-left">
-          <div class="modal-left-title">
-            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
+          <div class="modal-left-options-wrapper">
+            <div class="modal-left-title">
+              <h2>${translate("modal.wallet.connectYourWallet")}</h2>
+            </div>
+            <div class="wallet-options">
+              <div class="wallet-options-wrapper"></div>
+            </div>
           </div>
-          <div class="nws-modal-body">
-            <div class="wallet-options-wrapper"></div>
+          <div class="change-network">
+            <div class="change-network-title">Change Network</div>
+            <div class="change-network-selected" id="change-network-selected">
+              ${renderNetworkOption(
+                modalState.selector.options.network.networkId
+              )}
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.75 8.75L14.25 12L10.75 15.25"
+                  stroke="#C1C1C1"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="change-network-options" id="change-network-options"></div>
           </div>
         </div>
         <div class="modal-right"></div>
       </div>
     </div>
   `;
+
+  const changeNetworkOptionsElement = document.getElementById(
+    "change-network-options"
+  );
+
+  if (changeNetworkOptionsElement) {
+    changeNetworkOptionsElement.style.display = "none";
+
+    for (let i = 0; i < walletSelectors.length; i++) {
+      changeNetworkOptionsElement.insertAdjacentHTML(
+        "beforeend",
+        `<div id="change-network-to-${
+          walletSelectors[i].options.network.networkId
+        }">${renderNetworkOption(
+          walletSelectors[i].options.network.networkId
+        )}</div>`
+      );
+
+      document
+        .getElementById(
+          `change-network-to-${walletSelectors[i].options.network.networkId}`
+        )
+        ?.addEventListener("click", () => {
+          if (!modalState) {
+            return;
+          }
+          // eslint-disable-next-line no-console
+          console.log("Clicked", walletSelectors[i].options.network.networkId);
+          modalState.selector.setActiveNetwork(
+            walletSelectors[i].options.network.networkId
+          );
+          modalState.container.children[0].classList.remove("open");
+        });
+    }
+  }
+
+  const changeNetworkSelectedElement = document.getElementById(
+    "change-network-selected"
+  );
+
+  changeNetworkSelectedElement?.addEventListener("click", () => {
+    if (changeNetworkOptionsElement!.style.display === "flex") {
+      changeNetworkOptionsElement!.style.display = "none";
+    } else {
+      changeNetworkOptionsElement!.style.display = "flex";
+    }
+  });
 
   const moreWallets: Array<ModuleState<Wallet>> = [];
   const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];

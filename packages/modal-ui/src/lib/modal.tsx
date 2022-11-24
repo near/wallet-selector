@@ -1,4 +1,5 @@
 import React from "react";
+import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
@@ -8,20 +9,25 @@ import { Modal } from "./components/Modal";
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 let modalInstance: WalletSelectorModal | null = null;
+let root: Root | null = null;
 
 export const setupModal = (
   selector: WalletSelector,
   options: ModalOptions
 ): WalletSelectorModal => {
-  const el = document.createElement("div");
-  el.id = MODAL_ELEMENT_ID;
-  document.body.appendChild(el);
+  if (root) {
+    root.unmount();
+  } else {
+    const el = document.createElement("div");
+    el.id = MODAL_ELEMENT_ID;
+    document.body.appendChild(el);
+  }
 
   const container = document.getElementById(MODAL_ELEMENT_ID);
-  const root = createRoot(container!);
+  root = createRoot(container!);
 
   const render = (visible = false) => {
-    root.render(
+    root!.render(
       <Modal
         selector={selector}
         options={options}

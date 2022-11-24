@@ -72,7 +72,7 @@ export const setupWalletSelector = async (
 
     walletSelectors.push({
       options,
-      store,
+      store: store.toReadOnly(),
       wallet: async <Variation extends Wallet = Wallet>(id?: string) => {
         const { selectedWalletId } = store.getState();
         const wallet = await walletModules.getWallet<Variation>(
