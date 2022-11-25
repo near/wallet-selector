@@ -374,8 +374,6 @@ export function renderModal() {
           if (!modalState) {
             return;
           }
-          // eslint-disable-next-line no-console
-          console.log("Clicked", walletSelectors[i].options.network.networkId);
           modalState.selector.setActiveNetwork(
             walletSelectors[i].options.network.networkId
           );

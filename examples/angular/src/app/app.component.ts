@@ -50,7 +50,6 @@ export class AppComponent implements OnInit {
   }
 
   setNetwork(networkId: string) {
-    console.log("this.selector", this.selector);
     this.contractId =
       networkId === "mainnet" ? MAINNET_CONTRACT_ID : TESTNET_CONTRACT_ID;
 
@@ -113,14 +112,6 @@ export class AppComponent implements OnInit {
         modules: [...(await setupDefaultWallets()), setupSender()],
       },
     ]);
-
-    // this.selector.on("networkChanged", ({ networkId, selector }) => {
-    //   console.log("this.selector.networkChanged", networkId);
-    //   if (selector) {
-    //     this.selector = selector;
-    //   }
-    //   this.setNetwork(networkId);
-    // });
 
     this.setNetwork(this.selector.options.network.networkId);
   }
