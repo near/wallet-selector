@@ -48,6 +48,10 @@ export const walletSelectors: Array<WalletSelector> = [];
 export const setupWalletSelector = async (
   listOfParams: Array<WalletSelectorParams>
 ): Promise<WalletSelector> => {
+  if (listOfParams.length < 1) {
+    throw new Error("List of params length must 1 or more");
+  }
+
   const emitter = new EventEmitter<WalletSelectorEvents>();
 
   for (let i = 0; i < listOfParams.length; i++) {
@@ -130,11 +134,17 @@ export const setupWalletSelector = async (
     });
   }
 
-  // if (window.localStorage.getItem("ACTIVE_NETWORK_ID")) {
-  //   activeNetworkId = window.localStorage.getItem("ACTIVE_NETWORK_ID");
-  // } else {
-  //   activeNetworkId = walletModuleNetworks[0].options.network.networkId;
-  // }
+  let walletSelector = null;
+  if (window.localStorage.getItem("ACTIVE_NETWORK_ID")) {
+    const i = walletSelectors.findIndex(
+      (s) =>
+        s.options.network.networkId ===
+        window.localStorage.getItem("ACTIVE_NETWORK_ID")
+    );
+    walletSelector = walletSelectors[i];
+  } else {
+    walletSelector = walletSelectors[0];
+  }
 
-  return walletSelectors[0];
+  return walletSelector;
 };
