@@ -5,7 +5,7 @@ import {
   providers,
 } from "near-api-js";
 import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (
@@ -27,7 +27,7 @@ export const signTransactions = async (
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
-      provider.query<AccessKeyView>({
+      provider.query<AccessKeyViewRaw>({
         request_type: "view_access_key",
         finality: "final",
         account_id: transactions[i].signerId,

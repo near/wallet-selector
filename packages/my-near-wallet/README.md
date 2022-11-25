@@ -8,10 +8,10 @@ This is the [My NEAR Wallet](https://mynearwallet.com/) package for NEAR Wallet 
 The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 ```bash
 # Using Yarn
-yarn add near-api-js@^0.44.2
+yarn add near-api-js
 
 # Using NPM.
-npm install near-api-js@^0.44.2
+npm install near-api-js
 ```
 ```bash
 # Using Yarn

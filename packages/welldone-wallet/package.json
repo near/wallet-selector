@@ -2,6 +2,6 @@
   "name": "@near-wallet-selector/welldone-wallet",
   "version": "7.2.1",
   "peerDependencies": {
-    "near-api-js": "^0.44.2"
+    "near-api-js": "^0.44.2 || ^1.0.0"
   }
 }
