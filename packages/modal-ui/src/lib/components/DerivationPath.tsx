@@ -68,9 +68,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
 
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const response = await fetch(
-      `${
-        selector.options.network.indexerUrl
-      }/publicKey/ed25519:${publicKey}/accounts`
+      `${selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
     );
 
     if (!response.ok) {

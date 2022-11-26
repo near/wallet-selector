@@ -16,10 +16,10 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-// import { setupModal } from "@near-wallet-selector/modal-ui";
-// import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import { setupModal } from "@near-wallet-selector/modal-ui-js";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+// import { setupModal } from "@near-wallet-selector/modal-ui-js";
+// import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { MAINNET_CONTRACT_ID, TESTNET_CONTRACT_ID } from "../constants";
 
 declare global {
