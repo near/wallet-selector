@@ -34,6 +34,7 @@
   --what-wallet-icon-color: #FFFFFF;
   --deprecated-icon-bg-color: #D7E2F7;
   --deprecated-icon-bg-color-selected: #4F7CD1;
+  --change-network-options-background: #fff;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -70,6 +71,7 @@
   --what-wallet-icon-color: #568FFC;
   --deprecated-icon-bg-color: #2F394E;
   --deprecated-icon-bg-color-selected: #4F7CD1;
+  --change-network-options-background: #000;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -107,6 +109,7 @@
     --what-wallet-icon-color: #568FFC;
     --deprecated-icon-bg-color: #2F394E;
     --deprecated-icon-bg-color-selected: #4F7CD1;
+    --change-network-options-background: #000;
   }
 }
 
@@ -254,7 +257,7 @@
   top: -100%;
   left: 0;
   width: 100%;
-  background-color: black;
+  background-color: var(--change-network-options-background);
   display: flex;
   flex-direction: column;
   gap: 1em;
