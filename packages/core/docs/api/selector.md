@@ -148,6 +148,26 @@ Programmatically change active account which will be used to sign and send trans
 selector.setActiveAccount("sometestaccount.testnet");
 ```
 
+### `.setActiveNetwork(networkId)`
+
+**Parameters**
+
+- `networkId` (`string`): network to be set as active.
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Programmatically change active network.
+
+**Example**
+
+```ts
+selector.setActiveNetwork("mainnet");
+```
+
 ### `.on(event, callback)`
 
 **Parameters**
