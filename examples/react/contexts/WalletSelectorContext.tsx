@@ -46,47 +46,45 @@ export const WalletSelectorContextProvider: React.FC<{
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const init = useCallback(async () => {
-    const _selector = await setupWalletSelector([
-      {
-        network: "testnet",
-        debug: true,
-        modules: [
-          ...(await setupDefaultWallets()),
-          setupNearWallet(),
-          setupSender(),
-          setupMathWallet(),
-          setupNightly(),
-          setupMeteorWallet(),
-          setupWelldoneWallet(),
-          setupHereWallet(),
-          setupCoin98Wallet(),
-          setupNearFi(),
-          setupNeth({
-            gas: "300000000000000",
-            bundle: false,
-          }),
-          setupOptoWallet(),
-          setupWalletConnect({
-            projectId: "c4f79cc...",
-            metadata: {
-              name: "NEAR Wallet Selector",
-              description: "Example dApp used by NEAR Wallet Selector",
-              url: "https://github.com/near/wallet-selector",
-              icons: ["https://avatars.githubusercontent.com/u/37784886"],
-            },
-          }),
-          setupNightlyConnect({
-            url: "wss://relay.nightly.app/app",
-            appMetadata: {
-              additionalInfo: "",
-              application: "NEAR Wallet Selector",
-              description: "Example dApp used by NEAR Wallet Selector",
-              icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-            },
-          }),
-        ],
-      },
-    ]);
+    const _selector = await setupWalletSelector({
+      network: "testnet",
+      debug: true,
+      modules: [
+        ...(await setupDefaultWallets()),
+        setupNearWallet(),
+        setupSender(),
+        setupMathWallet(),
+        setupNightly(),
+        setupMeteorWallet(),
+        setupWelldoneWallet(),
+        setupHereWallet(),
+        setupCoin98Wallet(),
+        setupNearFi(),
+        setupNeth({
+          gas: "300000000000000",
+          bundle: false,
+        }),
+        setupOptoWallet(),
+        setupWalletConnect({
+          projectId: "c4f79cc...",
+          metadata: {
+            name: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        }),
+        setupNightlyConnect({
+          url: "wss://relay.nightly.app/app",
+          appMetadata: {
+            additionalInfo: "",
+            application: "NEAR Wallet Selector",
+            description: "Example dApp used by NEAR Wallet Selector",
+            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
+          },
+        }),
+      ],
+    });
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
     const state = _selector.store.getState();
     setAccounts(state.accounts);

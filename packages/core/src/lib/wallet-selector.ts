@@ -37,7 +37,11 @@ async function updateStorageCompatibility(storage: StorageService) {
   }
 
   const detectedNetworkId =
-    contract.contractId.split(".")[1] === "near" ? "mainnet" : "testnet";
+    contract.contractId.split(".")[
+      contract.contractId.split(".").length - 1
+    ] === "near"
+      ? "mainnet"
+      : "testnet";
 
   await jsonStorage.setItem(
     SELECTED_WALLET_ID + ":" + detectedNetworkId,
@@ -66,8 +70,12 @@ export function getActiveWalletSelector() {
 }
 
 export const setupWalletSelector = async (
-  listOfParams: Array<WalletSelectorParams>
+  listOfParams: Array<WalletSelectorParams> | WalletSelectorParams
 ): Promise<WalletSelector> => {
+  if (!Array.isArray(listOfParams)) {
+    listOfParams = [listOfParams];
+  }
+
   if (listOfParams.length < 1) {
     throw new Error("List of params length must 1 or more");
   }
