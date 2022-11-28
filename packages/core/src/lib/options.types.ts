@@ -1,7 +1,7 @@
 export type NetworkId = "mainnet" | "testnet";
 
 export interface Network {
-  networkId: NetworkId;
+  networkId: string;
   nodeUrl: string;
   helperUrl: string;
   explorerUrl: string;
