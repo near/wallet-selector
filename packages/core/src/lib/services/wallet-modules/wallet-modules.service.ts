@@ -18,9 +18,11 @@ import {
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
+  ACTIVE_NETWORK_ID,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
+import { getActiveWalletSelector } from "../../wallet-selector";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -252,7 +254,12 @@ export class WalletModules {
     });
 
     emitter.on("networkChanged", ({ networkId }) => {
-      this.emitter.emit("networkChanged", { walletId: module.id, networkId });
+      window.localStorage.setItem(ACTIVE_NETWORK_ID, networkId);
+      this.emitter.emit("networkChanged", {
+        walletId: module.id,
+        networkId,
+        selector: getActiveWalletSelector(),
+      });
     });
 
     emitter.on("uriChanged", ({ uri }) => {

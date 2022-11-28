@@ -6,3 +6,5 @@ export const PENDING_CONTRACT = "contract:pending";
 
 export const SELECTED_WALLET_ID = `selectedWalletId`;
 export const PENDING_SELECTED_WALLET_ID = `selectedWalletId:pending`;
+
+export const ACTIVE_NETWORK_ID = `activeNetworkId`;

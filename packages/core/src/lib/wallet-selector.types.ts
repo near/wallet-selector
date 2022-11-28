@@ -31,7 +31,7 @@ export type WalletSelectorEvents = {
   networkChanged: {
     walletId: string | null;
     networkId: string;
-    selector?: WalletSelector;
+    selector: WalletSelector;
   };
   uriChanged: { walletId: string; uri: string };
 };

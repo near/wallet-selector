@@ -14,7 +14,12 @@ import {
   WalletModules,
 } from "./services";
 import type { Wallet } from "./wallet";
-import { CONTRACT, PACKAGE_NAME, SELECTED_WALLET_ID } from "./constants";
+import {
+  ACTIVE_NETWORK_ID,
+  CONTRACT,
+  PACKAGE_NAME,
+  SELECTED_WALLET_ID,
+} from "./constants";
 import type { ContractState } from "./store.types";
 
 // this function is needed because the network switching feature was added
@@ -44,6 +49,21 @@ async function updateStorageCompatibility(storage: StorageService) {
 }
 
 export const walletSelectors: Array<WalletSelector> = [];
+export function getActiveWalletSelector() {
+  let walletSelector = null;
+  const networkId = window.localStorage.getItem(ACTIVE_NETWORK_ID);
+  if (networkId) {
+    walletSelector = walletSelectors.find(
+      (s) => s.options.network.networkId === networkId
+    );
+    if (!walletSelector) {
+      throw new Error("No " + networkId + " network");
+    }
+  } else {
+    walletSelector = walletSelectors[0];
+  }
+  return walletSelector;
+}
 
 export const setupWalletSelector = async (
   listOfParams: Array<WalletSelectorParams>
@@ -106,19 +126,12 @@ export const setupWalletSelector = async (
         });
       },
       setActiveNetwork: (networkId: string) => {
-        const selector = walletSelectors.find(
-          (s) => s.options.network.networkId === networkId
-        );
-        if (!selector) {
-          throw new Error("No " + networkId + " network");
-        }
-
+        window.localStorage.setItem(ACTIVE_NETWORK_ID, networkId);
         emitter.emit("networkChanged", {
           walletId: store.getState().selectedWalletId,
           networkId,
-          selector,
+          selector: getActiveWalletSelector(),
         });
-        window.localStorage.setItem("ACTIVE_NETWORK_ID", networkId);
       },
       isSignedIn() {
         const { accounts } = store.getState();
@@ -134,17 +147,5 @@ export const setupWalletSelector = async (
     });
   }
 
-  let walletSelector = null;
-  if (window.localStorage.getItem("ACTIVE_NETWORK_ID")) {
-    const i = walletSelectors.findIndex(
-      (s) =>
-        s.options.network.networkId ===
-        window.localStorage.getItem("ACTIVE_NETWORK_ID")
-    );
-    walletSelector = walletSelectors[i];
-  } else {
-    walletSelector = walletSelectors[0];
-  }
-
-  return walletSelector;
+  return getActiveWalletSelector();
 };

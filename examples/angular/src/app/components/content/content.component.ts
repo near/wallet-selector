@@ -49,9 +49,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.subscribeToEvents();
 
     this.selector.on("networkChanged", async ({ networkId, selector }) => {
-      if (selector) {
-        this.selector = selector;
-      }
+      this.selector = selector;
       this.setNetwork(networkId);
       const [_messages, _account] = await Promise.all([
         this.getMessages(this.contractId),
@@ -114,7 +112,8 @@ export class ContentComponent implements OnInit, OnDestroy {
         args_base64: "",
         finality: "optimistic",
       })
-      .then((res) => JSON.parse(Buffer.from(res.result).toString()));
+      .then((res) => JSON.parse(Buffer.from(res.result).toString()))
+      .catch((err) => console.log("err", err));
   }
 
   switchAccount() {
