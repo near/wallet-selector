@@ -225,7 +225,7 @@ const MyNearWallet: WalletBehaviourFactory<
 export function setupMyNearWallet({
   walletUrl,
   iconUrl = icon,
-  deprecated = true,
+  deprecated = false,
   successUrl = "",
   failureUrl = "",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
