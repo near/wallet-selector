@@ -10,6 +10,7 @@
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
 - `debug` (`boolean`): Whether internal logging is enabled.
+- `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 
 **Description**
 

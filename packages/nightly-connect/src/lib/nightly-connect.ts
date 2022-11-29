@@ -26,7 +26,7 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
-export interface NightlyConnectParams {
+interface NightlyConnectParams {
   appMetadata: AppMetadata;
   url?: string;
   timeout?: number;
@@ -85,6 +85,7 @@ const NightlyConnect: WalletBehaviourFactory<
 
       try {
         const tx = nearTransactions.Transaction.decode(Buffer.from(message));
+        // @ts-ignore
         const signedTx = await _state.client!.signTransaction(tx);
 
         return {

@@ -43,13 +43,13 @@ export interface VerifiedOwner {
   keyType: utils.key_pair.KeyType;
 }
 
-export interface SignAndSendTransactionParams {
+interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
   actions: Array<Action>;
 }
 
-export interface SignAndSendTransactionsParams {
+interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
@@ -95,17 +95,17 @@ export type BrowserWalletMetadata = BaseWalletMetadata & {
   failureUrl?: string;
 };
 
-export interface BrowserWalletSignInParams extends SignInParams {
+interface BrowserWalletSignInParams extends SignInParams {
   successUrl?: string;
   failureUrl?: string;
 }
 
-export interface BrowserWalletSignAndSendTransactionParams
+interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
   callbackUrl?: string;
 }
 
-export interface BrowserWalletSignAndSendTransactionsParams
+interface BrowserWalletSignAndSendTransactionsParams
   extends SignAndSendTransactionsParams {
   callbackUrl?: string;
 }
@@ -172,7 +172,7 @@ export type HardwareWallet = BaseWallet<
 
 // ----- Bridge Wallet ----- //
 
-export interface BridgeWalletSignInParams extends SignInParams {
+interface BridgeWalletSignInParams extends SignInParams {
   qrCodeModal?: boolean;
 }
 
@@ -205,7 +205,7 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-export interface WalletModuleOptions {
+interface WalletModuleOptions {
   options: Options;
 }
 

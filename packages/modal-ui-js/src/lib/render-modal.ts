@@ -164,36 +164,18 @@ export async function connectToWallet(
   }
 }
 
-export function renderModal() {
+function renderOptionsList(
+  parentClass: string,
+  modules: Array<ModuleState<Wallet>>
+) {
   if (!modalState) {
     return;
   }
 
-  modalState.container.innerHTML = `
-    <div class="nws-modal-wrapper ${
-      modalState.options.theme === "dark" ? "dark-theme" : ""
-    }">
-      <div class="nws-modal-overlay"></div>
-      <div class="nws-modal">
-        <div class="modal-left">
-          <div class="modal-left-title">
-            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
-          </div>
-          <div class="nws-modal-body">
-            <div class="wallet-options-wrapper">
-              <ul class="options-list"></ul>
-            </div>
-          </div>
-        </div>
-        <div class="modal-right"></div>
-      </div>
-    </div>
-  `;
-
-  for (let i = 0; i < modalState.modules.length; i++) {
-    const module = modalState.modules[i];
+  for (let i = 0; i < modules.length; i++) {
+    const module = modules[i];
     const { name, description, iconUrl } = module.metadata;
-    document.querySelector(".options-list")?.insertAdjacentHTML(
+    document.querySelector(parentClass)?.insertAdjacentHTML(
       "beforeend",
       `
         <div tabindex="0" class="single-wallet ${
@@ -237,6 +219,77 @@ export function renderModal() {
         }
         connectToWallet(module, false);
       });
+  }
+}
+
+export function renderModal() {
+  if (!modalState) {
+    return;
+  }
+
+  modalState.container.innerHTML = `
+    <div class="nws-modal-wrapper ${
+      modalState.options.theme === "dark" ? "dark-theme" : ""
+    }">
+      <div class="nws-modal-overlay"></div>
+      <div class="nws-modal">
+        <div class="modal-left">
+          <div class="modal-left-title">
+            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
+          </div>
+          <div class="nws-modal-body">
+            <div class="wallet-options-wrapper"></div>
+          </div>
+        </div>
+        <div class="modal-right"></div>
+      </div>
+    </div>
+  `;
+
+  const moreWallets: Array<ModuleState<Wallet>> = [];
+  const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
+
+  modalState.modules.forEach((module) => {
+    if (
+      modalState?.selector.store
+        .getState()
+        .recentlySignedInWallets.includes(module.id)
+    ) {
+      recentlySignedInWallets.push(module);
+    } else {
+      moreWallets.push(module);
+    }
+  });
+
+  if (
+    modalState.selector.options.optimizeWalletOrder &&
+    recentlySignedInWallets.length > 0
+  ) {
+    document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="options-list-section">
+        <div class="options-list-section-header">Recent</div>
+        <div class="options-list recent-options-list-content"></div>
+      </div>
+      `
+    );
+    document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="options-list-section">
+        <div class="options-list-section-header">More</div>
+        <div class="options-list more-options-list-content"></div>
+      </div>
+      `
+    );
+    renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
+    renderOptionsList(".more-options-list-content", moreWallets);
+  } else {
+    document
+      .querySelector(".wallet-options-wrapper")
+      ?.insertAdjacentHTML("beforeend", `<div class="options-list"></div>`);
+    renderOptionsList(".options-list", modalState.modules);
   }
 
   document

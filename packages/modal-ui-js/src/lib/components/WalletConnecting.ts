@@ -36,7 +36,7 @@ export async function renderWalletConnecting(
   }...
                 </span>
         </div>
-           <div class="connecting-message">
+          <div class="connecting-message">
             <span>
               ${translate("modal.wallet.connectingMessage." + module?.type)}
             </span>

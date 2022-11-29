@@ -1,7 +1,7 @@
 {
   "name": "@near-wallet-selector/math-wallet",
-  "version": "7.2.1",
+  "version": "7.3.0",
   "peerDependencies": {
-    "near-api-js": "^0.44.2"
+    "near-api-js": "^0.44.2 || ^1.0.0"
   }
 }
