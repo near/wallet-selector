@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import type { ModuleState, WalletSelector } from "@near-wallet-selector/core";
+import { walletSelectors } from "@near-wallet-selector/core";
 
 import type { ModalOptions, Theme } from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
@@ -242,7 +243,7 @@ export const Modal: React.FC<ModalProps> = ({
               selector={selector}
             />
           </div>
-          <ChangeNetwork selector={selector} />
+          {walletSelectors.length > 1 && <ChangeNetwork selector={selector} />}
         </div>
         <div className="modal-right">
           <div className="nws-modal-body">

@@ -319,30 +319,34 @@ export function renderModal() {
               <div class="wallet-options-wrapper"></div>
             </div>
           </div>
-          <div class="change-network">
-            <div class="change-network-title">Change Network</div>
-            <div class="change-network-selected" id="change-network-selected">
-              ${renderNetworkOption(
-                modalState.selector.options.network.networkId
-              )}
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.75 8.75L14.25 12L10.75 15.25"
-                  stroke="#C1C1C1"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div class="change-network-options" id="change-network-options"></div>
+          ${
+            walletSelectors.length > 1
+              ? `<div class="change-network">
+          <div class="change-network-title">Change Network</div>
+          <div class="change-network-selected" id="change-network-selected">
+            ${renderNetworkOption(
+              modalState.selector.options.network.networkId
+            )}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.75 8.75L14.25 12L10.75 15.25"
+                stroke="#C1C1C1"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
+          <div class="change-network-options" id="change-network-options"></div>
+        </div>`
+              : ""
+          }
         </div>
         <div class="modal-right"></div>
       </div>
@@ -353,7 +357,7 @@ export function renderModal() {
     "change-network-options"
   );
 
-  if (changeNetworkOptionsElement) {
+  if (changeNetworkOptionsElement && walletSelectors.length > 1) {
     changeNetworkOptionsElement.style.display = "none";
 
     for (let i = 0; i < walletSelectors.length; i++) {
@@ -380,19 +384,19 @@ export function renderModal() {
           modalState.container.children[0].classList.remove("open");
         });
     }
+
+    const changeNetworkSelectedElement = document.getElementById(
+      "change-network-selected"
+    );
+
+    changeNetworkSelectedElement?.addEventListener("click", () => {
+      if (changeNetworkOptionsElement!.style.display === "flex") {
+        changeNetworkOptionsElement!.style.display = "none";
+      } else {
+        changeNetworkOptionsElement!.style.display = "flex";
+      }
+    });
   }
-
-  const changeNetworkSelectedElement = document.getElementById(
-    "change-network-selected"
-  );
-
-  changeNetworkSelectedElement?.addEventListener("click", () => {
-    if (changeNetworkOptionsElement!.style.display === "flex") {
-      changeNetworkOptionsElement!.style.display = "none";
-    } else {
-      changeNetworkOptionsElement!.style.display = "flex";
-    }
-  });
 
   const moreWallets: Array<ModuleState<Wallet>> = [];
   const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
