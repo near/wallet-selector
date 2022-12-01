@@ -2583,10 +2583,20 @@
     rxjs "6"
     semver "^7.3.5"
 
-"@ledgerhq/errors@^6.10.0":
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.10.0.tgz#dda9127b65f653fbb2f74a55e8f0e550d69de6e4"
-  integrity sha512-fQFnl2VIXh9Yd41lGjReCeK+Q2hwxQJvLZfqHnKqWapTz68NHOv5QcI0OHuZVNEbv0xhgdLhi5b65kgYeQSUVg==
+"@ledgerhq/devices@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-7.0.5.tgz#2b3f69b84d4bccb2c4b1d34e534444da862f4880"
+  integrity sha512-2o2zD2Yv1Hgd3+R2aLCvlyT7NxBz2nltawTCPSXaf3+8MDIyZbiJlXi43hLEISRFBG3u3bYwAQuiOisimN9C6Q==
+  dependencies:
+    "@ledgerhq/errors" "^6.12.1"
+    "@ledgerhq/logs" "^6.10.1"
+    rxjs "6"
+    semver "^7.3.5"
+
+"@ledgerhq/errors@^6.10.0", "@ledgerhq/errors@^6.12.1":
+  version "6.12.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.12.1.tgz#99ad10bd528942bdfde0ef3d4d0dce658f6f4405"
+  integrity sha512-2qeUSUCpQbMhV9eLJDLI8wycFwTcWszP8g3cJycBt9Jf1VczC5MRERwAQv5AYhPa4rcy+jLKBOVZYxc35r5l7g==
 
 "@ledgerhq/hw-transport-webhid@6.27.1":
   version "6.27.1"
@@ -2598,19 +2608,24 @@
     "@ledgerhq/hw-transport" "^6.27.1"
     "@ledgerhq/logs" "^6.10.0"
 
-"@ledgerhq/hw-transport@6.27.1", "@ledgerhq/hw-transport@^6.27.1":
-  version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.27.1.tgz#88072278f69c279cb6569352acd4ae2fec33ace3"
-  integrity sha512-hnE4/Fq1YzQI4PA1W0H8tCkI99R3UWDb3pJeZd6/Xs4Qw/q1uiQO+vNLC6KIPPhK0IajUfuI/P2jk0qWcMsuAQ==
+"@ledgerhq/hw-transport@6.27.8", "@ledgerhq/hw-transport@^6.27.1":
+  version "6.27.8"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.27.8.tgz#57ece7e2b726216df698767de6828478fbe461e1"
+  integrity sha512-WSUgF1W3tAikSnAfeNAT2e2dgTdEQd5Vi/095C2mR5Fr0/POCSl9X4T9rlBhK5NSVD+nGXI0rN2ISj08zai8HQ==
   dependencies:
-    "@ledgerhq/devices" "^6.27.1"
-    "@ledgerhq/errors" "^6.10.0"
+    "@ledgerhq/devices" "^7.0.5"
+    "@ledgerhq/errors" "^6.12.1"
     events "^3.3.0"
 
 "@ledgerhq/logs@^6.10.0":
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.0.tgz#c012c1ecc1a0e53d50e6af381618dca5268461c1"
   integrity sha512-lLseUPEhSFUXYTKj6q7s2O3s2vW2ebgA11vMAlKodXGf5AFw4zUoEbTz9CoFOC9jS6xY4Qr8BmRnxP/odT4Uuw==
+
+"@ledgerhq/logs@^6.10.1":
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.1.tgz#5bd16082261d7364eabb511c788f00937dac588d"
+  integrity sha512-z+ILK8Q3y+nfUl43ctCPuR4Y2bIxk/ooCQFwZxhtci1EhAtMDzMAx2W25qx8G1PPL9UUOdnUax19+F0OjXoj4w==
 
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
