@@ -122,7 +122,6 @@ export type BrowserWalletBehaviour = Modify<
     signAndSendTransactions(
       params: BrowserWalletSignAndSendTransactionsParams
     ): Promise<void>;
-    importAccountsByEncryptedUrl?(params: string): string;
   }
 >;
 

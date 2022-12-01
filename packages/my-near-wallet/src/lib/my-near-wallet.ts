@@ -220,10 +220,8 @@ const MyNearWallet: WalletBehaviourFactory<
       });
     },
 
-    importAccountsByEncryptedUrl(encryptedAccountData) {
-      return `${resolveWalletUrl(
-        options.network
-      )}/batch-import#${encryptedAccountData}`;
+    buildImportAccountsUrl() {
+      return `${resolveWalletUrl(options.network)}/batch-import`;
     },
   };
 };
