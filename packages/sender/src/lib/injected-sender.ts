@@ -122,7 +122,7 @@ interface SenderEvents {
 
 export interface batchImportParams {
   keystore: string;
-  network: NetworkId;
+  network: string;
 }
 
 export interface InjectedSender {
