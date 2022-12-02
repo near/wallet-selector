@@ -51,17 +51,17 @@ afterEach(() => {
 });
 
 // TODO: when type of Meteor wallet is fixed, revisit again
-// describe("buildImportAccountsUrl", () => {
-//   it("returns import url", async () => {
-//     const { wallet } = await createMeteorWallet();
+describe("buildImportAccountsUrl", () => {
+  it.skip("returns import url", async () => {
+    const { wallet } = await createMeteorWallet();
 
-//     expect(wallet.buildImportAccountsUrl).toBeDefined();
+    expect(wallet.buildImportAccountsUrl).toBeDefined();
 
-//     const url =
-//       wallet.buildImportAccountsUrl && wallet.buildImportAccountsUrl();
+    // const url =
+    //   wallet.buildImportAccountsUrl && wallet.buildImportAccountsUrl();
 
-//     expect(url).toEqual(
-//       "https://wallet.meteorwallet.app/batch-import?network=testnet#test"
-//     );
-//   });
-// });
+    // expect(url).toEqual(
+    //   "https://wallet.meteorwallet.app/batch-import?network=testnet#test"
+    // );
+  });
+});
