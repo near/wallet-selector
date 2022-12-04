@@ -279,12 +279,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         });
     },
 
-    async importAccountsInSecureContext({ accounts: accountData }) {
-      if (window && window.near && window.near.isSender) {
-        // TODO: apply encryption here when it's implemented
-        const encryptedAccountData = JSON.stringify(accountData);
+    async importAccountsInSecureContext({ accounts }) {
+      if (window.near && window.near.isSender) {
         window.near.batchImport({
-          keystore: encryptedAccountData,
+          keystore: JSON.stringify(accounts),
           network: options.network.networkId,
         });
       } else {
