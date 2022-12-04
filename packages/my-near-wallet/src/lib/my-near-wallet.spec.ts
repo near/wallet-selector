@@ -116,13 +116,11 @@ describe("buildImportAccountsUrl", () => {
   it("returns import url", async () => {
     const { wallet } = await createMyNearWallet();
 
-    expect(wallet.buildImportAccountsUrl).toBeDefined();
+    expect(typeof wallet.buildImportAccountsUrl).toBe("function");
 
-    const url =
-      wallet.buildImportAccountsUrl && wallet.buildImportAccountsUrl();
-
-    expect(`${url}#test`).toEqual(
-      "https://testnet.mynearwallet.com/batch-import#test"
+    // @ts-ignore
+    expect(wallet?.buildImportAccountsUrl()).toEqual(
+      "https://testnet.mynearwallet.com/batch-import"
     );
   });
 });

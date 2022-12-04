@@ -195,11 +195,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         transactions: await transformTransactions(transactions),
       });
     },
-
-    // TODO: when type of Meteor wallet is fixed, revisit again
-    // buildImportAccountsUrl() {
-    //   return `https://wallet.meteorwallet.app/batch-import?network=${options.network.networkId}`;
-    // },
   };
 };
 
