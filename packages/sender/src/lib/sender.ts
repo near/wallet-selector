@@ -282,14 +282,9 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     async importAccountsInSecureContext({ accounts }) {
       if (window.near && window.near.isSender) {
         window.near.batchImport({
-          keystore: JSON.stringify(accounts),
+          keystore: accounts,
           network: options.network.networkId,
         });
-      } else {
-        window.open(
-          "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg?utm_source=chrome-ntp-icon",
-          "_blank"
-        );
       }
     },
   };

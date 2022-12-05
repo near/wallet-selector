@@ -2,6 +2,7 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
+import type { AccountImportData } from "packages/core/src/lib/wallet";
 
 interface AccessKey {
   publicKey: {
@@ -120,7 +121,7 @@ interface SenderEvents {
 }
 
 export interface batchImportParams {
-  keystore: string;
+  keystore: Array<AccountImportData>;
   network: string;
 }
 
