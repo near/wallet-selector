@@ -5,6 +5,7 @@ import {
   InjectedWallet,
   Account,
   Action,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import { providers } from "near-api-js";
 import icon from "./icon";
@@ -19,12 +20,18 @@ export interface NarwalletsParams {
   deprecated?: boolean;
 }
 
+interface NarwalletsError {
+  error: string | { type: string }
+}
+
+type Resolve = string | boolean | FinalExecutionOutcome | Array<FinalExecutionOutcome> | NarwalletsError
+type NarwalletsFunctionParams = undefined | boolean | SignAndSendTransactionParams | SignAndSendTransactionParams[]
+
 interface PendingPromises {
   id_wallet_selector: number;
   code: string;
-  // Note: the result from different action may give different results, like boolean or FinalExecutionOutcome. Since the response may be many things, we're leaving any here
-  resolve: (value: any) => void;
-  reject: (reason?: any) => void;
+  resolve: (value: Resolve) => void;
+  reject: (reason?: string) => void;
   timeout?: NodeJS.Timeout;
 }
 
@@ -44,9 +51,9 @@ const pendingPromises: Array<PendingPromises> = [];
 const sendToNarwallets = (
   code: string,
   withTimeout = false,
-  params?: any
-): Promise<any> => {
-  const promise = new Promise<any>((resolve, reject) => {
+  params?: NarwalletsFunctionParams
+): Promise<Resolve> => {
+  const promise = new Promise<Resolve>((resolve, reject) => {
     id++;
     let promiseTimeout;
     if (withTimeout) {
@@ -85,25 +92,23 @@ const isInstalled = async (): Promise<boolean> => {
   return true;
 };
 
-const isSignedIn = (): Promise<boolean> => {
+const isSignedIn = (): Promise<Resolve> => {
   return sendToNarwallets(NARWALLETS_CODES.IS_SIGNED_IN, true);
 };
 
-const getAccountId = (): Promise<string> => {
+const getAccountId = (): Promise<Resolve> => {
   return sendToNarwallets(NARWALLETS_CODES.GET_ACCOUNT_ID, false);
 };
 
 const callSignAndSendTransaction = (
   params: SignAndSendTransactionParams
-): Promise<providers.FinalExecutionOutcome> => {
+): Promise<Resolve> => {
   return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTION, false, params);
 };
 
 const callSignAndSendTransactions = (
   params: Array<SignAndSendTransactionParams>
-): Promise<
-  Array<providers.FinalExecutionOutcome>
-> => {
+): Promise<Resolve> => {
   return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
 };
 
@@ -163,14 +168,16 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return;
     }
 
-    const res = await sendToNarwallets("sign-out");
+    const res: Resolve = await sendToNarwallets("sign-out");
     // const res = await _state.wallet.signOut();
     if (res === true) {
       return;
     }
 
+    const errorObject: NarwalletsError = res as NarwalletsError
+
     const error = new Error(
-      typeof res.error === "string" ? res.error : res.error.type
+      typeof errorObject.error === "string" ? errorObject.error : errorObject.error.type
     );
 
     // Prevent signing out by throwing.
@@ -192,14 +199,14 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       } else {
         code = NARWALLETS_CODES.GET_ACCOUNT_ID;
       }
-      const response = await sendToNarwallets(code);
+      const response = await sendToNarwallets(code) as string;
       return [{ accountId: response }];
     },
 
     signOut,
 
     async getAccounts(): Promise<Array<Account>> {
-      const accountId = await getAccountId();
+      const accountId: string = await getAccountId() as string;
       return [{ accountId }];
     },
 
@@ -221,7 +228,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         signerId,
         receiverId: receiverId || contract.contractId,
         actions: actions
-      })
+      }) as Promise<FinalExecutionOutcome>
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -236,7 +243,7 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return callSignAndSendTransactions(
         transactions
-      )
+      ) as Promise<FinalExecutionOutcome[]>
     },
   };
 };
