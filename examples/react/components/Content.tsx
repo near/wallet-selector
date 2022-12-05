@@ -107,7 +107,6 @@ const Content: React.FC = () => {
     async (message: string, donation: string, multiple: boolean) => {
       const { contract } = selector.store.getState();
       const wallet = await selector.wallet();
-      
       if (!multiple) {
         return wallet
           .signAndSendTransaction({

@@ -1,6 +1,6 @@
 # @near-wallet-selector/narwallets
 
-This is the [Narwallets](https://chrome.google.com/webstore/detail/narwallets-v3/ipbomjpcpbebobdnkoogngmknkohncjd) package for NEAR Wallet Selector.
+This is the [Narwallets](https://chrome.google.com/webstore/detail/narwallets-v4/lkpeokpdkmcdaiadpmnnpimlgmdobkdj) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
