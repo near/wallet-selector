@@ -112,8 +112,8 @@ const callSignAndSendTransactions = (
   return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
 };
 
-const findPendingPromiseById = (id: number): PendingPromises | undefined => {
-  return pendingPromises.filter((c) => c.id_wallet_selector === id)[0];
+const findPendingPromiseById = (promiseId: number): PendingPromises | undefined => {
+  return pendingPromises.filter((c) => c.id_wallet_selector === promiseId)[0];
 }
 
 const removePendingPromise = (callback: PendingPromises) => {

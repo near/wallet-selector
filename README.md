@@ -92,6 +92,7 @@ import { setupSender } from "@near-wallet-selector/sender";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
@@ -107,6 +108,7 @@ const selector = await setupWalletSelector({
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),
+    setupNarwallets(),
     setupLedger(),
     setupWalletConnect({
       projectId: "c4f79cc...",
