@@ -2,7 +2,7 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
-import type { AccountImportData } from "packages/core/src/lib/wallet";
+import type { AccountImportData } from "@near-wallet-selector/core";
 
 interface AccessKey {
   publicKey: {

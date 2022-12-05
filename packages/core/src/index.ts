@@ -61,6 +61,7 @@ export type {
   DeleteKeyAction,
   DeleteAccountAction,
   AddKeyPermission,
+  AccountImportData,
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
