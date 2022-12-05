@@ -8,6 +8,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
+- [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
@@ -49,6 +50,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/narwallets \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
@@ -62,6 +64,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/narwallets \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
