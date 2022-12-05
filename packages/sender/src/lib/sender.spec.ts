@@ -55,11 +55,9 @@ describe("importAccountsInSecureContext", () => {
     ];
     if (wallet.importAccountsInSecureContext) {
       await wallet.importAccountsInSecureContext({ accounts: accountsData });
-      // TODO: apply encryption here when it's implemented
-      const encryptedAccountData = JSON.stringify(accountsData);
       // @ts-ignore
       expect(window.near.batchImport).toHaveBeenCalledWith({
-        keystore: encryptedAccountData,
+        keystore: accountsData,
         network: "testnet",
       });
     }
