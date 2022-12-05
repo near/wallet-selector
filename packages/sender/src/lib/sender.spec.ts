@@ -49,7 +49,7 @@ afterEach(() => {
 describe("importAccountsInSecureContext", () => {
   it("returns import url", async () => {
     const { wallet } = await createSenderWallet();
-    expect(wallet.importAccountsInSecureContext).toBeDefined();
+    expect(typeof wallet.importAccountsInSecureContext).toBe("function");
     const accountsData = [
       { accountId: "test.testnet", privateKey: "ed25519:test" },
     ];
