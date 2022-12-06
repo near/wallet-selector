@@ -1,6 +1,5 @@
-import { providers, utils } from "near-api-js";
-
-import {
+import type { providers, utils } from "near-api-js";
+import type {
   EventEmitterService,
   LoggerService,
   ProviderService,
@@ -44,13 +43,13 @@ export interface VerifiedOwner {
   keyType: utils.key_pair.KeyType;
 }
 
-export interface SignAndSendTransactionParams {
+interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
   actions: Array<Action>;
 }
 
-export interface SignAndSendTransactionsParams {
+interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
@@ -86,18 +85,27 @@ export type WalletEvents = {
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };
   networkChanged: { networkId: string };
+  uriChanged: { uri: string };
 };
 
 // ----- Browser Wallet ----- //
 
-export type BrowserWalletMetadata = BaseWalletMetadata;
+export type BrowserWalletMetadata = BaseWalletMetadata & {
+  successUrl?: string;
+  failureUrl?: string;
+};
 
-export interface BrowserWalletSignAndSendTransactionParams
+interface BrowserWalletSignInParams extends SignInParams {
+  successUrl?: string;
+  failureUrl?: string;
+}
+
+interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
   callbackUrl?: string;
 }
 
-export interface BrowserWalletSignAndSendTransactionsParams
+interface BrowserWalletSignAndSendTransactionsParams
   extends SignAndSendTransactionsParams {
   callbackUrl?: string;
 }
@@ -105,6 +113,9 @@ export interface BrowserWalletSignAndSendTransactionsParams
 export type BrowserWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
+    buildImportAccountsUrl?(): string;
+    importAccountsInSecureContext?: never;
+    signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;
@@ -126,7 +137,24 @@ export type InjectedWalletMetadata = BaseWalletMetadata & {
   downloadUrl: string;
 };
 
-export type InjectedWalletBehaviour = BaseWalletBehaviour;
+export interface AccountImportData {
+  accountId: string;
+  privateKey: string;
+}
+
+export interface AccountImportSecureContextParams {
+  accounts: Array<AccountImportData>;
+}
+
+export type InjectedWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  {
+    buildImportAccountsUrl?: never;
+    importAccountsInSecureContext?(
+      params: AccountImportSecureContextParams
+    ): Promise<void>;
+  }
+>;
 
 export type InjectedWallet = BaseWallet<
   "injected",
@@ -163,9 +191,16 @@ export type HardwareWallet = BaseWallet<
 
 // ----- Bridge Wallet ----- //
 
+interface BridgeWalletSignInParams extends SignInParams {
+  qrCodeModal?: boolean;
+}
+
 export type BridgeWalletMetadata = BaseWalletMetadata;
 
-export type BridgeWalletBehaviour = BaseWalletBehaviour;
+export type BridgeWalletBehaviour = Modify<
+  BaseWalletBehaviour,
+  { signIn(params: BridgeWalletSignInParams): Promise<Array<Account>> }
+>;
 
 export type BridgeWallet = BaseWallet<
   "bridge",
@@ -189,7 +224,7 @@ export type Wallet =
 
 export type WalletType = Wallet["type"];
 
-export interface WalletModuleOptions {
+interface WalletModuleOptions {
   options: Options;
 }
 

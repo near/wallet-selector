@@ -4,7 +4,7 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import { Transaction } from "@near-wallet-selector/core";
+import type { Transaction } from "@near-wallet-selector/core";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
@@ -12,6 +12,10 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
+
+type Submitted = SubmitEvent & {
+  target: { elements: { [key: string]: HTMLInputElement } };
+};
 
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
@@ -154,7 +158,7 @@ const Content: React.FC = () => {
       }
 
       return wallet.signAndSendTransactions({ transactions }).catch((err) => {
-        alert("Failed to add messages");
+        alert("Failed to add messages exception " + err);
         console.log("Failed to add messages");
 
         throw err;
@@ -181,11 +185,9 @@ const Content: React.FC = () => {
   };
 
   const handleSubmit = useCallback(
-    async (e: SubmitEvent) => {
+    async (e: Submitted) => {
       e.preventDefault();
 
-      // TODO: Fix the typing so that target.elements exists..
-      // @ts-ignore.
       const { fieldset, message, donation, multiple } = e.target.elements;
 
       fieldset.disabled = true;
@@ -244,7 +246,7 @@ const Content: React.FC = () => {
       </div>
       <Form
         account={account}
-        onSubmit={(e) => handleSubmit(e as unknown as SubmitEvent)}
+        onSubmit={(e) => handleSubmit(e as unknown as Submitted)}
       />
       <Messages messages={messages} />
     </Fragment>

@@ -1,4 +1,4 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { resolveAccounts } from "../render-modal";
 import { renderConnectHardwareWallet } from "./ConnectHardwareWallet";
@@ -7,6 +7,7 @@ import { renderLedgerSelectAccount } from "./LedgerSelectAccount";
 import { renderNoLedgerAccountsFound } from "./NoLedgerAccountsFound";
 import { renderWalletConnecting } from "./WalletConnecting";
 import { renderWalletConnectionFailed } from "./WalletConnectionFailed";
+import { translate } from "@near-wallet-selector/core";
 
 export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
   if (!modalState) {
@@ -21,13 +22,17 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
             </path>
           </svg></button>
         <div class="nws-modal-header">
-          <h3 class="middleTitle">Specify HD Path</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
+          <h3 class="middleTitle">
+            ${translate("modal.ledger.specifyHDPath")}
+          </h3>
+          <button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
               height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
               <path d="M0 0h24v24H0z" fill="none"></path>
               <path
                 d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
               </path>
-            </svg></button>
+            </svg>
+          </button>
         </div>
       </div>
       <div class="derivation-path-wrapper">
@@ -54,8 +59,22 @@ export function renderSpecifyDerivationPath(module: ModuleState<Wallet>) {
               </div>
             </div>
           </div>
-          <p class="path-description">Enter your preferred HD path, then scan for any active accounts.</p>
-          <div class="action-buttons"><button class="middleButton" id="scan-button">Scan</button></div>
+          <p class="path-description">
+            ${translate("modal.ledger.enterYourPreferredHDPath")}
+          </p>
+          <p class="what-link">
+            <a
+              href="https://www.ledger.com/academy/crypto/what-are-hierarchical-deterministic-hd-wallets"
+              target="_blank"
+            >
+              What's this?
+            </a>
+          </p>
+          <div class="action-buttons">
+            <button class="middleButton" id="scan-button">
+            ${translate("modal.ledger.scan")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

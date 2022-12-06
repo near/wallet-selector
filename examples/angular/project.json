@@ -6,7 +6,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/examples/angular",
         "index": "examples/angular/src/index.html",
@@ -31,6 +33,11 @@
           {
             "glob": "**/*",
             "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nearfi/assets/",
             "output": "assets/"
           },
           {
@@ -65,11 +72,23 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/welldone-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/opto-wallet/assets/",
             "output": "assets/"
           }
         ],
-        "styles": ["examples/angular/src/styles.scss"],
+        "styles": [
+          "examples/angular/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -134,7 +153,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/examples/angular"],
+      "outputs": [
+        "coverage/examples/angular"
+      ],
       "options": {
         "jestConfig": "examples/angular/jest.config.js",
         "passWithNoTests": true

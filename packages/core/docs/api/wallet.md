@@ -81,6 +81,9 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
+  - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `successUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+  - `failureUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
 
 **Returns**
 
@@ -197,7 +200,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
 
 Signs the message and verifies the owner. Message is not sent to blockchain.
 
-> Note: This feature is currently supported only by MyNearWallet on **testnet**. Sender can sign messages when unlocked.
+> Note: This feature is currently supported only by MyNearWallet, Meteor Wallet and WalletConnect on **testnet**. Sender can sign messages when unlocked.
 **Example**
 
 ```ts

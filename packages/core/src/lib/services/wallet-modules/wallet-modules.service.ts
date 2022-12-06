@@ -14,12 +14,13 @@ import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
+  RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import { ProviderService } from "../provider/provider.service.types";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -95,10 +96,14 @@ export class WalletModules {
           });
         }
 
+        const recentlySignedInWalletsFromPending =
+          await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+
         return {
           accounts,
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
+          recentlySignedInWallets: recentlySignedInWalletsFromPending,
         };
       }
     }
@@ -106,11 +111,16 @@ export class WalletModules {
     const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
+    const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
+      RECENTLY_SIGNED_IN_WALLETS
+    );
+
     if (!accounts.length) {
       return {
         accounts: [],
         contract: null,
         selectedWalletId: null,
+        recentlySignedInWallets: recentlySignedInWallets || [],
       };
     }
 
@@ -118,7 +128,31 @@ export class WalletModules {
       accounts,
       contract,
       selectedWalletId,
+      recentlySignedInWallets: recentlySignedInWallets || [],
     };
+  }
+
+  private async setWalletAsRecentlySignedIn(walletId: string) {
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+
+    let recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
+      RECENTLY_SIGNED_IN_WALLETS
+    );
+
+    if (!recentlySignedInWallets) {
+      recentlySignedInWallets = [];
+    }
+
+    if (!recentlySignedInWallets.includes(walletId)) {
+      recentlySignedInWallets.unshift(walletId);
+      recentlySignedInWallets = recentlySignedInWallets.slice(0, 5);
+      await jsonStorage.setItem(
+        RECENTLY_SIGNED_IN_WALLETS,
+        recentlySignedInWallets
+      );
+    }
+
+    return recentlySignedInWallets;
   }
 
   private async signOutWallet(walletId: string) {
@@ -157,9 +191,20 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
+    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+      walletId
+    );
+
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, contract, accounts },
+      payload: { walletId, contract, accounts, recentlySignedInWallets },
+    });
+
+    this.emitter.emit("signedIn", {
+      walletId,
+      contractId,
+      methodNames,
+      accounts,
     });
   }
 
@@ -168,6 +213,8 @@ export class WalletModules {
       type: "WALLET_DISCONNECTED",
       payload: { walletId },
     });
+
+    this.emitter.emit("signedOut", { walletId });
   }
 
   private setupWalletEmitter(module: WalletModule) {
@@ -182,6 +229,8 @@ export class WalletModules {
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
+      this.emitter.emit("accountsChanged", { walletId: module.id, accounts });
+
       if (!accounts.length) {
         return this.signOutWallet(module.id);
       }
@@ -194,6 +243,10 @@ export class WalletModules {
 
     emitter.on("networkChanged", ({ networkId }) => {
       this.emitter.emit("networkChanged", { walletId: module.id, networkId });
+    });
+
+    emitter.on("uriChanged", ({ uri }) => {
+      this.emitter.emit("uriChanged", { walletId: module.id, uri });
     });
 
     return emitter;
@@ -320,7 +373,7 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, contract, selectedWalletId } =
+    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
 
     this.store.dispatch({
@@ -330,6 +383,7 @@ export class WalletModules {
         accounts,
         contract,
         selectedWalletId,
+        recentlySignedInWallets,
       },
     });
   }

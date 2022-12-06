@@ -1,0 +1,58 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Conecta Tu Billetera",
+      "whatIsAWallet": "¿Que es una Billetera?",
+      "secureAndManage": "Resguarda y Administrar Tus Activos Digitales",
+      "safelyStore": "Almacena de forma segura y transfiere tus cryptos y NFT's",
+      "logInToAny": "Inicie sesión en Cualquier Aplicacion NEAR",
+      "noNeedToCreate": "No es necesario crear nuevas cuentas o credenciales, ¡Conecta tu billetera y listo!",
+      "getAWallet": "Obten una Billetera",
+      "useAWallet": "Usa tu Billetera para resguardar y administrar tus activos en NEAR, e Iniciar sesión en cualquier aplicacion NEAR sin la necesidad de nombres de usuarios y contraseñas",
+      "connectionFailed": "Conexión Fallida",
+      "connectionSuccessful": "Conexión Existosa",
+      "connected": "Conectado",
+      "connectingTo": "Conectando a ",
+      "connectingMessage": {
+        "injected": "Confirme la conexión en la ventana de extensión",
+        "browser": "Confirme la conexión en la billetera después de la redirección",
+        "hardware": "Confirme la conexión en el dispositivo de libro mayor"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "Conectar con Ledger",
+      "makeSureYourLedger": "Asegúrese de que su ledger está conectada de forma segura y que la aplicacion NEAR esté abierta en su dispositivo",
+      "continue": "Continuar",
+      "specifyHDPath": "Especifique la ruta HD",
+      "enterYourPreferredHDPath": "Ingrese su ruta HD prerida,y luego busque cualquier cuenta activa.",
+      "scan": "Escanear",
+      "retry": "Reintentar",
+      "ledgerIsNotAvailable": "El Ledger no está disponible",
+      "accessDeniedToUseLedgerDevice": "Acceso denegado para usar el dispositivo ledger",
+      "noAccountsFound": "No se encontraron cuentas",
+      "selectYourAccounts": "Selecciona tus cuentas",
+      "connecting1Account": "Conectando a 1 cuenta",
+      "cantFindAnyAccount": "No se pudo encontrar ninguna cuenta asociada con este ledger,Por favor crea una nueva cuenta en NEAR",
+      "orConnectAnAnotherLedger": "o conecta otro ledger",
+      "connecting": "Conectando",
+      "ofAccounts": "de Cuentas",
+      "failedToAutomatically": "No se pudo encontrar automaticamente el id de la cuenta,Ingresalo manualmente:",
+      "overviewTheListOfAuthorized": "Revise la lista de las cuentas autorizadas,Complete el inicio de sesión haciedo click a countinuacion.",
+      "finish": "Finalizar"
+    },
+    "install": {
+      "youllNeedToInstall": "Tendrás que instalar",
+      "toContinueAfterInstalling": "Para continuar, Despues de instalar",
+      "refreshThePage": "Recarga la pagina",
+      "open": "Abrir"
+    },
+    "qr": {
+      "copiedToClipboard": "Copiado al Portapapeles",
+      "failedToCopy": "Falló la copia al Portapapeles",
+      "scanWithYourMobile": "Busca con tu dispositivo movil",
+      "copyToClipboard": " Copiar al Portapapeles",
+      "preferTheOfficial": "¿Prefires el diálogo oficial de",
+      "open": "Abrir"
+    }
+  }
+}

@@ -4,8 +4,15 @@ This is the [WalletConnect](https://walletconnect.com/) package for NEAR Wallet 
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
+```bash
+# Using Yarn
+yarn add near-api-js
+
+# Using NPM.
+npm install near-api-js
+```
 ```bash
 # Using Yarn
 yarn add @near-wallet-selector/wallet-connect

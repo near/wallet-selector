@@ -1,10 +1,4 @@
-import {
-  connect,
-  keyStores,
-  transactions as nearTransactions,
-  utils,
-} from "near-api-js";
-import {
+import type {
   InjectedWallet,
   Network,
   Optional,
@@ -12,14 +6,21 @@ import {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import type {
+  MeteorWalletParams_Injected,
+  MeteorWalletState,
+} from "./meteor-wallet-types";
+import {
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
+
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
-import {
-  MeteorWalletParams_Injected,
-  MeteorWalletState,
-} from "./meteor-wallet-types";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
@@ -52,10 +53,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 > = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
-  const cleanup = () => {
-    _state.keyStore.clear();
-  };
-
   const getAccounts = () => {
     const accountId = _state.wallet.getAccountId();
 
@@ -73,14 +70,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     const { networkId, signer, provider } = account.connection;
 
     const localKey = await signer.getPublicKey(account.accountId, networkId);
-
-    for (const trx of transactions) {
-      if (trx.signerId !== account.accountId) {
-        throw new Error(
-          `Transaction had a signerId which didn't match the currently logged in account`
-        );
-      }
-    }
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
@@ -140,8 +129,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         await _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async isSignedIn() {

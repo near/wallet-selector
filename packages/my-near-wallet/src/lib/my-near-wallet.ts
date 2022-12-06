@@ -20,6 +20,8 @@ export interface MyNearWalletParams {
   walletUrl?: string;
   iconUrl?: string;
   deprecated?: boolean;
+  successUrl?: string;
+  failureUrl?: string;
 }
 
 interface MyNearWalletState {
@@ -61,11 +63,6 @@ const setupWalletState = async (
 
   const wallet = new WalletConnection(near, "near_app");
 
-  // Cleanup up any pending keys (cancelled logins).
-  if (!wallet.isSignedIn()) {
-    await keyStore.clear();
-  }
-
   return {
     wallet,
     keyStore,
@@ -77,10 +74,6 @@ const MyNearWallet: WalletBehaviourFactory<
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
-
-  const cleanup = () => {
-    _state.keyStore.clear();
-  };
 
   const getAccounts = () => {
     const accountId: string | null = _state.wallet.getAccountId();
@@ -132,14 +125,19 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames }) {
+    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
       const existingAccounts = getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
       }
 
-      await _state.wallet.requestSignIn({ contractId, methodNames });
+      await _state.wallet.requestSignIn({
+        contractId,
+        methodNames,
+        successUrl,
+        failureUrl,
+      });
 
       return getAccounts();
     },
@@ -148,8 +146,6 @@ const MyNearWallet: WalletBehaviourFactory<
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
       }
-
-      cleanup();
     },
 
     async getAccounts() {
@@ -230,6 +226,8 @@ export function setupMyNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
+  successUrl = "",
+  failureUrl = "",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     return {
@@ -242,6 +240,8 @@ export function setupMyNearWallet({
         iconUrl,
         deprecated,
         available: true,
+        successUrl,
+        failureUrl,
       },
       init: (options) => {
         return MyNearWallet({

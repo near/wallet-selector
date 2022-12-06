@@ -1,5 +1,5 @@
 import { isMobile } from "is-mobile";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,

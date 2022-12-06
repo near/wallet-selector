@@ -1,13 +1,22 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import { SessionTypes } from "@walletconnect/types";
+import type { SessionTypes } from "@walletconnect/types";
+import type {
+  EventEmitterService,
+  WalletEvents,
+} from "@near-wallet-selector/core";
 
 class WalletConnectClient {
   private client: Client;
+  private emitter: EventEmitterService<WalletEvents>;
 
   async init(opts: SignClientTypes.Options) {
     this.client = await Client.init(opts);
+  }
+
+  constructor(emitter: EventEmitterService<WalletEvents>) {
+    this.emitter = emitter;
   }
 
   get session() {
@@ -32,15 +41,19 @@ class WalletConnectClient {
     this.client.once(event, callback);
   }
 
-  async connect(params: EngineTypes.ConnectParams) {
+  async connect(params: EngineTypes.ConnectParams, qrCodeModal: boolean) {
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
       this.client
         .connect(params)
         .then(({ uri, approval }) => {
           if (uri) {
-            QRCodeModal.open(uri, () => {
-              reject(new Error("User cancelled pairing"));
-            });
+            if (qrCodeModal) {
+              QRCodeModal.open(uri, () => {
+                reject(new Error("User cancelled pairing"));
+              });
+            } else {
+              this.emitter.emit("uriChanged", { uri });
+            }
           }
 
           approval()

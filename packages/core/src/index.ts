@@ -11,6 +11,7 @@ export type {
   Subscription,
   StorageService,
   JsonStorageService,
+  EventEmitterService,
 } from "./lib/services";
 export type { Optional } from "./lib/utils.types";
 
@@ -65,3 +66,5 @@ export type {
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 export { waitFor, getActiveAccount } from "./lib/helpers";
+
+export { translate } from "./lib/translate/translate";

@@ -33,6 +33,7 @@ export const resolveOptions = (params: WalletSelectorParams) => {
   const options: Options = {
     network: resolveNetwork(params.network),
     debug: params.debug || false,
+    optimizeWalletOrder: params.optimizeWalletOrder === false ? false : true,
   };
 
   return {

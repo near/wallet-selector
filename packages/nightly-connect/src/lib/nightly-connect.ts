@@ -1,6 +1,7 @@
-import { Signer, transactions as nearTransactions, utils } from "near-api-js";
+import type { Signer } from "near-api-js";
+import { transactions as nearTransactions, utils } from "near-api-js";
+import type { AppMetadata } from "@nightlylabs/connect-near";
 import {
-  AppMetadata,
   AppNear,
   clearPersistedSessionAccountId,
   clearPersistedSessionId,
@@ -13,19 +14,19 @@ import {
   setPersistedSessionAccountId,
   setPersistedSessionPublicKey,
 } from "@nightlylabs/connect-near";
-import {
+import type {
   BridgeWallet,
-  getActiveAccount,
   Optional,
   Transaction,
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
-export interface NightlyConnectParams {
+interface NightlyConnectParams {
   appMetadata: AppMetadata;
   url?: string;
   timeout?: number;
@@ -84,6 +85,7 @@ const NightlyConnect: WalletBehaviourFactory<
 
       try {
         const tx = nearTransactions.Transaction.decode(Buffer.from(message));
+        // @ts-ignore
         const signedTx = await _state.client!.signTransaction(tx);
 
         return {
@@ -126,7 +128,7 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   return {
-    async signIn() {
+    async signIn({ qrCodeModal = true }) {
       return new Promise((resolve, reject) => {
         const existingAccounts = getAccounts();
 
@@ -179,10 +181,15 @@ const NightlyConnect: WalletBehaviourFactory<
               _state.modal.onClose = undefined;
               resolve(getAccounts());
             } else {
-              _state.modal.openModal(client.sessionId, NETWORK.NEAR);
-              _state.modal.onClose = () => {
-                reject(new Error("User cancelled pairing"));
-              };
+              if (qrCodeModal) {
+                _state.modal.openModal(client.sessionId, NETWORK.NEAR);
+                _state.modal.onClose = () => {
+                  reject(new Error("User cancelled pairing"));
+                };
+              } else {
+                const uri = `nightlyconnect:${client.sessionId}?network=${NETWORK.NEAR}`;
+                emitter.emit("uriChanged", { uri });
+              }
             }
           });
         } catch (err) {
