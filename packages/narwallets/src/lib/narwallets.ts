@@ -1,5 +1,5 @@
 import { isMobile } from "is-mobile";
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
@@ -7,7 +7,6 @@ import {
   Action,
   FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
-import { providers } from "near-api-js";
 import icon from "./icon";
 
 export interface SignAndSendTransactionParams {
@@ -21,11 +20,20 @@ export interface NarwalletsParams {
 }
 
 interface NarwalletsError {
-  error: string | { type: string }
+  error: string | { type: string };
 }
 
-type Resolve = string | boolean | FinalExecutionOutcome | Array<FinalExecutionOutcome> | NarwalletsError
-type NarwalletsFunctionParams = undefined | boolean | SignAndSendTransactionParams | SignAndSendTransactionParams[]
+type Resolve =
+  | string
+  | boolean
+  | FinalExecutionOutcome
+  | Array<FinalExecutionOutcome>
+  | NarwalletsError;
+type NarwalletsFunctionParams =
+  | undefined
+  | boolean
+  | SignAndSendTransactionParams
+  | Array<SignAndSendTransactionParams>;
 
 interface PendingPromises {
   id_wallet_selector: number;
@@ -42,8 +50,8 @@ const NARWALLETS_CODES = {
   SIGN_OUT: "sign-out",
   GET_ACCOUNT_ID: "get-account-id",
   SIGN_AND_SEND_TRANSACTION: "sign-and-send-transaction",
-  SIGN_AND_SEND_TRANSACTIONS: "sign-and-send-transactions"
-}
+  SIGN_AND_SEND_TRANSACTIONS: "sign-and-send-transactions",
+};
 
 let id = 0;
 const pendingPromises: Array<PendingPromises> = [];
@@ -85,9 +93,8 @@ const isInstalled = async (): Promise<boolean> => {
   // Note: sendToNarwallets throws if not installed
   try {
     await sendToNarwallets(NARWALLETS_CODES.IS_INSTALLED, true);
-  }
-  catch (ex) {
-    return false
+  } catch (ex) {
+    return false;
   }
   return true;
 };
@@ -103,18 +110,28 @@ const getAccountId = (): Promise<Resolve> => {
 const callSignAndSendTransaction = (
   params: SignAndSendTransactionParams
 ): Promise<Resolve> => {
-  return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTION, false, params);
+  return sendToNarwallets(
+    NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTION,
+    false,
+    params
+  );
 };
 
 const callSignAndSendTransactions = (
   params: Array<SignAndSendTransactionParams>
 ): Promise<Resolve> => {
-  return sendToNarwallets(NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS, false, params);
+  return sendToNarwallets(
+    NARWALLETS_CODES.SIGN_AND_SEND_TRANSACTIONS,
+    false,
+    params
+  );
 };
 
-const findPendingPromiseById = (promiseId: number): PendingPromises | undefined => {
+const findPendingPromiseById = (
+  promiseId: number
+): PendingPromises | undefined => {
   return pendingPromises.filter((c) => c.id_wallet_selector === promiseId)[0];
-}
+};
 
 const removePendingPromise = (callback: PendingPromises) => {
   const index = pendingPromises.indexOf(callback);
@@ -122,19 +139,18 @@ const removePendingPromise = (callback: PendingPromises) => {
     // only splice array when item is found
     pendingPromises.splice(index, 1); // 2nd parameter means remove one item only
   }
-}
+};
 
 const setupNarwalletsState = (): void => {
-
   // receive response from the extension content_script
   window.addEventListener("message", (event) => {
     if (event.source !== window) {
       return;
     }
-    const { data } = event
+    const { data } = event;
     // msg should be directed to the page (response from the extension, relayed from the content script)
     if (!data || data.dest !== "page") {
-      return
+      return;
     }
 
     if (data.id && data.type === "nw") {
@@ -146,8 +162,7 @@ const setupNarwalletsState = (): void => {
         }
         if (!data.result) {
           pendingPromise.reject("result is empty");
-        }
-        else if (data.result.err) {
+        } else if (data.result.err) {
           pendingPromise.reject(data.result.err);
         } else {
           pendingPromise.resolve(data.result.data);
@@ -162,7 +177,6 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
   store,
   logger,
 }) => {
-
   const signOut = async () => {
     if (!(await isSignedIn())) {
       return;
@@ -174,10 +188,12 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return;
     }
 
-    const errorObject: NarwalletsError = res as NarwalletsError
+    const errorObject: NarwalletsError = res as NarwalletsError;
 
     const error = new Error(
-      typeof errorObject.error === "string" ? errorObject.error : errorObject.error.type
+      typeof errorObject.error === "string"
+        ? errorObject.error
+        : errorObject.error.type
     );
 
     // Prevent signing out by throwing.
@@ -199,14 +215,14 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       } else {
         code = NARWALLETS_CODES.GET_ACCOUNT_ID;
       }
-      const response = await sendToNarwallets(code) as string;
+      const response = (await sendToNarwallets(code)) as string;
       return [{ accountId: response }];
     },
 
     signOut,
 
     async getAccounts(): Promise<Array<Account>> {
-      const accountId: string = await getAccountId() as string;
+      const accountId: string = (await getAccountId()) as string;
       return [{ accountId }];
     },
 
@@ -227,8 +243,8 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return callSignAndSendTransaction({
         signerId,
         receiverId: receiverId || contract.contractId,
-        actions: actions
-      }) as Promise<FinalExecutionOutcome>
+        actions: actions,
+      }) as Promise<FinalExecutionOutcome>;
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -241,9 +257,9 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      return callSignAndSendTransactions(
-        transactions
-      ) as Promise<FinalExecutionOutcome[]>
+      return callSignAndSendTransactions(transactions) as Promise<
+        Array<FinalExecutionOutcome>
+      >;
     },
   };
 };
@@ -253,7 +269,6 @@ export const setupNarwallets = ({
   deprecated = false,
 }: NarwalletsParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
-
     const mobile = isMobile();
     if (mobile) {
       return null;
@@ -278,4 +293,4 @@ export const setupNarwallets = ({
       init: Narwallets,
     };
   };
-}
+};
