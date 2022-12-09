@@ -5,6 +5,8 @@
 
 ## Supported language
 - Spanish 
+- Chinese
+- Korean
 
  ## How to use
 
