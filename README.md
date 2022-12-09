@@ -30,10 +30,10 @@ The easiest way to use NEAR Wallet Selector is to install the [`core`](https://w
 
 ```bash
 # Using Yarn
-yarn add near-api-js@^0.44.2
+yarn add near-api-js
 
 # Using NPM.
-npm install near-api-js@^0.44.2
+npm install near-api-js
 ```
 
 ```bash
