@@ -3,7 +3,7 @@
 - Languages are detected from browser language settings.
 - If user preffered language is not supported, english is rendered as default. 
 
-## Supported language
+## Supported languages
 - Spanish 
 - Chinese
 - Korean
