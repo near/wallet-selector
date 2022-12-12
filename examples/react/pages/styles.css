@@ -112,3 +112,8 @@ button:active {
   padding-left: 0.25em;
   margin-left: -0.5em;
 }
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

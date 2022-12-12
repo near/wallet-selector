@@ -1,15 +1,30 @@
 import type { NextPage } from "next";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { WalletSelectorContextProvider } from "../contexts/WalletSelectorContext";
 import Content from "../components/Content";
+import { ImportAccountSelectorContextProvider } from "../contexts/WalletSelectorImportContext";
+import ImportContent from "../components/ImportContent";
 
 const Home: NextPage = () => {
+  const [showImport, setShowImport] = useState<boolean>(false);
+
   return (
     <Fragment>
-      <h1>NEAR Guest Book</h1>
-      <WalletSelectorContextProvider>
-        <Content />
-      </WalletSelectorContextProvider>
+      <div className="title-container">
+        <h1>{showImport ? "Import Account" : "NEAR Guest Book"}</h1>
+        <button onClick={() => setShowImport(!showImport)}>
+          {showImport ? "Back to Log in" : "Try Import"}
+        </button>
+      </div>
+      {showImport ? (
+        <ImportAccountSelectorContextProvider>
+          <ImportContent />
+        </ImportAccountSelectorContextProvider>
+      ) : (
+        <WalletSelectorContextProvider>
+          <Content />
+        </WalletSelectorContextProvider>
+      )}
     </Fragment>
   );
 };

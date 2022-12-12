@@ -12,8 +12,6 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import { ImportAccountSelectorContextProvider } from "../contexts/WalletSelectorImportContext";
-import ImportContent from "./ImportContent";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
@@ -231,9 +229,6 @@ const Content: React.FC = () => {
       <Fragment>
         <div>
           <button onClick={handleSignIn}>Log in</button>
-          <ImportAccountSelectorContextProvider>
-            <ImportContent />
-          </ImportAccountSelectorContextProvider>
         </div>
         <SignIn />
       </Fragment>
