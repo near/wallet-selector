@@ -34,6 +34,10 @@ type ScanQRCodeParams = {
   uri: string | undefined;
 };
 
+type ImportAccountsParams = {
+  module: ModuleState;
+};
+
 type AlertMessageModalRoute = {
   name: "AlertMessage";
   params?: AlertMessageModalRouteParams;
@@ -78,6 +82,11 @@ type ScanQRCode = {
   params?: ScanQRCodeParams;
 };
 
+export type ImportAccounts = {
+  name: "ImportAccounts";
+  params?: ImportAccountsParams;
+};
+
 export type ModalRoute =
   | AlertMessageModalRoute
   | WalletOptionsModalRoute
@@ -87,4 +96,5 @@ export type ModalRoute =
   | WalletConnectingModalRoute
   | WalletHome
   | WalletConnected
-  | ScanQRCode;
+  | ScanQRCode
+  | ImportAccounts;

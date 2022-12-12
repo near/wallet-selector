@@ -353,6 +353,10 @@
     width: auto;
 }
 
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .import-content {
+  width: auto;
+}
+
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .title {
     font-style: normal;
     font-weight: 500;
@@ -362,7 +366,20 @@
     align-items: center;
     color: var(--wallet-selector-heading-color, var(--heading-color));
     margin-left: 10px;
-  }
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .import-content .title {
+  font-size: 14px;
+  color: var(--wallet-selector-heading-color, var(--heading-color));
+  margin-left: 10px;
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .import-content .import-type {
+  font-size: 10px;
+  margin-left: 10px;
+  margin-top: 2px;
+  font-weight: 400;
+}
 
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .content .description {
     display: none;
@@ -426,6 +443,7 @@
     background: var(--gradient-dark-icon);
     border-radius: 12px;
     color: var(--what-wallet-icon-color);
+    overflow: unset;
 }
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .icon-side svg {
@@ -448,12 +466,21 @@
 
 .nws-modal-wrapper .nws-modal .modal-right .wallet-what .content-side p {
     margin: 0;
-    font-family: inherit;
-    font-style: normal;
+    font-size: 14px;
+}
+
+.nws-modal-wrapper .nws-modal .modal-right .middleContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 100%;
+}
+
+.nws-modal-wrapper .nws-modal .modal-right .middleContainer p {
+    margin: 0;
+    text-align: center;
     font-weight: 400;
     font-size: 14px;
-    line-height: 150%;
-    word-break: break-word;
 }
 
 /**
@@ -486,6 +513,19 @@
     display: block;
     margin: 25px auto 12px auto;
     border: 0.1em solid var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton:disabled,
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton[disabled]{
+  border-color: var(--secondary-button-border-color);
+  background-color: var(--secondary-button-bg-color);
+  cursor: not-allowed;
+}
+
+
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton.import-account-button {
+    width: 240px;
+    margin-bottom: 30px;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.get-wallet {
@@ -992,10 +1032,10 @@
     align-items: center;
     margin-top: 40px;
 }
-.connecting-wrapper .content .connecting-details span {
+.content .connecting-details span {
     color: var(--wallet-selector-selected-wallet-bg, var(--selected-wallet-bg));
 }
-.connecting-wrapper .content .connecting-details .spinner {
+.content .connecting-details .spinner {
     width: 25px;
     height: auto;
     animation: spinner 2s linear infinite;
@@ -1063,6 +1103,108 @@
     color: #4FD98F;
 }
 
+
+.checkbox {
+  width: 100%;
+  position: relative;
+  display: block;
+}
+
+.checkbox label {
+  position: relative;
+  display: block;
+  padding-left: 50px;
+  margin-bottom: 0;
+  cursor: pointer;
+  color: var(--wallet-selector-heading-color, var(--heading-color));
+}
+
+.checkbox label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 4px;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.28s ease;
+  border-radius: 3px;
+  border: 2px solid #C1C1C1;
+}
+
+.checkbox label::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 5px;
+  border-bottom: 2px solid #4FD98F;
+  border-left: 2px solid #4FD98F;
+  transform: rotate(-45deg) scale(0);
+  transition: transform ease 0.25s;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.checkbox input[type="checkbox"] {
+  width: auto;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  margin-left: -20px;
+}
+
+.checkbox input[type="checkbox"]:checked + label::before {
+  border: 2px solid #4FD98F;
+  background-color: rgba(79, 217, 143, 0.3);
+}
+
+.checkbox input[type="checkbox"]:checked + label::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.checkbox input[type="checkbox"]:focus + label::before {
+  outline: 0;
+}
+
+.checkbox input[type="checkbox"]:disabled + label {
+color: var(--wallet-selector-text-color, var(--text-color));
+cursor: not-allowed;
+}
+
+.checkbox input[type="checkbox"]:disabled + label::before {
+border: 2px solid #606060;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy {
+  position: relative;
+  cursor: copy;
+  background-color: transparent;
+  display: block;
+  margin: 0 auto;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy > .copy-success {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  text-align: center;
+  background-color: #8decc6;
+  color: #005a46;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+  top: -30px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 200ms;
+  font-weight: 400;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy > .copy-success.show {
+  top: -40px;
+  opacity: 1;
+}
 
 .nws-modal-wrapper .nws-modal .connecting-wrapper .content {
     padding: 25px;
@@ -1271,6 +1413,97 @@
     font-size: 14px;
     line-height: 24px;
     padding: 8px 24px;
+}
+
+/************* Import Accounts **********/
+.import-account-body {
+  height: 100%;
+}
+
+.import-account {
+  height: 100%;
+}
+
+.import-account .content {
+  width: 100%;
+  height: 100%;
+  padding: 40px 28px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.import-account .content .account-selection-spinner {
+  width: 80px;
+  margin: auto;
+  margin-top: 70px;
+}
+
+.import-account .filler {
+  flex: 1;
+}
+
+.import-account .account-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.import-account .account-select-all {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  color: var( --wallet-option-outline-color, var(--outline-color));
+  font-size: 14px;
+}
+
+.import-account .account-unavailable {
+  width: 100%;
+  color: var(--wallet-selector-text-color, var(--text-color));
+  font-size: 14px;
+  text-align: left;
+}
+
+.import-account .account-selection .account-selection-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 0 12px;
+  margin-bottom: 24px;
+}
+
+.import-account .passphrase-title {
+  font-size: 14px;
+  text-align: center;
+  font-weight: 400;
+  color: #c1c1c1;
+  margin: 40px 0 30px;
+}
+
+.import-account .passphrase-text {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+
+  background: #272729;
+  border-radius: 8px;
+
+  word-break: break-word;
+  text-align: center;
+
+  filter: blur(4px);
+}
+
+.import-account .passphrase-label {
+  font-size: 10px;
+  cursor: copy;
 }
 
 /************* Responsive and mobile **********/
