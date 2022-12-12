@@ -8,19 +8,27 @@
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",
     "meteor-wallet": "packages/meteor-wallet",
+    "welldone-wallet": "packages/welldone-wallet",
     "modal-ui": "packages/modal-ui",
     "modal-ui-js": "packages/modal-ui-js",
     "my-near-wallet": "packages/my-near-wallet",
+<<<<<<< HEAD
     "near-snap": "packages/near-snap",
     "nearfi": "packages/nearfi",
+=======
+    "nearfi": "packages/nearfi",
+    "near-snap": "packages/near-snap",
+>>>>>>> b37e75dac6c11cc0111c40e4b8e8bc4ef435fd04
     "near-wallet": "packages/near-wallet",
     "nightly": "packages/nightly",
     "nightly-connect": "packages/nightly-connect",
     "react": "examples/react",
     "sender": "packages/sender",
+    "neth": "packages/neth",
     "here-wallet": "packages/here-wallet",
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
-    "coin98-wallet": "packages/coin98-wallet"
+    "coin98-wallet": "packages/coin98-wallet",
+    "opto-wallet": "packages/opto-wallet"
   }
 }

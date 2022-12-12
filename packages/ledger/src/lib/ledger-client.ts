@@ -1,5 +1,5 @@
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import Transport from "@ledgerhq/hw-transport";
+import type Transport from "@ledgerhq/hw-transport";
 import { utils } from "near-api-js";
 
 // Further reading regarding APDU Ledger API:

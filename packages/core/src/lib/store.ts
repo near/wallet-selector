@@ -1,7 +1,7 @@
 import { Subject, BehaviorSubject, scan } from "rxjs";
 
 import { logger, JsonStorage } from "./services";
-import { StorageService } from "./services";
+import type { StorageService } from "./services";
 import type {
   Store,
   WalletSelectorState,

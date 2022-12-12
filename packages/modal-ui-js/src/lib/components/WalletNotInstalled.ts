@@ -1,5 +1,6 @@
-import { ModuleState, Wallet } from "@near-wallet-selector/core";
+import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
+import { translate } from "@near-wallet-selector/core";
 
 export function renderWalletNotInstalled(
   module: ModuleState<Wallet> & {
@@ -32,12 +33,26 @@ export function renderWalletNotInstalled(
       <div class="wallet-not-installed-wrapper">
         <div class="wallet-data">
           <div class="wallet-icon-box"><img
-              src="${module.metadata.iconUrl}" alt="${module.metadata.name}"></div>
-          <p>${module.metadata.name}</p>
+              src="${module.metadata.iconUrl}" alt="${module.metadata.name}">
+          </div>
+          <p>
+            ${module.metadata.name}
+          </p>
         </div>
-        <p>You'll need to install ${module.metadata.name} to continue. After installing<span class="refresh-link" id="refresh-page-lint">&nbsp;refresh the
-            page.</span></p>
-        <div class="action-buttons"><button class="middleButton" id="download-button">Open ${module.metadata.name}</button></div>
+        <p>
+          ${translate("modal.install.youllNeedToInstall")} ${
+    module.metadata.name
+  }
+          ${translate("modal.install.toContinueAfterInstalling")}
+          <span class="refresh-link" id="refresh-page-lint">&nbsp;
+            ${translate("modal.install.refreshThePage")}
+          </span>
+        </p>
+        <div class="action-buttons">
+          <button class="middleButton" id="download-button">
+            ${translate("modal.install.open")} ${module.metadata.name}
+          </button>
+        </div>
       </div>
     </div>
   `;

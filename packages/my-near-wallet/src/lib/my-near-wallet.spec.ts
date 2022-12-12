@@ -1,6 +1,10 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
-import { Near, WalletConnection, ConnectedWalletAccount } from "near-api-js";
-import { AccountView } from "near-api-js/lib/providers/provider";
+import type {
+  Near,
+  WalletConnection,
+  ConnectedWalletAccount,
+} from "near-api-js";
+import type { AccountView } from "near-api-js/lib/providers/provider";
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";

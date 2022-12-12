@@ -1,10 +1,4 @@
-import {
-  connect,
-  keyStores,
-  transactions as nearTransactions,
-  utils,
-} from "near-api-js";
-import {
+import type {
   InjectedWallet,
   Network,
   Optional,
@@ -12,14 +6,21 @@ import {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import type {
+  MeteorWalletParams_Injected,
+  MeteorWalletState,
+} from "./meteor-wallet-types";
+import {
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
+
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
-import {
-  MeteorWalletParams_Injected,
-  MeteorWalletState,
-} from "./meteor-wallet-types";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
