@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import generator from "generate-password";
 import { translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "../ModalHeader";
 import ClickToCopy from "../ClickToCopy";
@@ -18,8 +19,15 @@ export const Passphrase: React.FC<PassphraseProps> = ({
   onCloseModal,
   onBack,
 }) => {
-  // TODO: Implement proper passphrase generation on WEP-213
-  const secretKey = "@#N@0-9-0aasd";
+  // TODO: reserve this secret key and pass down to next step for encryption for WEP-213
+  const secretKey = generator.generate({
+    length: 10,
+    numbers: true,
+    strict: true,
+    lowercase: true,
+    uppercase: true,
+    symbols: true,
+  });
 
   const onCheck = (check: boolean) => setHasCopied(check);
 
