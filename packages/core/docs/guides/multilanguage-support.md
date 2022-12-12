@@ -15,7 +15,7 @@
   as in example below
 - Can be extended when needed following `packageName.section.translationKey`structure
 
-  ```ts
+  ```json
   {
   "modal": {
     "wallet": {
@@ -33,22 +33,29 @@
 
   // Text that will be translated
   translate("modal.wallet.connectYourWallet")
+    ```
+  > Note: Should be used accordingly, example:
+  ```typescript jsx
+  // In modal-ui
+  <p>{translate("modal.wallet.whatIsAWallet")}</p>
   
-  > Note:should be wrapped accordingly ex. 
+  // In modal-ui-js
   <p>${translate("modal.wallet.whatIsAWallet")}</p>
-
   ```
+
 
 ## Adding new language
 - Language files are located in locale folder in `packages\core\src\lib\locale`
 - Files are named after ISO 639-1: two-letter language code
 - Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
 
-  ```ts
-    "packageName" : {
+  ```json
+  {
+    "packageName": {
       "section": {
-        "translationKey : "text to be rendered"
+        "translationKey": "text to be rendered"
       }
+    }
   }
   ```
 
