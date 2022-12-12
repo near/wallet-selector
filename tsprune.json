@@ -1,0 +1,10 @@
+{
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "dist",
+    "**/jest.config.*",
+    "**/neth",
+    "**/ledger"
+  ]
+}

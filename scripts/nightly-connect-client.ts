@@ -45,6 +45,7 @@ const main = async () => {
       // Send signed transaction
       await client.resolveSignTransaction({
         requestId: signRequest.id,
+        // @ts-ignore
         signedTransactions: [signedTx]
       })
     })

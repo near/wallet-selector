@@ -10,6 +10,7 @@
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
 - `debug` (`boolean`): Whether internal logging is enabled.
+- `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 
 **Description**
 
@@ -177,7 +178,7 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `networkChanged | uriChanged`.
+- `event` (`string`): Name of the event. This can be: `signedIn | signedOut | accountsChanged | networkChanged | uriChanged`.
 - `callback` (`Function`): Original handler passed to `.on(event, callback)`.
 
 **Returns**

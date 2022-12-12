@@ -12,6 +12,7 @@ export interface WalletSelectorParams {
   modules: Array<WalletModuleFactory>;
   storage?: StorageService;
   debug?: boolean;
+  optimizeWalletOrder?: boolean;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;

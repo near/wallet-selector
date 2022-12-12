@@ -137,7 +137,7 @@ export function setupHereWallet({
       id: "here-wallet",
       type: "browser",
       metadata: {
-        name: "Here Wallet (mobile)",
+        name: "Here Wallet",
         description: "Mobile wallet for NEAR Protocol",
         iconUrl,
         deprecated,

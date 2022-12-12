@@ -11,4 +11,5 @@ export interface Network {
 export interface Options {
   network: Network;
   debug: boolean;
+  optimizeWalletOrder: boolean;
 }
