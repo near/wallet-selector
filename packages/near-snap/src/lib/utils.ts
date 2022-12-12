@@ -38,10 +38,6 @@ export function getSnapOrigin(isDev: boolean): string {
   return "npm:@chainsafe/near-snap";
 }
 
-export function getSnapId(isDev: boolean): string {
-  return "wallet_snap_" + getSnapOrigin(isDev);
-}
-
 export function mapAccounts(
   accounts: Array<GetAccountPayload>
 ): Array<Account> {
