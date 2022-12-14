@@ -5,7 +5,7 @@ import {
   transactions as nearTransactions,
   utils,
 } from "near-api-js";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -138,7 +138,7 @@ const WalletConnect: WalletBehaviourFactory<
 
   const validateAccessKey = (
     transaction: Transaction,
-    accessKey: AccessKeyView
+    accessKey: AccessKeyViewRaw
   ) => {
     if (accessKey.permission === "FullAccess") {
       return accessKey;
@@ -183,7 +183,7 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("No public key found");
       }
 
-      const accessKey = await provider.query<AccessKeyView>({
+      const accessKey = await provider.query<AccessKeyViewRaw>({
         request_type: "view_access_key",
         finality: "final",
         account_id: transaction.signerId,
@@ -248,7 +248,7 @@ const WalletConnect: WalletBehaviourFactory<
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
-      provider.query<AccessKeyView>({
+      provider.query<AccessKeyViewRaw>({
         request_type: "view_access_key",
         finality: "final",
         account_id: transaction.signerId,
@@ -299,7 +299,7 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Invalid signer id");
       }
 
-      const accessKey = await provider.query<AccessKeyView>({
+      const accessKey = await provider.query<AccessKeyViewRaw>({
         request_type: "view_access_key",
         finality: "final",
         account_id: transaction.signerId,

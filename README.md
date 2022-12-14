@@ -22,7 +22,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 [React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
-![Preview](./images/preview-img.gif)
+![Preview](./images/preview.gif)
 
 ## Installation and Usage
 
@@ -30,10 +30,10 @@ The easiest way to use NEAR Wallet Selector is to install the [`core`](https://w
 
 ```bash
 # Using Yarn
-yarn add near-api-js@^0.44.2
+yarn add near-api-js
 
 # Using NPM.
-npm install near-api-js@^0.44.2
+npm install near-api-js
 ```
 
 ```bash

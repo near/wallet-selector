@@ -20,6 +20,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       <input type="radio" value="es" name="language" /> Spanish
       <input type="radio" value="fr" name="language" /> French
       <input type="radio" value="de" name="language" /> German
+      <input type="radio" value="bg" name="language" /> Bulgarian
     </div>
   );
 };

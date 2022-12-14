@@ -1,0 +1,53 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "连接你的钱包",
+      "whatIsAWallet": "什么是钱包？",
+      "secureAndManage": "保护和管理你的数字资产",
+      "safelyStore": "安全存储和转移你的加密货币和NFT",
+      "logInToAny": "登录任何 NEAR 应用",
+      "noNeedToCreate": "不需要创建新账户或密码。连接你的钱包，即可开始使用！",
+      "getAWallet": "获取新账户",
+      "useAWallet": "使用钱包来保护和管理你的 NEAR 资产，无需用户名和密码即可登录任何 NEAR 应用",
+      "connectionFailed": "连接失败",
+      "connectionSuccessful": "连接成功",
+      "connected": "已连接",
+      "connectingTo": "正在连接"
+    },
+    "ledger": {
+      "connectWithLedger": "连接 Ledger",
+      "makeSureYourLedger": "确保你的 Ledger 已经安全连接，并且 NEAR 应用已经在你设备上打开",
+      "continue": "继续",
+      "specifyHDPath": "指定 HD 路径",
+      "enterYourPreferredHDPath": "输入你偏好的 HD 路径，然后为任意活跃账户扫码",
+      "scan": "扫码",
+      "retry": "重试",
+      "ledgerIsNotAvailable": "Ledger 不可用",
+      "accessDeniedToUseLedgerDevice": "访问 Ledger 设备被拒绝",
+      "noAccountsFound": "没有找到账户",
+      "selectYourAccounts": "选择你的账户",
+      "connecting1Account": "正在连接1个账户",
+      "cantFindAnyAccount": "没有找到任何与这个 Ledger 相关联的账户。请创建新账户于",
+      "orConnectAnAnotherLedger.": "或连接另一个 Ledger",
+      "connecting": "正在连接",
+      "ofAccounts": "个账户",
+      "failedToAutomatically": "无法自动找到账户ID，请主动提供：",
+      "overviewTheListOfAuthorized": "请查看已授权的账户列表，点击以下按钮完成登录",
+      "finish": "完成"
+    },
+    "install": {
+      "youllNeedToInstall": "你将需要安装",
+      "toContinueAfterInstalling": "以继续。安装完",
+      "refreshThePage": "请刷新页面",
+      "open": "打开"
+    },
+    "qr": {
+      "copiedToClipboard": "复制到了剪贴板",
+      "failedToCopy": "复制到剪贴板失败",
+      "scanWithYourMobile": "用你的移动设备扫码",
+      "copyToClipboard": " 复制到剪贴板",
+      "preferTheOfficial": "希望使用官方对话框于",
+      "open": "打开"
+    }
+  }
+}

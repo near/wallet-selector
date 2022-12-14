@@ -13,7 +13,7 @@ import {
   transactions as nearTransactions,
 } from "near-api-js";
 
-export interface HereWalletState {
+interface HereWalletState {
   wallet: WalletConnection;
   keyStore: keyStores.BrowserLocalStorageKeyStore;
 }

@@ -1,9 +1,9 @@
 {
   "name": "@near-wallet-selector/neth",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "description": "control NEAR accounts with ETH accounts",
   "author": "mattlockyer",
   "peerDependencies": {
-    "near-api-js": "^0.44.2"
+    "near-api-js": "^0.44.2 || ^1.0.0"
   }
 }
