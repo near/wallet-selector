@@ -106,11 +106,11 @@ export class AppComponent implements OnInit {
           }),
         ],
       },
-      // {
-      //   network: "mainnet",
-      //   debug: false,
-      //   modules: [...(await setupDefaultWallets()), setupSender()],
-      // },
+      {
+        network: "mainnet",
+        debug: false,
+        modules: [...(await setupDefaultWallets()), setupSender()],
+      },
     ]);
 
     this.setNetwork(this.selector.options.network.networkId);

@@ -389,11 +389,17 @@ export function renderModal() {
       "change-network-selected"
     );
 
+    const changeNetworkSelectedSvgElement = document.querySelector<HTMLElement>(
+      ".change-network-selected > svg"
+    );
+
     changeNetworkSelectedElement?.addEventListener("click", () => {
       if (changeNetworkOptionsElement!.style.display === "flex") {
         changeNetworkOptionsElement!.style.display = "none";
+        changeNetworkSelectedSvgElement!.style.transform = "rotate(0deg)";
       } else {
         changeNetworkOptionsElement!.style.display = "flex";
+        changeNetworkSelectedSvgElement!.style.transform = "rotate(-90deg)";
       }
     });
   }

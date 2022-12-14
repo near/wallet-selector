@@ -95,6 +95,7 @@ export const ChangeNetwork: React.FC<ChangeNetworkProps> = ({ selector }) => {
       <div className="change-network-selected" onClick={toggleShowOptions}>
         {renderNetworkOption(selector.options.network.networkId)}
         <svg
+          style={{ transform: showOptions ? "rotate(-90deg)" : "rotate(0deg)" }}
           width="24"
           height="24"
           viewBox="0 0 24 24"
