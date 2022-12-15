@@ -43,6 +43,19 @@ export interface VerifiedOwner {
   keyType: utils.key_pair.KeyType;
 }
 
+export interface SignMessageParams {
+  message: string;
+  receiver: string;
+  nonce: Buffer;
+  callbackUrl?: string;
+}
+
+interface SignedMessage {
+  accountId: string;
+  publicKey: string;
+  signature: string;
+}
+
 interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
@@ -64,6 +77,7 @@ interface BaseWalletBehaviour {
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
+  signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
 }
 
 type BaseWallet<
