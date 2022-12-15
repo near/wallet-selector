@@ -50,7 +50,7 @@ export interface SignMessageParams {
   callbackUrl?: string;
 }
 
-interface SignedMessage {
+export interface SignedMessage {
   accountId: string;
   publicKey: string;
   signature: string;
