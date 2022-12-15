@@ -185,6 +185,27 @@ const Content: React.FC = () => {
     }
   };
 
+  const handleSignMessage = async () => {
+    const wallet = await selector.wallet();
+
+    const message = "test message for verification";
+    const receiver = "guest-book.testnet";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+
+    try {
+      const signedMessage = await wallet.signMessage({
+        message,
+        receiver,
+        nonce,
+      });
+      alert(signedMessage);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errorMessage);
+    }
+  };
+
   const handleSubmit = useCallback(
     async (e: Submitted) => {
       e.preventDefault();
@@ -241,6 +262,7 @@ const Content: React.FC = () => {
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchWallet}>Switch Wallet</button>
         <button onClick={handleVerifyOwner}>Verify Owner</button>
+        <button onClick={handleSignMessage}>Sign Message</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}

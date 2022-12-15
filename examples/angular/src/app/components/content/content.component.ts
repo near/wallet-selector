@@ -244,4 +244,25 @@ export class ContentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription?.unsubscribe();
   }
+
+  async onSignMessage() {
+    const wallet = await this.selector.wallet();
+
+    const message = "test message for verification";
+    const receiver = "guest-book.testnet";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+
+    try {
+      const signedMessage = await wallet.signMessage({
+        message,
+        receiver,
+        nonce,
+      });
+      alert(signedMessage);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errorMessage);
+    }
+  }
 }
