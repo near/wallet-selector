@@ -162,6 +162,12 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
 
     signAndSendTransactions: async ({ transactions }) =>
       signTransactions(transactions),
+
+    async signMessage({ message, receiver, nonce }) {
+      logger.log("NETH:signMessage", { message, receiver, nonce });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

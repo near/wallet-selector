@@ -1,4 +1,8 @@
 import type { Signer } from "near-api-js/lib/signer";
+import type {
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
 
 interface LoginParams {
   contractId?: string;
@@ -35,4 +39,5 @@ export interface InjectedMathWallet {
   signer: MathSigner;
   login: (param: LoginParams) => Promise<MathAccount>;
   logout: () => Promise<boolean>;
+  signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
 }

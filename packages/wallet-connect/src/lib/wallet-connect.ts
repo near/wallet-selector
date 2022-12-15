@@ -106,7 +106,16 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, provider, emitter, logger }) => {
+> = async ({
+  id,
+  options,
+  store,
+  params,
+  provider,
+  emitter,
+  logger,
+  metadata,
+}) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -590,6 +599,12 @@ const WalletConnect: WalletBehaviourFactory<
 
         return results;
       }
+    },
+    async signMessage({ message, receiver, nonce }) {
+      logger.log("WalletConnect:signMessage", { message, receiver, nonce });
+
+      //TODO: Update web-examples of WalletConnect and this package to support signMessage.
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

@@ -22,7 +22,7 @@ export type HereWallet = BrowserWallet & {
 export const initHereWallet: WalletBehaviourFactory<
   HereWallet,
   { configuration: HereConfiguration }
-> = async ({ store, logger, options, configuration }) => {
+> = async ({ store, logger, options, configuration, metadata }) => {
   const _state = await setupWalletState(configuration, options.network);
 
   const getAccounts = () => {
@@ -117,6 +117,16 @@ export const initHereWallet: WalletBehaviourFactory<
         transactions: await transformTransactions(_state, transactions),
         callbackUrl,
       });
+    },
+    async signMessage({ message, receiver, nonce, callbackUrl }) {
+      logger.log("HEREWallet:signMessage", {
+        message,
+        receiver,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

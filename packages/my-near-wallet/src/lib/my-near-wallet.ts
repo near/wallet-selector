@@ -223,6 +223,16 @@ const MyNearWallet: WalletBehaviourFactory<
     buildImportAccountsUrl() {
       return `${resolveWalletUrl(options.network)}/batch-import`;
     },
+    async signMessage({ message, receiver, nonce, callbackUrl }) {
+      logger.log("MyNearWallet:signMessage", {
+        message,
+        receiver,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

@@ -3,6 +3,10 @@ import type {
   Transaction as NearTransaction,
 } from "near-api-js/lib/transaction";
 import type { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
+import type {
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
 interface NightlyAccount {
   accountId: string;
   publicKey: NearPublicKey;
@@ -21,6 +25,7 @@ export interface NearNightly {
     eagerConnect?: boolean
   ) => Promise<NightlyAccount>;
   disconnect: () => Promise<void>;
+  signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
 }
 export interface InjectedNightly {
   near: NearNightly;

@@ -2,6 +2,10 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
+import type {
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
 
 interface AccessKey {
   publicKey: {
@@ -143,4 +147,5 @@ export interface InjectedSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
+  signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
 }

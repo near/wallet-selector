@@ -252,6 +252,11 @@ const NightlyConnect: WalletBehaviourFactory<
 
       return results;
     },
+    async signMessage({ message, receiver, nonce }) {
+      logger.log("NightlyConnect:signMessage", { message, receiver, nonce });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 
