@@ -5,7 +5,11 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import type { AccountState, Transaction } from "@near-wallet-selector/core";
+import type {
+  AccountState,
+  Transaction,
+  SignedMessage,
+} from "@near-wallet-selector/core";
 
 import type { Message } from "../../interfaces/message";
 import type { Submitted } from "../form/form.component";
@@ -15,6 +19,7 @@ import { distinctUntilChanged, map } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
+import { verifyFullKeyBelongsToUser, verifySignature } from "../../../utils";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -253,12 +258,40 @@ export class ContentComponent implements OnInit, OnDestroy {
     const nonce = Buffer.from(Array.from(Array(32).keys()));
 
     try {
-      const signedMessage = await wallet.signMessage({
+      const signedMessage = (await wallet.signMessage({
+        message,
+        receiver,
+        nonce,
+      })) as SignedMessage;
+
+      const verifiedSignature = verifySignature({
+        publicKey: signedMessage.publicKey,
+        signature: signedMessage.signature,
         message,
         receiver,
         nonce,
       });
-      alert(signedMessage);
+
+      const keyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: signedMessage.publicKey,
+        accountId: signedMessage.accountId,
+        network: this.selector.options.network,
+      });
+
+      //TODO: verify signed message for browser wallets after redirect.
+      if (verifiedSignature && keyBelongsToUser) {
+        alert(
+          `Successfully verified signed message: '${message}' for: \n ${JSON.stringify(
+            signedMessage
+          )}`
+        );
+      } else {
+        alert(
+          `Failed verifying signed message '${message}' for: \n ${JSON.stringify(
+            signedMessage
+          )}`
+        );
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Something went wrong";
