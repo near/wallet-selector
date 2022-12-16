@@ -1,4 +1,5 @@
 import type { AccountView } from "near-api-js/lib/providers/provider";
+import type { Network } from "@near-wallet-selector/core";
 
 export interface Message {
   premium: boolean;
@@ -9,3 +10,22 @@ export interface Message {
 export type Account = AccountView & {
   account_id: string;
 };
+
+export interface VerifySignatureParams {
+  publicKey: string;
+  signature: string;
+  message: string;
+  receiver: string;
+  nonce: Buffer;
+}
+
+export interface FetchUserKeysParams {
+  accountId: string;
+  network: Network;
+}
+
+export interface KeyBelongsToUserParams {
+  publicKey: string;
+  accountId: string;
+  network: Network;
+}

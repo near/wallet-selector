@@ -4,7 +4,7 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import type { Transaction } from "@near-wallet-selector/core";
+import type { SignedMessage, Transaction } from "@near-wallet-selector/core";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
@@ -12,6 +12,7 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
+import { verifyFullKeyBelongsToUser, verifySignature } from "../utils";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
@@ -193,12 +194,40 @@ const Content: React.FC = () => {
     const nonce = Buffer.from(Array.from(Array(32).keys()));
 
     try {
-      const signedMessage = await wallet.signMessage({
+      const signedMessage = (await wallet.signMessage({
+        message,
+        receiver,
+        nonce,
+      })) as SignedMessage;
+
+      const verifiedSignature = verifySignature({
+        publicKey: signedMessage.publicKey,
+        signature: signedMessage.signature,
         message,
         receiver,
         nonce,
       });
-      alert(signedMessage);
+
+      const keyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: signedMessage.publicKey,
+        accountId: signedMessage.accountId,
+        network: selector.options.network,
+      });
+
+      //TODO: verify signed message for browser wallets after redirect.
+      if (verifiedSignature && keyBelongsToUser) {
+        alert(
+          `Successfully verified signed message: '${message}' for: \n ${JSON.stringify(
+            signedMessage
+          )}`
+        );
+      } else {
+        alert(
+          `Failed verifying signed message '${message}' for: \n ${JSON.stringify(
+            signedMessage
+          )}`
+        );
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Something went wrong";
