@@ -292,3 +292,34 @@ Signs one or more transactions before sending to the network. The user must be s
   });
 })();
 ```
+
+### `.signMessage(params)`
+
+**Parameters**
+- `params` (`object`)
+  - `message` (`string`): The message that wants to be transmitted.
+  - `receiver` (`string`): The receiver to whom the message is destined (e.g. "alice.near" or "myapp.com").
+  - `nonce` (`Buffer`): A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
+  - `callbackUrl` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). The URL to call after the signing process. Defaults to `window.location.href`.
+
+**Returns**
+- `Promise<void | SignedMessage>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
+
+**Description**
+
+Allows users to sign a message for a specific receiver using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/pull/413).
+
+**Example**
+
+```ts
+// MyNearWallet
+(async () => {
+  const wallet = await selector.wallet("my-near-wallet");
+  
+  const message = "Test message";
+  const receiver = "myapp.com";
+  const nonce = Buffer.from(Array.from(Array(32).keys()));
+  
+  await wallet.signMessage({ message, receiver, nonce });
+})();
+```
