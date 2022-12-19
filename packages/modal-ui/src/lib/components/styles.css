@@ -1418,6 +1418,8 @@ border: 2px solid #606060;
 /************* Import Accounts **********/
 .import-account-body {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .import-account {
