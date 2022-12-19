@@ -16,6 +16,7 @@ import type {
   WalletEvents,
   EventEmitterService,
   VerifiedOwner,
+  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -68,6 +69,7 @@ const WC_METHODS = [
   "near_signTransaction",
   "near_signTransactions",
   "near_verifyOwner",
+  "near_signMessage",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -106,16 +108,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({
-  id,
-  options,
-  store,
-  params,
-  provider,
-  emitter,
-  logger,
-  metadata,
-}) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -243,6 +236,22 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_verifyOwner",
         params: { accountId, message },
+      },
+    });
+  };
+
+  const requestSignMessage = async (
+    accountId: string,
+    message: string,
+    receiver: string,
+    nonce: Buffer
+  ) => {
+    return _state.client.request<SignedMessage>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signMessage",
+        params: { accountId, message, receiver, nonce },
       },
     });
   };
@@ -603,8 +612,24 @@ const WalletConnect: WalletBehaviourFactory<
     async signMessage({ message, receiver, nonce }) {
       logger.log("WalletConnect:signMessage", { message, receiver, nonce });
 
-      //TODO: Update web-examples of WalletConnect and this package to support signMessage.
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const { contract } = store.getState();
+
+      if (!_state.session || !contract) {
+        throw new Error("Wallet not signed in");
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      return await requestSignMessage(
+        account.accountId,
+        message,
+        receiver,
+        nonce
+      );
     },
   };
 };
