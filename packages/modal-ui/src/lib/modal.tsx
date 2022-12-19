@@ -15,7 +15,7 @@ export const setupModal = (
 ): WalletSelectorModal => {
   const el = document.createElement("div");
   el.id = MODAL_ELEMENT_ID;
-  document.body.appendChild(el);
+  !document.getElementById(MODAL_ELEMENT_ID) && document.body.appendChild(el);
 
   const container = document.getElementById(MODAL_ELEMENT_ID);
   const root = createRoot(container!);
@@ -31,7 +31,6 @@ export const setupModal = (
     );
   };
 
-  render();
 
   if (!modalInstance) {
     modalInstance = {
