@@ -16,7 +16,8 @@
       "connectingMessage": {
         "injected": "Confirm the connection in the extension window",
         "browser": "Confirm the connection in the wallet after redirect",
-        "hardware": "Confirm the connection in the ledger device"
+        "hardware": "Confirm the connection in the ledger device",
+        "bridge": "Bestätigen Sie die Verbindung in der Brieftasche"
       }
     },
     "ledger": {

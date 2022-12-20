@@ -16,7 +16,8 @@
         "connectingMessage": {
           "injected": "Xác nhận kết nối trong cửa sổ tiện ích mở rộng",
           "browser": "Xác nhận kết nối trong ví sau khi được chuyển hướng",
-          "hardware": "Xác nhận kết nối với ví lạnh"
+          "hardware": "Xác nhận kết nối với ví lạnh",
+          "bridge": "Xác nhận kết nối trong ví"
         }
       },
       "ledger": {
