@@ -64,8 +64,6 @@
   ```ts
   import en from "../locale/en.json";
   import es from "../locale/es.json";
-  import fr from "../locale/fr.json";
-  import de from "../locale/de.json";
   
   const getLanguage = (languageCode: string) => {
     switch (languageCode) {

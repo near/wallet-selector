@@ -1,7 +1,5 @@
 import en from "../locale/en.json";
 import es from "../locale/es.json";
-import fr from "../locale/fr.json";
-import de from "../locale/de.json";
 import zh from "../locale/zh.json";
 import bg from "../locale/bg.json";
 import ko from "../locale/ko.json";
@@ -13,10 +11,6 @@ const getLanguage = (languageCode: string) => {
       return en;
     case "es":
       return es;
-    case "fr":
-      return fr;
-    case "de":
-      return de;
     case "zh":
       return zh;
     case "bg":
