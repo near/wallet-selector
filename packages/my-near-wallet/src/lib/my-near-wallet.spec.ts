@@ -111,3 +111,16 @@ describe("signAndSendTransaction", () => {
     expect(result).toEqual(null);
   });
 });
+
+describe("buildImportAccountsUrl", () => {
+  it("returns import url", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    expect(typeof wallet.buildImportAccountsUrl).toBe("function");
+
+    // @ts-ignore
+    expect(wallet?.buildImportAccountsUrl()).toEqual(
+      "https://testnet.mynearwallet.com/batch-import"
+    );
+  });
+});
