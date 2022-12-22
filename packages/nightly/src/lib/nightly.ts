@@ -239,10 +239,10 @@ export function setupNightly({
       type: "injected",
       metadata: {
         name: "Nightly",
-        description: "Upcoming cutting-edge crypto wallet.",
+        description: "Multichain crypto wallet.",
         iconUrl,
         // Will replace we open beta with stable version
-        downloadUrl: "https://www.nightly.app",
+        downloadUrl: "https://wallet.nightly.app/download",
         deprecated,
         available: installed,
       },
