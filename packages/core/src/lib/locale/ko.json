@@ -16,7 +16,8 @@
       "connectingMessage": {
         "injected": "익스텐션 창에서 연결을 확인하세요",
         "browser": "리다이렉트 된 지갑에서 연결을 확인하세요",
-        "hardware": "Ledger 기기에서 연결을 확인하세요"
+        "hardware": "Ledger 기기에서 연결을 확인하세요",
+        "bridge": "지갑에서 연결 확인"
       }
     },
     "ledger": {
