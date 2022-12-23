@@ -6,7 +6,10 @@
 ## Supported languages
 - Spanish 
 - Chinese
+- Bulgarian
+- Vietnamese 
 - Korean
+
 
  ## How to use
 
