@@ -190,22 +190,22 @@ const Content: React.FC = () => {
     const wallet = await selector.wallet();
 
     const message = "test message for verification";
-    const receiver = "guest-book.testnet";
     const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const receiver = "guest-book.testnet";
 
     try {
       const signedMessage = (await wallet.signMessage({
         message,
-        receiver,
         nonce,
+        receiver,
       })) as SignedMessage;
 
       const verifiedSignature = verifySignature({
         publicKey: signedMessage.publicKey,
         signature: signedMessage.signature,
         message,
-        receiver,
         nonce,
+        receiver,
       });
 
       const keyBelongsToUser = await verifyFullKeyBelongsToUser({

@@ -45,8 +45,8 @@ export interface VerifiedOwner {
 
 export interface SignMessageParams {
   message: string;
-  receiver: string;
   nonce: Buffer;
+  receiver: string;
   callbackUrl?: string;
 }
 

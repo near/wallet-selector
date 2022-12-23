@@ -15,8 +15,8 @@ export interface VerifySignatureParams {
   publicKey: string;
   signature: string;
   message: string;
-  receiver: string;
   nonce: Buffer;
+  receiver: string;
 }
 
 export interface FetchUserKeysParams {

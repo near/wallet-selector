@@ -223,11 +223,11 @@ const MyNearWallet: WalletBehaviourFactory<
     buildImportAccountsUrl() {
       return `${resolveWalletUrl(options.network)}/batch-import`;
     },
-    async signMessage({ message, receiver, nonce, callbackUrl }) {
+    async signMessage({ message, nonce, receiver, callbackUrl }) {
       logger.log("MyNearWallet:signMessage", {
         message,
-        receiver,
         nonce,
+        receiver,
         callbackUrl,
       });
 

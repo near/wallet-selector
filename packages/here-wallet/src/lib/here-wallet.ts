@@ -118,11 +118,11 @@ export const initHereWallet: WalletBehaviourFactory<
         callbackUrl,
       });
     },
-    async signMessage({ message, receiver, nonce, callbackUrl }) {
+    async signMessage({ message, nonce, receiver, callbackUrl }) {
       logger.log("HEREWallet:signMessage", {
         message,
-        receiver,
         nonce,
+        receiver,
         callbackUrl,
       });
 

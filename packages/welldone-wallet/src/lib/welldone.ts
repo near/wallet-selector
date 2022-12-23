@@ -395,8 +395,8 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return results;
     },
-    async signMessage({ message, receiver, nonce }) {
-      logger.log("WELLDONEWallet:signMessage", { message, receiver, nonce });
+    async signMessage({ message, nonce, receiver }) {
+      logger.log("WELLDONEWallet:signMessage", { message, nonce, receiver });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },

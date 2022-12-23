@@ -195,8 +195,8 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         transactions: await transformTransactions(transactions),
       });
     },
-    async signMessage({ message, receiver, nonce }) {
-      logger.log("MeteorWallet:signMessage", { message, receiver, nonce });
+    async signMessage({ message, nonce, receiver }) {
+      logger.log("MeteorWallet:signMessage", { message, nonce, receiver });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },

@@ -243,15 +243,15 @@ const WalletConnect: WalletBehaviourFactory<
   const requestSignMessage = async (
     accountId: string,
     message: string,
-    receiver: string,
-    nonce: Buffer
+    nonce: Buffer,
+    receiver: string
   ) => {
     return _state.client.request<SignedMessage>({
       topic: _state.session!.topic,
       chainId: getChainId(),
       request: {
         method: "near_signMessage",
-        params: { accountId, message, receiver, nonce },
+        params: { accountId, message, nonce, receiver },
       },
     });
   };
@@ -609,8 +609,8 @@ const WalletConnect: WalletBehaviourFactory<
         return results;
       }
     },
-    async signMessage({ message, receiver, nonce }) {
-      logger.log("WalletConnect:signMessage", { message, receiver, nonce });
+    async signMessage({ message, nonce, receiver }) {
+      logger.log("WalletConnect:signMessage", { message, nonce, receiver });
 
       const { contract } = store.getState();
 
@@ -627,8 +627,8 @@ const WalletConnect: WalletBehaviourFactory<
       return await requestSignMessage(
         account.accountId,
         message,
-        receiver,
-        nonce
+        nonce,
+        receiver
       );
     },
   };

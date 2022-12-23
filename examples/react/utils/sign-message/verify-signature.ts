@@ -6,16 +6,16 @@ export const verifySignature = ({
   publicKey,
   signature,
   message,
-  receiver,
   nonce,
+  receiver,
 }: VerifySignatureParams): boolean => {
   // Reconstruct the payload that was **actually signed**
   const msg =
     `NEP0413:` +
     JSON.stringify({
       message,
-      receiver: receiver,
       nonce: Array.from(nonce),
+      receiver: receiver,
     });
   const reconstructedPayload = Uint8Array.from(sha256.array(msg));
 

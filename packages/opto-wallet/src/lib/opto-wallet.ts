@@ -218,11 +218,11 @@ const OptoWallet: WalletBehaviourFactory<
         callbackUrl,
       });
     },
-    async signMessage({ message, receiver, nonce, callbackUrl }) {
+    async signMessage({ message, nonce, receiver, callbackUrl }) {
       logger.log("OptoWallet:signMessage", {
         message,
-        receiver,
         nonce,
+        receiver,
         callbackUrl,
       });
 
