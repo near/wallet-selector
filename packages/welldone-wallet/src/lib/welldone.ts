@@ -353,7 +353,7 @@ export function setupWelldoneWallet({
       id: "welldone-wallet",
       type: "injected",
       metadata: {
-        name: "Welldone Wallet",
+        name: "WELLDONE Wallet",
         description: "WELLDONE Wallet for Multichains",
         iconUrl,
         downloadUrl:
