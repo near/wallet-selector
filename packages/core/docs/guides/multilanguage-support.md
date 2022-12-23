@@ -1,17 +1,18 @@
- #  Multilanguage support
+# Multilanguage support
 
 - Languages are detected from browser language settings.
-- If user preffered language is not supported, english is rendered as default. 
+- If user preffered language is not supported, english is rendered as default.
 
 ## Supported languages
-- Spanish 
+
+- Spanish
 - Chinese
 - Korean
 
- ## How to use
+## How to use
 
 - Language files are located in locale folder in `packages\core\src\lib\locale`
-- In order for text to be translated `translate` function should be used 
+- In order for text to be translated `translate` function should be used
   as in example below
 - Can be extended when needed following `packageName.section.translationKey`structure
 
@@ -26,7 +27,7 @@
   }
   ```
 
-- File where translated text is rendered 
+- File where translated text is rendered
 
   ```ts
   import { translate } from "@near-wallet-selector/core";
@@ -43,8 +44,8 @@
   <p>${translate("modal.wallet.whatIsAWallet")}</p>
   ```
 
-
 ## Adding new language
+
 - Language files are located in locale folder in `packages\core\src\lib\locale`
 - Files are named after ISO 639-1: two-letter language code
 - Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
@@ -59,24 +60,32 @@
   }
   ```
 
-- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts` 
+- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts`
 
-  ```ts
-  import en from "../locale/en.json";
+  ```import en from "../locale/en.json"; 
   import es from "../locale/es.json";
-  
+  import zh from "../locale/zh.json";
+  import bg from "../locale/bg.json";
+  import ko from "../locale/ko.json";
+  import vi from "../locale/vi.json";
+
   const getLanguage = (languageCode: string) => {
-    switch (languageCode) {
-      case "en":
-        return en;
-      case "es":
-        return es;
-      case "fr":
-        return fr;
-      case "de":
-        return de;
-      default:
-        return en;
-    }
-  };
+  
+  switch (languageCode) {
+  case "en":
+    return en;
+  case "es":
+    return es;
+  case "zh":
+    return zh;
+  case "bg":
+    return bg;
+  case "ko":
+    return ko;
+  case "vi":
+    return vi;
+  default:
+    return en;
+  }
+};
   ```
