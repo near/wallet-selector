@@ -75,3 +75,20 @@ Returns the ID of the selected wallet.
 const { selectedWalletId } = selector.store.getState();
 console.log(selectedWalletId); // "near-wallet"
 ```
+
+### `.recentlySignedInWallets`
+
+**Returns**
+
+- `Array<string>`: List of wallet ID-s
+
+**Description**
+
+Returns ID-s of 5 recently signed in wallets.
+
+**Example**
+
+```ts
+const { recentlySignedInWallets } = selector.store.getState();
+console.log(recentlySignedInWallets); // ["near-wallet", "sender", ...]
+```

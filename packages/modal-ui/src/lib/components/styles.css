@@ -1059,6 +1059,14 @@
   color: var(--wallet-selector-content-bg,var(--content-bg));
 }
 
+.nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .error-wrapper p {
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .success {
     color: #4FD98F;
 }

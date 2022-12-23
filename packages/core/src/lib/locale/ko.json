@@ -1,0 +1,59 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "지갑 연결하기",
+      "whatIsAWallet": "지갑은 무슨 역할을 하나요?",
+      "secureAndManage": "당신의 디지털 자산을 보호하고 관리합니다.",
+      "safelyStore": "암호화폐와 NFT를 안전하게 저장하고 전송할 수 있습니다.",
+      "logInToAny": "NEAR App에 로그인합니다.",
+      "noNeedToCreate": "새로운 계정이나 비밀번호를 만들 필요 없이 지갑을 연결한 후 바로 사용할 수 있습니다.",
+      "getAWallet": "지갑 가져오기",
+      "useAWallet": "지갑을 사용하여 NEAR 자산을 보호·관리하고, 아이디와 비밀번호 없이 NEAR 앱에 로그인할 수 있습니다.",
+      "connectionFailed": "연결 실패",
+      "connectionSuccessful": "연결 성공",
+      "connected": "Connected",
+      "connectingTo": "연결 중: ",
+      "connectingMessage": {
+        "injected": "익스텐션 창에서 연결을 확인하세요",
+        "browser": "리다이렉트 된 지갑에서 연결을 확인하세요",
+        "hardware": "Ledger 기기에서 연결을 확인하세요",
+        "bridge": "지갑에서 연결 확인"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "Ledger 연결하기",
+      "makeSureYourLedger": "Ledger가 안전하게 연결되어 있고, NEAR 앱이 열려 있는 지 확인하세요",
+      "continue": "계속하기",
+      "specifyHDPath": "HD Path 지정하기",
+      "enterYourPreferredHDPath": "원하는 HD Path를 선택하고, 활성화된 계정이 있는 지 검색하세요",
+      "scan": "검색",
+      "retry": "다시 시도",
+      "ledgerIsNotAvailable": "Ledger를 사용할 수 없습니다",
+      "accessDeniedToUseLedgerDevice": "Ledger 기기 접근 권한이 거부되었습니다",
+      "noAccountsFound": "계정을 찾을 수 없습니다",
+      "selectYourAccounts": "계정 선택하기",
+      "connecting1Account": "하나의 계정에 연결",
+      "cantFindAnyAccount": "Ledger와 연결된 계정을 찾을 수 없습니다. 새로운 계정을 생성하거나 ",
+      "orConnectAnAnotherLedger": "다른 Ledger를 연결하세요",
+      "connecting": "계정 연결하기: ",
+      "ofAccounts": "개 계정을 찾았습니다",
+      "failedToAutomatically": "계정 ID를 찾지 못했습니다. 수동으로 입력해주세요.",
+      "overviewTheListOfAuthorized": "인증된 계정 목록을 확인한 후 아래 버튼을 클릭하여 로그인을 완료하세요",
+      "finish": "완료"
+    },
+    "install": {
+      "youllNeedToInstall": "다음 확장 프로그램을 설치해주세요:",
+      "toContinueAfterInstalling": ". 설치 완료 후 페이지 새로 고침이 필요합니다. ",
+      "refreshThePage": "새로 고침",
+      "open": "Open"
+    },
+    "qr": {
+      "copiedToClipboard": "클립보드에 복사 완료",
+      "failedToCopy": "클립보드에 복사 실패",
+      "scanWithYourMobile": "모바일 장치를 사용하여 스캔해주세요",
+      "copyToClipboard": " 클립보드에 복사하기",
+      "preferTheOfficial": "다음 프로그램에서 제공하는 공식 프로세스를 선호하십니까: ",
+      "open": "Open"
+    }
+  }
+}
