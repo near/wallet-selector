@@ -175,16 +175,16 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           publicKey: utils.PublicKey.from(signed[0].publicKey),
         };
       } catch (err) {
-        throw Error("Invalid message. Only transactions can be signed");
-        // const decoded = new TextDecoder("utf-8").decode(message);
-        // const signed = await _state.wallet.request("near", {
-        //   method: "dapp:sign",
-        //   params: [decoded],
-        // });
-        // return {
-        //   signature: Buffer.from(signed.signature.substr(2), "hex"),
-        //   publicKey: utils.PublicKey.from(signed.publicKey),
-        // };
+        const decoded = new TextDecoder("utf-8").decode(message);
+        const signed = await _state.wallet.request("near", {
+          method: "dapp:signMessage",
+          params: [decoded],
+        });
+
+        return {
+          signature: Buffer.from(signed[0].signature.substr(2), "hex"),
+          publicKey: utils.PublicKey.from(signed[0].publicKey),
+        };
       }
     },
   };
@@ -256,46 +256,40 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     signOut,
 
     async verifyOwner({ message }) {
-      logger.log("Welldone:verifyOwner", { message });
-      throw new Error(`Method not supported by WELLDONE Wallet`);
+      logger.log("verifyOwner", { message });
 
-      // if (!_state.wallet) {
-      //   throw new Error("Wallet is not installed");
-      // }
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
 
-      // const account = _state.account;
+      const account = _state.account;
 
-      // if (!account) {
-      //   throw new Error("Wallet not signed in");
-      // }
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
 
-      // const accountId = account.accountId;
-      // const pubKey = utils.PublicKey.fromString(account.publicKey);
-      // const block = await _state.wallet.request("near", {
-      //   method: "block",
-      //   params: {
-      //     finality: "final",
-      //   },
-      // });
+      const accountId = account.accountId;
+      const pubKey = utils.PublicKey.fromString(account.publicKey);
+      const block = await provider.block({ finality: "final" });
 
-      // const data = {
-      //   accountId,
-      //   message,
-      //   blockId: block.header.hash,
-      //   publicKey: Buffer.from(pubKey.data).toString("base64"),
-      //   keyType: pubKey.keyType,
-      // };
-      // const encoded = JSON.stringify(data);
+      const data = {
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      };
+      const encoded = JSON.stringify(data);
 
-      // const signed = await signer.signMessage(
-      //   new Uint8Array(Buffer.from(encoded)),
-      //   accountId
-      // );
+      const signed = await signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
+        accountId
+      );
 
-      // return {
-      //   ...data,
-      //   signature: Buffer.from(signed.signature).toString("base64"),
-      // };
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
