@@ -16,7 +16,8 @@
       "connectingMessage": {
         "injected": "Confirme la conexión en la ventana de extensión",
         "browser": "Confirme la conexión en la billetera después de la redirección",
-        "hardware": "Confirme la conexión en el dispositivo de libro mayor"
+        "hardware": "Confirme la conexión en el dispositivo de libro mayor",
+        "bridge": "Confirmar la conexión en la billetera"
       }
     },
     "ledger": {

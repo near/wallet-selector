@@ -21,7 +21,7 @@ export interface NearNightly {
     transaction: Array<NearTransaction>
   ) => Promise<Array<NearSignedTransaction>>;
   connect: (
-    onDisconnect?: () => void,
+    onAccountChange?: (acc?: NightlyAccount) => void,
     eagerConnect?: boolean
   ) => Promise<NightlyAccount>;
   disconnect: () => Promise<void>;
