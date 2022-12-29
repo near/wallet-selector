@@ -32,9 +32,9 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 
   switch (network.networkId) {
     case "mainnet":
-      return "https://near-wallet-api.finerwallet.io/mainnet";
+      return "https://near-wallet-mainnet.finerwallet.io";
     case "testnet":
-      return "https://near-wallet-api.finerwallet.io/testnet";
+      return "https://near-wallet-testnet.finerwallet.io";
     default:
       throw new Error("Invalid wallet url");
   }
