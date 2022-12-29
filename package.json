@@ -21,7 +21,8 @@
     "nearfi",
     "meteor-wallet",
     "welldone-wallet",
-    "opto-wallet"
+    "opto-wallet",
+    "finer-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -56,6 +57,7 @@
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
     "build:opto-wallet": "nx run-many --target=build --projects=opto-wallet --configuration=production",
+    "build:finer-wallet": "nx run-many --target=build --projects=finer-wallet --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
