@@ -8,22 +8,10 @@ import type {
 } from "@near-wallet-selector/core";
 import type { MyNearWalletParams } from "@near-wallet-selector/my-near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import { setupSender } from "@near-wallet-selector/sender";
+import { setupFinerSender } from "./finer-sender";
 import icon from "./icon";
 
 export type FinerWalletParams = MyNearWalletParams;
-
-interface InjectedFiner {
-  near: {
-    isSender: boolean;
-  };
-}
-
-declare global {
-  interface Window {
-    finer: InjectedFiner | undefined;
-  }
-}
 
 const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   if (walletUrl) {
@@ -41,7 +29,7 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 };
 
 const isInstalledExtension = () => {
-  return waitFor(() => !!window.finer?.near?.isSender).catch(() => false);
+  return waitFor(() => !!window.finer).catch(() => false);
 };
 
 export function setupFinerWallet({
@@ -81,7 +69,7 @@ export function setupFinerWallet({
     const installed = await isInstalledExtension();
 
     if (!mobile && installed) {
-      const extWallet = await setupSender({
+      const extWallet = await setupFinerSender({
         iconUrl,
         deprecated,
       })(options);
