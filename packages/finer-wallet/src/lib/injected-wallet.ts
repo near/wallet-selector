@@ -104,6 +104,21 @@ interface SenderEvents {
   rpcChanged: (response: RpcChangedResponse) => void;
 }
 
+interface SignMessageData {
+  accountId: string;
+  message: string;
+  blockId: string;
+  publicKey: string;
+  keyType: number;
+  signature: string;
+}
+
+interface SignMessageResponse {
+  method: "signMessage";
+  error?: string;
+  response?: SignMessageData;
+}
+
 export interface InjectedFinerSender {
   isSender: boolean;
   isFiner: boolean;
@@ -128,4 +143,5 @@ export interface InjectedFinerSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
+  signMessage: (message: string) => Promise<SignMessageResponse>;
 }

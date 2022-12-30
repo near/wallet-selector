@@ -186,7 +186,12 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       const account = _state.wallet.account();
 
       if (!account) {
-        throw new Error("Wallet not signed in");
+        const data = await _state.wallet.signMessage(message);
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        return data.response;
       }
 
       // Note: When the wallet is locked, Sender returns an empty Signer interface.
