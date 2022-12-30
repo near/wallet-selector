@@ -3,18 +3,13 @@
 import type { Account, providers } from "near-api-js";
 
 interface AccessKey {
-  publicKey: {
-    data: Uint8Array;
-    keyType: number;
-  };
+  publicKey: string;
   secretKey: string;
 }
 
 interface RequestSignInResponse {
   accessKey: AccessKey;
   error: string | { type: string };
-  notificationId: number;
-  type: "sender-wallet-result";
 }
 
 type SignOutResponse = true | { error: string | { type: string } };
@@ -33,9 +28,7 @@ interface RpcInfo {
 
 interface GetRpcResponse {
   method: "getRpc";
-  notificationId: number;
   rpc: RpcInfo;
-  type: "sender-wallet-result";
 }
 
 interface RequestSignInParams {
@@ -83,23 +76,16 @@ interface FunctionCallError {
   };
 }
 
-// Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 interface SignAndSendTransactionResponse {
-  actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
-  notificationId: number;
   error?: string;
   response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
-  type: "sender-wallet-extensionResult";
 }
 
 interface SignAndSendTransactionsResponse {
-  actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
-  notificationId: number;
   error?: string;
   response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
-  type: "sender-wallet-extensionResult";
 }
 
 interface Transaction {
@@ -121,7 +107,6 @@ interface SenderEvents {
 export interface InjectedFinerSender {
   isSender: boolean;
   isFiner: boolean;
-  callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
   account(): Account | null;

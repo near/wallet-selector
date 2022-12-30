@@ -53,18 +53,18 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupSenderState();
 
-  const cleanup = () => {
-    for (const key in _state.wallet.callbacks) {
-      _state.wallet.remove(key);
-    }
-  };
+  // const cleanup = () => {
+  //   for (const key in _state.wallet.callbacks) {
+  //     _state.wallet.remove(key);
+  //   }
+  // };
 
   const signOut = async () => {
     if (!_state.wallet.isSignedIn()) {
       return;
     }
 
-    cleanup();
+    // cleanup();
 
     const res = await _state.wallet.signOut();
 
