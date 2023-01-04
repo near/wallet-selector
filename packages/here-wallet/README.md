@@ -13,6 +13,7 @@ yarn add near-api-js
 # Using NPM.
 npm install near-api-js
 ```
+
 ```bash
 # Using Yarn
 yarn add @near-wallet-selector/here-wallet
@@ -27,34 +28,43 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 
-const hereWallet = setupHereWallet();
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [hereWallet],
+  modules: [setupHereWallet()],
 });
 ```
 
-## Options
 
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to base64 from `src/icon.ts`
+## Here Wallet JS SDK
 
-## Additional Methods
+The library uses @here-wallet/core, you can read more about the functionality here:
+https://github.com/here-wallet/js-sdk
 
-* `getHereBalance(): Promise<BN>` <br/>
-  Return available yoktoNears from Here smart contract
 
-* `getAvailableBalance(): Promise<BN>` <br/>
-  Return available yoktoNears from near account + getHereBalance()
+## Instant Wallet with AppClip
 
-You can use it with Typescript:
+If your goal is to provide the user with a convenient way to log in to your desktop app, you can use Here Instant Wallet, which allows users without a wallet to instantly create one via appclip.
+
+At the moment here wallet is only available for IOS users
+
+You have the option to override how your user is delivered the signing link. This is how you can create a long-lived transaction signature request and render it on your web page:
+
 ```ts
-const isHereWallet = (w: Wallet): w is HereWallet =>
-  w.id === "here-wallet";
+import { QRCodeStrategy } from "@here-wallet/core/qrcode-strategy";
+const isHereWallet = (w: Wallet): w is HereWallet => w.id === "here-wallet";
 
+// Correct typings
 if (isHereWallet(wallet)) {
-  wallet.getAvailableBalance(); // correct typings
+  await here.signIn({
+    contractId: "social.near",
+    strategy: new QRCodeStrategy({ 
+      element: document.getElementById("qr-container"), 
+      theme: 'dark'
+    }),
+  });
 }
 ```
+
 
 ## Assets
 

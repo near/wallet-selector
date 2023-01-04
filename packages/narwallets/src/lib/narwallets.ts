@@ -9,6 +9,12 @@ import type {
 } from "@near-wallet-selector/core";
 import icon from "./icon";
 
+declare global {
+  interface Window {
+    narwallets: InjectedWallet | undefined;
+  }
+}
+
 export interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;

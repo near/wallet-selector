@@ -9,7 +9,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
-- [Welldone Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
+- [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
@@ -23,7 +23,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 [React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
-![Preview](./images/preview-img.gif)
+![Preview](./images/preview.gif)
 
 ## Installation and Usage
 
@@ -31,10 +31,10 @@ The easiest way to use NEAR Wallet Selector is to install the [`core`](https://w
 
 ```bash
 # Using Yarn
-yarn add near-api-js@^0.44.2
+yarn add near-api-js
 
 # Using NPM.
-npm install near-api-js@^0.44.2
+npm install near-api-js
 ```
 
 ```bash

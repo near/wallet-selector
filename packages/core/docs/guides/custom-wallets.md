@@ -15,6 +15,7 @@ import {
 
 export interface MyWalletParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
@@ -62,6 +63,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
 
 export function setupMyWallet({
   iconUrl = "./assets/my-wallet-icon.png",
+  deprecated = false,
 }: MyWalletParams = {}): WalletModuleFactory<BrowserWallet> {
   return async () => {
     // Return null here when wallet is unavailable.
@@ -73,7 +75,7 @@ export function setupMyWallet({
         name: "My Wallet",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         available: true,
       },
       init: MyWallet,

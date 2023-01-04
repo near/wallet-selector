@@ -219,6 +219,10 @@ const MyNearWallet: WalletBehaviourFactory<
         callbackUrl,
       });
     },
+
+    buildImportAccountsUrl() {
+      return `${resolveWalletUrl(options.network)}/batch-import`;
+    },
   };
 };
 

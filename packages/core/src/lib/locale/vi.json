@@ -1,0 +1,59 @@
+{
+    "modal": {
+      "wallet": {
+        "connectYourWallet": "Kết nối ví của bạn",
+        "whatIsAWallet": "Ví là gì?",
+        "secureAndManage": "Bảo mật & Quản lý tài sản số của bạn",
+        "safelyStore": "Lưu trữ và chuyển tiền điện tử và NFT của bạn một cách an toàn.",
+        "logInToAny": "Đăng nhập vào bất kỳ ứng dụng trên NEAR",
+        "noNeedToCreate": "Không cần tạo tài khoản hoặc thông tin đăng nhập mới. Kết nối ví của bạn và bắt đầu!",
+        "getAWallet": "Tạo Ví",
+        "useAWallet": "Sử dụng ví để bảo mật và quản lý tài sản trên NEAR của bạn và đăng nhập vào bất kỳ ứng dụng NEAR nào, không cần tên người dùng và mật khẩu.",
+        "connectionFailed": "Kết nối thất bại",
+        "connectionSuccessful": "Kết nối thành công",
+        "connected": "Đã kết nối",
+        "connectingTo": "Đang kết nối tới",
+        "connectingMessage": {
+          "injected": "Xác nhận kết nối trong cửa sổ tiện ích mở rộng",
+          "browser": "Xác nhận kết nối trong ví sau khi được chuyển hướng",
+          "hardware": "Xác nhận kết nối với ví lạnh",
+          "bridge": "Xác nhận kết nối trong ví"
+        }
+      },
+      "ledger": {
+        "connectWithLedger": "Kết nối ví Ledger",
+        "makeSureYourLedger": "Đảm bảo Ledger của bạn được kết nối an toàn và ứng dụng NEAR đang mở sẵn trên thiết bị",
+        "continue": "Tiếp tục",
+        "specifyHDPath": "Chỉ định HD Path",
+        "enterYourPreferredHDPath": "Nhập HD Path của bạn, sau đó quét tìm các tài khoản hoạt động",
+        "scan": "Quét",
+        "retry": "Thử lại",
+        "ledgerIsNotAvailable": "Ledger không khả dụng",
+        "accessDeniedToUseLedgerDevice": "Truy cập Ledger bị từ chối",
+        "noAccountsFound": "Không tìm thấy tài khoản",
+        "selectYourAccounts": "Chọn tài khoản của bạn",
+        "connecting1Account": "Đang kết nối 1 tài khoản",
+        "cantFindAnyAccount": "Không thể tìm thấy bất kỳ tài khoản nào được liên kết với Ledger này. Vui lòng tạo một tài khoản NEAR mới",
+        "orConnectAnAnotherLedger": "hoặc kết nối với ví Ledger khác.",
+        "connecting": "Đang kết nối",
+        "ofAccounts": "của tài khoản",
+        "failedToAutomatically": "Không thể tự động tìm id tài khoản. Nhập thủ công:",
+        "overviewTheListOfAuthorized": "Tổng quan danh sách các tài khoản được ủy quyền, hoàn tất đăng nhập bằng cách bấm vào nút bên dưới.",
+        "finish": "Hoàn thành"
+      },
+      "install": {
+        "youllNeedToInstall": "Bạn sẽ cần cài đặt",
+        "toContinueAfterInstalling": "để bắt đầu. Sau khi cài đặt xong",
+        "refreshThePage": "Tải lại trang.",
+        "open": "Mở"
+      },
+      "qr": {
+        "copiedToClipboard": "Đã sao chép vào clipboard(bảng tạm)",
+        "failedToCopy": "Sao chép vào clipboard(bảng tạm) thất bại",
+        "scanWithYourMobile": "Quét với điện thoại của bạn",
+        "copyToClipboard": " Sao chép vào clipboard(bảng tạm)",
+        "preferTheOfficial": "Dialogue chính thức của",
+        "open": "Mở"
+      }
+    }
+  }

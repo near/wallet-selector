@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "7.3.0",
+  "version": "7.4.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -77,6 +77,7 @@
     "@angular/platform-browser": "~14.0.0",
     "@angular/platform-browser-dynamic": "~14.0.0",
     "@angular/router": "~14.0.0",
+    "@here-wallet/core": "^1.2.1",
     "@jscutlery/semver": "^2.27.2",
     "@ledgerhq/hw-transport": "6.27.1",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
@@ -175,8 +176,8 @@
     "semantic-release": "^19.0.2",
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
+    "ts-prune": "^0.10.3",
     "typescript": "~4.7.2",
-    "uuid": "^9.0.0",
-    "ts-prune": "^0.10.3"
+    "uuid": "^9.0.0"
   }
 }
