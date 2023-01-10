@@ -1,0 +1,55 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/export-selector-ui/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/export-selector-ui",
+        "tsConfig": "packages/export-selector-ui/tsconfig.lib.json",
+        "project": "packages/export-selector-ui/package.json",
+        "entryFile": "packages/export-selector-ui/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/export-selector-ui/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/export-selector-ui/**/*.css",
+            "input": ".",
+            "output": "."
+          }
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "../../../../dist/packages/modal-ui/styles.css"
+          ]
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/export-selector-ui/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/export-selector-ui"],
+      "options": {
+        "jestConfig": "packages/export-selector-ui/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
