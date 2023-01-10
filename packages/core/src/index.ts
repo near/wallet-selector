@@ -61,10 +61,16 @@ export type {
   DeleteKeyAction,
   DeleteAccountAction,
   AddKeyPermission,
+  AccountImportData,
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export { waitFor, getActiveAccount } from "./lib/helpers";
+export {
+  waitFor,
+  getActiveAccount,
+  encodeAccountData,
+  decodeAccountData,
+} from "./lib/helpers";
 
 export { translate } from "./lib/translate/translate";
