@@ -59,7 +59,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
         onCloseModal={onCloseModal}
         onBack={onBack}
       />
-      <div className="export-account">
+      <div className="export-account connecting-wrapper">
         <div className="content">
           {isLoading ? (
             <div className="connecting-details">

@@ -85,23 +85,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
      * accounts: [{ accountId: "test.testnet", privateKey: "ed25519:..."}, ...]
      */
     const _modal = setupExportSelectorModal(_selector, {
-      accounts: [
-        {
-          accountId: "dannytest33.testnet",
-          privateKey:
-            "ed25519:2hHZQbuQMUgRaoMLAYaQGvTq7dAQoYqg7wG8Fx11d4uwZEAhGHE5ok41n7KZMKnZkR6g8t8ifgfqmrhLYybUmcw2",
-        },
-        {
-          accountId: "dannytest26.testnet",
-          privateKey:
-            "ed25519:3F63h359C3iMk7ZtL2AiWvSJNbQMxtyxZ6hL8s6NGmJvTqpppRQQMtQYQSJPpo782mWAfQW6szUJ6naGUf9VCB7V",
-        },
-        {
-          accountId: "dannytest7.testnet",
-          privateKey:
-            "ed25519:4tNSRvrrDzFhoiA2MteuSDxBrQfvfpm9yjpV8nwQrNQcc9haDirZM3JuCGGf3UBYQ9EEKnW7NEyXY19jscN1hrQd",
-        },
-      ],
+      accounts: [],
       onComplete: (completedAccounts) => {
         console.log("Transfer Completed: ", completedAccounts);
       },
