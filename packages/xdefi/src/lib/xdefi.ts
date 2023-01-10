@@ -1,9 +1,12 @@
 import type {
-  InjectedWallet, Transaction, WalletBehaviourFactory,
+  InjectedWallet,
+  Optional,
+  Transaction,
+  WalletBehaviourFactory,
   WalletModuleFactory,
-  WalletSelectorStore
+  WalletSelectorStore,
 } from "@near-wallet-selector/core";
-import { Optional, waitFor } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { isMobile } from "is-mobile";
 import icon from "./icon";
 import type { InjectedXDEFI, NearXDEFI } from "./injected-xdefi";
@@ -14,7 +17,7 @@ declare global {
   }
 }
 
-interface XDEFIState {
+export interface XDEFIState {
   wallet: NearXDEFI;
 }
 
@@ -47,10 +50,10 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const getAccounts = () => {
     if (!_state.wallet.accounts) {
-      return []
+      return [];
     }
 
-    return _state.wallet.accounts
+    return _state.wallet.accounts;
   };
 
   const transformTransactions = (
@@ -71,7 +74,6 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     });
   };
-
 
   return {
     async signIn() {
@@ -111,17 +113,22 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const result = await _state.wallet.signAndSendTransaction(
-        transformTransactions([transaction])[0],
+        transformTransactions([transaction])[0]
       );
 
       return result;
     },
 
-    async signAndSendTransactions({ transactions }: { transactions: Transaction[] }) {
+    async signAndSendTransactions({
+      transactions,
+    }: {
+      transactions: Array<Transaction>;
+    }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      const result = await _state.wallet
-        .signAndSendTransactions(transformTransactions(transactions))
+      const result = await _state.wallet.signAndSendTransactions(
+        transformTransactions(transactions)
+      );
 
       return result;
     },

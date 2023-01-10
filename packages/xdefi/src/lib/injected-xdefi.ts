@@ -1,6 +1,6 @@
-import { Transaction } from "@near-wallet-selector/core";
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
+import type { Transaction } from "@near-wallet-selector/core";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
 
 export interface NearAccount {
   accountId: string;
@@ -13,11 +13,15 @@ export interface XDEFIAccount {
 }
 
 export interface NearXDEFI {
-  accounts: XDEFIAccount[];
+  accounts: Array<XDEFIAccount>;
   connected: boolean;
-  signAndSendTransaction: (transaction: Transaction) => Promise<FinalExecutionOutcome>;
-  signAndSendTransactions: (transactions: Array<Transaction>) => Promise<Array<FinalExecutionOutcome>>;
-  connect: () => Promise<XDEFIAccount[]>;
+  signAndSendTransaction: (
+    transaction: Transaction
+  ) => Promise<FinalExecutionOutcome>;
+  signAndSendTransactions: (
+    transactions: Array<Transaction>
+  ) => Promise<Array<FinalExecutionOutcome>>;
+  connect: () => Promise<Array<XDEFIAccount>>;
   disconnect: () => Promise<void>;
 }
 
