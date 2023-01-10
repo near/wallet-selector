@@ -34,8 +34,6 @@ export const setupExportSelectorModal = (
     );
   };
 
-  render();
-
   if (!importModalInstance) {
     importModalInstance = {
       show: () => {
