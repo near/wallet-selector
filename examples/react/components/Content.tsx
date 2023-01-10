@@ -12,7 +12,10 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import { verifyFullKeyBelongsToUser, verifySignature } from "../utils";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };

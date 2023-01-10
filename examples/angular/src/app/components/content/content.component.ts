@@ -19,7 +19,10 @@ import { distinctUntilChanged, map } from "rxjs";
 import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
-import { verifyFullKeyBelongsToUser, verifySignature } from "../../../utils";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
