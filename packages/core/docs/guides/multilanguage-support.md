@@ -4,11 +4,13 @@
 - If user preffered language is not supported, english is rendered as default. 
 
 ## Supported languages
+- English
 - Spanish 
 - Chinese
 - Bulgarian
 - Vietnamese 
 - Korean
+- Arabic
 
 
  ## How to use
