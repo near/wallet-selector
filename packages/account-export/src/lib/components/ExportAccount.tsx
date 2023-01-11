@@ -153,8 +153,6 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
   const [exportInterfaces, setExportInterfaces] = useState<{
     buildImportAccountsUrl?: BrowserWalletBehaviour["buildImportAccountsUrl"];
     importAccountsInSecureContext?: InjectedWalletBehaviour["importAccountsInSecureContext"];
-    // TODO:  once WEP-219 is completed, implement following interface
-    buildQrCode?: () => void;
   }>({});
   useEffect(() => {
     const getExportInterfaces = async () => {
@@ -164,19 +162,12 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
           buildImportAccountsUrl,
           // @ts-ignore
           importAccountsInSecureContext,
-          // @ts-ignore
-          buildQrCode,
         } = await wallet.wallet();
         setExportInterfaces({
           buildImportAccountsUrl,
           importAccountsInSecureContext,
-          buildQrCode,
         });
-        if (
-          !buildImportAccountsUrl &&
-          !importAccountsInSecureContext &&
-          !buildQrCode
-        ) {
+        if (!buildImportAccountsUrl && !importAccountsInSecureContext) {
           onWarning();
         }
       } catch (e) {
@@ -237,7 +228,6 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     exportInterfaces.buildImportAccountsUrl,
-    exportInterfaces.buildQrCode,
     exportInterfaces.importAccountsInSecureContext,
   ]);
 
@@ -286,7 +276,6 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
       window.open(url, "_blank");
     }
     setStep(EXPORT_ACCOUNT_STEPS.COMPLETE);
-    // TODO: once WEP-219 is completed, implement QR code route on below
   };
 
   const onTransferComplete = () => {
