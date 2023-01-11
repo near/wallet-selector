@@ -58,7 +58,7 @@
     "build:opto-wallet": "nx run-many --target=build --projects=opto-wallet --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
-    "build:export-selector-ui": "nx run-many --target=build --projects=export-selector-ui --configuration=production",
+    "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "serve:react": "nx serve react --host=0.0.0.0",

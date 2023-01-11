@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: "export-selector-ui",
+  displayName: "account-export",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -11,5 +11,5 @@ export default {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/packages/export-selector-ui",
+  coverageDirectory: "../../coverage/packages/account-export",
 };

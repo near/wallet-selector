@@ -6,7 +6,7 @@
     "coin98-wallet": "packages/coin98-wallet",
     "core": "packages/core",
     "default-wallets": "packages/default-wallets",
-    "export-selector-ui": "packages/export-selector-ui",
+    "account-export": "packages/account-export",
     "here-wallet": "packages/here-wallet",
     "ledger": "packages/ledger",
     "math-wallet": "packages/math-wallet",

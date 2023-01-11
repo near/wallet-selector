@@ -24,8 +24,8 @@
       "@near-wallet-selector/default-wallets": [
         "packages/default-wallets/src/index.ts"
       ],
-      "@near-wallet-selector/export-selector-ui": [
-        "packages/export-selector-ui/src/index.ts"
+      "@near-wallet-selector/account-export": [
+        "packages/account-export/src/index.ts"
       ],
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
