@@ -11,7 +11,7 @@ export const NoInterface: React.FC<NoInterfaceProps> = ({
   name,
   alertMessage,
 }) => (
-  <div className="export-account connecting-wrapper">
+  <div className="account-export connecting-wrapper">
     <div className="content">
       <div className="icon">
         <img src={src} alt={name} />

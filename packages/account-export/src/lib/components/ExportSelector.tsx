@@ -160,7 +160,7 @@ export const ExportSelector: React.FC<ExportSelectorProps> = ({
           />
         </div>
         <div className="modal-right">
-          <div className="nws-modal-body export-account-body">
+          <div className="nws-modal-body account-export-body">
             {route.name === "AlertMessage" && alertMessage && (
               <AlertMessage
                 message={alertMessage}

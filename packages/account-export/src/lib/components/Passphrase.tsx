@@ -36,7 +36,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
         onCloseModal={onCloseModal}
         onBack={onBack}
       />
-      <div className="export-account">
+      <div className="account-export">
         <div className="content">
           <h4 className="passphrase-title">
             {translate("modal.exportAccounts.getPassphrase.desc")}
@@ -62,7 +62,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
             </label>
           </div>
           <button
-            className="middleButton export-account-button"
+            className="middleButton account-export-button"
             onClick={onNextStep}
             disabled={!hasCopied}
           >

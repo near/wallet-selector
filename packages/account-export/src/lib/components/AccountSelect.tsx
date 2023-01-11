@@ -59,7 +59,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
         onCloseModal={onCloseModal}
         onBack={onBack}
       />
-      <div className="export-account connecting-wrapper">
+      <div className="account-export connecting-wrapper">
         <div className="content">
           {isLoading ? (
             <div className="connecting-details">
@@ -116,7 +116,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
               </div>
               <div className="filler" />
               <button
-                className="middleButton export-account-button"
+                className="middleButton account-export-button"
                 onClick={onNextStep}
                 disabled={selectedAccounts.length === 0}
               >
