@@ -8,10 +8,11 @@ const ExportContent: NextPage = () => {
     <Fragment>
       <button onClick={() => ExportModal.show()}>Open Modal</button>
       <p>
-        Export modal assist users to migrate given accounts to one of listed
-        third party wallets. Depends on the type of wallet selected, users may
-        required to copy the given passhrase and store it safely until the
-        migration is completed.
+        The Export Accounts modal assists users in migrating their accounts to
+        any Wallet Selector wallet supporting account imports. Any sensitive
+        data in transit during this process will be encrypted with a
+        randomly-generated password which the user will be required to copy down
+        and use in the account import process on the target wallet.
       </p>
     </Fragment>
   );
