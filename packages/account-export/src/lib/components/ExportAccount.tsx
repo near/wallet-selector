@@ -270,14 +270,9 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
     }
   };
 
-  const injectedWalletInterface = () => {
+  const injectedWalletInterface = async () => {
     if (importAccountsInSecureContext) {
-      // convert accounts data into string without any encryption
-      const accountsData = encodeAccountData(accounts);
-      const url = `${importAccountsInSecureContext({
-        accounts,
-      })}#${accountsData}`;
-      window.open(url, "_blank");
+      await importAccountsInSecureContext({ accounts });
     } else {
       setStep(EXPORT_ACCOUNT_STEPS.NO_INTERFACE);
     }
