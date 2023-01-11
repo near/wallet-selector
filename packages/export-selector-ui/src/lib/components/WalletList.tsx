@@ -31,7 +31,6 @@ export const WalletList: React.FC<WalletListProps> = ({
       (result, module, index) => {
         const { selectedWalletId } = selector.store.getState();
         const { name, iconUrl, deprecated } = module.metadata;
-        const type = module.type;
         const selected = module.id === selectedWalletId;
 
         result.push(
@@ -56,7 +55,7 @@ export const WalletList: React.FC<WalletListProps> = ({
             <div className="import-content">
               <div className="title">{name}</div>
               <div className="import-type">
-                {translate(`modal.exportAccounts.walletTypes.${type}`)}
+                {translate(`modal.exportAccounts.walletTypes.${module.type}`)}
               </div>
             </div>
             {deprecated && (

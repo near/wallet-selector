@@ -86,25 +86,18 @@ const getAccountType = async ({
   accountId,
   publicKey,
 }: getAccountTypeProps) => {
-  const result = await provider
-    .query<AccessKeyView>({
+  try {
+    const { permission } = await provider.query<AccessKeyView>({
       request_type: "view_access_key",
       account_id: accountId,
       public_key: publicKey,
       finality: "final",
-    })
-    .then((data) => {
-      const type = permissionToType(data.permission);
-      return {
-        type,
-      };
-    })
-    .catch(() => {
-      return {
-        type: ACCESS_KEY_TYPES.UNKNOWN,
-      };
     });
-  return result;
+    const type = permissionToType(permission);
+    return { type };
+  } catch {
+    return { type: ACCESS_KEY_TYPES.UNKNOWN };
+  }
 };
 
 interface getAccountBalanceProps {
@@ -116,19 +109,17 @@ const getAccountBalance = async ({
   provider,
   accountId,
 }: getAccountBalanceProps) => {
-  const result = await provider
-    .query<AccountView>({
+  try {
+    const { amount } = await provider.query<AccountView>({
       request_type: "view_account",
       finality: "final",
       account_id: accountId,
-    })
-    .then((data) => {
-      const bn = new BN(data.amount);
-      return {
-        hasBalance: !bn.isZero(),
-      };
     });
-  return result;
+    const bn = new BN(amount);
+    return { hasBalance: !bn.isZero() };
+  } catch {
+    return { hasBalance: false };
+  }
 };
 
 export interface ExportAccountData {

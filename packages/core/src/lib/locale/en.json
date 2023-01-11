@@ -62,7 +62,7 @@
       "selectYourAccounts": "Select Your Accounts",
       "afterDecide": "After you decide on a wallet, you can select which accounts you want to transfer.",
       "disclaimer": "You won’t be able to transfer accounts that have never been funded or used on NEAR.",
-      "warning": "does not support export account. Please select another wallet.",
+      "warning": "does not support account export at this time. Please select another wallet.",
       "walletTypes": {
         "hardware": "Hardware Wallet",
         "browser": "Browser Wallet",

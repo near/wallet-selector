@@ -23,7 +23,7 @@ export const setupExportSelectorModal = (
   const container = document.getElementById(MODAL_ELEMENT_ID);
   const root = createRoot(container!);
 
-  const render = (visible = false) => {
+  const render = (visible: boolean) => {
     root.render(
       <ExportSelector
         selector={selector}

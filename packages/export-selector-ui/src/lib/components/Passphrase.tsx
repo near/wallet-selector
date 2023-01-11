@@ -29,8 +29,6 @@ export const Passphrase: React.FC<PassphraseProps> = ({
     symbols: true,
   });
 
-  const onCheck = (check: boolean) => setHasCopied(check);
-
   return (
     <Fragment>
       <ModalHeader
@@ -52,9 +50,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
           <div className="filler" />
           <div className="checkbox">
             <input
-              onChange={(e) => {
-                onCheck(e.target.checked);
-              }}
+              onChange={(e) => setHasCopied(e.target.checked)}
               checked={hasCopied}
               type="checkbox"
               id="passphrase-check"

@@ -14,7 +14,7 @@ yarn add @near-wallet-selector/export-selector-ui
 npm install @near-wallet-selector/export-selector-ui
 ```
 
-Then use it in your dApp:
+Then use it in your wallet:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
@@ -40,7 +40,7 @@ modal.show();
 ```
 
 ## Options
-- `accounts` (`Array`): List of objects that contains an account id and it's private key to be exported.
+- `accounts` (`Array`): List of objects with an account id and its private key to be exported.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
 
