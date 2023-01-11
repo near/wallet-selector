@@ -86,10 +86,6 @@
   };
   ```
 
-- Supported language should be added to `Supported Languages` list. 
-
-- Pull request title should be in **"Add support for `LanguageName` language"** format.
-
 - Supported language should be added to **Supported Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages).
 
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
