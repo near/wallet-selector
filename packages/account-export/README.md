@@ -1,4 +1,4 @@
-# @near-wallet-selector/modal-ui
+# @near-wallet-selector/account-export
 
 This is the Export Selector UI package for NEAR Wallet Selector.
 
