@@ -1,4 +1,7 @@
 {
   "name": "@near-wallet-selector/account-export",
-  "version": "0.1.0"
+  "version": "7.4.0",
+  "peerDependencies": {
+    "near-api-js": "^1.1.0"
+  }
 }
