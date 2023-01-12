@@ -13,10 +13,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/near/wallet-selector/tree/main/packages/default-wallets"
+    "url": "https://github.com/near/wallet-selector.git"
   },
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://www.npmjs.com/package/@near-wallet-selector/default-wallets"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/default-wallets"
 }
