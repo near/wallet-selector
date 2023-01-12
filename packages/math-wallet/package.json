@@ -1,6 +1,26 @@
 {
   "name": "@near-wallet-selector/math-wallet",
   "version": "7.4.0",
+  "description": "Math wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "injected wallet",
+    "math wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector/tree/main/packages/math-wallet"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://www.npmjs.com/package/@near-wallet-selector/math-wallet",
   "peerDependencies": {
     "near-api-js": "^0.44.2 || ^1.0.0"
   }
