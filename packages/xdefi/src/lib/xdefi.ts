@@ -1,5 +1,6 @@
 import type {
   InjectedWallet,
+  Network,
   Optional,
   Transaction,
   WalletBehaviourFactory,
@@ -19,21 +20,24 @@ declare global {
 
 export interface XDEFIState {
   wallet: NearXDEFI;
+  network: Network;
 }
 
 const setupXDEFIState = async (
-  store: WalletSelectorStore
+  store: WalletSelectorStore,
+  network: Network
 ): Promise<XDEFIState> => {
   const { selectedWalletId } = store.getState();
   const wallet = window.xfi!.near!;
 
   // Attempt to reconnect wallet if previously selected.
   if (selectedWalletId === "xdefi") {
-    await wallet.connect().catch(() => null);
+    await wallet.connect(network.networkId).catch(() => null);
   }
 
   return {
     wallet,
+    network,
   };
 };
 
@@ -45,8 +49,9 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   store,
   logger,
+  options,
 }) => {
-  const _state = await setupXDEFIState(store);
+  const _state = await setupXDEFIState(store, options.network);
 
   const getAccounts = () => {
     if (!_state.wallet.accounts) {
@@ -83,7 +88,7 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _state.wallet.connect();
+      await _state.wallet.connect(_state.network.networkId);
 
       return getAccounts();
     },

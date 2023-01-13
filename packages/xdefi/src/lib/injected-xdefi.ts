@@ -21,7 +21,7 @@ export interface NearXDEFI {
   signAndSendTransactions: (
     transactions: Array<Transaction>
   ) => Promise<Array<FinalExecutionOutcome>>;
-  connect: () => Promise<Array<XDEFIAccount>>;
+  connect: (network: string) => Promise<Array<XDEFIAccount>>;
   disconnect: () => Promise<void>;
 }
 
