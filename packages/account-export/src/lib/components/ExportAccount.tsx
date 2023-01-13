@@ -291,6 +291,8 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
           src={module?.metadata.iconUrl}
           name={module?.metadata.name}
           alertMessage={alertMessage}
+          onBack={onBack}
+          onCloseModal={onCloseModal}
         />
       )}
       {step === EXPORT_ACCOUNT_STEPS.ACCOUNT_SELECTION && (

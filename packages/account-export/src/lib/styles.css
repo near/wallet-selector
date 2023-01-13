@@ -244,3 +244,7 @@
   height: 100%;
   text-align: center;
 }
+
+.nws-modal-wrapper .nws-modal .connecting-wrapper-err {
+  height: 100%;
+}

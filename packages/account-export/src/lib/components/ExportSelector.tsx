@@ -129,12 +129,20 @@ export const ExportSelector: React.FC<ExportSelectorProps> = ({
   };
 
   const handleWarning = useCallback(() => {
-    setAlertMessage(
-      `${selectedWallet?.metadata.name} ${translate(
-        "modal.exportAccounts.warning"
-      )}`
-    );
-  }, [selectedWallet?.metadata.name]);
+    if (selectedWallet) {
+      setAlertMessage(
+        `${selectedWallet?.metadata.name} ${translate(
+          "modal.exportAccounts.warning"
+        )}`
+      );
+      setRoute({
+        name: "AlertMessage",
+        params: {
+          module: selectedWallet,
+        },
+      });
+    }
+  }, [selectedWallet]);
 
   if (!visible) {
     return null;
@@ -165,10 +173,7 @@ export const ExportSelector: React.FC<ExportSelectorProps> = ({
               <AlertMessage
                 message={alertMessage}
                 module={route.params?.module}
-                onBack={(retry) => {
-                  if (retry) {
-                    handleWalletClick(selectedWallet!);
-                  }
+                onBack={() => {
                   setAlertMessage(null);
                   onBackHome();
                 }}
