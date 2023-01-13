@@ -5,6 +5,7 @@ import bg from "../locale/bg.json";
 import ko from "../locale/ko.json";
 import vi from "../locale/vi.json";
 import hi from "../locale/hi.json";
+import ar from "../locale/ar.json";
 
 const getLanguage = (languageCode: string) => {
   switch (languageCode) {
@@ -22,6 +23,8 @@ const getLanguage = (languageCode: string) => {
       return vi;
     case "hi":
       return hi;
+    case "ar":
+      return ar;
     default:
       return en;
   }
