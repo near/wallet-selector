@@ -2252,10 +2252,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@here-wallet/core@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@here-wallet/core/-/core-1.2.1.tgz#b1dd2ec95c7ffd0a8c4511f3956bf74db869185f"
-  integrity sha512-Ml+Uku7iUuPrQKMS1cRk9KuDNeVn8/kTe6hCveYuNCWUYbBYSDt6kztjo08apJW8UUuVJNDr+vgR2CBWliz79g==
+"@here-wallet/core@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@here-wallet/core/-/core-1.3.1.tgz#bf384ac7b2b88f1d1dcd6739c25c06e21c2f3d87"
+  integrity sha512-OK7AlskPpGRdAnGruy8dWcvPCl8JL+hmBCKr1QRESPNwA4Tn3InhTL8xyxGrCjFA1gQ9XUGGTQvdI9ae3FDQ9Q==
   dependencies:
     sha1 "^1.1.1"
     uuid4 "2.0.3"
