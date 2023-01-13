@@ -11,6 +11,7 @@
 - Vietnamese 
 - Korean
 - Arabic
+- Hindi
 
 
  ## How to use
