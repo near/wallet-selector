@@ -1522,14 +1522,14 @@
         margin-right: auto;
     }
 
-    ::-webkit-scrollbar {
+    .nws-modal-wrapper ::-webkit-scrollbar {
         height: 4px;
         width: 4px;
         background: var(--backdrop-bg);
 
     }
 
-    ::-webkit-scrollbar-thumb:horizontal {
+   .nws-modal-wrapper ::-webkit-scrollbar-thumb:horizontal {
         background: var(--close-button-fill-icon-color);
         border-radius: 10px;
     }

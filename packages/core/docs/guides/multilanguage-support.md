@@ -4,11 +4,14 @@
 - If user preffered language is not supported, english is rendered as default. 
 
 ## Supported languages
+- English
 - Spanish 
 - Chinese
 - Bulgarian
 - Vietnamese 
 - Korean
+- Arabic
+- Hindi
 
 
  ## How to use
@@ -83,3 +86,7 @@
     }
   };
   ```
+
+- Supported language should be added to **Supported Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages).
+
+- Pull request title should be named as **"Add support for `LanguageName` language"**.
