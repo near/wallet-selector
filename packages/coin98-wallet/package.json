@@ -1,6 +1,26 @@
 {
   "name": "@near-wallet-selector/coin98-wallet",
-  "version": "7.3.0",
+  "version": "7.5.0",
+  "description": "Coin 98 wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "injected wallet",
+    "coin 98"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/coin98-wallet",
   "peerDependencies": {
     "near-api-js": "^0.44.2 || ^1.0.0"
   }

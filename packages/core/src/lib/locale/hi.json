@@ -1,0 +1,58 @@
+{
+   "modal": {
+     "wallet": {
+       "connectYourWallet": "अपना वॉलेट (Wallet) कनेक्ट करें।",
+       "whatIsAWallet": "वॉलेट क्या है?",
+       "secureAndManage": "सुरक्षित और प्रबंधित करें।",
+       "safelyStore": "अपनी क्रिप्टोकरेंसी और एनएफटी को सुरक्षित रूप से स्टोर और ट्रांसफर करें।",
+       "logInToAny": "NEAR पर किसी भी ऐप में साइन इन करें।",
+       "noNeedToCreate": "नए खाते या लॉगिन बनाने की आवश्यकता नहीं है। अपना वॉलेट(NEAR Wallet)कनेक्ट करें और आरंभ करें।",
+       "getAWallet": "एक वॉलेट बनाएँ।",
+       "useAWallet": "अपनी NEAR संपत्तियों को सुरक्षित और प्रबंधित करने के लिए वॉलेट का उपयोग करें और किसी भी NEAR ऐप (app) में लॉग इन करें, किसी उपयोगकर्ता (user) नाम और पासवर्ड की आवश्यकता नहीं है।",
+       "connectionFailed": "कनेक्शन विफल|",
+       "connectionSuccessful": "कनेक्शन सफल|",
+       "connected": "वॉलेट जुड़ गया|",
+       "connectingTo": "वॉलेट जुड़ रहा हे|",
+       "connectingMessage": {
+         "injected": "एक्सटेंशन विंडो में कनेक्शन की पुष्टि करें|",
+         "browser": "रीडायरेक्ट होने के बाद वॉलेट में कनेक्शन की पुष्टि करें|",
+         "hardware": "कोल्ड वॉलेट के साथ कनेक्शन की पुष्टि करें|"
+       }
+     },
+     "ledger": {
+       "connectWithLedger": "लेजर(Ledger)वॉलेट कनेक्ट करें|",
+       "makeSureYourLedger": "सुनिश्चित करें कि आपका लेजर सुरक्षित रूप से जुड़ा हुआ है और NEAR ऐप आपके डिवाइस (Device)पर पहले से ही खुला है|",
+       "continue": "जारी रखे|",
+       "specifyHDPath": "हार्ड डिस्क(Hard Disk)पथ(Path)निर्धारित करे|",
+       "enterYourPreferredHDPath": "अपना एचडी पथ दर्ज करें, फिर सक्रिय खातों के लिए स्कैन करें|",
+       "scan": "स्कैन करे|",
+       "retry": "दोबारा प्रयास करे|",
+       "ledgerIsNotAvailable": "लेजर उपलब्ध नहीं है|",
+       "accessDeniedToUseLedgerDevice": "लेजर डिवाइस का उपयोग करने के लिए प्रवेश निषेध|",
+       "noAccountsFound": "खाता नहीं मिला|",
+       "selectYourAccounts": "अपने खाते चुनें|",
+       "connecting1Account": "एक खाता कनेक्ट हो रहा है|",
+       "cantFindAnyAccount": "इस लेजर से जुड़ा कोई खाता नहीं मिला। कृपया एक नया NEAR खाता बनाएँ|",
+       "orConnectAnAnotherLedger": "अथवा दूसरे लेजर वॉलेट से कनेक्ट करें।",
+       "connecting": "जुड़ रहा हे|",
+       "ofAccounts": "खाता अब जुड़ा नहीं हे|",
+       "failedToAutomatically": "खाता आईडी स्वचालित रूप से खोजने में असमर्थ। मैन्युअल (Manuall) रूप से कोशिश करें|",
+       "overviewTheListOfAuthorized": "अवलोकन अधिकृत की सूची, नीचे दिए गए बटन पर क्लिक करके लॉगिन पूरा करें।",
+       "finish": "समाप्त|"
+     },
+     "install": {
+       "youllNeedToInstall": "आपको इंस्टॉल करना होगा|",
+       "toContinueAfterInstalling": "इंस्टॉल करने के बाद जारी रखे|",
+       "refreshThePage": "पुन: लोड करें।",
+       "open": "खोले|"
+     },
+     "qr": {
+       "copiedToClipboard": "क्लिपबोर्ड(Clipboard)पर कॉपी किया गया|",
+       "failedToCopy": "क्लिपबोर्ड पर कॉपी करना विफल रहा|",
+       "scanWithYourMobile": "अपने फोन (Mobile)से स्कैन करें|",
+       "copyToClipboard": " क्लिपबोर्ड पर कॉपी करें|",
+       "preferTheOfficial": "आधिकारिक संवाद को प्राथमिकता दें|",
+       "open": "खोले|"
+     }
+   }
+ }

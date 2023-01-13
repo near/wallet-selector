@@ -1,0 +1,59 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "صل محفظتك",
+      "whatIsAWallet": "ما هي المحفظة؟",
+      "secureAndManage": "تأمين وإدارة الممتلكات الرقمية الخاصة بك",
+      "safelyStore": "قم بتخزين و ارسال عملاتك و أصولك الرقمية بأمان",
+      "logInToAny": "سجل الدخول إلى أي تطبيق يستخدم نير",
+      "noNeedToCreate": ".لا داعي لإنشاء حساب جديد. فقط قم بتوصيل محفظتك وانطلق",
+      "getAWallet": "احصل على محفظة",
+      "useAWallet": "استخدم محفظة لتأمين وإدارة أصول نير الخاصة بك، وادخل لأي تطبيق يستخدم نير دون الحاجة إلى اسم المستخدم وكلمةالمرور",
+      "connectionFailed": "اتصال فاشل",
+      "connectionSuccessful": "اتصال ناجح",
+      "connected": "متصل",
+      "connectingTo": "جاري الاتصال ب",
+      "connectingMessage": {
+        "injected": "وافق على الاتصال في نافذة الإضافة",
+        "browser": "وافق على الاتصال في المحفظة بعد إعادة توجيه",
+        "hardware": "وافق على الاتصال في جهاز ليدجر",
+        "bridge": "وافق على الاتصال في المحفظة"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "اتصل مع ليدجر",
+      "makeSureYourLedger": "تأكد أن ليدجر متصل بأمان, و أن تطبيق نير مفتوح في جهازك",
+      "continue": "تابع",
+      "specifyHDPath": "حدد مسار الحساب",
+      "enterYourPreferredHDPath": "أدخل مسار الحساب المفضل، ثم ابحث عن كل الحسابات النشطة",
+      "scan": "مسح",
+      "retry": "أعد المحاولة",
+      "ledgerIsNotAvailable": "ليدجر غير متوفر",
+      "accessDeniedToUseLedgerDevice": "تم رفض الاتصال بليدجر",
+      "noAccountsFound": "لم يتم العثور على أي حسابات",
+      "selectYourAccounts": "حدد حساباتك",
+      "connecting1Account": "جاري الاتصال بحساب واحد",
+      "cantFindAnyAccount": "لا يمكن العثور على أي حساب مرتبط بهذا ليدجر الرجاء إنشاء حساب نير جديد على",
+      "orConnectAnAnotherLedger": "او اربط جهاز ليدجر آخر",
+      "connecting": "جاري الاتصال",
+      "ofAccounts": "من الحسابات",
+      "failedToAutomatically": "فشل في الاتصال بالحساب تلقائيا. يرجى الاتصال بالحساب يدويا",
+      "overviewTheListOfAuthorized": "لائحة الحسابات المصرح بها, أكمل تسجيل الدخول بالنقر على الزر أدناه",
+      "finish": "إنهاء"
+    },
+    "install": {
+      "youllNeedToInstall": "ستحتاج لتثبيت",
+      "toContinueAfterInstalling": "للاستكمال. بعد التثبيت",
+      "refreshThePage": "قم بتحديث الصفحة",
+      "open": "افتح"
+    },
+    "qr": {
+      "copiedToClipboard": "تم النسخ",
+      "failedToCopy": "فشل النسخ",
+      "scanWithYourMobile": "امسح بجهازك المحمول",
+      "copyToClipboard": "نسخ",
+      "preferTheOfficial": "تفضل الحوار الرسمي ل",
+      "open": "فتح"
+    }
+  }
+}
