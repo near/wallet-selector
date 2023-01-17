@@ -7,7 +7,6 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
-import detectEthereumProvider from "@metamask/detect-provider";
 import { nethIcon } from "../assets/icons";
 import {
   getNear,
@@ -47,7 +46,6 @@ export interface NethParams {
 }
 
 const isInstalled = async () => {
-  await detectEthereumProvider();
   return !!window.ethereum;
 };
 
