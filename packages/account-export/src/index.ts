@@ -1,4 +1,10 @@
-export { setupExportSelectorModal } from "./lib";
+export {
+  setupExportSelectorModal,
+  encodeAccountData,
+  decodeAccountData,
+  encryptAccountData,
+  decryptAccountData,
+} from "./lib";
 
 export type {
   WalletSelectorModal,
