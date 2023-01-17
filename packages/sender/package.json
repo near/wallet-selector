@@ -1,6 +1,26 @@
 {
   "name": "@near-wallet-selector/sender",
-  "version": "7.4.0",
+  "version": "7.5.0",
+  "description": "Sender wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "injected wallet",
+    "sender wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/sender",
   "peerDependencies": {
     "near-api-js": "^0.44.2 || ^1.0.0"
   }
