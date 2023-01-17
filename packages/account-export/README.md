@@ -39,6 +39,40 @@ const modal = setupExportSelectorModal(selector, {
 modal.show();
 ```
 
+## Wallet Selector Implementation
+
+Implementing account imports in Wallet Selector requires either:
+- Direct method call to an installed browser extension (injected wallets only)
+- URL with encrypted account data, either a link to a wallet domain or a deep link for mobile wallets
+
+### Injected Wallets
+For injected wallets implemented in browser extensions, calling a method directly on this plugin is permitted without encryption of account data.
+To use this method, an injected wallet would implement the [importAccountsInSecureContext](../core/src/lib/wallet/wallet.types.ts) method e.g.:
+```ts
+importAccountsInSecureContext(params: AccountImportSecureContextParams) {
+    params.forEach(({ accountId, privateKey }) => {
+        this.wallet.importAccount({ accountId, privateKey });
+    });
+}
+```
+
+### URL-Based
+
+Wallets may instead opt to implement a URL-based strategy, including browser wallets, mobile wallets via deep links, and injected wallets with a web component capable of
+communicating with an extension. To use a URL, the __buildImportAccountsUrl__ must be implemented to return the base URL for the account import. The encrypted data will
+then be appended to this URL as a fragment before redirecting the user to the composed URL, e.g.:
+```javascript
+buildImportAccountsUrl() {
+  /* this URL must exist and parse the fragment data */
+  return `https://awesome-near-wallet.xyz/${this.state.networkId}`;
+}
+```
+
+The Wallet Selector will use this base URL and append encrypted data to it before redirecting there, so the final URL would be in the form of `"https://awesome-near-wallet.xyz/mainnet#xyz...abc"`
+
+Once redirected, the user would be prompted for the passphrase used to encrypt this data so that it could be decrypted in the destination wallet. The decryption method is available for import [here](./src/TBD).
+
+
 ## Options
 - `accounts` (`Array`): List of objects with an account id and its private key to be exported.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
