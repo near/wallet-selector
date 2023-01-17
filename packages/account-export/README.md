@@ -59,7 +59,7 @@ importAccountsInSecureContext(params: AccountImportSecureContextParams) {
 ### URL-Based
 
 Wallets may instead opt to implement a URL-based strategy, including browser wallets, mobile wallets via deep links, and injected wallets with a web component capable of
-communicating with an extension. To use a URL, the __buildImportAccountsUrl__ must be implemented to return the base URL for the account import. The encrypted data will
+communicating with an extension. To use a URL, the [buildImportAccountsUrl](../core/src/lib/wallet/wallet.types.ts) must be implemented to return the base URL for the account import. The encrypted data will
 then be appended to this URL as a fragment before redirecting the user to the composed URL, e.g.:
 ```javascript
 buildImportAccountsUrl() {
