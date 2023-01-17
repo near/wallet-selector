@@ -240,9 +240,7 @@ export function setupNearFi({
 
     // Add extra wait to ensure NearFi's sign in status is read from the
     // browser extension background env.
-    await waitFor(() => !!window.nearFiWallet?.isSignedIn(), {
-      timeout: 300,
-    }).catch(() => false);
+    await waitFor(() => !!window.nearFiWallet?.isSignedIn()).catch(() => false);
 
     return {
       id: "nearfi",
