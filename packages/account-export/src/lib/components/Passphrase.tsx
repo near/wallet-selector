@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import generator from "generate-password";
 import { translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
@@ -10,6 +10,7 @@ export interface PassphraseProps {
   setHasCopied: (hasCopied: boolean) => void;
   onCloseModal: () => void;
   onBack: () => void;
+  onPassphraseSave: (passphrase: string) => void;
 }
 
 export const Passphrase: React.FC<PassphraseProps> = ({
@@ -18,16 +19,26 @@ export const Passphrase: React.FC<PassphraseProps> = ({
   setHasCopied,
   onCloseModal,
   onBack,
+  onPassphraseSave,
 }) => {
-  // TODO: reserve this secret key and pass down to next step for encryption for WEP-213
-  const secretKey = generator.generate({
-    length: 10,
-    numbers: true,
-    strict: true,
-    lowercase: true,
-    uppercase: true,
-    symbols: true,
-  });
+  const [secretKey, setSecretKey] = useState("");
+
+  useEffect(() => {
+    const key = generator.generate({
+      length: 32,
+      numbers: true,
+      strict: true,
+      lowercase: true,
+      uppercase: true,
+      symbols: true,
+    });
+    setSecretKey(key);
+  }, []);
+
+  const onButtonClick = () => {
+    onPassphraseSave(secretKey);
+    onNextStep();
+  };
 
   return (
     <Fragment>
@@ -63,7 +74,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
           </div>
           <button
             className="middleButton account-export-button"
-            onClick={onNextStep}
+            onClick={onButtonClick}
             disabled={!hasCopied}
           >
             {translate("modal.exportAccounts.getPassphrase.button")}
