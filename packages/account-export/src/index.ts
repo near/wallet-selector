@@ -2,7 +2,6 @@ export {
   setupExportSelectorModal,
   encodeAccountData,
   decodeAccountData,
-  encryptAccountData,
   decryptAccountData,
 } from "./lib";
 

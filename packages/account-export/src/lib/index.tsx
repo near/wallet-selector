@@ -51,6 +51,5 @@ export const setupExportSelectorModal = (
 export {
   encodeAccountData,
   decodeAccountData,
-  encryptAccountData,
   decryptAccountData,
 } from "./helpers";
