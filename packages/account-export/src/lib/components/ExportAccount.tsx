@@ -277,7 +277,9 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
 
   const browserOrMobileInterface = () => {
     const encryptedAccountData = encryptAccountData({
-      accountData: accounts,
+      accountData: accounts.filter(({ accountId }) =>
+        selectedAccounts.includes(accountId)
+      ),
       secretKey: passphrase,
     });
     const isUrlCompatible =

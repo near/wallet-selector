@@ -1,11 +1,6 @@
 import type { AccountImportData } from "@near-wallet-selector/core";
 
-import {
-  encryptAccountData,
-  decryptAccountData,
-  encodeAccountData,
-  decodeAccountData,
-} from "./importAccount";
+import { encryptAccountData, decryptAccountData } from "./importAccount";
 
 describe("import account utils", () => {
   const accountData: Array<AccountImportData> = [
@@ -18,7 +13,7 @@ describe("import account utils", () => {
       privateKey: "test456",
     },
   ];
-  it("encryption and decription accountData", () => {
+  it("encryption and decryption accountData", () => {
     const secretKey = "mE@~H?QyyC8fpy,PC7sv#//w5W4SFfYO";
 
     const ciphertext = encryptAccountData({ accountData, secretKey });
@@ -48,19 +43,12 @@ describe("import account utils", () => {
 
   it("Fail to decryptAccountData if cipher text is missing", () => {
     const secretKey = "mE@~H?QyyC8fpy,PC7sv#//w5W4SFfYO";
-    const ciphertext = {} as CryptoJS.lib.CipherParams;
+    const ciphertext = "";
     expect(() =>
       decryptAccountData({
         ciphertext,
         secretKey,
       })
     ).toThrow("Unable to decrypt account data");
-  });
-
-  it("encode and decode accountData", () => {
-    const encodedAccountData = encodeAccountData(accountData);
-    const decodedAccountData = decodeAccountData(encodedAccountData);
-
-    expect(accountData).toEqual(decodedAccountData);
   });
 });

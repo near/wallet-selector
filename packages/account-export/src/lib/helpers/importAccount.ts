@@ -3,14 +3,10 @@ import generator from "generate-password";
 
 import type { AccountImportData } from "@near-wallet-selector/core";
 
-export const encodeAccountData = (
-  accountsData: Array<AccountImportData>
-): string => encodeURIComponent(JSON.stringify(accountsData));
-
-export const decodeAccountData = (
-  encodedAccountsData: string
-): Array<AccountImportData> =>
-  JSON.parse(decodeURIComponent(encodedAccountsData));
+interface DecryptAccountDataProps {
+  ciphertext: string;
+  secretKey: string;
+}
 
 interface EncryptAccountDataProps {
   accountData: Array<AccountImportData>;
@@ -20,21 +16,19 @@ interface EncryptAccountDataProps {
 export const encryptAccountData = ({
   accountData,
   secretKey,
-}: EncryptAccountDataProps): CryptoJS.lib.CipherParams => {
+}: EncryptAccountDataProps): string => {
   if (!secretKey) {
     throw new Error("Secret key is required");
   }
   try {
-    return CryptoJS.AES.encrypt(JSON.stringify(accountData), secretKey);
+    return CryptoJS.AES.encrypt(
+      JSON.stringify(accountData),
+      secretKey
+    ).toString();
   } catch {
     throw new Error("Unable to encrypt account data");
   }
 };
-
-interface DecryptAccountDataProps {
-  ciphertext: CryptoJS.lib.CipherParams;
-  secretKey: string;
-}
 
 export const decryptAccountData = ({
   ciphertext,

@@ -48,8 +48,4 @@ export const setupExportSelectorModal = (
   return importModalInstance;
 };
 
-export {
-  encodeAccountData,
-  decodeAccountData,
-  decryptAccountData,
-} from "./helpers";
+export { decryptAccountData } from "./helpers";
