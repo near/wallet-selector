@@ -178,7 +178,7 @@ export function setupNeth({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    await waitFor(() => !!isSignedIn()).catch(() => false);
+    await waitFor(() => !!isSignedIn(), { timeout: 300 }).catch(() => false);
 
     if (mobile) {
       return null;
