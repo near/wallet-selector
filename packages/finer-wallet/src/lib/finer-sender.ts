@@ -313,8 +313,8 @@ export function setupFinerSender({
         name: "FiNER Wallet",
         description: "Browser extension wallet built on NEAR.",
         iconUrl,
-        downloadUrl: "",
-        // "https://chrome.google.com/webstore/detail/",
+        downloadUrl:
+          "https://chrome.google.com/webstore/detail/finer-wallet/mbboloafhcopdfokibemggdnhcocggpl",
         deprecated,
         available: installed,
       },

@@ -1,5 +1,4 @@
 import { isMobile } from "is-mobile";
-import { waitFor } from "@near-wallet-selector/core";
 import type {
   WalletModuleFactory,
   BrowserWallet,
@@ -26,10 +25,6 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
     default:
       throw new Error("Invalid wallet url");
   }
-};
-
-const isInstalledExtension = () => {
-  return waitFor(() => !!window.finer).catch(() => false);
 };
 
 export function setupFinerWallet({
@@ -66,28 +61,21 @@ export function setupFinerWallet({
       };
     }
 
-    const installed = await isInstalledExtension();
+    const extWallet = await setupFinerSender({
+      iconUrl,
+      deprecated,
+    })(options);
 
-    if (!mobile && installed) {
-      const extWallet = await setupFinerSender({
-        iconUrl,
-        deprecated,
-      })(options);
-
-      if (extWallet) {
-        return {
-          ...extWallet,
-          id: "finer-wallet",
-          metadata: {
-            ...extWallet.metadata,
-            name: "FiNER Wallet",
-            description: "FiNER Wallet Extension",
-            iconUrl,
-            deprecated,
-            available: true,
-          },
-        };
-      }
+    if (extWallet) {
+      return {
+        ...extWallet,
+        id: "finer-wallet",
+        metadata: {
+          ...extWallet.metadata,
+          iconUrl,
+          deprecated,
+        },
+      };
     }
 
     return null;
