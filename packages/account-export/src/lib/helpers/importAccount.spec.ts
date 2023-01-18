@@ -27,6 +27,36 @@ describe("import account utils", () => {
     expect(accountData).toEqual(decryptedAccountData);
   });
 
+  it("Fail to encryptAccountData if secretKey is missing", () => {
+    const secretKey = "";
+    expect(() => encryptAccountData({ accountData, secretKey })).toThrow(
+      "Secret key is required"
+    );
+  });
+
+  it("Fail to decryptAccountData if secretKey is missing", () => {
+    const secretKey = "mE@~H?QyyC8fpy,PC7sv#//w5W4SFfYO";
+    const invalidSecretKey = "";
+    const ciphertext = encryptAccountData({ accountData, secretKey });
+    expect(() =>
+      decryptAccountData({
+        ciphertext,
+        secretKey: invalidSecretKey,
+      })
+    ).toThrow("Secret key is required");
+  });
+
+  it("Fail to decryptAccountData if cipher text is missing", () => {
+    const secretKey = "mE@~H?QyyC8fpy,PC7sv#//w5W4SFfYO";
+    const ciphertext = {} as CryptoJS.lib.CipherParams;
+    expect(() =>
+      decryptAccountData({
+        ciphertext,
+        secretKey,
+      })
+    ).toThrow("Unable to decrypt account data");
+  });
+
   it("encode and decode accountData", () => {
     const encodedAccountData = encodeAccountData(accountData);
     const decodedAccountData = decodeAccountData(encodedAccountData);
