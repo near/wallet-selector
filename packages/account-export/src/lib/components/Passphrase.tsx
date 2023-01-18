@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import generator from "generate-password";
+import { generateSecretKey } from "../helpers";
 import { translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { ClickToCopy } from "./ClickToCopy";
@@ -24,20 +24,17 @@ export const Passphrase: React.FC<PassphraseProps> = ({
   const [secretKey, setSecretKey] = useState("");
 
   useEffect(() => {
-    const key = generator.generate({
-      length: 32,
-      numbers: true,
-      strict: true,
-      lowercase: true,
-      uppercase: true,
-      symbols: true,
-    });
+    const key = generateSecretKey();
     setSecretKey(key);
   }, []);
 
   const onButtonClick = () => {
-    onPassphraseSave(secretKey);
     onNextStep();
+  };
+
+  const onCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasCopied(e.target.checked);
+    onPassphraseSave(secretKey);
   };
 
   return (
@@ -61,7 +58,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
           <div className="filler" />
           <div className="checkbox">
             <input
-              onChange={(e) => setHasCopied(e.target.checked)}
+              onChange={onCheck}
               checked={hasCopied}
               type="checkbox"
               id="passphrase-check"
