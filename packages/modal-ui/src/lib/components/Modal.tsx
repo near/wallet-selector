@@ -90,8 +90,7 @@ export const Modal: React.FC<ModalProps> = ({
       });
 
       if (isOnHide === true && options.onHide) {
-        /*// @ts-ignore*/
-        options.onHide("wallet-navigation");
+        options.onHide("user-triggered");
       }
       hide();
     },
