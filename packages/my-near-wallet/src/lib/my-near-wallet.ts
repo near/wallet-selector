@@ -221,7 +221,7 @@ const MyNearWallet: WalletBehaviourFactory<
     },
 
     buildImportAccountsUrl() {
-      return `${resolveWalletUrl(options.network)}/batch-import`;
+      return `${params.walletUrl}/batch-import`;
     },
   };
 };

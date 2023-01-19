@@ -4,6 +4,7 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit {
         ...(await setupDefaultWallets()),
         setupNearWallet(),
         setupSender(),
+        setupXDEFI(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
