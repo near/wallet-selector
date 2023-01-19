@@ -53,18 +53,10 @@ const FinerExtension: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupFinerState();
 
-  // const cleanup = () => {
-  //   for (const key in _state.wallet.callbacks) {
-  //     _state.wallet.remove(key);
-  //   }
-  // };
-
   const signOut = async () => {
     if (!_state.wallet.isSignedIn()) {
       return;
     }
-
-    // cleanup();
 
     const res = await _state.wallet.signOut();
 
