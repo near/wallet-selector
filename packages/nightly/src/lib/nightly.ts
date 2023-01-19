@@ -7,6 +7,7 @@ import type {
   Transaction,
   EventEmitterService,
   WalletEvents,
+  Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
@@ -45,6 +46,7 @@ const setupNightlyState = async (
             accounts: [
               {
                 accountId: newAcc.accountId,
+                publicKey: wallet.account.publicKey.toString()
               },
             ],
           });
@@ -70,7 +72,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = await setupNightlyState(store, emitter);
 
-  const getAccounts = () => {
+  const getAccounts = (): Array<Account> => {
     const { accountId, publicKey } = _state.wallet.account;
     if (!accountId) {
       return [];
@@ -114,7 +116,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find public key for account");
       }
-      return utils.PublicKey.from(account.publicKey);
+      return utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       const accounts = getAccounts();
@@ -154,7 +156,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
           emitter.emit("signedOut", null);
         } else {
           emitter.emit("accountsChanged", {
-            accounts: [{ accountId: newAcc.accountId }],
+            accounts: [{ accountId: newAcc.accountId, publicKey: _state.wallet.account.publicKey.toString() }],
           });
         }
       });
@@ -167,7 +169,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      return getAccounts().map(({ accountId }) => ({ accountId }));
+      return getAccounts();
     },
 
     async verifyOwner({ message }) {

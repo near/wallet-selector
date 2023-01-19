@@ -50,14 +50,14 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupCoin98WalletState();
 
-  const getAccounts = (): Array<Account> => {
+  const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.near.account;
 
     if (!accountId) {
       return [];
     }
 
-    return [{ accountId: _state.wallet.near.account }];
+    return [{ accountId: _state.wallet.near.account, publicKey: (await _state.wallet.near.signer.getPublicKey(accountId)).toString() }];
   };
 
   const transformTransactions = (
@@ -86,7 +86,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn({ contractId }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;

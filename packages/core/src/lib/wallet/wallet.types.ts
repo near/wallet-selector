@@ -21,6 +21,7 @@ interface BaseWalletMetadata {
 
 export interface Account {
   accountId: string;
+  publicKey?: string;
 }
 
 export interface SignInParams {

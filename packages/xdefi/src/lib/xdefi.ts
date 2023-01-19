@@ -1,4 +1,5 @@
 import type {
+  Account,
   InjectedWallet,
   Network,
   Optional,
@@ -82,7 +83,7 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      const existingAccounts = getAccounts();
+      const existingAccounts = getAccounts().map((x) => ({ accountId: x.accountId, publicKey: x.publicKey.toString() }));
 
       if (existingAccounts.length) {
         return existingAccounts;
@@ -90,7 +91,7 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
 
       await _state.wallet.connect(_state.network.networkId);
 
-      return getAccounts();
+      return getAccounts().map((x) => ({ accountId: x.accountId, publicKey: x.publicKey.toString() }));
     },
 
     async signOut() {
@@ -98,7 +99,7 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      return getAccounts().map(({ accountId }) => ({ accountId }));
+      return getAccounts().map((x) => ({ accountId: x.accountId, publicKey: x.publicKey.toString() }));
     },
 
     async verifyOwner({ message }) {

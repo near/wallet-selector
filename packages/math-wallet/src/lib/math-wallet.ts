@@ -50,14 +50,14 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 }) => {
   const _state = setupMathWalletState();
 
-  const getAccounts = (): Array<Account> => {
+  const getAccounts = async (): Promise<Array<Account>> => {
     const account = _state.wallet.signer.account;
 
     if (!account) {
       return [];
     }
 
-    return [{ accountId: account.accountId }];
+    return [{ accountId: account.accountId, publicKey: (await _state.wallet.signer.getPublicKey(account.accountId, options.network.networkId)).toString() }];
   };
 
   const transformTransactions = (
@@ -86,7 +86,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn({ contractId }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;

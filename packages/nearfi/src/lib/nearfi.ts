@@ -7,6 +7,7 @@ import type {
   Transaction,
   FunctionCallAction,
   Optional,
+  Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
@@ -91,7 +92,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  const getAccounts = async () => {
+  const getAccounts = async (): Promise<Array<Account>> => {
     let accountId = _state.wallet.getAccountId();
     if (!accountId) {
       await _state.wallet.resolveSignInState();

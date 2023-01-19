@@ -12,6 +12,7 @@ import type {
   Transaction,
   Optional,
   Network,
+  Account,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
@@ -79,14 +80,15 @@ const OptoWallet: WalletBehaviourFactory<
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
-  const getAccounts = () => {
+  const getAccounts = async (): Promise<Array<Account>> => {
     const accountId: string | null = _state.wallet.getAccountId();
+    const account = _state.wallet.account();
 
-    if (!accountId) {
+    if (!accountId || !account) {
       return [];
     }
 
-    return [{ accountId }];
+    return [{ accountId, publicKey: (await account.connection.signer.getPublicKey(account.accountId, options.network.networkId)).toString() }];
   };
 
   const transformTransactions = async (
@@ -130,7 +132,7 @@ const OptoWallet: WalletBehaviourFactory<
 
   return {
     async signIn({ contractId, methodNames }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;

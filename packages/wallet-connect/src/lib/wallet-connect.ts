@@ -16,6 +16,7 @@ import type {
   WalletEvents,
   EventEmitterService,
   VerifiedOwner,
+  Account,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -123,10 +124,22 @@ const WalletConnect: WalletBehaviourFactory<
     throw new Error("Invalid chain id");
   };
 
-  const getAccounts = () => {
-    return (_state.session?.namespaces["near"].accounts || []).map((x) => ({
-      accountId: x.split(":")[2],
-    }));
+  const getAccounts = async (): Promise<Array<Account>> => {
+    const accounts = _state.session?.namespaces["near"].accounts || [];
+    const newAccounts = [];
+
+    for (let i = 0; i < accounts.length; i++) {
+      const keyPair = await _state.keystore.getKey(
+        options.network.networkId,
+        accounts[i].split(":")[2]
+      );
+      newAccounts.push({
+        accountId: accounts[i].split(":")[2],
+        publicKey: keyPair.getPublicKey().toString()
+      });
+    }
+
+    return newAccounts;
   };
 
   const cleanup = async () => {
@@ -332,8 +345,8 @@ const WalletConnect: WalletBehaviourFactory<
     });
   };
 
-  const createLimitedAccessKeyPairs = (): Array<LimitedAccessKeyPair> => {
-    const accounts = getAccounts();
+  const createLimitedAccessKeyPairs = async (): Promise<Array<LimitedAccessKeyPair>> => {
+    const accounts = await getAccounts();
 
     return accounts.map(({ accountId }) => ({
       accountId,
@@ -344,7 +357,7 @@ const WalletConnect: WalletBehaviourFactory<
   const requestSignIn = async (
     permission: nearTransactions.FunctionCallPermission
   ) => {
-    const keyPairs = createLimitedAccessKeyPairs();
+    const keyPairs = await createLimitedAccessKeyPairs();
     const limitedAccessAccounts: Array<LimitedAccessAccount> = keyPairs.map(
       ({ accountId, keyPair }) => ({
         accountId,
@@ -376,7 +389,7 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const requestSignOut = async () => {
-    const accounts = getAccounts();
+    const accounts = await getAccounts();
     const limitedAccessAccounts: Array<LimitedAccessAccount> = [];
 
     for (let i = 0; i < accounts.length; i += 1) {
@@ -428,9 +441,9 @@ const WalletConnect: WalletBehaviourFactory<
     await cleanup();
   };
 
-  const setupEvents = () => {
+  const setupEvents = async () => {
     _state.subscriptions.push(
-      _state.client.on("session_update", (event) => {
+      _state.client.on("session_update", async (event) => {
         logger.log("Session Update", event);
 
         if (event.topic === _state.session?.topic) {
@@ -439,7 +452,7 @@ const WalletConnect: WalletBehaviourFactory<
             namespaces: event.params.namespaces,
           };
 
-          emitter.emit("accountsChanged", { accounts: getAccounts() });
+          emitter.emit("accountsChanged", { accounts: await getAccounts() });
         }
       })
     );
@@ -457,12 +470,12 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   if (_state.session) {
-    setupEvents();
+    await setupEvents();
   }
 
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
@@ -484,7 +497,7 @@ const WalletConnect: WalletBehaviourFactory<
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
-        setupEvents();
+        await setupEvents();
 
         return getAccounts();
       } catch (err) {
