@@ -24,6 +24,7 @@
     "sender": "packages/sender",
     "wallet-connect": "packages/wallet-connect",
     "wallet-utils": "packages/wallet-utils",
-    "welldone-wallet": "packages/welldone-wallet"
+    "welldone-wallet": "packages/welldone-wallet",
+    "xdefi": "packages/xdefi"
   }
 }

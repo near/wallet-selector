@@ -1,22 +1,24 @@
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupNearFi } from "@near-wallet-selector/nearfi";
+import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
+import { setupSender } from "@near-wallet-selector/sender";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
+import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import type { ReactNode } from "react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { map, distinctUntilChanged } from "rxjs";
-import { setupWalletSelector } from "@near-wallet-selector/core";
-import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
-import { setupModal } from "@near-wallet-selector/modal-ui";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupSender } from "@near-wallet-selector/sender";
-import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupNightly } from "@near-wallet-selector/nightly";
-import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
-import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { setupNearFi } from "@near-wallet-selector/nearfi";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import { distinctUntilChanged, map } from "rxjs";
+
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { CONTRACT_ID } from "../constants";
@@ -66,6 +68,7 @@ export const WalletSelectorContextProvider: React.FC<{
           bundle: false,
         }),
         setupOptoWallet(),
+        setupXDEFI(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

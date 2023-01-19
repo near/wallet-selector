@@ -1,0 +1,7 @@
+{
+  "name": "@near-wallet-selector/xdefi",
+  "version": "7.4.0",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2 || ^1.0.0"
+  }
+}
