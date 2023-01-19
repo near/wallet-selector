@@ -29,7 +29,7 @@ interface MathWalletState {
 }
 
 const isInstalled = () => {
-  return false;
+  return !!window.nearWalletApi;
 };
 
 const setupMathWalletState = (): MathWalletState => {

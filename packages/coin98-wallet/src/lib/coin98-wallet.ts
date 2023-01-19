@@ -29,7 +29,7 @@ interface Coin98WalletState {
 }
 
 const isInstalled = () => {
-  return false;
+  return !!window.coin98;
 };
 
 const setupCoin98WalletState = (): Coin98WalletState => {
@@ -181,7 +181,7 @@ export const setupCoin98Wallet = ({
 }: Coin98WalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
+    const installed = isInstalled();
 
     if (mobile) {
       return null;
