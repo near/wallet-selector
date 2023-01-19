@@ -11,31 +11,31 @@ import type {
   Optional,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
-import type { InjectedFinerSender } from "./injected-wallet";
+import type { InjectedFiner } from "./injected-wallet";
 import icon from "./icon";
 
 declare global {
   interface Window {
     finer: {
-      near: InjectedFinerSender | undefined;
+      near: InjectedFiner | undefined;
     };
   }
 }
 
-export interface SenderParams {
+export interface FinerParams {
   iconUrl?: string;
   deprecated?: boolean;
 }
 
-interface SenderState {
-  wallet: InjectedFinerSender;
+interface FinerState {
+  wallet: InjectedFiner;
 }
 
 const isInstalled = () => {
   return waitFor(() => !!window.finer?.near?.isFiner).catch(() => false);
 };
 
-const setupSenderState = (): SenderState => {
+const setupFinerState = (): FinerState => {
   const wallet = window.finer?.near!;
 
   return {
@@ -43,7 +43,7 @@ const setupSenderState = (): SenderState => {
   };
 };
 
-const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
+const FinerExtension: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   metadata,
   store,
@@ -51,7 +51,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   emitter,
   logger,
 }) => {
-  const _state = setupSenderState();
+  const _state = setupFinerState();
 
   // const cleanup = () => {
   //   for (const key in _state.wallet.callbacks) {
@@ -181,7 +181,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner({ message }) {
-      logger.log("Sender:verifyOwner", { message });
+      logger.log("Finer:verifyOwner", { message });
 
       const account = _state.wallet.account();
 
@@ -194,7 +194,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         return data.response;
       }
 
-      // Note: When the wallet is locked, Sender returns an empty Signer interface.
+      // Note: When the wallet is locked, Wallet returns an empty Signer interface.
       // Even after unlocking the wallet, the user will need to refresh to gain
       // access to these methods.
       if (!account.connection.signer.signMessage) {
@@ -290,10 +290,10 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 };
 
-export function setupFinerSender({
+export function setupFinerInjected({
   iconUrl = icon,
   deprecated = false,
-}: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
+}: FinerParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
     const installed = await isInstalled();
@@ -318,7 +318,7 @@ export function setupFinerSender({
         deprecated,
         available: installed,
       },
-      init: Sender,
+      init: FinerExtension,
     };
   };
 }

@@ -97,7 +97,7 @@ interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-interface SenderEvents {
+interface FinerEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;
@@ -119,7 +119,7 @@ interface SignMessageResponse {
   response?: SignMessageData;
 }
 
-export interface InjectedFinerSender {
+export interface InjectedFiner {
   isSender: boolean;
   isFiner: boolean;
   getAccountId: () => string | null;
@@ -131,9 +131,9 @@ export interface InjectedFinerSender {
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
   remove: (event: string) => void;
-  on: <Event extends keyof SenderEvents>(
+  on: <Event extends keyof FinerEvents>(
     event: Event,
-    callback: SenderEvents[Event]
+    callback: FinerEvents[Event]
   ) => void;
   // TODO: Determine return type.
   sendMoney: (params: SendMoneyParams) => Promise<unknown>;
