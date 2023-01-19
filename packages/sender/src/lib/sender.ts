@@ -103,14 +103,26 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
-    
+
     if (!accountId) {
       return [];
     }
-    
+
     const account = _state.wallet.account();
 
-    return [{ accountId, publicKey: account ? (await account.connection.signer.getPublicKey(account.accountId, options.network.networkId)).toString(): undefined }];
+    return [
+      {
+        accountId,
+        publicKey: account
+          ? (
+              await account.connection.signer.getPublicKey(
+                account.accountId,
+                options.network.networkId
+              )
+            ).toString()
+          : undefined,
+      },
+    ];
   };
 
   const isValidActions = (

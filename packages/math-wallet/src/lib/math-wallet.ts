@@ -57,7 +57,17 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
-    return [{ accountId: account.accountId, publicKey: (await _state.wallet.signer.getPublicKey(account.accountId, options.network.networkId)).toString() }];
+    return [
+      {
+        accountId: account.accountId,
+        publicKey: (
+          await _state.wallet.signer.getPublicKey(
+            account.accountId,
+            options.network.networkId
+          )
+        ).toString(),
+      },
+    ];
   };
 
   const transformTransactions = (

@@ -130,7 +130,10 @@ const NightlyConnect: WalletBehaviourFactory<
   return {
     async signIn({ qrCodeModal = true }) {
       return new Promise((resolve, reject) => {
-        const existingAccounts = getAccounts().map(x => ({ accountId: x.accountId, publicKey: x.publicKey.toString() }));
+        const existingAccounts = getAccounts().map((x) => ({
+          accountId: x.accountId,
+          publicKey: x.publicKey.toString(),
+        }));
 
         if (existingAccounts.length) {
           return resolve(existingAccounts);
@@ -158,7 +161,12 @@ const NightlyConnect: WalletBehaviourFactory<
               _state.accounts.push(account);
               _state.modal.onClose = undefined;
               _state.modal.closeModal();
-              resolve(getAccounts().map(x => ({ accountId: x.accountId, publicKey: x.publicKey.toString() })));
+              resolve(
+                getAccounts().map((x) => ({
+                  accountId: x.accountId,
+                  publicKey: x.publicKey.toString(),
+                }))
+              );
             },
           }).then((client) => {
             client.ws.onclose = () => {
@@ -179,7 +187,12 @@ const NightlyConnect: WalletBehaviourFactory<
                 publicKey: utils.PublicKey.from(persistedPubkey),
               });
               _state.modal.onClose = undefined;
-              resolve(getAccounts().map(x => ({ accountId: x.accountId, publicKey: x.publicKey.toString() })));
+              resolve(
+                getAccounts().map((x) => ({
+                  accountId: x.accountId,
+                  publicKey: x.publicKey.toString(),
+                }))
+              );
             } else {
               if (qrCodeModal) {
                 _state.modal.openModal(client.sessionId, NETWORK.NEAR);
@@ -202,7 +215,10 @@ const NightlyConnect: WalletBehaviourFactory<
     signOut,
 
     async getAccounts() {
-      return getAccounts().map(account => ({ accountId: account.accountId, publicKey: account.publicKey.toString() }));
+      return getAccounts().map((account) => ({
+        accountId: account.accountId,
+        publicKey: account.publicKey.toString(),
+      }));
     },
 
     async verifyOwner({ message }) {

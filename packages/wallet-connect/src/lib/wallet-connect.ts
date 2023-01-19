@@ -135,7 +135,7 @@ const WalletConnect: WalletBehaviourFactory<
       );
       newAccounts.push({
         accountId: accounts[i].split(":")[2],
-        publicKey: keyPair.getPublicKey().toString()
+        publicKey: keyPair.getPublicKey().toString(),
       });
     }
 
@@ -345,7 +345,9 @@ const WalletConnect: WalletBehaviourFactory<
     });
   };
 
-  const createLimitedAccessKeyPairs = async (): Promise<Array<LimitedAccessKeyPair>> => {
+  const createLimitedAccessKeyPairs = async (): Promise<
+    Array<LimitedAccessKeyPair>
+  > => {
     const accounts = await getAccounts();
 
     return accounts.map(({ accountId }) => ({

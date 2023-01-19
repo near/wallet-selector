@@ -62,7 +62,17 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       return [];
     }
 
-    return [{ accountId, publicKey: (await account.connection.signer.getPublicKey(account.accountId, options.network.networkId)).toString() }];
+    return [
+      {
+        accountId,
+        publicKey: (
+          await account.connection.signer.getPublicKey(
+            account.accountId,
+            options.network.networkId
+          )
+        ).toString(),
+      },
+    ];
   };
 
   const transformTransactions = async (

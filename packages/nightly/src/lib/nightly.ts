@@ -46,7 +46,7 @@ const setupNightlyState = async (
             accounts: [
               {
                 accountId: newAcc.accountId,
-                publicKey: wallet.account.publicKey.toString()
+                publicKey: wallet.account.publicKey.toString(),
               },
             ],
           });
@@ -156,7 +156,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
           emitter.emit("signedOut", null);
         } else {
           emitter.emit("accountsChanged", {
-            accounts: [{ accountId: newAcc.accountId, publicKey: _state.wallet.account.publicKey.toString() }],
+            accounts: [
+              {
+                accountId: newAcc.accountId,
+                publicKey: _state.wallet.account.publicKey.toString(),
+              },
+            ],
           });
         }
       });
