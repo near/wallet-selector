@@ -97,7 +97,7 @@ describe("getAccounts", () => {
       contractId: "guest-book.testnet",
     });
     const result = await wallet.getAccounts();
-    expect(result).toEqual([{ accountId }]);
+    expect(result).toEqual([{ accountId, publicKey }]);
   });
   it("returns empty list because not connected", async () => {
     const { wallet } = await createLedgerWallet();

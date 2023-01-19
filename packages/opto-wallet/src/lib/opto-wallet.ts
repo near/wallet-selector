@@ -82,21 +82,24 @@ const OptoWallet: WalletBehaviourFactory<
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId: string | null = _state.wallet.getAccountId();
-    const account = _state.wallet.account();
 
-    if (!accountId || !account) {
+    if (!accountId) {
       return [];
     }
+
+    const account = _state.wallet.account();
 
     return [
       {
         accountId,
-        publicKey: (
-          await account.connection.signer.getPublicKey(
-            account.accountId,
-            options.network.networkId
-          )
-        ).toString(),
+        publicKey: account
+          ? (
+              await account.connection.signer.getPublicKey(
+                account.accountId,
+                options.network.networkId
+              )
+            ).toString()
+          : undefined,
       },
     ];
   };

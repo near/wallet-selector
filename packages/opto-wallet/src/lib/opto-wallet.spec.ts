@@ -19,8 +19,13 @@ declare global {
 
 const createOptoWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
-  const account = mock<ConnectedWalletAccount>();
-
+  const account = mock<ConnectedWalletAccount>({
+    connection: {
+      signer: {
+        getPublicKey: jest.fn().mockReturnValue(""),
+      },
+    },
+  });
   jest.mock("near-api-js", () => {
     const module = jest.requireActual("near-api-js");
     return {
@@ -93,7 +98,9 @@ describe("getAccounts", () => {
     const result = await wallet.getAccounts();
 
     expect(walletConnection.getAccountId).toHaveBeenCalled();
-    expect(result).toEqual([{ accountId: "test-account.testnet" }]);
+    expect(result).toEqual([
+      { accountId: "test-account.testnet", publicKey: "" },
+    ]);
   });
 });
 
