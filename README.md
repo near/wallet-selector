@@ -8,6 +8,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
+- [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
@@ -58,6 +59,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
@@ -78,6 +80,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
@@ -111,6 +114,7 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -133,6 +137,7 @@ const selector = await setupWalletSelector({
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),
+    setupNarwallets(),
     setupWelldoneWallet(),
     setupLedger(),
     setupNearFi(),

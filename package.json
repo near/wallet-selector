@@ -55,6 +55,7 @@
     "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
+    "build:narwallets": "nx run-many --target=build --projects=narwallets --configuration=production",
     "build:opto-wallet": "nx run-many --target=build --projects=opto-wallet --configuration=production",
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
