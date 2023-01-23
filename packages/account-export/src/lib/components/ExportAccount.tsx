@@ -7,6 +7,7 @@ import type {
   Wallet,
   WalletSelector,
   AccountImportData,
+  InjectedWalletMetadata,
 } from "@near-wallet-selector/core";
 import { encodeAccountData } from "@near-wallet-selector/core";
 
@@ -252,7 +253,10 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
     exportInterfaces;
 
   const onAccountSelectNext = () => {
-    if (wallet.type === "injected") {
+    if (
+      wallet.type === "injected" &&
+      !(wallet.metadata as InjectedWalletMetadata).useUrlAccountImport
+    ) {
       injectedWalletInterface();
       onCloseModal();
     } else {
@@ -271,7 +275,10 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
   const browserOrMobileInterface = () => {
     // TODO: implement encryption when start WEP-213
     const encrypedAccountData = encodeAccountData(accounts);
-    if (wallet.type === "browser" && buildImportAccountsUrl) {
+    const isUrlCompatible =
+      wallet.type === "browser" ||
+      (wallet.metadata as InjectedWalletMetadata).useUrlAccountImport;
+    if (isUrlCompatible && buildImportAccountsUrl) {
       const url = `${buildImportAccountsUrl()}#${encrypedAccountData}`;
       window.open(url, "_blank");
     }
