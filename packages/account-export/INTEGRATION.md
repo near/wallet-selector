@@ -34,6 +34,10 @@ buildImportAccountsUrl(): string {
 
 The Wallet Selector will use this base URL and append encrypted data to it before redirecting there, so the final URL would be in the form of `"https://awesome-near-wallet.xyz/mainnet#xyz...abc"`
 
+:warning:
+**Once the user is redirected, the destination site should call `history.replaceState()` to prevent user data from being unnecessarily exposed in the browser.**
+:warning:
+
 Once redirected, the user would be prompted for the passphrase used to encrypt this data so that it could be decrypted in the destination wallet. The symmetric decryption method should be imported
 from this library:
 
