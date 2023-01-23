@@ -100,7 +100,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
   const getAccounts = (): Array<Account> => {
     return _state.accounts.map((x) => ({
       accountId: x.accountId,
-      publicKey: x.publicKey,
+      publicKey: "ed25519:" + x.publicKey,
     }));
   };
 

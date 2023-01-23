@@ -129,13 +129,14 @@ const WalletConnect: WalletBehaviourFactory<
     const newAccounts = [];
 
     for (let i = 0; i < accounts.length; i++) {
-      const keyPair = await _state.keystore.getKey(
-        options.network.networkId,
-        accounts[i].split(":")[2]
+      const signer = new InMemorySigner(_state.keystore);
+      const publicKey = await signer.getPublicKey(
+        accounts[i].split(":")[2],
+        options.network.networkId
       );
       newAccounts.push({
         accountId: accounts[i].split(":")[2],
-        publicKey: keyPair.getPublicKey().toString(),
+        publicKey: publicKey ? publicKey.toString() : undefined,
       });
     }
 
