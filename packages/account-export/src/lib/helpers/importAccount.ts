@@ -37,8 +37,7 @@ export const encryptAccountData = ({
     fullMessage.set(nonce);
     fullMessage.set(box, nonce.length);
 
-    const base64FullMessage = encodeBase64(fullMessage);
-    return base64FullMessage;
+    return encodeBase64(fullMessage);
   } catch (e) {
     throw new Error("Unable to encrypt account data");
   }
@@ -77,7 +76,7 @@ export const decryptAccountData = ({
 
 export const generateSecretKey = (): string =>
   generator.generate({
-    length: 32,
+    length: nacl.secretbox.keyLength,
     numbers: true,
     strict: true,
     lowercase: true,
