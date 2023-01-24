@@ -1596,6 +1596,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 @near-wallet-selector/my-near-wallet
 
+@near-wallet-selector/narwallets
+
 @near-wallet-selector/near-wallet
 
 @near-wallet-selector/nearfi
@@ -1615,6 +1617,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 @near-wallet-selector/wallet-utils
 
 @near-wallet-selector/welldone-wallet
+
+@near-wallet-selector/xdefi
 
 @nightlylabs/connect-near
 
