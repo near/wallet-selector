@@ -91,7 +91,12 @@ export class AppComponent implements OnInit {
       ],
     });
 
-    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const _modal = setupModal(_selector, {
+      contractId: CONTRACT_ID,
+      onHide: (hideReason) => {
+        console.log("The reason for hiding modal: ", hideReason);
+      },
+    });
     const state = _selector.store.getState();
 
     this.accounts = state.accounts;
