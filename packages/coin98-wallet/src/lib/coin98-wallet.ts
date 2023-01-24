@@ -8,7 +8,6 @@ import type {
   Transaction,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
@@ -30,7 +29,7 @@ interface Coin98WalletState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.coin98).catch(() => false);
+  return !!window.coin98;
 };
 
 const setupCoin98WalletState = (): Coin98WalletState => {
@@ -182,7 +181,7 @@ export const setupCoin98Wallet = ({
 }: Coin98WalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
+    const installed = isInstalled();
 
     if (mobile) {
       return null;

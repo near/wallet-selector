@@ -6,7 +6,6 @@ import type {
   FunctionCallAction,
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { nethIcon } from "../assets/icons";
 import {
@@ -179,8 +178,6 @@ export function setupNeth({
 
     const mobile = isMobile();
     const installed = await isInstalled();
-
-    await waitFor(() => !!isSignedIn(), { timeout: 300 }).catch(() => false);
 
     if (mobile) {
       return null;
