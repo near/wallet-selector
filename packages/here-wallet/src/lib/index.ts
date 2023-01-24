@@ -24,7 +24,7 @@ export function setupHereWallet({
       id: "here-wallet",
       type: "injected",
       metadata: {
-        name: "Here Wallet (mobile)",
+        name: "Here Wallet",
         description: "Mobile wallet for NEAR Protocol",
         downloadUrl: "",
         iconUrl,

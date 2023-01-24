@@ -39,6 +39,7 @@ modal.show();
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
+- `onHide` (`(hideReason) => {}?`): Callback method triggered when close button is clicked in the UI.
 
 ## Styles & Customizing CSS
 
