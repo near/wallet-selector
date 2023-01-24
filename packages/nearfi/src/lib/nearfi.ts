@@ -237,9 +237,6 @@ export function setupNearFi({
       return null;
     }
 
-    // Add extra wait to ensure NearFi's sign in status is read from the
-    // browser extension background env.
-
     return {
       id: "nearfi",
       type: "injected",
