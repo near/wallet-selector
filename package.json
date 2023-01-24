@@ -145,7 +145,6 @@
     "@testing-library/react-hooks": "^7.0.2",
     "@types/big.js": "^6.1.6",
     "@types/bn.js": "^5.1.1",
-    "@types/crypto-js": "^4.1.1",
     "@types/gh-pages": "^3.2.1",
     "@types/jest": "27.4.1",
     "@types/node": "16.11.7",
