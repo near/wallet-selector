@@ -4,10 +4,12 @@ import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -55,9 +57,11 @@ export class AppComponent implements OnInit {
         ...(await setupDefaultWallets()),
         setupNearWallet(),
         setupSender(),
+        setupXDEFI(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
@@ -87,7 +91,12 @@ export class AppComponent implements OnInit {
       ],
     });
 
-    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const _modal = setupModal(_selector, {
+      contractId: CONTRACT_ID,
+      onHide: (hideReason) => {
+        console.log("The reason for hiding modal: ", hideReason);
+      },
+    });
     const state = _selector.store.getState();
 
     this.accounts = state.accounts;

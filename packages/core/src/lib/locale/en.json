@@ -54,6 +54,47 @@
       "copyToClipboard": " Copy to clipboard",
       "preferTheOfficial": "Prefer the official dialogue of",
       "open": "Open"
+    },
+    "exportAccounts": {
+      "chooseAWallet": "Choose a Wallet",
+      "transferYourAccounts": "Transfer Your Accounts",
+      "selectAWallet": "Select a wallet that fits your needs and supports your connected accounts.",
+      "selectYourAccounts": "Select Your Accounts",
+      "afterDecide": "After you decide on a wallet, you can select which accounts you want to transfer.",
+      "disclaimer": "You won’t be able to transfer accounts that have never been funded or used on NEAR.",
+      "warning": "does not support account export at this time. Please select another wallet.",
+      "walletTypes": {
+        "hardware": "Hardware Wallet",
+        "browser": "Browser Wallet",
+        "injected": "Wallet Extension",
+        "bridge": "Bridge Wallet",
+        "mobile": "Mobile Wallet"
+      },
+      "selectAccounts": {
+        "title": "Select Accounts to Transfer",
+        "button": "Get Passphrase",
+        "deselectAll": "Deselect All",
+        "selectAll": "Select All",
+        "unavailable": "Transfer Unavailable"
+      },
+      "getPassphrase": {
+        "title": "Copy Temporary Password",
+        "desc": "You’ll need to enter this password when you begin exporting your accounts to a different wallet.",
+        "button": "Transfer Accounts",
+        "label": "Click to Copy",
+        "checkLabel": "I copied or wrote down the password"
+      },
+      "complete": {
+        "title": "Complete the Transfer",
+        "desc": "You will now be redirected to the wallet you selected to complete the transfer. Once import part of process is completed from selected wallet, press button to complete the transfer process.",
+        "button": "Complete"
+      }
+    }
+  },
+  "component": {
+    "clickToCopy": {
+      "label": "Copied",
+      "tooltip": "Click to copy"
     }
   }
 }

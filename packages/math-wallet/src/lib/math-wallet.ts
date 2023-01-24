@@ -8,7 +8,6 @@ import type {
   Transaction,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
@@ -30,7 +29,7 @@ interface MathWalletState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.nearWalletApi).catch(() => false);
+  return !!window.nearWalletApi;
 };
 
 const setupMathWalletState = (): MathWalletState => {

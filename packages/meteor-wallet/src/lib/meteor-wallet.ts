@@ -195,6 +195,10 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         transactions: await transformTransactions(transactions),
       });
     },
+
+    buildImportAccountsUrl() {
+      return `https://wallet.meteorwallet.app/batch-import?network=${_state.wallet._networkId}`;
+    },
   };
 };
 
@@ -214,6 +218,7 @@ export function setupMeteorWallet({
         iconUrl,
         deprecated,
         downloadUrl: "https://wallet.meteorwallet.app",
+        useUrlAccountImport: true,
       },
       init: (options) => {
         return createMeteorWalletInjected({

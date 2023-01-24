@@ -43,7 +43,9 @@ export const initHereWallet: SelectorInit = async (config) => {
     async signIn(data) {
       logger.log("HereWallet:signIn");
 
-      const account = await here.signIn(data);
+      const contractId = data.contractId !== "" ? data.contractId : undefined;
+      const account = await here.signIn({ ...data, contractId: contractId });
+
       emitter.emit("signedIn", {
         contractId: data.contractId,
         methodNames: data.methodNames ?? [],

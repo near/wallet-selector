@@ -8,7 +8,6 @@ import type {
   FunctionCallAction,
   Optional,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
 import icon from "./icon";
 
@@ -28,7 +27,7 @@ interface NearFiState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.nearFiWallet?.isNearFi).catch(() => false);
+  return !!window.nearFiWallet?.isNearFi;
 };
 
 const setupNearFiState = (): NearFiState => {
@@ -237,12 +236,6 @@ export function setupNearFi({
     if (!mobile || !installed) {
       return null;
     }
-
-    // Add extra wait to ensure NearFi's sign in status is read from the
-    // browser extension background env.
-    await waitFor(() => !!window.nearFiWallet?.isSignedIn(), {
-      timeout: 300,
-    }).catch(() => false);
 
     return {
       id: "nearfi",
