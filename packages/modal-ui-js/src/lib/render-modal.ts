@@ -19,7 +19,7 @@ import { translate } from "@near-wallet-selector/core";
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
 };
-let renderCount = 0;
+let initialRender = true;
 
 const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   if (!modalState) {
@@ -307,7 +307,7 @@ export function renderModal() {
     });
 
   // TODO: Better handle `click` event listener for close-button.
-  if (renderCount === 0) {
+  if (initialRender) {
     document.addEventListener("click", (e) => {
       if (!modalState) {
         return;
@@ -323,6 +323,6 @@ export function renderModal() {
         }
       }
     });
-    renderCount++;
+    initialRender = false;
   }
 }
