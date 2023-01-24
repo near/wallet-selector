@@ -47,3 +47,5 @@ export const setupExportSelectorModal = (
 
   return importModalInstance;
 };
+
+export { decryptAccountData } from "./helpers";
