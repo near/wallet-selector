@@ -71,7 +71,7 @@ export const initHereWallet: SelectorInit = async (config) => {
         accounts: await getAccounts(),
       });
 
-      return getAccounts();
+      return await getAccounts();
     },
 
     async getHereBalance() {
