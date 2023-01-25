@@ -72,8 +72,21 @@ export const initHereWallet: SelectorInit = async (config) => {
 
     async getAccounts() {
       logger.log("HereWallet:getAccounts");
-      const accounts = await here.getAccounts();
-      return accounts.map((accountId) => ({ accountId }));
+      const accountIds = await here.getAccounts();
+      const accounts = [];
+
+      for (let i = 0; i < accountIds.length; i++) {
+        accounts.push({
+          accountId: accountIds[i],
+          publicKey: (
+            await here.signer.getPublicKey(
+              accountIds[i],
+              options.network.networkId
+            )
+          ).toString(),
+        });
+      }
+      return accounts;
     },
 
     async signAndSendTransaction(data) {

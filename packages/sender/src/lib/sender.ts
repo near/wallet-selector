@@ -108,6 +108,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
+    await waitFor(() => !!_state.wallet.account(), { timeout: 100 });
+
     const account = _state.wallet.account();
 
     return [
