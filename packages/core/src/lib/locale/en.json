@@ -75,12 +75,15 @@
         "button": "Get Passphrase",
         "deselectAll": "Deselect All",
         "selectAll": "Select All",
-        "unavailable": "Transfer Unavailable"
+        "unavailable": "Transfer Unavailable",
+        "error": "Account does not exist",
+        "warningLedger": "Ledger support required",
+        "noBalance": "Account not funded"
       },
       "getPassphrase": {
         "title": "Copy Temporary Password",
         "desc": "You’ll need to enter this password when you begin exporting your accounts to a different wallet.",
-        "button": "Transfer Accounts",
+        "button": "Continue",
         "label": "Click to Copy",
         "checkLabel": "I copied or wrote down the password"
       },
