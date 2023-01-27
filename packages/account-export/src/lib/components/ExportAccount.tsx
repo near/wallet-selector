@@ -43,7 +43,7 @@ const EXPORT_ACCOUNT_STEPS = {
   COMPLETE: "COMPLETE",
 };
 
-const ACCESS_KEY_TYPES = {
+export const ACCESS_KEY_TYPES = {
   LEDGER: "Ledger",
   FULL_ACCESS_KEY: "Full Access Key",
   MULTI_SIG: "Multi-Sig",
