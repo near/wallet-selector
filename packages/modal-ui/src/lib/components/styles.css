@@ -632,7 +632,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description p {
-  margin: 14px 0 14px 0;
+  margin: 14px 0;
 }
 
 .nws-modal-wrapper .nws-modal .derivation-path-wrapper .enter-derivation-path .ledger-description .specify-path {
@@ -680,7 +680,7 @@
 }
 
 .nws-modal-wrapper .nws-modal .specify-path-wrapper p {
-    margin: 14px 0 14px 0;
+    margin: 14px;
 }
 
 .nws-modal-wrapper .nws-modal .specify-path-wrapper .path-description {
@@ -847,7 +847,7 @@
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper p {
-  margin: 16px 0 16px 0;
+  margin: 16px 0;
 }
 
 .nws-modal-wrapper .wallet-not-installed-wrapper .wallet-data .wallet-icon-box {
@@ -980,7 +980,7 @@
 }
 
 .connecting-wrapper .content h3 {
-  margin: 16px 0 16px 0;
+  margin: 16px 0;
 }
 
 .connecting-wrapper .content .connecting-name {
@@ -1081,7 +1081,7 @@
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin: 14px 0 14px 0;
+  margin: 14px 0;
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .alert-message .connection .success {
