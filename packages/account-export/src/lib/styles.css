@@ -34,9 +34,10 @@
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton:disabled,
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton[disabled]{
-  border-color: var(--secondary-button-border-color);
-  background-color: var(--secondary-button-bg-color);
   cursor: not-allowed;
+  background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
+  color: #606060;
+  border: none;
 }
 
 
@@ -46,7 +47,6 @@
 }
 
 .checkbox {
-  width: 100%;
   position: relative;
   display: block;
 }
@@ -54,7 +54,7 @@
 .checkbox label {
   position: relative;
   display: block;
-  padding-left: 50px;
+  padding-left: 40px;
   margin-bottom: 0;
   cursor: pointer;
   color: var(--wallet-selector-heading-color, var(--heading-color));
@@ -111,6 +111,18 @@
 .checkbox input[type="checkbox"]:disabled + label {
   color: var(--wallet-selector-text-color, var(--text-color));
   cursor: not-allowed;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox input[type="checkbox"]:disabled + label > span.error {
+  color: var(--wallet-selector-error, var(--error));
+  font-size: 10px;
+}
+
+.checkbox input[type="checkbox"]:disabled + label > span.warning {
+  color: #E9B870;
+  font-size: 10px;
 }
 
 .checkbox input[type="checkbox"]:disabled + label::before {
@@ -156,6 +168,7 @@
 
 .account-export {
   height: 100%;
+  margin-top: 15px !important;
 }
 
 .account-export .content {
@@ -185,7 +198,7 @@
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .account-export .account-select-all {
@@ -208,15 +221,20 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 0 12px;
-  margin-bottom: 24px;
+  padding: 15px 12px;
+  border-bottom: 1px solid #313030;
+}
+
+.account-export .account-selection .account-selection-row label {
+  display: flex;
+  flex-direction: column;
 }
 
 .account-export .passphrase-title {
-  font-size: 14px;
+  font-size: 15px;
   text-align: center;
-  font-weight: 400;
-  color: #c1c1c1;
+  font-weight: 500;
+  color: var(--wallet-selector-text-color, var(--text-color));
   margin: 40px 0 30px;
 }
 
@@ -236,8 +254,9 @@
 }
 
 .account-export .passphrase-label {
-  font-size: 10px;
+  font-size: 12px;
   cursor: copy;
+  color: var(--wallet-selector-text-color, var(--text-color));
 }
 
 .account-export .complete-desc {

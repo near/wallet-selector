@@ -53,10 +53,16 @@
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
       ],
+
+      "@near-wallet-selector/narwallets": [
+        "packages/narwallets/src/index.ts"
+      ],
+      "@near-wallet-selector/sender": [
+        "packages/sender/src/index.ts"
+      ],
       "@near-wallet-selector/opto-wallet": [
         "packages/opto-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],

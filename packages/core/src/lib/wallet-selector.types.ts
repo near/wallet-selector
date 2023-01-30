@@ -13,6 +13,7 @@ export interface WalletSelectorParams {
   storage?: StorageService;
   debug?: boolean;
   optimizeWalletOrder?: boolean;
+  allowMultipleSelectors?: boolean;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;

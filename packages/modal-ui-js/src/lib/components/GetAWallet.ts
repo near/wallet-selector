@@ -55,6 +55,13 @@ const getTypeNameAndIcon = (
         };
       }
 
+      if (walletId === "here-wallet") {
+        return {
+          typeFullName: "Mobile Wallet",
+          qrIcon: true,
+        };
+      }
+
       return {
         typeFullName: "Wallet Extension",
         qrIcon: false,

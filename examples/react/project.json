@@ -60,6 +60,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },

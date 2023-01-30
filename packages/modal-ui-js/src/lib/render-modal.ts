@@ -19,6 +19,7 @@ import { translate } from "@near-wallet-selector/core";
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
 };
+let initialRender = true;
 
 const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   if (!modalState) {
@@ -299,17 +300,29 @@ export function renderModal() {
         return;
       }
       modalState.container.children[0].classList.remove("open");
+
+      if (modalState.options.onHide) {
+        modalState.options.onHide("user-triggered");
+      }
     });
 
-  document.addEventListener("click", (e) => {
-    if (!modalState) {
-      return;
-    }
+  // TODO: Better handle `click` event listener for close-button.
+  if (initialRender) {
+    document.addEventListener("click", (e) => {
+      if (!modalState) {
+        return;
+      }
 
-    const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement;
 
-    if (target && target.className === "close-button") {
-      modalState.container.children[0].classList.remove("open");
-    }
-  });
+      if (target && target.className === "close-button") {
+        modalState.container.children[0].classList.remove("open");
+
+        if (modalState.options.onHide) {
+          modalState.options.onHide("user-triggered");
+        }
+      }
+    });
+    initialRender = false;
+  }
 }

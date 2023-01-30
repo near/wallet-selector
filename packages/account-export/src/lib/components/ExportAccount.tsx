@@ -7,8 +7,8 @@ import type {
   Wallet,
   WalletSelector,
   AccountImportData,
+  InjectedWalletMetadata,
 } from "@near-wallet-selector/core";
-import { encodeAccountData } from "@near-wallet-selector/core";
 
 import { utils, providers } from "near-api-js";
 import type {
@@ -21,6 +21,8 @@ import { AccountSelect } from "./AccountSelect";
 import { Passphrase } from "./Passphrase";
 import { NoInterface } from "./NoInterface";
 import { Complete } from "./Complete";
+
+import { encryptAccountData } from "../helpers";
 
 interface ExportAccountProps {
   alertMessage: string | null;
@@ -41,7 +43,7 @@ const EXPORT_ACCOUNT_STEPS = {
   COMPLETE: "COMPLETE",
 };
 
-const ACCESS_KEY_TYPES = {
+export const ACCESS_KEY_TYPES = {
   LEDGER: "Ledger",
   FULL_ACCESS_KEY: "Full Access Key",
   MULTI_SIG: "Multi-Sig",
@@ -149,6 +151,8 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
     Array<ExportAccountData>
   >([]);
 
+  const [passphrase, setPassphrase] = useState<string>("");
+
   //@ts-ignore
   const [exportInterfaces, setExportInterfaces] = useState<{
     buildImportAccountsUrl?: BrowserWalletBehaviour["buildImportAccountsUrl"];
@@ -252,7 +256,10 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
     exportInterfaces;
 
   const onAccountSelectNext = () => {
-    if (wallet.type === "injected") {
+    if (
+      wallet.type === "injected" &&
+      !(wallet.metadata as InjectedWalletMetadata).useUrlAccountImport
+    ) {
       injectedWalletInterface();
       onCloseModal();
     } else {
@@ -269,10 +276,17 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
   };
 
   const browserOrMobileInterface = () => {
-    // TODO: implement encryption when start WEP-213
-    const encrypedAccountData = encodeAccountData(accounts);
-    if (wallet.type === "browser" && buildImportAccountsUrl) {
-      const url = `${buildImportAccountsUrl()}#${encrypedAccountData}`;
+    const encryptedAccountData = encryptAccountData({
+      accountData: accounts.filter(({ accountId }) =>
+        selectedAccounts.includes(accountId)
+      ),
+      secretKey: passphrase,
+    });
+    const isUrlCompatible =
+      wallet.type === "browser" ||
+      (wallet.metadata as InjectedWalletMetadata).useUrlAccountImport;
+    if (isUrlCompatible && buildImportAccountsUrl) {
+      const url = `${buildImportAccountsUrl()}#${encryptedAccountData}`;
       window.open(url, "_blank");
     }
     setStep(EXPORT_ACCOUNT_STEPS.COMPLETE);
@@ -314,6 +328,7 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
           setHasCopied={setHasCopied}
           onCloseModal={onCloseModal}
           onBack={showAccountSelection}
+          onPassphraseSave={setPassphrase}
         />
       )}
       {step === EXPORT_ACCOUNT_STEPS.COMPLETE && (

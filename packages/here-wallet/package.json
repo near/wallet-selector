@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/here-wallet",
-  "version": "7.5.0",
+  "version": "7.6.1",
   "description": "Here wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

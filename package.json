@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "7.5.0",
+  "version": "7.6.1",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -56,6 +56,7 @@
     "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:nightly-connect": "nx run-many --target=build --projects=nightly-connect --configuration=production",
+    "build:narwallets": "nx run-many --target=build --projects=narwallets --configuration=production",
     "build:opto-wallet": "nx run-many --target=build --projects=opto-wallet --configuration=production",
     "build:finer-wallet": "nx run-many --target=build --projects=finer-wallet --configuration=production",
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
@@ -113,6 +114,7 @@
     "stream-browserify": "^3.0.0",
     "tslib": "^2.3.0",
     "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

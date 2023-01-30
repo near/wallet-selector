@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import generator from "generate-password";
+import React, { Fragment, useEffect, useState } from "react";
+import { generateSecretKey } from "../helpers";
 import { translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 import { ClickToCopy } from "./ClickToCopy";
@@ -10,6 +10,7 @@ export interface PassphraseProps {
   setHasCopied: (hasCopied: boolean) => void;
   onCloseModal: () => void;
   onBack: () => void;
+  onPassphraseSave: (passphrase: string) => void;
 }
 
 export const Passphrase: React.FC<PassphraseProps> = ({
@@ -18,16 +19,23 @@ export const Passphrase: React.FC<PassphraseProps> = ({
   setHasCopied,
   onCloseModal,
   onBack,
+  onPassphraseSave,
 }) => {
-  // TODO: reserve this secret key and pass down to next step for encryption for WEP-213
-  const secretKey = generator.generate({
-    length: 10,
-    numbers: true,
-    strict: true,
-    lowercase: true,
-    uppercase: true,
-    symbols: true,
-  });
+  const [secretKey, setSecretKey] = useState("");
+
+  useEffect(() => {
+    const key = generateSecretKey();
+    setSecretKey(key);
+  }, []);
+
+  const onButtonClick = () => {
+    onNextStep();
+  };
+
+  const onCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasCopied(e.target.checked);
+    onPassphraseSave(secretKey);
+  };
 
   return (
     <Fragment>
@@ -50,7 +58,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
           <div className="filler" />
           <div className="checkbox">
             <input
-              onChange={(e) => setHasCopied(e.target.checked)}
+              onChange={onCheck}
               checked={hasCopied}
               type="checkbox"
               id="passphrase-check"
@@ -63,7 +71,7 @@ export const Passphrase: React.FC<PassphraseProps> = ({
           </div>
           <button
             className="middleButton account-export-button"
-            onClick={onNextStep}
+            onClick={onButtonClick}
             disabled={!hasCopied}
           >
             {translate("modal.exportAccounts.getPassphrase.button")}

@@ -8,6 +8,7 @@ import type {
   JsonStorageService,
   Optional,
   Transaction,
+  Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type {
@@ -100,7 +101,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
-  const getAccounts = () => {
+  const getAccounts = (): Array<Account> => {
     return _state.account
       ? [
           {
@@ -149,7 +150,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return utils.PublicKey.from(account.publicKey);
+      return utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       if (!_state.wallet) {
