@@ -22,6 +22,7 @@ import { distinctUntilChanged, map } from "rxjs";
 
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { CONTRACT_ID } from "../constants";
 import { Loading } from "../components/Loading";
 
@@ -70,6 +71,7 @@ export const WalletSelectorContextProvider: React.FC<{
           bundle: false,
         }),
         setupOptoWallet(),
+        setupFinerWallet(),
         setupXDEFI(),
         setupWalletConnect({
           projectId: "c4f79cc...",

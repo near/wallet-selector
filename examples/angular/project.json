@@ -92,6 +92,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/finer-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/xdefi/assets/",
             "output": "assets/"
           }
