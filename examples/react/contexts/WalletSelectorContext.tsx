@@ -132,7 +132,14 @@ export const WalletSelectorContextProvider: React.FC<{
         setAccounts(nextAccounts);
       });
 
-    return () => subscription.unsubscribe();
+    const onHideSubscription = modal!.on("onHide", ({ hideReason }) => {
+      console.log(`The reason for hiding the modal ${hideReason}`);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      onHideSubscription.remove();
+    };
   }, [selector]);
 
   if (!selector || !modal) {
