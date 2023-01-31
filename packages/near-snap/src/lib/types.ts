@@ -1,4 +1,4 @@
-import { Action } from "@near-wallet-selector/core";
+import type { Action } from "@near-wallet-selector/core";
 
 declare global {
   interface Window {
@@ -6,7 +6,12 @@ declare global {
       isMetaMask: boolean;
       request: <T>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        request: SnapRpcMethodRequest | { method: string; params?: Array<any> }
+        request:
+          | SnapRpcMethodRequest
+          | {
+              method: string;
+              params?: Array<SignTransactionRequestParams | unknown>;
+            }
       ) => Promise<T>;
     };
   }
@@ -31,10 +36,11 @@ export interface Transaction {
 }
 export interface SignTransactionRequest {
   method: "near_signTransactions";
-  params: {
-    network: "testnet" | "mainnet";
-    transactions: Array<Transaction>;
-  };
+  params: SignTransactionRequestParams;
+}
+export interface SignTransactionRequestParams {
+  network: "testnet" | "mainnet";
+  transactions: Array<Transaction>;
 }
 
 export type GetSnapsResponse = {

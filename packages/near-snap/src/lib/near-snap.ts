@@ -1,4 +1,4 @@
-import {
+import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
@@ -6,6 +6,7 @@ import {
 import { isMobile } from "is-mobile";
 import { enable, getSnapAccounts, signTransactions } from "./methods";
 import { isMetaMaskAvailable } from "./utils";
+import icon from "../lib/icon";
 
 const isDev = false;
 
@@ -64,7 +65,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       const { accountId, publicKey } = accountPayload[0];
       const accessKey = await provider.viewAccessKey({ accountId, publicKey });
       let nonce = parseInt(accessKey.nonce.toString());
-      
+
       const signedTxs = await signTransactions(
         isDev,
         network,
@@ -83,10 +84,12 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
 export interface NearSnapParams {
   iconUrl?: string;
+  deprecated?: boolean;
 }
 
 export const setupNearSnap = ({
-  iconUrl = "./assets/near-snap-icon.png",
+  iconUrl = icon,
+  deprecated = false,
 }: NearSnapParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     if (isMobile()) {
@@ -100,7 +103,7 @@ export const setupNearSnap = ({
         name: "NearSnap",
         description: null,
         iconUrl,
-        deprecated: false,
+        deprecated,
         downloadUrl: "https://metamask.io/flask/",
         available: await isMetaMaskAvailable(),
       },

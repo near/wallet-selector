@@ -1,5 +1,5 @@
-import { Account } from "@near-wallet-selector/core";
-import { GetAccountPayload } from "./types";
+import type { Account } from "@near-wallet-selector/core";
+import type { GetAccountPayload } from "./types";
 
 export function hasMetaMask(): boolean {
   if (!window.ethereum) {

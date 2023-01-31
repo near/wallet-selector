@@ -1,5 +1,5 @@
 import { getSnapOrigin } from "./utils";
-import { GetAccountPayload, Transaction } from "./types";
+import type { GetAccountPayload, Transaction } from "./types";
 import { SignedTransaction } from "near-api-js/lib/transaction";
 
 export async function enable(isDev: boolean): Promise<void> {
@@ -20,13 +20,13 @@ export async function getSnapAccounts(
   network: string
 ): Promise<Array<GetAccountPayload>> {
   const account: GetAccountPayload = await window.ethereum.request({
-    method: 'wallet_invokeSnap',
+    method: "wallet_invokeSnap",
     params: [
       getSnapOrigin(isDev),
-      { 
-        method: "near_getAccount", 
-        params: { network } 
-      }
+      {
+        method: "near_getAccount",
+        params: { network },
+      },
     ],
   });
   return [account];
@@ -39,7 +39,7 @@ export async function signTransactions(
 ): Promise<Array<SignedTransaction>> {
   const signedTransactions: Array<[string, string]> =
     await window.ethereum.request({
-      method: 'wallet_invokeSnap',
+      method: "wallet_invokeSnap",
       params: [
         getSnapOrigin(isDev),
         {
@@ -53,6 +53,8 @@ export async function signTransactions(
     });
 
   return signedTransactions.map(([, signature]) =>
-    SignedTransaction.decode(Buffer.from(Object.values(Uint8Array.from(Buffer.from(signature, 'hex')))))
+    SignedTransaction.decode(
+      Buffer.from(Object.values(Uint8Array.from(Buffer.from(signature, "hex"))))
+    )
   );
 }
