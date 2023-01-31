@@ -152,8 +152,18 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      const { accountId } = await getNear();
-      return [{ accountId }];
+      const { accountId, account } = await getNear();
+      return [
+        {
+          accountId,
+          publicKey: (
+            await account.connection.signer.getPublicKey(
+              account.accountId,
+              options.network.networkId
+            )
+          ).toString(),
+        },
+      ];
     },
 
     signAndSendTransaction: async ({ receiverId, actions }) =>
