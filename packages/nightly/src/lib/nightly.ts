@@ -5,6 +5,9 @@ import type {
   WalletSelectorStore,
   Optional,
   Transaction,
+  EventEmitterService,
+  WalletEvents,
+  Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
@@ -26,14 +29,30 @@ interface NightlyState {
 }
 
 const setupNightlyState = async (
-  store: WalletSelectorStore
+  store: WalletSelectorStore,
+  emitter: EventEmitterService<WalletEvents>
 ): Promise<NightlyState> => {
   const { selectedWalletId } = store.getState();
   const wallet = window.nightly!.near!;
 
   // Attempt to reconnect wallet if previously selected.
   if (selectedWalletId === "nightly") {
-    await wallet.connect(undefined, true).catch(() => null);
+    await wallet
+      .connect((newAcc) => {
+        if (!newAcc) {
+          emitter.emit("signedOut", null);
+        } else {
+          emitter.emit("accountsChanged", {
+            accounts: [
+              {
+                accountId: newAcc.accountId,
+                publicKey: wallet.account.publicKey.toString(),
+              },
+            ],
+          });
+        }
+      }, true)
+      .catch(() => null);
   }
 
   return {
@@ -49,12 +68,12 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   store,
   logger,
   provider,
+  emitter,
 }) => {
-  const _state = await setupNightlyState(store);
+  const _state = await setupNightlyState(store, emitter);
 
-  const getAccounts = () => {
+  const getAccounts = (): Array<Account> => {
     const { accountId, publicKey } = _state.wallet.account;
-
     if (!accountId) {
       return [];
     }
@@ -97,8 +116,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find public key for account");
       }
-
-      return utils.PublicKey.from(account.publicKey);
+      return utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       const accounts = getAccounts();
@@ -133,7 +151,20 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _state.wallet.connect();
+      await _state.wallet.connect((newAcc) => {
+        if (!newAcc) {
+          emitter.emit("signedOut", null);
+        } else {
+          emitter.emit("accountsChanged", {
+            accounts: [
+              {
+                accountId: newAcc.accountId,
+                publicKey: _state.wallet.account.publicKey.toString(),
+              },
+            ],
+          });
+        }
+      });
 
       return getAccounts();
     },
@@ -143,7 +174,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      return getAccounts().map(({ accountId }) => ({ accountId }));
+      return getAccounts();
     },
 
     async verifyOwner({ message }) {
@@ -161,7 +192,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!accounts.length || !contract) {
         throw new Error("Wallet not signed in");
       }
-
       const [signedTx] = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
         signer,
@@ -216,10 +246,10 @@ export function setupNightly({
       type: "injected",
       metadata: {
         name: "Nightly",
-        description: "Upcoming cutting-edge crypto wallet.",
+        description: "Multichain crypto wallet.",
         iconUrl,
         // Will replace we open beta with stable version
-        downloadUrl: "https://www.nightly.app",
+        downloadUrl: "https://wallet.nightly.app/download",
         deprecated,
         available: installed,
       },

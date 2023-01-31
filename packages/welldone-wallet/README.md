@@ -1,6 +1,6 @@
 # @near-wallet-selector/welldone
 
-This is the [Welldone](https://chrome.google.com/webstore/detail/welldone-wallet-for-multi/bmkakpenjmcpfhhjadflneinmhboecjf) package for NEAR Wallet Selector.
+This is the [WELLDONE](https://chrome.google.com/webstore/detail/welldone-wallet-for-multi/bmkakpenjmcpfhhjadflneinmhboecjf) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 

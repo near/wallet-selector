@@ -12,6 +12,7 @@ import type {
   Transaction,
   Optional,
   Network,
+  Account,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
@@ -75,14 +76,25 @@ const MyNearWallet: WalletBehaviourFactory<
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
 
-  const getAccounts = () => {
-    const accountId: string | null = _state.wallet.getAccountId();
+  const getAccounts = async (): Promise<Array<Account>> => {
+    const accountId = _state.wallet.getAccountId();
+    const account = _state.wallet.account();
 
-    if (!accountId) {
+    if (!accountId || !account) {
       return [];
     }
 
-    return [{ accountId }];
+    return [
+      {
+        accountId,
+        publicKey: (
+          await account.connection.signer.getPublicKey(
+            account.accountId,
+            options.network.networkId
+          )
+        ).toString(),
+      },
+    ];
   };
 
   const transformTransactions = async (
@@ -126,7 +138,7 @@ const MyNearWallet: WalletBehaviourFactory<
 
   return {
     async signIn({ contractId, methodNames, successUrl, failureUrl }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
@@ -221,7 +233,7 @@ const MyNearWallet: WalletBehaviourFactory<
     },
 
     buildImportAccountsUrl() {
-      return `${resolveWalletUrl(options.network)}/batch-import`;
+      return `${params.walletUrl}/batch-import`;
     },
   };
 };

@@ -60,6 +60,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -76,6 +81,11 @@
           {
             "glob": "**/*",
             "input": "packages/opto-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/finer-wallet/assets/",
             "output": "assets/"
           }
         ]

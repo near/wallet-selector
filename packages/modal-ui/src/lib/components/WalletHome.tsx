@@ -88,6 +88,13 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           };
         }
 
+        if (walletId === "here-wallet") {
+          return {
+            typeFullName: "Mobile Wallet",
+            qrIcon: true,
+          };
+        }
+
         return {
           typeFullName: "Wallet Extension",
           qrIcon: false,

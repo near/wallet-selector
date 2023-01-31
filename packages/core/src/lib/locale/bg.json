@@ -1,0 +1,59 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Свържете вашия Портфейл",
+      "whatIsAWallet": "Какво е Портфейл?",
+      "secureAndManage": "Защитете и управлявайте дигиталните си активи",
+      "safelyStore": "Съхранявайте и прехвърляйте безопасно вашите крипто и NFT.",
+      "logInToAny": "Използвайте всяко приложение на NEAR",
+      "noNeedToCreate": "Няма нужда да създавате нови профили. Свържете портфейла си и сте готови!",
+      "getAWallet": "Създайте Портфейл",
+      "useAWallet": "Използвайте портфейла, за да защитите и управлявате активите си на NEAR както и да използвате всяко приложение на NEAR без нужда от потребителски имена и пароли.",
+      "connectionFailed": "Свързването неуспешно",
+      "connectionSuccessful": "Свързването успешно",
+      "connected": "Свързан",
+      "connectingTo": "Свързване към",
+      "connectingMessage": {
+        "injected": "Потвърдете свързването в прозореца на разширението",
+        "browser": "Потвърдете свързването в портфейла след пренасочването",
+        "hardware": "Потвърдете свързването в хардуерния портфейл",
+        "bridge": "Потвърдете връзката в портфейла"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "Свържете се с Ledger",
+      "makeSureYourLedger": "Уверете се, че вашият Ledger е свързан и че приложението NEAR е отворено нa него.",
+      "continue": "Продължете",
+      "specifyHDPath": "Посочете HD път",
+      "enterYourPreferredHDPath": "Въведете предпочитания HD път, след което сканирайте за активни акаунти.",
+      "scan": "Сканирайте",
+      "retry": "Опитайте отново",
+      "ledgerIsNotAvailable": "Ledger устройството не е достъпно",
+      "accessDeniedToUseLedgerDevice": "Достъпът за използване на Ledger е отказан",
+      "noAccountsFound": "Няма намерени профили",
+      "selectYourAccounts": "Изберете вашите профили",
+      "connecting1Account": "Свързване на 1 профил",
+      "cantFindAnyAccount": "Няма намерени профили, съврзани с този Ledger. Моля, създайте нов NEAR профил на",
+      "orConnectAnAnotherLedger": "или свържете друг Ledger.",
+      "connecting": "Свързване",
+      "ofAccounts": "от профили",
+      "failedToAutomatically": "Автоматичното намиране на профила не бе успешно. Въведете го ръчно:",
+      "overviewTheListOfAuthorized": "Прегледайте списъка с упълномощени профили, завършете влизането, като щракнете върху бутона по-долу..",
+      "finish": "Завършете"
+    },
+    "install": {
+      "youllNeedToInstall": "Ще трябва да инсталирате",
+      "toContinueAfterInstalling": "за да продължите. След инсталиране",
+      "refreshThePage": "презаредете страницата.",
+      "open": "Отворете"
+    },
+    "qr": {
+      "copiedToClipboard": "Копирано в клипборда",
+      "failedToCopy": "Неуспешно копиране в клипборда",
+      "scanWithYourMobile": " Сканирайте с мобилното си устройство",
+      "copyToClipboard": " Копирайте в клипборда",
+      "preferTheOfficial": "Предпочитан език за кореспонденция",
+      "open": "Отворете"
+    }
+  }
+}

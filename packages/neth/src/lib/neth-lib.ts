@@ -8,6 +8,10 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import * as nearAPI from "near-api-js";
 import { generateSeedPhrase } from "near-seed-phrase";
 import BN from "bn.js";
+import type {
+  KeyPair as NearKeyPair,
+  Account as NearAccount,
+} from "near-api-js";
 
 const {
   Near,
@@ -1008,7 +1012,12 @@ export const getNearMap = async (eth_address) => {
   );
 };
 
-export const getNear = async () => {
+export const getNear = async (): {
+  account: NearAccount;
+  accountId: string;
+  keyPair: NearKeyPair;
+  secretKey: string;
+} => {
   const secretKey = await storage.getItem(APP_KEY_SECRET);
   const accountId = await storage.getItem(APP_KEY_ACCOUNT_ID);
   if (!secretKey || !accountId) {

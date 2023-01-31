@@ -181,7 +181,7 @@ Returns one or more accounts when signed in. This method can be useful for walle
 (async () => {
   const wallet = await selector.wallet("sender");
   const accounts = await wallet.getAccounts();
-  console.log(accounts); // [{ accountId: "test.testnet" }]
+  console.log(accounts); // [{ accountId: "test.testnet", publicKey: "..." }]
 })();
 ```
 

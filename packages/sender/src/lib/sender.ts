@@ -7,6 +7,7 @@ import type {
   Transaction,
   FunctionCallAction,
   Optional,
+  Account,
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedSender } from "./injected-sender";
@@ -100,14 +101,30 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  const getAccounts = () => {
+  const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
       return [];
     }
 
-    return [{ accountId }];
+    await waitFor(() => !!_state.wallet.account(), { timeout: 100 });
+
+    const account = _state.wallet.account();
+
+    return [
+      {
+        accountId,
+        publicKey: account
+          ? (
+              await account.connection.signer.getPublicKey(
+                account.accountId,
+                options.network.networkId
+              )
+            ).toString()
+          : undefined,
+      },
+    ];
   };
 
   const isValidActions = (
@@ -145,7 +162,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn({ contractId, methodNames }) {
-      const existingAccounts = getAccounts();
+      const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
         return existingAccounts;
