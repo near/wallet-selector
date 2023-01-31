@@ -17,6 +17,7 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 // import { setupModal } from "@near-wallet-selector/modal-ui";
 // import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
           bundle: false,
         }),
         setupOptoWallet(),
+        setupFinerWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
