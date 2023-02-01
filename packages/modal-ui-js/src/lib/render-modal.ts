@@ -132,6 +132,7 @@ export async function connectToWallet(
 
       subscription.remove();
       modalState.container.children[0].classList.remove("open");
+      modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
       return;
     }
 
@@ -144,6 +145,7 @@ export async function connectToWallet(
       });
 
       modalState.container.children[0].classList.remove("open");
+      modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
 
       return;
     }
@@ -154,6 +156,7 @@ export async function connectToWallet(
     });
 
     modalState.container.children[0].classList.remove("open");
+    modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
   } catch (err) {
     const { name } = module.metadata;
     const message = err instanceof Error ? err.message : "Something went wrong";
@@ -302,7 +305,7 @@ export function renderModal() {
       modalState.container.children[0].classList.remove("open");
 
       if (modalState.options.onHide) {
-        modalState.options.onHide("user-triggered");
+        modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
       }
     });
 
@@ -319,7 +322,7 @@ export function renderModal() {
         modalState.container.children[0].classList.remove("open");
 
         if (modalState.options.onHide) {
-          modalState.options.onHide("user-triggered");
+          modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
         }
       }
     });
