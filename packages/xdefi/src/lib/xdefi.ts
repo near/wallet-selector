@@ -146,6 +146,10 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return result;
     },
+
+    async importAccountsInSecureContext(params) {
+      _state.wallet.importAccounts(params.accounts);
+    },
   };
 };
 
