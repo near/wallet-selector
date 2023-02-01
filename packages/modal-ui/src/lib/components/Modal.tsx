@@ -292,7 +292,7 @@ export const Modal: React.FC<ModalProps> = ({
                 selector={selector}
                 options={options}
                 onConnected={() => {
-                  handleDismissClick({});
+                  handleDismissClick({ hideReason: "wallet-navigation" });
                 }}
                 params={route.params}
                 onBack={() =>
