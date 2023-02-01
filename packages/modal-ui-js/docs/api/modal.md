@@ -98,6 +98,6 @@ const handleModalClosed = ({
   console.log(`The reason for hiding the modal ${hideReason}`);
 }
 
-selector.on("onHide", handleModalClosed);
-selector.off("onHide", handleModalClosed);
+modal.on("onHide", handleModalClosed);
+modal.off("onHide", handleModalClosed);
 ```
