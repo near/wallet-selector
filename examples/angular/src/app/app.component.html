@@ -1,12 +1,11 @@
 <main>
-  <h1>NEAR Guest Book</h1>
-  <near-wallet-selector-content
-    *ngIf="!!selector"
-    [selector]="selector"
-    [accounts]="accounts"
-    [accountId]="accountId"
-    [modal]="modal"
-  >
-  </near-wallet-selector-content>
+  <div class="title-container">
+    <h1>{{showImport ? "Export Account" : "NEAR Guest Book"}}</h1>
+    <button (click)="showImport = !showImport" >
+      {{showImport ? "Back to Log in" : "Try Export Account"}}
+    </button>
+  </div>
+  <near-wallet-selector-wallet-selector *ngIf="!showImport"></near-wallet-selector-wallet-selector>
+  <near-wallet-selector-wallet-selector-export *ngIf="showImport"></near-wallet-selector-wallet-selector-export>
 </main>
 

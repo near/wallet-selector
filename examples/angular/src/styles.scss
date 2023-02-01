@@ -5,6 +5,7 @@
 }
 
 @import "../../../dist/packages/modal-ui-js/styles.css";
+@import "../../../dist/packages/account-export/styles.css";
 
 html {
   --bg: #fff;
@@ -44,99 +45,81 @@ body {
   padding: 0 1em;
   max-width: 40em;
 }
-
 fieldset {
   border: none;
   margin: 0;
   padding: 0;
 }
-
 .highlight {
   align-items: center;
   display: flex;
   margin-bottom: 0.5em;
   width: 100%;
-
-  label {
-    margin-right: 0.5em;
-  }
-
-  input {
-    caret-color: var(--secondary);
-  }
 }
-
+.highlight label {
+  margin-right: 0.5em;
+}
+.highlight input {
+  caret-color: var(--secondary);
+}
 label {
   color: var(--gray);
 }
-
-button,
-.highlight {
+button, .highlight {
   border-radius: 5px;
   border-color: var(--primary);
   border: 0.1em solid var(--primary);
   padding: 0.5em 1em;
-
-  &:hover,
-  &:focus,
-  &:focus-within {
-    border-color: var(--secondary);
-  }
 }
-
+button:hover, .highlight:hover, button:focus, .highlight:focus, button:focus-within, .highlight:focus-within {
+  border-color: var(--secondary);
+}
 input {
   border: none;
   flex: 1;
-
-  &:read-only {
-    color: var(--primary)
-  }
 }
-
+input:read-only {
+  color: var(--primary);
+}
 input[type="number"] {
   text-align: center;
   border-bottom: 0.1em solid var(--primary);
   margin: 0 1em;
   width: 4em;
   padding-left: 0.5em;
-
-  &:hover,
-  &:focus {
-    border-color: var(--secondary);
-  }
 }
-
+input[type="number"]:hover, input[type="number"]:focus {
+  border-color: var(--secondary);
+}
 input[type="checkbox"] {
   margin: 0 1em;
 }
-
-button,
-input {
+button, input {
   background: transparent;
   color: inherit;
   cursor: pointer;
   font: inherit;
   outline: none;
 }
-
 button {
   position: relative;
   transition: top 50ms;
-
-  &:hover,
-  &:focus {
-    top: -1px;
-  }
-
-  &:active {
-    background: var(--secondary);
-    border-color: var(--secondary);
-    top: 1px;
-  }
 }
-
+button:hover, button:focus {
+  top: -1px;
+}
+button:active {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  top: 1px;
+}
 .is-premium {
   border-left: 0.25em solid var(--secondary);
   padding-left: 0.25em;
   margin-left: -0.5em;
+}
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
