@@ -1,0 +1,11 @@
+<near-wallet-selector-loading *ngIf="!exportModal || !exportSelector"></near-wallet-selector-loading>
+<div *ngIf="exportModal || exportSelector">
+  <button (click)="show()">Open Modal</button>
+  <p>
+    The Export Accounts modal assists users in migrating their accounts to
+    any Wallet Selector wallet supporting account imports. Any sensitive
+    data in transit during this process will be encrypted with a
+    randomly-generated password which the user will be required to copy down
+    and use in the account import process on the target wallet.
+  </p>
+</div>
