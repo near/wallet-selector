@@ -147,6 +147,10 @@ export class ContentComponent implements OnInit, OnDestroy {
           this.account = account;
         });
       });
+
+    this.modal.on("onHide", ({ hideReason }) => {
+      console.log(`The reason for hiding the modal ${hideReason}`);
+    });
   }
 
   async addMessages(message: string, donation: string, multiple: boolean) {

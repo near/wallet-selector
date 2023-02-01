@@ -1,7 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { ModuleState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  EventEmitterService,
+  ModuleState,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 
-import type { ModalOptions, Theme } from "../modal.types";
+import type {
+  ModalEvents,
+  ModalHideReason,
+  ModalOptions,
+  Theme,
+} from "../modal.types";
 import type { ModalRoute } from "./Modal.types";
 import { WalletNetworkChanged } from "./WalletNetworkChanged";
 import { WalletOptions } from "./WalletOptions";
@@ -20,6 +29,7 @@ interface ModalProps {
   options: ModalOptions;
   visible: boolean;
   hide: () => void;
+  emitter: EventEmitterService<ModalEvents>;
 }
 
 const getThemeClass = (theme?: Theme) => {
@@ -38,6 +48,7 @@ export const Modal: React.FC<ModalProps> = ({
   options,
   visible,
   hide,
+  emitter,
 }) => {
   const [route, setRoute] = useState<ModalRoute>({
     name: "WalletHome",
@@ -70,7 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
     const subscription = selector.on("networkChanged", ({ networkId }) => {
       // Switched back to the correct network.
       if (networkId === selector.options.network.networkId) {
-        return handleDismissClick();
+        return handleDismissClick({});
       }
 
       setRoute({
@@ -83,14 +94,18 @@ export const Modal: React.FC<ModalProps> = ({
   }, []);
 
   const handleDismissClick = useCallback(
-    (isOnHide?: boolean) => {
+    ({ hideReason }: { hideReason?: ModalHideReason }) => {
       setAlertMessage(null);
       setRoute({
         name: "WalletHome",
       });
 
-      if (isOnHide === true && options.onHide) {
-        options.onHide("user-triggered");
+      if (hideReason === "user-triggered") {
+        emitter.emit("onHide", { hideReason });
+      }
+
+      if (hideReason === "wallet-navigation") {
+        emitter.emit("onHide", { hideReason });
       }
       hide();
     },
@@ -100,7 +115,7 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     const close = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        handleDismissClick();
+        handleDismissClick({ hideReason: "user-triggered" });
       }
     };
     window.addEventListener("keydown", close);
@@ -185,7 +200,7 @@ export const Modal: React.FC<ModalProps> = ({
         });
 
         subscription.remove();
-        handleDismissClick();
+        handleDismissClick({ hideReason: "wallet-navigation" });
         return;
       }
 
@@ -197,7 +212,7 @@ export const Modal: React.FC<ModalProps> = ({
           failureUrl: wallet.metadata.failureUrl,
         });
 
-        handleDismissClick();
+        handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
@@ -207,7 +222,7 @@ export const Modal: React.FC<ModalProps> = ({
         methodNames: options.methodNames,
       });
 
-      handleDismissClick();
+      handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {
       const { name } = module.metadata;
 
@@ -234,8 +249,12 @@ export const Modal: React.FC<ModalProps> = ({
         visible ? "open" : ""
       }`}
     >
-      {/*// @ts-ignore*/}
-      <div className="nws-modal-overlay" onClick={handleDismissClick} />
+      <div
+        className="nws-modal-overlay"
+        onClick={() => {
+          handleDismissClick({ hideReason: "user-triggered" });
+        }}
+      />
       <div className="nws-modal">
         <div className="modal-left">
           <div className="modal-left-title">
@@ -263,14 +282,18 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "DerivationPath" && (
               <DerivationPath
                 selector={selector}
                 options={options}
-                onConnected={handleDismissClick}
+                onConnected={() => {
+                  handleDismissClick({ hideReason: "wallet-navigation" });
+                }}
                 params={route.params}
                 onBack={() =>
                   setRoute({
@@ -291,7 +314,9 @@ export const Modal: React.FC<ModalProps> = ({
                     },
                   });
                 }}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "WalletNetworkChanged" && (
@@ -302,7 +327,9 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   })
                 }
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "WalletNotInstalled" && (
@@ -313,7 +340,9 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "WalletConnecting" && (
@@ -324,19 +353,25 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   });
                 }}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "WalletHome" && (
               <WalletHome
                 selector={selector}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
             {route.name === "WalletConnected" && (
               <WalletConnected
                 module={selectedWallet!}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
               />
             )}
 
@@ -345,7 +380,9 @@ export const Modal: React.FC<ModalProps> = ({
                 handleOpenDefaultModal={() => {
                   handleWalletClick(selectedWallet!, true);
                 }}
-                onCloseModal={() => handleDismissClick(true)}
+                onCloseModal={() =>
+                  handleDismissClick({ hideReason: "user-triggered" })
+                }
                 uri={bridgeWalletUri}
                 wallet={selectedWallet!}
               />
