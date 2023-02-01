@@ -51,7 +51,6 @@ export class WalletSelectorExportComponent implements OnInit {
     const _selector = await setupWalletSelector({
       network: "testnet",
       debug: true,
-      allowMultipleSelectors: true,
       modules: [
         ...(await setupDefaultWallets()),
         setupNearWallet(),
