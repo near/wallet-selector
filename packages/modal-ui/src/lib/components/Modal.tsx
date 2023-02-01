@@ -200,7 +200,7 @@ export const Modal: React.FC<ModalProps> = ({
         });
 
         subscription.remove();
-        handleDismissClick({});
+        handleDismissClick({ hideReason: "wallet-navigation" });
         return;
       }
 
@@ -212,7 +212,7 @@ export const Modal: React.FC<ModalProps> = ({
           failureUrl: wallet.metadata.failureUrl,
         });
 
-        handleDismissClick({});
+        handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
@@ -222,7 +222,7 @@ export const Modal: React.FC<ModalProps> = ({
         methodNames: options.methodNames,
       });
 
-      handleDismissClick({});
+      handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {
       const { name } = module.metadata;
 
