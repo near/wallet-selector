@@ -62,7 +62,7 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         setMoreModules(moreWallets);
       }
 
-      setModules(state.modules);
+      setModules(state.modules.sort(() => Math.random() - 0.5));
     });
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
