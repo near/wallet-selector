@@ -4,9 +4,7 @@ This is the Default Wallets package for NEAR Wallet Selector.
 
 This is the list of default wallets:
 
-- [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
-- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
-
+>Note: This package will be deprecated and will not contain any wallets by default starting from next release (current version `v7.6.1`)
 
 ## Installation and Usage
 
