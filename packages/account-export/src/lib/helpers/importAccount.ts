@@ -1,4 +1,3 @@
-import generator from "generate-password";
 import nacl from "tweetnacl";
 import {
   decodeUTF8,
@@ -74,12 +73,7 @@ export const decryptAccountData = ({
   }
 };
 
-export const generateSecretKey = (): string =>
-  generator.generate({
-    length: nacl.secretbox.keyLength,
-    numbers: true,
-    strict: true,
-    lowercase: true,
-    uppercase: true,
-    symbols: true,
-  });
+export const generateSecretKey = (): string => {
+  const random = nacl.randomBytes(nacl.secretbox.keyLength);
+  return encodeBase64(random).substring(0, 32);
+};
