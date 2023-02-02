@@ -122,7 +122,6 @@ import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
@@ -133,7 +132,6 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 const selector = await setupWalletSelector({
   network: "testnet",
   modules: [
-    ...(await setupDefaultWallets()),
     setupNearWallet(),
     setupMyNearWallet(),
     setupSender(),
