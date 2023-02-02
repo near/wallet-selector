@@ -269,7 +269,11 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
 
   const injectedWalletInterface = async () => {
     if (importAccountsInSecureContext) {
-      await importAccountsInSecureContext({ accounts });
+      await importAccountsInSecureContext({
+        accounts: accounts.filter(({ accountId }) =>
+          selectedAccounts.includes(accountId)
+        ),
+      });
     } else {
       setStep(EXPORT_ACCOUNT_STEPS.NO_INTERFACE);
     }
