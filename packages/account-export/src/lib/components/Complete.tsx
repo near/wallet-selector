@@ -20,16 +20,19 @@ export const Complete: React.FC<CompleteProps> = ({
 
   return (
     <>
-      <ModalHeader
-        title={translate("modal.exportAccounts.complete.title")}
-        onCloseModal={onCloseModal}
-        onBack={onBack}
-      />
-      <h4 className="complete-desc">
-        {translate("modal.exportAccounts.complete.desc")}
-      </h4>
+      <div className="nws-modal-header-wrapper">
+        <ModalHeader
+          title={translate("modal.exportAccounts.complete.title")}
+          onCloseModal={onCloseModal}
+          onBack={onBack}
+        />
+      </div>
+      <div className="complete-desc">
+        <h4>{translate("modal.exportAccounts.complete.descOne")}</h4>
+        <h4>{translate("modal.exportAccounts.complete.descTwo")}</h4>
+      </div>
 
-      <button className="middleButton" onClick={onClick}>
+      <button className="middleButton account-export-button" onClick={onClick}>
         {translate("modal.exportAccounts.complete.button")}
       </button>
     </>
