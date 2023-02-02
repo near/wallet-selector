@@ -20,6 +20,8 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 
 declare global {
   interface Window {
@@ -51,6 +53,8 @@ export class WalletSelectorExportComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupXDEFI(),

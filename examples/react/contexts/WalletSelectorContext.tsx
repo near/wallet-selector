@@ -22,8 +22,10 @@ import { distinctUntilChanged, map } from "rxjs";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
-import { CONTRACT_ID } from "../constants";
 import { Loading } from "../components/Loading";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -54,6 +56,8 @@ export const WalletSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupMathWallet(),

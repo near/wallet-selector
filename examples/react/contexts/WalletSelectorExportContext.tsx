@@ -18,6 +18,8 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { Loading } from "../components/Loading";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 
 declare global {
   interface Window {
@@ -48,6 +50,8 @@ export const ExportAccountSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupMathWallet(),
