@@ -16,6 +16,7 @@ import type {
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
+import edgeSSRLoader from "next/dist/build/webpack/loaders/next-edge-ssr-loader";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -75,7 +76,6 @@ const MyNearWallet: WalletBehaviourFactory<
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
-
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
@@ -83,18 +83,29 @@ const MyNearWallet: WalletBehaviourFactory<
     if (!accountId || !account) {
       return [];
     }
-
-    return [
-      {
-        accountId,
-        publicKey: (
-          await account.connection.signer.getPublicKey(
-            account.accountId,
-            options.network.networkId
-          )
-        ).toString(),
-      },
-    ];
+    const publicKeyTemp = await account.connection.signer.getPublicKey(
+      account.accountId,
+      options.network.networkId
+    );
+    /*
+    let publicKeyTemp = "";
+    try {
+      publicKeyTemp = await account.connection.signer
+        .getPublicKey(account.accountId, options.network.networkId)
+        .toString();
+    } catch (e) {
+      console.warn(e);
+    }*/
+    if (!publicKeyTemp) {
+      return [];
+    } else {
+      return [
+        {
+          accountId,
+          publicKey: publicKeyTemp.toString(),
+        },
+      ];
+    }
   };
 
   const transformTransactions = async (
