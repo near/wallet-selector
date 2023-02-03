@@ -19,6 +19,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 - [Opto Wallet](https://www.npmjs.com/package/@near-wallet-selector/opto-wallet) - Mobile wallet & Browser wallet.
+- [Finer Wallet](https://www.npmjs.com/package/@near-wallet-selector/finer-wallet) - Mobile wallet & Browser wallet.
 
 ## Preview
 
@@ -67,6 +68,7 @@ yarn add \
   @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
+  @near-wallet-selector/finer-wallet \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi
 
@@ -88,6 +90,7 @@ npm install \
   @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
+  @near-wallet-selector/finer-wallet \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi
 ```
@@ -123,6 +126,7 @@ import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 
@@ -143,6 +147,7 @@ const selector = await setupWalletSelector({
     setupNearFi(),
     setupCoin98Wallet(),
     setupOptoWallet(),
+    setupFinerWallet(),
     setupNeth(),
     setupXDEFI(),
     setupWalletConnect({

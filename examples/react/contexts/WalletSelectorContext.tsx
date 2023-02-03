@@ -22,6 +22,7 @@ import { distinctUntilChanged, map } from "rxjs";
 
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { CONTRACT_ID } from "../constants";
 import { Loading } from "../components/Loading";
 
@@ -70,6 +71,7 @@ export const WalletSelectorContextProvider: React.FC<{
           bundle: false,
         }),
         setupOptoWallet(),
+        setupFinerWallet(),
         setupXDEFI(),
         setupWalletConnect({
           projectId: "c4f79cc...",
@@ -93,9 +95,6 @@ export const WalletSelectorContextProvider: React.FC<{
     });
     const _modal = setupModal(_selector, {
       contractId: CONTRACT_ID,
-      onHide: (hideReason) => {
-        console.log("the reason for hidding modal...", hideReason);
-      },
     });
     const state = _selector.store.getState();
     setAccounts(state.accounts);
@@ -130,7 +129,14 @@ export const WalletSelectorContextProvider: React.FC<{
         setAccounts(nextAccounts);
       });
 
-    return () => subscription.unsubscribe();
+    const onHideSubscription = modal!.on("onHide", ({ hideReason }) => {
+      console.log(`The reason for hiding the modal ${hideReason}`);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      onHideSubscription.remove();
+    };
   }, [selector]);
 
   if (!selector || !modal) {

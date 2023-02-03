@@ -218,6 +218,10 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return results;
     },
+
+    async importAccountsInSecureContext(params) {
+      _state.wallet.importWalletsNear(params.accounts);
+    },
   };
 };
 

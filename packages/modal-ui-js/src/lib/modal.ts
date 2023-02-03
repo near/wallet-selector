@@ -1,4 +1,5 @@
 import type {
+  EventEmitterService,
   ModuleState,
   Wallet,
   WalletSelector,
@@ -8,9 +9,11 @@ import type {
   WalletSelectorModal,
   ModalOptions,
   ModalRoute,
+  ModalEvents,
 } from "./modal.types";
 import { renderWhatIsAWallet } from "./components/WhatIsAWallet";
 import { renderWalletAccount } from "./components/WalletAccount";
+import { EventEmitter } from "@near-wallet-selector/core";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
@@ -24,6 +27,7 @@ type ModalState = {
   route: ModalRoute;
   modules: Array<ModuleState<Wallet>>;
   derivationPath: string;
+  emitter: EventEmitterService<ModalEvents>;
 };
 
 export let modalState: ModalState | null = null;
@@ -42,6 +46,8 @@ export const setupModal = (
   selector: WalletSelector,
   options: ModalOptions
 ): WalletSelectorModal => {
+  const emitter = new EventEmitter<ModalEvents>();
+
   modalState = {
     container: document.getElementById(MODAL_ELEMENT_ID)!,
     selector,
@@ -51,6 +57,7 @@ export const setupModal = (
     },
     modules: [],
     derivationPath: DEFAULT_DERIVATION_PATH,
+    emitter,
   };
 
   modalState.selector.store.observable.subscribe((state) => {
@@ -84,8 +91,8 @@ export const setupModal = (
       if (!modalState) {
         return;
       }
-
       modalState.container.children[0].classList.remove("open");
+      modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
     }
   };
   window.addEventListener("keydown", close);
@@ -116,6 +123,12 @@ export const setupModal = (
           return;
         }
         modalState.container.children[0].classList.remove("open");
+      },
+      on: (eventName, callback) => {
+        return modalState!.emitter.on(eventName, callback);
+      },
+      off: (eventName, callback) => {
+        modalState!.emitter.off(eventName, callback);
       },
     };
   }

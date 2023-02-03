@@ -23,6 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "jsx": "react-jsx"
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

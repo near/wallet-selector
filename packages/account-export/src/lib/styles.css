@@ -168,7 +168,8 @@
 
 .account-export {
   height: 100%;
-  margin-top: 15px !important;
+  margin-top: 0px !important;
+  padding: 0px !important;
 }
 
 .account-export .content {
@@ -228,6 +229,11 @@
 .account-export .account-selection .account-selection-row label {
   display: flex;
   flex-direction: column;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  width: 399px;
 }
 
 .account-export .passphrase-title {
@@ -259,9 +265,10 @@
   color: var(--wallet-selector-text-color, var(--text-color));
 }
 
-.account-export .complete-desc {
-  height: 100%;
+.complete-desc {
+  flex: 1;
   text-align: center;
+  margin-top: 10px;
 }
 
 .nws-modal-wrapper .nws-modal .connecting-wrapper-err {
