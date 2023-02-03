@@ -74,6 +74,6 @@ export const decryptAccountData = ({
 };
 
 export const generateSecretKey = (): string => {
-  const random = nacl.randomBytes(nacl.secretbox.keyLength);
-  return encodeBase64(random).substring(0, 32);
+  const random = nacl.randomBytes(24);
+  return encodeBase64(random);
 };
