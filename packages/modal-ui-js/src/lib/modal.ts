@@ -108,6 +108,7 @@ export const setupModal = (
         renderModal();
         const selectedWalletId =
           modalState.selector.store.getState().selectedWalletId;
+        modalState.modules = modalState.modules.sort(() => Math.random() - 0.5);
         if (selectedWalletId) {
           const module = modalState.modules.find(
             (m) => m.id === selectedWalletId
