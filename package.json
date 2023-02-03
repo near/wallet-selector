@@ -99,7 +99,6 @@
     "core-js": "^3.6.5",
     "crypto-browserify": "^3.12.0",
     "ethers": "^5.7.2",
-    "generate-password": "^1.7.0",
     "is-mobile": "^3.1.1",
     "near-api-js": "^1.1.0",
     "near-seed-phrase": "^0.2.0",
