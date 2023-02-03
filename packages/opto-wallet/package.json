@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/opto-wallet",
-  "version": "7.6.2",
+  "version": "7.6.1",
   "description": "Opto wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
