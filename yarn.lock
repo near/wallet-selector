@@ -5799,10 +5799,10 @@ before-after-hook@^2.2.0:
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.2.2.tgz#a6e8ca41028d90ee2c24222f201c90956091613e"
   integrity sha512-3pZEU3NT5BFUo/AD5ERPWOgQOCZITni6iavr5AUw5AUwQjMlI0kzu5btnyD39AF0gUEsDPwJT+oY1ORBJijPjQ==
 
-better-sqlite3@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.0.0.tgz#aa350edf5defccd726749b8139881e5918b098b6"
-  integrity sha512-DhIPmhV+F3NBb9oGCNqNON8Cg4nP3/7NOwx412SL6JJUclYjAKmqNtbL6xBfG2RcG0uZWUS/TEHRy4AFLeq5Zg==
+better-sqlite3@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.0.1.tgz#3a596d21fbcefadf36f94e126c5cf24d5697d0b8"
+  integrity sha512-JhTZjpyapA1icCEjIZB4TSSgkGdFgpWZA2Wszg7Cf4JwJwKQmbvuNnJBeR+EYG/Z29OXvR4G//Rbg31BW/Z7Yg==
   dependencies:
     bindings "^1.5.0"
     prebuild-install "^7.1.0"
