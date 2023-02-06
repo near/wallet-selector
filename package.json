@@ -170,7 +170,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.6.0",
-    "gh-pages": "^4.0.0",
+    "gh-pages": "^5.0.0",
     "jest": "27.5.1",
     "jest-mock-extended": "^2.0.6",
     "jest-preset-angular": "^12.2.0",
