@@ -4,4 +4,5 @@ export type {
   WalletSelectorModal,
   ModalOptions,
   Theme,
+  ModalEvents,
 } from "./lib/modal.types";

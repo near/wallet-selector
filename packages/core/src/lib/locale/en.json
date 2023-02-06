@@ -89,7 +89,8 @@
       },
       "complete": {
         "title": "Complete the Transfer",
-        "desc": "You will now be redirected to the wallet you selected to complete the transfer. Once import part of process is completed from selected wallet, press button to complete the transfer process.",
+        "descOne": "You will now be redirected to the wallet you selected to complete the transfer.",
+        "descTwo": "Once import part of process is completed from selected wallet, press button to complete the transfer process.",
         "button": "Complete"
       }
     }

@@ -14,6 +14,7 @@ interface AccountSelectProps {
   disabledAccounts: Array<ExportAccountData>;
   onNextStep: () => void;
   isLoading: boolean;
+  buttonLabel: string;
 }
 
 interface WarningLabelProp {
@@ -61,6 +62,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
   disabledAccounts,
   onNextStep,
   isLoading,
+  buttonLabel,
 }) => {
   const onAccountSelect = (accountId: string, checked: boolean) => {
     if (checked) {
@@ -89,11 +91,13 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
 
   return (
     <Fragment>
-      <ModalHeader
-        title={translate("modal.exportAccounts.selectAccounts.title")}
-        onCloseModal={onCloseModal}
-        onBack={onBack}
-      />
+      <div className="nws-modal-header-wrapper">
+        <ModalHeader
+          title={translate("modal.exportAccounts.selectAccounts.title")}
+          onCloseModal={onCloseModal}
+          onBack={onBack}
+        />
+      </div>
       <div className="account-export connecting-wrapper">
         <div className="content">
           {isLoading ? (
@@ -121,7 +125,9 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
                         name={accountId}
                         value={accountId}
                       />
-                      <label htmlFor={accountId}> {accountId}</label>
+                      <label htmlFor={accountId} title={accountId}>
+                        {accountId}
+                      </label>
                     </div>
                   </div>
                 ))}
@@ -144,7 +150,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
                         value={accountId}
                         disabled
                       />
-                      <label htmlFor={accountId}>
+                      <label htmlFor={accountId} title={accountId}>
                         <span>{accountId}</span>
                         {getWarningLabel({ hasBalance, type })}
                       </label>
@@ -158,7 +164,7 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
                 onClick={onNextStep}
                 disabled={selectedAccounts.length === 0}
               >
-                {translate("modal.exportAccounts.selectAccounts.button")}
+                {translate(buttonLabel)}
               </button>
             </>
           )}

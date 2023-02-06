@@ -1,0 +1,9 @@
+<near-wallet-selector-loading *ngIf="!modal || !selector"></near-wallet-selector-loading>
+<near-wallet-selector-content
+  *ngIf="!!selector"
+  [selector]="selector"
+  [accounts]="accounts"
+  [accountId]="accountId"
+  [modal]="modal"
+>
+</near-wallet-selector-content>
