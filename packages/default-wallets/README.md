@@ -4,7 +4,7 @@ This is the Default Wallets package for NEAR Wallet Selector.
 
 This is the list of default wallets:
 
->Note: This package will be deprecated and will not contain any wallets by default starting from next release (current version `v7.6.1`)
+>**Note**: This package does not contain any wallets by default.
 
 ## Installation and Usage
 
