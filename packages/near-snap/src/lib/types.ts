@@ -5,7 +5,6 @@ declare global {
     ethereum: {
       isMetaMask: boolean;
       request: <T>(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         request:
           | SnapRpcMethodRequest
           | {

@@ -166,7 +166,7 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner({ message }) {
-      logger.log("NearSnap:verifyOwner", { message });
+      logger.log("NearFi:verifyOwner", { message });
       
       throw new Error(`Method not supported by ${metadata.name}`);
     },

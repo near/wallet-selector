@@ -19,9 +19,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      // Sign in to My Wallet for access to account(s).
       await enable(isDev);
-
       return await getSnapAccounts(isDev, network);
     },
 

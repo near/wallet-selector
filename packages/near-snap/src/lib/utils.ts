@@ -1,5 +1,5 @@
 import type { Account } from "@near-wallet-selector/core";
-import type { GetAccountPayload } from "./types";
+import type { GetAccountPayload, GetSnapsResponse } from "./types";
 
 export function hasMetaMask(): boolean {
   if (!window.ethereum) {
@@ -8,14 +8,6 @@ export function hasMetaMask(): boolean {
   return window.ethereum.isMetaMask;
 }
 
-export type GetSnapsResponse = {
-  [k: string]: {
-    permissionName?: string;
-    id?: string;
-    version?: string;
-    initialPermissions?: { [k: string]: unknown };
-  };
-};
 async function getWalletSnaps(): Promise<GetSnapsResponse> {
   return await window.ethereum.request({
     method: "wallet_getSnaps",
