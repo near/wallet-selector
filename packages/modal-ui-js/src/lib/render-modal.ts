@@ -288,7 +288,10 @@ export function renderModal() {
       `
     );
     renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
-    renderOptionsList(".more-options-list-content", moreWallets);
+    renderOptionsList(
+      ".more-options-list-content",
+      moreWallets.sort(() => Math.random() - 0.5)
+    );
   } else {
     document
       .querySelector(".wallet-options-wrapper")
