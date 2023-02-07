@@ -14,6 +14,7 @@ export interface WalletSelectorParams {
   debug?: boolean;
   optimizeWalletOrder?: boolean;
   allowMultipleSelectors?: boolean;
+  randomizeWalletOrder?: boolean;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;
