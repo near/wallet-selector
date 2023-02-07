@@ -333,25 +333,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     buildImportAccountsUrl() {
       return `https://docs.welldonestudio.io/contribution/202211-batch-import`;
     },
-
-    async importAccountsInSecureContext({ accounts }) {
-      if (!_state.wallet) {
-        throw new Error("Wallet is not installed");
-      }
-      const params: Array<string> = [];
-      // use batch import
-      accounts.forEach(({ privateKey }) => {
-        if (privateKey.slice(0, 8) === "ed25519:") {
-          params.push(privateKey.slice(8));
-        } else {
-          params.push(privateKey);
-        }
-      });
-      await _state.wallet.request("near", {
-        method: "experimental:near:importPrivatekey",
-        params: params,
-      });
-    },
   };
 };
 
