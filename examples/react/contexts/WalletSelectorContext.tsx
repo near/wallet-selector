@@ -1,7 +1,6 @@
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
@@ -23,8 +22,10 @@ import { distinctUntilChanged, map } from "rxjs";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
-import { CONTRACT_ID } from "../constants";
 import { Loading } from "../components/Loading";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -55,7 +56,8 @@ export const WalletSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
-        ...(await setupDefaultWallets()),
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupMathWallet(),

@@ -3,7 +3,6 @@ import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -20,8 +19,10 @@ import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { CONTRACT_ID } from "../../../constants";
 import { Component } from "@angular/core";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { CONTRACT_ID } from "../../../constants";
 
 declare global {
   interface Window {
@@ -53,7 +54,8 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        ...(await setupDefaultWallets()),
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupXDEFI(),
