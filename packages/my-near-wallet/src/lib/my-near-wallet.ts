@@ -16,7 +16,6 @@ import type {
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
-import edgeSSRLoader from "next/dist/build/webpack/loaders/next-edge-ssr-loader";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -83,26 +82,22 @@ const MyNearWallet: WalletBehaviourFactory<
     if (!accountId || !account) {
       return [];
     }
-    const publicKeyTemp = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
-    /*
-    let publicKeyTemp = "";
     try {
-      publicKeyTemp = await account.connection.signer
-        .getPublicKey(account.accountId, options.network.networkId)
-        .toString();
-    } catch (e) {
-      console.warn(e);
-    }*/
-    if (!publicKeyTemp) {
-      return [];
-    } else {
+      const publicKey = await account.connection.signer.getPublicKey(
+        account.accountId,
+        options.network.networkId
+      );
       return [
         {
           accountId,
-          publicKey: publicKeyTemp.toString(),
+          publicKey: publicKey.toString(),
+        },
+      ];
+    } catch (e) {
+      return [
+        {
+          accountId,
+          publicKey: undefined,
         },
       ];
     }
