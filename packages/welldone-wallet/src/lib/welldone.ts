@@ -330,8 +330,27 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return results;
     },
 
-    buildImportAccountsUrl() {
-      return `https://docs.welldonestudio.io/contribution/202211-batch-import`;
+    async importAccountsInSecureContext({ accounts }) {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+      const privateKeys: Array<string> = [];
+      // use batch import
+      accounts.forEach(({ privateKey }) => {
+        if (privateKey.slice(0, 8) === "ed25519:") {
+          privateKeys.push(privateKey.slice(8));
+        } else {
+          privateKeys.push(privateKey);
+        }
+      });
+      const params = {
+        privateKey: privateKeys,
+        network: options.network.networkId,
+      };
+      await _state.wallet.request("near", {
+        method: "experimental:near:importPrivatekey",
+        params: [params],
+      });
     },
   };
 };
@@ -359,7 +378,6 @@ export function setupWelldoneWallet({
           "https://chrome.google.com/webstore/detail/welldone-wallet/bmkakpenjmcpfhhjadflneinmhboecjf",
         deprecated,
         available: installed,
-        useUrlAccountImport: true,
       },
       init: WelldoneWallet,
     };
