@@ -166,8 +166,3 @@ Wallets shall checkbox a statement of compliance to be maintained on the walletâ
 
 41. Communication between infrastructure elements should be secured to the maximum extent possible.
     Please link to your the statement on your website or GitHub repo showing a statement of compliance. Please put link below (even if it is a placeholder).
-
-
-# Default Wallet List Criteria:
-
-To be included in the default wallet list, a wallet project must have met the Wallet Product Criteria, the Wallet Security Criteria, and completed an audit.

@@ -11,7 +11,7 @@
   - `explorerUrl` (`string`): URL for the NEAR explorer.
 - `debug` (`boolean`): Whether internal logging is enabled.
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
-
+- `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.
 **Description**
 
 Resolved variation of the options passed to `setupWalletSelector`.

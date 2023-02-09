@@ -75,7 +75,6 @@ const MyNearWallet: WalletBehaviourFactory<
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = await setupWalletState(params, options.network);
-
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
@@ -83,18 +82,25 @@ const MyNearWallet: WalletBehaviourFactory<
     if (!accountId || !account) {
       return [];
     }
-
-    return [
-      {
-        accountId,
-        publicKey: (
-          await account.connection.signer.getPublicKey(
-            account.accountId,
-            options.network.networkId
-          )
-        ).toString(),
-      },
-    ];
+    try {
+      const publicKey = await account.connection.signer.getPublicKey(
+        account.accountId,
+        options.network.networkId
+      );
+      return [
+        {
+          accountId,
+          publicKey: publicKey.toString(),
+        },
+      ];
+    } catch (e) {
+      return [
+        {
+          accountId,
+          publicKey: undefined,
+        },
+      ];
+    }
   };
 
   const transformTransactions = async (

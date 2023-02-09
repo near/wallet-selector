@@ -45,6 +45,7 @@ const selector = await setupWalletSelector({
   - `indexerUrl` (`string`): Custom URL for the Indexer service.
 - `debug` (`boolean?`): Enable internal logging for debugging purposes. Defaults to `false`.
 - `optimizeWalletOrder` (`boolean?`): Enable automatic wallet order. Reorders last signed in wallet on top, then installed wallets over not installed and deprecated wallets.
+- `randomizeWalletOrder` (`boolean?`): Randomize wallets order in the `More` section of the UI.
 - `allowMultipleSelectors` (`boolean?`): Optionally allow creating new instances of wallet selector.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
