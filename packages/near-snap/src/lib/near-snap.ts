@@ -14,6 +14,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   provider,
   store,
+  metadata,
 }) => {
   const network = options.network.networkId as "testnet" | "mainnet";
 
@@ -31,8 +32,9 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return await getSnapAccounts(isDev, network);
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    async verifyOwner() {},
+    async verifyOwner() {
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
 
     async signAndSendTransaction({ receiverId, actions }) {
       const accountPayload = await getSnapAccounts(isDev, network);
