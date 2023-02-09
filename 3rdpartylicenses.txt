@@ -1584,8 +1584,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 @near-wallet-selector/core
 
-@near-wallet-selector/default-wallets
-
 @near-wallet-selector/finer-wallet
 
 @near-wallet-selector/here-wallet
