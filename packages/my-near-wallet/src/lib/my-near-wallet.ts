@@ -82,25 +82,17 @@ const MyNearWallet: WalletBehaviourFactory<
     if (!accountId || !account) {
       return [];
     }
-    try {
-      const publicKey = await account.connection.signer.getPublicKey(
-        account.accountId,
-        options.network.networkId
-      );
-      return [
-        {
-          accountId,
-          publicKey: publicKey.toString(),
-        },
-      ];
-    } catch (e) {
-      return [
-        {
-          accountId,
-          publicKey: undefined,
-        },
-      ];
-    }
+
+    const publicKey = await account.connection.signer.getPublicKey(
+      account.accountId,
+      options.network.networkId
+    );
+    return [
+      {
+        accountId,
+        publicKey: publicKey ? publicKey.toString() : undefined,
+      },
+    ];
   };
 
   const transformTransactions = async (
