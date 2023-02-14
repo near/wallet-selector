@@ -69,7 +69,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     return [
       {
         accountId,
-        publicKey: publicKey ? publicKey.toString() : undefined,
+        publicKey: publicKey ? publicKey.toString() : "",
       },
     ];
   };

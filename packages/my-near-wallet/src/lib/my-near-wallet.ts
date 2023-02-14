@@ -90,7 +90,7 @@ const MyNearWallet: WalletBehaviourFactory<
     return [
       {
         accountId,
-        publicKey: publicKey ? publicKey.toString() : undefined,
+        publicKey: publicKey ? publicKey.toString() : "",
       },
     ];
   };
