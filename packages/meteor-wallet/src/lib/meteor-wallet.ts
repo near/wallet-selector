@@ -62,15 +62,14 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       return [];
     }
 
+    const publicKey = await account.connection.signer.getPublicKey(
+      account.accountId,
+      options.network.networkId
+    );
     return [
       {
         accountId,
-        publicKey: (
-          await account.connection.signer.getPublicKey(
-            account.accountId,
-            options.network.networkId
-          )
-        ).toString(),
+        publicKey: publicKey ? publicKey.toString() : "",
       },
     ];
   };

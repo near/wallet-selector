@@ -136,7 +136,7 @@ const WalletConnect: WalletBehaviourFactory<
       );
       newAccounts.push({
         accountId: accounts[i].split(":")[2],
-        publicKey: publicKey ? publicKey.toString() : undefined,
+        publicKey: publicKey ? publicKey.toString() : "",
       });
     }
 
