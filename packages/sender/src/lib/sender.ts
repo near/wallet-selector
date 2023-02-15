@@ -112,17 +112,20 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     const account = _state.wallet.account();
 
+    // When wallet is locked signer is empty an object {}.
+    if (!account!.connection.signer.getPublicKey) {
+      return [{ accountId, publicKey: undefined }];
+    }
+
+    const publicKey = await account!.connection.signer.getPublicKey(
+      account!.accountId,
+      options.network.networkId
+    );
+
     return [
       {
         accountId,
-        publicKey: account
-          ? (
-              await account.connection.signer.getPublicKey(
-                account.accountId,
-                options.network.networkId
-              )
-            ).toString()
-          : undefined,
+        publicKey: publicKey ? publicKey.toString() : undefined,
       },
     ];
   };
