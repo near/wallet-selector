@@ -5,6 +5,7 @@ import type {
   CodeResult,
 } from "near-api-js/lib/providers/provider";
 import type { Transaction } from "@near-wallet-selector/core";
+import BN from "bn.js";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
