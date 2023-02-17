@@ -4,14 +4,10 @@ import { SignedTransaction } from "near-api-js/lib/transaction";
 
 export async function enable(isDev: boolean): Promise<void> {
   await window.ethereum.request({
-    method: "wallet_enable",
-    params: [
-      {
-        wallet_snap: {
-          [getSnapOrigin(isDev)]: {},
-        },
-      },
-    ],
+    method: "wallet_requestSnaps",
+    params: {
+      [getSnapOrigin(isDev)]: {},
+    },
   });
 }
 
@@ -21,13 +17,13 @@ export async function getSnapAccounts(
 ): Promise<Array<GetAccountPayload>> {
   const account: GetAccountPayload = await window.ethereum.request({
     method: "wallet_invokeSnap",
-    params: [
-      getSnapOrigin(isDev),
-      {
+    params: {
+      snapId: getSnapOrigin(isDev),
+      request: {
         method: "near_getAccount",
         params: { network },
       },
-    ],
+    },
   });
   return [account];
 }
@@ -40,16 +36,16 @@ export async function signTransactions(
   const signedTransactions: Array<[string, string]> =
     await window.ethereum.request({
       method: "wallet_invokeSnap",
-      params: [
-        getSnapOrigin(isDev),
-        {
+      params: {
+        snapId: getSnapOrigin(isDev),
+        request: {
           method: "near_signTransactions",
           params: {
             network,
             transactions,
           },
         },
-      ],
+      },
     });
 
   return signedTransactions.map(([, signature]) =>

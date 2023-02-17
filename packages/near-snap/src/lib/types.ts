@@ -9,7 +9,7 @@ declare global {
           | SnapRpcMethodRequest
           | {
               method: string;
-              params?: Array<SignTransactionRequestParams | unknown>;
+              params?: SignTransactionRequestParams | unknown;
             }
       ) => Promise<T>;
     };
