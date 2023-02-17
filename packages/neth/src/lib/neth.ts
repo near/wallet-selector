@@ -46,7 +46,7 @@ export interface NethParams {
 }
 
 const isInstalled = async () => {
-  await detectEthereumProvider();
+  await detectEthereumProvider({ timeout: 200 });
   return !!window.ethereum;
 };
 
