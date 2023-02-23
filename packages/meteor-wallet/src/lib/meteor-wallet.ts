@@ -7,7 +7,6 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
-import { isMobile } from "is-mobile";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
@@ -219,11 +218,6 @@ export function setupMeteorWallet({
   deprecated = false,
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const mobile = isMobile();
-
-    if (mobile) {
-      return null;
-    }
 
     return {
       id: "meteor-wallet",

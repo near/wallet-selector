@@ -3,7 +3,6 @@ import type { WalletModuleFactory } from "@near-wallet-selector/core";
 import type { HereWallet } from "./types";
 import { initHereWallet } from "./selector";
 import icon from "./icon";
-import { isMobile } from "is-mobile";
 
 export { icon };
 
@@ -21,11 +20,6 @@ export function setupHereWallet({
   defaultProvider,
 }: Options = {}): WalletModuleFactory<HereWallet> {
   return async () => {
-    const mobile = isMobile();
-
-    if (mobile) {
-      return null;
-    }
     return {
       id: "here-wallet",
       type: "injected",
