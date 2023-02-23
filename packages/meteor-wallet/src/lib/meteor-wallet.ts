@@ -218,7 +218,6 @@ export function setupMeteorWallet({
   deprecated = false,
 }: MeteorWalletParams_Injected = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-
     return {
       id: "meteor-wallet",
       type: "injected",
