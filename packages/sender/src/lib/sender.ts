@@ -312,7 +312,7 @@ export function setupSender({
 
     // Add extra wait to ensure Sender's sign in status is read from the
     // browser extension background env.
-    // Check for isSigned in only if extension is installed.
+    // Check for isSignedIn() in only if extension is installed.
     if (installed) {
       await waitFor(() => !!window.near?.isSignedIn(), { timeout: 200 }).catch(
         () => false
