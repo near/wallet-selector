@@ -166,10 +166,6 @@ export function setupXDEFI({
       return null;
     }
 
-    await waitFor(() => !!window.xfi?.near, {
-      timeout: 300,
-    }).catch(() => false);
-
     return {
       id: "xdefi",
       type: "injected",
