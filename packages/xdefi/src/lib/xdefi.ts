@@ -42,7 +42,7 @@ const setupXDEFIState = async (
 };
 
 const isInstalled = () => {
-  return waitFor(() => !!window.xfi!.near!).catch(() => false);
+  return waitFor(() => !!window.xfi?.near).catch(() => false);
 };
 
 const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
