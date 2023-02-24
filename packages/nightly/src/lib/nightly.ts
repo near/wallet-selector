@@ -241,10 +241,6 @@ export function setupNightly({
       return null;
     }
 
-    await waitFor(() => !!window.nightly?.near, {
-      timeout: 300,
-    }).catch(() => false);
-
     return {
       id: "nightly",
       type: "injected",
