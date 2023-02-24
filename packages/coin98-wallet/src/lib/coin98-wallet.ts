@@ -191,11 +191,11 @@ export const setupCoin98Wallet = ({
 }: Coin98WalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
-    const installed = isInstalled();
-
     if (mobile) {
       return null;
     }
+
+    const installed = isInstalled();
 
     return {
       id: "coin98-wallet",

@@ -307,11 +307,11 @@ export function setupSender({
 }: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
+
+    const installed = await isInstalled();
 
     // Add extra wait to ensure Sender's sign in status is read from the
     // browser extension background env.

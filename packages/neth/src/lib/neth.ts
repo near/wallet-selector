@@ -187,11 +187,11 @@ export function setupNeth({
     bundle = _bundle;
 
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
+
+    const installed = await isInstalled();
 
     return {
       id: "neth",
