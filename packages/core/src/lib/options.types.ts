@@ -12,4 +12,5 @@ export interface Options {
   network: Network;
   debug: boolean;
   optimizeWalletOrder: boolean;
+  randomizeWalletOrder: boolean;
 }

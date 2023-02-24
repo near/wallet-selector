@@ -39,6 +39,10 @@ export const initHereWallet: SelectorInit = async (config) => {
       return here.networkId;
     },
 
+    buildImportAccountsUrl() {
+      return `https://my.herewallet.app/import?network=${options.network.networkId}`;
+    },
+
     async account(id) {
       logger.log("HereWallet:account");
       return await here.account(id);

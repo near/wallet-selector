@@ -61,8 +61,11 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         setRecentModules(recentlySignedInWallets);
         setMoreModules(moreWallets);
       }
-
-      setModules(state.modules);
+      if (selector.options.randomizeWalletOrder) {
+        setModules(state.modules.sort(() => Math.random() - 0.5));
+      } else {
+        setModules(state.modules);
+      }
     });
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps

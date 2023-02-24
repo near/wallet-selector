@@ -109,7 +109,7 @@ export const Modal: React.FC<ModalProps> = ({
       }
       hide();
     },
-    [hide]
+    [hide, emitter]
   );
 
   useEffect(() => {

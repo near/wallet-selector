@@ -329,6 +329,29 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return results;
     },
+
+    async importAccountsInSecureContext({ accounts }) {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+      const privateKeys: Array<string> = [];
+      // use batch import
+      accounts.forEach(({ privateKey }) => {
+        if (privateKey.slice(0, 8) === "ed25519:") {
+          privateKeys.push(privateKey.slice(8));
+        } else {
+          privateKeys.push(privateKey);
+        }
+      });
+      const params = {
+        privateKey: privateKeys,
+        network: options.network.networkId,
+      };
+      await _state.wallet.request("near", {
+        method: "experimental:near:importPrivatekey",
+        params: [params],
+      });
+    },
   };
 };
 

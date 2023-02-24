@@ -26,7 +26,8 @@ export function setupHereWallet({
       metadata: {
         name: "Here Wallet",
         description: "Mobile wallet for NEAR Protocol",
-        downloadUrl: "",
+        useUrlAccountImport: true,
+        downloadUrl: "https://herewallet.app",
         iconUrl,
         deprecated,
         available: true,

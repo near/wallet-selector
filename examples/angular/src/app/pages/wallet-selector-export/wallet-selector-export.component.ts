@@ -2,7 +2,6 @@ import type { OnInit } from "@angular/core";
 import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
-import { setupDefaultWallets } from "@near-wallet-selector/default-wallets";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -21,6 +20,8 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 
 declare global {
   interface Window {
@@ -52,7 +53,8 @@ export class WalletSelectorExportComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        ...(await setupDefaultWallets()),
+        setupMyNearWallet(),
+        setupLedger(),
         setupNearWallet(),
         setupSender(),
         setupXDEFI(),
