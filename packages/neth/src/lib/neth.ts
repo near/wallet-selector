@@ -189,8 +189,6 @@ export function setupNeth({
     const mobile = isMobile();
     const installed = await isInstalled();
 
-    console.log({ installed });
-
     if (mobile) {
       return null;
     }
