@@ -1,5 +1,9 @@
 import type { OnInit } from "@angular/core";
-import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  AccountState,
+  BrowserWallet,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
@@ -23,6 +27,67 @@ import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { CONTRACT_ID } from "../../../constants";
+
+import type {
+  WalletModuleFactory,
+  WalletBehaviourFactory,
+  InjectedWallet,
+} from "@near-wallet-selector/core";
+
+export interface KeypomParams {
+  iconUrl?: string;
+  deprecated?: boolean;
+}
+
+const Keypom: WalletBehaviourFactory<InjectedWallet> = async () => {
+  return {
+    async signIn() {
+      return [{ accountId: "amirsaran666.testnet" }];
+    },
+
+    async signOut() {
+      throw new Error("Method not implemented");
+    },
+
+    async getAccounts() {
+      throw new Error("Method not implemented");
+    },
+
+    async verifyOwner() {
+      throw new Error("Method not implemented");
+    },
+
+    async signAndSendTransaction() {
+      throw new Error("Method not implemented");
+    },
+
+    async signAndSendTransactions() {
+      throw new Error("Method not implemented");
+    },
+  };
+};
+
+function setupKeypom({
+  iconUrl = "",
+  deprecated = false,
+}: KeypomParams = {}): WalletModuleFactory<InjectedWallet> {
+  return async () => {
+    return {
+      id: "keypom",
+      type: "injected",
+      metadata: {
+        name: "Keypom",
+        description: "Browser extension wallet built on NEAR.",
+        iconUrl,
+        downloadUrl:
+          "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
+        deprecated,
+        available: true,
+      },
+      init: Keypom,
+    };
+  };
+}
 
 declare global {
   interface Window {
@@ -54,6 +119,7 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
+        setupKeypom(),
         setupMyNearWallet(),
         setupLedger(),
         setupNearWallet(),
@@ -91,6 +157,15 @@ export class WalletSelectorComponent implements OnInit {
           },
         }),
       ],
+    });
+
+    const wallet = (await _selector.store
+      .getState()
+      .modules[0].wallet()) as BrowserWallet;
+
+    wallet.signIn({
+      contractId: CONTRACT_ID,
+      methodNames: [],
     });
 
     const _modal = setupModal(_selector, {
