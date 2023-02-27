@@ -46,7 +46,7 @@ export interface NethParams {
 }
 
 const isInstalled = async () => {
-  await detectEthereumProvider();
+  await detectEthereumProvider({ timeout: 100 });
   return !!window.ethereum;
 };
 
@@ -187,11 +187,11 @@ export function setupNeth({
     bundle = _bundle;
 
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
+
+    const installed = await isInstalled();
 
     return {
       id: "neth",

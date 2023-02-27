@@ -60,7 +60,7 @@ const setupNightlyState = async (
   };
 };
 const isInstalled = () => {
-  return waitFor(() => !!window.nightly!.near!).catch(() => false);
+  return waitFor(() => !!window.nightly?.near).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
@@ -235,15 +235,11 @@ export function setupNightly({
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
 
-    await waitFor(() => !!window.nightly?.near, {
-      timeout: 300,
-    }).catch(() => false);
+    const installed = await isInstalled();
 
     return {
       id: "nightly",

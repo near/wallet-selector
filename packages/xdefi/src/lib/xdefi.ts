@@ -42,7 +42,7 @@ const setupXDEFIState = async (
 };
 
 const isInstalled = () => {
-  return waitFor(() => !!window.xfi!.near!).catch(() => false);
+  return waitFor(() => !!window.xfi?.near).catch(() => false);
 };
 
 const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
@@ -160,15 +160,10 @@ export function setupXDEFI({
 }: XDEFIWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
-
-    await waitFor(() => !!window.xfi?.near, {
-      timeout: 300,
-    }).catch(() => false);
+    const installed = await isInstalled();
 
     return {
       id: "xdefi",
