@@ -56,6 +56,12 @@ const nearSnap = setupNearSnap({
   iconUrl: nearSnapIconUrl
 });
 ```
+## Known Issues
+
+Currently, the Near Snap and Coin98 Wallet conflict each other since the Coin98 overrides the `window.ethereum` to avoid this try the following:
+
+- Through the "Override Wallet" feature on Coin98 Extension (Home > Settings > Override Wallet). Turning off the button means allowing the other wallet to override Coin98 and vice versa.
+- Through Chrome's "Manage Extensions" section > Deactivate Coin98 when wishing to use other wallets.
 
 ## License
 

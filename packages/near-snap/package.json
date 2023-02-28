@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/near-snap",
-  "version": "7.7.0",
+  "version": "7.8.2",
   "description": "Metamask snap to interact with Near dapps.",
   "keywords": [
     "near",
@@ -17,12 +17,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chainsafe/near-snap.git"
+    "url": "https://github.com/near/wallet-selector.git"
   },
   "bugs": {
-    "url": "https://github.com/chainsafe/near-snap/issues"
+    "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/chainsafe/near-snap#readme",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-snap",
   "peerDependencies": {
     "near-api-js": "^0.44.2 || ^1.0.0"
   }
