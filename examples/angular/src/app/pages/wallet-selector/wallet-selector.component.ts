@@ -14,6 +14,7 @@ import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
@@ -67,6 +68,7 @@ export class WalletSelectorComponent implements OnInit {
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
+        setupNearSnap(),
         setupNeth({
           bundle: false,
         }),

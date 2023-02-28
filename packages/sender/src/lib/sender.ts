@@ -307,17 +307,20 @@ export function setupSender({
 }: SenderParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
 
+    const installed = await isInstalled();
+
     // Add extra wait to ensure Sender's sign in status is read from the
     // browser extension background env.
-    await waitFor(() => !!window.near?.isSignedIn(), { timeout: 300 }).catch(
-      () => false
-    );
+    // Check for isSignedIn() in only if extension is installed.
+    if (installed) {
+      await waitFor(() => !!window.near?.isSignedIn(), { timeout: 200 }).catch(
+        () => false
+      );
+    }
 
     return {
       id: "sender",

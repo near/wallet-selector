@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "7.8.2",
+  "version": "7.9.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -10,6 +10,7 @@
     "near-protocol",
     "near-blockchain",
     "near-wallet",
+    "near-snap",
     "my-near-wallet",
     "sender",
     "neth",
@@ -62,6 +63,7 @@
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
+    "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
     "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
@@ -81,7 +83,7 @@
     "@angular/platform-browser": "~14.0.0",
     "@angular/platform-browser-dynamic": "~14.0.0",
     "@angular/router": "~14.0.0",
-    "@here-wallet/core": "^1.3.1",
+    "@here-wallet/core": "^1.4.0",
     "@jscutlery/semver": "^2.29.3",
     "@ledgerhq/hw-transport": "6.27.1",
     "@ledgerhq/hw-transport-webhid": "6.27.1",

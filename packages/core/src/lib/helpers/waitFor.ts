@@ -24,7 +24,7 @@ export const waitFor = async (
   cb: () => boolean,
   opts: { timeout?: number; interval?: number } = {}
 ) => {
-  const { timeout = 200, interval = 50 } = opts;
+  const { timeout = 100, interval = 50 } = opts;
 
   return Promise.race([
     wait(timeout).then(() => {

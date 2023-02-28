@@ -294,9 +294,11 @@ export function setupFinerInjected({
       return null;
     }
 
-    await waitFor(() => !!window.finer?.near?.isSignedIn(), {
-      timeout: 300,
-    }).catch(() => false);
+    if (installed) {
+      await waitFor(() => !!window.finer?.near?.isSignedIn(), {
+        timeout: 200,
+      }).catch(() => false);
+    }
 
     return {
       id: "finer-wallet",

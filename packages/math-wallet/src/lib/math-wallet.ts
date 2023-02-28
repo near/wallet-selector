@@ -195,11 +195,11 @@ export const setupMathWallet = ({
 }: MathWalletParams = {}): WalletModuleFactory<InjectedWallet> => {
   return async () => {
     const mobile = isMobile();
-    const installed = await isInstalled();
-
     if (mobile) {
       return null;
     }
+
+    const installed = await isInstalled();
 
     return {
       id: "math-wallet",
