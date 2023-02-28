@@ -1,0 +1,54 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/near-snap/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/near-snap",
+        "tsConfig": "packages/near-snap/tsconfig.lib.json",
+        "project": "packages/near-snap/package.json",
+        "entryFile": "packages/near-snap/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/near-snap/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/near-snap/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/near-snap/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/near-snap"],
+      "options": {
+        "jestConfig": "packages/near-snap/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": ["injected-wallet"]
+}

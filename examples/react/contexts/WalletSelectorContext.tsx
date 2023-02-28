@@ -13,6 +13,7 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import type { ReactNode } from "react";
@@ -63,6 +64,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupNearSnap(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
