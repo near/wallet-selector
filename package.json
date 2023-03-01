@@ -113,7 +113,7 @@
     "regenerator-runtime": "0.13.11",
     "rxjs": "^7.8.0",
     "stream-browserify": "^3.0.0",
-    "tslib": "^2.3.0",
+    "tslib": "^2.5.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "zone.js": "~0.11.4"
