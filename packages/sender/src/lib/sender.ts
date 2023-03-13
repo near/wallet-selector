@@ -187,7 +187,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
       setupEvents();
 
-      return getAccounts();
+      return await getAccounts();
     },
 
     signOut,
