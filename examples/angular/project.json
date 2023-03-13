@@ -37,6 +37,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/keypom/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/xdefi/assets/",
             "output": "assets/"
           },

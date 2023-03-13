@@ -10,6 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type BN from "bn.js";
 
 interface BaseWalletMetadata {
   name: string;
@@ -165,6 +166,26 @@ export type InjectedWallet = BaseWallet<
   InjectedWalletBehaviour
 >;
 
+// ----- Instant Link Wallet ----- //
+
+export type InstantLinkWalletMetadata = BaseWalletMetadata & {
+  contractId: string;
+};
+
+export type InstantLinkWalletBehaviour = BaseWalletBehaviour & {
+  networkId: string;
+  switchAccount(id: string): Promise<void>;
+  getAccountId(): string;
+  isSignedIn: () => Promise<boolean>;
+  getAvailableBalance: () => Promise<BN>;
+};
+
+export type InstantLinkWallet = BaseWallet<
+  "instant-link",
+  InstantLinkWalletMetadata,
+  InstantLinkWalletBehaviour
+>;
+
 // ----- Hardware Wallet ----- //
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
@@ -216,12 +237,14 @@ export type BridgeWallet = BaseWallet<
 export type WalletMetadata =
   | BrowserWalletMetadata
   | InjectedWalletMetadata
+  | InstantLinkWalletMetadata
   | HardwareWalletMetadata
   | BridgeWalletMetadata;
 
 export type Wallet =
   | BrowserWallet
   | InjectedWallet
+  | InstantLinkWallet
   | HardwareWallet
   | BridgeWallet;
 

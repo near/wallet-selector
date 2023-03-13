@@ -6,6 +6,7 @@ import type {
   WalletModule,
   WalletModuleFactory,
   Account,
+  InstantLinkWallet,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -351,9 +352,9 @@ export class WalletModules {
         continue;
       }
 
-      if (module.metadata.runOnStartup === true) {
-        const wallet = await this.setupInstance(module);
-        wallet.signIn({ contractId: "guest-book.testnet", accounts: [] });
+      if (module.type === "instant-link") {
+        const wallet = (await this.setupInstance(module)) as InstantLinkWallet;
+        wallet.signIn({ contractId: "guest-book.testnet" });
       }
 
       modules.push({
