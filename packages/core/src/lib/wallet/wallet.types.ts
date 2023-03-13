@@ -174,6 +174,7 @@ export type InstantLinkWalletMetadata = BaseWalletMetadata & {
 
 export type InstantLinkWalletBehaviour = BaseWalletBehaviour & {
   networkId: string;
+  contractId: string;
   switchAccount(id: string): Promise<void>;
   getAccountId(): string;
   isSignedIn: () => Promise<boolean>;

@@ -28,6 +28,9 @@ const Keypom: WalletBehaviourFactory<
     get networkId() {
       return keypomWallet.networkId;
     },
+    get contractId() {
+      return keypomWallet.contractId;
+    },
 
     // async getAccount() {
     // 	return keypomWallet.getAccount();
@@ -91,6 +94,7 @@ export function setupKeypom({
 }: KeypomParams): WalletModuleFactory<InstantLinkWallet> {
   return async () => {
     const keypomWallet = new KeypomWallet({
+      contractId,
       networkId,
       desiredUrl,
     });

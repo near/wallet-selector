@@ -7,8 +7,15 @@ import type {
 } from "@near-wallet-selector/core";
 import type { PublicKey } from "near-api-js/lib/utils";
 
+type KeypomWalletParams = {
+  contractId: string;
+  networkId?: string;
+  desiredUrl?: string;
+};
+
 export class KeypomWallet implements InstantLinkWalletBehaviour {
   readonly networkId: string;
+  readonly contractId: string;
   private readonly near: Near;
   private readonly connection: Connection;
   private readonly desiredUrl: string;
@@ -19,9 +26,16 @@ export class KeypomWallet implements InstantLinkWalletBehaviour {
   private publicKey?: PublicKey;
   private keyPair?: KeyPair;
 
-  public constructor({ networkId = "mainnet", desiredUrl = "/keypom-trial/" }) {
+  public constructor({
+    contractId,
+    networkId = "mainnet",
+    desiredUrl = "/keypom-trial/",
+  }: KeypomWalletParams) {
     // eslint-disable-next-line no-console
     console.log(networkId, desiredUrl);
+    this.networkId = networkId;
+    this.desiredUrl = desiredUrl;
+    this.contractId = contractId;
   }
 
   getAccountId(): string {
