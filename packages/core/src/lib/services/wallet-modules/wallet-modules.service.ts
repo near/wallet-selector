@@ -351,6 +351,11 @@ export class WalletModules {
         continue;
       }
 
+      if (module.metadata.runOnStartup === true) {
+        const wallet = await this.setupInstance(module);
+        wallet.signIn({ contractId: "guest-book.testnet", accounts: [] });
+      }
+
       modules.push({
         id: module.id,
         type: module.type,
