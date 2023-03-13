@@ -388,6 +388,15 @@ export class WalletModules {
       }
     });
 
+    for (let i = 0; i < this.modules.length; i++) {
+      if (this.modules[i].type === "instant-link") {
+        const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
+        if (wallet.metadata.runOnStartup === true) {
+          wallet.signIn({ contractId: wallet.contractId });
+        }
+      }
+    }
+
     const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
 
