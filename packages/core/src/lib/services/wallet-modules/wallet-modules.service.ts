@@ -352,7 +352,9 @@ export class WalletModules {
         continue;
       }
 
-      if (module.type === "instant-link") {
+      const { selectedWalletId } = this.store.getState();
+
+      if (module.type === "instant-link" && selectedWalletId === null) {
         const wallet = (await this.setupInstance(module)) as InstantLinkWallet;
         if (wallet.metadata.runOnStartup === true) {
           wallet.signIn({ contractId: wallet.contractId });
