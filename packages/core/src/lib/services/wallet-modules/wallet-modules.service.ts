@@ -188,7 +188,12 @@ export class WalletModules {
       return;
     }
 
+    // eslint-disable-next-line no-console
+    console.log("===========", "1");
+
     if (selectedWalletId && selectedWalletId !== walletId) {
+      // eslint-disable-next-line no-console
+      console.log("===========", "2", selectedWalletId, walletId);
       await this.signOutWallet(selectedWalletId);
     }
 
@@ -352,15 +357,6 @@ export class WalletModules {
         continue;
       }
 
-      const { selectedWalletId } = this.store.getState();
-
-      if (module.type === "instant-link" && selectedWalletId === null) {
-        const wallet = (await this.setupInstance(module)) as InstantLinkWallet;
-        if (wallet.metadata.runOnStartup === true) {
-          wallet.signIn({ contractId: wallet.contractId });
-        }
-      }
-
       modules.push({
         id: module.id,
         type: module.type,
@@ -382,6 +378,15 @@ export class WalletModules {
     }
 
     this.modules = modules;
+
+    this.modules.forEach(async (module) => {
+      if (module.type === "instant-link") {
+        const wallet = (await module.wallet()) as InstantLinkWallet;
+        if (wallet.metadata.runOnStartup === true) {
+          wallet.signIn({ contractId: wallet.contractId });
+        }
+      }
+    });
 
     const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
