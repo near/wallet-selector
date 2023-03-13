@@ -354,7 +354,9 @@ export class WalletModules {
 
       if (module.type === "instant-link") {
         const wallet = (await this.setupInstance(module)) as InstantLinkWallet;
-        wallet.signIn({ contractId: wallet.contractId });
+        if (wallet.metadata.runOnStartup === true) {
+          wallet.signIn({ contractId: wallet.contractId });
+        }
       }
 
       modules.push({

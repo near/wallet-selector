@@ -333,7 +333,6 @@ export function setupSender({
           "https://chrome.google.com/webstore/detail/sender-wallet/epapihdplajcdnnkdeiahlgigofloibg",
         deprecated,
         available: installed,
-        runOnStartup: true,
       },
       init: Sender,
     };

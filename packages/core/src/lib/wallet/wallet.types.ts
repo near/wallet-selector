@@ -18,7 +18,6 @@ interface BaseWalletMetadata {
   iconUrl: string;
   deprecated: boolean;
   available: boolean;
-  runOnStartup?: boolean;
 }
 
 export interface Account {
@@ -170,6 +169,7 @@ export type InjectedWallet = BaseWallet<
 
 export type InstantLinkWalletMetadata = BaseWalletMetadata & {
   contractId: string;
+  runOnStartup: boolean;
 };
 
 export type InstantLinkWalletBehaviour = BaseWalletBehaviour & {

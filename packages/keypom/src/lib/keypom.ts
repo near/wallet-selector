@@ -109,6 +109,7 @@ export function setupKeypom({
         deprecated,
         available: true,
         contractId,
+        runOnStartup: true, // check url here
       },
       init: async (config) =>
         Keypom({
