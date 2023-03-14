@@ -7,6 +7,8 @@ import vi from "../locale/vi.json";
 import hi from "../locale/hi.json";
 import ar from "../locale/ar.json";
 
+const devLanguage = "es"; // leave null or change into language code "en", "es"...
+
 const getLanguage = (languageCode: string) => {
   switch (languageCode) {
     case "en":
@@ -54,6 +56,9 @@ const findObjectPropByStringPath = (obj: any, prop: string): unknown => {
 export const translate = (path: string) => {
   let lang = window.navigator.languages ? window.navigator.languages[0] : null;
   lang = lang || window.navigator.language;
+  if (devLanguage !== null) {
+    lang = devLanguage;
+  }
 
   const languageCode = shortenLanguageCode(lang);
 
