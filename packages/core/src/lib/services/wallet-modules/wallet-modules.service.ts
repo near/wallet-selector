@@ -188,12 +188,7 @@ export class WalletModules {
       return;
     }
 
-    // eslint-disable-next-line no-console
-    console.log("===========", "1");
-
     if (selectedWalletId && selectedWalletId !== walletId) {
-      // eslint-disable-next-line no-console
-      console.log("===========", "2", selectedWalletId, walletId);
       await this.signOutWallet(selectedWalletId);
     }
 
@@ -382,8 +377,8 @@ export class WalletModules {
     for (let i = 0; i < this.modules.length; i++) {
       if (this.modules[i].type === "instant-link") {
         const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
-        if (wallet.metadata.runOnStartup === true) {
-          wallet.signIn({ contractId: wallet.contractId });
+        if (wallet.metadata.runOnStartup) {
+          await wallet.signIn({ contractId: wallet.getContractId() });
         }
       }
     }

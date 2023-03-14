@@ -4,6 +4,7 @@ import type {
   InstantLinkWallet,
   NetworkId,
 } from "@near-wallet-selector/core";
+import type BN from "bn.js";
 import icon from "./icon";
 import { KeypomWallet } from "./keypom-wallet";
 
@@ -19,8 +20,17 @@ interface KeypomInitializeOptions {
   keypomWallet: KeypomWallet;
 }
 
+export type KeypomWalletInstant = InstantLinkWallet & {
+  networkId: string;
+  getContractId(): string;
+  switchAccount(id: string): Promise<void>;
+  getAccountId(): string;
+  isSignedIn: () => Promise<boolean>;
+  getAvailableBalance: () => Promise<BN>;
+};
+
 const Keypom: WalletBehaviourFactory<
-  InstantLinkWallet,
+  KeypomWalletInstant,
   KeypomInitializeOptions
 > = async ({ logger, keypomWallet }) => {
   // return the wallet interface for wallet-selector
@@ -28,8 +38,8 @@ const Keypom: WalletBehaviourFactory<
     get networkId() {
       return keypomWallet.networkId;
     },
-    get contractId() {
-      return keypomWallet.contractId;
+    getContractId() {
+      return keypomWallet.getContractId();
     },
 
     // async getAccount() {
@@ -41,7 +51,7 @@ const Keypom: WalletBehaviourFactory<
       return keypomWallet.getAccounts();
     },
 
-    async switchAccount(id) {
+    async switchAccount(id: string) {
       return await keypomWallet.switchAccount(id);
     },
 
@@ -91,7 +101,7 @@ export function setupKeypom({
   desiredUrl,
   networkId,
   contractId,
-}: KeypomParams): WalletModuleFactory<InstantLinkWallet> {
+}: KeypomParams): WalletModuleFactory<KeypomWalletInstant> {
   return async () => {
     const keypomWallet = new KeypomWallet({
       contractId,

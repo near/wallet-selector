@@ -37,6 +37,9 @@ export class KeypomWallet implements InstantLinkWalletBehaviour {
     this.desiredUrl = desiredUrl;
     this.contractId = contractId;
   }
+  getContractId(): string {
+    return this.contractId;
+  }
 
   getAccountId(): string {
     throw new Error("Method not implemented.");

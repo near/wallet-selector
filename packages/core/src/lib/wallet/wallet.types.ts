@@ -10,7 +10,6 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type BN from "bn.js";
 
 interface BaseWalletMetadata {
   name: string;
@@ -173,12 +172,7 @@ export type InstantLinkWalletMetadata = BaseWalletMetadata & {
 };
 
 export type InstantLinkWalletBehaviour = BaseWalletBehaviour & {
-  networkId: string;
-  contractId: string;
-  switchAccount(id: string): Promise<void>;
-  getAccountId(): string;
-  isSignedIn: () => Promise<boolean>;
-  getAvailableBalance: () => Promise<BN>;
+  getContractId(): string;
 };
 
 export type InstantLinkWallet = BaseWallet<
