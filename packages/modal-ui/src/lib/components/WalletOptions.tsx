@@ -21,6 +21,16 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
+      const { selectedWalletId } = selector.store.getState();
+      if (selectedWalletId) {
+        setActiveWalletId(selectedWalletId);
+      }
+
+      const wallets = state.modules.filter(
+        (module) =>
+          !(module.type === "instant-link" && selectedWalletId !== module.id)
+      );
+
       if (selector.options.optimizeWalletOrder) {
         state.modules.sort((current, next) => {
           if (current.metadata.deprecated === next.metadata.deprecated) {
@@ -38,15 +48,10 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
           return next.metadata.available ? 1 : -1;
         });
 
-        const { selectedWalletId } = selector.store.getState();
-        if (selectedWalletId) {
-          setActiveWalletId(selectedWalletId);
-        }
-
         const moreWallets: Array<ModuleState<Wallet>> = [];
         const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
 
-        state.modules.forEach((module) => {
+        wallets.forEach((module) => {
           if (
             selector.store
               .getState()
@@ -62,9 +67,9 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
         setMoreModules(moreWallets);
       }
       if (selector.options.randomizeWalletOrder) {
-        setModules(state.modules.sort(() => Math.random() - 0.5));
+        setModules(wallets.sort(() => Math.random() - 0.5));
       } else {
-        setModules(state.modules);
+        setModules(wallets);
       }
     });
     return () => subscription.unsubscribe();
