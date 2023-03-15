@@ -381,7 +381,7 @@ export class WalletModules {
           try {
             await wallet.signIn({ contractId: wallet.getContractId() });
           } catch (err) {
-            throw new Error("Failed to sign in to wallet. " + err);
+            logger.error("Failed to sign in to wallet. " + err);
           }
         }
       }
