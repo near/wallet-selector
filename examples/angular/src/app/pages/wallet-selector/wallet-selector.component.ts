@@ -20,7 +20,6 @@ import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
-import { setupKeypom } from "@near-wallet-selector/keypom";
 import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -56,10 +55,6 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        setupKeypom({
-          contractId: CONTRACT_ID,
-          networkId: "testnet",
-        }),
         setupMyNearWallet(),
         setupLedger(),
         setupNearWallet(),

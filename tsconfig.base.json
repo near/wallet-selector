@@ -77,9 +77,6 @@
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],
-      "@near-wallet-selector/keypom": [
-        "packages/keypom/src/index.ts"
-      ],
       "@near-wallet-selector/opto-wallet": [
         "packages/opto-wallet/src/index.ts"
       ],
