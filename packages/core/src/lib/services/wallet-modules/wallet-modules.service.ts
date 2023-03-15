@@ -6,6 +6,7 @@ import type {
   WalletModule,
   WalletModuleFactory,
   Account,
+  InstantLinkWallet,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -372,6 +373,19 @@ export class WalletModules {
     }
 
     this.modules = modules;
+
+    for (let i = 0; i < this.modules.length; i++) {
+      if (this.modules[i].type === "instant-link") {
+        const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
+        if (wallet.metadata.runOnStartup) {
+          try {
+            await wallet.signIn({ contractId: wallet.getContractId() });
+          } catch (err) {
+            logger.error("Failed to sign in to wallet. " + err);
+          }
+        }
+      }
+    }
 
     const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
