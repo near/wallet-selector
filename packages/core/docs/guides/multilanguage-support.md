@@ -1,23 +1,23 @@
- #  Multilanguage support
+# Multilanguage support
 
 - Languages are detected from browser language settings.
-- If user preffered language is not supported, english is rendered as default. 
+- If user preffered language is not supported, english is rendered as default.
 
 ## Supported languages
+
 - English
-- Spanish 
+- Spanish
 - Chinese
 - Bulgarian
-- Vietnamese 
+- Vietnamese
 - Korean
 - Arabic
 - Hindi
 
-
- ## How to use
+## How to use
 
 - Language files are located in locale folder in `packages\core\src\lib\locale`
-- In order for text to be translated `translate` function should be used 
+- In order for text to be translated `translate` function should be used
   as in example below
 - Can be extended when needed following `packageName.section.translationKey`structure
 
@@ -32,7 +32,7 @@
   }
   ```
 
-- File where translated text is rendered 
+- File where translated text is rendered
 
   ```ts
   import { translate } from "@near-wallet-selector/core";
@@ -49,8 +49,8 @@
   <p>${translate("modal.wallet.whatIsAWallet")}</p>
   ```
 
-
 ## Adding new language
+
 - Language files are located in locale folder in `packages\core\src\lib\locale`
 - Files are named after ISO 639-1: two-letter language code
 - Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
@@ -65,7 +65,7 @@
   }
   ```
 
-- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts` 
+- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts`
 
   ```ts
   import en from "../locale/en.json";
@@ -87,6 +87,32 @@
   };
   ```
 
-- Supported language should be added to **Supported Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages).
+- Supported language should be added to **Supported
+  Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages)
+  .
 
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
+
+## Set custom language
+
+- In `packages\core\src\lib\translate\translate.ts` find and edit `allowOnlyLanguage` for language code which is
+  available.
+
+**Default file:**
+```ts
+import en from "../locale/en.json";
+import es from "../locale/es.json";
+
+const allowOnlyLanguage = null;
+```
+<br>
+
+##### Example for Spanish language: 
+```ts
+import en from "../locale/en.json";
+import es from "../locale/es.json";
+
+const allowOnlyLanguage = "es";
+   ```
+
+- *Note: Only languages which is already added to `packages\core\src\lib\locale` can be selected.*
