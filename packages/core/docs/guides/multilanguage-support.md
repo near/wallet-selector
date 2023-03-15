@@ -95,6 +95,7 @@
 
 ## Set custom language
 
+- This disables language detection and allows to set only one to be used. 
 - In `packages\core\src\lib\translate\translate.ts` find and edit `allowOnlyLanguage` for language code which is
   available.
 
