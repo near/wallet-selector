@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/nearfi",
-  "version": "7.9.0",
+  "version": "7.9.1",
   "description": "Nearfi package for NEAR Wallet Selector.",
   "keywords": [
     "near",
