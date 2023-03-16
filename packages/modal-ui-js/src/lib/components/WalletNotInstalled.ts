@@ -1,6 +1,7 @@
 import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { translate } from "@near-wallet-selector/core";
+import { renderWhatIsAWallet } from "./WhatIsAWallet";
 
 export function renderWalletNotInstalled(
   module: ModuleState<Wallet> & {
@@ -15,11 +16,12 @@ export function renderWalletNotInstalled(
 
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
-      <div class="nws-modal-header-wrapper"><button class="back-button"><svg width="8" height="14" viewBox="0 0 8 14"
+      <div class="nws-modal-header-wrapper"><button class="back-button" id="back-button"><svg width="8" height="14" viewBox="0 0 8 14"
             fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 13L1 7L7 1" stroke="#6494EE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             </path>
-          </svg></button>
+          </svg>
+          </button>
         <div class="nws-modal-header">
           <h3 class="middleTitle"></h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg" height="24"
               viewBox="0 0 24 24" width="24" fill="#C1C1C1">
@@ -56,6 +58,10 @@ export function renderWalletNotInstalled(
       </div>
     </div>
   `;
+
+  document.getElementById("back-button")?.addEventListener("click", () => {
+    renderWhatIsAWallet();
+  });
 
   document
     .getElementById("refresh-page-lint")

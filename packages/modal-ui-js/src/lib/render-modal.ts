@@ -178,6 +178,14 @@ function renderOptionsList(
 
   for (let i = 0; i < modules.length; i++) {
     const module = modules[i];
+
+    if (
+      modules[i].type === "instant-link" &&
+      modalState.selector.store.getState().selectedWalletId !== module.id
+    ) {
+      continue;
+    }
+
     const { name, description, iconUrl } = module.metadata;
     document.querySelector(parentClass)?.insertAdjacentHTML(
       "beforeend",

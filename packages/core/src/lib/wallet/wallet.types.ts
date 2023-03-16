@@ -164,6 +164,23 @@ export type InjectedWallet = BaseWallet<
   InjectedWalletBehaviour
 >;
 
+// ----- Instant Link Wallet ----- //
+
+export type InstantLinkWalletMetadata = BaseWalletMetadata & {
+  contractId: string;
+  runOnStartup: boolean;
+};
+
+export type InstantLinkWalletBehaviour = BaseWalletBehaviour & {
+  getContractId(): string;
+};
+
+export type InstantLinkWallet = BaseWallet<
+  "instant-link",
+  InstantLinkWalletMetadata,
+  InstantLinkWalletBehaviour
+>;
+
 // ----- Hardware Wallet ----- //
 
 export type HardwareWalletMetadata = BaseWalletMetadata;
@@ -215,12 +232,14 @@ export type BridgeWallet = BaseWallet<
 export type WalletMetadata =
   | BrowserWalletMetadata
   | InjectedWalletMetadata
+  | InstantLinkWalletMetadata
   | HardwareWalletMetadata
   | BridgeWalletMetadata;
 
 export type Wallet =
   | BrowserWallet
   | InjectedWallet
+  | InstantLinkWallet
   | HardwareWallet
   | BridgeWallet;
 
