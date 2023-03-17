@@ -22,7 +22,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
-import { translate } from "@near-wallet-selector/core";
+import { translate, allowOnlyLanguage } from "@near-wallet-selector/core";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -61,7 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
     setRoute({
       name: "WalletHome",
     });
-
+    allowOnlyLanguage("es");
     const { selectedWalletId, modules } = selector.store.getState();
     if (selectedWalletId) {
       const module = modules.find((m) => m.id === selectedWalletId);
