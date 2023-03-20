@@ -1,0 +1,58 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Повежите свој новчаник!",
+      "whatIsAWallet": "Шта је новчаник?",
+      "secureAndManage": "Обезбедите и управљајте својом дигиталном имовином.",
+      "safelyStore": "Безбедно чувајте и преносите своје криптовалуте и NFT.",
+      "logInToAny": "Пријавите се на било коју апликацију NEAR",
+      "noNeedToCreate": "Нема потребе да креирате нове рачуне или акредитиве. Повежите новчаник и спремни стe!",
+      "getAWallet": "Набавите новчаник",
+      "useAWallet": "Користите новчаник да обезбедите и управљате својим NEAR средствима и да се пријавите у било коју апликацију NEAR без потребе за корисничким именима и лозинкама.",
+      "connectionFailed": "Веза није успостављена.",
+      "connectionSuccessful": "Веза је успела.",
+      "connected": "Повезан.",
+      "connectingTo": "Повезивање на",
+      "connectingMessage": {
+        "injected": "Потврдите везу у спољном прозору",
+        "browser": "Након преусмеравања, потврдите везу у новчанику",
+        "hardware": "Потврдите везу са хладним новчаником"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "Повежите се са Ledger",
+      "makeSureYourLedger": "Уверите се да је ваш Ledger безбедно повезан и да је апликација NEAR отворена на вашем уређају",
+      "continue": "Настави",
+      "specifyHDPath": "Наведите ХД путању",
+      "enterYourPreferredHDPath": "Унесите жељену путању за ХД, а затим скенирајте све активне налоге.",
+      "scan": "Скенирајте",
+      "retry": "Покушај поново",
+      "ledgerIsNotAvailable": "Ledger  није доступан.",
+      "accessDeniedToUseLedgerDevice": "Приступ је одбијен за коришћење Ledger уређаја",
+      "noAccountsFound": "Рачуни нису пронађени",
+      "selectYourAccounts": "Изаберите Ваши  рачун",
+      "connecting1Account": "Повезивање 1 рачун",
+      "cantFindAnyAccount": "Није могуће пронаћи ниједан рачун повезан са овои Ledger. Направите нови НЕАР рачун",
+      "orConnectAnAnotherLedger": "или повежите други Ledger.",
+      "connecting": "Повезивање",
+      "ofAccounts": "рачуна",
+      "failedToAutomatically": "Аутоматско проналажење ИД-а рачуна није успело. Наведите га ручно:",
+      "overviewTheListOfAuthorized": "ППрегледајте листу овлашћених рачуна, завршите пријаву кликом на дугме испод.",
+      "finish": "Заврши"
+    },
+    "install": {
+      "youllNeedToInstall": "Мораћете да инсталирате",
+      "toContinueAfterInstalling": "да се настави. Након инсталирања",
+      "refreshThePage": "Поново учитати страницу.",
+      "open": "Отвори"
+    },
+    "qr": {
+      "copiedToClipboard": "Копирано у међуспремник",
+      "failedToCopy": "Копирање у међуспремник није успело",
+      "scanWithYourMobile": "Скенирајте помоћу мобилног уређаја",
+      "copyToClipboard": " Копирај у међуспремник",
+      "preferTheOfficial": "Преферирајте званични дијалог од",
+      "open": "Отвори"
+    }
+  }
+}
