@@ -56,7 +56,7 @@ const createSenderWallet = async (deps: MockWalletDependencies = {}) => {
 
   return {
     wallet,
-    injectedSender
+    injectedSender,
   };
 };
 
