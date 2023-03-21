@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 // https://github.com/DamonOehlman/detect-browser/blob/master/src/index.ts
 
 export type Browser =
