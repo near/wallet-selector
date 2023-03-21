@@ -10,7 +10,7 @@ import type { SignOutResponse } from "./injected-sender";
 
 declare global {
   interface Window {
-    near: InjectedSender;
+    near: InjectedSender | undefined;
   }
 }
 
@@ -68,11 +68,11 @@ describe("signIn", () => {
     // Allow `requestSignIn` to be invoked
     // getAccounts depends on window.near.getAccountId
     // so by default the mocked account would be returned.
-    window.near.getAccountId = jest.fn().mockReturnValue("");
+    window.near!.getAccountId = jest.fn().mockReturnValue("");
 
     await wallet.signIn({ contractId: "test.testnet" });
 
-    expect(window.near.requestSignIn).toHaveBeenCalled();
+    expect(window.near!.requestSignIn).toHaveBeenCalled();
   });
 });
 
@@ -83,7 +83,7 @@ describe("signOut", () => {
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signOut();
 
-    expect(window.near.signOut).toHaveBeenCalled();
+    expect(window.near!.signOut).toHaveBeenCalled();
   });
 });
 
@@ -94,7 +94,7 @@ describe("getAccounts", () => {
     await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.getAccounts();
 
-    expect(window.near.getAccountId).toHaveBeenCalled();
+    expect(window.near!.getAccountId).toHaveBeenCalled();
     expect(result).toEqual([
       { accountId: "test-account.testnet", publicKey: undefined },
     ]);
@@ -112,6 +112,6 @@ describe("signAndSendTransaction", () => {
       actions: [],
     });
 
-    expect(window.near.signAndSendTransaction).toHaveBeenCalled();
+    expect(window.near!.signAndSendTransaction).toHaveBeenCalled();
   });
 });
