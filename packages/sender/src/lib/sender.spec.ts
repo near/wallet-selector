@@ -4,15 +4,9 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { InjectedWallet } from "../../../core/src/lib/wallet";
-import type { InjectedSender, SenderEvents } from "./injected-sender";
+import type { SenderEvents, SignOutResponse } from "./injected-sender";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type { SignOutResponse } from "./injected-sender";
-
-declare global {
-  interface Window {
-    near: InjectedSender;
-  }
-}
+import { setupSender } from "./sender";
 
 const mockSenderOnWindow = () => {
   window.near = {
@@ -43,17 +37,17 @@ const mockSenderOnWindow = () => {
     ),
     requestSignTransactions: jest.fn().mockReturnValue(null),
   };
+
+  return window.near;
 };
 
 const createSenderWallet = async (deps: MockWalletDependencies = {}) => {
-  mockSenderOnWindow();
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { setupSender } = require("./sender");
+  const injectedSender = mockSenderOnWindow();
   const { wallet } = await mockWallet<InjectedWallet>(setupSender(), deps);
 
   return {
     wallet,
+    injectedSender,
   };
 };
 
@@ -63,38 +57,38 @@ afterEach(() => {
 
 describe("signIn", () => {
   it("sign into near wallet", async () => {
-    const { wallet } = await createSenderWallet();
+    const { wallet, injectedSender } = await createSenderWallet();
 
     // Allow `requestSignIn` to be invoked
     // getAccounts depends on window.near.getAccountId
     // so by default the mocked account would be returned.
-    window.near.getAccountId = jest.fn().mockReturnValue("");
+    injectedSender.getAccountId = jest.fn().mockReturnValue("");
 
     await wallet.signIn({ contractId: "test.testnet" });
 
-    expect(window.near.requestSignIn).toHaveBeenCalled();
+    expect(injectedSender.requestSignIn).toHaveBeenCalled();
   });
 });
 
 describe("signOut", () => {
   it("sign out of sender wallet", async () => {
-    const { wallet } = await createSenderWallet();
+    const { wallet, injectedSender } = await createSenderWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signOut();
 
-    expect(window.near.signOut).toHaveBeenCalled();
+    expect(injectedSender.signOut).toHaveBeenCalled();
   });
 });
 
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
-    const { wallet } = await createSenderWallet();
+    const { wallet, injectedSender } = await createSenderWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.getAccounts();
 
-    expect(window.near.getAccountId).toHaveBeenCalled();
+    expect(injectedSender.getAccountId).toHaveBeenCalled();
     expect(result).toEqual([
       { accountId: "test-account.testnet", publicKey: undefined },
     ]);
@@ -103,7 +97,7 @@ describe("getAccounts", () => {
 
 describe("signAndSendTransaction", () => {
   it("sign transaction in sender", async () => {
-    const { wallet } = await createSenderWallet();
+    const { wallet, injectedSender } = await createSenderWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signAndSendTransaction({
@@ -112,6 +106,6 @@ describe("signAndSendTransaction", () => {
       actions: [],
     });
 
-    expect(window.near.signAndSendTransaction).toHaveBeenCalled();
+    expect(injectedSender.signAndSendTransaction).toHaveBeenCalled();
   });
 });
