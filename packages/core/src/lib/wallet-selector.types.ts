@@ -6,6 +6,7 @@ import type {
 import type { ReadOnlyStore } from "./store.types";
 import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
+import type { SupportedLanguage } from "./translate/translate";
 
 export interface WalletSelectorParams {
   network: NetworkId | Network;
@@ -15,6 +16,7 @@ export interface WalletSelectorParams {
   optimizeWalletOrder?: boolean;
   allowMultipleSelectors?: boolean;
   randomizeWalletOrder?: boolean;
+  languageCode?: SupportedLanguage;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;
