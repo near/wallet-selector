@@ -13,7 +13,7 @@ const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
 const mockCoin98WalletOnWindow = () => {
   window.coin98 = {
     near: {
-      account: accountId,
+      account: "",
       signer: mock<Signer>({
         createKey: jest.fn(),
         signMessage: jest.fn().mockReturnValue({
@@ -28,7 +28,10 @@ const mockCoin98WalletOnWindow = () => {
         }),
         getPublicKey: jest.fn().mockReturnValue(publicKey),
       }),
-      connect: jest.fn().mockReturnValue(""),
+      connect: jest.fn(async () => {
+        window.coin98.near.account = accountId;
+        return "";
+      }),
       disconnect: jest.fn(),
     },
   };
@@ -36,7 +39,7 @@ const mockCoin98WalletOnWindow = () => {
   return window.coin98;
 };
 
-const createSenderWallet = async (deps: MockWalletDependencies = {}) => {
+const createCoin98Wallet = async (deps: MockWalletDependencies = {}) => {
   const injectedCoin98Wallet = mockCoin98WalletOnWindow();
   const { wallet } = await mockWallet<InjectedWallet>(
     setupCoin98Wallet(),
@@ -55,9 +58,8 @@ afterEach(() => {
 
 describe("signIn", () => {
   it("sign into coin98 wallet", async () => {
-    const { wallet, injectedCoin98Wallet } = await createSenderWallet();
+    const { wallet, injectedCoin98Wallet } = await createCoin98Wallet();
 
-    injectedCoin98Wallet.near.account = "";
     await wallet.signIn({ contractId: "test.testnet" });
 
     expect(injectedCoin98Wallet.near.connect).toHaveBeenCalled();
@@ -66,7 +68,7 @@ describe("signIn", () => {
 
 describe("signOut", () => {
   it("sign out of coin98 wallet", async () => {
-    const { wallet, injectedCoin98Wallet } = await createSenderWallet();
+    const { wallet, injectedCoin98Wallet } = await createCoin98Wallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signOut();
@@ -77,7 +79,7 @@ describe("signOut", () => {
 
 describe("getAccounts", () => {
   it("returns array of accounts", async () => {
-    const { wallet, injectedCoin98Wallet } = await createSenderWallet();
+    const { wallet, injectedCoin98Wallet } = await createCoin98Wallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.getAccounts();
@@ -89,7 +91,7 @@ describe("getAccounts", () => {
 
 describe("signAndSendTransaction", () => {
   it("sign transaction in coin98", async () => {
-    const { wallet, injectedCoin98Wallet } = await createSenderWallet();
+    const { wallet, injectedCoin98Wallet } = await createCoin98Wallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signAndSendTransaction({
@@ -104,7 +106,7 @@ describe("signAndSendTransaction", () => {
 
 describe("signAndSendTransactions", () => {
   it("sign transactions in coin98", async () => {
-    const { wallet, injectedCoin98Wallet } = await createSenderWallet();
+    const { wallet, injectedCoin98Wallet } = await createCoin98Wallet();
 
     const transactions = [
       {

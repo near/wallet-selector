@@ -41,8 +41,6 @@ const mockFinerOnWindow = () => {
         return {
           accessKey: mock<AccessKey>(),
           error: "",
-          notificationId: 0,
-          type: "sender-wallet-result" as const,
         };
       }),
       signOut: jest.fn().mockReturnValue(mock<SignOutResponse>()),
@@ -86,7 +84,7 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it("sign into sender wallet", async () => {
+  it("sign into finer wallet", async () => {
     const { wallet, injectedFiner } = await createFinerWallet();
 
     const accounts = await wallet.signIn({ contractId: "test.testnet" });
@@ -97,7 +95,7 @@ describe("signIn", () => {
 });
 
 describe("signOut", () => {
-  it("sign out of sender wallet", async () => {
+  it("sign out of finer wallet", async () => {
     const { wallet, injectedFiner } = await createFinerWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -120,7 +118,7 @@ describe("getAccounts", () => {
 });
 
 describe("signAndSendTransaction", () => {
-  it("sign transaction in sender", async () => {
+  it("sign transaction in finer", async () => {
     const { wallet, injectedFiner } = await createFinerWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -134,7 +132,7 @@ describe("signAndSendTransaction", () => {
   });
 });
 describe("signAndSendTransactions", () => {
-  it("sign transactions in sender", async () => {
+  it("sign transactions in finer", async () => {
     const { wallet, injectedFiner } = await createFinerWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
