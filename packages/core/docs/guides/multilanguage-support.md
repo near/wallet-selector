@@ -94,26 +94,6 @@
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
 
 ## Set custom language
-
-- This disables language detection and allows to set only one to be used. 
-- In `packages\core\src\lib\translate\translate.ts` find and edit `allowOnlyLanguage` for language code which is
-  available.
-
-**Default file:**
-```ts
-import en from "../locale/en.json";
-import es from "../locale/es.json";
-
-const allowOnlyLanguage = null;
-```
-<br>
-
-##### Example for Spanish language: 
-```ts
-import en from "../locale/en.json";
-import es from "../locale/es.json";
-
-const allowOnlyLanguage = "es";
-   ```
-
-- *Note: Only languages which is already added to `packages\core\src\lib\locale` can be selected.*
+- Set the `languageCode` in the [Options](./README.md#options) of `setupWalletSelector(options)`
+- This disables language detection and allows to set only one to be used.
+- The `languageCode` must be an ISO 639-1: two-letter language code from [Supported Languages](#supported-languages)
