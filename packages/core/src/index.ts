@@ -72,6 +72,6 @@ export type {
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export { waitFor, getActiveAccount, isSupportBrowser } from "./lib/helpers";
+export { waitFor, getActiveAccount, isBrowserSupported } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

@@ -99,7 +99,7 @@ const matchUserAgent = (ua: string): UserAgentMatch => {
   );
 };
 
-export const isSupportBrowser = (browers: Array<Browser>): boolean => {
+export const isBrowserSupported = (browsers: Array<Browser>): boolean => {
   if (typeof navigator === "undefined") {
     return false;
   }
@@ -113,5 +113,5 @@ export const isSupportBrowser = (browers: Array<Browser>): boolean => {
     return false;
   }
 
-  return !!browers.find((item) => item === name);
+  return !!browsers.find((item) => item === name);
 };
