@@ -3,7 +3,7 @@
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
 
-interface AccessKey {
+export interface AccessKey {
   publicKey: {
     data: Uint8Array;
     keyType: number;

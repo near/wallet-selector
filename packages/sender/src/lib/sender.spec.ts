@@ -4,15 +4,33 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { InjectedWallet } from "../../../core/src/lib/wallet";
-import type { SenderEvents, SignOutResponse } from "./injected-sender";
+import type {
+  AccessKey,
+  SenderEvents,
+  SignOutResponse,
+} from "./injected-sender";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import { setupSender } from "./sender";
+
+const accountId = "test-account.testnet";
+const transactions = [
+  {
+    signerId: accountId,
+    receiverId: "test.testnet",
+    actions: [],
+  },
+  {
+    signerId: accountId,
+    receiverId: "test.testnet",
+    actions: [],
+  },
+];
 
 const mockSenderOnWindow = () => {
   window.near = {
     isSender: true,
     callbacks: mock<SenderEvents>(),
-    getAccountId: jest.fn().mockReturnValue("test-account.testnet"),
+    getAccountId: jest.fn().mockReturnValue(""),
     getRpc: jest.fn(),
     account: jest.fn().mockReturnValue({
       connection: {
@@ -21,9 +39,15 @@ const mockSenderOnWindow = () => {
         },
       },
     }),
-    requestSignIn: jest
-      .fn()
-      .mockReturnValue({ accessKey: "accessKey", error: "" }),
+    requestSignIn: jest.fn(async () => {
+      window.near!.getAccountId = jest.fn().mockReturnValue(accountId);
+      return {
+        accessKey: mock<AccessKey>(),
+        error: "",
+        notificationId: 0,
+        type: "sender-wallet-result" as const,
+      };
+    }),
     signOut: jest.fn().mockReturnValue(mock<SignOutResponse>()),
     isSignedIn: jest.fn().mockReturnValue(true),
     remove: jest.fn(),
@@ -35,7 +59,14 @@ const mockSenderOnWindow = () => {
         response: mock<FinalExecutionOutcome>(),
       })
     ),
-    requestSignTransactions: jest.fn().mockReturnValue(null),
+    requestSignTransactions: jest.fn().mockReturnValue(
+      Promise.resolve({
+        error: undefined,
+        response: mock<Array<FinalExecutionOutcome>>(
+          new Array(transactions.length).fill({})
+        ),
+      })
+    ),
   };
 
   return window.near;
@@ -56,17 +87,13 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it("sign into near wallet", async () => {
+  it("sign into sender wallet", async () => {
     const { wallet, injectedSender } = await createSenderWallet();
 
-    // Allow `requestSignIn` to be invoked
-    // getAccounts depends on window.near.getAccountId
-    // so by default the mocked account would be returned.
-    injectedSender.getAccountId = jest.fn().mockReturnValue("");
-
-    await wallet.signIn({ contractId: "test.testnet" });
+    const accounts = await wallet.signIn({ contractId: "test.testnet" });
 
     expect(injectedSender.requestSignIn).toHaveBeenCalled();
+    expect(accounts).toEqual([{ accountId, publicKey: undefined }]);
   });
 });
 
@@ -89,9 +116,7 @@ describe("getAccounts", () => {
     const result = await wallet.getAccounts();
 
     expect(injectedSender.getAccountId).toHaveBeenCalled();
-    expect(result).toEqual([
-      { accountId: "test-account.testnet", publicKey: undefined },
-    ]);
+    expect(result).toEqual([{ accountId, publicKey: undefined }]);
   });
 });
 
@@ -101,11 +126,24 @@ describe("signAndSendTransaction", () => {
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signAndSendTransaction({
-      signerId: "test-account.testnet",
+      signerId: accountId,
       receiverId: "test.testnet",
       actions: [],
     });
 
     expect(injectedSender.signAndSendTransaction).toHaveBeenCalled();
+  });
+});
+describe("signAndSendTransactions", () => {
+  it("sign transactions in sender", async () => {
+    const { wallet, injectedSender } = await createSenderWallet();
+
+    await wallet.signIn({ contractId: "test.testnet" });
+    const result = await wallet.signAndSendTransactions({
+      transactions,
+    });
+
+    expect(injectedSender.requestSignTransactions).toHaveBeenCalled();
+    expect(result.length).toEqual(transactions.length);
   });
 });
