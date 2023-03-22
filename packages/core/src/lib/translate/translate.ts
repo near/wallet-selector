@@ -7,9 +7,6 @@ import vi from "../locale/vi.json";
 import hi from "../locale/hi.json";
 import ar from "../locale/ar.json";
 
-let forcedLang: boolean;
-let forcedLanguageCode: string;
-
 const getLanguage = (languageCode: string) => {
   switch (languageCode) {
     case "en":
@@ -33,15 +30,19 @@ const getLanguage = (languageCode: string) => {
   }
 };
 
-// leave null or change into language code "en", "es"...
-export const allowOnlyLanguage = (forcedLangCode: string) => {
-  if (forcedLangCode !== "") {
-    forcedLang = true;
-    forcedLanguageCode = forcedLangCode;
-  } else {
-    forcedLang = false;
-  }
-  return forcedLangCode;
+export type SupportedLanguage =
+  | "en"
+  | "es"
+  | "zh"
+  | "bg"
+  | "ko"
+  | "vi"
+  | "hi"
+  | "ar";
+
+let chosenLang: string;
+export const allowOnlyLanguage = (langCode: SupportedLanguage) => {
+  chosenLang = langCode;
 };
 
 // (i.e en-CA returns just en)
@@ -66,17 +67,14 @@ const findObjectPropByStringPath = (obj: any, prop: string): unknown => {
 };
 
 export const translate = (path: string) => {
-  let lang = window.navigator.languages ? window.navigator.languages[0] : null;
-  lang = lang || window.navigator.language;
-  /*if (allowOnlyLanguage !== null) {
-    lang = allowOnlyLanguage;
-  }*/
+  let browserLang = window.navigator.languages
+    ? window.navigator.languages[0]
+    : null;
+  browserLang = browserLang || window.navigator.language;
 
-  const languageCode = shortenLanguageCode(lang);
+  const languageCode = shortenLanguageCode(chosenLang || browserLang);
 
-  const selectedLanguage = forcedLang
-    ? getLanguage(forcedLanguageCode)
-    : getLanguage(languageCode);
+  const selectedLanguage = getLanguage(languageCode);
 
   const text = findObjectPropByStringPath(selectedLanguage, path);
 
