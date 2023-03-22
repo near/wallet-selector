@@ -30,6 +30,21 @@ const getLanguage = (languageCode: string) => {
   }
 };
 
+export type SupportedLanguage =
+  | "en"
+  | "es"
+  | "zh"
+  | "bg"
+  | "ko"
+  | "vi"
+  | "hi"
+  | "ar";
+
+let chosenLang: string | undefined;
+export const allowOnlyLanguage = (langCode: SupportedLanguage | undefined) => {
+  chosenLang = langCode;
+};
+
 // (i.e en-CA returns just en)
 const shortenLanguageCode = (lang: string) => {
   return lang.indexOf("-") !== -1 ? lang.split("-")[0] : lang.split("_")[0];
@@ -52,10 +67,12 @@ const findObjectPropByStringPath = (obj: any, prop: string): unknown => {
 };
 
 export const translate = (path: string) => {
-  let lang = window.navigator.languages ? window.navigator.languages[0] : null;
-  lang = lang || window.navigator.language;
+  let browserLang = window.navigator.languages
+    ? window.navigator.languages[0]
+    : null;
+  browserLang = browserLang || window.navigator.language;
 
-  const languageCode = shortenLanguageCode(lang);
+  const languageCode = shortenLanguageCode(chosenLang || browserLang);
 
   const selectedLanguage = getLanguage(languageCode);
 

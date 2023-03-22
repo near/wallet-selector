@@ -1,3 +1,5 @@
+import type { SupportedLanguage } from "./translate/translate";
+
 export type NetworkId = "mainnet" | "testnet";
 
 export interface Network {
@@ -9,6 +11,7 @@ export interface Network {
 }
 
 export interface Options {
+  languageCode: SupportedLanguage | undefined;
   network: Network;
   debug: boolean;
   optimizeWalletOrder: boolean;

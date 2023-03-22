@@ -47,6 +47,7 @@ const selector = await setupWalletSelector({
 - `optimizeWalletOrder` (`boolean?`): Enable automatic wallet order. Reorders last signed in wallet on top, then installed wallets over not installed and deprecated wallets.
 - `randomizeWalletOrder` (`boolean?`): Randomize wallets order in the `More` section of the UI.
 - `allowMultipleSelectors` (`boolean?`): Optionally allow creating new instances of wallet selector.
+- `languageCode` (`string?`): Optionally set specific ISO 639-1 two-letter language code, disables language detection based on the browser's settings.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
 

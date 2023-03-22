@@ -13,7 +13,7 @@ import type {
 } from "./modal.types";
 import { renderWhatIsAWallet } from "./components/WhatIsAWallet";
 import { renderWalletAccount } from "./components/WalletAccount";
-import { EventEmitter } from "@near-wallet-selector/core";
+import { allowOnlyLanguage, EventEmitter } from "@near-wallet-selector/core";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 export const DEFAULT_DERIVATION_PATH = "44'/397'/0'/0'/1'";
@@ -105,6 +105,7 @@ export const setupModal = (
         if (!modalState) {
           return;
         }
+        allowOnlyLanguage(modalState.selector.options.languageCode);
         renderModal();
         const selectedWalletId =
           modalState.selector.store.getState().selectedWalletId;
