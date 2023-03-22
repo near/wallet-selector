@@ -29,7 +29,7 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it.skip("sign into math wallet", async () => {
+  it.skip("sign into meteor wallet", async () => {
     const { wallet, meteorWalletSdk } = await createMeteorWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -39,7 +39,7 @@ describe("signIn", () => {
 });
 
 describe("signOut", () => {
-  it.skip("sign out of math wallet", async () => {
+  it.skip("sign out of meteor wallet", async () => {
     const { wallet, meteorWalletSdk } = await createMeteorWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -61,7 +61,7 @@ describe("getAccounts", () => {
 });
 
 describe("signAndSendTransaction", () => {
-  it.skip("sign transaction in math wallet", async () => {
+  it.skip("sign transaction in meteor wallet", async () => {
     const { wallet, meteorWalletSdk } = await createMeteorWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -76,7 +76,7 @@ describe("signAndSendTransaction", () => {
 });
 
 describe("signAndSendTransactions", () => {
-  it.skip("sign transactions in math wallet", async () => {
+  it.skip("sign transactions in meteor wallet", async () => {
     const { wallet, meteorWalletSdk } = await createMeteorWallet();
 
     const transactions = [
