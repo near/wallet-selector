@@ -35,8 +35,12 @@ const getLanguage = (languageCode: string) => {
 
 // leave null or change into language code "en", "es"...
 export const allowOnlyLanguage = (forcedLangCode: string) => {
-  forcedLang = true;
-  forcedLanguageCode = forcedLangCode;
+  if (forcedLangCode !== "") {
+    forcedLang = true;
+    forcedLanguageCode = forcedLangCode;
+  } else {
+    forcedLang = false;
+  }
   return forcedLangCode;
 };
 

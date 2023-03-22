@@ -9,6 +9,7 @@ export interface Network {
 }
 
 export interface Options {
+  languageCode: string;
   network: Network;
   debug: boolean;
   optimizeWalletOrder: boolean;

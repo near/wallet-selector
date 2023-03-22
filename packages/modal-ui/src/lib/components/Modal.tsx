@@ -61,7 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
     setRoute({
       name: "WalletHome",
     });
-    allowOnlyLanguage("es");
+    allowOnlyLanguage(selector.options.languageCode);
     const { selectedWalletId, modules } = selector.store.getState();
     if (selectedWalletId) {
       const module = modules.find((m) => m.id === selectedWalletId);
