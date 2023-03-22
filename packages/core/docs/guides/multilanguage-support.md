@@ -94,6 +94,6 @@
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
 
 ## Set custom language
-- Set the `languageCode` in the [Options](./README.md#options) of `setupWalletSelector(options)`
+- Set the `languageCode` in the [Options](../../README.md#options) of `setupWalletSelector(options)`
 - This disables language detection and allows to set only one to be used.
 - The `languageCode` must be an ISO 639-1: two-letter language code from [Supported Languages](#supported-languages)
