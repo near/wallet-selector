@@ -88,7 +88,7 @@
   ```
 
 - Supported language should be added to **Supported
-  Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages)
+  Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages) and type list
   .
 
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
