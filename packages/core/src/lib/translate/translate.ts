@@ -40,8 +40,8 @@ export type SupportedLanguage =
   | "hi"
   | "ar";
 
-let chosenLang: string;
-export const allowOnlyLanguage = (langCode: SupportedLanguage) => {
+let chosenLang: string | undefined;
+export const allowOnlyLanguage = (langCode: SupportedLanguage | undefined) => {
   chosenLang = langCode;
 };
 
