@@ -360,9 +360,10 @@ export function setupWelldoneWallet({
   deprecated = false,
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const isSupported =
-      !isMobile() && isSupportBrowser(["chrome", "edge-chromium", "opera"]);
-    if (!isSupported) {
+    const mobile = isMobile();
+    const supported = isSupportBrowser(["chrome", "edge-chromium", "opera"]);
+
+    if (mobile || !supported) {
       return null;
     }
 
