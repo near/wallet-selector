@@ -20,6 +20,7 @@ import type {
 import icon from "./icon";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
+import { isSupportBrowser } from "./isSupportBrowser";
 
 export const STORAGE_ACCOUNT = "account";
 
@@ -360,8 +361,9 @@ export function setupWelldoneWallet({
   deprecated = false,
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const mobile = isMobile();
-    if (mobile) {
+    const isSupported =
+      !isMobile() && isSupportBrowser(["chrome", "edge-chromium", "opera"]);
+    if (!isSupported) {
       return null;
     }
 
