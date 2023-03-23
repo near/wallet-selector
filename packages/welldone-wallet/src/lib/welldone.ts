@@ -10,7 +10,7 @@ import type {
   Transaction,
   Account,
 } from "@near-wallet-selector/core";
-import { isBrowserSupported, waitFor } from "@near-wallet-selector/core";
+import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
   WalletProvider,
@@ -361,7 +361,7 @@ export function setupWelldoneWallet({
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const isSupported = isBrowserSupported([
+    const isSupported = isCurrentBrowserSupported([
       "chrome",
       "edge-chromium",
       "opera",
