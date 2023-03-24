@@ -10,7 +10,7 @@ import type {
   Transaction,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
   WalletProvider,
@@ -20,7 +20,6 @@ import type {
 import icon from "./icon";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
-import { isSupportBrowser } from "./isSupportBrowser";
 
 export const STORAGE_ACCOUNT = "account";
 
@@ -361,9 +360,14 @@ export function setupWelldoneWallet({
   deprecated = false,
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const isSupported =
-      !isMobile() && isSupportBrowser(["chrome", "edge-chromium", "opera"]);
-    if (!isSupported) {
+    const mobile = isMobile();
+    const isSupported = isCurrentBrowserSupported([
+      "chrome",
+      "edge-chromium",
+      "opera",
+    ]);
+
+    if (mobile || !isSupported) {
       return null;
     }
 
