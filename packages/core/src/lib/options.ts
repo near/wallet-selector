@@ -31,6 +31,7 @@ export const resolveNetwork = (network: NetworkId | Network): Network => {
 
 export const resolveOptions = (params: WalletSelectorParams) => {
   const options: Options = {
+    languageCode: params.languageCode || undefined,
     network: resolveNetwork(params.network),
     debug: params.debug || false,
     optimizeWalletOrder: params.optimizeWalletOrder === false ? false : true,

@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/near-snap",
-  "version": "7.9.1",
+  "version": "7.9.2",
   "description": "Metamask snap to interact with Near dapps.",
   "keywords": [
     "near",

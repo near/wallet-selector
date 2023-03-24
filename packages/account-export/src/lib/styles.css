@@ -48,7 +48,8 @@
 
 .checkbox {
   position: relative;
-  display: block;
+  display: flex;
+  margin: 10px;
 }
 
 .checkbox label {
@@ -93,6 +94,7 @@
   position: absolute;
   left: 0;
   margin-left: -20px;
+  margin-top: 0px;
 }
 
 .checkbox input[type="checkbox"]:checked + label::before {
@@ -198,7 +200,9 @@
   justify-content: space-between;
   width: 100%;
   max-height: 200px;
+  min-height: 50px;
   overflow-y: auto;
+  overflow-x: hidden;
   margin: 20px 0;
 }
 
@@ -222,7 +226,6 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 15px 12px;
   border-bottom: 1px solid #313030;
 }
 
