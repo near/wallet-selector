@@ -132,32 +132,38 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
                   </div>
                 ))}
               </div>
-              <span className="account-unavailable">
-                {translate("modal.exportAccounts.selectAccounts.unavailable")}
-              </span>
-              <div className="account-selection">
-                {disabledAccounts.map(({ accountId, type, hasBalance }) => (
-                  <div className="account-selection-row" key={accountId}>
-                    <div className="checkbox">
-                      <input
-                        onChange={(e) => {
-                          onAccountSelect(accountId, e.target.checked);
-                        }}
-                        checked={selectedAccounts.includes(accountId)}
-                        type="checkbox"
-                        id={accountId}
-                        name={accountId}
-                        value={accountId}
-                        disabled
-                      />
-                      <label htmlFor={accountId} title={accountId}>
-                        <span>{accountId}</span>
-                        {getWarningLabel({ hasBalance, type })}
-                      </label>
-                    </div>
+              {disabledAccounts.length > 0 && (
+                <>
+                  <span className="account-unavailable">
+                    {translate(
+                      "modal.exportAccounts.selectAccounts.unavailable"
+                    )}
+                  </span>
+                  <div className="account-selection">
+                    {disabledAccounts.map(({ accountId, type, hasBalance }) => (
+                      <div className="account-selection-row" key={accountId}>
+                        <div className="checkbox">
+                          <input
+                            onChange={(e) => {
+                              onAccountSelect(accountId, e.target.checked);
+                            }}
+                            checked={selectedAccounts.includes(accountId)}
+                            type="checkbox"
+                            id={accountId}
+                            name={accountId}
+                            value={accountId}
+                            disabled
+                          />
+                          <label htmlFor={accountId} title={accountId}>
+                            <span>{accountId}</span>
+                            {getWarningLabel({ hasBalance, type })}
+                          </label>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
               <div className="filler" />
               <button
                 className="middleButton account-export-button"
