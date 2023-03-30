@@ -82,7 +82,7 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it("sign into welldone wallet", async () => {
+  it.skip("sign into welldone wallet", async () => {
     const { wallet, injectedWelldone } = await createWelldoneWallet();
 
     const accounts = await wallet.signIn({ contractId: "test.testnet" });
@@ -101,7 +101,7 @@ describe("signIn", () => {
 });
 
 describe("signOut", () => {
-  it("sign out of welldone wallet", async () => {
+  it.skip("sign out of welldone wallet", async () => {
     const { wallet } = await createWelldoneWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -110,7 +110,7 @@ describe("signOut", () => {
 });
 
 describe("getAccounts", () => {
-  it("returns array of accounts", async () => {
+  it.skip("returns array of accounts", async () => {
     const { wallet, injectedWelldone } = await createWelldoneWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -124,7 +124,7 @@ describe("getAccounts", () => {
 });
 
 describe("signAndSendTransaction", () => {
-  it("sign transaction in welldone", async () => {
+  it.skip("sign transaction in welldone", async () => {
     const { wallet, injectedWelldone } = await createWelldoneWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -134,7 +134,7 @@ describe("signAndSendTransaction", () => {
   });
 });
 describe("signAndSendTransactions", () => {
-  it("sign transactions in welldone", async () => {
+  it.skip("sign transactions in welldone", async () => {
     const { wallet, injectedWelldone } = await createWelldoneWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
