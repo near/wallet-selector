@@ -128,11 +128,7 @@ describe("signAndSendTransaction", () => {
     const { wallet, injectedWelldone } = await createWelldoneWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
-    await wallet.signAndSendTransaction({
-      signerId: accountId,
-      receiverId: "test.testnet",
-      actions: [],
-    });
+    await wallet.signAndSendTransaction(transactions[0]);
 
     expect(injectedWelldone.request).toHaveBeenCalledTimes(3);
   });
