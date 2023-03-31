@@ -6,7 +6,7 @@
       "secureAndManage": "Osigurajte i upravljajte svojom digitalnom imovinom.",
       "safelyStore": "Sigurno pohranite i prebacite svoj crypto i NFT-eve.",
       "logInToAny": " Prijavite se u bilo koju NEAR aplikaciju",
-      "noNeedToCreate": "Nema potrebe za stvaranjem novih računa ili korisničkih podataka. Spojite svoj crypto novčanik i spremni ste!",
+      "noNeedToCreate": "Nema potrebe za stvaranjem novih naloga ili korisničkih podataka. Spojite svoj crypto novčanik i spremni ste!",
       "getAWallet": "Otvorite crypto novčanik",
       "useAWallet": "Koristite crypto novčanik da biste osigurali i upravljali svojom NEAR imovinom, te se prijavite u bilo koju NEAR aplikaciju bez korisničkog imena i lozinke.",
       "connectionFailed": "Neuspješno povezivanje.",
@@ -16,7 +16,8 @@
       "connectingMessage": {
         "injected": "Potvrdite vezu u eksternom prozoru",
         "browser": "Nakon redirekcije, potvrdite vezu u novčaniku",
-        "hardware": "Potvrdite vezu hardverskim novčanikom"
+        "hardware": "Potvrdite vezu sa novčanikom",
+        "bridge": "Potvrdite vezu u novčaniku"
       }
     },
     "ledger": {
@@ -24,18 +25,18 @@
       "makeSureYourLedger": "Osigurajte sigurnu vezu s hardverskim novčanikom, te da je NEAR aplikacija otvorena na vašem uređaju",
       "continue": "Nastavite",
       "specifyHDPath": "Specificirajte HD putanju",
-      "enterYourPreferredHDPath": "Upišite preferiranu HD putanju, zatim skenirajte aktivne račune.",
+      "enterYourPreferredHDPath": "Upišite preferiranu HD putanju, zatim skenirajte aktivne naloge",
       "scan": "Skenirajte",
       "retry": "Pokušajte ponovno",
       "ledgerIsNotAvailable": "Hardverski novčanik nije dostupan.",
       "accessDeniedToUseLedgerDevice": "Odbijen pristup za korištenjem hardverskog novčanika",
-      "noAccountsFound": "Računi nisu pronađeni",
-      "selectYourAccounts": "Odaberite svoje račune",
-      "connecting1Account": "Povezivanje 1 računa",
-      "cantFindAnyAccount": "Nije moguće pronaći niti jedan račun povezan s ovim hardverskim novčanikom. Molimo vas, stvorite novi NEAR račun",
+      "noAccountsFound": "Nalozi nisu pronađeni",
+      "selectYourAccounts": "Odaberite svoje naloge",
+      "connecting1Account": "Povezivanje 1 naloga",
+      "cantFindAnyAccount": "Nije moguće pronaći niti jedan račun povezan s ovim hardverskim novčanikom. Molimo vas, stvorite novi NEAR nalog",
       "orConnectAnAnotherLedger": "Ili povežite drugi hardverski novčanik.",
       "connecting": "Povezivanje",
-      "ofAccounts": "računa",
+      "ofAccounts": "naloga",
       "failedToAutomatically": "Neuspješno automatsko pronalaženje ID računa. Unesite ručno:",
       "overviewTheListOfAuthorized": "Pregledajte popis odobrenih računa, završite prijavu pritiskom na niže prikazani gumb.",
       "finish": "Završite"
@@ -53,6 +54,45 @@
       "copyToClipboard": " Kopirajte u međuspremnik",
       "preferTheOfficial": "Odaberite službeni dijalog",
       "open": "Otvorite"
+    },
+    "exportAccounts": {
+      "chooseAWallet": "Odaberi Wallet",
+      "transferYourAccounts": "Prenesi svoje račune",
+      "selectAWallet": "Odaberite wallet koji odgovara vašim potrebama i podržava vaše povezane račune.",
+      "selectYourAccounts": "Odaberi svoje račune",
+      "afterDecide": "Nakon što odlučite koji wallet koristite, možete odabrati koje račune želite prebaciti.",
+      "disclaimer": "Nećete moći prebaciti račune koji nisu nikada bili korišteni na NEAR-u.",
+      "warning": "ne podržava izvoz računa u ovom trenutku. Molimo odaberite drugi wallet.",
+      "walletTypes": {
+        "hardware": "Hardware Wallet",
+        "browser": "Browser Wallet",
+        "injected": "Wallet Extension",
+        "bridge": "Bridge Wallet",
+        "mobile": "Mobile Wallet"
+      },
+      "selectAccounts": {
+        "title": "Odaberi račune za prijenos",
+        "button": "Generiraj lozinku",
+        "deselectAll": "Makni odabir sa svih",
+        "selectAll": "Odaberi sve",
+        "unavailable": "Prijenos nije dostupan",
+        "error": "Račun ne postoji",
+        "warningLedger": "Potrebna ledger podrška",
+        "noBalance": "Račun nema sredstava"
+      },
+      "getPassphrase": {
+        "title": "Kopiraj privremenu lozinku",
+        "desc": "Bit će potrebno unijeti ovu lozinku na početku izvoza računa na drugi wallet.",
+        "button": "Nastavi",
+        "label": "Klikni za kopiju",
+        "checkLabel": "Kopirao sam ili zapisao lozinku"
+      },
+      "complete": {
+        "title": "Završi prijenos",
+        "descOne": "You will now be redirected to the wallet you selected to complete the transfer.",
+        "descTwo": "Kada je unos s odabranog walleta završen, pritisnite gumb da biste završili prijenos.",
+        "button": "Završi"
+      }
     }
   }
 }

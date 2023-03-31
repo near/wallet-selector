@@ -16,7 +16,8 @@
       "connectingMessage": {
         "injected": "Potrdite povezavo v oknu razširitve",
         "browser": "Po preusmeritvi potrdite povezavo v denarnici",
-        "hardware": "Potrdite povezavo s hladno denarnico"
+        "hardware": "Potrdite povezavo s hladno denarnico",
+        "bridge": "Potrdite povezavo v denarnici"
       }
     },
     "ledger": {
@@ -53,6 +54,45 @@
       "copyToClipboard": " Kopirajte v podložni mapi",
       "preferTheOfficial": "Preferirajte uradno pogovorno okno",
       "open": "Odprite"
+    },
+    "exportAccounts": {
+      "chooseAWallet": "Izberite denarnico",
+      "transferYourAccounts": "Prenesite svoje račune",
+      "selectAWallet": "Izberite denarnico, ki ustreza vašim potrebam in podpira vaše povezane račune.",
+      "selectYourAccounts": "Izberite vaši računi",
+      "afterDecide": "Ko se odločite za denarnico, lahko izberete, katere račune želite prenesti.",
+      "disclaimer": "Ne boste mogli prenesti Računov, ki nikoli niso bili financirani ali uporabljeni na NEAR.",
+      "warning": "trenutno ne podpira izvoza računa. Izberite drugo denarnico",
+      "walletTypes": {
+        "hardware": "Hladna denarnica",
+        "browser": "Denarnica brskalnika",
+        "injected": "Razširitev za denarnico",
+        "bridge": "Bridge denarnica",
+        "mobile": "Mobilna denarnica"
+      },
+      "selectAccounts": {
+        "title": "Izberite računi za prenos.",
+        "button": "Pridobite geslo",
+        "deselectAll": "Prekliči izbiro vseh",
+        "selectAll": "Izberi vse",
+        "unavailable": "Prenos ni na voljo",
+        "error": "Račun ne obstaja",
+        "warningLedger": "Potrebna je podpora za Ledger",
+        "noBalance": "Račun ni financiran"
+      },
+      "getPassphrase": {
+        "title": "Kopiraj začasno geslo",
+        "desc": "To geslo boste morali vnesti, ko boste začeli izvažati svoje račune v drugo denarnico.",
+        "button": "Nadaljujte",
+        "label": "Kliknite za kopiranje",
+        "checkLabel": "Geslo sem kopiral ali zapisal"
+      },
+      "complete": {
+        "title": "Dokončajte prenos",
+        "descOne": "Zdaj boste preusmerjeni v denarnico, ki ste jo izbrali za dokončanje prenosa.",
+        "descTwo": "Ko je uvozni del postopka končan iz izbrane denarnice, pritisnite gumb za dokončanje postopka prenosa.",
+        "button": "Končajte"
+      }
     }
   }
 }
