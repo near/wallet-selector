@@ -91,7 +91,7 @@
     "@meteorwallet/sdk": "^0.6.0",
     "@nightlylabs/connect-near": "0.0.15",
     "@walletconnect/qrcode-modal": "2.0.0-alpha.20",
-    "@walletconnect/sign-client": "2.1.4",
+    "@walletconnect/sign-client": "2.5.2",
     "better-sqlite3": "^8.1.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
