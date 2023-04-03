@@ -1,6 +1,6 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
-import QRCodeModal from "@walletconnect/qrcode-modal";
+import { Web3Modal } from "@web3modal/standalone";
 import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
@@ -41,15 +41,29 @@ class WalletConnectClient {
     this.client.once(event, callback);
   }
 
-  async connect(params: EngineTypes.ConnectParams, qrCodeModal: boolean) {
+  async connect(
+    params: EngineTypes.ConnectParams,
+    qrCodeModal: boolean,
+    projectId: string,
+    chainId: string
+  ) {
+    const web3Modal = new Web3Modal({
+      walletConnectVersion: 2,
+      projectId,
+      standaloneChains: [chainId],
+    });
+
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
       this.client
         .connect(params)
         .then(({ uri, approval }) => {
           if (uri) {
             if (qrCodeModal) {
-              QRCodeModal.open(uri, () => {
-                reject(new Error("User cancelled pairing"));
+              web3Modal.openModal({ uri, standaloneChains: [chainId] });
+              web3Modal.subscribeModal(({ open }) => {
+                if (!open) {
+                  reject(new Error("User cancelled pairing"));
+                }
               });
             } else {
               this.emitter.emit("uriChanged", { uri });
@@ -59,7 +73,7 @@ class WalletConnectClient {
           approval()
             .then(resolve)
             .catch(reject)
-            .finally(() => QRCodeModal.close());
+            .finally(() => web3Modal.closeModal());
         })
         .catch(reject);
     });
