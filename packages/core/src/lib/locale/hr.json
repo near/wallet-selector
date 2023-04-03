@@ -33,12 +33,12 @@
       "noAccountsFound": "Nalozi nisu pronađeni",
       "selectYourAccounts": "Odaberite svoje naloge",
       "connecting1Account": "Povezivanje 1 naloga",
-      "cantFindAnyAccount": "Nije moguće pronaći niti jedan račun povezan s ovim hardverskim novčanikom. Molimo vas, stvorite novi NEAR nalog",
+      "cantFindAnyAccount": "Nije moguće pronaći niti jedan nalog povezan s ovim hardverskim novčanikom. Molimo vas, kreirajte novi NEAR nalog",
       "orConnectAnAnotherLedger": "Ili povežite drugi hardverski novčanik.",
       "connecting": "Povezivanje",
       "ofAccounts": "naloga",
-      "failedToAutomatically": "Neuspješno automatsko pronalaženje ID računa. Unesite ručno:",
-      "overviewTheListOfAuthorized": "Pregledajte popis odobrenih računa, završite prijavu pritiskom na niže prikazani gumb.",
+      "failedToAutomatically": "Neuspješno automatsko pronalaženje ID naloga. Unesite ručno:",
+      "overviewTheListOfAuthorized": "Pregledajte popis odobrenih naloga, završite prijavu pritiskom na niže prikazani gumb.",
       "finish": "Završite"
     },
     "install": {
@@ -57,12 +57,12 @@
     },
     "exportAccounts": {
       "chooseAWallet": "Odaberi Wallet",
-      "transferYourAccounts": "Prenesi svoje račune",
-      "selectAWallet": "Odaberite wallet koji odgovara vašim potrebama i podržava vaše povezane račune.",
-      "selectYourAccounts": "Odaberi svoje račune",
+      "transferYourAccounts": "Prenesi svoje naloge",
+      "selectAWallet": "Odaberite wallet koji odgovara vašim potrebama i podržava vaše povezane naloge.",
+      "selectYourAccounts": "Odaberi svoje naloge",
       "afterDecide": "Nakon što odlučite koji wallet koristite, možete odabrati koje račune želite prebaciti.",
-      "disclaimer": "Nećete moći prebaciti račune koji nisu nikada bili korišteni na NEAR-u.",
-      "warning": "ne podržava izvoz računa u ovom trenutku. Molimo odaberite drugi wallet.",
+      "disclaimer": "Nećete moći prebaciti naloge koji nisu nikada bili korišteni na NEAR-u.",
+      "warning": "ne podržava izvoz naloga u ovom trenutku. Molimo odaberite drugi wallet.",
       "walletTypes": {
         "hardware": "Hardware Wallet",
         "browser": "Browser Wallet",
@@ -71,18 +71,18 @@
         "mobile": "Mobile Wallet"
       },
       "selectAccounts": {
-        "title": "Odaberi račune za prijenos",
+        "title": "Odaberi naloge za prijenos",
         "button": "Generiraj lozinku",
         "deselectAll": "Makni odabir sa svih",
         "selectAll": "Odaberi sve",
         "unavailable": "Prijenos nije dostupan",
-        "error": "Račun ne postoji",
+        "error": "Nalog ne postoji",
         "warningLedger": "Potrebna ledger podrška",
-        "noBalance": "Račun nema sredstava"
+        "noBalance": "Nalog nema sredstava"
       },
       "getPassphrase": {
         "title": "Kopiraj privremenu lozinku",
-        "desc": "Bit će potrebno unijeti ovu lozinku na početku izvoza računa na drugi wallet.",
+        "desc": "Bit će potrebno unijeti ovu lozinku na početku izvoza naloga na drugi wallet.",
         "button": "Nastavi",
         "label": "Klikni za kopiju",
         "checkLabel": "Kopirao sam ili zapisao lozinku"
