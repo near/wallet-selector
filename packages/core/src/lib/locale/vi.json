@@ -48,10 +48,10 @@
         "open": "Mở"
       },
       "qr": {
-        "copiedToClipboard": "Đã sao chép vào clipboard(bảng tạm)",
-        "failedToCopy": "Sao chép vào clipboard(bảng tạm) thất bại",
+        "copiedToClipboard": "Đã sao chép vào bảng ghi tạm",
+        "failedToCopy": "Sao chép vào bảng ghi tạm thất bại",
         "scanWithYourMobile": "Quét với điện thoại của bạn",
-        "copyToClipboard": " Sao chép vào clipboard(bảng tạm)",
+        "copyToClipboard": " Sao chép vào bảng ghi tạm",
         "preferTheOfficial": "Dialogue chính thức của",
         "open": "Mở"
       }
