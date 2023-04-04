@@ -51,6 +51,7 @@
     "build:my-near-wallet": "nx run-many --target=build --projects=my-near-wallet --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
     "build:neth": "nx run-many --target=build --projects=neth --configuration=production",
+    "build:fastauth-metamask": "nx run-many --target=build --projects=fastauth-metamask --configuration=production",
     "build:nearfi": "nx run-many --target=build --projects=nearfi --configuration=production",
     "build:nightly": "nx run-many --target=build --projects=nightly --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
