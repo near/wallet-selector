@@ -45,9 +45,14 @@ const selector = await setupWalletSelector({
 });
 ```
 
+## Wallet Connect Configuration
+
+Project ID is required for wallet connect, please obtain it from [walletconnect.ocm](https://walletconnect.com/)
+
+
 ## Options
 
-- `projectId` (`string`): Project ID required to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/cloud/relay#project-id).
+- `projectId` (`string`): Project ID is `required` to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/cloud/relay#project-id).
 - `metadata` (`object`): Metadata used to provide context of the dApp to the connected wallet. More details can be found [here](https://docs.walletconnect.com/2.0/specs/clients/core/pairing/data-structures#metadata).
 - `chainId` (`string?`): Chain ID for requests. Defaults to `"near:<networkId>` unless using custom network configuration.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
