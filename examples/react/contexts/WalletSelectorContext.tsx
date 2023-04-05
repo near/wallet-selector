@@ -22,7 +22,7 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useMemo
+  useMemo,
 } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
@@ -166,9 +166,7 @@ export const WalletSelectorContextProvider: React.FC<{
   }
 
   return (
-    <WalletSelectorContext.Provider
-      value={walletSelectorContextValue}
-    >
+    <WalletSelectorContext.Provider value={walletSelectorContextValue}>
       {children}
     </WalletSelectorContext.Provider>
   );
