@@ -48,57 +48,12 @@
         "open": "Mở"
       },
       "qr": {
-        "copiedToClipboard": "Đã sao chép vào bảng ghi tạm",
-        "failedToCopy": "Sao chép vào bảng ghi tạm thất bại",
+        "copiedToClipboard": "Đã sao chép vào clipboard(bảng tạm)",
+        "failedToCopy": "Sao chép vào clipboard(bảng tạm) thất bại",
         "scanWithYourMobile": "Quét với điện thoại của bạn",
-        "copyToClipboard": " Sao chép vào bảng ghi tạm",
+        "copyToClipboard": " Sao chép vào clipboard(bảng tạm)",
         "preferTheOfficial": "Dialogue chính thức của",
         "open": "Mở"
-      },
-      "exportAccounts": {
-        "chooseAWallet": "Chọn ví",
-        "transferYourAccounts": "Chuyển tài khoản",
-        "selectAWallet": "Chọn ví phù hợp với nhu cầu của bạn, ví được chọn cần hỗ trợ các tài khoản đang sử dụng.",
-        "selectYourAccounts": "Chọn tài khoản",
-        "afterDecide": "Sau khi chọn được tài khoản bạn có chuyển.",
-        "disclaimer": "Bạn không thể chuyển tài khoản nếu tài khoản đó chưa được nhận tiền hoặc chưa phát sinh giao dịch trên NEAR.",
-        "warning": "không hỗ trợ xuất tài khoản. Vui lòng chọn ví khác.",
-        "walletTypes": {
-          "hardware": "Ví lạnh",
-          "browser": "Ví trình duyệt",
-          "injected": "Ví tiện ích mở rộng",
-          "bridge": "Ví Cầu",
-          "mobile": "Ví Mobile"
-        },
-        "selectAccounts": {
-          "title": "Chọn tài khoản để chuyển",
-          "button": "Lấy cụm mật khẩu",
-          "deselectAll": "Bỏ chọn tất cả",
-          "selectAll": "Chọn tất cả",
-          "unavailable": "Chuyển không khả dụng",
-          "error": "Tài khoản không tồn tại",
-          "warningLedger": "Yêu cầu hỗ trợ Ledger",
-          "noBalance": "Tài khoản trống"
-        },
-        "getPassphrase": {
-          "title": "Sao chép mật khẩu tạm thời",
-          "desc": "Bạn sẽ cần nhập mật khẩu khi bắt đầu xuất các khoản tới ví khác.",
-          "button": "Tiếp tục",
-          "label": "Bấm để sao chép",
-          "checkLabel": "Tôi đã chép hoặc ghi lại mật khẩu"
-        },
-        "complete": {
-          "title": "Hoàn thành chuyển",
-          "descOne": "Bạn sẽ được chuyển hướng tới tài khoản đã chọn để hoàn tất quá trình.",
-          "descTwo": "Sau khi nhập, nhấn nút để hoàn tất quy trình chuyển.",
-          "button": "Hoàn thành"
-        }
-      }
-    },
-    "component": {
-      "clickToCopy": {
-        "label": "Đã sao chép",
-        "tooltip": "Bấm để sao chép"
       }
     }
   }
