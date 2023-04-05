@@ -17,7 +17,13 @@ import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import type { ReactNode } from "react";
-import React, { useCallback, useContext, useEffect, useState, useMemo } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useMemo
+} from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
 import { setupNeth } from "@near-wallet-selector/neth";
@@ -147,13 +153,13 @@ export const WalletSelectorContextProvider: React.FC<{
 
   const walletSelectorContextValue = useMemo<WalletSelectorContextValue>(
     () => ({
-        selector: selector!,
-        modal: modal!,
-        accounts,
-        accountId: accounts.find((account) => account.active)?.accountId || null,
+      selector: selector!,
+      modal: modal!,
+      accounts,
+      accountId: accounts.find((account) => account.active)?.accountId || null,
     }),
     [selector, modal, accounts]
-);
+  );
 
   if (loading) {
     return <Loading />;
