@@ -17,7 +17,7 @@ import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import type { ReactNode } from "react";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState, useMemo } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
 import { setupNeth } from "@near-wallet-selector/neth";
@@ -51,6 +51,7 @@ export const WalletSelectorContextProvider: React.FC<{
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
@@ -108,6 +109,7 @@ export const WalletSelectorContextProvider: React.FC<{
 
     setSelector(_selector);
     setModal(_modal);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -141,23 +143,25 @@ export const WalletSelectorContextProvider: React.FC<{
       subscription.unsubscribe();
       onHideSubscription.remove();
     };
-  }, [selector]);
+  }, [selector, modal]);
 
-  if (!selector || !modal) {
+  const walletSelectorContextValue = useMemo<WalletSelectorContextValue>(
+    () => ({
+        selector: selector!,
+        modal: modal!,
+        accounts,
+        accountId: accounts.find((account) => account.active)?.accountId || null,
+    }),
+    [selector, modal, accounts]
+);
+
+  if (loading) {
     return <Loading />;
   }
 
-  const accountId =
-    accounts.find((account) => account.active)?.accountId || null;
-
   return (
     <WalletSelectorContext.Provider
-      value={{
-        selector,
-        modal,
-        accounts,
-        accountId,
-      }}
+      value={walletSelectorContextValue}
     >
       {children}
     </WalletSelectorContext.Provider>
