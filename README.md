@@ -179,6 +179,10 @@ const modal = setupModal(selector, {
 });
 ```
 
+## Wallet Package Documentation
+
+Each wallet package contains its own `README` document, please refer inside the [packages folder](https://github.com/near/wallet-selector/tree/main/packages) for extra information.
+
 ## Contributing
 
 Contributors may find the [`examples`](./examples) directory useful as it provides a quick and consistent way to manually test new changes and/or bug fixes.
