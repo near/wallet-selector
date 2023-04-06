@@ -92,7 +92,7 @@
     "@nightlylabs/connect-near": "0.0.15",
     "@walletconnect/sign-client": "2.5.2",
     "@web3modal/standalone": "^2.2.2",
-    "better-sqlite3": "^8.1.0",
+    "better-sqlite3": "^8.2.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "bs58": "^5.0.0",
