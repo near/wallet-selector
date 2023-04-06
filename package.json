@@ -105,7 +105,7 @@
     "near-api-js": "^1.1.0",
     "near-seed-phrase": "^0.2.0",
     "next": "12.2.3",
-    "ngx-deploy-npm": "^4.3.1",
+    "ngx-deploy-npm": "^4.3.10",
     "qrcode": "^1.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
