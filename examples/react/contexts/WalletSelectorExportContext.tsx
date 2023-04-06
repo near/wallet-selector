@@ -48,7 +48,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const [importSelector, setSelector] = useState<WalletSelector | null>(null);
-  const [ExportModal, setModal] = useState<WalletSelectorModal | null>(null);
+  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -138,12 +138,12 @@ export const ExportAccountSelectorContextProvider: React.FC<{
 
   const exportWalletSelectorContextValue = useMemo<ExportAccountSelectorContextValue>(
     () => ({
-      selector,
+      importSelector,
       modal,
       accounts,
       accountId: accounts.find((account) => account.active)?.accountId || null,
     }),
-    [selector, modal, accounts]
+    [importSelector, modal, accounts]
   );
 
   if (loading) {
