@@ -56,15 +56,15 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
+    const publicKey = await _state.wallet.near.signer.getPublicKey(
+      accountId,
+      options.network.networkId
+    );
+
     return [
       {
-        accountId: _state.wallet.near.account,
-        publicKey: (
-          await _state.wallet.near.signer.getPublicKey(
-            accountId,
-            options.network.networkId
-          )
-        ).toString(),
+        accountId,
+        publicKey: publicKey ? publicKey.toString() : undefined,
       },
     ];
   };

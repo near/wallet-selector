@@ -3,7 +3,7 @@
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
 
-interface AccessKey {
+export interface AccessKey {
   publicKey: {
     data: Uint8Array;
     keyType: number;
@@ -18,7 +18,7 @@ interface RequestSignInResponse {
   type: "sender-wallet-result";
 }
 
-type SignOutResponse = true | { error: string | { type: string } };
+export type SignOutResponse = true | { error: string | { type: string } };
 
 interface RpcInfo {
   explorerUrl: string;
@@ -74,7 +74,7 @@ interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
-interface FunctionCallError {
+export interface FunctionCallError {
   error: {
     index: number;
     kind: object;
@@ -85,7 +85,7 @@ interface FunctionCallError {
 }
 
 // Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
-interface SignAndSendTransactionResponse {
+export interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
@@ -112,7 +112,7 @@ interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-interface SenderEvents {
+export interface SenderEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;

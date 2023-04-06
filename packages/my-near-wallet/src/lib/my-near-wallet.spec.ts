@@ -98,7 +98,7 @@ describe("getAccounts", () => {
 
 describe("signAndSendTransaction", () => {
   // TODO: Figure out why imports to core are returning undefined.
-  it.skip("signs and sends transaction", async () => {
+  it("signs and sends transaction", async () => {
     const { wallet, walletConnection, account } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -117,6 +117,30 @@ describe("signAndSendTransaction", () => {
       receiverId: "guest-book.testnet",
     });
     expect(result).toEqual(null);
+  });
+});
+
+describe("verifyOwner", () => {
+  it("verifies owner", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    const replace = window.location.replace;
+
+    await wallet.signIn({ contractId: "test.testnet" });
+
+    Object.defineProperty(window, "location", {
+      value: { replace: jest.fn() },
+    });
+
+    const result = await wallet.verifyOwner({
+      message: "message",
+      callbackUrl: "http://localhost",
+    });
+
+    expect(result).toBe(undefined);
+    expect(window.location.replace).toHaveBeenCalled();
+
+    window.location.replace = replace;
   });
 });
 

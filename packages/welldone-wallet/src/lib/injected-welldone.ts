@@ -16,7 +16,7 @@ export interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
-interface RequestParams {
+export interface RequestParams {
   jsonrpc?: "2.0";
   id?: number;
   method: string;
