@@ -22,7 +22,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   options,
   provider,
 }) => {
-  // Initialise wallet-sepecific client(s) here.
+  // Initialise wallet-specific client(s) here.
   
   return {
     async signIn({ contractId, methodNames }) {
