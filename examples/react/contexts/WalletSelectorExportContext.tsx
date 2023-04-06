@@ -136,15 +136,17 @@ export const ExportAccountSelectorContextProvider: React.FC<{
     return () => subscription.unsubscribe();
   }, [importSelector]);
 
-  const exportWalletSelectorContextValue = useMemo<ExportAccountSelectorContextValue>(
-    () => ({
-      importSelector,
-      modal,
-      accounts,
-      accountId: accounts.find((account) => account.active)?.accountId || null,
-    }),
-    [importSelector, modal, accounts]
-  );
+  const exportWalletSelectorContextValue =
+    useMemo<ExportAccountSelectorContextValue>(
+      () => ({
+        importSelector,
+        modal,
+        accounts,
+        accountId:
+          accounts.find((account) => account.active)?.accountId || null,
+      }),
+      [importSelector, modal, accounts]
+    );
 
   if (loading) {
     return <Loading />;
