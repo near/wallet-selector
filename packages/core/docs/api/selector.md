@@ -12,6 +12,7 @@
 - `debug` (`boolean`): Whether internal logging is enabled.
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 - `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.
+- `languageCode` (`string?`): ISO 639-1 two-letter language code.
 **Description**
 
 Resolved variation of the options passed to `setupWalletSelector`.

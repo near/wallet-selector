@@ -25,7 +25,7 @@ npm install @near-wallet-selector/wallet-utils
 Then use it in your custom wallet integration:
 
 ```ts
-import { createAction } from "@near-wallet-selector/wallet-utils";
+import { createAction, signTransactions } from "@near-wallet-selector/wallet-utils";
 
 const action = createAction({
   type: "Transfer",
@@ -33,6 +33,12 @@ const action = createAction({
     deposit: "10000000000000000000000",
   },
 });
+
+const signedTransactions = await signTransactions(
+  [{ signerId, receiverId, actions }],
+  signer,
+  options.network
+);
 ```
 
 ## License

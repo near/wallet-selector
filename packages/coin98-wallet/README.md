@@ -43,6 +43,7 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `iconUrl`: (`string?`): Icon is optional. Default image point to Coin98 Wallet Logo in base64 format.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## License
 

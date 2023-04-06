@@ -42,6 +42,7 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/math-wallet-icon.png`.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 

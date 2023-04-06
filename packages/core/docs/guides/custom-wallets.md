@@ -41,6 +41,16 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       return [];
     },
 
+    async verifyOwner({ message }) {
+      const signature = provider.signMessage(message);
+
+      return {
+        ...data,
+        signature: Buffer.from(signature.signature).toString("base64"),
+        keyType: signature.publicKey.keyType,
+      }; // Promise<VerifiedOwner>
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       // Sign a list of NEAR Actions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
@@ -92,12 +102,13 @@ export function setupMyWallet({
 
 A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and accessed by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
 
-Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
+Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently five types of wallet:
 
-- `BrowserWallet`: NEAR Wallet
-- `InjectedWallet`: Sender & Math Wallet
-- `HardwareWallet`: Ledger
-- `BridgeWallet`: WalletConnect
+- `BrowserWallet`
+- `InjectedWallet`
+- `HardwareWallet`
+- `BridgeWallet`
+- `InstantLinkWallet`
 
 ## Methods
 
@@ -105,7 +116,7 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a signed in state.
 
-> Note: Hardware wallets require `derivationPaths`.
+> Note: Hardware wallets require `accounts`.
 
 ### `signOut`
 
@@ -114,6 +125,10 @@ This method handles signing out from accounts and cleanup such as event listener
 ### `getAccounts`
 
 This method returns the current list of accounts we have access to. When no accounts are returned, the wallet is considered to be in a signed out state.
+
+### `verifyOwner`
+
+Signs the message and verifies the owner. Message is not sent to blockchain.
 
 ### `signAndSendTransaction`
 
