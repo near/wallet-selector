@@ -50,7 +50,11 @@ export type SupportedLanguage =
   | "ko"
   | "vi"
   | "hi"
-  | "ar";
+  | "ar"
+  | "hr"
+  | "mk"
+  | "sl"
+  | "sr";
 
 let chosenLang: string | undefined;
 export const allowOnlyLanguage = (langCode: SupportedLanguage | undefined) => {

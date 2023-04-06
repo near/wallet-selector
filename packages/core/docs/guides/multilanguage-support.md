@@ -6,13 +6,17 @@
 ## Supported languages
 
 - English
-- Spanish
-- Chinese
-- Bulgarian
-- Vietnamese
-- Korean
 - Arabic
+- Bulgarian
+- Chinese
+- Croatian
 - Hindi
+- Korean
+- Macedonian
+- Serbian
+- Slovenian
+- Spanish
+- Vietnamese
 
 ## How to use
 
