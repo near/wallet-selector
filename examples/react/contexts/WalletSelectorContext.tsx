@@ -42,8 +42,8 @@ declare global {
 }
 
 interface WalletSelectorContextValue {
-  selector: WalletSelector;
-  modal: WalletSelectorModal;
+  selector: WalletSelector | null;
+  modal: WalletSelectorModal | null;
   accounts: Array<AccountState>;
   accountId: string | null;
 }
@@ -110,6 +110,8 @@ export const WalletSelectorContextProvider: React.FC<{
     const state = _selector.store.getState();
     setAccounts(state.accounts);
 
+    // this is added for debugging purpose only
+    // for more information (https://github.com/near/wallet-selector/pull/764#issuecomment-1498073367)
     window.selector = _selector;
     window.modal = _modal;
 
@@ -153,8 +155,8 @@ export const WalletSelectorContextProvider: React.FC<{
 
   const walletSelectorContextValue = useMemo<WalletSelectorContextValue>(
     () => ({
-      selector: selector!,
-      modal: modal!,
+      selector,
+      modal,
       accounts,
       accountId: accounts.find((account) => account.active)?.accountId || null,
     }),
