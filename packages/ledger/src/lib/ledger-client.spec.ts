@@ -2,7 +2,7 @@ import type { DeepPartial } from "ts-essentials";
 import { mock } from "jest-mock-extended";
 import type Transport from "@ledgerhq/hw-transport";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import { transactions, utils } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import { BN } from "bn.js";
 
 interface CreateLedgerClientParams {
@@ -24,23 +24,27 @@ const createGetPublicKeyResponseMock = () => {
 
 const createTransactionMock = () => {
   const actions = [
-    transactions.functionCall(
+    nearAPI.transactions.functionCall(
       "addMessage",
       { text: "test" },
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      new BN(utils.format.parseNearAmount("0.00000000003")!),
+      new BN(nearAPI.utils.format.parseNearAmount("0.00000000003")!),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      new BN(utils.format.parseNearAmount("0")!)
+      new BN(nearAPI.utils.format.parseNearAmount("0")!)
     ),
   ];
 
-  return transactions.createTransaction(
+  return nearAPI.transactions.createTransaction(
     "test.testnet",
-    utils.PublicKey.from("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
+    nearAPI.utils.PublicKey.from(
+      "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"
+    ),
     "guest-book.testnet",
     76068360000003,
     actions,
-    utils.serialize.base_decode("DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t")
+    nearAPI.utils.serialize.base_decode(
+      "DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t"
+    )
   );
 };
 
@@ -148,7 +152,10 @@ describe("sign", () => {
     });
 
     const transaction = createTransactionMock();
-    const data = utils.serialize.serialize(transactions.SCHEMA, transaction);
+    const data = nearAPI.utils.serialize.serialize(
+      nearAPI.transactions.SCHEMA,
+      transaction
+    );
 
     await client.connect();
     const result = await client.sign({

@@ -10,7 +10,7 @@ import type {
   InjectedWalletMetadata,
 } from "@near-wallet-selector/core";
 
-import { utils, providers } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type {
   FunctionCallPermissionView,
   AccessKeyView,
@@ -78,7 +78,7 @@ const permissionToType = (
 };
 
 interface getAccountTypeProps {
-  provider: providers.Provider;
+  provider: nearAPI.providers.Provider;
   accountId: string;
   publicKey: string;
 }
@@ -103,7 +103,7 @@ const getAccountType = async ({
 };
 
 interface getAccountBalanceProps {
-  provider: providers.Provider;
+  provider: nearAPI.providers.Provider;
   accountId: string;
 }
 
@@ -183,7 +183,9 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
   }, [module?.metadata.name, alertMessage]);
 
   const { network } = selector.options;
-  const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+  const provider = new nearAPI.providers.JsonRpcProvider({
+    url: network.nodeUrl,
+  });
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
@@ -191,7 +193,7 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
       setIsLoading(true);
       const accountsWithDetails = await Promise.all(
         accounts.map(async ({ accountId, privateKey }) => {
-          const keyPair = utils.KeyPair.fromString(privateKey);
+          const keyPair = nearAPI.utils.KeyPair.fromString(privateKey);
           const { type } = await getAccountType({
             provider,
             accountId,

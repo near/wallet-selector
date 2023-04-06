@@ -6,7 +6,7 @@ import type {
 import { mock } from "jest-mock-extended";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import type { JsonRpcProvider } from "near-api-js/lib/providers";
-import { providers } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
@@ -24,7 +24,9 @@ const defaults = {
 const setup = (url: string) => {
   const provider = mock<JsonRpcProvider>();
 
-  jest.spyOn(providers, "JsonRpcProvider").mockImplementation(() => provider);
+  jest
+    .spyOn(nearAPI.providers, "JsonRpcProvider")
+    .mockImplementation(() => provider);
 
   return {
     provider,
