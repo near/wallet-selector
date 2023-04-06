@@ -1,4 +1,4 @@
-import { providers } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type {
   AccessKeyView,
   BlockReference,
@@ -12,10 +12,10 @@ import type {
 } from "./provider.service.types";
 
 export class Provider implements ProviderService {
-  private provider: providers.JsonRpcProvider;
+  private provider: nearAPI.providers.JsonRpcProvider;
 
   constructor(url: string) {
-    this.provider = new providers.JsonRpcProvider({ url });
+    this.provider = new nearAPI.providers.JsonRpcProvider({ url });
   }
 
   query<Response extends QueryResponseKind>(params: QueryParams) {

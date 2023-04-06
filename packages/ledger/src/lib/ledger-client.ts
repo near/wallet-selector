@@ -1,6 +1,6 @@
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type Transport from "@ledgerhq/hw-transport";
-import { utils } from "near-api-js";
+import * as nearAPI from "near-api-js";
 
 // Further reading regarding APDU Ledger API:
 // - https://gist.github.com/Wollac/49f0c4e318e42f463b8306298dfb4f4a
@@ -151,7 +151,7 @@ export class LedgerClient {
       parseDerivationPath(derivationPath)
     );
 
-    return utils.serialize.base_encode(res.subarray(0, -2));
+    return nearAPI.utils.serialize.base_encode(res.subarray(0, -2));
   };
 
   sign = async ({ data, derivationPath }: SignParams) => {

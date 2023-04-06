@@ -1,10 +1,5 @@
 import type { KeyPair, providers } from "near-api-js";
-import {
-  InMemorySigner,
-  keyStores,
-  transactions as nearTransactions,
-  utils,
-} from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
@@ -58,7 +53,7 @@ interface WalletConnectAccount {
 interface WalletConnectState {
   client: WalletConnectClient;
   session: SessionTypes.Struct | null;
-  keystore: keyStores.KeyStore;
+  keystore: nearAPI.keyStores.KeyStore;
   subscriptions: Array<Subscription>;
 }
 
@@ -80,7 +75,7 @@ const setupWalletConnectState = async (
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient(emitter);
   let session: SessionTypes.Struct | null = null;
-  const keystore = new keyStores.BrowserLocalStorageKeyStore(
+  const keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
@@ -129,7 +124,7 @@ const WalletConnect: WalletBehaviourFactory<
     const newAccounts = [];
 
     for (let i = 0; i < accounts.length; i++) {
-      const signer = new InMemorySigner(_state.keystore);
+      const signer = new nearAPI.InMemorySigner(_state.keystore);
       const publicKey = await signer.getPublicKey(
         accounts[i].split(":")[2],
         options.network.networkId
@@ -181,8 +176,9 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const signTransactions = async (transactions: Array<Transaction>) => {
-    const signer = new InMemorySigner(_state.keystore);
-    const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
+    const signer = new nearAPI.InMemorySigner(_state.keystore);
+    const signedTransactions: Array<nearAPI.transactions.SignedTransaction> =
+      [];
 
     const block = await provider.block({ finality: "final" });
 
@@ -208,16 +204,16 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Invalid access key");
       }
 
-      const tx = nearTransactions.createTransaction(
+      const tx = nearAPI.transactions.createTransaction(
         transactions[i].signerId,
-        utils.PublicKey.from(publicKey.toString()),
+        nearAPI.utils.PublicKey.from(publicKey.toString()),
         transactions[i].receiverId,
         accessKey.nonce + i + 1,
         transaction.actions.map((action) => createAction(action)),
-        utils.serialize.base_decode(block.header.hash)
+        nearAPI.utils.serialize.base_decode(block.header.hash)
       );
 
-      const [, signedTx] = await nearTransactions.signTransaction(
+      const [, signedTx] = await nearAPI.transactions.signTransaction(
         tx,
         signer,
         transactions[i].signerId,
@@ -270,13 +266,13 @@ const WalletConnect: WalletBehaviourFactory<
       }),
     ]);
 
-    const tx = nearTransactions.createTransaction(
+    const tx = nearAPI.transactions.createTransaction(
       transaction.signerId,
-      utils.PublicKey.from(account.publicKey),
+      nearAPI.utils.PublicKey.from(account.publicKey),
       transaction.receiverId,
       accessKey.nonce + 1,
       transaction.actions.map((action) => createAction(action)),
-      utils.serialize.base_decode(block.header.hash)
+      nearAPI.utils.serialize.base_decode(block.header.hash)
     );
 
     const result = await _state.client.request<Uint8Array>({
@@ -288,7 +284,7 @@ const WalletConnect: WalletBehaviourFactory<
       },
     });
 
-    return nearTransactions.SignedTransaction.decode(Buffer.from(result));
+    return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
   };
 
   const requestSignTransactions = async (transactions: Array<Transaction>) => {
@@ -296,7 +292,7 @@ const WalletConnect: WalletBehaviourFactory<
       return [];
     }
 
-    const txs: Array<nearTransactions.Transaction> = [];
+    const txs: Array<nearAPI.transactions.Transaction> = [];
 
     const [block, accounts] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -321,13 +317,13 @@ const WalletConnect: WalletBehaviourFactory<
       });
 
       txs.push(
-        nearTransactions.createTransaction(
+        nearAPI.transactions.createTransaction(
           transaction.signerId,
-          utils.PublicKey.from(account.publicKey),
+          nearAPI.utils.PublicKey.from(account.publicKey),
           transaction.receiverId,
           accessKey.nonce + i + 1,
           transaction.actions.map((action) => createAction(action)),
-          utils.serialize.base_decode(block.header.hash)
+          nearAPI.utils.serialize.base_decode(block.header.hash)
         )
       );
     }
@@ -342,7 +338,7 @@ const WalletConnect: WalletBehaviourFactory<
     });
 
     return results.map((result) => {
-      return nearTransactions.SignedTransaction.decode(Buffer.from(result));
+      return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
     });
   };
 
@@ -353,12 +349,12 @@ const WalletConnect: WalletBehaviourFactory<
 
     return accounts.map(({ accountId }) => ({
       accountId,
-      keyPair: utils.KeyPair.fromRandom("ed25519"),
+      keyPair: nearAPI.utils.KeyPair.fromRandom("ed25519"),
     }));
   };
 
   const requestSignIn = async (
-    permission: nearTransactions.FunctionCallPermission
+    permission: nearAPI.transactions.FunctionCallPermission
   ) => {
     const keyPairs = await createLimitedAccessKeyPairs();
     const limitedAccessAccounts: Array<LimitedAccessAccount> = keyPairs.map(
@@ -485,6 +481,8 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
+        const chainId = getChainId();
+
         _state.session = await _state.client.connect(
           {
             requiredNamespaces: {
@@ -495,7 +493,9 @@ const WalletConnect: WalletBehaviourFactory<
               },
             },
           },
-          qrCodeModal
+          qrCodeModal,
+          params.projectId,
+          chainId
         );
 
         await requestSignIn({ receiverId: contractId, methodNames });

@@ -1,10 +1,4 @@
-import {
-  WalletConnection,
-  connect,
-  keyStores,
-  transactions as nearTransactions,
-  utils,
-} from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -30,8 +24,8 @@ export interface OptoWalletParams {
 }
 
 interface OptoWalletState {
-  wallet: WalletConnection;
-  keyStore: keyStores.BrowserLocalStorageKeyStore;
+  wallet: nearAPI.WalletConnection;
+  keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
 }
 
 interface OptoWalletExtraOptions {
@@ -57,16 +51,16 @@ const setupWalletState = async (
   params: OptoWalletExtraOptions,
   network: Network
 ): Promise<OptoWalletState> => {
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 
-  const near = await connect({
+  const near = await nearAPI.connect({
     keyStore,
     walletUrl: params.walletUrl,
     ...network,
     headers: {},
   });
 
-  const wallet = new WalletConnection(near, "near_app");
+  const wallet = new nearAPI.WalletConnection(near, "near_app");
 
   return {
     wallet,
@@ -131,13 +125,13 @@ const OptoWallet: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
-        return nearTransactions.createTransaction(
+        return nearAPI.transactions.createTransaction(
           account.accountId,
-          utils.PublicKey.from(accessKey.public_key),
+          nearAPI.utils.PublicKey.from(accessKey.public_key),
           transaction.receiverId,
           accessKey.access_key.nonce + index + 1,
           actions,
-          utils.serialize.base_decode(block.header.hash)
+          nearAPI.utils.serialize.base_decode(block.header.hash)
         );
       })
     );

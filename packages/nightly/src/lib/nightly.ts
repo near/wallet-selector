@@ -13,7 +13,7 @@ import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import type { Signer } from "near-api-js";
-import { utils, transactions as nearTransactions } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
@@ -116,7 +116,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find public key for account");
       }
-      return utils.PublicKey.from(account.publicKey!);
+      return nearAPI.utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       const accounts = getAccounts();
@@ -127,7 +127,9 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       try {
-        const tx = nearTransactions.Transaction.decode(Buffer.from(message));
+        const tx = nearAPI.transactions.Transaction.decode(
+          Buffer.from(message)
+        );
         const signedTx = await _state.wallet.signTransaction(tx);
 
         return {

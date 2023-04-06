@@ -14,7 +14,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import type { Signer } from "near-api-js";
-import { utils } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
@@ -76,7 +76,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return utils.PublicKey.from(account.publicKey);
+      return nearAPI.utils.PublicKey.from(account.publicKey);
     },
     signMessage: async (message, accountId) => {
       const account = _state.accounts.find((a) => a.accountId === accountId);
@@ -92,7 +92,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       return {
         signature,
-        publicKey: utils.PublicKey.from(account.publicKey),
+        publicKey: nearAPI.utils.PublicKey.from(account.publicKey),
       };
     },
   };

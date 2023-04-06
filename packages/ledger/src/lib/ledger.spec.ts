@@ -174,3 +174,19 @@ describe("signAndSendTransactions", () => {
     expect(result.length).toEqual(transactions.length);
   });
 });
+
+describe("getPublicKey", () => {
+  it("returns public key", async () => {
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, publicKey } = await createLedgerWallet();
+    await wallet.signIn({
+      accounts: [{ derivationPath, publicKey, accountId }],
+      contractId: "guest-book.testnet",
+    });
+    const publicKeyResponse = await wallet.getPublicKey(derivationPath);
+    expect(publicKeyResponse).toBe(
+      "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"
+    );
+  });
+});

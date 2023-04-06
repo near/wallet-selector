@@ -47,7 +47,7 @@ const selector = await setupWalletSelector({
 
 ## Wallet Connect Configuration
 
-Project ID is required for wallet connect, please obtain it from [walletconnect.ocm](https://walletconnect.com/)
+Project ID is required for wallet connect, please obtain it from [walletconnect.com](https://walletconnect.com/)
 
 
 ## Options

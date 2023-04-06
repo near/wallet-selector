@@ -2,7 +2,7 @@
 
 import type { Account, providers } from "near-api-js";
 
-interface AccessKey {
+export interface AccessKey {
   publicKey: string;
   secretKey: string;
 }
@@ -12,7 +12,7 @@ interface RequestSignInResponse {
   error: string | { type: string };
 }
 
-type SignOutResponse = true | { error: string | { type: string } };
+export type SignOutResponse = true | { error: string | { type: string } };
 
 interface RpcInfo {
   explorerUrl: string;

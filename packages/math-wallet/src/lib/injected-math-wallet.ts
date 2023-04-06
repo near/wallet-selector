@@ -5,7 +5,7 @@ interface LoginParams {
   publicKey?: string;
 }
 
-interface MathAccount {
+export interface MathAccount {
   name: string;
   accountId: string;
   publicKey: string;
@@ -26,7 +26,7 @@ interface MathNetwork {
   extra: string;
 }
 
-type MathSigner = Signer & {
+export type MathSigner = Signer & {
   account: MathAccount | null;
   network: MathNetwork;
 };

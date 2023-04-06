@@ -1,5 +1,5 @@
 import type { Signer } from "near-api-js";
-import { transactions as nearTransactions, utils } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type { AppMetadata } from "@nightlylabs/connect-near";
 import {
   AppNear,
@@ -34,7 +34,7 @@ interface NightlyConnectParams {
 
 interface NightlyConnectAccount {
   accountId: string;
-  publicKey: utils.PublicKey;
+  publicKey: nearAPI.utils.PublicKey;
 }
 
 interface NightlyConnectState {
@@ -73,7 +73,7 @@ const NightlyConnect: WalletBehaviourFactory<
         throw new Error("Failed to find public key for account");
       }
 
-      return utils.PublicKey.from(account.publicKey);
+      return nearAPI.utils.PublicKey.from(account.publicKey);
     },
     signMessage: async (message, accountId) => {
       const accounts = getAccounts();
@@ -84,7 +84,9 @@ const NightlyConnect: WalletBehaviourFactory<
       }
 
       try {
-        const tx = nearTransactions.Transaction.decode(Buffer.from(message));
+        const tx = nearAPI.transactions.Transaction.decode(
+          Buffer.from(message)
+        );
         // @ts-ignore
         const signedTx = await _state.client!.signTransaction(tx);
 
@@ -184,7 +186,7 @@ const NightlyConnect: WalletBehaviourFactory<
             ) {
               _state.accounts.push({
                 accountId: persistedAccountId,
-                publicKey: utils.PublicKey.from(persistedPubkey),
+                publicKey: nearAPI.utils.PublicKey.from(persistedPubkey),
               });
               _state.modal.onClose = undefined;
               resolve(
