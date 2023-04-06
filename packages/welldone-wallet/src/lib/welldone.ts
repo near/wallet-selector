@@ -1,5 +1,5 @@
 import type { Signer } from "near-api-js";
-import { transactions as Transactions, utils } from "near-api-js";
+import * as nearAPI from "near-api-js";
 import type {
   WalletModuleFactory,
   InjectedWallet,
@@ -150,7 +150,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return utils.PublicKey.from(account.publicKey!);
+      return nearAPI.utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       if (!_state.wallet) {
@@ -164,7 +164,9 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find account for signing");
       }
       try {
-        const tx = Transactions.Transaction.decode(Buffer.from(message));
+        const tx = nearAPI.transactions.Transaction.decode(
+          Buffer.from(message)
+        );
         const serializedTx = Buffer.from(tx.encode()).toString("hex");
         const signed = await _state.wallet.request("near", {
           method: "dapp:signTransaction",
@@ -173,7 +175,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
         return {
           signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: utils.PublicKey.from(signed[0].publicKey),
+          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
         };
       } catch (err) {
         const decoded = new TextDecoder("utf-8").decode(message);
@@ -184,7 +186,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
         return {
           signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: utils.PublicKey.from(signed[0].publicKey),
+          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
         };
       }
     },
@@ -270,7 +272,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const accountId = account.accountId;
-      const pubKey = utils.PublicKey.fromString(account.publicKey);
+      const pubKey = nearAPI.utils.PublicKey.fromString(account.publicKey);
       const block = await provider.block({ finality: "final" });
 
       const data = {

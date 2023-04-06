@@ -11,13 +11,7 @@ import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
 } from "./meteor-wallet-types";
-import {
-  connect,
-  keyStores,
-  transactions as nearTransactions,
-  utils,
-} from "near-api-js";
-
+import * as nearAPI from "near-api-js";
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
@@ -29,12 +23,12 @@ const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore(
+  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
   );
 
-  const near = await connect({
+  const near = await nearAPI.connect({
     keyStore,
     ...network,
     headers: {},
@@ -101,13 +95,13 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
-        return nearTransactions.createTransaction(
+        return nearAPI.transactions.createTransaction(
           account.accountId,
-          utils.PublicKey.from(accessKey.public_key),
+          nearAPI.utils.PublicKey.from(accessKey.public_key),
           transaction.receiverId,
           accessKey.access_key.nonce + index + 1,
           actions,
-          utils.serialize.base_decode(block.header.hash)
+          nearAPI.utils.serialize.base_decode(block.header.hash)
         );
       })
     );
