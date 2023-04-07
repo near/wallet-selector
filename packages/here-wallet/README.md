@@ -80,6 +80,13 @@ const hereWallet = setupHereWallet({
 
 ```
 
+## Options
+
+- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
+- `defaultStrategy`: (`() => HereStrategy?`): DefaultStrategy is optional. Default is `undefined`.
+- `defaultProvider`: (`HereProvider`): HereProvider is optional. Default is `undefined`.
+
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).

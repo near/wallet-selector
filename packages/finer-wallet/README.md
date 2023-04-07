@@ -36,6 +36,7 @@ const selector = await setupWalletSelector({
 
 - `walletUrl` (`string?`): Wallet URL used to redirect when signing transactions. This parameter is required when using custom network configuration.
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/finer-wallet-icon.png`.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 
