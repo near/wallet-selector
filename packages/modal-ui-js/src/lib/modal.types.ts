@@ -9,7 +9,6 @@ export interface ModalOptions {
   methodNames?: Array<string>;
   theme?: Theme;
   description?: string;
-  onHide?: (hideReason: "user-triggered" | "wallet-navigation") => void;
 }
 
 export type ModalHideReason = "user-triggered" | "wallet-navigation";
