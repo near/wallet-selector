@@ -3,10 +3,10 @@ import { Fragment } from "react";
 import { useExportAccountSelector } from "../contexts/WalletSelectorExportContext";
 
 const ExportContent: NextPage = () => {
-  const { ExportModal } = useExportAccountSelector();
+  const { exportModal } = useExportAccountSelector();
   return (
     <Fragment>
-      <button onClick={() => ExportModal.show()}>Open Modal</button>
+      <button onClick={() => exportModal.show()}>Open Modal</button>
       <p>
         The Export Accounts modal assists users in migrating their accounts to
         any Wallet Selector wallet supporting account imports. Any sensitive
