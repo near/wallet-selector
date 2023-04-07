@@ -1,6 +1,3 @@
-/*eslint @typescript-eslint/no-use-before-define: 1*/
-/*eslint @typescript-eslint/no-explicit-any: 1*/
-/*eslint @typescript-eslint/naming-convention: 1*/
 // @ts-nocheck
 
 import { ethers } from "ethers";
