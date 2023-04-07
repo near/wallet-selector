@@ -30,13 +30,13 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 declare global {
   interface Window {
     importSelector: WalletSelector;
-    ExportModal: WalletSelectorModal;
+    exportModal: WalletSelectorModal;
   }
 }
 
 interface ExportAccountSelectorContextValue {
-  importSelector: WalletSelector | null;
-  ExportModal: WalletSelectorModal | null;
+  importSelector: WalletSelector;
+  exportModal: WalletSelectorModal;
   accounts: Array<AccountState>;
   accountId: string | null;
 }
@@ -105,7 +105,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
     // this is added for debugging purpose only
     // for more information (https://github.com/near/wallet-selector/pull/764#issuecomment-1498073367)
     window.importSelector = _selector;
-    window.ExportModal = _modal;
+    window.exportModal = _modal;
 
     setSelector(_selector);
     setModal(_modal);
@@ -139,8 +139,8 @@ export const ExportAccountSelectorContextProvider: React.FC<{
   const exportWalletSelectorContextValue =
     useMemo<ExportAccountSelectorContextValue>(
       () => ({
-        importSelector,
-        modal,
+        importSelector: importSelector!,
+        exportModal: modal!,
         accounts,
         accountId:
           accounts.find((account) => account.active)?.accountId || null,
