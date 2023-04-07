@@ -42,8 +42,8 @@ declare global {
 }
 
 interface WalletSelectorContextValue {
-  selector: WalletSelector | null;
-  modal: WalletSelectorModal | null;
+  selector: WalletSelector;
+  modal: WalletSelectorModal;
   accounts: Array<AccountState>;
   accountId: string | null;
 }
@@ -155,8 +155,8 @@ export const WalletSelectorContextProvider: React.FC<{
 
   const walletSelectorContextValue = useMemo<WalletSelectorContextValue>(
     () => ({
-      selector,
-      modal,
+      selector: selector!,
+      modal: modal!,
       accounts,
       accountId: accounts.find((account) => account.active)?.accountId || null,
     }),
