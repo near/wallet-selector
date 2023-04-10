@@ -3,8 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "declaration": true,
-    "types": []
+    "types": [],
+    "jsx": "react",
   },
-  "include": ["**/*.ts", "src/lib/fastauth-metamask-lib.ts"],
+  "include": ["**/*.ts", "src/lib/fastauth-metamask-lib.ts", "src/lib/modal.tsx"],
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

@@ -21,6 +21,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
 import { setupNeth } from "@near-wallet-selector/neth";
+import { setupFastAuthMetaMask } from "@near-wallet-selector/fastauth-metamask";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { Loading } from "../components/Loading";
@@ -74,6 +75,7 @@ export const WalletSelectorContextProvider: React.FC<{
           gas: "300000000000000",
           bundle: false,
         }),
+        setupFastAuthMetaMask(),
         setupOptoWallet(),
         setupFinerWallet(),
         setupXDEFI(),

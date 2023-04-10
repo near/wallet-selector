@@ -55,7 +55,6 @@ const MIN_NEW_ACCOUNT = parseNearAmount("0.4");
 const MIN_NEW_ACCOUNT_THRESH = parseNearAmount("0.49");
 export const MIN_NEW_ACCOUNT_ASK = parseNearAmount("0.5");
 const FUNDING_CHECK_TIMEOUT = 5000;
-/// lkmfawl
 
 const attachedDepositMapping = parseNearAmount("0.05");
 
@@ -114,9 +113,9 @@ export const initConnection = ({
   networkId = network.networkId;
   contractAccount = new Account(
     connection,
-    networkId === "mainnet" ? "near" : networkId
+    NETWORK[networkId].ROOT_ACCOUNT_ID
   );
-  accountSuffix = networkId === "mainnet" ? ".near" : "." + networkId;
+  accountSuffix = networkId === "." + NETWORK[networkId].ROOT_ACCOUNT_ID;
 
   const cover = document.createElement("div");
   cover.style.display = "none";
@@ -182,6 +181,10 @@ export const handleCreate = async (
   fundingErrorCB,
   postFundingCB
 ) => {
+  if (!signer || !ethAddress) {
+    ({ signer, ethAddress } = await getEthereum());
+  }
+
   if (
     (networkId === "testnet" && newAccountId.indexOf(".near") > -1) ||
     (networkId === "mainnet" && newAccountId.indexOf(".testnet") > -1)
@@ -217,8 +220,8 @@ const createAccount = async ({
   fundingErrorCB,
   postFundingCB,
 }) => {
-  // const { publicKey, secretKey } = parseSeedPhrase(process.env.REACT_APP_FUNDING_SEED_PHRASE);
-  /// assumes implicit is funded, otherwise will warn and cycle here
+
+  return console.warn(`Create the account with FastAuth and then call "handleMapping" to pair the ETH and NEAR accounts.`);
 
   const implicitAccountId = Buffer.from(
     PublicKey.from(fundingAccountPubKey).data
@@ -349,7 +352,9 @@ export const handleMapping = async () => {
     logger.log(e);
     return logger.log(`Account mapping failed`);
   }
-  return await handleDeployContract();
+
+  console.warn('NETH contract will not be deployed.')
+  // return await handleDeployContract();
 };
 
 export const handleDeployContract = async () => {

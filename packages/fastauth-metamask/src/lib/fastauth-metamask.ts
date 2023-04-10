@@ -6,17 +6,20 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
+import * as nearAPI from 'near-api-js'
+const {
+  Account
+} = nearAPI
 import { FastAuthMetaMaskIcon } from "../assets/icons";
 import {
-  getNear,
   signIn,
   signOut,
+  getNethAccounts,
+  initConnection,
   verifyOwner,
   isSignedIn,
-  signAndSendTransactions,
-  initConnection,
   METAMASK_URL,
-} from "./neth-lib";
+} from "./lib";
 import isMobile from "is-mobile";
 export { initConnection } from "./neth-lib";
 
@@ -34,9 +37,16 @@ declare global {
 export interface FastAuthMetaMaskParams {
   // default FastAuthMetaMask icon included
   iconUrl?: string;
+  // customize how much gas to attach to function calls
+  gas?: string;
+  // should there be a modal cover over the screen while awaiting tx results?
+  useModalCover?: boolean;
   // default false
   deprecated?: boolean;
 }
+
+let useCover = false;
+let customGas;
 
 const isInstalled = async () => {
   await detectEthereumProvider({ timeout: 100 });
@@ -47,9 +57,16 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   logger,
   store,
+  storage,
   options,
   provider,
 }) => {
+
+  const cover = initConnection({
+    network: options.network,
+    logger,
+    storage,
+  })
 
   const isValidActions = (
     actions: Array<Action>
@@ -78,6 +95,10 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error("Wallet not signed in");
     }
 
+    if (useCover) {
+      cover.style.display = "block";
+    }
+
     const transformedTxs = transactions.map(({ receiverId, actions }) => ({
       receiverId: receiverId || contract.contractId,
       actions: transformActions(actions),
@@ -94,16 +115,20 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
       throw e;
     }
 
+    if (useCover) {
+      cover.style.display = "none";
+    }
+
     return res;
   };
 
   // return the wallet interface for wallet-selector
   return {
     async signIn() {
-      let account;
+      let accounts;
       try {
-        account = await signIn();
-        if (!account) {
+        accounts = await signIn();
+        if (!accounts) {
           return [];
         }
       } catch (e) {
@@ -112,7 +137,7 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
         }
         // console.log(e);
       }
-      return [account];
+      return accounts;
     },
 
     async signOut() {
@@ -125,33 +150,30 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      const { accountId, account } = await getNear();
-      return [
-        {
-          accountId,
-          publicKey: (
-            await account.connection.signer.getPublicKey(
-              account.accountId,
-              options.network.networkId
-            )
-          ).toString(),
-        },
-      ];
+      return getNethAccounts()
     },
 
-    signAndSendTransaction: async ({ receiverId, actions }) =>
-      signTransactions([{ receiverId, actions }]),
+    async signAndSendTransaction({ receiverId, actions }) {
+      return signTransactions([{ receiverId, actions }])
+    },
 
-    signAndSendTransactions: async ({ transactions }) =>
-      signTransactions(transactions),
+    async signAndSendTransactions({ transactions }) {
+      const account = getNethAccounts()
+      (account as typeof Account).signAndSendTransactions(transactions);
+    },
   };
 };
 
 export function setupFastAuthMetaMask({
   iconUrl = FastAuthMetaMaskIcon,
+  gas,
+  useModalCover = false,
   deprecated = false,
 }: FastAuthMetaMaskParams = {}): WalletModuleFactory<InjectedWallet> {
+
   return async () => {
+    useCover = useModalCover;
+    customGas = gas;
 
     const mobile = isMobile();
     if (mobile) {
