@@ -12,7 +12,10 @@
       "connectionFailed": "连接失败",
       "connectionSuccessful": "连接成功",
       "connected": "已连接",
-      "connectingTo": "正在连接"
+      "connectingTo": "正在连接",
+      "connectingMessage": {
+        "bridge": "确认钱包中的连接"
+      }
     },
     "ledger": {
       "connectWithLedger": "连接 Ledger",
@@ -28,7 +31,6 @@
       "selectYourAccounts": "选择你的账户",
       "connecting1Account": "正在连接1个账户",
       "cantFindAnyAccount": "没有找到任何与这个 Ledger 相关联的账户。请创建新账户于",
-      "orConnectAnAnotherLedger.": "或连接另一个 Ledger",
       "connecting": "正在连接",
       "ofAccounts": "个账户",
       "failedToAutomatically": "无法自动找到账户ID，请主动提供：",
