@@ -101,8 +101,9 @@
     "core-js": "^3.6.5",
     "crypto-browserify": "^3.12.0",
     "ethers": "^5.7.2",
+    "https-browserify": "^1.0.0",
     "is-mobile": "^3.1.1",
-    "near-api-js": "^1.1.0",
+    "near-api-js": "^2.1.0",
     "near-seed-phrase": "^0.2.0",
     "next": "12.2.3",
     "ngx-deploy-npm": "^4.3.10",
@@ -113,9 +114,11 @@
     "regenerator-runtime": "0.13.11",
     "rxjs": "^7.8.0",
     "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "tslib": "^2.3.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
+    "url": "^0.11.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

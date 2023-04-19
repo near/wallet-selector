@@ -152,7 +152,12 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      const { accountId, account } = await getNear();
+      const near = await getNear();
+      if (!near) {
+        logger.log("NETH:getAccounts");
+        return [];
+      }
+      const { account, accountId } = near;
       return [
         {
           accountId,

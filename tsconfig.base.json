@@ -92,9 +92,6 @@
       "@near-wallet-selector/xdefi": [
         "packages/xdefi/src/index.ts"
       ],
-      "@near-wallet-selector/opto-wallet": [
-        "packages/opto-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/finer-wallet": [
         "packages/finer-wallet/src/index.ts"
       ],
@@ -103,6 +100,15 @@
       ],
       "stream": [
         "node_modules/stream-browserify"
+      ],
+      "https": [
+        "node_modules/https-browserify"
+      ],
+      "http": [
+        "node_modules/stream-http"
+      ],
+      "url": [
+        "node_modules/url"
       ]
     }
   },

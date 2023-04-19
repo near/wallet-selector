@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/xdefi",
   "peerDependencies": {
-    "near-api-js": "^0.44.2 || ^1.0.0"
+    "near-api-js": "^1.0.0 || ^2.0.0"
   }
 }

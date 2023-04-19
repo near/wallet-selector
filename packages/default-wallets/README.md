@@ -8,7 +8,7 @@ This is the list of default wallets:
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
