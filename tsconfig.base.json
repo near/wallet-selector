@@ -103,6 +103,15 @@
       ],
       "stream": [
         "node_modules/stream-browserify"
+      ],
+      "https": [
+        "node_modules/https-browserify"
+      ],
+      "http": [
+        "node_modules/stream-http"
+      ],
+      "url": [
+        "node_modules/url"
       ]
     }
   },
