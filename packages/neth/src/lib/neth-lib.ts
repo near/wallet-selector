@@ -462,13 +462,13 @@ export const handleCheckAccount = async ({
   const account = new Account(connection, newAccountId);
 
   logger.log("Checking account address mapping.");
-  const mapRes = await account.viewFunction(
-    NETWORK[networkId].MAP_ACCOUNT_ID,
-    "get_eth",
-    {
+  const mapRes = await account.viewFunction({
+    contractId: NETWORK[networkId].MAP_ACCOUNT_ID,
+    methodName: "get_eth",
+    args: {
       account_id: newAccountId,
-    }
-  );
+    },
+  });
   if (mapRes === null) {
     return handleMapping();
   }
@@ -481,7 +481,10 @@ export const handleCheckAccount = async ({
 
   logger.log("Checking contract setup.");
   try {
-    const ethRes = await account.viewFunction(newAccountId, "get_address");
+    const ethRes = await account.viewFunction({
+      contractId: newAccountId,
+      methodName: "get_address",
+    });
     // any reason the address wasn't set properly
     if (!ethRes || !ethRes.length) {
       return handleSetupContract();
@@ -532,7 +535,10 @@ export const handleRefreshAppKey = async (signer, ethAddress) => {
 
   // now refresh app key
   const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
+    await account.viewFunction({
+      contractId: accountId,
+      methodName: "get_nonce",
+    }),
     16
   ).toString();
   // new public key based on current nonce which will become the app_key_nonce in contract after this TX
@@ -556,7 +562,10 @@ export const handleRefreshAppKey = async (signer, ethAddress) => {
   if (hasAppKey(accessKeys)) {
     // old public key based on current app_key_nonce
     const appKeyNonce = parseInt(
-      await account.viewFunction(accountId, "get_app_key_nonce"),
+      await account.viewFunction({
+        contractId: accountId,
+        methodName: "get_app_key_nonce",
+      }),
       16
     ).toString();
     const { publicKey: oldPublicKey } = await keyPairFromEthSig(
@@ -612,7 +621,10 @@ export const handleUpdateContract = async (signer, ethAddress) => {
     },
   ];
   const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
+    await account.viewFunction({
+      contractId: accountId,
+      methodName: "get_nonce",
+    }),
     16
   ).toString();
   const args = await ethSignJson(signer, {
@@ -694,7 +706,10 @@ export const handleDisconnect = async (signer, ethAddress) => {
     })
   ) {
     const appKeyNonce = parseInt(
-      await account.viewFunction(accountId, "get_app_key_nonce"),
+      await account.viewFunction({
+        contractId: accountId,
+        methodName: "get_app_key_nonce",
+      }),
       16
     ).toString();
     const { publicKey: oldPublicKey } = await keyPairFromEthSig(
@@ -710,7 +725,10 @@ export const handleDisconnect = async (signer, ethAddress) => {
 
   /// get args for execute call
   const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
+    await account.viewFunction({
+      contractId: accountId,
+      methodName: "get_nonce",
+    }),
     16
   ).toString();
   const args = await ethSignJson(signer, {
@@ -1005,19 +1023,24 @@ export const switchEthereum = async () => {
 /// near
 
 export const getNearMap = async (eth_address) => {
-  return contractAccount.viewFunction(
-    NETWORK[networkId].MAP_ACCOUNT_ID,
-    "get_near",
-    { eth_address }
-  );
+  return contractAccount.viewFunction({
+    contractId: NETWORK[networkId].MAP_ACCOUNT_ID,
+    methodName: "get_near",
+    args: {
+      eth_address,
+    },
+  });
 };
 
-export const getNear = async (): {
-  account: NearAccount;
-  accountId: string;
-  keyPair: NearKeyPair;
-  secretKey: string;
-} => {
+export const getNear = async (): Promise<
+  | false
+  | {
+      account: NearAccount;
+      accountId: string;
+      keyPair: NearKeyPair;
+      secretKey: string;
+    }
+> => {
   const secretKey = await storage.getItem(APP_KEY_SECRET);
   const accountId = await storage.getItem(APP_KEY_ACCOUNT_ID);
   if (!secretKey || !accountId) {
@@ -1050,7 +1073,10 @@ export const signOut = async () => {
 export const verifyOwner = async ({ message, provider, account }) => {
   let accountId;
   if (!account) {
-    ({ account, accountId } = await getNear());
+    const nearAccount = await getNear();
+    if (nearAccount) {
+      ({ account, accountId } = nearAccount);
+    }
   } else {
     ({ accountId } = account);
   }
@@ -1153,7 +1179,10 @@ export const getAppKey = async ({ signer, ethAddress: eth_address }) => {
     // accountId = account.accountId;
   }
   const appKeyNonce = parseInt(
-    await contractAccount.viewFunction(accountId, "get_app_key_nonce"),
+    await contractAccount.viewFunction({
+      contractId: accountId,
+      methodName: "get_app_key_nonce",
+    }),
     16
   ).toString();
   const { publicKey, secretKey } = await keyPairFromEthSig(
@@ -1174,7 +1203,12 @@ export const getAppKey = async ({ signer, ethAddress: eth_address }) => {
 };
 
 const broadcastTXs = async () => {
-  const { account, accountId } = await getNear();
+  const nearAccount = await getNear();
+  if (!nearAccount) {
+    logger.log("NETH: ERROR broadcasting tx. No account found.");
+    return;
+  }
+  const { account, accountId } = nearAccount;
   const args = await storage.getItem(TX_ARGS_ATTEMPT);
   if (!args || args.length === 0) {
     return;
@@ -1204,7 +1238,14 @@ const broadcastTXs = async () => {
 export const signAndSendTransactions = async ({ transactions, bundle }) => {
   const ethRes: any = await getEthereum();
   const { signer } = ethRes;
-  const { account, accountId } = await getNear();
+  const nearAccount = await getNear();
+  if (!nearAccount) {
+    logger.log(
+      "NETH: ERROR signing and sending transactions. No account found."
+    );
+    return;
+  }
+  const { account, accountId } = nearAccount;
 
   const receivers = transactions.map(({ receiverId }) => receiverId);
   const transformedTxs = transactions.map(({ receiverId, actions }) => ({
@@ -1212,7 +1253,10 @@ export const signAndSendTransactions = async ({ transactions, bundle }) => {
   }));
 
   const nonce = parseInt(
-    await account.viewFunction(accountId, "get_nonce"),
+    await account.viewFunction({
+      contractId: accountId,
+      methodName: "get_nonce",
+    }),
     16
   );
   const args: Array<any> = [];
