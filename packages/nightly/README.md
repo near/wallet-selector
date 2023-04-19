@@ -5,7 +5,7 @@ This is the [Nightly](https://wallet.nightly.app/) package for NEAR Wallet Selec
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
@@ -43,6 +43,7 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nightly-icon.png`.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 

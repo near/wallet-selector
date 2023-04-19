@@ -4,7 +4,7 @@ This is the Wallet Utils package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
@@ -25,7 +25,7 @@ npm install @near-wallet-selector/wallet-utils
 Then use it in your custom wallet integration:
 
 ```ts
-import { createAction } from "@near-wallet-selector/wallet-utils";
+import { createAction, signTransactions } from "@near-wallet-selector/wallet-utils";
 
 const action = createAction({
   type: "Transfer",
@@ -33,6 +33,12 @@ const action = createAction({
     deposit: "10000000000000000000000",
   },
 });
+
+const signedTransactions = await signTransactions(
+  [{ signerId, receiverId, actions }],
+  signer,
+  options.network
+);
 ```
 
 ## License

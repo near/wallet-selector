@@ -320,9 +320,7 @@ export function renderModal() {
       }
       modalState.container.children[0].classList.remove("open");
 
-      if (modalState.options.onHide) {
-        modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
-      }
+      modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
     });
 
   // TODO: Better handle `click` event listener for close-button.
@@ -337,9 +335,7 @@ export function renderModal() {
       if (target && target.className === "close-button") {
         modalState.container.children[0].classList.remove("open");
 
-        if (modalState.options.onHide) {
-          modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
-        }
+        modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
       }
     });
     initialRender = false;

@@ -4,7 +4,7 @@ This is the [Nightly Connect](https://connect.nightly.app/) package for NEAR Wal
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
@@ -45,11 +45,11 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `persistent` (`boolean?`): Indication of whether last session id should be persisted in localStorage and used after user refreshes app. Defaults to true.
 - `appMetadata` (`object`): App metadata used to provide context of the dApp to the connected wallet.
 - `url` (`string?`): URL address of Nightly Connect proxy.
 - `timeout` (`number?`): Timeout of requests sent via proxy.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/nightly-connect.png`.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 

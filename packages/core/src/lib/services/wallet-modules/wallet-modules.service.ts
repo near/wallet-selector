@@ -374,19 +374,6 @@ export class WalletModules {
 
     this.modules = modules;
 
-    for (let i = 0; i < this.modules.length; i++) {
-      if (this.modules[i].type === "instant-link") {
-        const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
-        if (wallet.metadata.runOnStartup) {
-          try {
-            await wallet.signIn({ contractId: wallet.getContractId() });
-          } catch (err) {
-            logger.error("Failed to sign in to wallet. " + err);
-          }
-        }
-      }
-    }
-
     const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
       await this.resolveStorageState();
 
@@ -400,5 +387,22 @@ export class WalletModules {
         recentlySignedInWallets,
       },
     });
+
+    for (let i = 0; i < this.modules.length; i++) {
+      if (this.modules[i].type !== "instant-link") {
+        continue;
+      }
+
+      const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
+      if (!wallet.metadata.runOnStartup) {
+        continue;
+      }
+
+      try {
+        await wallet.signIn({ contractId: wallet.getContractId() });
+      } catch (err) {
+        logger.error("Failed to sign in to wallet. " + err);
+      }
+    }
   }
 }

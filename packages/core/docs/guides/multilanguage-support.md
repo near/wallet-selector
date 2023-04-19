@@ -1,7 +1,7 @@
-# Multilanguage support
+# Multi-language support
 
 - Languages are detected from browser language settings.
-- If user preffered language is not supported, english is rendered as default.
+- If user preferred language is not supported, english is rendered as default.
 
 ## Supported languages
 

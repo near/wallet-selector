@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
@@ -24,13 +30,13 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 declare global {
   interface Window {
     importSelector: WalletSelector;
-    ExportModal: WalletSelectorModal;
+    exportModal: WalletSelectorModal;
   }
 }
 
 interface ExportAccountSelectorContextValue {
   importSelector: WalletSelector;
-  ExportModal: WalletSelectorModal;
+  exportModal: WalletSelectorModal;
   accounts: Array<AccountState>;
   accountId: string | null;
 }
@@ -42,8 +48,9 @@ export const ExportAccountSelectorContextProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const [importSelector, setSelector] = useState<WalletSelector | null>(null);
-  const [ExportModal, setModal] = useState<WalletSelectorModal | null>(null);
+  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
@@ -95,11 +102,14 @@ export const ExportAccountSelectorContextProvider: React.FC<{
     const state = _selector.store.getState();
     setAccounts(state.accounts);
 
+    // this is added for debugging purpose only
+    // for more information (https://github.com/near/wallet-selector/pull/764#issuecomment-1498073367)
     window.importSelector = _selector;
-    window.ExportModal = _modal;
+    window.exportModal = _modal;
 
     setSelector(_selector);
     setModal(_modal);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -126,21 +136,25 @@ export const ExportAccountSelectorContextProvider: React.FC<{
     return () => subscription.unsubscribe();
   }, [importSelector]);
 
-  if (!importSelector || !ExportModal) {
+  const exportWalletSelectorContextValue =
+    useMemo<ExportAccountSelectorContextValue>(
+      () => ({
+        importSelector: importSelector!,
+        exportModal: modal!,
+        accounts,
+        accountId:
+          accounts.find((account) => account.active)?.accountId || null,
+      }),
+      [importSelector, modal, accounts]
+    );
+
+  if (loading) {
     return <Loading />;
   }
 
-  const accountId =
-    accounts.find((account) => account.active)?.accountId || null;
-
   return (
     <ExportAccountSelectorContext.Provider
-      value={{
-        importSelector,
-        ExportModal,
-        accounts,
-        accountId,
-      }}
+      value={exportWalletSelectorContextValue}
     >
       {children}
     </ExportAccountSelectorContext.Provider>

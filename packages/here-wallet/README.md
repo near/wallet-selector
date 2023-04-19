@@ -4,7 +4,7 @@ This is the [Here Wallet](https://herewallet.app/) package for NEAR Wallet Selec
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
@@ -79,6 +79,13 @@ const hereWallet = setupHereWallet({
 });
 
 ```
+
+## Options
+
+- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
+- `defaultStrategy`: (`() => HereStrategy?`): DefaultStrategy is optional. Default is `undefined`.
+- `defaultProvider`: (`HereProvider`): HereProvider is optional. Default is `undefined`.
 
 ## License
 
