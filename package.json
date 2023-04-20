@@ -95,6 +95,7 @@
     "better-sqlite3": "^8.2.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
+    "borsh": "^0.7.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "copy-to-clipboard": "^3.3.3",

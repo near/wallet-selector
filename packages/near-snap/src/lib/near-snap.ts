@@ -15,6 +15,7 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   store,
   metadata,
+  logger,
 }) => {
   const network = options.network.networkId as "testnet" | "mainnet";
 
@@ -78,6 +79,17 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       );
 
       return Promise.all(signedTxs.map((tx) => provider.sendTransaction(tx)));
+    },
+
+    async signMessage({ message, nonce, recipient, state }) {
+      logger.log("NearSnap:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

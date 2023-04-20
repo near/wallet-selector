@@ -223,6 +223,17 @@ const NearFi: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
+
+    async signMessage({ message, nonce, recipient, state }) {
+      logger.log("NearFi:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

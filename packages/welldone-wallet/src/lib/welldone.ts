@@ -54,6 +54,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   logger,
   storage,
   provider,
+  metadata,
 }) => {
   const _state = await setupWalletState(storage);
 
@@ -353,6 +354,17 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         method: "experimental:near:importPrivatekey",
         params: [params],
       });
+    },
+
+    async signMessage({ message, nonce, recipient, state }) {
+      logger.log("Welldone:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

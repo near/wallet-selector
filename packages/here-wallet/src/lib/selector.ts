@@ -4,9 +4,17 @@ import type BN from "bn.js";
 
 import type { SelectorInit } from "./types";
 
+// @ts-ignore
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options, defaultProvider, defaultStrategy } =
-    config;
+  const {
+    store,
+    logger,
+    emitter,
+    options,
+    defaultProvider,
+    defaultStrategy,
+    metadata,
+  } = config;
 
   const here = new HereWallet({
     networkId: options.network.networkId as NetworkId,
@@ -113,13 +121,13 @@ export const initHereWallet: SelectorInit = async (config) => {
 
     async verifyOwner() {
       throw Error(
-        "HereWallet:verifyOwner is deprecated, use signMessage method with impletementation NEP0413 Standart"
+        "HereWallet:verifyOwner is deprecated, use signMessage method with implementation NEP0413 Standard"
       );
     },
 
     async signMessage(data) {
       logger.log("HereWallet:signMessage", data);
-      return await here.signMessage(data);
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransactions(data) {

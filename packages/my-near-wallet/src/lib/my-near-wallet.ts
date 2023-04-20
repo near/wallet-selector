@@ -224,6 +224,18 @@ const MyNearWallet: WalletBehaviourFactory<
       });
     },
 
+    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
+      logger.log("MyNearWallet:signMessage", {
+        message,
+        nonce,
+        recipient,
+        callbackUrl,
+        state,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
     buildImportAccountsUrl() {
       return `${params.walletUrl}/batch-import`;
     },

@@ -68,6 +68,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
         signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
       );
     },
+
+    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
+      // A standardized Wallet API method, namely `signMessage`, 
+      // that allows users to sign a message for a specific receiver using their NEAR account
+      return await wallet.signMessage({ message, nonce, recipient, callbackUrl, state });
+    },
   };
 };
 
