@@ -298,6 +298,8 @@ const handleSignIn = (resolve) => (accountId, keyPair) => {
 	resolve(getNethAccounts())
 }
 
+export const getConnection = () => connection
+
 export const signIn = async () => {
 	if (appAccount) {
 		alert('already signed in')

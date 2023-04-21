@@ -14,6 +14,7 @@ import { FastAuthMetaMaskIcon } from "../assets/icons";
 import {
   signIn,
   signOut,
+  getConnection,
   getNethAccounts,
   initConnection,
   verifyOwner,
@@ -104,9 +105,12 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
       actions: transformActions(actions),
     }));
 
+    const accountInfo = await getNethAccounts();
+    const account = new Account(getConnection(), accountInfo[0].accountId)
+
     let res;
     try {
-      res = await signAndSendTransactions({
+      res = await (account as any).signAndSendTransactions({
         transactions: transformedTxs,
       });
     } catch (e) {
@@ -146,7 +150,7 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async verifyOwner({ message }) {
       logger.log("FastAuthMetaMask:verifyOwner", { message });
-      return verifyOwner({ message, provider, account: null });
+      return verifyOwner({ message, provider });
     },
 
     async getAccounts() {
@@ -158,8 +162,7 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async signAndSendTransactions({ transactions }) {
-      const account = getNethAccounts()
-      (account as typeof Account).signAndSendTransactions(transactions);
+      return signTransactions(transactions)
     },
   };
 };
