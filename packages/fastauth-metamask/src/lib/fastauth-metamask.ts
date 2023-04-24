@@ -6,10 +6,8 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import detectEthereumProvider from "@metamask/detect-provider";
-import * as nearAPI from 'near-api-js'
-const {
-  Account
-} = nearAPI
+import * as nearAPI from "near-api-js";
+const { Account } = nearAPI;
 import { FastAuthMetaMaskIcon } from "../assets/icons";
 import {
   signIn,
@@ -62,12 +60,11 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
   provider,
 }) => {
-
   const cover = initConnection({
     network: options.network,
     logger,
     storage,
-  })
+  });
 
   const isValidActions = (
     actions: Array<Action>
@@ -106,10 +103,11 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
     }));
 
     const accountInfo = await getNethAccounts();
-    const account = new Account(getConnection(), accountInfo[0].accountId)
+    const account = new Account(getConnection(), accountInfo[0].accountId);
 
     let res;
     try {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
       res = await (account as any).signAndSendTransactions({
         transactions: transformedTxs,
       });
@@ -154,15 +152,15 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async getAccounts() {
-      return getNethAccounts()
+      return getNethAccounts();
     },
 
     async signAndSendTransaction({ receiverId, actions }) {
-      return signTransactions([{ receiverId, actions }])
+      return signTransactions([{ receiverId, actions }]);
     },
 
     async signAndSendTransactions({ transactions }) {
-      return signTransactions(transactions)
+      return signTransactions(transactions);
     },
   };
 };
@@ -173,9 +171,9 @@ export function setupFastAuthMetaMask({
   useModalCover = false,
   deprecated = false,
 }: FastAuthMetaMaskParams = {}): WalletModuleFactory<InjectedWallet> {
-
   return async () => {
     useCover = useModalCover;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     customGas = gas;
 
     const mobile = isMobile();
