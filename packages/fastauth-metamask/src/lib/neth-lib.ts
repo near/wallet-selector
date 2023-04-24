@@ -1,6 +1,3 @@
-/*eslint @typescript-eslint/no-use-before-define: 1*/
-/*eslint @typescript-eslint/no-explicit-any: 1*/
-/*eslint @typescript-eslint/naming-convention: 1*/
 // @ts-nocheck
 
 import { ethers } from "ethers";
@@ -25,7 +22,8 @@ const {
   },
 } = nearAPI;
 
-export const METAMASK_URL = "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn";
+export const METAMASK_URL =
+  "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn";
 export const PREV_NETH_SITE_URL = "neardefi.github.io/neth";
 
 const NETWORK = {
@@ -111,10 +109,7 @@ export const initConnection = ({
   });
   connection = near.connection;
   networkId = network.networkId;
-  contractAccount = new Account(
-    connection,
-    NETWORK[networkId].ROOT_ACCOUNT_ID
-  );
+  contractAccount = new Account(connection, NETWORK[networkId].ROOT_ACCOUNT_ID);
   accountSuffix = networkId === "." + NETWORK[networkId].ROOT_ACCOUNT_ID;
 
   const cover = document.createElement("div");
@@ -220,8 +215,9 @@ const createAccount = async ({
   fundingErrorCB,
   postFundingCB,
 }) => {
-
-  return console.warn(`Create the account with FastAuth and then call "handleMapping" to pair the ETH and NEAR accounts.`);
+  return console.warn(
+    `Create the account with FastAuth and then call "handleMapping" to pair the ETH and NEAR accounts.`
+  );
 
   const implicitAccountId = Buffer.from(
     PublicKey.from(fundingAccountPubKey).data
@@ -353,7 +349,7 @@ export const handleMapping = async () => {
     return logger.log(`Account mapping failed`);
   }
 
-  console.warn('NETH contract will not be deployed.')
+  console.warn("NETH contract will not be deployed.");
   // return await handleDeployContract();
 };
 
@@ -1206,7 +1202,10 @@ const broadcastTXs = async () => {
   return res;
 };
 
-export const signAndSendTransactions = async ({ transactions, bundle = false }) => {
+export const signAndSendTransactions = async ({
+  transactions,
+  bundle = false,
+}) => {
   const ethRes: any = await getEthereum();
   const { signer } = ethRes;
   const { account, accountId } = await getNear();
