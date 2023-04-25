@@ -36,6 +36,7 @@ export const resolveOptions = (params: WalletSelectorParams) => {
     debug: params.debug || false,
     optimizeWalletOrder: params.optimizeWalletOrder === false ? false : true,
     randomizeWalletOrder: params.randomizeWalletOrder || false,
+    relayerUrl: params.relayerUrl || undefined
   };
 
   return {
