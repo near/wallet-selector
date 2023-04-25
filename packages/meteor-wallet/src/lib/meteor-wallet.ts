@@ -45,7 +45,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params, metadata }) => {
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const getAccounts = async (): Promise<Array<Account>> => {
@@ -169,7 +169,19 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         recipient,
         state,
       });
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const accountId = _state.wallet.getAccountId();
+      const response = await _state.wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+        accountId,
+        state,
+      });
+      if (response.success) {
+        return response.payload;
+      } else {
+        throw new Error(`Couldn't sign message owner: ${response.message}`);
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

@@ -2639,10 +2639,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-2.0.0.tgz#4bc2795e5e6f7d8b84b2e845058d2f222c99917d"
   integrity sha512-sFpN+TX13E9fdBDh9lvQeZdJn4qYoRb/6QF2oZZK/Pn559IhCFacPMU1rMuqyXoFQF3JSJfii2l98B87QDPeCQ==
 
-"@meteorwallet/sdk@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.6.0.tgz#006b77410a7874f0c9bfc0d693f199b561f39d19"
-  integrity sha512-oriaQ1gk1hpQx6V6BxsvUthDd0Bpmv3ho5Ap5pm9P0euEosWtFUVF1dTYndJE10qBG8yLW+EOOX1LZ8taXCiRA==
+"@meteorwallet/sdk@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.8.0.tgz#913732c1c5210a05e008a3aedc664b16c728f682"
+  integrity sha512-C0x9/20t+lCMUlKSPSAbPUWjz8Ls59NwWnz/qSJM5B4qCXN3OSCcrqmpbJpSVa2wCHFhK/HuOqaKlMCr0XsQ0w==
   dependencies:
     nanoid "3.3.4"
     query-string "^7.1.1"
