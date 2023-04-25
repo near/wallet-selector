@@ -16,5 +16,5 @@ export interface Options {
   debug: boolean;
   optimizeWalletOrder: boolean;
   randomizeWalletOrder: boolean;
-  relayerUrl: string | undefined
+  relayerUrl: string | undefined;
 }
