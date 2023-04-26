@@ -46,5 +46,8 @@ export interface Options {
    * Weather wallet order randomization is enabled.
    */
   randomizeWalletOrder: boolean;
+  /**
+   * The URL where DelegateActions are sent by meta transaction enabled wallet modules.
+   */
   relayerUrl: string | undefined;
 }
