@@ -17,6 +17,7 @@ export interface WalletSelectorParams {
   allowMultipleSelectors?: boolean;
   randomizeWalletOrder?: boolean;
   languageCode?: SupportedLanguage;
+  relayerUrl?: string;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;

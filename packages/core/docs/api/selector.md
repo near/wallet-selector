@@ -14,6 +14,8 @@
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 - `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.
 - `languageCode` (`string?`): ISO 639-1 two-letter language code.
+- `relayerUrl` (`string?`): The URL where DelegateActions are sent by meta transaction enabled wallet modules.
+
 **Description**
 
 Resolved variation of the options passed to `setupWalletSelector`.

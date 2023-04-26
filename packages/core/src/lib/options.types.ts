@@ -46,4 +46,5 @@ export interface Options {
    * Weather wallet order randomization is enabled.
    */
   randomizeWalletOrder: boolean;
+  relayerUrl: string | undefined;
 }
