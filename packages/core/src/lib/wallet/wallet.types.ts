@@ -12,26 +12,62 @@ import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
 interface BaseWalletMetadata {
+  /**
+   * Wallet name.
+   */
   name: string;
+  /**
+   * Wallet description.
+   */
   description: string | null;
+  /**
+   * Wallet icon url.
+   */
   iconUrl: string;
+  /**
+   * Is wallet deprecated.
+   */
   deprecated: boolean;
+  /**
+   * Will the wallet be shown in modal.
+   */
   available: boolean;
 }
 
 export interface Account {
+  /**
+   * NEAR account identifier.
+   */
   accountId: string;
+  /**
+   * Account public key.
+   */
   publicKey?: string;
 }
 
 export interface SignInParams {
+  /**
+   * Account ID of the Smart Contract.
+   */
   contractId: string;
+  /**
+   * Specify limited access to particular methods on the Smart Contract.
+   */
   methodNames?: Array<string>;
 }
 
 export interface VerifyOwnerParams {
+  /**
+   * The message requested sign. Defaults to `verify owner` string.
+   */
   message: string;
+  /**
+   * Applicable to browser wallets (e.g. MyNearWallet). This is the callback url once the signing is approved. Defaults to `window.location.href`.
+   */
   callbackUrl?: string;
+  /**
+   * Applicable to browser wallets (e.g. MyNearWallet) extra data that will be passed to the callback url once the signing is approved.
+   */
   meta?: string;
 }
 
@@ -45,23 +81,57 @@ export interface VerifiedOwner {
 }
 
 interface SignAndSendTransactionParams {
+  /**
+   * Account ID used to sign the transaction. Defaults to the first account.
+   */
   signerId?: string;
+  /**
+   * Account ID to receive the transaction. Defaults to `contractId` defined in `init`.
+   */
   receiverId?: string;
+  /**
+   * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
+   */
   actions: Array<Action>;
 }
 
 interface SignAndSendTransactionsParams {
+  /**
+   * NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
+   */
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
 interface BaseWalletBehaviour {
+  /**
+   * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
+   */
   signIn(params: SignInParams): Promise<Array<Account>>;
+  /**
+   * Sign out from the wallet.
+   */
   signOut(): Promise<void>;
+  /**
+   * Returns one or more accounts when signed in.
+   * This method can be useful for wallets that support accounts at once such as WalletConnect.
+   * In this case, you can use an `accountId` returned as the `signerId` for `signAndSendTransaction`.
+   */
   getAccounts(): Promise<Array<Account>>;
+  /**
+   * Signs the message and verifies the owner. Message is not sent to blockchain.
+   */
   verifyOwner(params: VerifyOwnerParams): Promise<VerifiedOwner | void>;
+  /**
+   * Signs one or more NEAR Actions before sending to the network.
+   * The user must be signed in to call this method as there's at least charges for gas spent.
+   */
   signAndSendTransaction(
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;
+  /**
+   * Signs one or more transactions before sending to the network.
+   * The user must be signed in to call this method as there's at least charges for gas spent.
+   */
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
@@ -72,8 +142,17 @@ type BaseWallet<
   Metadata extends BaseWalletMetadata,
   Behaviour
 > = {
+  /**
+   * Unique identifier of the wallet.
+   */
   id: string;
+  /**
+   * Returns the type of wallet. This is particular useful when using functionality that's wallet specific (see hardware wallet example).
+   */
   type: Type;
+  /**
+   * Returns meta information about the wallet such as `name`, `description`, `iconUrl`, `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId` and `runOnStartup` for instant-link wallets.
+   */
   metadata: Metadata;
 } & Behaviour;
 
@@ -92,22 +171,40 @@ export type WalletEvents = {
 // ----- Browser Wallet ----- //
 
 export type BrowserWalletMetadata = BaseWalletMetadata & {
+  /**
+   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   */
   successUrl?: string;
+  /**
+   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   */
   failureUrl?: string;
 };
 
 interface BrowserWalletSignInParams extends SignInParams {
+  /**
+   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   */
   successUrl?: string;
+  /**
+   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   */
   failureUrl?: string;
 }
 
 interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
+  /**
+   * Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+   */
   callbackUrl?: string;
 }
 
 interface BrowserWalletSignAndSendTransactionsParams
   extends SignAndSendTransactionsParams {
+  /**
+   * Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+   */
   callbackUrl?: string;
 }
 
@@ -192,6 +289,9 @@ export interface HardwareWalletAccount {
 }
 
 export interface HardwareWalletSignInParams extends SignInParams {
+  /**
+   * Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
+   */
   accounts: Array<HardwareWalletAccount>;
 }
 
@@ -211,6 +311,10 @@ export type HardwareWallet = BaseWallet<
 // ----- Bridge Wallet ----- //
 
 interface BridgeWalletSignInParams extends SignInParams {
+  /**
+   * Optional for bridge wallets (e.g Wallet Connect).
+   * This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+   */
   qrCodeModal?: boolean;
 }
 
