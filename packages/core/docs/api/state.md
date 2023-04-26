@@ -46,6 +46,7 @@ console.log(modules); // [{ id: "near-wallet", ... }]
 
 - `Array<AccountState>`
   - `accountId` (`string`): NEAR account identifier.
+  - `publicKey` (`string?`): Account public key.
   - `active` (`boolean`): Is account set as active.
 
 **Description**

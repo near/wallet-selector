@@ -9,6 +9,7 @@
   - `nodeUrl` (`string`): URL for RPC requests.
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
+  - `indexerUrl` (`string`): URL for the NEAR indexer.
 - `debug` (`boolean`): Whether internal logging is enabled.
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 - `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.

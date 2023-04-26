@@ -7,7 +7,9 @@
     "node": true,
     "jest": true
   },
-  "ignorePatterns": ["**/*"],
+  "ignorePatterns": [
+    "**/*"
+  ],
   "plugins": [
     "@nrwl/nx",
     "@typescript-eslint",
@@ -16,7 +18,12 @@
   ],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
       "rules": {
         "@nrwl/nx/enforce-module-boundaries": [
           "error",
@@ -26,7 +33,9 @@
             "depConstraints": [
               {
                 "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "onlyDependOnLibsWithTags": [
+                  "*"
+                ]
               }
             ]
           }
@@ -34,9 +43,14 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
       "parserOptions": {
-        "project": ["tsconfig.*?.json"]
+        "project": [
+          "tsconfig.*?.json"
+        ]
       },
       "extends": [
         "plugin:@nrwl/nx/typescript",
@@ -45,7 +59,8 @@
         "prettier"
       ],
       "rules": {
-        "prettier/prettier": ["error",
+        "prettier/prettier": [
+          "error",
           {
             "arrowParens": "always",
             "bracketSpacing": true,
@@ -61,7 +76,8 @@
             "insertPragma": false,
             "requirePragma": false,
             "bracketSameLine": false,
-            "endOfLine": "auto"
+            "endOfLine": "auto",
+            "jsdoc": true
           }
         ],
         "@typescript-eslint/ban-ts-comment": "off",
@@ -72,7 +88,11 @@
           "error",
           {
             "selector": "variableLike",
-            "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+            "format": [
+              "camelCase",
+              "PascalCase",
+              "UPPER_CASE"
+            ],
             "leadingUnderscore": "allow"
           }
         ],
@@ -84,11 +104,22 @@
         "@typescript-eslint/type-annotation-spacing": "error",
         "@typescript-eslint/no-unused-vars": "error",
         "@typescript-eslint/ban-ts-ignore": "off",
-        "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+        "@typescript-eslint/array-type": [
+          "error",
+          {
+            "default": "generic"
+          }
+        ],
         "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/consistent-type-exports": "error",
-        "curly": ["error", "all"],
-        "eqeqeq": ["error", "smart"],
+        "curly": [
+          "error",
+          "all"
+        ],
+        "eqeqeq": [
+          "error",
+          "smart"
+        ],
         "default-case": "off",
         "no-caller": "error",
         "no-case-declarations": "off",
@@ -101,7 +132,10 @@
         "no-shadow": "off",
         "@typescript-eslint/no-shadow": "error",
         "no-unused-expressions": "error",
-        "radix": ["error", "as-needed"],
+        "radix": [
+          "error",
+          "as-needed"
+        ],
         "no-restricted-syntax": [
           "error",
           {
@@ -114,13 +148,21 @@
             "message": "Call parseFloat directly to guarantee radix param is not incorrectly provided"
           }
         ],
-        "strict": ["error", "global"],
+        "strict": [
+          "error",
+          "global"
+        ],
         "valid-jsdoc": "error"
       }
     },
     {
-      "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
+      "extends": [
+        "plugin:@nrwl/nx/javascript"
+      ],
       "rules": {}
     }
   ]
