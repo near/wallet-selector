@@ -153,4 +153,4 @@ This method is similar to `signAndSendTransaction` but instead sends a batch of 
 ### `signMessage`
 
 This method allows users to sign a message for a specific recipient using their NEAR account.
-Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/pull/413).
+Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).

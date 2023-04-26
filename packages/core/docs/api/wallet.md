@@ -309,7 +309,7 @@ Signs one or more transactions before sending to the network. The user must be s
 
 **Description**
 
-Allows users to sign a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/pull/413).
+Allows users to sign a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
 
 **Example**
 

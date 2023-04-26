@@ -15,7 +15,8 @@ export interface VerifyFullKeyBelongsToUserParams {
   network: Network;
 }
 
-export interface FetchUserKeysParams {
+export interface ViewAccessKeyParams {
   accountId: string;
   network: Network;
+  publicKey: string;
 }

@@ -8,6 +8,8 @@ export class Payload {
   callbackUrl?: string;
 
   constructor(data: SignMessageParams) {
+    // The tag's value is a hardcoded value as per
+    // defined in the NEP [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md)
     this.tag = 2147484061;
     this.message = data.message;
     this.nonce = data.nonce;

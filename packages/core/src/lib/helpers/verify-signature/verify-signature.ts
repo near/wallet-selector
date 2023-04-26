@@ -4,10 +4,10 @@ import { sha256 } from "js-sha256";
 import type {
   VerifyFullKeyBelongsToUserParams,
   VerifySignatureParams,
-  FetchUserKeysParams,
+  ViewAccessKeyParams,
 } from "./verify-signature.types";
 import { Payload, payloadSchema } from "./payload";
-import type { AccessKeyList } from "near-api-js/lib/providers/provider";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider";
 
 export const verifySignature = ({
   publicKey,
@@ -30,14 +30,16 @@ export const verifySignature = ({
 const fetchAllUserKeys = async ({
   accountId,
   network,
-}: FetchUserKeysParams): Promise<AccessKeyList> => {
+  publicKey,
+}: ViewAccessKeyParams): Promise<AccessKeyView> => {
   const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
-  const keys = await provider.query({
-    request_type: "view_access_key_list",
+  const key = await provider.query({
+    request_type: "view_access_key",
     account_id: accountId,
     finality: "final",
+    public_key: publicKey,
   });
-  return keys as AccessKeyList;
+  return key as AccessKeyView;
 };
 
 export const verifyFullKeyBelongsToUser = async ({
@@ -45,16 +47,11 @@ export const verifyFullKeyBelongsToUser = async ({
   accountId,
   network,
 }: VerifyFullKeyBelongsToUserParams) => {
-  const { keys } = await fetchAllUserKeys({ accountId, network });
+  const { permission } = await fetchAllUserKeys({
+    accountId,
+    network,
+    publicKey,
+  });
 
-  if (!keys) {
-    return false;
-  }
-
-  for (const k in keys) {
-    if (keys[k].public_key === publicKey) {
-      return keys[k].access_key.permission === "FullAccess";
-    }
-  }
-  return false;
+  return permission === "FullAccess";
 };
