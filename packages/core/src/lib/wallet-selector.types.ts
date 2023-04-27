@@ -9,14 +9,41 @@ import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
 
 export interface WalletSelectorParams {
+  /**
+   * Resolved network configuration.
+   */
   network: NetworkId | Network;
+  /**
+   * List of wallet module factory functions
+   */
   modules: Array<WalletModuleFactory>;
+  /**
+   * Custom storage service
+   */
   storage?: StorageService;
+  /**
+   * Whether internal logging is enabled.
+   */
   debug?: boolean;
+  /**
+   * Whether wallet order optimization is enabled.
+   */
   optimizeWalletOrder?: boolean;
+  /**
+   * Wether to allow multiple wallet selector instances to be created.
+   */
   allowMultipleSelectors?: boolean;
+  /**
+   * Weather wallet order randomization is enabled.
+   */
   randomizeWalletOrder?: boolean;
+  /**
+   * ISO 639-1 two-letter language code.
+   */
   languageCode?: SupportedLanguage;
+  /**
+   * The URL where DelegateActions are sent by meta transaction enabled wallet modules.
+   */
   relayerUrl?: string;
 }
 

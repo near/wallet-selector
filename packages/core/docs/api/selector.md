@@ -13,6 +13,7 @@
 - `debug` (`boolean`): Whether internal logging is enabled.
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 - `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.
+- `allowMultipleSelectors` (`boolean?`): Wether to allow multiple wallet selector instances to be created.
 - `languageCode` (`string?`): ISO 639-1 two-letter language code.
 - `relayerUrl` (`string?`): The URL where DelegateActions are sent by meta transaction enabled wallet modules.
 
