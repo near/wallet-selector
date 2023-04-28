@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/wallet-connect",
-  "version": "8.0.2",
+  "version": "8.0.3",
   "description": "Wallet Connect package for NEAR Wallet Selector.",
   "keywords": [
     "near",
