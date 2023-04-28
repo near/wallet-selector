@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/xdefi",
-  "version": "8.0.2",
+  "version": "8.0.3",
   "description": "This is the XDEFI package for NEAR Wallet Selector.",
   "keywords": [
     "near",
