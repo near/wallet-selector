@@ -5159,7 +5159,7 @@
   dependencies:
     tslib "1.14.1"
 
-"@walletconnect/types@2.7.2", "@walletconnect/types@^2.5.2":
+"@walletconnect/types@2.7.2", "@walletconnect/types@^2.7.2":
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.7.2.tgz#508d1755110864dee294f955e09b7da3f8ee0064"
   integrity sha512-1O2UefakZpT0ErRfEAXY7Ls3qdUrKDky/DsK088xR6klyfkQOx+aSVH0fJYLhmnqPTuvp3lrqNbsDc0s6/6nvg==
