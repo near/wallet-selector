@@ -126,7 +126,7 @@
   color: var(--wallet-selector-text-color, var(--text-color));
   font-family: Manrope, sans-serif;
   font-weight: 500;
-  z-index: 100;
+  z-index: 80;
   display: flex;
   justify-content: center;
   align-items: center;

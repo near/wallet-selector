@@ -485,6 +485,8 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       try {
+        const chainId = getChainId();
+
         _state.session = await _state.client.connect(
           {
             requiredNamespaces: {
@@ -495,7 +497,9 @@ const WalletConnect: WalletBehaviourFactory<
               },
             },
           },
-          qrCodeModal
+          qrCodeModal,
+          params.projectId,
+          chainId
         );
 
         await requestSignIn({ receiverId: contractId, methodNames });
