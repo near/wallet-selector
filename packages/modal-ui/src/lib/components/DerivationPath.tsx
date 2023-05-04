@@ -133,6 +133,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       setAccounts(resolvedAccounts);
 
       if (!multipleAccounts) {
+        setSelectedAccounts(resolvedAccounts);
         setRoute("OverviewAccounts");
       } else {
         setHeaderTitle(translate("modal.ledger.selectYourAccounts"));

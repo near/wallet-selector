@@ -215,7 +215,7 @@ const createAccount = async ({
   fundingErrorCB,
   postFundingCB,
 }) => {
-  return console.warn(
+  alert(
     `Create the account with FastAuth and then call "handleMapping" to pair the ETH and NEAR accounts.`
   );
 
