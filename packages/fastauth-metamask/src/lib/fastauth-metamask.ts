@@ -107,6 +107,7 @@ const FastAuthMetaMask: WalletBehaviourFactory<InjectedWallet> = async ({
 
     let res;
     try {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
       res = await (account as any).signAndSendTransactions({
         transactions: transformedTxs,
       });
@@ -172,6 +173,7 @@ export function setupFastAuthMetaMask({
 }: FastAuthMetaMaskParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     useCover = useModalCover;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     customGas = gas;
 
     const mobile = isMobile();
