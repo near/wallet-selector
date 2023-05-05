@@ -57,10 +57,10 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 
 ```ts
 import { setupNeth } from "@near-wallet-selector/neth";
-import { nearWalletIcon } from "@near-wallet-selector/neth/assets/icons";
+import nethWalletIcon from "@near-wallet-selector/neth/assets/neth-logo.png";
 
 const neth = setupNeth({
-  iconUrl: nearWalletIcon
+  iconUrl: nethWalletIcon
 });
 ```
 

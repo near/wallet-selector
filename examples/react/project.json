@@ -30,6 +30,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/xdefi/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/nearfi/assets/",
             "output": "assets/"
           },
@@ -60,11 +65,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/narwallets/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -86,6 +86,26 @@
           {
             "glob": "**/*",
             "input": "packages/finer-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/here-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-snap/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/neth/assets/",
             "output": "assets/"
           }
         ]
