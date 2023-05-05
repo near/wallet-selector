@@ -114,8 +114,6 @@ export async function renderGetAWallet() {
     const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
     const walletUrl = getWalletUrl(filteredModules[i]);
 
-    console.log({ walletUrl });
-
     document.getElementById("wallets")?.insertAdjacentHTML(
       "beforeend",
       `
