@@ -52,50 +52,6 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     return url;
   };
 
-  const getTypeNameAndIcon = (
-    walletId: string,
-    type: string
-  ): { typeFullName: string; qrIcon: boolean } => {
-    switch (type) {
-      case "injected":
-        if (walletId === "nearfi") {
-          return {
-            typeFullName: "Wallet Extension",
-            qrIcon: true,
-          };
-        }
-
-        if (walletId === "here-wallet") {
-          return {
-            typeFullName: "Mobile Wallet",
-            qrIcon: true,
-          };
-        }
-
-        return {
-          typeFullName: "Wallet Extension",
-          qrIcon: false,
-        };
-      case "browser":
-        if (walletId === "here-wallet") {
-          return {
-            typeFullName: "Web Wallet",
-            qrIcon: true,
-          };
-        }
-
-        return {
-          typeFullName: "Web Wallet",
-          qrIcon: false,
-        };
-      default:
-        return {
-          typeFullName: "Web Wallet",
-          qrIcon: false,
-        };
-    }
-  };
-
   return (
     <div className="wallet-home-wrapper">
       <div className="nws-modal-header-wrapper">
@@ -119,8 +75,8 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
         <div className="get-wallet-wrapper">
           {modules.map((module) => {
             const { iconUrl, name } = module.metadata;
-            const { type, id } = module;
-            const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+            const qrIcon = ["nearfi", "here-wallet"].includes(module.id);
+            const hereWalletType = module.id === "here-wallet" ? "mobile" : "";
             const walletUrl = getWalletUrl(module);
             return (
               <div
@@ -224,7 +180,9 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 <div className="content">
                   <div className="title">{name}</div>
                   <div className="type">
-                    {translate(`modal.walletTypes.${module.type}`)}
+                    {translate(
+                      `modal.walletTypes.${hereWalletType || module.type}`
+                    )}
                   </div>
                 </div>
               </div>
