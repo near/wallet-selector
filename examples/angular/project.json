@@ -97,7 +97,22 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/xdefi/assets/",
+            "input": "packages/here-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-snap/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/neth/assets/",
             "output": "assets/"
           }
         ],
