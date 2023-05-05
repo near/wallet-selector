@@ -45,6 +45,19 @@ const selector = await setupWalletSelector({
 - `iconUrl`: (`string?`): Icon is optional. Default image point to Coin98 Wallet Logo in base64 format.
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
+## Assets
+
+Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
+
+```ts
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import coin98WalletIconUrl from "@near-wallet-selector/coin98-wallet/assets/coin98-wallet-icon.png";
+
+const wallet = setupCoin98Wallet({
+  iconUrl: coin98WalletIconUrl
+});
+```
+
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
