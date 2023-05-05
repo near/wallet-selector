@@ -111,7 +111,7 @@ export async function renderGetAWallet() {
 
   for (let i = 0; i < filteredModules.length; i++) {
     const { type, id } = filteredModules[i];
-    const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+    const { qrIcon } = getTypeNameAndIcon(id, type);
     const walletUrl = getWalletUrl(filteredModules[i]);
 
     document.getElementById("wallets")?.insertAdjacentHTML(
@@ -215,7 +215,9 @@ export async function renderGetAWallet() {
           alt="${filteredModules[i].metadata.name}"></div>
       <div class="content">
         <div class="title">${filteredModules[i].metadata.name}</div>
-        <div class="type">${typeFullName}</div>
+        <div class="type">${translate(
+          `modal.walletTypes.${filteredModules[i].type}`
+        )}</div>
       </div>
     </div>
 `

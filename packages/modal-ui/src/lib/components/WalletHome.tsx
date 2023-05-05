@@ -223,7 +223,9 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 </div>
                 <div className="content">
                   <div className="title">{name}</div>
-                  <div className="type">{typeFullName}</div>
+                  <div className="type">
+                    {translate(`modal.walletTypes.${module.type}`)}
+                  </div>
                 </div>
               </div>
             );
