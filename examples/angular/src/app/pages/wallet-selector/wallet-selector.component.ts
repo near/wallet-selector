@@ -55,7 +55,7 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        setupMyNearWallet(),
+        setupMyNearWallet({ deprecated: true }),
         setupLedger(),
         setupNearWallet(),
         setupSender(),
