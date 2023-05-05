@@ -134,7 +134,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                 }}
               >
                 <div className={"small-icon"}>
-                  {qrIcon && (
+                  {qrIcon && walletUrl && (
                     <svg
                       width="18"
                       height="16"
@@ -189,7 +189,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                       />
                     </svg>
                   )}
-                  {!qrIcon && (
+                  {!qrIcon && walletUrl && (
                     <svg
                       width="18"
                       height="16"

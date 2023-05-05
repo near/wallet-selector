@@ -112,6 +112,9 @@ export async function renderGetAWallet() {
   for (let i = 0; i < filteredModules.length; i++) {
     const { type, id } = filteredModules[i];
     const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+    const walletUrl = getWalletUrl(filteredModules[i]);
+
+    console.log({ walletUrl });
 
     document.getElementById("wallets")?.insertAdjacentHTML(
       "beforeend",
@@ -121,7 +124,7 @@ export async function renderGetAWallet() {
       }">
       <div class="small-icon">
       ${
-        qrIcon
+        qrIcon && walletUrl
           ? `
         <svg
           width="18"
@@ -176,7 +179,8 @@ export async function renderGetAWallet() {
             fill="#4C5155"
           />
         </svg>`
-          : `
+          : !qrIcon && walletUrl
+          ? `
         <svg
             width="18"
             height="16"
@@ -203,6 +207,7 @@ export async function renderGetAWallet() {
               stroke-linejoin="round"
             />
           </svg>`
+          : ``
       }
 
       </div>
