@@ -6,6 +6,10 @@ import type {
 import { modalState } from "../modal";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
 import { translate } from "@near-wallet-selector/core";
+import { BackArrowIcon } from "./icons/BackArrowIcon";
+import { CloseIcon } from "./icons/CloseIcon";
+import { QRIcon } from "./icons/QRIcon";
+import { LinkIcon } from "./icons/LinkIcon";
 
 function getWalletUrl(module: ModuleState) {
   if (!modalState) {
@@ -34,22 +38,16 @@ export async function renderGetAWallet() {
     <div class="nws-modal-body">
       <div class="wallet-home-wrapper">
         <div class="nws-modal-header-wrapper">
-        <button class="back-button" id="back-button"><svg width="8" height="14" viewBox="0 0 8 14"
-              fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 13L1 7L7 1" stroke="#6494EE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              </path>
-            </svg>
+        <button class="back-button" id="back-button">
+          ${BackArrowIcon}
         </button>
           <div class="nws-modal-header">
             <h3 class="middleTitle -open">${translate(
               "modal.wallet.getAWallet"
-            )}</h3><button class="close-button"><svg xmlns="http://www.w3.org/2000/svg"
-                height="24" viewBox="0 0 24 24" width="24" fill="#C1C1C1">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
-                </path>
-              </svg></button>
+            )}</h3>
+            <button class="close-button">
+              ${CloseIcon}
+            </button>
           </div>
         </div>
         <div class="get-wallet-wrapper" id="wallets">
@@ -80,88 +78,9 @@ export async function renderGetAWallet() {
       <div class="small-icon">
       ${
         qrIcon && walletUrl
-          ? `
-        <svg
-          width="18"
-          height="16"
-          viewBox="0 0 18 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.22224 1.33334H1.44446V6.66668H7.22224V1.33334Z"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M15.8889 1.33334H10.1111V6.66668H15.8889V1.33334Z"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.22224 9.33334H1.44446V14.6667H7.22224V9.33334Z"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M10.1111 13.1429V14.6667H15.8889M10.1111 9.33334V10.8572H12.5873V9.33334H15.8889V12.381"
-            stroke="#4C5155"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <rect
-            x="3.61108"
-            y="3.33334"
-            width="1.44444"
-            height="1.33333"
-            fill="#4C5155"
-          />
-          <rect
-            x="3.61108"
-            y="11.3333"
-            width="1.44444"
-            height="1.33333"
-            fill="#4C5155"
-          />
-          <rect
-            x="12.2778"
-            y="3.33334"
-            width="1.44445"
-            height="1.33333"
-            fill="#4C5155"
-          />
-        </svg>`
+          ? `${QRIcon}`
           : !qrIcon && walletUrl
-          ? `
-        <svg
-            width="18"
-            height="16"
-            viewBox="0 0 18 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M13 8.66667V12.6667C13 13.0203 12.8478 13.3594 12.577 13.6095C12.3061 13.8595 11.9387 14 11.5556 14H3.61113C3.22804 14 2.86064 13.8595 2.58975 13.6095C2.31887 13.3594 2.16669 13.0203 2.16669 12.6667V5.33333C2.16669 4.97971 2.31887 4.64057 2.58975 4.39052C2.86064 4.14048 3.22804 4 3.61113 4H7.94447"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M10.8333 2H15.1666V6"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M7.22223 9.33333L15.1667 2"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>`
+          ? `${LinkIcon}`
           : ``
       }
 
