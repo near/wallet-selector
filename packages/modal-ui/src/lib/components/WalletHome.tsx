@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import type {
+  BrowserWallet,
   InjectedWallet,
   ModuleState,
   WalletSelector,
@@ -37,42 +38,18 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const goToWallet = (module: ModuleState) => {
-    const { networkId } = selector.options.network;
+  const getWalletUrl = (module: ModuleState) => {
     let url = "";
 
     if (module.type === "injected") {
       url = (module as ModuleState<InjectedWallet>).metadata.downloadUrl;
     }
 
-    // TODO: improve links to wallets other than injected type.
-    if (module.id === "my-near-wallet") {
-      const subdomain = networkId === "testnet" ? "testnet" : "app";
-      url = `https://${subdomain}.mynearwallet.com`;
+    if (module.type === "browser") {
+      url = (module as ModuleState<BrowserWallet>).metadata.walletUrl;
     }
 
-    if (module.id === "opto-wallet") {
-      const subdomain = networkId === "testnet" ? "app.testnet" : "app";
-      url = `https://${subdomain}.optowallet.com`;
-    }
-
-    if (module.id === "near-wallet") {
-      const subdomain = networkId === "testnet" ? "testnet." : "";
-      url = `https://wallet.${subdomain}near.org`;
-    }
-
-    if (module.id === "here-wallet") {
-      url = "https://herewallet.app/";
-    }
-
-    if (
-      (url === "" && module.type === "bridge") ||
-      module.type === "hardware"
-    ) {
-      return;
-    }
-
-    window.open(url, "_blank");
+    return url;
   };
 
   const getTypeNameAndIcon = (
@@ -144,17 +121,20 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             const { iconUrl, name } = module.metadata;
             const { type, id } = module;
             const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+            const walletUrl = getWalletUrl(module);
             return (
               <div
                 tabIndex={0}
                 className={`single-wallet-get ${module.id}`}
                 key={module.id}
                 onClick={() => {
-                  goToWallet(module);
+                  if (walletUrl) {
+                    window.open(walletUrl, "_blank");
+                  }
                 }}
               >
                 <div className={"small-icon"}>
-                  {qrIcon && (
+                  {qrIcon && walletUrl && (
                     <svg
                       width="18"
                       height="16"
@@ -209,7 +189,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
                       />
                     </svg>
                   )}
-                  {!qrIcon && (
+                  {!qrIcon && walletUrl && (
                     <svg
                       width="18"
                       height="16"

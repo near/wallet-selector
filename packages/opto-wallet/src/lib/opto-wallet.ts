@@ -235,7 +235,7 @@ export function setupOptoWallet({
   iconUrl = icon,
   deprecated = false,
 }: OptoWalletParams = {}): WalletModuleFactory<BrowserWallet> {
-  return async () => {
+  return async (moduleOptions) => {
     if (!window.opto) {
       return null;
     }
@@ -249,6 +249,7 @@ export function setupOptoWallet({
         iconUrl,
         deprecated,
         available: true,
+        walletUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
       },
       init: (options) => {
         return OptoWallet({
