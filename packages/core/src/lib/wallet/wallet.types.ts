@@ -151,7 +151,7 @@ type BaseWallet<
    */
   type: Type;
   /**
-   * Returns meta information about the wallet such as `name`, `description`, `iconUrl`, `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId` and `runOnStartup` for instant-link wallets.
+   * Returns meta information about the wallet such as `name`, `description`, `iconUrl`, `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId`, `runOnStartup` for instant-link wallets and  walletUrl for browser wallets.
    */
   metadata: Metadata;
 } & Behaviour;
@@ -179,6 +179,11 @@ export type BrowserWalletMetadata = BaseWalletMetadata & {
    * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
+
+  /**
+   * The URL of the wallet exposed in the metadata of the module.
+   */
+  walletUrl: string;
 };
 
 interface BrowserWalletSignInParams extends SignInParams {
