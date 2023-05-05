@@ -38,7 +38,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const goToWallet = (module: ModuleState) => {
+  const getWalletUrl = (module: ModuleState) => {
     let url = "";
 
     if (module.type === "injected") {
@@ -49,14 +49,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       url = (module as ModuleState<BrowserWallet>).metadata.walletUrl;
     }
 
-    if (
-      (url === "" && module.type === "bridge") ||
-      module.type === "hardware"
-    ) {
-      return;
-    }
-
-    window.open(url, "_blank");
+    return url;
   };
 
   const getTypeNameAndIcon = (
@@ -128,13 +121,16 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
             const { iconUrl, name } = module.metadata;
             const { type, id } = module;
             const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+            const walletUrl = getWalletUrl(module);
             return (
               <div
                 tabIndex={0}
                 className={`single-wallet-get ${module.id}`}
                 key={module.id}
                 onClick={() => {
-                  goToWallet(module);
+                  if (walletUrl) {
+                    window.open(walletUrl, "_blank");
+                  }
                 }}
               >
                 <div className={"small-icon"}>

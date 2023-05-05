@@ -7,7 +7,7 @@ import { modalState } from "../modal";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
 import { translate } from "@near-wallet-selector/core";
 
-function goToWallet(module: ModuleState) {
+function getWalletUrl(module: ModuleState) {
   if (!modalState) {
     return;
   }
@@ -22,11 +22,7 @@ function goToWallet(module: ModuleState) {
     url = (module as ModuleState<BrowserWallet>).metadata.walletUrl;
   }
 
-  if ((url === "" && module.type === "bridge") || module.type === "hardware") {
-    return;
-  }
-
-  window.open(url, "_blank");
+  return url;
 }
 
 const getTypeNameAndIcon = (
@@ -235,7 +231,11 @@ export async function renderGetAWallet() {
         if (!module) {
           return;
         }
-        goToWallet(module);
+        const walletUrl = getWalletUrl(module);
+
+        if (walletUrl) {
+          window.open(walletUrl, "_blank");
+        }
       });
     }
   );
