@@ -48,6 +48,14 @@
       "copyToClipboard": " 复制到剪贴板",
       "preferTheOfficial": "希望使用官方对话框于",
       "open": "打开"
+    },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
     }
   }
 }

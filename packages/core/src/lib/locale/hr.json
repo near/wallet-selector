@@ -55,6 +55,14 @@
       "preferTheOfficial": "Odaberite službeni dijalog",
       "open": "Otvorite"
     },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
+    },
     "exportAccounts": {
       "chooseAWallet": "Odaberi Wallet",
       "transferYourAccounts": "Prenesi svoje naloge",

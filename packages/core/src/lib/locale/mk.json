@@ -55,6 +55,14 @@
       "preferTheOfficial": "Преферирајте официјален диалог на",
       "open": "Отворете"
     },
+    "walletTypes": {
+      "hardware": "Хардверски новчаник",
+      "browser": "Новчаник на интернет прелистувач",
+      "injected": "Екстензија за новчаник",
+      "bridge": "Bridge новчаник",
+      "mobile": "Мобилен новчаник",
+      "instant-link": "Инстант паричник"
+    },
     "exportAccounts": {
       "chooseAWallet": "Одберете паричник",
       "transferYourAccounts": "Префрлете ги вашите кориснички сметки",
