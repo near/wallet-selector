@@ -19,6 +19,7 @@
     "narwallets": "packages/narwallets",
     "near-wallet": "packages/near-wallet",
     "neth": "packages/neth",
+    "fastauth-metamask": "packages/fastauth-metamask",
     "nightly": "packages/nightly",
     "nightly-connect": "packages/nightly-connect",
     "opto-wallet": "packages/opto-wallet",

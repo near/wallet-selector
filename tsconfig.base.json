@@ -65,6 +65,9 @@
       "@near-wallet-selector/neth": [
         "packages/neth/src/index.ts"
       ],
+      "@near-wallet-selector/fastauth-metamask": [
+        "packages/fastauth-metamask/src/index.ts"
+      ],
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"
       ],
