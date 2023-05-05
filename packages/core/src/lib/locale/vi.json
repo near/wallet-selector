@@ -55,6 +55,14 @@
         "preferTheOfficial": "Dialogue chính thức của",
         "open": "Mở"
       },
+      "walletTypes": {
+        "hardware": "Ví lạnh",
+        "browser": "Ví trình duyệt",
+        "injected": "Ví tiện ích mở rộng",
+        "bridge": "Ví Cầu",
+        "mobile": "Ví Mobile",
+        "instant-link": "Ví tức thì"
+      },
       "exportAccounts": {
         "chooseAWallet": "Chọn ví",
         "transferYourAccounts": "Chuyển tài khoản",

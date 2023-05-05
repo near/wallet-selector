@@ -55,6 +55,14 @@
       "preferTheOfficial": "Prefer the official dialogue of",
       "open": "Open"
     },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
+    },
     "exportAccounts": {
       "chooseAWallet": "Choose a Wallet",
       "transferYourAccounts": "Transfer Your Accounts",

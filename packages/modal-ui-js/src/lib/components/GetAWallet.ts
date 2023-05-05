@@ -25,50 +25,6 @@ function getWalletUrl(module: ModuleState) {
   return url;
 }
 
-const getTypeNameAndIcon = (
-  walletId: string,
-  type: string
-): { typeFullName: string; qrIcon: boolean } => {
-  switch (type) {
-    case "injected":
-      if (walletId === "nearfi") {
-        return {
-          typeFullName: "Wallet Extension",
-          qrIcon: true,
-        };
-      }
-
-      if (walletId === "here-wallet") {
-        return {
-          typeFullName: "Mobile Wallet",
-          qrIcon: true,
-        };
-      }
-
-      return {
-        typeFullName: "Wallet Extension",
-        qrIcon: false,
-      };
-    case "browser":
-      if (walletId === "here-wallet") {
-        return {
-          typeFullName: "Web Wallet",
-          qrIcon: true,
-        };
-      }
-
-      return {
-        typeFullName: "Web Wallet",
-        qrIcon: false,
-      };
-    default:
-      return {
-        typeFullName: "Web Wallet",
-        qrIcon: false,
-      };
-  }
-};
-
 export async function renderGetAWallet() {
   if (!modalState) {
     return;
@@ -110,8 +66,9 @@ export async function renderGetAWallet() {
   const filteredModules = modalState.modules.filter(filterByType);
 
   for (let i = 0; i < filteredModules.length; i++) {
-    const { type, id } = filteredModules[i];
-    const { typeFullName, qrIcon } = getTypeNameAndIcon(id, type);
+    const qrIcon = ["nearfi", "here-wallet"].includes(filteredModules[i].id);
+    const hereWalletType =
+      filteredModules[i].id === "here-wallet" ? "mobile" : "";
     const walletUrl = getWalletUrl(filteredModules[i]);
 
     document.getElementById("wallets")?.insertAdjacentHTML(
@@ -215,7 +172,9 @@ export async function renderGetAWallet() {
           alt="${filteredModules[i].metadata.name}"></div>
       <div class="content">
         <div class="title">${filteredModules[i].metadata.name}</div>
-        <div class="type">${typeFullName}</div>
+        <div class="type">${translate(
+          `modal.walletTypes.${hereWalletType || filteredModules[i].type}`
+        )}</div>
       </div>
     </div>
 `
