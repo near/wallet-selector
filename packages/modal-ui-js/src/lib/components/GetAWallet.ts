@@ -1,4 +1,8 @@
-import type { InjectedWallet, ModuleState } from "@near-wallet-selector/core";
+import type {
+  InjectedWallet,
+  ModuleState,
+  BrowserWallet,
+} from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
 import { translate } from "@near-wallet-selector/core";
@@ -8,27 +12,14 @@ function goToWallet(module: ModuleState) {
     return;
   }
 
-  const { networkId } = modalState.selector.options.network;
   let url = "";
 
   if (module.type === "injected") {
     url = (module as ModuleState<InjectedWallet>).metadata.downloadUrl;
   }
 
-  // TODO: improve links to wallets other than injected type.
-  if (module.id === "my-near-wallet") {
-    const subdomain = networkId === "testnet" ? "testnet" : "app";
-    url = `https://${subdomain}.mynearwallet.com`;
-  }
-
-  if (module.id === "opto-wallet") {
-    const subdomain = networkId === "testnet" ? "app.testnet" : "app";
-    url = `https://${subdomain}.optowallet.com`;
-  }
-
-  if (module.id === "near-wallet") {
-    const subdomain = networkId === "testnet" ? "testnet." : "";
-    url = `https://wallet.${subdomain}near.org`;
+  if (module.type === "browser") {
+    url = (module as ModuleState<BrowserWallet>).metadata.walletUrl;
   }
 
   if ((url === "" && module.type === "bridge") || module.type === "hardware") {
