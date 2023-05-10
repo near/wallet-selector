@@ -237,7 +237,7 @@ export function setupMyNearWallet({
   successUrl = "",
   failureUrl = "",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
-  return async () => {
+  return async (moduleOptions) => {
     return {
       id: "my-near-wallet",
       type: "browser",
@@ -250,6 +250,7 @@ export function setupMyNearWallet({
         available: true,
         successUrl,
         failureUrl,
+        walletUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
       },
       init: (options) => {
         return MyNearWallet({

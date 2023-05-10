@@ -11,8 +11,10 @@ import HardwareWalletAccountsForm from "./HardwareWalletAccountsForm";
 import { WalletConnecting } from "./WalletConnecting";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
+import { LedgerDeviceIcon } from "./icons/LedgerDeviceIcon";
 import { translate } from "@near-wallet-selector/core";
+import { UpArrowIcon } from "./icons/UpArrowIcon";
+import { DownArrowIcon } from "./icons/DownArrowIcon";
 
 interface DerivationPathProps {
   selector: WalletSelector;
@@ -288,21 +290,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                       setCustomDerivationPath(newValue);
                     }}
                   >
-                    <svg
-                      width="10"
-                      height="7"
-                      viewBox="0 0 10 7"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M9 5.4762L5 1.4762L1 5.4762"
-                        stroke="#4F7CD1"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <UpArrowIcon />
                   </button>
 
                   <button
@@ -318,21 +306,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                       setCustomDerivationPath(newValue);
                     }}
                   >
-                    <svg
-                      width="10"
-                      height="7"
-                      viewBox="0 0 10 7"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1 1.52382L5 5.52382L9 1.52382"
-                        stroke="#4F7CD1"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <DownArrowIcon />
                   </button>
                 </div>
               </div>

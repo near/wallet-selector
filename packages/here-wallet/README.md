@@ -65,6 +65,12 @@ if (isHereWallet(wallet)) {
 }
 ```
 
+## Options
+
+- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
+- `defaultStrategy`: (`() => HereStrategy?`): DefaultStrategy is optional. Default is `undefined`.
+- `defaultProvider`: (`HereProvider`): HereProvider is optional. Default is `undefined`.
 
 ## Assets
 
@@ -79,13 +85,6 @@ const hereWallet = setupHereWallet({
 });
 
 ```
-
-## Options
-
-- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
-- `defaultStrategy`: (`() => HereStrategy?`): DefaultStrategy is optional. Default is `undefined`.
-- `defaultProvider`: (`HereProvider`): HereProvider is optional. Default is `undefined`.
 
 ## License
 
