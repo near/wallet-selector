@@ -58,7 +58,11 @@ export async function renderGetAWallet() {
   `;
 
   const filterByType = (item: { type: string }) => {
-    return item.type !== "bridge" && item.type !== "hardware";
+    return (
+      item.type !== "bridge" &&
+      item.type !== "hardware" &&
+      item.type !== "instant-link"
+    );
   };
 
   const filteredModules = modalState.modules.filter(filterByType);
