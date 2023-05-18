@@ -95,8 +95,10 @@ export const ExportAccountSelectorContextProvider: React.FC<{
      */
     const _modal = setupExportSelectorModal(_selector, {
       accounts: [],
-      onComplete: (completedAccounts) => {
-        console.log("Transfer Completed: ", completedAccounts);
+      onComplete: (completeProps) => {
+        console.log(
+          `${completeProps.accounts} exported to ${completeProps.walletName}`
+        );
       },
     });
     const state = _selector.store.getState();
