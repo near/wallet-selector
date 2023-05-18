@@ -24,6 +24,10 @@ import { Complete } from "./Complete";
 
 import { encryptAccountData } from "../helpers";
 
+type CompleteProps = {
+  accounts: Array<string>;
+  walletName: string;
+};
 interface ExportAccountProps {
   alertMessage: string | null;
   module?: ModuleState;
@@ -33,7 +37,7 @@ interface ExportAccountProps {
   accounts: Array<AccountImportData>;
   selector: WalletSelector;
   wallet: ModuleState<Wallet>;
-  onComplete?: (accounts: Array<string>) => void;
+  onComplete?: (object: CompleteProps) => void;
 }
 
 const EXPORT_ACCOUNT_STEPS = {
@@ -300,7 +304,10 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
 
   const onTransferComplete = () => {
     if (onComplete) {
-      onComplete(selectedAccounts);
+      onComplete({
+        accounts: selectedAccounts,
+        walletName: module?.metadata.name || "Unknown",
+      });
     }
   };
 

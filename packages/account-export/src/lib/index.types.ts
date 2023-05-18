@@ -5,11 +5,16 @@ import type {
 
 export type Theme = "dark" | "light" | "auto";
 
+type ExportSelectorOnCompleteParams = {
+  accounts: Array<string>;
+  walletName: string;
+};
+
 export interface ExportSelectorOptions {
   theme?: Theme;
   description?: string;
   accounts: Array<AccountImportData>;
-  onComplete?: (accounts: Array<string>) => void;
+  onComplete?: (completeProps: ExportSelectorOnCompleteParams) => void;
 }
 
 export interface WalletSelectorModal {
