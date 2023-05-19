@@ -184,11 +184,11 @@ export type WalletEvents = {
 
 export type BrowserWalletMetadata = BaseWalletMetadata & {
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
    */
   successUrl?: string;
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
 
@@ -200,22 +200,22 @@ export type BrowserWalletMetadata = BaseWalletMetadata & {
 
 interface BrowserWalletSignInParams extends SignInParams {
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
    */
   successUrl?: string;
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
 }
 
 interface BrowserWalletSignInMultiParams extends SignInMultiParams {
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
    */
   successUrl?: string;
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
 }
@@ -355,7 +355,7 @@ export type HardwareWallet = BaseWallet<
 
 interface BridgeWalletSignInParams extends SignInParams {
   /**
-   * Optional for bridge wallets (e.g Wallet Connect).
+   * Optional for bridge wallets (e.g. Wallet Connect).
    * This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
    */
   qrCodeModal?: boolean;
@@ -363,7 +363,7 @@ interface BridgeWalletSignInParams extends SignInParams {
 
 interface BridgeWalletSignInMultiParams extends SignInMultiParams {
   /**
-   * Optional for bridge wallets (e.g Wallet Connect).
+   * Optional for bridge wallets (e.g. Wallet Connect).
    * This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
    */
   qrCodeModal?: boolean;
