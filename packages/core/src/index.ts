@@ -35,6 +35,7 @@ export type {
   WalletMetadata,
   WalletEvents,
   SignInParams,
+  SignInMultiParams,
   BrowserWalletMetadata,
   BrowserWalletBehaviour,
   BrowserWallet,
