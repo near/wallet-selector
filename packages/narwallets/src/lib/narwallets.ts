@@ -221,6 +221,14 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return [{ accountId: response }];
     },
 
+    async signInMulti({ permissions }) {
+      logger.log("signInMulti", { permissions });
+
+      throw new Error(
+        `The signInMulti method is not supported by ${metadata.name}`
+      );
+    },
+
     signOut,
 
     async getAccounts(): Promise<Array<Account>> {

@@ -214,6 +214,14 @@ const NightlyConnect: WalletBehaviourFactory<
       });
     },
 
+    async signInMulti({ permissions, qrCodeModal = true }) {
+      logger.log("signInMulti", { permissions, qrCodeModal });
+
+      throw new Error(
+        `The signInMulti method is not supported by ${metadata.name}`
+      );
+    },
+
     signOut,
 
     async getAccounts() {
