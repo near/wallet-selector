@@ -31,7 +31,11 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
   useEffect(() => {
     const subscription = selector.store.observable.subscribe((state) => {
       const filterByType = (item: { type: string }) => {
-        return item.type !== "bridge" && item.type !== "hardware";
+        return (
+          item.type !== "bridge" &&
+          item.type !== "hardware" &&
+          item.type !== "instant-link"
+        );
       };
 
       const filteredModules = state.modules.filter(filterByType);
@@ -113,6 +117,7 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
           })}
         </div>
       )}
+
       {route === "WalletInfo" && (
         <>
           <div className="wallet-info-wrapper what-wallet-hide">

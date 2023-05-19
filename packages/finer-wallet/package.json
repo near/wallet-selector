@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/finer-wallet",
-  "version": "8.1.0",
+  "version": "8.1.1",
   "description": "FiNER Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
