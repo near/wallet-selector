@@ -80,6 +80,7 @@ export const initHereWallet: SelectorInit = async (config) => {
         contractId: data.contractId,
         methodNames: data.methodNames ?? [],
         accounts: await getAccounts(),
+        contracts: null,
       });
 
       return await getAccounts();
