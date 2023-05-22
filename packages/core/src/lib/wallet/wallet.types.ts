@@ -10,6 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { MultiContractState } from "../store.types";
 
 interface BaseWalletMetadata {
   /**
@@ -173,6 +174,7 @@ export type WalletEvents = {
     contractId: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
+    contracts: MultiContractState | null;
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };

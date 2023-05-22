@@ -13,6 +13,8 @@ export interface ContractState {
   methodNames: Array<string>;
 }
 
+export type MultiContractState = Array<ContractState>;
+
 export type ModuleState<Variation extends Wallet = Wallet> = {
   /**
    * Unique identifier for the wallet.
@@ -60,6 +62,10 @@ export interface WalletSelectorState {
    * Returns ID-s of 5 recently signed in wallets.
    */
   recentlySignedInWallets: Array<string>;
+  /**
+   * The list of contracts when SignInMulti is supported.
+   */
+  contracts: MultiContractState | null;
 }
 
 export type WalletSelectorAction =
@@ -71,6 +77,7 @@ export type WalletSelectorAction =
         contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
+        contracts: MultiContractState | null;
       };
     }
   | {
@@ -80,6 +87,7 @@ export type WalletSelectorAction =
         contract: ContractState;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
+        contracts: MultiContractState | null;
       };
     }
   | {

@@ -12,6 +12,7 @@ import {
   CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
+  CONTRACTS,
 } from "./constants";
 
 const reducer = (
@@ -28,6 +29,7 @@ const reducer = (
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -44,11 +46,17 @@ const reducer = (
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts, recentlySignedInWallets } =
-        action.payload;
+      const {
+        walletId,
+        contract,
+        accounts,
+        recentlySignedInWallets,
+        contracts,
+      } = action.payload;
 
       if (!accounts.length) {
         return state;
@@ -71,6 +79,7 @@ const reducer = (
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
+        contracts,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -85,6 +94,7 @@ const reducer = (
         contract: null,
         accounts: [],
         selectedWalletId: null,
+        contracts: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -143,6 +153,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
+    contracts: await jsonStorage.getItem(CONTRACTS),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -178,6 +189,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       RECENTLY_SIGNED_IN_WALLETS,
       "recentlySignedInWallets"
     );
+    syncStorage(prevState, state, CONTRACTS, "contracts");
     prevState = state;
   });
 
