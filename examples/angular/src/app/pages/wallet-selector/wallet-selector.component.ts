@@ -97,10 +97,6 @@ export class WalletSelectorComponent implements OnInit {
 
     const _modal = setupModal(_selector, {
       contractId: CONTRACT_ID,
-      contracts: [
-        { receiverId: "guest.book.testnet", methodNames: [] },
-        { receiverId: "guest-book1.testnet", methodNames: [] },
-      ],
     });
     const state = _selector.store.getState();
 
