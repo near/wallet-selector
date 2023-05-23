@@ -193,11 +193,18 @@ export const Modal: React.FC<ModalProps> = ({
           });
         });
 
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          qrCodeModal,
-        });
+        if (options.contracts) {
+          await wallet.signInMulti({
+            permissions: options.contracts,
+            qrCodeModal,
+          });
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            qrCodeModal,
+          });
+        }
 
         subscription.remove();
         handleDismissClick({ hideReason: "wallet-navigation" });
@@ -205,22 +212,36 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "browser") {
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          successUrl: wallet.metadata.successUrl,
-          failureUrl: wallet.metadata.failureUrl,
-        });
+        if (options.contracts) {
+          await wallet.signInMulti({
+            permissions: options.contracts,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        }
 
         handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
 
-      await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      if (options.contracts) {
+        await wallet.signInMulti({
+          permissions: options.contracts,
+        });
+      } else {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+        });
+      }
 
       handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {

@@ -125,11 +125,18 @@ export async function connectToWallet(
         });
       });
 
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        qrCodeModal,
-      });
+      if (modalState.options.contracts) {
+        await wallet.signInMulti({
+          permissions: modalState.options.contracts,
+          qrCodeModal,
+        });
+      } else {
+        await wallet.signIn({
+          contractId: modalState.options.contractId,
+          methodNames: modalState.options.methodNames,
+          qrCodeModal,
+        });
+      }
 
       subscription.remove();
       modalState.container.children[0].classList.remove("open");
@@ -138,12 +145,20 @@ export async function connectToWallet(
     }
 
     if (wallet.type === "browser") {
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        successUrl: wallet.metadata.successUrl,
-        failureUrl: wallet.metadata.failureUrl,
-      });
+      if (modalState.options.contracts) {
+        await wallet.signInMulti({
+          permissions: modalState.options.contracts,
+          successUrl: wallet.metadata.successUrl,
+          failureUrl: wallet.metadata.failureUrl,
+        });
+      } else {
+        await wallet.signIn({
+          contractId: modalState.options.contractId,
+          methodNames: modalState.options.methodNames,
+          successUrl: wallet.metadata.successUrl,
+          failureUrl: wallet.metadata.failureUrl,
+        });
+      }
 
       modalState.container.children[0].classList.remove("open");
       modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
@@ -151,10 +166,16 @@ export async function connectToWallet(
       return;
     }
 
-    await wallet.signIn({
-      contractId: modalState.options.contractId,
-      methodNames: modalState.options.methodNames,
-    });
+    if (modalState.options.contracts) {
+      await wallet.signInMulti({
+        permissions: modalState.options.contracts,
+      });
+    } else {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+      });
+    }
 
     modalState.container.children[0].classList.remove("open");
     modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
