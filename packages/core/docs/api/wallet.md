@@ -145,7 +145,7 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 
 - `params` (`object`)
   
-  - `permissions`(`Array<{allowance?: BN, receiverId: string, methodNames: Array<string>}>?`): List of Account ID-s of the Smart Contracts and the limited access to particular methods on the Smart Contract.
+  - `permissions`(`Array<{allowance?: BN, receiverId: string, methodNames: Array<string>}>`): List of Account ID-s of the Smart Contracts and the limited access to particular methods on the Smart Contract.
   - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
   - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g. Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
   - `successUrl` (`string?`): Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
