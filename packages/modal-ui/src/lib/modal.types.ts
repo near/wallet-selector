@@ -1,4 +1,5 @@
 import type { Subscription } from "@near-wallet-selector/core";
+import type { transactions } from "near-api-js";
 
 export type Theme = "dark" | "light" | "auto";
 
@@ -7,6 +8,7 @@ export interface ModalOptions {
   methodNames?: Array<string>;
   theme?: Theme;
   description?: string;
+  contracts?: Array<transactions.FunctionCallPermission>;
 }
 
 export type ModalHideReason = "user-triggered" | "wallet-navigation";
