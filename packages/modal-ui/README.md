@@ -39,6 +39,7 @@ modal.show();
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
+- `contracts` (`Array<{allowance?: BN, receiverId: string, methodNames: Array<string>}>?`): List of the Smart Contracts and the limited access to particular methods on the Smart Contract for signing in with multiple contracts. When the list of contracts is provided the `signInMulti` method of the wallets is used by default to sign-in.
 
 ## Styles & Customizing CSS
 

@@ -82,9 +82,9 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
   - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
-  - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
-  - `successUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
-  - `failureUrl` (`string?`): Optional for browser wallets (e.g MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
+  - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g. Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `successUrl` (`string?`): Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
+  - `failureUrl` (`string?`): Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
 
 **Returns**
 
@@ -136,6 +136,94 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 (async () => {
   const wallet = await selector.wallet("wallet-connect");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
+})();
+```
+
+### `.signInMulti(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  
+  - `permissions`(`Array<{allowance?: BN, receiverId: string, methodNames: Array<string>}>?`): List of Account ID-s of the Smart Contracts and the limited access to particular methods on the Smart Contract.
+  - `accounts` (`Array<{derivationPath: string, publicKey: string, accountId: string}>?`): Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
+  - `qrCodeModal` (`boolean?`): Optional for bridge wallets (e.g. Wallet Connect). This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+  - `successUrl` (`string?`): Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
+  - `failureUrl` (`string?`): Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
+
+**Returns**
+
+- `Promise<Array<Account>>`
+
+**Description**
+
+Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
+
+**Example**
+
+```ts
+// NEAR Wallet.
+(async () => {
+  const wallet = await selector.wallet("near-wallet");
+  const accounts = await wallet.signInMulti({
+    permissions: [
+      { receiverId: "test.testnet", methodNames: [] },
+      { receiverId: "test1.testnet", methodNames: [] }
+    ]
+  });
+})();
+
+// Sender.
+(async () => {
+  const wallet = await selector.wallet("sender");
+  const accounts = await wallet.signInMulti({
+    permissions: [
+      { receiverId: "test.testnet", methodNames: [] },
+      { receiverId: "test1.testnet", methodNames: [] }
+    ]
+  });
+})();
+
+// Math Wallet.
+(async () => {
+  const wallet = await selector.wallet("math-wallet");
+  const accounts = await wallet.signInMulti({
+    permissions: [
+      { receiverId: "test.testnet", methodNames: [] },
+      { receiverId: "test1.testnet", methodNames: [] }
+    ]
+  });
+})();
+
+// Ledger
+(async () => {
+  const wallet = await selector.wallet("ledger");
+  const derivationPath = "44'/397'/0'/0'/1'";
+  const publicKey = await wallet.getPublicKey(derivationPath);
+  const accountId = "youraccountid.testnet"
+  
+  const accounts = await wallet.signIn({
+    permissions: [
+      { receiverId: "test.testnet", methodNames: [] },
+      { receiverId: "test1.testnet", methodNames: [] }
+    ],
+    accounts: [{
+      derivationPath,
+      publicKey,
+      accountId
+    }],
+  });
+})();
+
+// WalletConnect.
+(async () => {
+  const wallet = await selector.wallet("wallet-connect");
+  const accounts = await wallet.signInMulti({
+    permissions: [
+      { receiverId: "test.testnet", methodNames: [] },
+      { receiverId: "test1.testnet", methodNames: [] }
+    ]
+  });
 })();
 ```
 

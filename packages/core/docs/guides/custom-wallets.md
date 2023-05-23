@@ -31,6 +31,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       return [];
     },
 
+    async signInMulti({ permissions }) {
+      // Sign in to My Wallet with multiple contracts.
+
+      return [];
+    },
+
     async signOut() {
       // Sign out from accounts and cleanup (e.g. listeners).
     },
