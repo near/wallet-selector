@@ -159,28 +159,8 @@ const MyNearWallet: WalletBehaviourFactory<
     async verifyOwner({ message, callbackUrl, meta }) {
       logger.log("verifyOwner", { message });
 
-      const account = _state.wallet.account();
+      throw new Error(`Method not supported by ${metadata.name}`);
 
-      if (!account) {
-        throw new Error("Wallet not signed in");
-      }
-      const locationUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      const url = callbackUrl || locationUrl;
-
-      if (!url) {
-        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
-      }
-
-      const encodedUrl = encodeURIComponent(url);
-      const extraMeta = meta ? `&meta=${meta}` : "";
-
-      window.location.replace(
-        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
-      );
-
-      return;
     },
 
     async signAndSendTransaction({
