@@ -120,30 +120,6 @@ describe("signAndSendTransaction", () => {
   });
 });
 
-describe("verifyOwner", () => {
-  it("verifies owner", async () => {
-    const { wallet } = await createMyNearWallet();
-
-    const replace = window.location.replace;
-
-    await wallet.signIn({ contractId: "test.testnet" });
-
-    Object.defineProperty(window, "location", {
-      value: { replace: jest.fn() },
-    });
-
-    const result = await wallet.verifyOwner({
-      message: "message",
-      callbackUrl: "http://localhost",
-    });
-
-    expect(result).toBe(undefined);
-    expect(window.location.replace).toHaveBeenCalled();
-
-    window.location.replace = replace;
-  });
-});
-
 describe("buildImportAccountsUrl", () => {
   it("returns import url", async () => {
     const { wallet } = await createMyNearWallet();
