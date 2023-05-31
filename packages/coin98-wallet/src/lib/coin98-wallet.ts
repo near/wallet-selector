@@ -115,12 +115,6 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner() {
-      const account = getActiveAccount(store.getState());
-
-      if (!account) {
-        throw new Error("No active account");
-      }
-
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 

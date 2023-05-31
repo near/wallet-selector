@@ -156,11 +156,8 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({ message, callbackUrl, meta }) {
-      logger.log("verifyOwner", { message });
-
+    async verifyOwner() {
       throw new Error(`Method not supported by ${metadata.name}`);
-
     },
 
     async signAndSendTransaction({
