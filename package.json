@@ -163,7 +163,7 @@
     "@types/w3c-web-usb": "^1.0.5",
     "@typescript-eslint/eslint-plugin": "5.13.0",
     "@typescript-eslint/parser": "5.13.0",
-    "@walletconnect/types": "^2.7.2",
+    "@walletconnect/types": "^2.7.7",
     "babel-jest": "27.2.3",
     "cypress": "^9.1.0",
     "eslint": "~8.15.0",
