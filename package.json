@@ -88,7 +88,7 @@
     "@ledgerhq/hw-transport": "6.27.1",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@metamask/detect-provider": "^2.0.0",
-    "@meteorwallet/sdk": "^0.6.0",
+    "@meteorwallet/sdk": "^0.8.0",
     "@nightlylabs/connect-near": "0.0.15",
     "@walletconnect/sign-client": "2.7.2",
     "@web3modal/standalone": "^2.2.2",
