@@ -265,6 +265,10 @@
   filter: blur(4px);
 }
 
+.account-export .passphrase-text:hover {
+  filter: none;
+}
+
 .account-export .passphrase-label {
   font-size: 12px;
   cursor: copy;

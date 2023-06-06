@@ -1,6 +1,6 @@
 # @near-wallet-selector/account-export
 
-This is the Export Selector UI package for NEAR Wallet Selector.
+This is the Account Export Selector UI package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -45,9 +45,14 @@ modal.show();
 - `description` (`string?`): Define a custom description in the UI.
 - `onComplete` (`(accounts: Array<string>) => void`): Triggers when the user completes the flow. By default it is not set.
 
-## Styles & Customizing CSS
+### Supported Wallets
+ - [Nightly Wallet](https://github.com/near/wallet-selector/blob/main/packages/nightly/src/lib/nightly.ts#L224)
+ - [Meteor Wallet](https://github.com/near/wallet-selector/blob/main/packages/meteor-wallet/src/lib/meteor-wallet.ts#L204)
+ - [Welldone Wallet](https://github.com/near/wallet-selector/blob/main/packages/welldone-wallet/src/lib/welldone.ts#L335)
+ - [Here Wallet](https://github.com/near/wallet-selector/blob/main/packages/here-wallet/src/lib/selector.ts#LL42)
+ - [My Near Wallet](https://github.com/near/wallet-selector/blob/main/packages/my-near-wallet/src/lib/my-near-wallet.ts#L227)
 
-Import modal css styles:
+## Styles & Customizing CSS
 
 ### React & Vue
 

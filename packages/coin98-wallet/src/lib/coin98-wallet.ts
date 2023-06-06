@@ -114,39 +114,8 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async verifyOwner({ message }) {
-      const account = getActiveAccount(store.getState());
-
-      if (!account) {
-        throw new Error("No active account");
-      }
-
-      const accountId = account.accountId;
-      const pubKey = await _state.wallet.near.signer.getPublicKey(accountId);
-      const block = await provider.block({ finality: "final" });
-
-      const data = {
-        accountId,
-        message,
-        blockId: block.header.hash,
-        publicKey: Buffer.from(pubKey.data).toString("base64"),
-        keyType: pubKey.keyType,
-      };
-      const encoded = JSON.stringify(data);
-
+    async verifyOwner() {
       throw new Error(`Method not supported by ${metadata.name}`);
-
-      const signed = await _state.wallet.near.signer.signMessage(
-        new Uint8Array(Buffer.from(encoded)),
-        accountId,
-        options.network.networkId
-      );
-
-      return {
-        ...data,
-        signature: Buffer.from(signed.signature).toString("base64"),
-        keyType: signed.publicKey.keyType,
-      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
