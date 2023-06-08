@@ -1,13 +1,14 @@
 import { isMobile } from "is-mobile";
-import type {
-  WalletModuleFactory,
-  WalletBehaviourFactory,
-  InjectedWallet,
-  Action,
-  Transaction,
-  FunctionCallAction,
-  Optional,
-  Account,
+import {
+  type WalletModuleFactory,
+  type WalletBehaviourFactory,
+  type InjectedWallet,
+  type Action,
+  type Transaction,
+  type FunctionCallAction,
+  type Optional,
+  type Account,
+  waitFor,
 } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
 import icon from "./icon";
@@ -28,7 +29,9 @@ interface NearFiState {
 }
 
 const isInstalled = () => {
-  return !!window.nearFiWallet?.isNearFi;
+  return waitFor(() => !!window.nearFiWallet?.isNearFi, { timeout: 200 }).catch(
+    () => false
+  );
 };
 
 const setupNearFiState = (): NearFiState => {
