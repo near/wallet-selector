@@ -1,15 +1,15 @@
 import { isMobile } from "is-mobile";
-import {
-  type WalletModuleFactory,
-  type WalletBehaviourFactory,
-  type InjectedWallet,
-  type Action,
-  type Transaction,
-  type FunctionCallAction,
-  type Optional,
-  type Account,
-  waitFor,
+import type {
+  WalletModuleFactory,
+  WalletBehaviourFactory,
+  InjectedWallet,
+  Action,
+  Transaction,
+  FunctionCallAction,
+  Optional,
+  Account,
 } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
 import icon from "./icon";
 
