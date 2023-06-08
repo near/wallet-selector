@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/narwallets",
-  "version": "8.1.2",
+  "version": "8.1.3",
   "description": "This is the Narwallets package for NEAR Wallet Selector.",
   "keywords": [
     "near",
