@@ -6,7 +6,6 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   BridgeWallet,
-  Subscription,
   Transaction,
   WalletEvents,
   EventEmitterService,
@@ -16,8 +15,9 @@ import type {
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
-import WalletConnectClient from "./wallet-connect-client";
 import icon from "./icon";
+
+import UniversalProvider from "@walletconnect/universal-provider";
 
 export interface WalletConnectParams {
   projectId: string;
@@ -51,10 +51,9 @@ interface WalletConnectAccount {
 }
 
 interface WalletConnectState {
-  client: WalletConnectClient;
-  session: SessionTypes.Struct | null;
+  client: UniversalProvider;
+  session?: SessionTypes.Struct;
   keystore: nearAPI.keyStores.KeyStore;
-  subscriptions: Array<Subscription>;
 }
 
 const WC_METHODS = [
@@ -73,29 +72,34 @@ const setupWalletConnectState = async (
   params: WalletConnectExtraOptions,
   emitter: EventEmitterService<WalletEvents>
 ): Promise<WalletConnectState> => {
-  const client = new WalletConnectClient(emitter);
-  let session: SessionTypes.Struct | null = null;
+  // eslint-disable-next-line no-console
+  console.log(emitter);
+  //  Initialize the provider
+  const client = await UniversalProvider.init({
+    logger: "info",
+    relayUrl: params.relayUrl,
+    projectId: params.projectId,
+    metadata: params.metadata,
+  });
+  // const client = new WalletConnectClient(emitter);
   const keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
 
-  await client.init({
-    projectId: params.projectId,
-    metadata: params.metadata,
-    relayUrl: params.relayUrl,
-  });
+  // await client.init({
+  //   projectId: params.projectId,
+  //   metadata: params.metadata,
+  //   relayUrl: params.relayUrl,
+  // });
 
-  if (client.session.length) {
-    const lastKeyIndex = client.session.keys.length - 1;
-    session = client.session.get(client.session.keys[lastKeyIndex]);
-  }
+  // eslint-disable-next-line no-console
+  console.log("asdasdasd", client.session, client.sessionProperties);
 
   return {
     client,
-    session,
+    session: client.session,
     keystore,
-    subscriptions: [],
   };
 };
 
@@ -136,13 +140,6 @@ const WalletConnect: WalletBehaviourFactory<
     }
 
     return newAccounts;
-  };
-
-  const cleanup = async () => {
-    _state.subscriptions.forEach((subscription) => subscription.remove());
-
-    _state.subscriptions = [];
-    _state.session = null;
   };
 
   const validateAccessKey = (
@@ -227,25 +224,23 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const requestAccounts = async () => {
-    return _state.client.request<Array<WalletConnectAccount>>({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    return _state.client.request<Array<WalletConnectAccount>>(
+      {
         method: "near_getAccounts",
         params: {},
       },
-    });
+      getChainId()
+    );
   };
 
   const requestVerifyOwner = async (accountId: string, message: string) => {
-    return _state.client.request<VerifiedOwner>({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    return _state.client.request<VerifiedOwner>(
+      {
         method: "near_verifyOwner",
         params: { accountId, message },
       },
-    });
+      getChainId()
+    );
   };
 
   const requestSignTransaction = async (transaction: Transaction) => {
@@ -275,14 +270,13 @@ const WalletConnect: WalletBehaviourFactory<
       nearAPI.utils.serialize.base_decode(block.header.hash)
     );
 
-    const result = await _state.client.request<Uint8Array>({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    const result = await _state.client.request<Uint8Array>(
+      {
         method: "near_signTransaction",
         params: { transaction: tx.encode() },
       },
-    });
+      getChainId()
+    );
 
     return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
   };
@@ -328,14 +322,13 @@ const WalletConnect: WalletBehaviourFactory<
       );
     }
 
-    const results = await _state.client.request<Array<Uint8Array>>({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    const results = await _state.client.request<[]>(
+      {
         method: "near_signTransactions",
         params: { transactions: txs.map((x) => x.encode()) },
       },
-    });
+      getChainId()
+    );
 
     return results.map((result) => {
       return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
@@ -364,17 +357,16 @@ const WalletConnect: WalletBehaviourFactory<
       })
     );
 
-    await _state.client.request({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    await _state.client.request(
+      {
         method: "near_signIn",
         params: {
           permission: permission,
           accounts: limitedAccessAccounts,
         },
       },
-    });
+      getChainId()
+    );
 
     for (let i = 0; i < keyPairs.length; i += 1) {
       const { accountId, keyPair } = keyPairs[i];
@@ -412,60 +404,59 @@ const WalletConnect: WalletBehaviourFactory<
       return;
     }
 
-    await _state.client.request({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
+    await _state.client.request(
+      {
         method: "near_signOut",
         params: {
           accounts: limitedAccessAccounts,
         },
       },
-    });
+      getChainId()
+    );
   };
 
   const signOut = async () => {
     if (_state.session) {
       await requestSignOut();
 
-      await _state.client.disconnect({
-        topic: _state.session.topic,
-        reason: {
-          code: 5900,
-          message: "User disconnected",
-        },
-      });
+      _state.client.disconnect();
     }
-
-    await cleanup();
   };
 
   const setupEvents = async () => {
-    _state.subscriptions.push(
-      _state.client.on("session_update", async (event) => {
-        logger.log("Session Update", event);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    _state.client.on("session_update", async (event: any) => {
+      logger.log("Session Update", event);
 
-        if (event.topic === _state.session?.topic) {
+      if (event.topic === _state.session?.topic) {
+        if (_state.client.session) {
           _state.session = {
-            ..._state.client.session.get(event.topic),
+            ..._state.client.session,
             namespaces: event.params.namespaces,
           };
-
-          emitter.emit("accountsChanged", { accounts: await getAccounts() });
         }
-      })
-    );
 
-    _state.subscriptions.push(
-      _state.client.on("session_delete", async (event) => {
-        logger.log("Session Deleted", event);
+        emitter.emit("accountsChanged", { accounts: await getAccounts() });
+      }
+    });
 
-        if (event.topic === _state.session?.topic) {
-          await cleanup();
-          emitter.emit("signedOut", null);
-        }
-      })
-    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    _state.client.on("session_delete", async (event: any) => {
+      logger.log("Session Deleted", event);
+
+      if (event.topic === _state.session?.topic) {
+        emitter.emit("signedOut", null);
+      }
+    });
+
+    _state.client.on("display_uri", async (uri: string) => {
+      logger.log("Session Display Uri", uri);
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    _state.client.on("session_ping", async (event: any) => {
+      logger.log("Session Ping", event);
+    });
   };
 
   if (_state.session) {
@@ -480,23 +471,33 @@ const WalletConnect: WalletBehaviourFactory<
         return existingAccounts;
       }
 
-      try {
-        const chainId = getChainId();
+      // eslint-disable-next-line no-console
+      console.log("11111111111");
 
-        _state.session = await _state.client.connect(
-          {
-            requiredNamespaces: {
+      try {
+        if (!qrCodeModal) {
+          await _state.client.connect({
+            namespaces: {
               near: {
                 chains: [getChainId()],
                 methods: WC_METHODS,
                 events: WC_EVENTS,
+                rpcMap: {
+                  testnet: `${
+                    params.relayUrl
+                  }?chainId=${getChainId()}&projectId=${params.projectId}`,
+                },
               },
             },
-          },
-          qrCodeModal,
-          params.projectId,
-          chainId
-        );
+          });
+          // await _state.client.enable();
+          // eslint-disable-next-line no-console
+          console.log("22222", _state.session);
+        } else {
+          // eslint-disable-next-line no-console
+          console.log("3333");
+          // emitter.emit("uriChanged", { uri });
+        }
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
