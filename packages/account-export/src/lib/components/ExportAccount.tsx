@@ -354,6 +354,7 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
           onCloseModal={onCloseModal}
           onBack={showPassPhrase}
           onComplete={onTransferComplete}
+          onStartOver={onBack}
         />
       )}
     </Fragment>
