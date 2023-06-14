@@ -49,6 +49,14 @@
   margin: 0 auto;
 }
 
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton.account-export-button.secondary {
+  background: var( --secondary-button-bg-color);
+  border: 1px solid var(--secondary-button-border-color);
+  border-radius: 4px;
+  color: var(--secondary-button-text-color);
+  margin-bottom: 10px;
+}
+
 .checkbox {
   position: relative;
   display: flex;
@@ -298,6 +306,12 @@
   flex: 1;
   text-align: center;
   margin-top: 10px;
+}
+
+.complete-desc .content {
+  font-size: 14px;
+  width: 300px;
+  margin: 40px auto 0;
 }
 
 .nws-modal-wrapper .nws-modal .connecting-wrapper-err {

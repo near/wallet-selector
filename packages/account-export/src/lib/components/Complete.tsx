@@ -6,12 +6,14 @@ interface CompleteProps {
   onComplete: () => void;
   onCloseModal: () => void;
   onBack: () => void;
+  onStartOver: () => void;
 }
 
 export const Complete: React.FC<CompleteProps> = ({
   onComplete,
   onBack,
   onCloseModal,
+  onStartOver,
 }) => {
   const onClick = () => {
     onComplete();
@@ -28,10 +30,20 @@ export const Complete: React.FC<CompleteProps> = ({
         />
       </div>
       <div className="complete-desc">
-        <h4>{translate("modal.exportAccounts.complete.descOne")}</h4>
-        <h4>{translate("modal.exportAccounts.complete.descTwo")}</h4>
+        <h4 className="content">
+          {translate("modal.exportAccounts.complete.descOne")}
+        </h4>
+        <h4 className="content">
+          {translate("modal.exportAccounts.complete.descTwo")}
+        </h4>
       </div>
 
+      <button
+        className="middleButton account-export-button secondary"
+        onClick={onStartOver}
+      >
+        {translate("modal.exportAccounts.complete.startOverButton")}
+      </button>
       <button className="middleButton account-export-button" onClick={onClick}>
         {translate("modal.exportAccounts.complete.button")}
       </button>
