@@ -56,25 +56,29 @@ export const Passphrase: React.FC<PassphraseProps> = ({
             {translate("modal.exportAccounts.getPassphrase.label")}
           </label>
           <div className="filler" />
-          <div className="checkbox">
-            <input
-              onChange={onCheck}
-              checked={hasCopied}
-              type="checkbox"
-              id="passphrase-check"
-              name="passphrase-check"
-              value="passphrase-check"
-            />
-            <label htmlFor="passphrase-check">
-              {translate("modal.exportAccounts.getPassphrase.checkLabel")}
-            </label>
+          <div className="passphrase-check-container">
+            <div className="checkbox">
+              <input
+                onChange={onCheck}
+                checked={hasCopied}
+                type="checkbox"
+                id="passphrase-check"
+                name="passphrase-check"
+                value="passphrase-check"
+              />
+              <label htmlFor="passphrase-check">
+                <span className="label">
+                  {translate("modal.exportAccounts.getPassphrase.checkLabel")}
+                </span>
+              </label>
+            </div>
           </div>
           <button
             className="middleButton account-export-button"
             onClick={onButtonClick}
             disabled={!hasCopied}
           >
-            {translate("modal.exportAccounts.getPassphrase.button")}
+            {translate("modal.exportAccounts.getPassphrase.transferButton")}
           </button>
         </div>
       </div>
