@@ -1,10 +1,11 @@
 {
+  "name": "neth",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/neth/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/neth",
@@ -29,15 +30,15 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/neth/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/neth"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/neth"],
       "options": {
         "jestConfig": "packages/neth/jest.config.ts",
         "passWithNoTests": true

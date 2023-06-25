@@ -1,10 +1,11 @@
 {
+  "name": "modal-ui-js",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/modal-ui-js/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/modal-ui-js",
@@ -29,44 +30,37 @@
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node tools/scripts/publish.mjs modal-ui-js {args.ver} {args.tag}"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/modal-ui-js/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/modal-ui-js/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/modal-ui-js"
-      ],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/modal-ui-js"],
       "options": {
         "jestConfig": "packages/modal-ui-js/jest.config.ts",
         "passWithNoTests": true
       }
-      },
-      "deploy": {
-        "executor": "ngx-deploy-npm:deploy",
-        "options": {
-          "access": "public"
-        }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
       }
+    }
   },
   "tags": []
 }
