@@ -6,7 +6,6 @@ TAG=latest
 npm publish dist/packages/core --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/modal-ui --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/modal-ui-js --tag "${TAG}" --otp "${OTP}"
-npm publish dist/packages/default-wallets --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/wallet-utils --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/my-near-wallet --tag "${TAG}" --otp "${OTP}"
@@ -28,3 +27,6 @@ npm publish dist/packages/account-export --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/narwallets --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/xdefi --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-snap --tag "${TAG}" --otp "${OTP}"
+
+# Commented script for default wallets to avoid publishing new versions since the package is now deprecated.
+#npm publish dist/packages/default-wallets --tag "${TAG}" --otp "${OTP}"

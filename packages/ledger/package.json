@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ledger",
-  "version": "8.1.1",
+  "version": "8.1.4",
   "description": "Ledger package for NEAR Wallet Selector.",
   "keywords": [
     "near",

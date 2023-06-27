@@ -40,13 +40,21 @@
   cursor: not-allowed;
   background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
   color: #606060;
-  border: none;
+  border: 1px solid transparent;
 }
 
 
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton.account-export-button {
-  width: 240px;
-  margin-bottom: 30px;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton.account-export-button.secondary {
+  background: var( --secondary-button-bg-color);
+  border: 1px solid var(--secondary-button-border-color);
+  border-radius: 4px;
+  color: var(--secondary-button-text-color);
+  margin-bottom: 10px;
 }
 
 .checkbox {
@@ -137,9 +145,13 @@
 .nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy {
   position: relative;
   cursor: copy;
-  background-color: transparent;
+  background-color: var(--wallet-selector-content-bg, var(--content-bg));
   display: block;
   margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid var(--wallet-option-border-color, var(--sidebar-border-color));
+  padding: 0;
+  filter: brightness(95%);
 }
 
 .nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy > .copy-success {
@@ -180,7 +192,7 @@
 .account-export .content {
   width: 100%;
   height: 100%;
-  padding: 40px 28px 0px;
+  padding: 25px 0 0 !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -209,6 +221,12 @@
   margin: 20px 0;
 }
 
+.account-export .account-selection-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .account-export .account-select-all {
   width: 100%;
   text-align: left;
@@ -229,7 +247,7 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border-bottom: 1px solid #313030;
+  border-bottom: 1px solid rgba(60,60,60,0.22);
 }
 
 .account-export .account-selection .account-selection-row label {
@@ -242,10 +260,14 @@
   width: 399px;
 }
 
+.account-export .checkbox .label {
+  font-size: 14px;
+}
+
 .account-export .passphrase-title {
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 300;
   color: var(--wallet-selector-text-color, var(--text-color));
   margin: 40px 0 30px;
 }
@@ -254,27 +276,42 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 20px;
 
-  background: #272729;
-  border-radius: 8px;
+  background: transparent;
 
   word-break: break-word;
   text-align: center;
 
   filter: blur(4px);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.account-export .passphrase-text:hover {
+  filter: none;
+}
+
+.account-export .passphrase-check-container {
+  margin-bottom: 20px;
 }
 
 .account-export .passphrase-label {
-  font-size: 12px;
+  font-size: 10px;
   cursor: copy;
   color: var(--wallet-selector-text-color, var(--text-color));
+  margin-top: 10px;
 }
 
 .complete-desc {
   flex: 1;
   text-align: center;
   margin-top: 10px;
+}
+
+.complete-desc .content {
+  font-size: 14px;
+  width: 300px;
+  margin: 40px auto 0;
 }
 
 .nws-modal-wrapper .nws-modal .connecting-wrapper-err {
