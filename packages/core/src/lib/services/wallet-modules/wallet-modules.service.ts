@@ -305,6 +305,10 @@ export class WalletModules {
     };
 
     wallet.signInMulti = async (params: never) => {
+      if (_signInMulti === undefined) {
+        throw Error(`Method not supported by ${wallet.metadata.name}.`);
+      }
+
       const accounts = await _signInMulti(params);
 
       const { permissions } = params as SignInMultiParams;

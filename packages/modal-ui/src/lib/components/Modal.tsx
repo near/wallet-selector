@@ -194,7 +194,7 @@ export const Modal: React.FC<ModalProps> = ({
         });
 
         if (options.contracts) {
-          await wallet.signInMulti({
+          await wallet.signInMulti!({
             permissions: options.contracts,
             qrCodeModal,
           });
@@ -213,7 +213,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       if (wallet.type === "browser") {
         if (options.contracts) {
-          await wallet.signInMulti({
+          await wallet.signInMulti!({
             permissions: options.contracts,
             successUrl: wallet.metadata.successUrl,
             failureUrl: wallet.metadata.failureUrl,
@@ -233,7 +233,7 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (options.contracts) {
-        await wallet.signInMulti({
+        await wallet.signInMulti!({
           permissions: options.contracts,
         });
       } else {

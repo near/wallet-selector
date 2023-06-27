@@ -119,7 +119,7 @@ interface BaseWalletBehaviour {
   /**
    *  Programmatically sign in with multiple contracts.
    */
-  signInMulti(params: SignInMultiParams): Promise<Array<Account>>;
+  signInMulti?(params: SignInMultiParams): Promise<Array<Account>>;
   /**
    * Sign out from the wallet.
    */
@@ -244,7 +244,7 @@ export type BrowserWalletBehaviour = Modify<
     buildImportAccountsUrl?(): string;
     importAccountsInSecureContext?: never;
     signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
-    signInMulti(
+    signInMulti?(
       params: BrowserWalletSignInMultiParams
     ): Promise<Array<Account>>;
     signAndSendTransaction(
@@ -339,7 +339,7 @@ export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
     signIn(params: HardwareWalletSignInParams): Promise<Array<Account>>;
-    signInMulti(
+    signInMulti?(
       params: HardwareWalletSignInMultiParams
     ): Promise<Array<Account>>;
   }
@@ -377,7 +377,9 @@ export type BridgeWalletBehaviour = Modify<
   BaseWalletBehaviour,
   {
     signIn(params: BridgeWalletSignInParams): Promise<Array<Account>>;
-    signInMulti(params: BridgeWalletSignInMultiParams): Promise<Array<Account>>;
+    signInMulti?(
+      params: BridgeWalletSignInMultiParams
+    ): Promise<Array<Account>>;
   }
 >;
 

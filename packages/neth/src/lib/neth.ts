@@ -142,14 +142,6 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
       return [account];
     },
 
-    async signInMulti({ permissions }) {
-      logger.log("signInMulti", { permissions });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
-    },
-
     async signOut() {
       await signOut();
     },

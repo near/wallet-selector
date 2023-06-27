@@ -15,7 +15,6 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   store,
   metadata,
-  logger,
 }) => {
   const network = options.network.networkId as "testnet" | "mainnet";
 
@@ -23,14 +22,6 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signIn() {
       await enable(isDev);
       return await getSnapAccounts(isDev, network);
-    },
-
-    async signInMulti({ permissions }) {
-      logger.log("signInMulti", { permissions });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
     },
 
     async signOut() {

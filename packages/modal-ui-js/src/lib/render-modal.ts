@@ -126,7 +126,7 @@ export async function connectToWallet(
       });
 
       if (modalState.options.contracts) {
-        await wallet.signInMulti({
+        await wallet.signInMulti!({
           permissions: modalState.options.contracts,
           qrCodeModal,
         });
@@ -146,7 +146,7 @@ export async function connectToWallet(
 
     if (wallet.type === "browser") {
       if (modalState.options.contracts) {
-        await wallet.signInMulti({
+        await wallet.signInMulti!({
           permissions: modalState.options.contracts,
           successUrl: wallet.metadata.successUrl,
           failureUrl: wallet.metadata.failureUrl,
@@ -167,7 +167,7 @@ export async function connectToWallet(
     }
 
     if (modalState.options.contracts) {
-      await wallet.signInMulti({
+      await wallet.signInMulti!({
         permissions: modalState.options.contracts,
       });
     } else {

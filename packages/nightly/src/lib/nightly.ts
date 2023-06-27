@@ -171,14 +171,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signInMulti({ permissions }) {
-      logger.log("signInMulti", { permissions });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
-    },
-
     async signOut() {
       await _state.wallet.disconnect();
     },

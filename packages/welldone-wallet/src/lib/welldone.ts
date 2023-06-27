@@ -54,7 +54,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   logger,
   storage,
   provider,
-  metadata,
 }) => {
   const _state = await setupWalletState(storage);
 
@@ -255,14 +254,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async getAccounts() {
       return getAccounts();
-    },
-
-    async signInMulti({ permissions }) {
-      logger.log("signInMulti", { permissions });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
     },
 
     signOut,

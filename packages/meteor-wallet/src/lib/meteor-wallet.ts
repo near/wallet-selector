@@ -45,7 +45,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params, metadata }) => {
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const getAccounts = async (): Promise<Array<Account>> => {
@@ -128,14 +128,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
 
       return getAccounts();
-    },
-
-    async signInMulti({ permissions }) {
-      logger.log("signInMulti", { permissions });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
     },
 
     async signOut() {

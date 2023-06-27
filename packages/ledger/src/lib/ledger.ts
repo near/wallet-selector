@@ -216,14 +216,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       return getAccounts();
     },
 
-    async signInMulti({ permissions, accounts }) {
-      logger.log("signInMulti", { permissions, accounts });
-
-      throw new Error(
-        `The signInMulti method is not supported by ${metadata.name}`
-      );
-    },
-
     signOut,
 
     async getAccounts() {
