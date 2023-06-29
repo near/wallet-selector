@@ -4,7 +4,7 @@ This is the Default Wallets package for NEAR Wallet Selector.
 
 This is the list of default wallets:
 
->**Note**: This package does not contain any wallets by default.
+> **⚠️ Package deprecated starting from `v8.1.4`. The package no longer holds a list of default wallets please install specific wallet packages from https://www.npmjs.com/org/near-wallet-selector ⚠️**
 
 ## Installation and Usage
 
