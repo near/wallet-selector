@@ -1,13 +1,12 @@
 {
+  "name": "here-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/here-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/here-wallet",
         "tsConfig": "packages/here-wallet/tsconfig.lib.json",
@@ -15,10 +14,7 @@
         "entryFile": "packages/here-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": [
-          "esm",
-          "cjs"
-        ],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/here-wallet/README.md",
@@ -34,21 +30,15 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/here-wallet/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/here-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/here-wallet"
-      ],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/here-wallet"],
       "options": {
         "jestConfig": "packages/here-wallet/jest.config.ts",
         "passWithNoTests": true
@@ -61,7 +51,5 @@
       }
     }
   },
-  "tags": [
-    "browser-wallet"
-  ]
+  "tags": ["browser-wallet"]
 }

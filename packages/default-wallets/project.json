@@ -1,10 +1,11 @@
 {
+  "name": "default-wallets",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/default-wallets/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/default-wallets",
@@ -44,15 +45,15 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/default-wallets/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/default-wallets"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/default-wallets"],
       "options": {
         "jestConfig": "packages/default-wallets/jest.config.ts",
         "passWithNoTests": true
