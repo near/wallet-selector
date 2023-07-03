@@ -53,10 +53,8 @@ export type WalletSelectorStore = ReadOnlyStore;
 export type WalletSelectorEvents = {
   signedIn: {
     walletId: string;
-    contractId: string;
-    methodNames: Array<string>;
     accounts: Array<Account>;
-    contracts: MultiContractState | null;
+    contracts: MultiContractState;
   };
   signedOut: {
     walletId: string;

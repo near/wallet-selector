@@ -86,6 +86,10 @@ export async function connectToWallet(
   }
 
   try {
+    if (modalState.options.contracts.length < 1) {
+      throw new Error("No contract provided");
+    }
+
     if (module.type === "injected" && !module.metadata.available) {
       return renderWalletNotInstalled(module);
     }
@@ -125,15 +129,15 @@ export async function connectToWallet(
         });
       });
 
-      if (modalState.options.contracts) {
+      if (modalState.options.contracts.length > 1) {
         await wallet.signInMulti!({
           permissions: modalState.options.contracts,
           qrCodeModal,
         });
       } else {
         await wallet.signIn({
-          contractId: modalState.options.contractId,
-          methodNames: modalState.options.methodNames,
+          contractId: modalState.options.contracts[0].receiverId,
+          methodNames: modalState.options.contracts[0].methodNames,
           qrCodeModal,
         });
       }
@@ -145,7 +149,7 @@ export async function connectToWallet(
     }
 
     if (wallet.type === "browser") {
-      if (modalState.options.contracts) {
+      if (modalState.options.contracts.length > 1) {
         await wallet.signInMulti!({
           permissions: modalState.options.contracts,
           successUrl: wallet.metadata.successUrl,
@@ -153,8 +157,8 @@ export async function connectToWallet(
         });
       } else {
         await wallet.signIn({
-          contractId: modalState.options.contractId,
-          methodNames: modalState.options.methodNames,
+          contractId: modalState.options.contracts[0].receiverId,
+          methodNames: modalState.options.contracts[0].methodNames,
           successUrl: wallet.metadata.successUrl,
           failureUrl: wallet.metadata.failureUrl,
         });
@@ -166,14 +170,14 @@ export async function connectToWallet(
       return;
     }
 
-    if (modalState.options.contracts) {
+    if (modalState.options.contracts.length > 1) {
       await wallet.signInMulti!({
         permissions: modalState.options.contracts,
       });
     } else {
       await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
+        contractId: modalState.options.contracts[0].receiverId,
+        methodNames: modalState.options.contracts[0].methodNames,
       });
     }
 

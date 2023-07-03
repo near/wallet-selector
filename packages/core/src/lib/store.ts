@@ -9,7 +9,6 @@ import type {
 } from "./store.types";
 import {
   PACKAGE_NAME,
-  CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
   CONTRACTS,
@@ -26,7 +25,6 @@ const reducer = (
       const {
         modules,
         accounts,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
         contracts,
@@ -43,20 +41,14 @@ const reducer = (
         ...state,
         modules,
         accounts: accountStates,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
         contracts,
       };
     }
     case "WALLET_CONNECTED": {
-      const {
-        walletId,
-        contract,
-        accounts,
-        recentlySignedInWallets,
-        contracts,
-      } = action.payload;
+      const { walletId, accounts, recentlySignedInWallets, contracts } =
+        action.payload;
 
       if (!accounts.length) {
         return state;
@@ -75,7 +67,6 @@ const reducer = (
 
       return {
         ...state,
-        contract,
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
@@ -91,10 +82,9 @@ const reducer = (
 
       return {
         ...state,
-        contract: null,
         accounts: [],
         selectedWalletId: null,
-        contracts: null,
+        contracts: [],
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -149,11 +139,10 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    contract: await jsonStorage.getItem(CONTRACT),
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
-    contracts: await jsonStorage.getItem(CONTRACTS),
+    contracts: (await jsonStorage.getItem(CONTRACTS)) || [],
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -182,7 +171,6 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
   let prevState = state$.getValue();
   state$.subscribe((state) => {
     syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
-    syncStorage(prevState, state, CONTRACT, "contract");
     syncStorage(
       prevState,
       state,

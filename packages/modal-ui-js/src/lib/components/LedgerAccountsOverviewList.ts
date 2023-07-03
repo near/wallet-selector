@@ -70,8 +70,8 @@ export async function renderLedgerAccountsOverviewList(
 
         const wallet = await module.wallet();
         wallet.signIn({
-          contractId: modalState.options.contractId,
-          methodNames: modalState.options.methodNames,
+          contractId: modalState.options.contracts[0].receiverId,
+          methodNames: modalState.options.contracts[0].methodNames,
           accounts: selectedAccounts,
         });
 

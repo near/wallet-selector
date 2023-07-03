@@ -42,15 +42,15 @@ const NearSnapWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const accessKey = await provider.viewAccessKey({ accountId, publicKey });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
       let nonce = parseInt(accessKey.nonce.toString());
-      if (!contract) {
+      if (contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
       const signedTxs = await signTransactions(isDev, network, [
         {
-          receiverId: receiverId || contract.contractId,
+          receiverId,
           actions,
           nonce: ++nonce,
           recentBlockHash: accessKey.block_hash,

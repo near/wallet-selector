@@ -111,19 +111,19 @@ const NightlyConnect: WalletBehaviourFactory<
   };
 
   const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+    transactions: Array<Optional<Transaction, "signerId">>
   ): Array<Transaction> => {
     const account = getActiveAccount(store.getState());
-    const { contract } = store.getState();
+    const { contracts } = store.getState();
 
-    if (!account || !contract) {
+    if (!account || contracts.length < 1) {
       throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
       return {
         signerId: transaction.signerId || account.accountId,
-        receiverId: transaction.receiverId || contract.contractId,
+        receiverId: transaction.receiverId,
         actions: transaction.actions,
       };
     });

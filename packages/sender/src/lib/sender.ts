@@ -103,7 +103,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
-
     if (!accountId) {
       return [];
     }
@@ -245,15 +244,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
 
-      if (!_state.wallet.isSignedIn() || !contract) {
+      if (!_state.wallet.isSignedIn() || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
       return _state.wallet
         .signAndSendTransaction({
-          receiverId: receiverId || contract.contractId,
+          receiverId,
           actions: transformActions(actions),
         })
         .then((res) => {

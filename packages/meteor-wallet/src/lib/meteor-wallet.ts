@@ -169,20 +169,20 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         actions,
       });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not signed in");
       }
 
-      if (!receiverId && !contract) {
+      if (!receiverId && contracts.length < 1) {
         throw new Error("No receiver found to send the transaction to");
       }
 
       const account = _state.wallet.account()!;
 
       return account["signAndSendTransaction_direct"]({
-        receiverId: receiverId ?? contract!.contractId,
+        receiverId,
         actions: actions.map((action) => createAction(action)),
       });
     },

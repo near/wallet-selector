@@ -105,7 +105,7 @@ export const WalletSelectorContextProvider: React.FC<{
       ],
     });
     const _modal = setupModal(_selector, {
-      contractId: CONTRACT_ID,
+      contracts: [{ receiverId: CONTRACT_ID, methodNames: [] }],
     });
     const state = _selector.store.getState();
     setAccounts(state.accounts);
