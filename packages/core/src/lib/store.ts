@@ -12,6 +12,7 @@ import {
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
   CONTRACTS,
+  CONTRACT,
 } from "./constants";
 
 const reducer = (
@@ -134,8 +135,20 @@ const reducer = (
   }
 };
 
+const updateOldContractState = async (storage: JsonStorage) => {
+  const oldState = await storage.getItem(CONTRACT);
+
+  if (oldState) {
+    await storage.setItem(CONTRACTS, [oldState]);
+    await storage.removeItem(CONTRACT);
+  }
+};
+
 export const createStore = async (storage: StorageService): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
+
+  await updateOldContractState(jsonStorage);
+
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
