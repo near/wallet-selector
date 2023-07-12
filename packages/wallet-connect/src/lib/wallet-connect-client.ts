@@ -1,6 +1,6 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
-import { Web3Modal } from "@web3modal/standalone";
+import { WalletConnectModal } from "@walletconnect/modal";
 import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
@@ -47,10 +47,10 @@ class WalletConnectClient {
     projectId: string,
     chainId: string
   ) {
-    const web3Modal = new Web3Modal({
-      walletConnectVersion: 2,
+    const walletConnectModal = new WalletConnectModal({
       projectId,
-      standaloneChains: [chainId],
+      chains: [chainId],
+      enableExplorer: false,
     });
 
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
@@ -59,8 +59,11 @@ class WalletConnectClient {
         .then(({ uri, approval }) => {
           if (uri) {
             if (qrCodeModal) {
-              web3Modal.openModal({ uri, standaloneChains: [chainId] });
-              web3Modal.subscribeModal(({ open }) => {
+              walletConnectModal.openModal({
+                uri,
+                standaloneChains: [chainId],
+              });
+              walletConnectModal.subscribeModal(({ open }) => {
                 if (!open) {
                   reject(new Error("User cancelled pairing"));
                 }
@@ -73,7 +76,7 @@ class WalletConnectClient {
           approval()
             .then(resolve)
             .catch(reject)
-            .finally(() => web3Modal.closeModal());
+            .finally(() => walletConnectModal.closeModal());
         })
         .catch(reject);
     });
