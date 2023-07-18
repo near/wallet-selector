@@ -1,0 +1,1 @@
+export { setupMetamaskSnap } from "./lib";
