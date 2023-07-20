@@ -1,11 +1,15 @@
 import Client from "@walletconnect/sign-client";
 import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
-import { Web3Modal } from "@web3modal/standalone";
+import { WalletConnectModal } from "@walletconnect/modal";
 import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
   WalletEvents,
 } from "@near-wallet-selector/core";
+
+// NEAR supported WalletIds from WalletConnect Explorer.
+const OPTO_WALLET =
+  "9504a1c1a86cc0702b2d3e47049e1389b373fb2ff22de3208c748d62912433a4";
 
 class WalletConnectClient {
   private client: Client;
@@ -47,10 +51,11 @@ class WalletConnectClient {
     projectId: string,
     chainId: string
   ) {
-    const web3Modal = new Web3Modal({
-      walletConnectVersion: 2,
+    const walletConnectModal = new WalletConnectModal({
       projectId,
-      standaloneChains: [chainId],
+      chains: [chainId],
+      explorerExcludedWalletIds: "ALL",
+      explorerRecommendedWalletIds: [OPTO_WALLET],
     });
 
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
@@ -59,8 +64,11 @@ class WalletConnectClient {
         .then(({ uri, approval }) => {
           if (uri) {
             if (qrCodeModal) {
-              web3Modal.openModal({ uri, standaloneChains: [chainId] });
-              web3Modal.subscribeModal(({ open }) => {
+              walletConnectModal.openModal({
+                uri,
+                standaloneChains: [chainId],
+              });
+              walletConnectModal.subscribeModal(({ open }) => {
                 if (!open) {
                   reject(new Error("User cancelled pairing"));
                 }
@@ -73,7 +81,7 @@ class WalletConnectClient {
           approval()
             .then(resolve)
             .catch(reject)
-            .finally(() => web3Modal.closeModal());
+            .finally(() => walletConnectModal.closeModal());
         })
         .catch(reject);
     });

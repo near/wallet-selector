@@ -1,13 +1,12 @@
 {
-  "root": "examples/react",
+  "name": "react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "examples/react",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/next:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "root": "examples/react",
@@ -111,11 +110,14 @@
         ]
       },
       "configurations": {
-        "production": {}
+        "production": {},
+        "development": {
+          "outputPath": "examples/react"
+        }
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "react:build",
         "dev": true
@@ -128,20 +130,16 @@
       }
     },
     "export": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "next:build:production"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "examples/react/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },
