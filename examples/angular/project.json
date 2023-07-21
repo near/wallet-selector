@@ -187,7 +187,7 @@
       }
     },
     "deploy": {
-      "executor": "@nx/workspace:run-script",
+      "executor": "nx:run-script",
       "options": {
         "script": "gh-pages -d ./dist/examples/angular"
       }
