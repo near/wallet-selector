@@ -69,11 +69,19 @@ export async function renderLedgerAccountsOverviewList(
         }
 
         const wallet = await module.wallet();
-        wallet.signIn({
-          contractId: modalState.options.contracts[0].receiverId,
-          methodNames: modalState.options.contracts[0].methodNames,
-          accounts: selectedAccounts,
-        });
+
+        if (modalState.options.contracts.length > 1) {
+          await wallet.signInMulti!({
+            permissions: modalState.options.contracts,
+            accounts: selectedAccounts,
+          });
+        } else {
+          await wallet.signIn({
+            contractId: modalState.options.contracts[0].receiverId,
+            methodNames: modalState.options.contracts[0].methodNames,
+            accounts: selectedAccounts,
+          });
+        }
 
         modalState.container.children[0].classList.remove("open");
         modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });

@@ -192,16 +192,27 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       }
     );
 
-    return hardwareWallet!
-      .signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
+    if (options.contracts.length > 1) {
+      return hardwareWallet!.signInMulti!({
+        permissions: options.contracts,
         accounts: mapAccounts,
       })
-      .then(() => onConnected())
-      .catch((err) => {
-        onError(`Error: ${err.message}`, hardwareWallet!);
-      });
+        .then(() => onConnected())
+        .catch((err) => {
+          onError(`Error: ${err.message}`, hardwareWallet!);
+        });
+    } else {
+      return hardwareWallet!
+        .signIn({
+          contractId: options.contracts[0].receiverId,
+          methodNames: options.contracts[0].methodNames,
+          accounts: mapAccounts,
+        })
+        .then(() => onConnected())
+        .catch((err) => {
+          onError(`Error: ${err.message}`, hardwareWallet!);
+        });
+    }
   };
 
   const handleOnBackButtonClick = () => {
