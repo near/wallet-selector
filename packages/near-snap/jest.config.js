@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "metamask-snap",
+  displayName: "near-snap",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -10,5 +10,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/metamask-snap",
+  coverageDirectory: "../../coverage/packages/near-snap",
 };

@@ -38,8 +38,8 @@
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/metamask-snap": [
-        "packages/metamask-snap/src/index.ts"
+      "@near-wallet-selector/near-snap": [
+        "packages/near-snap/src/index.ts"
       ],
       "@near-wallet-selector/ledger": [
         "packages/ledger/src/index.ts"

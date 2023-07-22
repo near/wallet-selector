@@ -59,7 +59,7 @@ yarn add \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
-  @near-wallet-selector/metamask-snap \
+  @near-wallet-selector/near-snap \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -84,7 +84,7 @@ npm install \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
-  @near-wallet-selector/metamask-snap \
+  @near-wallet-selector/near-snap \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -122,7 +122,7 @@ import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupMetamaskSnap } from "@near-wallet-selector/metamask-snap";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
@@ -147,7 +147,6 @@ const selector = await setupWalletSelector({
     setupMyNearWallet(),
     setupSender(),
     setupHereWallet(),
-    setupMetamaskSnap(),
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),

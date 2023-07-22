@@ -64,7 +64,7 @@
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
-    "build:metamask-snap": "nx run-many --target=build --projects=metamask-snap --configuration=production",
+    "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
     "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
     "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "build:ramper-wallet": "nx run-many --target=build --projects=ramper-wallet --configuration=production",

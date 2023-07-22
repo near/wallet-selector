@@ -5,7 +5,7 @@ import type {
 } from "@near-wallet-selector/core";
 import { NearSnap, NearSnapAccount } from "@near-snap/sdk";
 
-export const initMetamaskSnap: WalletBehaviourFactory<InjectedWallet> = async (
+export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
   config
 ) => {
   const { store, logger, options } = config;
@@ -16,12 +16,12 @@ export const initMetamaskSnap: WalletBehaviourFactory<InjectedWallet> = async (
 
   return {
     async isSignedIn() {
-      logger.log("MetamaskSnap:isSignedIn");
+      logger.log("NearSnap:isSignedIn");
       return account != null;
     },
 
     async signIn({ contractId, methodNames }) {
-      logger.log("MetamaskSnap:signIn");
+      logger.log("NearSnap:signIn");
       account = await NearSnapAccount.connect({
         contractId: contractId === "" ? undefined : contractId,
         methods: methodNames,
@@ -33,7 +33,7 @@ export const initMetamaskSnap: WalletBehaviourFactory<InjectedWallet> = async (
     },
 
     async signOut() {
-      logger.log("MetamaskSnap:signOut");
+      logger.log("NearSnap:signOut");
       await account?.disconnect();
     },
 
@@ -42,7 +42,7 @@ export const initMetamaskSnap: WalletBehaviourFactory<InjectedWallet> = async (
     },
 
     async signAndSendTransaction(data) {
-      logger.log("MetamaskSnap:signAndSendTransaction", data);
+      logger.log("NearSnap:signAndSendTransaction", data);
 
       if (account == null) {
         throw new Error("Wallet not signed in");
@@ -59,11 +59,11 @@ export const initMetamaskSnap: WalletBehaviourFactory<InjectedWallet> = async (
     },
 
     async verifyOwner() {
-      throw Error("MetamaskSnap:verifyOwner is not released yet");
+      throw Error("NearSnap:verifyOwner is not released yet");
     },
 
     async signAndSendTransactions({ transactions }) {
-      logger.log("MetamaskSnap:signAndSendTransactions", { transactions });
+      logger.log("NearSnap:signAndSendTransactions", { transactions });
 
       if (account == null) {
         throw new Error("Wallet not signed in");

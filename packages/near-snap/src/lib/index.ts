@@ -1,21 +1,21 @@
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
-import { initMetamaskSnap } from "./selector";
+import { initNearSnap } from "./selector";
 import icon from "./icon";
 
 export { icon };
 
-export function setupMetamaskSnap({
+export function setupNearSnap({
   deprecated = false,
   iconUrl = icon,
-}): WalletModuleFactory {
+} = {}): WalletModuleFactory {
   return async () => {
     return {
-      id: "metamask-snap",
+      id: "near-snap",
       type: "injected",
-      init: initMetamaskSnap,
+      init: initNearSnap,
       metadata: {
-        name: "Metamask Snap",
-        description: "Metamask plugin for NEAR Protocol",
+        name: "Near Snap",
+        description: "Metamask Snap for NEAR Protocol",
         downloadUrl: "https://near-snap.surge.sh",
         iconUrl,
         deprecated,
