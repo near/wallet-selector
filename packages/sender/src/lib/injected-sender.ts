@@ -2,6 +2,7 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
+import type { AccountImportData } from "@near-wallet-selector/core";
 
 export interface AccessKey {
   publicKey: {
@@ -119,6 +120,11 @@ export interface SenderEvents {
   rpcChanged: (response: RpcChangedResponse) => void;
 }
 
+export interface batchImportParams {
+  keystore: Array<AccountImportData>;
+  network: string;
+}
+
 export interface InjectedSender {
   isSender: boolean;
   callbacks: Record<keyof SenderEvents, unknown>;
@@ -143,4 +149,5 @@ export interface InjectedSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
+  batchImport: (params: batchImportParams) => void;
 }

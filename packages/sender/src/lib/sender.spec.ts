@@ -67,6 +67,7 @@ const mockSenderOnWindow = () => {
         ),
       })
     ),
+    batchImport: jest.fn(),
   };
 
   return window.near;
@@ -134,6 +135,7 @@ describe("signAndSendTransaction", () => {
     expect(injectedSender.signAndSendTransaction).toHaveBeenCalled();
   });
 });
+
 describe("signAndSendTransactions", () => {
   it("sign transactions in sender", async () => {
     const { wallet, injectedSender } = await createSenderWallet();
@@ -145,5 +147,26 @@ describe("signAndSendTransactions", () => {
 
     expect(injectedSender.requestSignTransactions).toHaveBeenCalled();
     expect(result.length).toEqual(transactions.length);
+  });
+});
+
+describe("importAccountsInSecureContext", () => {
+  it("returns import url", async () => {
+    const { wallet } = await createSenderWallet();
+
+    expect(typeof wallet.importAccountsInSecureContext).toBe("function");
+
+    const accountsData = [
+      { accountId: "test.testnet", privateKey: "ed25519:test" },
+    ];
+
+    if (wallet.importAccountsInSecureContext) {
+      await wallet.importAccountsInSecureContext({ accounts: accountsData });
+      // @ts-ignore
+      expect(window.near.batchImport).toHaveBeenCalledWith({
+        keystore: accountsData,
+        network: "testnet",
+      });
+    }
   });
 });
