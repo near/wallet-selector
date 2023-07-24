@@ -301,7 +301,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async importAccountsInSecureContext({ accounts }) {
       if (window.near && window.near.isSender) {
-        window.near.batchImport({
+        await window.near.batchImport({
           keystore: accounts,
           network: options.network.networkId,
         });

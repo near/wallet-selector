@@ -149,5 +149,5 @@ export interface InjectedSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
-  batchImport: (params: batchImportParams) => void;
+  batchImport: (params: batchImportParams) => Promise<unknown>;
 }
