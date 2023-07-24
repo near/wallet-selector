@@ -1,10 +1,11 @@
 {
+  "name": "finer-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/finer-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/finer-wallet",
@@ -29,15 +30,15 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/finer-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/finer-wallet"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/finer-wallet"],
       "options": {
         "jestConfig": "packages/finer-wallet/jest.config.ts",
         "passWithNoTests": true
