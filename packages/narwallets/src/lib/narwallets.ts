@@ -263,17 +263,6 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         Array<FinalExecutionOutcome>
       >;
     },
-
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("NarWallet:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 

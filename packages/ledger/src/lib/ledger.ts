@@ -276,17 +276,6 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       return await _state.client.getPublicKey({ derivationPath });
     },
-
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("Ledger:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 
