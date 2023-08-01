@@ -59,6 +59,10 @@ export interface SignedMessage {
   state?: string;
 }
 
+export type SignMessageMethod = {
+  signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
+};
+
 interface SignAndSendTransactionParams {
   signerId?: string;
   receiverId?: string;
