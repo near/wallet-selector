@@ -22,6 +22,7 @@ import {
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
+import type { SignMessageMethod } from "../../wallet";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -32,7 +33,7 @@ export class WalletModules {
   private provider: ProviderService;
 
   private modules: Array<ModuleState>;
-  private instances: Record<string, Wallet>;
+  private instances: Record<string, Wallet & SignMessageMethod>;
 
   constructor({
     factories,
@@ -289,7 +290,9 @@ export class WalletModules {
     return wallet;
   }
 
-  private async setupInstance(module: WalletModule): Promise<Wallet> {
+  private async setupInstance(
+    module: WalletModule
+  ): Promise<Wallet & SignMessageMethod> {
     if (!module.metadata.available) {
       const message =
         module.type === "injected" ? "not installed" : "not available";
@@ -313,7 +316,7 @@ export class WalletModules {
       })),
     } as Wallet;
 
-    return this.decorateWallet(wallet);
+    return this.decorateWallet(wallet) as Wallet & SignMessageMethod;
   }
 
   private getModule(id: string | null) {
