@@ -90,7 +90,7 @@
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.8.0",
     "@nightlylabs/connect-near": "0.0.15",
-    "@walletconnect/sign-client": "2.8.6",
+    "@walletconnect/sign-client": "2.9.1",
     "@walletconnect/modal": "^2.6.0",
     "better-sqlite3": "^8.4.0",
     "big.js": "^6.1.1",
