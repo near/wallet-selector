@@ -298,17 +298,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
-
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("Sender:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 

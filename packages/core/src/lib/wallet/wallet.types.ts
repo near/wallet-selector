@@ -80,7 +80,7 @@ interface BaseWalletBehaviour {
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
-  signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
+  signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
 }
 
 type BaseWallet<

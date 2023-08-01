@@ -616,17 +616,6 @@ const WalletConnect: WalletBehaviourFactory<
         return results;
       }
     },
-
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("WalletConnect:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 

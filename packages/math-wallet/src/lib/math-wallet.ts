@@ -181,17 +181,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return results;
     },
-
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("MathWallet:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 

@@ -256,6 +256,7 @@ export class WalletModules {
   private decorateWallet(wallet: Wallet): Wallet {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
+    const _signMessage = wallet.signMessage;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -273,6 +274,16 @@ export class WalletModules {
     wallet.signOut = async () => {
       await _signOut();
       this.onWalletSignedOut(wallet.id);
+    };
+
+    wallet.signMessage = async (params: never) => {
+      if (_signMessage === undefined) {
+        throw Error(
+          `The signMessage method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signMessage(params);
     };
 
     return wallet;
