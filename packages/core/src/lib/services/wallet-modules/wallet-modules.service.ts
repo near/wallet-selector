@@ -283,7 +283,7 @@ export class WalletModules {
         );
       }
 
-      return _signMessage(params);
+      return await _signMessage(params);
     };
 
     return wallet;
