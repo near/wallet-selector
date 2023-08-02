@@ -1,16 +1,5 @@
-import type { Config } from "@jest/types";
+const { getJestProjects } = require("@nx/jest");
 
-const config: Config.InitialOptions = {
-  verbose: true,
-  cacheDirectory: ".jest/cache",
-  moduleFileExtensions: ["js", "ts", "tsx"],
-  testMatch: ["**/*.(spec)\\.(ts|tsx)"],
-  testPathIgnorePatterns: ["/node_modules/", "/example/"],
-  testEnvironment: "jest-environment-jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.init.ts"],
-  transform: {
-    "^.+\\.(ts|tsx)?$": "ts-jest",
-  },
+module.exports = {
+  projects: getJestProjects(),
 };
-
-export default config;

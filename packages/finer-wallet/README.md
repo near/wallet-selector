@@ -44,10 +44,10 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 
 ```ts
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
-import nearWalletIconUrl from "@near-wallet-selector/finer-wallet/assets/finer-wallet-icon.png";
+import finerWalletIconUrl from "@near-wallet-selector/finer-wallet/assets/finer-wallet-icon.png";
 
-const nearWallet = setupFinerWallet({
-  iconUrl: nearWalletIconUrl
+const wallet = setupFinerWallet({
+  iconUrl: finerWalletIconUrl
 });
 ```
 

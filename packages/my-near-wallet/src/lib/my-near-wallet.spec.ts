@@ -1,4 +1,4 @@
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+/* eslint-disable @nx/enforce-module-boundaries */
 import type {
   Near,
   WalletConnection,
@@ -117,30 +117,6 @@ describe("signAndSendTransaction", () => {
       receiverId: "guest-book.testnet",
     });
     expect(result).toEqual(null);
-  });
-});
-
-describe("verifyOwner", () => {
-  it("verifies owner", async () => {
-    const { wallet } = await createMyNearWallet();
-
-    const replace = window.location.replace;
-
-    await wallet.signIn({ contractId: "test.testnet" });
-
-    Object.defineProperty(window, "location", {
-      value: { replace: jest.fn() },
-    });
-
-    const result = await wallet.verifyOwner({
-      message: "message",
-      callbackUrl: "http://localhost",
-    });
-
-    expect(result).toBe(undefined);
-    expect(window.location.replace).toHaveBeenCalled();
-
-    window.location.replace = replace;
   });
 });
 

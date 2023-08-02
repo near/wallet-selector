@@ -4,26 +4,62 @@ import type { Wallet, Account } from "./wallet";
 import type { SignMessageMethod } from "./wallet";
 
 export interface ContractState {
+  /**
+   * Account ID of the Smart Contract.
+   */
   contractId: string;
+  /**
+   * List of methods that can only be invoked on the Smart Contract. Empty list means no restriction.
+   */
   methodNames: Array<string>;
 }
 
 export type ModuleState<Variation extends Wallet = Wallet> = {
+  /**
+   * Unique identifier for the wallet.
+   */
   id: Variation["id"];
+  /**
+   * Type of the wallet.
+   */
   type: Variation["type"];
+  /**
+   * Meta information about the wallet.
+   */
   metadata: Variation["metadata"];
+  /**
+   * Access functionality of the wallet.
+   */
   wallet(): Promise<Variation & SignMessageMethod>;
 };
 
 export type AccountState = Account & {
+  /**
+   * Is account set as active.
+   */
   active: boolean;
 };
 
 export interface WalletSelectorState {
+  /**
+   * Returns the signed in contract.
+   */
   contract: ContractState | null;
+  /**
+   * Returns the list of available modules.
+   */
   modules: Array<ModuleState>;
+  /**
+   * Returns the list of signed in accounts.
+   */
   accounts: Array<AccountState>;
+  /**
+   * Returns the ID of the selected wallet.
+   */
   selectedWalletId: string | null;
+  /**
+   * Returns ID-s of 5 recently signed in wallets.
+   */
   recentlySignedInWallets: Array<string>;
 }
 
@@ -68,7 +104,13 @@ export type WalletSelectorAction =
     };
 
 export interface ReadOnlyStore {
+  /**
+   * Retrieve the current state. You can find more information on `WalletSelectorState` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/state.md | here}.
+   */
   getState(): WalletSelectorState;
+  /**
+   * Subscribe to state changes using the (RxJS) Observable pattern. You can find more information on `WalletSelectorState` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/state.md | here}.
+   */
   observable: Observable<WalletSelectorState>;
 }
 

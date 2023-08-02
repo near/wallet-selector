@@ -55,6 +55,14 @@
       "preferTheOfficial": "Preferirajte uradno pogovorno okno",
       "open": "Odprite"
     },
+    "walletTypes": {
+      "hardware": "Hladna denarnica",
+      "browser": "Denarnica brskalnika",
+      "injected": "Razširitev za denarnico",
+      "bridge": "Bridge denarnica",
+      "mobile": "Mobilna denarnica",
+      "instant-link": "Takojšnja denarnica"
+    },
     "exportAccounts": {
       "chooseAWallet": "Izberite denarnico",
       "transferYourAccounts": "Prenesite svoje račune",

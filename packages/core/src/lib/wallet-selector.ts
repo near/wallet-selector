@@ -63,6 +63,11 @@ const createSelector = (
   };
 };
 
+/**
+ * Initiates a wallet selector instance
+ * @param {WalletSelectorParams} params Selector parameters (network, modules...)
+ * @returns {Promise<WalletSelector>} Returns a WalletSelector object
+ */
 export const setupWalletSelector = async (
   params: WalletSelectorParams
 ): Promise<WalletSelector> => {

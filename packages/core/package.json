@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/core",
-  "version": "8.0.0",
+  "version": "8.2.1",
   "description": "This is the core package for NEAR Wallet Selector.",
   "keywords": [
     "near",

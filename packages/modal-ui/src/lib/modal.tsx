@@ -11,6 +11,12 @@ const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 let modalInstance: WalletSelectorModal | null = null;
 
+/**
+ * Initiates a modal instance
+ * @param {WalletSelector} selector Selector
+ * @param {ModalOptions} options Modal options
+ * @returns {WalletSelectorModal} Returns a WalletSelectorModal object
+ */
 export const setupModal = (
   selector: WalletSelector,
   options: ModalOptions

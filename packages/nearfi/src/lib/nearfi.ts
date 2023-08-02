@@ -9,6 +9,7 @@ import type {
   Optional,
   Account,
 } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import type { InjectedNearFi } from "./injected-nearfi";
 import icon from "./icon";
 
@@ -28,7 +29,9 @@ interface NearFiState {
 }
 
 const isInstalled = () => {
-  return !!window.nearFiWallet?.isNearFi;
+  return waitFor(() => !!window.nearFiWallet?.isNearFi, { timeout: 200 }).catch(
+    () => false
+  );
 };
 
 const setupNearFiState = (): NearFiState => {

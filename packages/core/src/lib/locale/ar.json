@@ -54,6 +54,14 @@
       "copyToClipboard": "نسخ",
       "preferTheOfficial": "تفضل الحوار الرسمي ل",
       "open": "فتح"
+    },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
     }
   }
 }

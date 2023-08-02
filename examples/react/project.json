@@ -1,13 +1,12 @@
 {
-  "root": "examples/react",
+  "name": "react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "examples/react",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/next:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "root": "examples/react",
@@ -26,6 +25,11 @@
           {
             "glob": "**/*",
             "input": "packages/sender/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/xdefi/assets/",
             "output": "assets/"
           },
           {
@@ -60,11 +64,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/narwallets/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -87,15 +86,38 @@
             "glob": "**/*",
             "input": "packages/finer-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/here-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-snap/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/neth/assets/",
+            "output": "assets/"
           }
         ]
       },
       "configurations": {
-        "production": {}
+        "production": {},
+        "development": {
+          "outputPath": "examples/react"
+        }
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "react:build",
         "dev": true
@@ -108,20 +130,16 @@
       }
     },
     "export": {
-      "executor": "@nrwl/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "next:build:production"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "examples/react/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

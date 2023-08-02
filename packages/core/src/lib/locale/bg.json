@@ -54,6 +54,14 @@
       "copyToClipboard": " Копирайте в клипборда",
       "preferTheOfficial": "Предпочитан език за кореспонденция",
       "open": "Отворете"
+    },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
     }
   }
 }

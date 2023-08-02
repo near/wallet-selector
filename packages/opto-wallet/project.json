@@ -1,13 +1,12 @@
 {
+  "name": "opto-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/opto-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/opto-wallet",
         "tsConfig": "packages/opto-wallet/tsconfig.lib.json",
@@ -15,10 +14,7 @@
         "entryFile": "packages/opto-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": [
-          "esm",
-          "cjs"
-        ],
+        "format": ["esm", "cjs"],
         "assets": [
           {
             "glob": "packages/opto-wallet/README.md",
@@ -34,21 +30,15 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "packages/opto-wallet/**/*.ts"
-        ]
+        "lintFilePatterns": ["packages/opto-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/packages/opto-wallet"
-      ],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/opto-wallet"],
       "options": {
         "jestConfig": "packages/opto-wallet/jest.config.ts",
         "passWithNoTests": true
@@ -61,7 +51,5 @@
       }
     }
   },
-  "tags": [
-    "browser-wallet"
-  ]
+  "tags": ["browser-wallet"]
 }

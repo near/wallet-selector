@@ -63,7 +63,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId` and `runOnStartup` for instant-link wallets.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId`,  `runOnStartup` for instant-link wallets and `walletUrl` for browser wallets.
 
 **Example**
 

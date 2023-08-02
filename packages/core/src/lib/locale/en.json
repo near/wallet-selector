@@ -55,6 +55,14 @@
       "preferTheOfficial": "Prefer the official dialogue of",
       "open": "Open"
     },
+    "walletTypes": {
+      "hardware": "Hardware Wallet",
+      "browser": "Browser Wallet",
+      "injected": "Wallet Extension",
+      "bridge": "Bridge Wallet",
+      "mobile": "Mobile Wallet",
+      "instant-link": "Instant Wallet"
+    },
     "exportAccounts": {
       "chooseAWallet": "Choose a Wallet",
       "transferYourAccounts": "Transfer Your Accounts",
@@ -72,7 +80,7 @@
       },
       "selectAccounts": {
         "title": "Select Accounts to Transfer",
-        "button": "Get Passphrase",
+        "button": "Continue",
         "deselectAll": "Deselect All",
         "selectAll": "Select All",
         "unavailable": "Transfer Unavailable",
@@ -84,6 +92,7 @@
         "title": "Copy Temporary Password",
         "desc": "You’ll need to enter this password when you begin exporting your accounts to a different wallet.",
         "button": "Continue",
+        "transferButton": "Transfer Accounts",
         "label": "Click to Copy",
         "checkLabel": "I copied or wrote down the password"
       },
@@ -91,6 +100,7 @@
         "title": "Complete the Transfer",
         "descOne": "You will now be redirected to the wallet you selected to complete the transfer.",
         "descTwo": "Once import part of process is completed from selected wallet, press button to complete the transfer process.",
+        "startOverButton": "Start Over",
         "button": "Complete"
       }
     }

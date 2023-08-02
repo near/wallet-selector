@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { useEffect } from "react";
 import React, { Fragment } from "react";
 import { translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
@@ -89,6 +90,14 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
       ? translate("modal.exportAccounts.selectAccounts.deselectAll")
       : translate("modal.exportAccounts.selectAccounts.selectAll");
 
+  useEffect(() => {
+    // Select all available accounts by default
+    if (!selectedAccounts.length) {
+      setSelectedAccounts(accountsWithDetail.map(({ accountId }) => accountId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountsWithDetail.length]);
+
   return (
     <Fragment>
       <div className="nws-modal-header-wrapper">
@@ -108,63 +117,70 @@ export const AccountSelect: React.FC<AccountSelectProps> = ({
             </div>
           ) : (
             <>
-              <span className="account-select-all" onClick={onSelectAll}>
-                {selectLabel}
-              </span>
-              <div className="account-selection">
-                {accountsWithDetail.map(({ accountId }) => (
-                  <div className="account-selection-row" key={accountId}>
-                    <div className="checkbox">
-                      <input
-                        onChange={(e) => {
-                          onAccountSelect(accountId, e.target.checked);
-                        }}
-                        checked={selectedAccounts.includes(accountId)}
-                        type="checkbox"
-                        id={accountId}
-                        name={accountId}
-                        value={accountId}
-                      />
-                      <label htmlFor={accountId} title={accountId}>
-                        {accountId}
-                      </label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {disabledAccounts.length > 0 && (
-                <>
-                  <span className="account-unavailable">
-                    {translate(
-                      "modal.exportAccounts.selectAccounts.unavailable"
-                    )}
-                  </span>
-                  <div className="account-selection">
-                    {disabledAccounts.map(({ accountId, type, hasBalance }) => (
-                      <div className="account-selection-row" key={accountId}>
-                        <div className="checkbox">
-                          <input
-                            onChange={(e) => {
-                              onAccountSelect(accountId, e.target.checked);
-                            }}
-                            checked={selectedAccounts.includes(accountId)}
-                            type="checkbox"
-                            id={accountId}
-                            name={accountId}
-                            value={accountId}
-                            disabled
-                          />
-                          <label htmlFor={accountId} title={accountId}>
-                            <span>{accountId}</span>
-                            {getWarningLabel({ hasBalance, type })}
-                          </label>
-                        </div>
+              <div className="account-selection-container">
+                <span className="account-select-all" onClick={onSelectAll}>
+                  {selectLabel}
+                </span>
+                <div className="account-selection">
+                  {accountsWithDetail.map(({ accountId }) => (
+                    <div className="account-selection-row" key={accountId}>
+                      <div className="checkbox">
+                        <input
+                          onChange={(e) => {
+                            onAccountSelect(accountId, e.target.checked);
+                          }}
+                          checked={selectedAccounts.includes(accountId)}
+                          type="checkbox"
+                          id={accountId}
+                          name={accountId}
+                          value={accountId}
+                        />
+                        <label htmlFor={accountId} title={accountId}>
+                          <span className="label">{accountId}</span>
+                        </label>
                       </div>
-                    ))}
-                  </div>
-                </>
-              )}
-              <div className="filler" />
+                    </div>
+                  ))}
+                </div>
+                {disabledAccounts.length > 0 && (
+                  <>
+                    <span className="account-unavailable">
+                      {translate(
+                        "modal.exportAccounts.selectAccounts.unavailable"
+                      )}
+                    </span>
+                    <div className="account-selection">
+                      {disabledAccounts.map(
+                        ({ accountId, type, hasBalance }) => (
+                          <div
+                            className="account-selection-row"
+                            key={accountId}
+                          >
+                            <div className="checkbox">
+                              <input
+                                onChange={(e) => {
+                                  onAccountSelect(accountId, e.target.checked);
+                                }}
+                                checked={selectedAccounts.includes(accountId)}
+                                type="checkbox"
+                                id={accountId}
+                                name={accountId}
+                                value={accountId}
+                                disabled
+                              />
+                              <label htmlFor={accountId} title={accountId}>
+                                <span className="account-id">{accountId}</span>
+                                {getWarningLabel({ hasBalance, type })}
+                              </label>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className="filler" />
+              </div>
               <button
                 className="middleButton account-export-button"
                 onClick={onNextStep}

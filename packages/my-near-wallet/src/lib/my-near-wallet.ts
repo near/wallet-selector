@@ -156,31 +156,8 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
-    async verifyOwner({ message, callbackUrl, meta }) {
-      logger.log("verifyOwner", { message });
-
-      const account = _state.wallet.account();
-
-      if (!account) {
-        throw new Error("Wallet not signed in");
-      }
-      const locationUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      const url = callbackUrl || locationUrl;
-
-      if (!url) {
-        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
-      }
-
-      const encodedUrl = encodeURIComponent(url);
-      const extraMeta = meta ? `&meta=${meta}` : "";
-
-      window.location.replace(
-        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
-      );
-
-      return;
+    async verifyOwner() {
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async signAndSendTransaction({
@@ -237,7 +214,7 @@ export function setupMyNearWallet({
   successUrl = "",
   failureUrl = "",
 }: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
-  return async () => {
+  return async (moduleOptions) => {
     return {
       id: "my-near-wallet",
       type: "browser",
@@ -250,6 +227,7 @@ export function setupMyNearWallet({
         available: true,
         successUrl,
         failureUrl,
+        walletUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
       },
       init: (options) => {
         return MyNearWallet({

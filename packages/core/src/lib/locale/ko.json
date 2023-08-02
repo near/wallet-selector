@@ -41,6 +41,14 @@
       "overviewTheListOfAuthorized": "인증된 계정 목록을 확인한 후 아래 버튼을 클릭하여 로그인을 완료하세요",
       "finish": "완료"
     },
+    "walletTypes": {
+      "hardware": "하드웨어 지갑",
+      "browser": "브라우저 지갑",
+      "injected": "지갑 확장",
+      "bridge": "브리지 지갑",
+      "mobile": "모바일 지갑",
+      "instant-link": "인스턴트 지갑"
+    },
     "install": {
       "youllNeedToInstall": "다음 확장 프로그램을 설치해주세요:",
       "toContinueAfterInstalling": ". 설치 완료 후 페이지 새로 고침이 필요합니다. ",

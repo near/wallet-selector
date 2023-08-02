@@ -42,6 +42,12 @@ if (typeof window !== "undefined") {
   document.body.appendChild(el);
 }
 
+/**
+ * Initiates a modal instance
+ * @param {WalletSelector} selector Selector
+ * @param {ModalOptions} options Modal options
+ * @returns {WalletSelectorModal} Returns a WalletSelectorModal object
+ */
 export const setupModal = (
   selector: WalletSelector,
   options: ModalOptions

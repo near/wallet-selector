@@ -1,14 +1,13 @@
 {
+  "name": "angular",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "examples/angular",
   "sourceRoot": "examples/angular/src",
   "prefix": "near-wallet-selector",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/examples/angular",
         "index": "examples/angular/src/index.html",
@@ -97,13 +96,26 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/xdefi/assets/",
+            "input": "packages/here-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-snap/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/neth/assets/",
             "output": "assets/"
           }
         ],
-        "styles": [
-          "examples/angular/src/styles.scss"
-        ],
+        "styles": ["examples/angular/src/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -158,7 +170,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "examples/angular/src/**/*.ts",
@@ -167,17 +179,15 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/examples/angular"
-      ],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/examples/angular"],
       "options": {
-        "jestConfig": "examples/angular/jest.config.js",
+        "jestConfig": "examples/angular/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "deploy": {
-      "executor": "@nrwl/workspace:run-script",
+      "executor": "nx:run-script",
       "options": {
         "script": "gh-pages -d ./dist/examples/angular"
       }
