@@ -6,6 +6,10 @@ import type {
   CodeResult,
 } from "near-api-js/lib/providers/provider";
 import type { AccountState, Transaction } from "@near-wallet-selector/core";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 import type { Message } from "../../interfaces/message";
 import type { Submitted } from "../form/form.component";
@@ -158,6 +162,53 @@ export class ContentComponent implements OnInit, OnDestroy {
       const message =
         err instanceof Error ? err.message : "Something went wrong";
       alert(message);
+    }
+  }
+
+  async onSignMessage() {
+    const wallet = await this.selector.wallet();
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+
+    try {
+      const signedMessage = await wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+      });
+      if (signedMessage) {
+        const verifiedSignature = verifySignature({
+          message,
+          nonce,
+          recipient,
+          publicKey: signedMessage.publicKey,
+          signature: signedMessage.signature,
+        });
+        const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+          publicKey: signedMessage.publicKey,
+          accountId: signedMessage.accountId,
+          network: this.selector.options.network,
+        });
+
+        if (verifiedFullKeyBelongsToUser && verifiedSignature) {
+          alert(
+            `Successfully verify signed message: '${message}': \n ${JSON.stringify(
+              signedMessage
+            )}`
+          );
+        } else {
+          alert(
+            `Failed to verify signed message '${message}': \n ${JSON.stringify(
+              signedMessage
+            )}`
+          );
+        }
+      }
+    } catch (err) {
+      const errMsg =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errMsg);
     }
   }
 
