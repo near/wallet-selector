@@ -83,7 +83,7 @@ const Content: React.FC = () => {
         ...data,
         account_id: accountId,
       }));
-  }, [accountId, selector.options]);
+  }, [accountId, selector]);
 
   const getMessages = useCallback(() => {
     const { network } = selector.options;
@@ -103,6 +103,7 @@ const Content: React.FC = () => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

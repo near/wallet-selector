@@ -102,16 +102,7 @@ const setupWalletConnectState = async (
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({
-  id,
-  options,
-  store,
-  params,
-  provider,
-  emitter,
-  logger,
-  metadata,
-}) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {

@@ -54,7 +54,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   logger,
   storage,
   provider,
-  metadata,
 }) => {
   const _state = await setupWalletState(storage);
 
