@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "8.2.1",
+  "version": "8.3.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -95,6 +95,7 @@
     "better-sqlite3": "^8.4.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
+    "borsh": "^0.7.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "copy-to-clipboard": "^3.3.3",
@@ -115,7 +116,7 @@
     "rxjs": "^7.8.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "tslib": "^2.6.0",
+    "tslib": "^2.6.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "url": "^0.11.0",

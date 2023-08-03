@@ -80,6 +80,25 @@ export interface VerifiedOwner {
   keyType: utils.key_pair.KeyType;
 }
 
+export interface SignMessageParams {
+  message: string;
+  recipient: string;
+  nonce: Buffer;
+  callbackUrl?: string;
+  state?: string;
+}
+
+export interface SignedMessage {
+  accountId: string;
+  publicKey: string;
+  signature: string;
+  state?: string;
+}
+
+export type SignMessageMethod = {
+  signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
+};
+
 interface SignAndSendTransactionParams {
   /**
    * Account ID used to sign the transaction. Defaults to the first account.
@@ -135,6 +154,7 @@ interface BaseWalletBehaviour {
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
+  signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
 }
 
 type BaseWallet<

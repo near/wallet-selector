@@ -68,6 +68,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
         signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
       );
     },
+
+    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
+      // A standardized Wallet API method, namely `signMessage`, 
+      // that allows users to sign a message for a specific receiver using their NEAR account
+      return await wallet.signMessage({ message, nonce, recipient, callbackUrl, state });
+    },
   };
 };
 
@@ -143,3 +149,8 @@ Where you might have to construct NEAR Transactions and send them yourself, you 
 This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
 
 > Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. NEAR Wallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
+
+### `signMessage`
+
+This method allows users to sign a message for a specific recipient using their NEAR account.
+Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
