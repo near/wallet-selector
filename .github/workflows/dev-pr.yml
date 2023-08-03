@@ -39,6 +39,10 @@ jobs:
             await script({context});
       - name: Ensure title update with changes type
         uses: actions/github-script@v4
+        permissions:
+          contents: 'read'
+          id-token: 'write'
+          issues: 'write'
         with:
           script: |
             const script = require('.github/actions/pr-title.js').update;
