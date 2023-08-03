@@ -1,4 +1,4 @@
-e## API Reference (Wallet)
+## API Reference (Wallet)
 
 ### `.id`
 
