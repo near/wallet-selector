@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <link rel="apple-touch-icon" href={favicon.src} />
-        <title>NEAR Guest Book</title>
+        <title>NEAR Guest Book test</title>
         <meta property="og:title" content="NEAR Guest Book" />
         <meta
           property="og:description"
