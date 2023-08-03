@@ -26,6 +26,7 @@ import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { Loading } from "../components/Loading";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupRamper } from "@near-wallet-selector/ramper-wallet";
 
 declare global {
   interface Window {
@@ -69,6 +70,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupCoin98Wallet(),
         setupNearFi(),
         setupOptoWallet(),
+        setupRamper(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

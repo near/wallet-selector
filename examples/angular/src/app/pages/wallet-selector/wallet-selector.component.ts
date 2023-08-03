@@ -22,6 +22,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupRamper } from "@near-wallet-selector/ramper-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { CONTRACT_ID } from "../../../constants";
 
@@ -92,6 +93,7 @@ export class WalletSelectorComponent implements OnInit {
             icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
           },
         }),
+        setupRamper({ networkId: "testnet" }),
       ],
     });
 
