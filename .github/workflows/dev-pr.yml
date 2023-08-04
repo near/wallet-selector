@@ -17,6 +17,11 @@ on:
       - dev
       - main
 
+permissions:
+  actions: write
+  issues: write
+  pull-requests: write
+
 jobs:
   # printer:
   #   runs-on: ubuntu-latest
