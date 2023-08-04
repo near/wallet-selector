@@ -25,7 +25,7 @@ type SendTransactionParams = {
   network?: NearNetwork;
 };
 
-export interface InjectedRamper extends RamperInstance {
+export interface InjectedRamperWallet extends RamperInstance {
   signIn: (clientAPIKey?: string) => Promise<SignInResult>;
   signInWithProvider: SignInWithProvider;
   signOut: () => void;

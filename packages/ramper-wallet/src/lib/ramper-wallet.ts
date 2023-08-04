@@ -3,7 +3,6 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
   Transaction,
-  NetworkId,
   Account,
   Optional,
 } from "@near-wallet-selector/core";
@@ -11,7 +10,7 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
 import { isMobile } from "is-mobile";
-import type { InjectedRamper } from "./injected-ramper-wallet";
+import type { InjectedRamperWallet } from "./injected-ramper-wallet";
 import icon from "./icon";
 import {
   init,
@@ -23,27 +22,38 @@ import {
 } from "@ramper/near";
 import type { Action } from "near-api-js/lib/transaction";
 
-interface RamperState {
-  wallet: InjectedRamper;
+interface RamperWalletState {
+  wallet: InjectedRamperWallet;
 }
 
-const setupRamperState = (): RamperState => {
-  const wallet = window.ramper as InjectedRamper;
+const setupRamperWalletState = (): RamperWalletState => {
+  const wallet = window.ramper as InjectedRamperWallet;
   return {
     wallet,
   };
 };
 
-const isInstalled = () => {
-  return !!window.ramper.isLoaded;
-};
-
 const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
   store,
+  options,
   logger,
 }) => {
-  const _state = setupRamperState();
+  await init({
+    appName: "Ramper Wallet",
+    authProviders: [
+      AUTH_PROVIDER.GOOGLE,
+      AUTH_PROVIDER.FACEBOOK,
+      AUTH_PROVIDER.TWITTER,
+      AUTH_PROVIDER.APPLE,
+      AUTH_PROVIDER.EMAIL,
+    ],
+    walletProviders: [WALLET_PROVIDER.NEAR_WALLET],
+    network: options.network.networkId,
+    theme: THEME.DARK,
+  });
+
+  const _state = setupRamperWalletState();
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const { wallets } = _state.wallet.getUser();
@@ -102,7 +112,7 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async verifyOwner({ message }) {
-      logger.log("Ramper:verifyOwner", { message });
+      logger.log("Ramper Wallet:verifyOwner", { message });
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
@@ -152,13 +162,11 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 export interface RamperWalletParams {
   iconUrl?: string;
   deprecated?: boolean;
-  networkId?: NetworkId;
 }
 
-export function setupRamper({
+export function setupRamperWallet({
   iconUrl = icon,
   deprecated = false,
-  networkId = "testnet",
 }: RamperWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
@@ -166,33 +174,16 @@ export function setupRamper({
       return null;
     }
 
-    await init({
-      appName: "Ramper Wallet",
-      authProviders: [
-        AUTH_PROVIDER.GOOGLE,
-        AUTH_PROVIDER.FACEBOOK,
-        AUTH_PROVIDER.TWITTER,
-        AUTH_PROVIDER.APPLE,
-        AUTH_PROVIDER.EMAIL,
-      ],
-      walletProviders: [WALLET_PROVIDER.NEAR_WALLET],
-      network: networkId,
-      theme: THEME.DARK,
-    });
-
-    const installed = await isInstalled();
-
     return {
       id: "ramper-wallet",
       type: "injected",
       metadata: {
-        name: "Ramper",
+        name: "Ramper Wallet",
         description: null,
         iconUrl,
-        // Will replace we open beta with stable version
         downloadUrl: "https://docs.ramper.xyz/",
         deprecated,
-        available: installed,
+        available: true,
       },
       init: RamperWallet,
     };

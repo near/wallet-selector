@@ -16,7 +16,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
-import { setupRamper } from "@near-wallet-selector/ramper-wallet";
+import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import type { ReactNode } from "react";
 import React, {
   useCallback,
@@ -78,7 +78,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupRamper(),
+        setupRamperWallet(),
         setupNeth({
           gas: "300000000000000",
           bundle: false,

@@ -135,7 +135,7 @@ import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
-import { setupRamper } from "@near-wallet-selector/ramper-wallet";
+import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",

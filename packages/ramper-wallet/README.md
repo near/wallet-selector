@@ -1,7 +1,7 @@
 # @near-wallet-selector/ramper-wallet
 
 
-This is the [Ramper](https://docs.ramper.xyz/) package for NEAR Wallet Selector.
+This is the [Ramper Wallet](https://docs.ramper.xyz/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
@@ -27,10 +27,10 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupRamper } from "@near-wallet-selector/ramper-wallet";
+import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 
 // Ramper for Wallet Selector can be setup without any params or it can take one optional param.
-const ramper = setupRamper({ networkId: "testnet" }),
+const ramper = setupRamperWallet(),
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -40,7 +40,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ramper.png`.
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ramper-wallet.png`.
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
@@ -48,11 +48,11 @@ const selector = await setupWalletSelector({
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupRamper } from "@near-wallet-selector/ramper-wallet";
-import ramperIconUrl from "@near-wallet-selector/ramper-wallet/assets/ramper.png";
+import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import ramperWalletIconUrl from "@near-wallet-selector/ramper-wallet/assets/ramper-wallet.png";
 
-const ramper = setupRamper({
-  iconUrl: ramperIconUrl
+const ramper = setupRamperWallet({
+  iconUrl: ramperWalletIconUrl
 });
 ```
 
