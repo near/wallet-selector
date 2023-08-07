@@ -10,12 +10,11 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
 import { isMobile } from "is-mobile";
-import type { InjectedRamperWallet } from "./injected-ramper-wallet";
+import type { InjectedRamperWallet } from "./ramper-wallet.types";
 import icon from "./icon";
 import {
   init,
   AUTH_PROVIDER,
-  WALLET_PROVIDER,
   THEME,
   signIn,
   sendTransaction,
@@ -48,7 +47,7 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       AUTH_PROVIDER.APPLE,
       AUTH_PROVIDER.EMAIL,
     ],
-    walletProviders: [WALLET_PROVIDER.NEAR_WALLET],
+    walletProviders: [],
     network: options.network.networkId,
     theme: THEME.DARK,
   });
@@ -57,7 +56,7 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const { wallets } = _state.wallet.getUser();
-    const { publicKey: accountId } = wallets.near;
+    const { publicKey: accountId } = wallets["near"];
 
     if (!accountId) {
       return [];
@@ -94,7 +93,12 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      await signIn(); // signIn first because if getUser break function
+      const signInResult = await signIn();
+      if (signInResult.method === "cancel" || signInResult.method === "none") {
+        throw new Error("Something went wrong");
+      }
+
+      // signIn first because if getUser break function
       const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
@@ -135,11 +139,21 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         actions: Array<Action>;
       }> = await transformTransactions([{ receiverId, actions }]);
 
-      const { result } = await sendTransaction({
-        transactionActions: transactions,
-      });
-
-      return result[0];
+      try {
+        const { result } = await sendTransaction({
+          transactionActions: transactions,
+        });
+        if (
+          Object.keys(result[0]).length === 0 &&
+          result[0].constructor === Object
+        ) {
+          throw new Error();
+        } else {
+          return result[0];
+        }
+      } catch (e) {
+        throw new Error("Failed to send transaction");
+      }
     },
 
     async signAndSendTransactions({ transactions }) {
@@ -150,11 +164,21 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         actions: Array<Action>;
       }> = await transformTransactions(transactions);
 
-      const { result: results } = await sendTransaction({
-        transactionActions: transactionsParsed,
-      });
-
-      return results;
+      try {
+        const { result: results } = await sendTransaction({
+          transactionActions: transactionsParsed,
+        });
+        if (
+          Object.keys(results[0]).length === 0 &&
+          results[0].constructor === Object
+        ) {
+          throw new Error();
+        } else {
+          return results;
+        }
+      } catch (e) {
+        throw new Error("Failed to send transactions");
+      }
     },
   };
 };
