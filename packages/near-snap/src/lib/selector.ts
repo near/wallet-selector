@@ -58,6 +58,14 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
       return await account.executeTransaction({ receiverId, ...data });
     },
 
+    async signMessage({ message, nonce, recipient }) {
+      if (account == null) {
+        throw new Error("Wallet not signed in");
+      }
+
+      return await account.signMessage({ message, nonce, recipient });
+    },
+
     async verifyOwner() {
       throw Error("NearSnap:verifyOwner is not released yet");
     },

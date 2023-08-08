@@ -92,6 +92,9 @@
       "@near-wallet-selector/welldone-wallet": [
         "packages/welldone-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/ramper-wallet": [
+        "packages/ramper-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/xdefi": [
         "packages/xdefi/src/index.ts"
       ],
