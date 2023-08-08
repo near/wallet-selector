@@ -72,6 +72,9 @@
         "packages/welldone-wallet/src/index.ts"
       ],
       "@near-wallet-selector/xdefi": ["packages/xdefi/src/index.ts"],
+      "@near-wallet-selector/ramper-wallet": [
+        "packages/ramper-wallet/src/index.ts"
+      ],
       "crypto": ["node_modules/crypto-browserify"],
       "http": ["node_modules/stream-http"],
       "https": ["node_modules/https-browserify"],
