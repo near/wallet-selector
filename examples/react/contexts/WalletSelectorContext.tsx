@@ -73,7 +73,6 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNightly(),
         setupMeteorWallet(),
         setupNearSnap(),
-        setupNearSnap(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),

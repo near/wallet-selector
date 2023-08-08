@@ -4,8 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "commonjs",
+    "noFallthroughCasesInSwitch": true
   },
   "files": [],
   "include": [],

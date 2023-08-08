@@ -59,7 +59,6 @@ yarn add \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
-  @near-wallet-selector/near-snap \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -84,7 +83,6 @@ npm install \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
-  @near-wallet-selector/near-snap \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \

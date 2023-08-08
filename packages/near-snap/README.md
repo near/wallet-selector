@@ -26,11 +26,11 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupMetamaskSnap } from "@near-wallet-selector/near-snap";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [setupMetamaskSnap()],
+  modules: [setupNearSnap()],
 });
 ```
 
@@ -51,10 +51,10 @@ https://github.com/here-wallet/near-snap
 Assets such as icons can be found in the `/assets` directory of the package. Below is an example using Webpack:
 
 ```ts
-import { setupMetamaskSnap } from "@near-wallet-selector/near-snap";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import SnapIconUrl from "@near-wallet-selector/near-snap/assets/snap-icon.png";
 
-const snapWallet = setupMetamaskSnap({ 
+const snapWallet = setupNearSnap({ 
   iconUrl: SnapIconUrl 
 });
 
