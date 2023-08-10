@@ -11,7 +11,10 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -23,7 +26,9 @@
       "@near-wallet-selector/coin98-wallet": [
         "packages/coin98-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/core": ["packages/core/src/index.ts"],
+      "@near-wallet-selector/core": [
+        "packages/core/src/index.ts"
+      ],
       "@near-wallet-selector/default-wallets": [
         "packages/default-wallets/src/index.ts"
       ],
@@ -33,35 +38,51 @@
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/ledger": ["packages/ledger/src/index.ts"],
+      "@near-wallet-selector/ledger": [
+        "packages/ledger/src/index.ts"
+      ],
       "@near-wallet-selector/math-wallet": [
         "packages/math-wallet/src/index.ts"
       ],
       "@near-wallet-selector/meteor-wallet": [
         "packages/meteor-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/modal-ui": ["dist/packages/modal-ui"],
+      "@near-wallet-selector/modal-ui": [
+        "dist/packages/modal-ui"
+      ],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"
       ],
       "@near-wallet-selector/my-near-wallet": [
         "packages/my-near-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/narwallets": ["packages/narwallets/src/index.ts"],
-      "@near-wallet-selector/near-snap": ["packages/near-snap/src/index.ts"],
+      "@near-wallet-selector/narwallets": [
+        "packages/narwallets/src/index.ts"
+      ],
+      "@near-wallet-selector/near-snap": [
+        "packages/near-snap/src/index.ts"
+      ],
       "@near-wallet-selector/near-wallet": [
         "packages/near-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/nearfi": ["packages/nearfi/src/index.ts"],
-      "@near-wallet-selector/neth": ["packages/neth/src/index.ts"],
-      "@near-wallet-selector/nightly": ["packages/nightly/src/index.ts"],
+      "@near-wallet-selector/nearfi": [
+        "packages/nearfi/src/index.ts"
+      ],
+      "@near-wallet-selector/neth": [
+        "packages/neth/src/index.ts"
+      ],
+      "@near-wallet-selector/nightly": [
+        "packages/nightly/src/index.ts"
+      ],
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
       ],
       "@near-wallet-selector/opto-wallet": [
         "packages/opto-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
+      "@near-wallet-selector/sender": [
+        "packages/sender/src/index.ts"
+      ],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
       ],
@@ -71,16 +92,34 @@
       "@near-wallet-selector/welldone-wallet": [
         "packages/welldone-wallet/src/index.ts"
       ],
-      "@near-wallet-selector/xdefi": ["packages/xdefi/src/index.ts"],
       "@near-wallet-selector/ramper-wallet": [
         "packages/ramper-wallet/src/index.ts"
       ],
-      "crypto": ["node_modules/crypto-browserify"],
-      "http": ["node_modules/stream-http"],
-      "https": ["node_modules/https-browserify"],
-      "stream": ["node_modules/stream-browserify"],
-      "url": ["node_modules/url"]
+      "@near-wallet-selector/xdefi": [
+        "packages/xdefi/src/index.ts"
+      ],
+      "crypto": [
+        "node_modules/crypto-browserify"
+      ],
+      "http": [
+        "node_modules/stream-http"
+      ],
+      "https": [
+        "node_modules/https-browserify"
+      ],
+      "stream": [
+        "node_modules/stream-browserify"
+      ],
+      "url": [
+        "node_modules/url"
+      ],
+      "fs": [
+        "node_modules/browserify-fs"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
