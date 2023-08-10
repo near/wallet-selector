@@ -35,7 +35,7 @@ const selector = await setupWalletSelector({
 ```
 
 
-## Here Wallet JS SDK
+## Near Snap JS SDK
 
 The library uses @near-snap/sdk, you can read more about the functionality here:
 https://github.com/here-wallet/near-snap
@@ -43,7 +43,7 @@ https://github.com/here-wallet/near-snap
 
 ## Options
 
-- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
+- `iconUrl`: (`string?`): Icon is optional. Default image point to Metamask Flask Logo in base64 format.
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets

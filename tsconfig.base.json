@@ -115,7 +115,8 @@
       ],
       "fs": [
         "node_modules/browserify-fs"
-      ]
+      ],
+      "path": ["node_modules/path-browserify"]
     }
   },
   "exclude": [
