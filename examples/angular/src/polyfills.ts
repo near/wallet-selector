@@ -52,7 +52,7 @@ import "zone.js"; // Included with Angular CLI.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
-(window as any).process = { env: {} };
+(window as any).process = { env: {}, version: "" };
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
