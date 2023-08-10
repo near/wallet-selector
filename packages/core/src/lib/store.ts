@@ -12,6 +12,7 @@ import {
   CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
+  SIGN_IN_MESSAGE,
 } from "./constants";
 
 const reducer = (
@@ -47,7 +48,7 @@ const reducer = (
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts, recentlySignedInWallets } =
+      const { walletId, contract, accounts, recentlySignedInWallets, message } =
         action.payload;
 
       if (!accounts.length) {
@@ -71,6 +72,7 @@ const reducer = (
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
+        ...(message && { message }),
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -85,6 +87,7 @@ const reducer = (
         contract: null,
         accounts: [],
         selectedWalletId: null,
+        message: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -143,6 +146,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
+    message: await jsonStorage.getItem(SIGN_IN_MESSAGE),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -178,6 +182,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       RECENTLY_SIGNED_IN_WALLETS,
       "recentlySignedInWallets"
     );
+    syncStorage(prevState, state, SIGN_IN_MESSAGE, "message");
     prevState = state;
   });
 

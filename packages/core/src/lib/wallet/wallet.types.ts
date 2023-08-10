@@ -99,6 +99,14 @@ export type SignMessageMethod = {
   signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
 };
 
+export interface SignInMessageParams {
+  message: string;
+  recipient: string;
+  nonce: Buffer;
+  callbackUrl?: string;
+  state?: string;
+}
+
 interface SignAndSendTransactionParams {
   /**
    * Account ID used to sign the transaction. Defaults to the first account.
@@ -154,7 +162,16 @@ interface BaseWalletBehaviour {
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
+
+  /**
+   * Signs a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
+   */
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Signs a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
+   * Sets the wallet selector's isSignedIn state to true after the message is signed and verified.
+   */
+  signInMessage?(params: SignInMessageParams): Promise<Array<Account>>;
 }
 
 type BaseWallet<
@@ -181,6 +198,7 @@ export type WalletEvents = {
     contractId: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
+    message?: SignMessageParams;
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };

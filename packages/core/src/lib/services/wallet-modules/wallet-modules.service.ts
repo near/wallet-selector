@@ -19,10 +19,11 @@ import {
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
+  PENDING_SIGN_IN_MESSAGE,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
-import type { SignMessageMethod } from "../../wallet";
+import type { SignMessageMethod, SignInMessageParams } from "../../wallet";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -110,7 +111,7 @@ export class WalletModules {
       }
     }
 
-    const { contract, selectedWalletId } = this.store.getState();
+    const { contract, selectedWalletId, message } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
     const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
@@ -123,6 +124,7 @@ export class WalletModules {
         contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
+        message: null,
       };
     }
 
@@ -131,6 +133,7 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
+      message,
     };
   }
 
@@ -171,7 +174,7 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
+    { accounts, contractId, methodNames, message }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -184,6 +187,7 @@ export class WalletModules {
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
         await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
+        await jsonStorage.setItem(PENDING_SIGN_IN_MESSAGE, message);
       }
 
       return;
@@ -199,7 +203,13 @@ export class WalletModules {
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, contract, accounts, recentlySignedInWallets },
+      payload: {
+        walletId,
+        contract,
+        accounts,
+        recentlySignedInWallets,
+        message,
+      },
     });
 
     this.emitter.emit("signedIn", {
@@ -258,6 +268,7 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
+    const _signInMessage = wallet.signInMessage;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -285,6 +296,26 @@ export class WalletModules {
       }
 
       return await _signMessage(params);
+    };
+
+    wallet.signInMessage = async (params: never) => {
+      if (_signInMessage === undefined) {
+        throw Error(
+          `The signInMessage method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      const message = params as SignInMessageParams;
+      const accounts = await _signInMessage(params);
+
+      await this.onWalletSignedIn(wallet.id, {
+        accounts,
+        contractId: "",
+        methodNames: [],
+        message,
+      });
+
+      return accounts;
     };
 
     return wallet;
@@ -388,8 +419,13 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
-      await this.resolveStorageState();
+    const {
+      accounts,
+      contract,
+      selectedWalletId,
+      recentlySignedInWallets,
+      message,
+    } = await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
@@ -399,6 +435,7 @@ export class WalletModules {
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        message: message!,
       },
     });
 

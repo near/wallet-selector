@@ -1,7 +1,11 @@
 import type { BehaviorSubject, Observable } from "rxjs";
 
-import type { Wallet, Account } from "./wallet";
-import type { SignMessageMethod } from "./wallet";
+import type {
+  Wallet,
+  Account,
+  SignInMessageParams,
+  SignMessageMethod,
+} from "./wallet";
 
 export interface ContractState {
   /**
@@ -61,6 +65,10 @@ export interface WalletSelectorState {
    * Returns ID-s of 5 recently signed in wallets.
    */
   recentlySignedInWallets: Array<string>;
+  /**
+   * The original message that was used to "sign-in" via signInMessages
+   */
+  message: SignInMessageParams | null;
 }
 
 export type WalletSelectorAction =
@@ -72,6 +80,7 @@ export type WalletSelectorAction =
         contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
+        message?: SignInMessageParams;
       };
     }
   | {
@@ -81,6 +90,7 @@ export type WalletSelectorAction =
         contract: ContractState;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
+        message?: SignInMessageParams;
       };
     }
   | {
