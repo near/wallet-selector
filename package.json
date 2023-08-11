@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "8.4.0",
+  "version": "8.5.0",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -91,6 +91,7 @@
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.8.0",
+    "@near-snap/sdk": "^0.5.0",
     "@nightlylabs/connect-near": "0.0.15",
     "@ramper/near": "^0.0.30",
     "@walletconnect/modal": "^2.6.0",
@@ -99,6 +100,7 @@
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "borsh": "^0.7.0",
+    "browserify-fs": "^1.0.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "copy-to-clipboard": "^3.3.3",
@@ -193,6 +195,7 @@
     "jsdoc": "^4.0.2",
     "nx": "16.0.0",
     "nx-cloud": "16.0.5",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
     "react-refresh": "^0.10.0",
     "react-test-renderer": "18.2.0",
@@ -206,6 +209,7 @@
     "ts-prune": "^0.10.3",
     "typescript": "4.9.5",
     "url-loader": "^4.1.1",
+    "util": "^0.12.5",
     "uuid": "^9.0.0",
     "webpack": "^5.75.0",
     "webpack-merge": "^5.8.0"

@@ -13,8 +13,13 @@ import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
+import { setupNeth } from "@near-wallet-selector/neth";
+import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
+import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import type { ReactNode } from "react";
@@ -27,12 +32,7 @@ import React, {
 } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 
-import { setupNeth } from "@near-wallet-selector/neth";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { Loading } from "../components/Loading";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
 import { CONTRACT_ID } from "../constants";
 
 declare global {

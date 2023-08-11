@@ -1,15 +1,13 @@
-/* eslint-disable */
-export default {
+module.exports = {
   displayName: "near-snap",
   preset: "../../jest.preset.js",
-  globals: {},
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.spec.json",
+    },
+  },
   transform: {
-    "^.+\\.[tj]s$": [
-      "ts-jest",
-      {
-        tsconfig: "<rootDir>/tsconfig.spec.json",
-      },
-    ],
+    "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/near-snap",

@@ -22,7 +22,7 @@ export const verifySignature = ({
   const sha = sha256(borshPayload);
   const pk = utils.PublicKey.from(publicKey);
   return pk.verify(
-    new Uint8Array(Buffer.from(sha)),
+    new Uint8Array(Buffer.from(sha, "hex")),
     Buffer.from(signature, "base64")
   );
 };
