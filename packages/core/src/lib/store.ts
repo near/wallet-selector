@@ -38,11 +38,13 @@ const reducer = (
         };
       });
 
+      const contractExists = contract && contract?.contractId.length > 0;
+
       return {
         ...state,
         modules,
         accounts: accountStates,
-        contract,
+        ...(contractExists && { contract }),
         selectedWalletId,
         recentlySignedInWallets,
       };
@@ -66,9 +68,11 @@ const reducer = (
         };
       });
 
+      const contractExists = contract && contract.contractId.length > 0;
+
       return {
         ...state,
-        contract,
+        ...(contractExists && { contract }),
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
