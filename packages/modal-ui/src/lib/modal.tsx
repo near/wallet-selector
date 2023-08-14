@@ -1,6 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import type { WalletSelector } from "@near-wallet-selector/core";
+import type {
+  SignInMessageParams,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 
 import type { WalletSelectorModal, ModalOptions } from "./modal.types";
 import { Modal } from "./components/Modal";
@@ -31,7 +34,10 @@ export const setupModal = (
   const root = createRoot(container!);
   const emitter = new EventEmitter<ModalEvents>();
 
-  const render = (visible = false) => {
+  const render = (
+    visible = false,
+    message: SignInMessageParams | null = null
+  ) => {
     root.render(
       <Modal
         selector={selector}
@@ -39,6 +45,7 @@ export const setupModal = (
         visible={visible}
         hide={() => render(false)}
         emitter={emitter}
+        message={message}
       />
     );
   };
@@ -50,6 +57,9 @@ export const setupModal = (
       },
       hide: () => {
         render(false);
+      },
+      signInMessage(message: SignInMessageParams) {
+        render(true, message);
       },
       on: (eventName, callback) => {
         return emitter.on(eventName, callback);

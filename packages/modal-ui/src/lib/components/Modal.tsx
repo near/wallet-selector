@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import type {
   EventEmitterService,
   ModuleState,
+  SignInMessageParams,
   WalletSelector,
 } from "@near-wallet-selector/core";
 
@@ -30,6 +31,7 @@ interface ModalProps {
   visible: boolean;
   hide: () => void;
   emitter: EventEmitterService<ModalEvents>;
+  message: SignInMessageParams | null;
 }
 
 const getThemeClass = (theme?: Theme) => {
@@ -49,6 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
   visible,
   hide,
   emitter,
+  message,
 }) => {
   const [route, setRoute] = useState<ModalRoute>({
     name: "WalletHome",
@@ -193,11 +196,15 @@ export const Modal: React.FC<ModalProps> = ({
           });
         });
 
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          qrCodeModal,
-        });
+        if (message) {
+          await wallet.signInMessage!(message);
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            qrCodeModal,
+          });
+        }
 
         subscription.remove();
         handleDismissClick({ hideReason: "wallet-navigation" });
@@ -205,22 +212,30 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "browser") {
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          successUrl: wallet.metadata.successUrl,
-          failureUrl: wallet.metadata.failureUrl,
-        });
+        if (message) {
+          await wallet.signInMessage!(message);
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        }
 
         handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
 
-      await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      if (message) {
+        await wallet.signInMessage!(message);
+      } else {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+        });
+      }
 
       handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {

@@ -1,4 +1,7 @@
-import type { Subscription } from "@near-wallet-selector/core";
+import type {
+  SignInMessageParams,
+  Subscription,
+} from "@near-wallet-selector/core";
 
 export type Theme = "dark" | "light" | "auto";
 
@@ -27,6 +30,7 @@ export interface WalletSelectorModal {
   /**
    * Attach an event handler to important events.
    */
+  signInMessage(params: SignInMessageParams): void;
   on<EventName extends keyof ModalEvents>(
     eventName: EventName,
     callback: (event: ModalEvents[EventName]) => void
