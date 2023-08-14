@@ -326,3 +326,36 @@ Allows users to sign a message for a specific recipient using their NEAR account
   await wallet.signMessage({ message, recipient, nonce });
 })();
 ```
+
+### `.signInMessage(params)`
+
+**Parameters**
+- `params` (`object`)
+  - `message` (`string`): The message that wants to be transmitted.
+  - `nonce` (`Buffer`): A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
+  - `recipient` (`string`): The recipient to whom the message is destined (e.g. "alice.near" or "myapp.com").
+  - `callbackUrl` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). The URL to call after the signing process. Defaults to `window.location.href`.
+  - `state` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). A state for authentication purposes.
+
+**Returns**
+- `Promise<Array<Account>>`
+
+**Description**
+
+Allows users to sign-in (login) to a dApp without creating a LAK by signing a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
+
+**Example**
+
+```ts
+// MyNearWallet
+(async () => {
+  const wallet = await selector.wallet("my-near-wallet");
+  const message = "test message for verification";
+  let nonceArray: Uint8Array = new Uint8Array(32);
+  nonceArray = crypto.getRandomValues(nonceArray);
+  const nonce = Buffer.from(nonceArray);
+  const recipient = "myapp.com";
+  
+  await wallet.signInMessage({ message, recipient, nonce });
+})();
+```

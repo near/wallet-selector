@@ -74,6 +74,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       // that allows users to sign a message for a specific receiver using their NEAR account
       return await wallet.signMessage({ message, nonce, recipient, callbackUrl, state });
     },
+    async signInMessage({ message, nonce, recipient, callbackUrl, state }) {
+      // Sign in to My Wallet withotut creating a LAK for access to account(s).
+      // Signs the message, verifies it and returns the account(s).
+      
+      return [];
+    },
   };
 };
 

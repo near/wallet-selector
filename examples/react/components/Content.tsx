@@ -127,6 +127,7 @@ const Content: React.FC = () => {
     const message = "test message to sign";
     const nonce = Buffer.from(Array.from(Array(32).keys()));
     const recipient = "guest-book.testnet";
+    console.log({ message, nonce, recipient });
     modal.signInMessage({ message, nonce, recipient });
   };
 

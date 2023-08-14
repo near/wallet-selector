@@ -93,3 +93,26 @@ Returns ID-s of 5 recently signed in wallets.
 const { recentlySignedInWallets } = selector.store.getState();
 console.log(recentlySignedInWallets); // ["near-wallet", "sender", ...]
 ```
+
+### `.message`
+
+**Returns**
+
+- `SignInMessageParams | null`
+  - `message` (`string`): The message that wants to be transmitted.
+  - `nonce` (`Buffer`): A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
+  - `recipient` (`string`): The recipient to whom the message is destined (e.g. "alice.near" or "myapp.com").
+  - `callbackUrl` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). The URL to call after the signing process.
+  - `state` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). A state for authentication purposes.
+
+
+**Description**
+
+Returns the original message that was used for `signInMessage`.
+
+**Example**
+
+```ts
+const { message } = selector.store.getState();
+console.log(message); // { message: "test", nonce: [0...31], recipient: "myapp.com" }
+```
