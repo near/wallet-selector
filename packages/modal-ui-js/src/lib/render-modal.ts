@@ -116,48 +116,63 @@ export async function connectToWallet(
     }
 
     if (wallet.type === "bridge") {
-      const subscription = modalState.selector.on("uriChanged", ({ uri }) => {
-        renderScanQRCode(module, {
-          uri,
-          handleOpenDefaultModal: () => {
-            connectToWallet(module, true);
-          },
+      if (modalState.message) {
+        await wallet.signInMessage!(modalState.message);
+      } else {
+        const subscription = modalState.selector.on("uriChanged", ({ uri }) => {
+          renderScanQRCode(module, {
+            uri,
+            handleOpenDefaultModal: () => {
+              connectToWallet(module, true);
+            },
+          });
         });
-      });
 
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        qrCodeModal,
-      });
+        await wallet.signIn({
+          contractId: modalState.options.contractId,
+          methodNames: modalState.options.methodNames,
+          qrCodeModal,
+        });
 
-      subscription.remove();
+        subscription.remove();
+      }
+
       modalState.container.children[0].classList.remove("open");
       modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
+      modalState.message = undefined;
       return;
     }
 
     if (wallet.type === "browser") {
-      await wallet.signIn({
-        contractId: modalState.options.contractId,
-        methodNames: modalState.options.methodNames,
-        successUrl: wallet.metadata.successUrl,
-        failureUrl: wallet.metadata.failureUrl,
-      });
+      if (modalState.message) {
+        await wallet.signInMessage!(modalState.message);
+      } else {
+        await wallet.signIn({
+          contractId: modalState.options.contractId,
+          methodNames: modalState.options.methodNames,
+          successUrl: wallet.metadata.successUrl,
+          failureUrl: wallet.metadata.failureUrl,
+        });
+      }
 
       modalState.container.children[0].classList.remove("open");
       modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
-
+      modalState.message = undefined;
       return;
     }
 
-    await wallet.signIn({
-      contractId: modalState.options.contractId,
-      methodNames: modalState.options.methodNames,
-    });
+    if (modalState.message) {
+      await wallet.signInMessage!(modalState.message);
+    } else {
+      await wallet.signIn({
+        contractId: modalState.options.contractId,
+        methodNames: modalState.options.methodNames,
+      });
+    }
 
     modalState.container.children[0].classList.remove("open");
     modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
+    modalState.message = undefined;
   } catch (err) {
     const { name } = module.metadata;
     const message = err instanceof Error ? err.message : "Something went wrong";
@@ -322,6 +337,7 @@ export function renderModal() {
       modalState.container.children[0].classList.remove("open");
 
       modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+      modalState.message = undefined;
     });
 
   // TODO: Better handle `click` event listener for close-button.
@@ -337,6 +353,7 @@ export function renderModal() {
         modalState.container.children[0].classList.remove("open");
 
         modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+        modalState.message = undefined;
       }
     });
     initialRender = false;

@@ -1,6 +1,7 @@
 import type {
   EventEmitterService,
   ModuleState,
+  SignInMessageParams,
   Wallet,
   WalletSelector,
 } from "@near-wallet-selector/core";
@@ -28,6 +29,7 @@ type ModalState = {
   modules: Array<ModuleState<Wallet>>;
   derivationPath: string;
   emitter: EventEmitterService<ModalEvents>;
+  message?: SignInMessageParams;
 };
 
 export let modalState: ModalState | null = null;
@@ -99,11 +101,25 @@ export const setupModal = (
       }
       modalState.container.children[0].classList.remove("open");
       modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+      modalState.message = undefined;
     }
   };
   window.addEventListener("keydown", close);
 
   renderModal();
+
+  const showUI = (state: ModalState) => {
+    allowOnlyLanguage(state.selector.options.languageCode);
+    renderModal();
+    const selectedWalletId = state.selector.store.getState().selectedWalletId;
+    if (selectedWalletId) {
+      const module = state.modules.find((m) => m.id === selectedWalletId);
+      renderWalletAccount(module);
+    } else {
+      renderWhatIsAWallet();
+    }
+    state.container.children[0].classList.add("open");
+  };
 
   if (!modalInstance) {
     modalInstance = {
@@ -111,24 +127,20 @@ export const setupModal = (
         if (!modalState) {
           return;
         }
-        allowOnlyLanguage(modalState.selector.options.languageCode);
-        renderModal();
-        const selectedWalletId =
-          modalState.selector.store.getState().selectedWalletId;
-        if (selectedWalletId) {
-          const module = modalState.modules.find(
-            (m) => m.id === selectedWalletId
-          );
-          renderWalletAccount(module);
-        } else {
-          renderWhatIsAWallet();
+        showUI(modalState);
+      },
+      signInMessage(message: SignInMessageParams) {
+        if (!modalState) {
+          return;
         }
-        modalState.container.children[0].classList.add("open");
+        modalState.message = message;
+        showUI(modalState);
       },
       hide: () => {
         if (!modalState) {
           return;
         }
+        modalState.message = undefined;
         modalState.container.children[0].classList.remove("open");
       },
       on: (eventName, callback) => {

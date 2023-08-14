@@ -77,6 +77,7 @@ export async function renderLedgerAccountsOverviewList(
 
         modalState.container.children[0].classList.remove("open");
         modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
+        modalState.message = undefined;
       } catch (err) {
         await renderWalletConnectionFailed(module, err as Error);
       }

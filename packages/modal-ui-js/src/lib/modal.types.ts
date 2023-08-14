@@ -1,4 +1,4 @@
-import type { Wallet } from "@near-wallet-selector/core";
+import type { SignInMessageParams, Wallet } from "@near-wallet-selector/core";
 import type { ModuleState } from "@near-wallet-selector/core";
 import type { Subscription } from "@near-wallet-selector/core";
 
@@ -20,6 +20,7 @@ export type ModalEvents = {
 export interface WalletSelectorModal {
   show(): void;
   hide(): void;
+  signInMessage(message: SignInMessageParams): void;
   on<EventName extends keyof ModalEvents>(
     eventName: EventName,
     callback: (event: ModalEvents[EventName]) => void
