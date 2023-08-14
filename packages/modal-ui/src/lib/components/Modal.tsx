@@ -241,10 +241,10 @@ export const Modal: React.FC<ModalProps> = ({
     } catch (err) {
       const { name } = module.metadata;
 
-      const message =
+      const errorMessage =
         err instanceof Error ? err.message : "Something went wrong";
 
-      setAlertMessage(`Failed to sign in with ${name}: ${message}`);
+      setAlertMessage(`Failed to sign in with ${name}: ${errorMessage}`);
       setRoute({
         name: "AlertMessage",
         params: {
@@ -315,13 +315,13 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   })
                 }
-                onError={(message, wallet) => {
+                onError={(errorMessage, wallet) => {
                   const { modules } = selector.store.getState();
                   const findModule = modules.find(
                     (module) => module.id === wallet.id
                   );
 
-                  setAlertMessage(message);
+                  setAlertMessage(errorMessage);
                   setRoute({
                     name: "AlertMessage",
                     params: {

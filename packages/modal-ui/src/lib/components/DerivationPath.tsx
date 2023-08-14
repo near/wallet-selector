@@ -22,7 +22,7 @@ interface DerivationPathProps {
   onBack: () => void;
   onConnected: () => void;
   params: DerivationPathModalRouteParams;
-  onError: (message: string, wallet: Wallet) => void;
+  onError: (errorMessage: string, wallet: Wallet) => void;
   onCloseModal: () => void;
 }
 
