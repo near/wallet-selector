@@ -4,19 +4,22 @@ import type {
   WalletConnection,
   ConnectedWalletAccount,
 } from "near-api-js";
-import type { AccountView } from "near-api-js/lib/providers/provider";
+import type { BlockResult } from "near-api-js/lib/providers/provider";
+import { type AccountView } from "near-api-js/lib/providers/provider";
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { BrowserWallet } from "../../../core/src/lib/wallet";
+import type { PublicKey, KeyPair } from "near-api-js/lib/utils";
+import type { AccessKey } from "near-api-js/lib/transaction";
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>({
     connection: {
       signer: {
-        getPublicKey: jest.fn().mockReturnValue(""),
+        getPublicKey: jest.fn().mockReturnValue("key1"),
       },
     },
   });
@@ -130,5 +133,67 @@ describe("buildImportAccountsUrl", () => {
     expect(wallet?.buildImportAccountsUrl()).toEqual(
       "https://testnet.mynearwallet.com/batch-import"
     );
+  });
+});
+
+describe("multipleAppSignin", () => {
+  it("should choose the appropriate function access key for transaction", async () => {
+    const publicKey1 = mock<PublicKey>();
+    const keyPair1 = mock<KeyPair>({
+      getPublicKey: () => publicKey1,
+    });
+    const walletConnection = mock<WalletConnection>();
+
+    const account = mock<ConnectedWalletAccount>({
+      connection: {
+        signer: {
+          getPublicKey: async (
+            accountId?: string | undefined,
+            networkId?: string | undefined
+          ) => publicKey1,
+        },
+        provider: {
+          block: async () =>
+            mock<BlockResult>({
+              header: {
+                hash: "abc",
+              },
+            }),
+        },
+      },
+      accessKeyForTransaction: async (receiverId, actions, localKey) => {
+        return mock<AccessKey>({});
+      },
+    });
+
+    walletConnection.account.calledWith().mockReturnValue(account);
+    walletConnection.isSignedIn.calledWith().mockReturnValue(true);
+
+    jest.mock("near-api-js", () => {
+      const module = jest.requireActual("near-api-js");
+      return {
+        ...module,
+        connect: jest.fn().mockResolvedValue(mock<Near>()),
+        WalletConnection: jest.fn().mockReturnValue(walletConnection),
+      };
+    });
+    const { setupMyNearWallet } = require("./my-near-wallet");
+    const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), {});
+
+    await wallet.signIn({ contractId: "test.testnet" });
+    await wallet.signIn({ contractId: "test2.testnet" });
+
+    const result = await wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: "test.testnet",
+          actions: [],
+        },
+        {
+          receiverId: "test2.testnet",
+          actions: [],
+        },
+      ],
+    });
   });
 });
