@@ -118,7 +118,7 @@ const MyNearWallet: WalletBehaviourFactory<
         }
 
         if (accessKey.public_key.toString() !== localKey.toString()) {
-          console.log("Missing localkey");
+          console.log("Missing localkey for", transaction.receiverId);
         }
 
         const block = await provider.block({ finality: "final" });
