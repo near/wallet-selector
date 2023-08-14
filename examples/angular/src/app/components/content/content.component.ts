@@ -106,6 +106,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.modal.show();
   }
 
+  signInMessage() {
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+    this.modal.signInMessage({ message, nonce, recipient });
+  }
+
   async signOut() {
     const wallet = await this.selector.wallet();
 

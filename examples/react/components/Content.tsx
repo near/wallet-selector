@@ -123,6 +123,13 @@ const Content: React.FC = () => {
     modal.show();
   };
 
+  const handleSignInMessage = () => {
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+    modal.signInMessage({ message, nonce, recipient });
+  };
+
   const handleSignOut = async () => {
     const wallet = await selector.wallet();
 
@@ -316,6 +323,7 @@ const Content: React.FC = () => {
       <Fragment>
         <div>
           <button onClick={handleSignIn}>Log in</button>
+          <button onClick={handleSignInMessage}>Sign In Message</button>
         </div>
         <SignIn />
       </Fragment>
