@@ -332,6 +332,7 @@ export const Modal: React.FC<ModalProps> = ({
                 onCloseModal={() =>
                   handleDismissClick({ hideReason: "user-triggered" })
                 }
+                message={message}
               />
             )}
             {route.name === "WalletNetworkChanged" && (

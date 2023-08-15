@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import type {
   HardwareWallet,
   HardwareWalletAccount,
+  SignInMessageParams,
   Wallet,
   WalletSelector,
 } from "@near-wallet-selector/core";
@@ -24,6 +25,7 @@ interface DerivationPathProps {
   params: DerivationPathModalRouteParams;
   onError: (errorMessage: string, wallet: Wallet) => void;
   onCloseModal: () => void;
+  message: SignInMessageParams | null;
 }
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
@@ -48,6 +50,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   params,
   onError,
   onCloseModal,
+  message,
 }) => {
   const [route, setRoute] = useState<HardwareRoutes>("EnterDerivationPath");
   const [derivationPath, setDerivationPath] = useState<string>(
@@ -143,10 +146,10 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       }
     } catch (err) {
       setConnecting(false);
-      const message =
+      const errorMessage =
         err instanceof Error ? err.message : "Something went wrong";
 
-      onError(message, wallet);
+      onError(errorMessage, wallet);
     } finally {
       setConnecting(false);
     }
@@ -173,9 +176,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       setRoute("OverviewAccounts");
     } catch (err) {
       setConnecting(false);
-      const message =
+      const errorMessage =
         err instanceof Error ? err.message : "Something went wrong";
-      onError(message, hardwareWallet!);
+      onError(errorMessage, hardwareWallet!);
     } finally {
       setConnecting(false);
     }
@@ -192,16 +195,24 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       }
     );
 
-    return hardwareWallet!
-      .signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-        accounts: mapAccounts,
-      })
-      .then(() => onConnected())
-      .catch((err) => {
-        onError(`Error: ${err.message}`, hardwareWallet!);
-      });
+    if (message) {
+      return hardwareWallet!.signInMessage!(message)
+        .then(() => onConnected())
+        .catch((err) => {
+          onError(`Error: ${err.message}`, hardwareWallet!);
+        });
+    } else {
+      return hardwareWallet!
+        .signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+          accounts: mapAccounts,
+        })
+        .then(() => onConnected())
+        .catch((err) => {
+          onError(`Error: ${err.message}`, hardwareWallet!);
+        });
+    }
   };
 
   const handleOnBackButtonClick = () => {
