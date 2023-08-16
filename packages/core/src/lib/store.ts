@@ -29,6 +29,7 @@ const reducer = (
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        message,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -47,6 +48,7 @@ const reducer = (
         ...(contractExists && { contract }),
         selectedWalletId,
         recentlySignedInWallets,
+        message: message!,
       };
     }
     case "WALLET_CONNECTED": {
