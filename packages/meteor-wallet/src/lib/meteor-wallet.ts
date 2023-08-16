@@ -18,6 +18,10 @@ import {
 } from "@meteorwallet/sdk";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
@@ -179,6 +183,51 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       });
       if (response.success) {
         return response.payload;
+      } else {
+        throw new Error(`Couldn't sign message owner: ${response.message}`);
+      }
+    },
+
+    // This function is added here just for testing, it will be removed after PR is approved.
+    async signInMessage({ message, nonce, recipient, state }) {
+      logger.log("MeteorWallet:signInMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+      const accountId = _state.wallet.getAccountId();
+      const response = await _state.wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+        accountId,
+        state,
+      });
+      if (response.success) {
+        const verifiedSignature = verifySignature({
+          message,
+          nonce,
+          recipient,
+          publicKey: response.payload.publicKey,
+          signature: response.payload.signature,
+        });
+        const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+          publicKey: response.payload.publicKey,
+          accountId: response.payload.accountId,
+          network: options.network,
+        });
+
+        if (verifiedSignature && verifiedFullKeyBelongsToUser) {
+          return [
+            {
+              accountId: response.payload.accountId,
+              publicKey: response.payload.publicKey,
+            },
+          ];
+        } else {
+          throw new Error(`Failed to verify the message`);
+        }
       } else {
         throw new Error(`Couldn't sign message owner: ${response.message}`);
       }
