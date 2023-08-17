@@ -95,16 +95,13 @@ const MyNearWallet: WalletBehaviourFactory<
     const account = _state.wallet.account();
     const { networkId, signer, provider } = account.connection;
 
+    const localKey = await signer.getPublicKey(account.accountId, networkId);
+
     return Promise.all(
       transactions.map(async (transaction, index) => {
         const actions = transaction.actions.map((action) =>
           createAction(action)
         );
-        const localKey = await signer.getPublicKey(
-          account.accountId,
-          networkId
-        );
-
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
           actions,
@@ -115,10 +112,6 @@ const MyNearWallet: WalletBehaviourFactory<
           throw new Error(
             `Failed to find matching key for transaction sent to ${transaction.receiverId}`
           );
-        }
-
-        if (accessKey.public_key.toString() !== localKey.toString()) {
-          console.log("Missing localkey for", transaction.receiverId);
         }
 
         const block = await provider.block({ finality: "final" });

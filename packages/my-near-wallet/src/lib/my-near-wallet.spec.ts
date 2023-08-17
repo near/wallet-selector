@@ -14,7 +14,6 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { BrowserWallet } from "../../../core/src/lib/wallet";
-import type { KeyPair } from "near-api-js/lib/utils";
 import { PublicKey } from "near-api-js/lib/utils";
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
@@ -147,9 +146,8 @@ describe("multipleAppSignin", () => {
     const publicKey2 = PublicKey.fromString(
       "ed25519:GGUEz8sFXe3aLTB3XLq5oh3cSLPsxZK2FinSvSeEvmeQ"
     );
-    const walletConnection = mock<WalletConnection>();
 
-    const account = mock<ConnectedWalletAccount>({
+    const account1 = mock<ConnectedWalletAccount>({
       connection: {
         signer: {
           getPublicKey: async (
@@ -167,46 +165,84 @@ describe("multipleAppSignin", () => {
         },
       },
       accessKeyForTransaction: async (receiverId, actions, localKey) => {
-        if (receiverId == "test.testnet") {
+        if (receiverId === "test.testnet") {
           return mock<AccessKeyInfoView>({
             public_key: publicKey1.toString(),
           });
         } else {
-          return mock<AccessKeyInfoView>({
-            public_key: publicKey2.toString(),
-          });
+          return null;
         }
       },
     });
 
-    walletConnection.account.calledWith().mockReturnValue(account);
-    walletConnection.isSignedIn.calledWith().mockReturnValue(true);
+    const account2 = mock<ConnectedWalletAccount>({
+      connection: {
+        signer: {
+          getPublicKey: async (
+            accountId?: string | undefined,
+            networkId?: string | undefined
+          ) => publicKey1,
+        },
+        provider: {
+          block: async () =>
+            mock<BlockResult>({
+              header: {
+                hash: "abc",
+              },
+            }),
+        },
+      },
+      accessKeyForTransaction: async (receiverId, actions, localKey) => {
+        if (receiverId === "test2.testnet") {
+          return mock<AccessKeyInfoView>({
+            public_key: publicKey1.toString(),
+          });
+        } else {
+          return null;
+        }
+      },
+    });
+
+    const walletConnection1 = mock<WalletConnection>();
+    walletConnection1.account.calledWith().mockReturnValue(account1);
+    walletConnection1.getAccountId
+      .calledWith()
+      .mockReturnValue("test-account.testnet");
+    walletConnection1.isSignedIn.calledWith().mockReturnValue(true);
+
+    const walletConnection2 = mock<WalletConnection>();
+    walletConnection2.account.calledWith().mockReturnValue(account2);
+    walletConnection2.getAccountId
+      .calledWith()
+      .mockReturnValue("test-account.testnet");
+    walletConnection2.isSignedIn.calledWith().mockReturnValue(true);
 
     jest.mock("near-api-js", () => {
       const module = jest.requireActual("near-api-js");
       return {
         ...module,
         connect: jest.fn().mockResolvedValue(mock<Near>()),
-        WalletConnection: jest.fn().mockReturnValue(walletConnection),
+        WalletConnection: jest.fn().mockReturnValue(walletConnection1),
       };
     });
     const { setupMyNearWallet } = require("./my-near-wallet");
     const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), {});
 
     await wallet.signIn({ contractId: "test.testnet" });
-    await wallet.signIn({ contractId: "test2.testnet" });
-
-    const result = await wallet.signAndSendTransactions({
-      transactions: [
-        {
-          receiverId: "test.testnet",
-          actions: [],
-        },
-        {
-          receiverId: "test2.testnet",
-          actions: [],
-        },
-      ],
+    await wallet.signAndSendTransaction({
+      receiverId: "test.testnet",
+      actions: [],
     });
+
+    expect(account1.signAndSendTransaction).toHaveBeenCalled();
+    expect(account2.signAndSendTransaction).not.toHaveBeenCalled();
+
+    await wallet.signAndSendTransaction({
+      receiverId: "test2.testnet",
+      actions: [],
+    });
+
+    expect(account1.signAndSendTransaction).not.toHaveBeenCalled();
+    expect(account2.signAndSendTransaction).toHaveBeenCalled();
   });
 });
