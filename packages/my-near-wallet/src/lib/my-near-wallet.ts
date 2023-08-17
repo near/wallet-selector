@@ -68,7 +68,10 @@ const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
-  const _state = await setupWalletState(params, options.network);
+  const _state = {
+    ...(await setupWalletState(params, options.network)),
+    contractConnections: {} as { [key: string]: MyNearWalletState },
+  };
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
@@ -146,6 +149,49 @@ const MyNearWallet: WalletBehaviourFactory<
       return getAccounts();
     },
 
+    async addContractConnection(
+      contractId: string,
+      methodNames: Array<string>
+    ) {
+      // Create a new random key pair for the access key
+
+      const keyPair = nearAPI.utils.KeyPair.fromRandom("ed25519");
+
+      const permission = nearAPI.transactions.functionCallAccessKey(
+        contractId,
+        methodNames
+      );
+
+      // Construct the transaction
+      const actions = [
+        nearAPI.transactions.addKey(keyPair.getPublicKey(), permission),
+      ];
+
+      const account = _state.wallet.account();
+      // Sign and send the transaction
+      await account.signAndSendTransaction({
+        receiverId: account.accountId,
+        actions,
+      });
+
+      const near = await nearAPI.connect({
+        networkId: _state.wallet._networkId,
+        nodeUrl: "_state.wallet._near.connection.url",
+      });
+
+      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+        window.localStorage,
+        contractId
+      );
+
+      const wallet = new nearAPI.WalletConnection(near, contractId);
+
+      _state.contractConnections[contractId] = {
+        wallet,
+        keyStore,
+      };
+    },
+
     async signOut() {
       if (_state.wallet.isSignedIn()) {
         _state.wallet.signOut();
@@ -179,7 +225,10 @@ const MyNearWallet: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      const account = _state.wallet.account();
+      const account =
+        contract.contractId === receiverId
+          ? _state.wallet.account()
+          : _state.contractConnections[receiverId!].wallet.account();
 
       return account["signAndSendTransaction"]({
         receiverId: receiverId || contract.contractId,

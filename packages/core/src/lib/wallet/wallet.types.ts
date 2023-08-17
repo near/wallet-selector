@@ -239,6 +239,10 @@ export type BrowserWalletBehaviour = Modify<
     buildImportAccountsUrl?(): string;
     importAccountsInSecureContext?: never;
     signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
+    addContractConnection?(
+      contractId: string,
+      methodNames: Array<string>
+    ): Promise<void>;
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;

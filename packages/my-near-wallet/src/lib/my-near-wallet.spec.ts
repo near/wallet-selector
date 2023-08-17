@@ -1,4 +1,5 @@
 /* eslint-disable @nx/enforce-module-boundaries */
+import * as nearAPI from "near-api-js";
 import type {
   Near,
   WalletConnection,
@@ -222,9 +223,16 @@ describe("multipleAppSignin", () => {
       return {
         ...module,
         connect: jest.fn().mockResolvedValue(mock<Near>()),
-        WalletConnection: jest.fn().mockReturnValue(walletConnection1),
+        WalletConnection: jest.fn((near, appKeyPrefix) => {
+          if (appKeyPrefix === "near_app") {
+            return walletConnection1;
+          } else {
+            return walletConnection2;
+          }
+        }),
       };
     });
+
     const { setupMyNearWallet } = require("./my-near-wallet");
     const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), {});
 
@@ -235,14 +243,26 @@ describe("multipleAppSignin", () => {
     });
 
     expect(account1.signAndSendTransaction).toHaveBeenCalled();
+    expect(account1.signAndSendTransaction).toHaveBeenCalledWith({
+      receiverId: "test.testnet",
+      actions: [],
+    });
     expect(account2.signAndSendTransaction).not.toHaveBeenCalled();
 
+    nearAPI.utils.KeyPair.fromRandom = jest.fn().mockReturnValue({
+      getPublicKey: () => publicKey2,
+    });
+
+    await wallet.addContractConnection!("test2.testnet", []);
     await wallet.signAndSendTransaction({
       receiverId: "test2.testnet",
       actions: [],
     });
 
-    expect(account1.signAndSendTransaction).not.toHaveBeenCalled();
     expect(account2.signAndSendTransaction).toHaveBeenCalled();
+    expect(account2.signAndSendTransaction).toHaveBeenCalledWith({
+      receiverId: "test2.testnet",
+      actions: [],
+    });
   });
 });
