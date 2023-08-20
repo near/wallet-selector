@@ -259,6 +259,31 @@ const Content: React.FC = () => {
     [addMessages, getMessages]
   );
 
+  const handleAddContractConnection = async () => {
+    const wallet = await selector.wallet();
+    await wallet.addContractConnection("superduper77.testnet", []);
+  };
+
+  const callWithContractConnection = async () => {
+    const wallet = await selector.wallet();
+    const result = await wallet.signAndSendTransaction({
+      signerId: accountId!,
+      receiverId: "superduper77.testnet",
+      actions: [
+        {
+          type: "FunctionCall",
+          params: {
+            methodName: "call_js_func",
+            args: { function_name: "nft_metadata" },
+            gas: BOATLOAD_OF_GAS,
+            deposit: "0",
+          },
+        },
+      ],
+    });
+    console.log(JSON.stringify(result));
+  };
+
   const handleSignMessage = async () => {
     const wallet = await selector.wallet();
 
@@ -332,6 +357,12 @@ const Content: React.FC = () => {
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
+        <button onClick={handleAddContractConnection}>
+          Add contract connection
+        </button>
+        <button onClick={callWithContractConnection}>
+          callWithContractConnection
+        </button>
       </div>
       <Form
         account={account}
