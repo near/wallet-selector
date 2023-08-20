@@ -70,7 +70,6 @@ const MyNearWallet: WalletBehaviourFactory<
 > = async ({ metadata, options, store, params, logger }) => {
   const _state = {
     ...(await setupWalletState(params, options.network)),
-    contractConnections: {} as { [key: string]: MyNearWalletState },
   };
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
@@ -167,29 +166,23 @@ const MyNearWallet: WalletBehaviourFactory<
         nearAPI.transactions.addKey(keyPair.getPublicKey(), permission),
       ];
 
+      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+        window.localStorage,
+        `${contractId}:keystore:`
+      );
+
       const account = _state.wallet.account();
+      await keyStore.setKey(
+        _state.wallet._networkId,
+        account.accountId,
+        keyPair
+      );
+
       // Sign and send the transaction
       await account.signAndSendTransaction({
         receiverId: account.accountId,
         actions,
       });
-
-      const near = await nearAPI.connect({
-        networkId: _state.wallet._networkId,
-        nodeUrl: "_state.wallet._near.connection.url",
-      });
-
-      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-        window.localStorage,
-        contractId
-      );
-
-      const wallet = new nearAPI.WalletConnection(near, contractId);
-
-      _state.contractConnections[contractId] = {
-        wallet,
-        keyStore,
-      };
     },
 
     async signOut() {
@@ -220,21 +213,37 @@ const MyNearWallet: WalletBehaviourFactory<
       });
 
       const { contract } = store.getState();
+      let account = _state.wallet.account();
 
       if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not signed in");
       }
 
-      const account =
-        contract.contractId === receiverId
-          ? _state.wallet.account()
-          : _state.contractConnections[receiverId!].wallet.account();
+      const targetContract = receiverId || contract.contractId;
 
-      return account["signAndSendTransaction"]({
-        receiverId: receiverId || contract.contractId,
+      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+        window.localStorage,
+        `${targetContract}:keystore:`
+      );
+
+      if (await keyStore.getKey(_state.wallet._networkId, account.accountId)) {
+        const near = await nearAPI.connect({
+          keyStore,
+          walletUrl: params.walletUrl,
+          networkId: account.connection.networkId,
+          nodeUrl: "rpc.testnet.near.org",
+          headers: {},
+        });
+        account = new nearAPI.WalletConnection(near, targetContract).account();
+      }
+
+      const result = account.signAndSendTransaction({
+        receiverId: targetContract,
         actions: actions.map((action) => createAction(action)),
         walletCallbackUrl: callbackUrl,
       });
+
+      return result;
     },
 
     async signAndSendTransactions({ transactions, callbackUrl }) {
