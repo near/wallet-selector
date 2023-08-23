@@ -42,6 +42,12 @@
         "lintFilePatterns": ["packages/account-export/**/*.{ts,tsx,js,jsx}"]
       }
     },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/account-export"],
