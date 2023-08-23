@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/nightly",
-  "version": "8.5.0",
+  "version": "8.5.1",
   "description": "Nightly wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
