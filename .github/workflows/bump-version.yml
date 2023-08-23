@@ -4,6 +4,11 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  actions: write
+  issues: write
+  pull-requests: write
+
 jobs:
   release:
     env:
@@ -22,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           cache: 'yarn'
       - name: Check example apps
         run: echo "EXAMPLE_APPS=$(ls ./examples | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
