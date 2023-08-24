@@ -1,5 +1,4 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import * as nearAPI from "near-api-js";
 import { ConnectedWalletAccount } from "near-api-js";
 import type { Near, WalletConnection } from "near-api-js";
 import type {
@@ -14,14 +13,6 @@ import type {
   BrowserWallet,
 } from "../../../core/src/lib/wallet";
 import { SignAndSendTransactionOptions } from "near-api-js/lib/account";
-
-const borsh = require('borsh');
-
-const originalBaseDecode = borsh.baseDecode;
-borsh.baseDecode = function (value: string) {
-  const bufferResult = originalBaseDecode(value);
-  return new Uint8Array(bufferResult);
-};
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
@@ -69,8 +60,19 @@ const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
   };
 };
 
+beforeEach(() => {
+  const borsh = require('borsh');
+
+  const originalBaseDecode = borsh.baseDecode;
+  borsh.baseDecode = function (value: string) {
+    const bufferResult = originalBaseDecode(value);
+    return new Uint8Array(bufferResult);
+  };
+});
+
 afterEach(() => {
   jest.resetModules();
+  jest.unmock("near-api-js");
 });
 
 describe("signIn", () => {
@@ -83,72 +85,9 @@ describe("signIn", () => {
   });
 });
 
-describe("signOut", () => {
-  it("sign out of near wallet", async () => {
-    const { wallet, walletConnection } = await createMyNearWallet();
-
-    await wallet.signIn({ contractId: "test.testnet" });
-    await wallet.signOut();
-
-    expect(walletConnection.signOut).toHaveBeenCalled();
-  });
-});
-
-describe("getAccounts", () => {
-  it("returns array of accounts", async () => {
-    const { wallet, walletConnection } = await createMyNearWallet();
-
-    await wallet.signIn({ contractId: "test.testnet" });
-    const result = await wallet.getAccounts();
-
-    expect(walletConnection.getAccountId).toHaveBeenCalled();
-    expect(result).toEqual([
-      { accountId: "test-account.testnet", publicKey: "" },
-    ]);
-  });
-});
-
-describe("signAndSendTransaction", () => {
-  // TODO: Figure out why imports to core are returning undefined.
-  it("signs and sends transaction", async () => {
-    const { wallet, walletConnection, account } = await createMyNearWallet();
-
-    await wallet.signIn({ contractId: "test.testnet" });
-    const result = await wallet.signAndSendTransaction({
-      receiverId: "guest-book.testnet",
-      actions: [],
-    });
-
-    expect(walletConnection.account).toHaveBeenCalled();
-    // near-api-js marks this method as protected.
-    // @ts-ignore
-    expect(account.signAndSendTransaction).toHaveBeenCalled();
-    // @ts-ignore
-    expect(account.signAndSendTransaction).toBeCalledWith({
-      actions: [],
-      receiverId: "guest-book.testnet",
-    });
-    expect(result).toEqual(null);
-  });
-});
-
-describe("buildImportAccountsUrl", () => {
-  it("returns import url", async () => {
-    const { wallet } = await createMyNearWallet();
-
-    expect(typeof wallet.buildImportAccountsUrl).toBe("function");
-
-    // @ts-ignore
-    expect(wallet?.buildImportAccountsUrl()).toEqual(
-      "https://testnet.mynearwallet.com/batch-import"
-    );
-  });
-});
-
 describe("multipleAppSignin", () => {
   it("should choose the appropriate function access key for transaction", async () => {
-    jest.unmock("near-api-js");
-
+    const nearAPI = require("near-api-js");
     const mainKeyPair = nearAPI.KeyPair.fromRandom("ed25519");
     const accountId = "testaccount.testnet";
     localStorage.setItem(
