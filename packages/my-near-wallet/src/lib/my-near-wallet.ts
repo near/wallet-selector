@@ -90,6 +90,31 @@ const MyNearWallet: WalletBehaviourFactory<
       },
     ];
   };
+  const getAccountObjectForTargetContract = async (targetContract: string, callerAccountId: string, networkId: string): Promise<nearAPI.ConnectedWalletAccount | null> => {
+    const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+      window.localStorage,
+      `${targetContract}:keystore:`
+    );
+
+    if (await keyStore.getKey(_state.wallet._networkId, callerAccountId)) {
+      const appPrefix = targetContract;
+      localStorage.setItem(
+        `${appPrefix}_wallet_auth_key`,
+        localStorage.getItem("near_app_wallet_auth_key")!
+      );
+      const near = await nearAPI.connect({
+        keyStore,
+        walletUrl: params.walletUrl,
+        networkId: networkId,
+        nodeUrl: `https://rpc.${networkId}.near.org`,
+        headers: {},
+      });
+      const walletConnection = new nearAPI.WalletConnection(near, appPrefix);
+      return walletConnection.account();
+    } else {
+      return null;
+    }
+  };
 
   const transformTransactions = async (
     transactions: Array<Optional<Transaction, "signerId">>
@@ -214,7 +239,6 @@ const MyNearWallet: WalletBehaviourFactory<
 
       const { contract } = store.getState();
       let account = _state.wallet.account();
-      const callerAccountId = account.accountId;
 
       if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not signed in");
@@ -222,27 +246,7 @@ const MyNearWallet: WalletBehaviourFactory<
 
       const targetContract = receiverId || contract.contractId;
 
-      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-        window.localStorage,
-        `${targetContract}:keystore:`
-      );
-
-      if (await keyStore.getKey(_state.wallet._networkId, account.accountId)) {
-        const appPrefix = targetContract;
-        localStorage.setItem(
-          `${appPrefix}_wallet_auth_key`,
-          localStorage.getItem("near_app_wallet_auth_key")!
-        );
-        const near = await nearAPI.connect({
-          keyStore,
-          walletUrl: params.walletUrl,
-          networkId: account.connection.networkId,
-          nodeUrl: `https://rpc.${account.connection.networkId}.near.org`,
-          headers: {},
-        });
-        const walletConnection = new nearAPI.WalletConnection(near, appPrefix);
-        account = walletConnection.account();
-      }
+      account = await getAccountObjectForTargetContract(targetContract, account.accountId, account.connection.networkId) || account;
 
       const result = account.signAndSendTransaction({
         receiverId: targetContract,
@@ -260,10 +264,23 @@ const MyNearWallet: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
 
-      return _state.wallet.requestSignTransactions({
-        transactions: await transformTransactions(transactions),
-        callbackUrl,
-      });
+      if (transactions.length == 1) {
+        const transaction = transactions[0];
+        const receiverId = transaction.receiverId;
+        let account = _state.wallet.account();
+        account = await getAccountObjectForTargetContract(receiverId, account.accountId, account.connection.networkId) || account;
+
+        await account.signAndSendTransaction({
+          receiverId,
+          actions: transaction.actions.map((action) => createAction(action)),
+          walletCallbackUrl: callbackUrl
+        });
+      } else {
+        return _state.wallet.requestSignTransactions({
+          transactions: await transformTransactions(transactions),
+          callbackUrl,
+        });
+      }
     },
 
     buildImportAccountsUrl() {

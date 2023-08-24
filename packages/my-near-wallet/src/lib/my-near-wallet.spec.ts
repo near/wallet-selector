@@ -3,9 +3,6 @@ import * as nearAPI from "near-api-js";
 import { ConnectedWalletAccount } from "near-api-js";
 import type { Near, WalletConnection } from "near-api-js";
 import type {
-  AccessKeyInfoView,
-  AccessKeyView,
-  BlockResult,
   FinalExecutionOutcome,
 } from "near-api-js/lib/providers/provider";
 import { type AccountView } from "near-api-js/lib/providers/provider";
@@ -15,19 +12,23 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type {
   BrowserWallet,
-  WalletMetadata,
 } from "../../../core/src/lib/wallet";
-import type { stringify } from "querystring";
-import { BN } from "bn.js";
-import type { Action } from "near-api-js/lib/transaction";
-import type { SignAndSendTransactionOptions } from "near-api-js/lib/account";
+import { SignAndSendTransactionOptions } from "near-api-js/lib/account";
+
+const borsh = require('borsh');
+
+const originalBaseDecode = borsh.baseDecode;
+borsh.baseDecode = function (value: string) {
+  const bufferResult = originalBaseDecode(value);
+  return new Uint8Array(bufferResult);
+};
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();
   const account = mock<ConnectedWalletAccount>({
     connection: {
       signer: {
-        getPublicKey: jest.fn().mockReturnValue("key1"),
+        getPublicKey: jest.fn().mockReturnValue(""),
       },
     },
   });
@@ -146,13 +147,7 @@ describe("buildImportAccountsUrl", () => {
 
 describe("multipleAppSignin", () => {
   it("should choose the appropriate function access key for transaction", async () => {
-    const borsh = require("borsh");
-    const originalBaseDecode = borsh.baseDecode;
-
-    borsh.baseDecode = function (value: string) {
-      const bufferResult = originalBaseDecode(value);
-      return new Uint8Array(bufferResult);
-    };
+    jest.unmock("near-api-js");
 
     const mainKeyPair = nearAPI.KeyPair.fromRandom("ed25519");
     const accountId = "testaccount.testnet";
@@ -161,14 +156,7 @@ describe("multipleAppSignin", () => {
       `{"accountId":"${accountId}","allKeys":["ed25519:EjYAuzTBj3ZHeznV71HuWC5f3Yqrty7AVYWhPKufcqGf"]}`
     );
 
-    const networkId = "testnet";
-    const mainKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
-    mainKeyStore.setKey(networkId, accountId, mainKeyPair);
-
-    const { setupMyNearWallet } = require("./my-near-wallet");
-    const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), {});
-
-    ConnectedWalletAccount.prototype.signAndSendTransaction = async function (
+    nearAPI.ConnectedWalletAccount.prototype.signAndSendTransaction = async function (
       options: SignAndSendTransactionOptions
     ) {
       sessionStorage.setItem(
@@ -179,6 +167,13 @@ describe("multipleAppSignin", () => {
       );
       return mock<FinalExecutionOutcome>();
     };
+
+    const networkId = "testnet";
+    const mainKeyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+    mainKeyStore.setKey(networkId, accountId, mainKeyPair);
+
+    const { setupMyNearWallet } = require("./my-near-wallet");
+    const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), {});
 
     await wallet.signIn({ contractId: "test.testnet" });
     await wallet.signAndSendTransaction({
