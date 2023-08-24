@@ -97,6 +97,7 @@ const MyNearWallet: WalletBehaviourFactory<
     );
 
     if (await keyStore.getKey(_state.wallet._networkId, callerAccountId)) {
+      console.log('using key for target contract', targetContract);
       const appPrefix = targetContract;
       localStorage.setItem(
         `${appPrefix}_wallet_auth_key`,
@@ -177,6 +178,16 @@ const MyNearWallet: WalletBehaviourFactory<
       contractId: string,
       methodNames: Array<string>
     ) {
+      const account = _state.wallet.account();
+      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+        window.localStorage,
+        `${contractId}:keystore:`
+      );
+
+      if (await keyStore.getKey(_state.wallet._networkId,account.accountId)) {
+        return;
+      }
+
       // Create a new random key pair for the access key
 
       const keyPair = nearAPI.utils.KeyPair.fromRandom("ed25519");
@@ -191,12 +202,8 @@ const MyNearWallet: WalletBehaviourFactory<
         nearAPI.transactions.addKey(keyPair.getPublicKey(), permission),
       ];
 
-      const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
-        window.localStorage,
-        `${contractId}:keystore:`
-      );
 
-      const account = _state.wallet.account();
+
       await keyStore.setKey(
         _state.wallet._networkId,
         account.accountId,
@@ -266,6 +273,7 @@ const MyNearWallet: WalletBehaviourFactory<
 
       if (transactions.length == 1) {
         const transaction = transactions[0];
+
         const receiverId = transaction.receiverId;
         let account = _state.wallet.account();
         account = await getAccountObjectForTargetContract(receiverId, account.accountId, account.connection.networkId) || account;
