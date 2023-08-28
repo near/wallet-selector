@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - nx-deploy-packages
 
 env:
   CI: true

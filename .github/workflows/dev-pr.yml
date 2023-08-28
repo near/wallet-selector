@@ -16,6 +16,7 @@ on:
     branches:
       - dev
       - main
+      - nx-deploy-packages
 
 permissions:
   actions: write

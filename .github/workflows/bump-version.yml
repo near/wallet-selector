@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+      - nx-deploy-packages
   workflow_dispatch:
 
 permissions:
