@@ -48,8 +48,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "GIT_TAG=$(git describe --exact-match --tags $(git log -n1 --pretty='%h') 2> /dev/null)" >> $GITHUB_ENV
 
+      - name: Run Build All
+        run: yarn build:all
+
       - name: Deploy
-        run: yarn nx run-many --target=deploy --all --exclude=$EXAMPLE_APPS --dry-run
+        run: yarn nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
         env:
           EXAMPLE_APPS: ${{ env.EXAMPLE_APPS }}
 
