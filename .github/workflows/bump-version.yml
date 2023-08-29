@@ -51,7 +51,7 @@ jobs:
         run: yarn build:all
 
       - name: Deploy
-        run: yarn nx run-many --target=deploy --all --exclude=$EXAMPLE_APPS --dry-run
+        run: yarn nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
         env:
           EXAMPLE_APPS: ${{ env.EXAMPLE_APPS }}
 
