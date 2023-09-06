@@ -4,17 +4,9 @@ import type BN from "bn.js";
 
 import type { SelectorInit } from "./types";
 
-// @ts-ignore
 export const initHereWallet: SelectorInit = async (config) => {
-  const {
-    store,
-    logger,
-    emitter,
-    options,
-    defaultProvider,
-    defaultStrategy,
-    metadata,
-  } = config;
+  const { store, logger, emitter, options, defaultProvider, defaultStrategy } =
+    config;
 
   const here = new HereWallet({
     networkId: options.network.networkId as NetworkId,
@@ -127,7 +119,7 @@ export const initHereWallet: SelectorInit = async (config) => {
 
     async signMessage(data) {
       logger.log("HereWallet:signMessage", data);
-      throw new Error(`Method not supported by ${metadata.name}`);
+      return await here.signMessage(data);
     },
 
     async signAndSendTransactions(data) {
