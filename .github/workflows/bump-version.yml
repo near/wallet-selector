@@ -50,8 +50,11 @@ jobs:
       - name: Run Build All
         run: yarn build:all
 
+      # Use npx instead of yarn because yarn automatically sets NPM_* environment variables
+      # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
+      # which is set up by `setup-node` action.
       - name: Deploy
-        run: yarn nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
+        run: npx nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
         env:
           EXAMPLE_APPS: ${{ env.EXAMPLE_APPS }}
 
