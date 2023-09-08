@@ -9,7 +9,7 @@ import type {
 } from "@near-wallet-selector/core";
 
 export type HereWallet = InjectedWallet &
-  Omit<Omit<HereWalletProtocol, "getAccounts">, "signIn">;
+  Omit<Omit<Omit<HereWalletProtocol, "getAccounts">, "signIn">, "signMessage">;
 
 export type SelectorInit = WalletBehaviourFactory<
   HereWallet,
