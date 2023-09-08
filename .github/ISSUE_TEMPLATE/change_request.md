@@ -2,7 +2,7 @@
 name: Change request
 about: Template for change requests
 title: ''
-labels: ''
+labels: change-request
 assignees: ''
 
 ---
