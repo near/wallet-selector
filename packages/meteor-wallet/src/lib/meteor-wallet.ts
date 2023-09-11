@@ -219,12 +219,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         });
 
         if (verifiedSignature && verifiedFullKeyBelongsToUser) {
-          return [
-            {
-              accountId: response.payload.accountId,
-              publicKey: response.payload.publicKey,
-            },
-          ];
+          return response.payload;
         } else {
           throw new Error(`Failed to verify the message`);
         }
