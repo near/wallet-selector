@@ -107,11 +107,14 @@ export class WalletModules {
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
+          message: null,
+          signedInMessage: null,
         };
       }
     }
 
-    const { contract, selectedWalletId, message } = this.store.getState();
+    const { contract, selectedWalletId, message, signedInMessage } =
+      this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
     const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
@@ -125,6 +128,7 @@ export class WalletModules {
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
         message: null,
+        signedInMessage: null,
       };
     }
 
@@ -134,6 +138,7 @@ export class WalletModules {
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
       message,
+      signedInMessage,
     };
   }
 
@@ -174,7 +179,13 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames, message }: WalletEvents["signedIn"]
+    {
+      accounts,
+      contractId,
+      methodNames,
+      message,
+      signedInMessage,
+    }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -209,6 +220,7 @@ export class WalletModules {
         accounts,
         recentlySignedInWallets,
         message,
+        signedInMessage,
       },
     });
 
@@ -278,6 +290,8 @@ export class WalletModules {
         accounts,
         contractId,
         methodNames,
+        message: null,
+        signedInMessage: null,
       });
 
       return accounts;
@@ -306,16 +320,20 @@ export class WalletModules {
       }
 
       const message = params as SignInMessageParams;
-      const accounts = await _signInMessage(params);
+      const signedInMessage = await _signInMessage(params);
+
+      const { accountId, publicKey } = signedInMessage;
+      const accounts = [{ accountId, publicKey }];
 
       await this.onWalletSignedIn(wallet.id, {
         accounts,
         contractId: "",
         methodNames: [],
         message,
+        signedInMessage,
       });
 
-      return accounts;
+      return signedInMessage;
     };
 
     return wallet;
@@ -425,6 +443,7 @@ export class WalletModules {
       selectedWalletId,
       recentlySignedInWallets,
       message,
+      signedInMessage,
     } = await this.resolveStorageState();
 
     this.store.dispatch({
@@ -435,7 +454,8 @@ export class WalletModules {
         contract,
         selectedWalletId,
         recentlySignedInWallets,
-        message: message!,
+        message: message,
+        signedInMessage: signedInMessage,
       },
     });
 

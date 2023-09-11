@@ -5,6 +5,7 @@ import type {
   Account,
   SignInMessageParams,
   SignMessageMethod,
+  SignedMessage,
 } from "./wallet";
 
 export interface ContractState {
@@ -69,6 +70,7 @@ export interface WalletSelectorState {
    * The original message that was used to "sign-in" via signInMessages
    */
   message: SignInMessageParams | null;
+  signedInMessage: SignedMessage | null;
 }
 
 export type WalletSelectorAction =
@@ -80,7 +82,8 @@ export type WalletSelectorAction =
         contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
-        message?: SignInMessageParams;
+        message: SignInMessageParams | null;
+        signedInMessage: SignedMessage | null;
       };
     }
   | {
@@ -90,7 +93,8 @@ export type WalletSelectorAction =
         contract: ContractState;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
-        message?: SignInMessageParams;
+        message: SignInMessageParams | null;
+        signedInMessage: SignedMessage | null;
       };
     }
   | {
