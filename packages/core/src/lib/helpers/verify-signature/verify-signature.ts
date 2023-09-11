@@ -17,14 +17,23 @@ export const verifySignature = ({
   recipient,
   callbackUrl,
 }: VerifySignatureParams) => {
+  // Reconstruct the payload that was **actually signed**
   const payload = new Payload({ message, nonce, recipient, callbackUrl });
+
+  // Serialize payload based on payloadSchema
   const borshPayload = serialize(payloadSchema, payload);
-  const sha = sha256(borshPayload);
+
+  // Hash the payload as in the NEP0413 referenced example
+  // https://github.com/near/NEPs/blob/master/neps/nep-0413.md#references
+  // https://github.com/gagdiez/near-login/blob/main/authenticate/wallet-authenticate.js#L21
+  const hashedPayload = Uint8Array.from(sha256.array(borshPayload));
+
+  // Convert real signature to buffer base64
+  const realSignature = Buffer.from(signature, "base64");
   const pk = utils.PublicKey.from(publicKey);
-  return pk.verify(
-    new Uint8Array(Buffer.from(sha)),
-    Buffer.from(signature, "base64")
-  );
+
+  // Verify the signature
+  return pk.verify(hashedPayload, realSignature);
 };
 
 const fetchAllUserKeys = async ({

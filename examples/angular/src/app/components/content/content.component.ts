@@ -16,7 +16,7 @@ import type { Submitted } from "../form/form.component";
 import type { Account } from "../../interfaces/account";
 import type { Subscription } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
 import type { GetAccountBalanceProps } from "../../interfaces/account-balance";

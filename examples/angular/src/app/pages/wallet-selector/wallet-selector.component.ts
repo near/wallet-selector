@@ -76,7 +76,7 @@ export class WalletSelectorComponent implements OnInit {
         setupOptoWallet(),
         setupFinerWallet(),
         setupWalletConnect({
-          projectId: "c4f79cc...",
+          projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",

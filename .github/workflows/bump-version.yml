@@ -4,6 +4,11 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  actions: write
+  issues: write
+  pull-requests: write
+
 jobs:
   release:
     env:
@@ -13,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Git
         run: |
           git config user.name "GitHub Bot"
@@ -22,7 +29,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           cache: 'yarn'
       - name: Check example apps
         run: echo "EXAMPLE_APPS=$(ls ./examples | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
@@ -45,8 +52,11 @@ jobs:
       - name: Run Build All
         run: yarn build:all
 
+      # Use npx instead of yarn because yarn automatically sets NPM_* environment variables
+      # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
+      # which is set up by `setup-node` action.
       - name: Deploy
-        run: yarn nx run-many --target=deploy --all --exclude=$EXAMPLE_APPS --dry-run
+        run: npx nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
         env:
           EXAMPLE_APPS: ${{ env.EXAMPLE_APPS }}
 
