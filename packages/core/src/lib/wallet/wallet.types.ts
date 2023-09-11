@@ -171,7 +171,7 @@ interface BaseWalletBehaviour {
    * Signs a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
    * Sets the wallet selector's isSignedIn state to true after the message is signed and verified.
    */
-  signInMessage?(params: SignInMessageParams): Promise<Array<Account>>;
+  signInMessage?(params: SignInMessageParams): Promise<SignedMessage>;
 }
 
 type BaseWallet<
