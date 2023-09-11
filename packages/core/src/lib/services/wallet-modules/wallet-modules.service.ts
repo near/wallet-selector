@@ -137,8 +137,8 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
-      message,
-      signedInMessage,
+      message: contract ? null : message,
+      signedInMessage: contract ? null : signedInMessage,
     };
   }
 
@@ -219,8 +219,8 @@ export class WalletModules {
         contract,
         accounts,
         recentlySignedInWallets,
-        message,
-        signedInMessage,
+        message: message!,
+        signedInMessage: signedInMessage!,
       },
     });
 
