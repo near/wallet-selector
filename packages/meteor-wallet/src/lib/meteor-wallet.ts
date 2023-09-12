@@ -55,21 +55,31 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
+    const { signedInMessage } = store.getState();
 
-    if (!accountId || !account) {
-      return [];
+    if (accountId && account) {
+      const publicKey = await account.connection.signer.getPublicKey(
+        account.accountId,
+        options.network.networkId
+      );
+      return [
+        {
+          accountId,
+          publicKey: publicKey ? publicKey.toString() : "",
+        },
+      ];
     }
 
-    const publicKey = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
-    return [
-      {
-        accountId,
-        publicKey: publicKey ? publicKey.toString() : "",
-      },
-    ];
+    if (signedInMessage) {
+      return [
+        {
+          accountId: signedInMessage.accountId,
+          publicKey: signedInMessage.publicKey,
+        },
+      ];
+    }
+
+    return [];
   };
 
   const transformTransactions = async (
