@@ -82,7 +82,6 @@ export async function connectToWallet(
 
   if (selectedWalletId === module.id) {
     renderWalletAccount(module);
-    return;
   }
 
   try {

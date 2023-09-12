@@ -132,6 +132,16 @@ export const Modal: React.FC<ModalProps> = ({
   ) => {
     setSelectedWallet(module);
 
+    const { selectedWalletId } = selector.store.getState();
+    if (selectedWalletId === module.id) {
+      setRoute({
+        name: "WalletConnected",
+        params: {
+          module,
+        },
+      });
+    }
+
     try {
       const { deprecated, available } = module.metadata;
 
