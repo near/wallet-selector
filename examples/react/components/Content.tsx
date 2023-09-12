@@ -156,7 +156,6 @@ const Content: React.FC = () => {
 
   const addMessages = useCallback(
     async (message: string, donation: string, multiple: boolean) => {
-      const { contract } = selector.store.getState();
       const wallet = await selector.wallet();
       if (!multiple) {
         return wallet
@@ -187,7 +186,7 @@ const Content: React.FC = () => {
       for (let i = 0; i < 2; i += 1) {
         transactions.push({
           signerId: accountId!,
-          receiverId: contract!.contractId,
+          receiverId: CONTRACT_ID,
           actions: [
             {
               type: "FunctionCall",

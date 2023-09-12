@@ -7,6 +7,10 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
@@ -18,10 +22,6 @@ import {
 } from "@meteorwallet/sdk";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
@@ -198,7 +198,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
     },
 
-    // This function is added here just for testing, it will be removed after PR is approved.
     async signInMessage({ message, nonce, recipient, state }) {
       logger.log("MeteorWallet:signInMessage", {
         message,
