@@ -116,3 +116,23 @@ Returns the original message that was used for `signInMessage`.
 const { message } = selector.store.getState();
 console.log(message); // { message: "test", nonce: [0...31], recipient: "myapp.com" }
 ```
+
+### `.signedInMessage`
+
+**Returns**
+
+- `SignedMessage | null`
+  - `accountId` (`string`): The account name to which the publicKey corresponds as plain text (e.g. "alice.near").
+  - `publicKey` (`Buffer`): The public counterpart of the key used to sign, expressed as a string with format "<key-type>:<base58-key-bytes>" (e.g. "ed25519:6TupyNrcHGTt5XRLmHTc2KGaiSbjhQi1KHtCXTgbcr4Y")
+  - `signature` (`string`): The base64 representation of the signature.
+
+**Description**
+
+Returns the `SignedMessage` that was signed with `signInMessage`.
+
+**Example**
+
+```ts
+const { signedMessage } = selector.store.getState();
+console.log(signedMessage); // { accountId: "alice.near", publicKey: "ed25519:6TupyNrcHGTt5XRLmHTc2KGaiSbjhQi1KHtCXTgbcr4Y", signature: "CAbsadROASPfwXRekOt8s0EYZTRxrGbl7TbqssN9KYZrrCRFC7YTZ2gtgQYDAw6qJ7V4Ww48VxnzdqyCGniADQ==" }
+```

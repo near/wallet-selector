@@ -76,7 +76,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
     },
     async signInMessage({ message, nonce, recipient, callbackUrl, state }) {
       // Sign in to My Wallet withotut creating a LAK for access to account(s).
-      // Signs the message, verifies it and returns the account(s).
+      // Signs the message, verifies it and returns the `SignedMessage`.
       
       return [];
     },

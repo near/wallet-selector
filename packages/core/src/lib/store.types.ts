@@ -70,6 +70,9 @@ export interface WalletSelectorState {
    * The original message that was used to "sign-in" via signInMessages
    */
   message: SignInMessageParams | null;
+  /**
+   * The `SignedMessage` that was signed via signInMessages
+   */
   signedInMessage: SignedMessage | null;
 }
 
