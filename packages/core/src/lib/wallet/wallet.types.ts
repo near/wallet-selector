@@ -198,8 +198,11 @@ export type WalletEvents = {
     contractId: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
-    message?: SignInMessageParams | null;
-    signedInMessage?: SignedMessage | null;
+  };
+  signedInMessage: {
+    message: SignInMessageParams;
+    signedInMessage: SignedMessage;
+    accounts: Array<Account>;
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };

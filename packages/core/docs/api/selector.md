@@ -206,7 +206,7 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `signedIn | signedOut | accountsChanged | networkChanged | uriChanged`.
+- `event` (`string`): Name of the event. This can be: `signedIn | signedInMessage | signedOut | accountsChanged | networkChanged | uriChanged`.
 - `callback` (`Function`): Original handler passed to `.on(event, callback)`.
 
 **Returns**

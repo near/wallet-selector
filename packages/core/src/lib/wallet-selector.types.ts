@@ -8,6 +8,7 @@ import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
 import type { SignMessageMethod } from "./wallet/wallet.types";
+import type { SignedMessage, SignInMessageParams } from "./wallet/wallet.types";
 
 export type SignInType = "key" | "message";
 
@@ -57,6 +58,12 @@ export type WalletSelectorEvents = {
     walletId: string;
     contractId: string;
     methodNames: Array<string>;
+    accounts: Array<Account>;
+  };
+  signedInMessage: {
+    walletId: string;
+    message: SignInMessageParams;
+    signedInMessage: SignedMessage;
     accounts: Array<Account>;
   };
   signedOut: {
