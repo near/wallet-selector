@@ -137,8 +137,8 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
-      message: contract ? null : message,
-      signedInMessage: contract ? null : signedInMessage,
+      message,
+      signedInMessage,
     };
   }
 
@@ -179,13 +179,7 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    {
-      accounts,
-      contractId,
-      methodNames,
-      message,
-      signedInMessage,
-    }: WalletEvents["signedIn"]
+    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -198,7 +192,6 @@ export class WalletModules {
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
         await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
-        await jsonStorage.setItem(PENDING_SIGN_IN_MESSAGE, message);
       }
 
       return;
@@ -219,8 +212,8 @@ export class WalletModules {
         contract,
         accounts,
         recentlySignedInWallets,
-        message: message!,
-        signedInMessage: signedInMessage!,
+        message: null,
+        signedInMessage: null,
       },
     });
 
@@ -228,6 +221,53 @@ export class WalletModules {
       walletId,
       contractId,
       methodNames,
+      accounts,
+    });
+  }
+
+  private async onWalletSignedInMessage(
+    walletId: string,
+    { accounts, message, signedInMessage }: WalletEvents["signedInMessage"]
+  ) {
+    const { selectedWalletId } = this.store.getState();
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+
+    if (!accounts.length) {
+      const module = this.getModule(walletId)!;
+      // We can't guarantee the user will actually sign in with browser wallets.
+      // Best we can do is set in storage and validate on init.
+      if (module.type === "browser") {
+        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+        await jsonStorage.setItem(PENDING_SIGN_IN_MESSAGE, message);
+      }
+
+      return;
+    }
+
+    if (selectedWalletId && selectedWalletId !== walletId) {
+      await this.signOutWallet(selectedWalletId);
+    }
+
+    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+      walletId
+    );
+
+    this.store.dispatch({
+      type: "WALLET_CONNECTED",
+      payload: {
+        walletId,
+        contract: null,
+        accounts,
+        recentlySignedInWallets,
+        message,
+        signedInMessage,
+      },
+    });
+
+    this.emitter.emit("signedInMessage", {
+      walletId,
+      message,
+      signedInMessage,
       accounts,
     });
   }
@@ -250,6 +290,10 @@ export class WalletModules {
 
     emitter.on("signedIn", (event) => {
       this.onWalletSignedIn(module.id, event);
+    });
+
+    emitter.on("signedInMessage", (event) => {
+      this.onWalletSignedInMessage(module.id, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
@@ -290,8 +334,6 @@ export class WalletModules {
         accounts,
         contractId,
         methodNames,
-        message: null,
-        signedInMessage: null,
       });
 
       return accounts;
@@ -325,10 +367,8 @@ export class WalletModules {
       const { accountId, publicKey } = signedInMessage;
       const accounts = [{ accountId, publicKey }];
 
-      await this.onWalletSignedIn(wallet.id, {
+      await this.onWalletSignedInMessage(wallet.id, {
         accounts,
-        contractId: "",
-        methodNames: [],
         message,
         signedInMessage,
       });

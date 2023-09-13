@@ -93,7 +93,7 @@ export type WalletSelectorAction =
       type: "WALLET_CONNECTED";
       payload: {
         walletId: string;
-        contract: ContractState;
+        contract: ContractState | null;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
         message: SignInMessageParams | null;

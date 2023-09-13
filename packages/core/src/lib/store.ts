@@ -41,13 +41,11 @@ const reducer = (
         };
       });
 
-      const contractExists = contract && contract?.contractId.length > 0;
-
       return {
         ...state,
         modules,
         accounts: accountStates,
-        ...(contractExists && { contract }),
+        contract,
         selectedWalletId,
         recentlySignedInWallets,
         message: message,
@@ -79,10 +77,9 @@ const reducer = (
         };
       });
 
-      const contractExists = contract && contract.contractId.length > 0;
       return {
         ...state,
-        ...(contractExists && { contract }),
+        contract,
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
