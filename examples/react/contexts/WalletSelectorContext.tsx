@@ -22,6 +22,8 @@ import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
+
 import type { ReactNode } from "react";
 import React, {
   useCallback,
@@ -104,6 +106,7 @@ export const WalletSelectorContextProvider: React.FC<{
             icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
           },
         }),
+        setupNearMobileWallet(),
       ],
     });
     const _modal = setupModal(_selector, {

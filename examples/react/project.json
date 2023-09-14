@@ -111,6 +111,11 @@
             "glob": "**/*",
             "input": "packages/ramper-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-mobile-wallet/assets/",
+            "output": "assets/"
           }
         ]
       },

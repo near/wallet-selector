@@ -22,6 +22,7 @@ import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 
 declare global {
@@ -91,6 +92,7 @@ export class WalletSelectorExportComponent implements OnInit {
           },
         }),
         setupRamperWallet(),
+        setupNearMobileWallet(),
       ],
     });
     /**
