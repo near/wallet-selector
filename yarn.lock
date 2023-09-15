@@ -4902,10 +4902,10 @@
     "@parcel/utils" "2.9.3"
     nullthrows "^1.1.1"
 
-"@peersyst/near-mobile-signer@1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.0-alpha.2.tgz#5c4ff823691b8b818265c01d6ad795ba1ba2a3e6"
-  integrity sha512-qnBPMr0aSCOio4AfTqExn/eCXYSZtu79/wcyvaoF1p/oxSIamGhppzbBGH71wAUNkC8CamHqsEj/pqn/RmRD9A==
+"@peersyst/near-mobile-signer@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.0.tgz#a831e41b1ad1515054868959f31cfef25ab5e7b6"
+  integrity sha512-e/hD8ujL0S+CJkKLm760bvexsKS+S5ZVXR8aKABNcBLLRFX4E95rRJSmPWFrctdCkwgSKE9dtmblzZ9UrcfR4Q==
   dependencies:
     "@peersyst/react-types" "^1.6.1"
     bn.js "^5.2.1"
