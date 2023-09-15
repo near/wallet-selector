@@ -3,11 +3,12 @@ import type { NearMobileWalletInit } from "./near-mobile-wallet.types";
 import type { Network } from "@peersyst/near-mobile-signer/dist/src/common/models";
 
 export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
-  const { store, options, logger } = config;
+  const { store, options, logger, dAppMetadata } = config;
 
   const nearMobileWallet = new NearMobileWallet({
     network: options.network.networkId as Network,
     nodeUrl: options.network.nodeUrl,
+    metadata: dAppMetadata,
   });
 
   async function getAccounts() {
@@ -39,7 +40,6 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
 
       const contractId = data.contractId !== "" ? data.contractId : undefined;
       await nearMobileWallet.signIn({ ...data, contractId: contractId });
-
       return await getAccounts();
     },
 
