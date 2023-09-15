@@ -21,7 +21,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 - [Opto Wallet](https://www.npmjs.com/package/@near-wallet-selector/opto-wallet) - Mobile wallet & Browser wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
-- [Near Mobile Wallet](FALTA LINK) - Mobile Wallet.
+- [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
 
 ## Preview
 
