@@ -26,7 +26,7 @@ Then use it in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupHereWallet } from "@near-wallet-selector/near-mobile-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
