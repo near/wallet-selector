@@ -12,7 +12,7 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
   });
 
   async function getAccounts() {
-    logger.log("HereWallet:getAccounts");
+    logger.log("[NearMobileWallet]:getAccounts");
     const accountIds = await nearMobileWallet.getAccounts();
     const accounts = [];
 
