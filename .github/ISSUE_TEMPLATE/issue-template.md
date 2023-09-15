@@ -2,7 +2,7 @@
 name: Issue Template
 about: Issues are general tasks to be compeleted
 title: ''
-labels: Emerging Tech, Epic, Near BOS
+labels: Emerging Tech, Near BOS
 assignees: ''
 
 ---
