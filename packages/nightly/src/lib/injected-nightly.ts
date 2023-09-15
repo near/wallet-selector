@@ -14,7 +14,7 @@ interface NightlyAccount {
 }
 export interface NearNightly {
   account: NightlyAccount;
-  connected: boolean;
+  isConnected: boolean;
   signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
   signTransaction: (
     transaction: NearTransaction

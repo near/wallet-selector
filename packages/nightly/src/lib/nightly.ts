@@ -193,6 +193,10 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         state,
       });
 
+      if (_state.wallet.isConnected) {
+        await _state.wallet.connect();
+      }
+
       const signature = await _state.wallet.signMessage({
         message,
         nonce,
