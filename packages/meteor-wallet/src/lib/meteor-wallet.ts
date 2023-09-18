@@ -162,6 +162,28 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
     },
 
+    async signMessage({ message, nonce, recipient, state }) {
+      logger.log("MeteorWallet:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+      const accountId = _state.wallet.getAccountId();
+      const response = await _state.wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+        accountId,
+        state,
+      });
+      if (response.success) {
+        return response.payload;
+      } else {
+        throw new Error(`Couldn't sign message owner: ${response.message}`);
+      }
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("MeteorWallet:signAndSendTransaction", {
         signerId,

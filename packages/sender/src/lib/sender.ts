@@ -297,6 +297,15 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
+
+    async importAccountsInSecureContext({ accounts }) {
+      if (window.near && window.near.isSender) {
+        await window.near.batchImport({
+          keystore: accounts,
+          network: options.network.networkId,
+        });
+      }
+    },
   };
 };
 

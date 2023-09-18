@@ -14,7 +14,7 @@ export type FinerWalletParams = MyNearWalletParams;
 export function setupFinerWallet({
   walletUrl,
   iconUrl = icon,
-  deprecated = false,
+  deprecated = true,
 }: FinerWalletParams = {}): WalletModuleFactory<
   BrowserWallet | InjectedWallet
 > {

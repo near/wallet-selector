@@ -1,7 +1,7 @@
 # @near-wallet-selector/finer-wallet
 
 This is the [FiNER Wallet](https://finerwallet.io/) package for NEAR Wallet Selector.
-
+#### ⚠️ FiNER Wallet has been marked as deprecated. ⚠️
 ## Installation and Usage
 
 The easiest way to use this package is to install it from the NPM registry:

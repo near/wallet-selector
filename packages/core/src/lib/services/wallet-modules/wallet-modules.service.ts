@@ -29,6 +29,7 @@ import {
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
+import type { SignMessageMethod } from "../../wallet";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -39,7 +40,7 @@ export class WalletModules {
   private provider: ProviderService;
 
   private modules: Array<ModuleState>;
-  private instances: Record<string, Wallet>;
+  private instances: Record<string, Wallet & SignMessageMethod>;
 
   constructor({
     factories,
@@ -277,6 +278,7 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signInMulti = wallet.signInMulti;
     const _signOut = wallet.signOut;
+    const _signMessage = wallet.signMessage;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -315,10 +317,22 @@ export class WalletModules {
       this.onWalletSignedOut(wallet.id);
     };
 
+    wallet.signMessage = async (params: never) => {
+      if (_signMessage === undefined) {
+        throw Error(
+          `The signMessage method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signMessage(params);
+    };
+
     return wallet;
   }
 
-  private async setupInstance(module: WalletModule): Promise<Wallet> {
+  private async setupInstance(
+    module: WalletModule
+  ): Promise<Wallet & SignMessageMethod> {
     if (!module.metadata.available) {
       const message =
         module.type === "injected" ? "not installed" : "not available";
@@ -342,7 +356,7 @@ export class WalletModules {
       })),
     } as Wallet;
 
-    return this.decorateWallet(wallet);
+    return this.decorateWallet(wallet) as Wallet & SignMessageMethod;
   }
 
   private getModule(id: string | null) {

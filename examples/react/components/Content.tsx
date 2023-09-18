@@ -5,6 +5,8 @@ import type {
   CodeResult,
 } from "near-api-js/lib/providers/provider";
 import type { Transaction } from "@near-wallet-selector/core";
+import { verifyFullKeyBelongsToUser } from "@near-wallet-selector/core";
+import { verifySignature } from "@near-wallet-selector/core";
 import BN from "bn.js";
 
 import type { Account, Message } from "../interfaces";
@@ -81,7 +83,7 @@ const Content: React.FC = () => {
         ...data,
         account_id: accountId,
       }));
-  }, [accountId, selector.options]);
+  }, [accountId, selector]);
 
   const getMessages = useCallback(() => {
     const { network } = selector.options;
@@ -101,6 +103,7 @@ const Content: React.FC = () => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -256,6 +259,54 @@ const Content: React.FC = () => {
     [addMessages, getMessages]
   );
 
+  const handleSignMessage = async () => {
+    const wallet = await selector.wallet();
+
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+
+    try {
+      const signedMessage = await wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+      });
+      if (signedMessage) {
+        const verifiedSignature = verifySignature({
+          message,
+          nonce,
+          recipient,
+          publicKey: signedMessage.publicKey,
+          signature: signedMessage.signature,
+        });
+        const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+          publicKey: signedMessage.publicKey,
+          accountId: signedMessage.accountId,
+          network: selector.options.network,
+        });
+
+        if (verifiedFullKeyBelongsToUser && verifiedSignature) {
+          alert(
+            `Successfully verify signed message: '${message}': \n ${JSON.stringify(
+              signedMessage
+            )}`
+          );
+        } else {
+          alert(
+            `Failed to verify signed message '${message}': \n ${JSON.stringify(
+              signedMessage
+            )}`
+          );
+        }
+      }
+    } catch (err) {
+      const errMsg =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errMsg);
+    }
+  };
+
   if (loading) {
     return null;
   }
@@ -277,6 +328,7 @@ const Content: React.FC = () => {
         <button onClick={handleSignOut}>Log out</button>
         <button onClick={handleSwitchWallet}>Switch Wallet</button>
         <button onClick={handleVerifyOwner}>Verify Owner</button>
+        <button onClick={handleSignMessage}>Sign Message</button>
         {accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}

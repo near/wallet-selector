@@ -185,6 +185,28 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 
+    async signMessage({ message, nonce, recipient, state }) {
+      logger.log("Nightly:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      if (_state.wallet.isConnected) {
+        await _state.wallet.connect();
+      }
+
+      const signature = await _state.wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      return signature;
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 

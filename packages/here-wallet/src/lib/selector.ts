@@ -109,7 +109,7 @@ export const initHereWallet: SelectorInit = async (config) => {
 
     async verifyOwner() {
       throw Error(
-        "HereWallet:verifyOwner is deprecated, use signMessage method with impletementation NEP0413 Standart"
+        "HereWallet:verifyOwner is deprecated, use signMessage method with implementation NEP0413 Standard"
       );
     },
 

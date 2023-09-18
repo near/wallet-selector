@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/math-wallet",
-  "version": "8.2.1",
+  "version": "8.5.2",
   "description": "Math wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

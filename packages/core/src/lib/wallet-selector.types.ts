@@ -8,6 +8,7 @@ import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
 import type { MultiContractState } from "./store.types";
+import type { SignMessageMethod } from "./wallet/wallet.types";
 
 export interface WalletSelectorParams {
   /**
@@ -79,7 +80,9 @@ export interface WalletSelector {
    * It's advised to use `state.modules` if you only need access to `id`, `type` or `metadata` as it avoids initialising.
    * You can find more information on Wallet {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/wallet.md | here}.
    */
-  wallet<Variation extends Wallet = Wallet>(id?: string): Promise<Variation>;
+  wallet<Variation extends Wallet = Wallet>(
+    id?: string
+  ): Promise<Variation & SignMessageMethod>;
 
   /**
    * Determines whether we're signed in to one or more accounts.
