@@ -11,6 +11,6 @@ export default {
       },
     ],
   },
-  moduleFileExtensions: ["ts", "js", "html"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/near-snap",
 };
