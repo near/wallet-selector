@@ -9,7 +9,11 @@ import type {
   WalletEvents,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+  waitFor,
+} from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import type { Signer } from "near-api-js";
@@ -147,12 +151,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      const existingAccounts = getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       await _state.wallet.connect((newAcc) => {
         if (!newAcc) {
           emitter.emit("signedOut", null);
@@ -205,6 +203,45 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       });
 
       return signature;
+    },
+
+    async signInMessage({ message, nonce, recipient, state }) {
+      logger.log("Nightly:signInMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      if (!_state.wallet.isConnected) {
+        await _state.wallet.connect();
+      }
+
+      const response = await _state.wallet.signMessage({
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      const verifiedSignature = verifySignature({
+        message,
+        nonce,
+        recipient,
+        publicKey: response.publicKey,
+        signature: response.signature,
+      });
+      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: response.publicKey,
+        accountId: response.accountId,
+        network: options.network,
+      });
+
+      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
+        return response;
+      } else {
+        throw new Error(`Failed to verify the message`);
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

@@ -4,6 +4,10 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import { NearSnap, NearSnapAccount } from "@near-snap/sdk";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
   config
@@ -66,6 +70,45 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
       return await account.signMessage({ message, nonce, recipient });
     },
 
+    async signInMessage({ message, nonce, recipient }) {
+      let snapAccount: NearSnapAccount | null = null;
+      if (account == null) {
+        snapAccount = await NearSnapAccount.connect({
+          contractId: undefined,
+          methods: [],
+          network,
+          snap,
+        });
+      }
+
+      const currentAccount = account || snapAccount;
+
+      const response = await currentAccount!.signMessage({
+        message,
+        nonce,
+        recipient,
+      });
+
+      const verifiedSignature = verifySignature({
+        message,
+        nonce,
+        recipient,
+        publicKey: response.publicKey,
+        signature: response.signature,
+      });
+      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: response.publicKey,
+        accountId: response.accountId,
+        network: options.network,
+      });
+
+      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
+        return response;
+      } else {
+        throw new Error(`Failed to verify the message`);
+      }
+    },
+
     async verifyOwner() {
       throw Error("NearSnap:verifyOwner is not released yet");
     },
@@ -73,7 +116,9 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
     async signAndSendTransactions({ transactions }) {
       logger.log("NearSnap:signAndSendTransactions", { transactions });
 
-      if (account == null) {
+      const { contract } = store.getState();
+
+      if (account == null || !contract) {
         throw new Error("Wallet not signed in");
       }
 
