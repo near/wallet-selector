@@ -1,3 +1,4 @@
+import { isMobile } from "is-mobile";
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
 import { initNearSnap } from "./selector";
 import icon from "./icon";
@@ -33,6 +34,11 @@ export function setupNearSnap({
   iconUrl = icon,
 } = {}): WalletModuleFactory {
   return async () => {
+    const mobile = isMobile();
+    if (mobile) {
+      return null;
+    }
+
     const installed = await isInstalled();
 
     return {
