@@ -46,7 +46,8 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      }
+      },
+      "dependsOn": ["^deploy"]
     },
     "test": {
       "executor": "@nx/jest:jest",

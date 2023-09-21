@@ -27,9 +27,6 @@
     },
     "test": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
-    },
-    "deploy": {
-      "dependsOn": ["^deploy"]
     }
   },
   "generators": {
