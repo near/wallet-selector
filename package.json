@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "8.5.2",
+  "version": "8.5.3",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
