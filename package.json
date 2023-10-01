@@ -87,7 +87,7 @@
     "@angular/router": "15.2.9",
     "@here-wallet/core": "^1.5.1",
     "@jscutlery/semver": "3.1.0",
-    "@ledgerhq/hw-transport": "6.27.1",
+    "@ledgerhq/hw-transport": "6.28.8",
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.8.0",
