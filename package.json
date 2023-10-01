@@ -171,7 +171,7 @@
     "@types/react-dom": "18.0.9",
     "@types/regenerator-runtime": "^0.13.1",
     "@types/uuid": "^9.0.1",
-    "@types/w3c-web-hid": "^1.0.2",
+    "@types/w3c-web-hid": "^1.0.4",
     "@types/w3c-web-usb": "^1.0.5",
     "@typescript-eslint/eslint-plugin": "5.58.0",
     "@typescript-eslint/parser": "5.58.0",

@@ -5173,10 +5173,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.1.tgz#98586dc36aee8dacc98cc396dbca8d0429647aa6"
   integrity sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==
 
-"@types/w3c-web-hid@^1.0.2":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/w3c-web-hid/-/w3c-web-hid-1.0.3.tgz#e08587a7d737f8654ea6bc0a88689ce5d3ce2d19"
-  integrity sha512-eTQRkPd2JukZfS9+kRtrBAaTCCb6waGh5X8BJHmH1MiVQPLMYwm4+EvhwFfOo9SDna15o9dFAwmWwN6r/YM53A==
+"@types/w3c-web-hid@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/w3c-web-hid/-/w3c-web-hid-1.0.4.tgz#0c82a7b12166215ebdd17726184e8065b3618335"
+  integrity sha512-N7BG4BVZyI2cI0sTnUSYtI2zTPGHhnydL+84IwaEYBwbkJ1L3oHC1Y/WYkvQJkpWXNtei7GL8YqmCjtTDHa7Pw==
 
 "@types/w3c-web-usb@^1.0.5":
   version "1.0.6"
