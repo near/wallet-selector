@@ -19,6 +19,10 @@ categories:
       - 'perf'
       - 'test'
       - 'build'
+
+exclude-labels:
+  - 'skip-changelog'
+
 template: |
   ## Changelog
   $CHANGES
