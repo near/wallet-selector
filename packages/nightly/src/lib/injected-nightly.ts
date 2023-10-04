@@ -1,4 +1,8 @@
-import type { AccountImportData } from "@near-wallet-selector/core";
+import type {
+  AccountImportData,
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
 import type {
   SignedTransaction as NearSignedTransaction,
   Transaction as NearTransaction,
@@ -10,7 +14,8 @@ interface NightlyAccount {
 }
 export interface NearNightly {
   account: NightlyAccount;
-  connected: boolean;
+  isConnected: boolean;
+  signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
   signTransaction: (
     transaction: NearTransaction
   ) => Promise<NearSignedTransaction>;
