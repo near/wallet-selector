@@ -21,7 +21,7 @@ export class Payload {
   }
 }
 
-export const payloadSchema = new Map([
+export const payloadSchemaNep413 = new Map([
   [
     Payload,
     {
@@ -43,16 +43,9 @@ export const payloadSchema = new Map([
   ],
 ]);
 
-export const isNep413Message = (message: any): boolean => {
-  if ("message" in message && "recipient" in message && "nonce" in message) {
-    return true;
-  }
-  return false;
-};
-
 export const serializeNep413 = (
   signMessageParams: SignMessageParams
 ): Buffer => {
   const payload = new Payload({ ...signMessageParams });
-  return Buffer.from(serialize(payloadSchema, payload));
+  return Buffer.from(serialize(payloadSchemaNep413, payload));
 };

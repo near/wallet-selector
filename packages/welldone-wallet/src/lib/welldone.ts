@@ -10,6 +10,7 @@ import type {
   Transaction,
   Account,
   SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
 import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
 import type {
@@ -21,7 +22,7 @@ import type {
 import icon from "./icon";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
-import { isNep413Message, serializeNep413 } from "./nep413";
+import { serializeNep413 } from "./nep413";
 
 export const STORAGE_ACCOUNT = "account";
 
@@ -154,54 +155,21 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return nearAPI.utils.PublicKey.from(account.publicKey!);
     },
-    signMessage: async (
-      message: Uint8Array | SignMessageParams,
-      accountId?: string
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ): Promise<any> => {
+    signMessage: async (message, accountId) => {
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
       }
 
       const accounts = getAccounts();
-      const account = accountId
-        ? accounts.find((a) => a.accountId === accountId)
-        : accounts[0];
+      const account = accounts.find((a) => a.accountId === accountId);
 
       if (!account) {
         throw new Error("Failed to find account for signing");
       }
 
-      if (isNep413Message(message)) {
-        const serializedTx = serializeNep413(message as SignMessageParams);
-        const signed = await _state.wallet.request("near", {
-          method: "dapp:signMessage",
-          params: ["0x" + serializedTx.toString("hex")],
-        });
-
-        return (message as SignMessageParams).state
-          ? {
-              accountId: accountId || accounts[0].accountId,
-              publicKey: signed[0].publicKey,
-              signature: Buffer.from(
-                signed[0].signature.substr(2),
-                "hex"
-              ).toString("base64"),
-              state: (message as SignMessageParams).state,
-            }
-          : {
-              accountId: accountId || accounts[0].accountId,
-              publicKey: signed[0].publicKey,
-              signature: Buffer.from(
-                signed[0].signature.substr(2),
-                "hex"
-              ).toString("base64"),
-            };
-      }
-
       try {
         const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message as Uint8Array)
+          Buffer.from(message)
         );
         const serializedTx = Buffer.from(tx.encode()).toString("hex");
         const signed = await _state.wallet.request("near", {
@@ -214,10 +182,9 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
         };
       } catch (err) {
-        const decoded = new TextDecoder("utf-8").decode(message as Uint8Array);
         const signed = await _state.wallet.request("near", {
           method: "dapp:signMessage",
-          params: [decoded],
+          params: ["0x" + Buffer.from(message).toString("hex")],
         });
 
         return {
@@ -332,12 +299,33 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async signMessage(
-      message: Uint8Array | SignMessageParams,
-      accountId?: string
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (await signer.signMessage(message as any, accountId)) as any;
+    async signMessage(message: SignMessageParams): Promise<SignedMessage> {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      const accounts = getAccounts();
+      const account = accounts[0];
+
+      if (!account) {
+        throw new Error("Failed to find account for signing");
+      }
+
+      const serializedTx = serializeNep413(message as SignMessageParams);
+      const signed = await signer.signMessage(serializedTx, account.accountId);
+
+      return (message as SignMessageParams).state
+        ? {
+            accountId: account.accountId,
+            publicKey: signed.publicKey.toString(),
+            signature: Buffer.from(signed.signature).toString("base64"),
+            state: (message as SignMessageParams).state,
+          }
+        : {
+            accountId: account.accountId,
+            publicKey: signed.publicKey.toString(),
+            signature: Buffer.from(signed.signature).toString("base64"),
+          };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
