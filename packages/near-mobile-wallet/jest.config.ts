@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: "ramper-wallet",
+  displayName: "near-mobile-wallet",
   preset: "../../jest.preset.js",
   globals: {},
   transform: {
