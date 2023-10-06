@@ -30,7 +30,9 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 
 // Ramper for Wallet Selector can be setup without any params or it can take few optional params, see options below.
-const ramper = setupRamperWallet();
+const ramper = setupRamperWallet({
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
+});
 
 const selector = await setupWalletSelector({
   network: "testnet",

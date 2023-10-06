@@ -29,7 +29,7 @@ import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 
 // WELLDONE Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const welldone = setupWelldoneWallet({
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 const selector = await setupWalletSelector({

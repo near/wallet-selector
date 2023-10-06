@@ -30,7 +30,7 @@ import { setupNearFi } from "@near-wallet-selector/nearfi";
 
 // NearFi for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nearFi = setupNearFi({
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 const selector = await setupWalletSelector({

@@ -23,7 +23,7 @@ import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 // FiNER Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nearWallet = setupFinerWallet({
   walletUrl: "finer://wallet.testnet.near.org",
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 const selector = await setupWalletSelector({
