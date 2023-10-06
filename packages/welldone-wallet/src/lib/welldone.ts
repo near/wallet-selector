@@ -15,6 +15,8 @@ import type {
 import {
   isCurrentBrowserSupported,
   serializeNep413,
+  verifyFullKeyBelongsToUser,
+  verifySignature,
   waitFor,
 } from "@near-wallet-selector/core";
 import type {
@@ -108,14 +110,26 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = (): Array<Account> => {
-    return _state.account
-      ? [
-          {
-            accountId: _state.account.accountId,
-            publicKey: _state.account.publicKey,
-          },
-        ]
-      : [];
+    const { signedInMessage } = store.getState();
+    if (_state.account) {
+      return [
+        {
+          accountId: _state.account.accountId,
+          publicKey: _state.account.publicKey,
+        },
+      ];
+    }
+
+    if (signedInMessage) {
+      return [
+        {
+          accountId: signedInMessage.accountId,
+          publicKey: signedInMessage.publicKey,
+        },
+      ];
+    }
+
+    return [];
   };
 
   const signOut = async () => {
@@ -219,12 +233,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      const existingAccounts = getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       if (_state.account) {
         await signOut();
       }
@@ -301,7 +309,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async signMessage(message: SignMessageParams): Promise<SignedMessage> {
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
@@ -333,6 +340,53 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       return result;
+    },
+
+    async signInMessage(message: SignMessageParams): Promise<SignedMessage> {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      const account = await _getAccounts();
+      const accountId = account[0];
+
+      if (!accountId) {
+        throw new Error("Failed to find account for signing");
+      }
+
+      const serializedTx = serializeNep413(message);
+      const signed = await _state.wallet.request("near", {
+        method: "dapp:signMessage",
+        params: ["0x" + serializedTx.toString("hex")],
+      });
+
+      const result = {
+        accountId,
+        publicKey: signed[0].publicKey,
+        signature: Buffer.from(signed[0].signature.substr(2), "hex").toString(
+          "base64"
+        ),
+        state: message.state,
+      };
+
+      const verifiedSignature = verifySignature({
+        message: message.message,
+        nonce: message.nonce,
+        recipient: message.recipient,
+        publicKey: result.publicKey,
+        signature: result.signature,
+      });
+      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: result.publicKey,
+        accountId: result.accountId,
+        network: options.network,
+      });
+
+      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
+        return result;
+      } else {
+        throw new Error(`Failed to verify the message`);
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
