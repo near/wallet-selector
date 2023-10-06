@@ -51,6 +51,7 @@ modal.show();
  - [Welldone Wallet](https://github.com/near/wallet-selector/blob/main/packages/welldone-wallet/src/lib/welldone.ts#L335)
  - [Here Wallet](https://github.com/near/wallet-selector/blob/main/packages/here-wallet/src/lib/selector.ts#LL42)
  - [My Near Wallet](https://github.com/near/wallet-selector/blob/main/packages/my-near-wallet/src/lib/my-near-wallet.ts#L227)
+ - [Sender Wallet](https://github.com/near/wallet-selector/blob/main/packages/sender/src/lib/sender.ts)
 
 ## Styles & Customizing CSS
 
