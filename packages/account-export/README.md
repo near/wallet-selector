@@ -43,7 +43,7 @@ modal.show();
 - `accounts` (`Array`): List of objects with an account id and its private key to be exported.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
-- `onComplete` (`(accounts: Array<string>) => void`): Triggers when the user completes the flow. By default it is not set.
+- `onComplete` (`({ accounts: Array<string>, walletName: string }) => void`): Triggers when the user completes the flow. By default it is not set.
 
 ### Supported Wallets
  - [Nightly Wallet](https://github.com/near/wallet-selector/blob/main/packages/nightly/src/lib/nightly.ts)
