@@ -12,7 +12,11 @@ import type {
   SignMessageParams,
   SignedMessage,
 } from "@near-wallet-selector/core";
-import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
+import {
+  isCurrentBrowserSupported,
+  serializeNep413,
+  waitFor,
+} from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
   WalletProvider,
@@ -22,7 +26,6 @@ import type {
 import icon from "./icon";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
-import { serializeNep413 } from "./nep413";
 
 export const STORAGE_ACCOUNT = "account";
 
