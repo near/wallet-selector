@@ -28,17 +28,8 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNeth } from "@near-wallet-selector/neth";
 
 // NETH for Wallet Selector can be setup without any params or it can take few optional params, see options below.
-const neth = setupNeth({
-  // default NETH icon included
-  iconUrl?: string;
-  // default 200 Tgas - for each NETH transaction (bundling can include multiple "inner" transactions)
-  gas?: string; 
-  // default false - cover screen with rgba(0, 0, 0, 0.5) mask while signing and awaiting transaction outcome
-  useModalCover?: boolean;
-  // default true - signAndSendTransactions will be bundled into 1 NETH TX
-  bundle?: boolean,
-  // default false
-  deprecated?: boolean,
+const neth = setupNearSnap({
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await setupWalletSelector({
@@ -49,7 +40,11 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-Setup options are described in comments above
+- `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/sender-icon.png`.
+- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
+- `gas`: (`string?`): Tgas - for each NETH transaction (bundling can include multiple "inner" transactions). Default is `200 Tgas`.
+- `useModalCover`: (`boolean?`): Set background overlay to rgba(0, 0, 0, 0.5) while signing and awaiting transaction outcome. Default is `false`.
+- `bundle`: (`boolean?`): The signAndSendTransactions will be bundled into 1 NETH TX. Default is `true`.
 
 ## Assets
 
