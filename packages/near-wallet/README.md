@@ -20,7 +20,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
-// NEAR Wallet for Wallet Selector can be setup without any params or it can take two optional params.
+// NEAR Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nearWallet = setupNearWallet({
   walletUrl: "https://wallet.testnet.near.org",
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"

@@ -20,7 +20,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 
-// FiNER Wallet for Wallet Selector can be setup without any params or it can take two optional params.
+// FiNER Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nearWallet = setupFinerWallet({
   walletUrl: "finer://wallet.testnet.near.org",
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"

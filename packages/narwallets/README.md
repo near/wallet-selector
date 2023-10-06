@@ -20,7 +20,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 
-// Narwallets for Wallet Selector can be setup without any params or it can take one optional param.
+// Narwallets for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const narwallets = setupNarwallets({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });

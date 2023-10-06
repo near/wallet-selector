@@ -27,7 +27,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 
-// Meteor for Wallet Selector can be setup without any params or it can take one optional param.
+// Meteor for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const meteorWallet = setupMeteorWallet({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });

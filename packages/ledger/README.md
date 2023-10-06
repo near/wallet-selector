@@ -27,7 +27,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupLedger } from "@near-wallet-selector/ledger";
 
-// Ledger for Wallet Selector can be setup without any params or it can take one optional param.
+// Ledger for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const ledger = setupLedger({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });

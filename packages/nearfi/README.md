@@ -28,7 +28,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 
-// NearFi for Wallet Selector can be setup without any params or it can take one optional param.
+// NearFi for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nearFi = setupNearFi({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });

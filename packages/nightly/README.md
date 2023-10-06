@@ -29,7 +29,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNightly } from "@near-wallet-selector/nightly";
 
-// Nightly for Wallet Selector can be setup without any params or it can take one optional param.
+// Nightly for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const nightly = setupNightly({
   iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
