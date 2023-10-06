@@ -1,4 +1,5 @@
 import type { SignMessageParams } from "../../wallet";
+import { serialize } from "borsh";
 
 export class Payload {
   tag: number;
@@ -41,3 +42,10 @@ export const payloadSchema = new Map([
     },
   ],
 ]);
+
+export const serializeNep413 = (
+  signMessageParams: SignMessageParams
+): Buffer => {
+  const payload = new Payload({ ...signMessageParams });
+  return Buffer.from(serialize(payloadSchema, payload));
+};
