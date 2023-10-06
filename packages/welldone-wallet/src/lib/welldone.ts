@@ -304,27 +304,36 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet is not installed");
       }
 
-      const accounts = getAccounts();
-      const account = accounts[0];
+      const account = await _getAccounts();
+      const accountId = account[0];
 
-      if (!account) {
+      if (!accountId) {
         throw new Error("Failed to find account for signing");
       }
 
       const serializedTx = serializeNep413(message as SignMessageParams);
-      const signed = await signer.signMessage(serializedTx, account.accountId);
+      const signed = await _state.wallet.request("near", {
+        method: "dapp:signMessage",
+        params: ["0x" + serializedTx.toString("hex")],
+      });
 
       return (message as SignMessageParams).state
         ? {
-            accountId: account.accountId,
-            publicKey: signed.publicKey.toString(),
-            signature: Buffer.from(signed.signature).toString("base64"),
+            accountId,
+            publicKey: signed[0].publicKey,
+            signature: Buffer.from(
+              signed[0].signature.substr(2),
+              "hex"
+            ).toString("base64"),
             state: (message as SignMessageParams).state,
           }
         : {
-            accountId: account.accountId,
-            publicKey: signed.publicKey.toString(),
-            signature: Buffer.from(signed.signature).toString("base64"),
+            accountId,
+            publicKey: signed[0].publicKey,
+            signature: Buffer.from(
+              signed[0].signature.substr(2),
+              "hex"
+            ).toString("base64"),
           };
     },
 
