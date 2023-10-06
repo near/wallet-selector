@@ -191,7 +191,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         state,
       });
 
-      if (_state.wallet.isConnected) {
+      if (!_state.wallet.isConnected) {
         await _state.wallet.connect();
       }
 
