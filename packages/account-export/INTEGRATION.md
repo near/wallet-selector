@@ -1,4 +1,5 @@
-# @near-wallet-selector/account-export
+# @near-wallet-selector/account-exportimport { decryptAccountData } from "@wallet-selector/account-export";
+const accounts = decryptAccountData({ ciphertext: urlHash, secretKey: userInputSecret });
 
 ## Wallet Selector Integration
 
