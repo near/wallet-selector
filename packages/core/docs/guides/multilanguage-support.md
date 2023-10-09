@@ -20,7 +20,7 @@
 
 ## How to use
 
-- Language files are located in locale folder in `packages\core\src\lib\locale`
+- Language files are located in locale folder [here](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/locale)
 - In order for text to be translated `translate` function should be used
   as in example below
 - Can be extended when needed following `packageName.section.translationKey`structure
@@ -55,7 +55,7 @@
 
 ## Adding new language
 
-- Language files are located in locale folder in `packages\core\src\lib\locale`
+- Language files are located in locale folder [here](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/locale)
 - Files are named after ISO 639-1: two-letter language code
 - Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
 
@@ -69,7 +69,7 @@
   }
   ```
 
-- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts`
+- When new language is introduced it must be added to [translate.ts](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/translate/translate.ts) file.
 
   ```ts
   import en from "../locale/en.json";
@@ -92,7 +92,7 @@
   ```
 
 - Supported language should be added to **Supported
-  Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages) and type list
+  Languages** [list](#supported-languages) and type list
   .
 
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
