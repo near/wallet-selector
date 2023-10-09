@@ -12,5 +12,5 @@ export default {
     ],
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/ramper-wallet",
+  coverageDirectory: "../../coverage/packages/near-mobile-wallet",
 };
