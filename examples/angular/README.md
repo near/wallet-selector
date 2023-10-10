@@ -1,6 +1,16 @@
 # Near Wallet Selector Angular Example
 
 This Angular example shows how to integrate Near Wallet Selector into your Angular application for easy Near wallet integration.
+# Usage
+
+Start the development server:
+```bash
+yarn nx serve angular
+```
+
+Open your web browser and navigate to http://localhost:4200/wallet-selector to see the Angular example in action.
+
+You should be able to interact with the Near Wallet Selector within the example application.
 
 ## Folder Structure
 
@@ -17,20 +27,8 @@ The folder structure of this Angular project is organized to maintain a clean co
 - **`.eslintrc.json`**: ESLint configuration for code linting.
 - **`jest.config.ts`**: Configuration file for Jest.
 - **`project.json`**: Project configuration file.
-- **`README.md`**: The file you are currently reading.
+- **`README.md`**: The file you are currently reading, providing project documentation.
 - **`tsconfig.app.json`**: TypeScript configuration to Angular application.
 - **`tsconfig.editor.json`**: TypeScript configuration for code editor.
 - **`tsconfig.json`**: The root TypeScript configuration file.
 
-
-
-# Usage
-
-Start the development server:
-```bash
-yarn nx serve angular
-```
-
-Open your web browser and navigate to http://localhost:4200/wallet-selector to see the Angular example in action.
-
-You should be able to interact with the Near Wallet Selector within the example application.
