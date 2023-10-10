@@ -132,3 +132,29 @@ describe("buildImportAccountsUrl", () => {
     );
   });
 });
+
+describe("signMessage", () => {
+  it("sign message", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    const replace = window.location.replace;
+
+    await wallet.signIn({ contractId: "test.testnet" });
+
+    Object.defineProperty(window, "location", {
+      value: { replace: jest.fn() },
+    });
+
+    const result = await wallet.signMessage!({
+      message: 'test message for verification',
+      nonce: Buffer.from('30990309-30990309-390A303-292090'),
+      recipient: 'test.app',
+      callbackUrl: 'https://test.app',
+    });
+
+    expect(result).toBe(undefined);
+    expect(window.location.replace).toHaveBeenCalled();
+
+    window.location.replace = replace;
+  });
+});
