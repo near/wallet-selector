@@ -73,12 +73,12 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
     },
 
     async signMessage(data) {
-      const { recipient, ...rest } = data;
+      const { recipient, nonce, ...rest } = data;
       logger.log("[NearMobileWallet]: signMessage", data);
       const result = await nearMobileWallet.signMessage({
         ...rest,
         receiver: recipient,
-        nonce: undefined,
+        nonce: Array.from(nonce),
       });
       return {
         accountId: result.accountId,
