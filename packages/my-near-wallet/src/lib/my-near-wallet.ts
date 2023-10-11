@@ -163,11 +163,6 @@ const MyNearWallet: WalletBehaviourFactory<
     async signMessage({ message, nonce, recipient, callbackUrl, state }) {
       logger.log("sign message", { message });
 
-      const account = _state.wallet.account();
-
-      if (!account) {
-        throw new Error("Wallet not signed in");
-      }
       const locationUrl =
         typeof window !== "undefined" ? window.location.href : "";
 
@@ -177,11 +172,17 @@ const MyNearWallet: WalletBehaviourFactory<
         throw new Error(`The callbackUrl is missing for ${metadata.name}`);
       }
 
-      const encodedUrl = encodeURIComponent(url);
+      const href = new URL(params.walletUrl);
+      href.pathname = "sign-message";
+      href.searchParams.append("message", message);
+      href.searchParams.append("nonce", nonce.toString());
+      href.searchParams.append("recipient", recipient);
+      href.searchParams.append("callbackUrl", url);
+      if (state) {
+        href.searchParams.append("state", state);
+      }
 
-      window.location.replace(
-        `${params.walletUrl}/sign-message?message=${message}&nonce=${nonce}&state=${state}&recipient=${recipient}&callbackUrl=${encodedUrl}`
-      );
+      window.location.replace(href.toString());
 
       return;
     },

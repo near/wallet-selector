@@ -139,21 +139,23 @@ describe("signMessage", () => {
 
     const replace = window.location.replace;
 
-    await wallet.signIn({ contractId: "test.testnet" });
-
     Object.defineProperty(window, "location", {
       value: { replace: jest.fn() },
     });
 
-    const result = await wallet.signMessage!({
-      message: 'test message for verification',
-      nonce: Buffer.from('30990309-30990309-390A303-292090'),
-      recipient: 'test.app',
-      callbackUrl: 'https://test.app',
-    });
+    const attributes = {
+      message: "test message",
+      nonce: Buffer.from("30990309-30990309-390A303-292090"),
+      recipient: "test.app",
+      callbackUrl: "https://test.app",
+    };
+
+    const result = await wallet.signMessage!(attributes);
 
     expect(result).toBe(undefined);
-    expect(window.location.replace).toHaveBeenCalled();
+    expect(window.location.replace).toHaveBeenCalledWith(
+      "https://testnet.mynearwallet.com/sign-message?message=test+message&nonce=30990309-30990309-390A303-292090&recipient=test.app&callbackUrl=https%3A%2F%2Ftest.app"
+    );
 
     window.location.replace = replace;
   });
