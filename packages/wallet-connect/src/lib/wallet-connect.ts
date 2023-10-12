@@ -12,6 +12,8 @@ import type {
   EventEmitterService,
   VerifiedOwner,
   Account,
+  SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -64,6 +66,7 @@ const WC_METHODS = [
   "near_signTransaction",
   "near_signTransactions",
   "near_verifyOwner",
+  "near_signMessage",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -244,6 +247,26 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_verifyOwner",
         params: { accountId, message },
+      },
+    });
+  };
+
+  const requestSignMessage = async (
+    messageParams: SignMessageParams & { accountId?: string }
+  ) => {
+    const { message, nonce, recipient, callbackUrl, accountId } = messageParams;
+    return _state.client.request<SignedMessage>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signMessage",
+        params: {
+          message,
+          nonce,
+          recipient,
+          ...(callbackUrl && { callbackUrl }),
+          ...(accountId && { accountId }),
+        },
       },
     });
   };
@@ -532,6 +555,41 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       return requestVerifyOwner(account.accountId, message);
+    },
+
+    async signMessage({ message, nonce, recipient, callbackUrl }) {
+      logger.log("WalletConnect:signMessage", { message, nonce, recipient });
+
+      const chainId = getChainId();
+
+      console.log({ session: _state.session });
+
+      if (!_state.session) {
+        _state.session = await _state.client.connect(
+          {
+            requiredNamespaces: {
+              near: {
+                chains: [getChainId()],
+                methods: WC_METHODS,
+                events: WC_EVENTS,
+              },
+            },
+          },
+          true,
+          params.projectId,
+          chainId
+        );
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      return requestSignMessage({
+        message,
+        nonce,
+        recipient,
+        callbackUrl,
+        accountId: account?.accountId ?? undefined,
+      });
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
