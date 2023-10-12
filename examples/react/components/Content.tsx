@@ -4,7 +4,11 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import type { Transaction } from "@near-wallet-selector/core";
+import type {
+  SignedMessage,
+  SignMessageParams,
+  Transaction,
+} from "@near-wallet-selector/core";
 import { verifyFullKeyBelongsToUser } from "@near-wallet-selector/core";
 import { verifySignature } from "@near-wallet-selector/core";
 import BN from "bn.js";
@@ -103,6 +107,14 @@ const Content: React.FC = () => {
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
+
+    const timeoutId = setTimeout(() => {
+      verifyMessageBrowserWallet();
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -224,6 +236,68 @@ const Content: React.FC = () => {
     }
   };
 
+  const verifyMessage = async (
+    message: SignMessageParams,
+    signedMessage: SignedMessage
+  ) => {
+    const verifiedSignature = verifySignature({
+      message: message.message,
+      nonce: message.nonce,
+      recipient: message.recipient,
+      publicKey: signedMessage.publicKey,
+      signature: signedMessage.signature,
+      callbackUrl: message.callbackUrl,
+    });
+    const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+      publicKey: signedMessage.publicKey,
+      accountId: signedMessage.accountId,
+      network: selector.options.network,
+    });
+
+    const isMessageVerified = verifiedFullKeyBelongsToUser && verifiedSignature;
+
+    const alertMessage = isMessageVerified
+      ? "Successfully verified"
+      : "Failed to verify";
+
+    alert(
+      `${alertMessage} signed message: '${
+        message.message
+      }': \n ${JSON.stringify(signedMessage)}`
+    );
+  };
+
+  const verifyMessageBrowserWallet = useCallback(async () => {
+    const urlParams = new URLSearchParams(
+      window.location.hash.substring(1) // skip the first char (#)
+    );
+    const accId = urlParams.get("accountId") as string;
+    const publicKey = urlParams.get("publicKey") as string;
+    const signature = urlParams.get("signature") as string;
+
+    if (!accId && !publicKey && !signature) {
+      return;
+    }
+
+    const message: SignMessageParams = JSON.parse(
+      localStorage.getItem("message")!
+    );
+
+    const signedMessage = {
+      accountId: accId,
+      publicKey,
+      signature,
+    };
+
+    await verifyMessage(message, signedMessage);
+
+    const url = new URL(location.href);
+    url.hash = "";
+    url.search = "";
+    window.history.replaceState({}, document.title, url);
+    localStorage.removeItem("message");
+  }, []);
+
   const handleSubmit = useCallback(
     async (e: Submitted) => {
       e.preventDefault();
@@ -266,6 +340,18 @@ const Content: React.FC = () => {
     const nonce = Buffer.from(Array.from(Array(32).keys()));
     const recipient = "guest-book.testnet";
 
+    if (wallet.type === "browser") {
+      localStorage.setItem(
+        "message",
+        JSON.stringify({
+          message,
+          nonce: [...nonce],
+          recipient,
+          callbackUrl: location.href,
+        })
+      );
+    }
+
     try {
       const signedMessage = await wallet.signMessage({
         message,
@@ -273,32 +359,7 @@ const Content: React.FC = () => {
         recipient,
       });
       if (signedMessage) {
-        const verifiedSignature = verifySignature({
-          message,
-          nonce,
-          recipient,
-          publicKey: signedMessage.publicKey,
-          signature: signedMessage.signature,
-        });
-        const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-          publicKey: signedMessage.publicKey,
-          accountId: signedMessage.accountId,
-          network: selector.options.network,
-        });
-
-        if (verifiedFullKeyBelongsToUser && verifiedSignature) {
-          alert(
-            `Successfully verify signed message: '${message}': \n ${JSON.stringify(
-              signedMessage
-            )}`
-          );
-        } else {
-          alert(
-            `Failed to verify signed message '${message}': \n ${JSON.stringify(
-              signedMessage
-            )}`
-          );
-        }
+        await verifyMessage({ message, nonce, recipient }, signedMessage);
       }
     } catch (err) {
       const errMsg =
