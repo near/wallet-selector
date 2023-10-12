@@ -160,6 +160,33 @@ const MyNearWallet: WalletBehaviourFactory<
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 
+    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
+      logger.log("sign message", { message });
+
+      const locationUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const url = callbackUrl || locationUrl;
+
+      if (!url) {
+        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+      }
+
+      const href = new URL(params.walletUrl);
+      href.pathname = "sign-message";
+      href.searchParams.append("message", message);
+      href.searchParams.append("nonce", nonce.toString());
+      href.searchParams.append("recipient", recipient);
+      href.searchParams.append("callbackUrl", url);
+      if (state) {
+        href.searchParams.append("state", state);
+      }
+
+      window.location.replace(href.toString());
+
+      return;
+    },
+
     async signAndSendTransaction({
       signerId,
       receiverId,
