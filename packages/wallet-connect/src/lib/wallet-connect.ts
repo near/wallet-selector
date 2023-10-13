@@ -131,6 +131,16 @@ const connect = async ({
   );
 };
 
+const disconnect = async ({ state }: { state: WalletConnectState }) => {
+  await state.client.disconnect({
+    topic: state.session!.topic,
+    reason: {
+      code: 5900,
+      message: "User disconnected",
+    },
+  });
+};
+
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
@@ -480,13 +490,7 @@ const WalletConnect: WalletBehaviourFactory<
     if (_state.session) {
       await requestSignOut();
 
-      await _state.client.disconnect({
-        topic: _state.session.topic,
-        reason: {
-          code: 5900,
-          message: "User disconnected",
-        },
-      });
+      await disconnect({ state: _state });
     }
 
     await cleanup();
@@ -527,22 +531,26 @@ const WalletConnect: WalletBehaviourFactory<
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
       try {
+        const { contract } = store.getState();
+        if (_state.session && !contract) {
+          await disconnect({ state: _state });
+          await cleanup();
+        }
+
         const chainId = getChainId();
 
-        if (!_state.session) {
-          _state.session = await connect({
-            state: _state,
-            chainId,
-            qrCodeModal,
-            projectId: params.projectId,
-          });
-        }
+        _state.session = await connect({
+          state: _state,
+          chainId,
+          qrCodeModal,
+          projectId: params.projectId,
+        });
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
         await setupEvents();
 
-        return getAccounts();
+        return await getAccounts();
       } catch (err) {
         await signOut();
 
@@ -577,26 +585,33 @@ const WalletConnect: WalletBehaviourFactory<
     async signMessage({ message, nonce, recipient, callbackUrl }) {
       logger.log("WalletConnect:signMessage", { message, nonce, recipient });
 
-      const chainId = getChainId();
+      try {
+        const chainId = getChainId();
 
-      if (!_state.session) {
-        _state.session = _state.session = await connect({
-          state: _state,
-          chainId,
-          qrCodeModal: true,
-          projectId: params.projectId,
+        if (!_state.session) {
+          _state.session = _state.session = await connect({
+            state: _state,
+            chainId,
+            qrCodeModal: true,
+            projectId: params.projectId,
+          });
+        }
+
+        const account = getActiveAccount(store.getState());
+
+        return await requestSignMessage({
+          message,
+          nonce,
+          recipient,
+          callbackUrl,
+          accountId: account?.accountId,
         });
+      } catch (err) {
+        await disconnect({ state: _state });
+        await cleanup();
+
+        throw err;
       }
-
-      const account = getActiveAccount(store.getState());
-
-      return requestSignMessage({
-        message,
-        nonce,
-        recipient,
-        callbackUrl,
-        accountId: account?.accountId,
-      });
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
