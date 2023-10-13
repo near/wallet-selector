@@ -296,6 +296,7 @@ const Content: React.FC = () => {
     url.search = "";
     window.history.replaceState({}, document.title, url);
     localStorage.removeItem("message");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = useCallback(
