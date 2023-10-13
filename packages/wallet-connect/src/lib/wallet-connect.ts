@@ -59,6 +59,13 @@ interface WalletConnectState {
   subscriptions: Array<Subscription>;
 }
 
+interface ConnectParams {
+  state: WalletConnectState;
+  chainId: string;
+  qrCodeModal: boolean;
+  projectId: string;
+}
+
 const WC_METHODS = [
   "near_signIn",
   "near_signOut",
@@ -100,6 +107,28 @@ const setupWalletConnectState = async (
     keystore,
     subscriptions: [],
   };
+};
+
+const connect = async ({
+  state,
+  chainId,
+  qrCodeModal,
+  projectId,
+}: ConnectParams) => {
+  return await state.client.connect(
+    {
+      requiredNamespaces: {
+        near: {
+          chains: [chainId],
+          methods: WC_METHODS,
+          events: WC_EVENTS,
+        },
+      },
+    },
+    qrCodeModal,
+    projectId,
+    chainId
+  );
 };
 
 const WalletConnect: WalletBehaviourFactory<
@@ -501,20 +530,12 @@ const WalletConnect: WalletBehaviourFactory<
         const chainId = getChainId();
 
         if (!_state.session) {
-          _state.session = await _state.client.connect(
-            {
-              requiredNamespaces: {
-                near: {
-                  chains: [getChainId()],
-                  methods: WC_METHODS,
-                  events: WC_EVENTS,
-                },
-              },
-            },
+          _state.session = await connect({
+            state: _state,
+            chainId,
             qrCodeModal,
-            params.projectId,
-            chainId
-          );
+            projectId: params.projectId,
+          });
         }
 
         await requestSignIn({ receiverId: contractId, methodNames });
@@ -559,20 +580,12 @@ const WalletConnect: WalletBehaviourFactory<
       const chainId = getChainId();
 
       if (!_state.session) {
-        _state.session = await _state.client.connect(
-          {
-            requiredNamespaces: {
-              near: {
-                chains: [getChainId()],
-                methods: WC_METHODS,
-                events: WC_EVENTS,
-              },
-            },
-          },
-          true,
-          params.projectId,
-          chainId
-        );
+        _state.session = _state.session = await connect({
+          state: _state,
+          chainId,
+          qrCodeModal: true,
+          projectId: params.projectId,
+        });
       }
 
       const account = getActiveAccount(store.getState());
