@@ -562,8 +562,6 @@ const WalletConnect: WalletBehaviourFactory<
 
       const chainId = getChainId();
 
-      console.log({ session: _state.session });
-
       if (!_state.session) {
         _state.session = await _state.client.connect(
           {
@@ -588,7 +586,7 @@ const WalletConnect: WalletBehaviourFactory<
         nonce,
         recipient,
         callbackUrl,
-        accountId: account?.accountId ?? undefined,
+        accountId: account?.accountId,
       });
     },
 
