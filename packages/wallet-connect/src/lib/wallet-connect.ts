@@ -497,29 +497,25 @@ const WalletConnect: WalletBehaviourFactory<
 
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
-      const existingAccounts = await getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       try {
         const chainId = getChainId();
 
-        _state.session = await _state.client.connect(
-          {
-            requiredNamespaces: {
-              near: {
-                chains: [getChainId()],
-                methods: WC_METHODS,
-                events: WC_EVENTS,
+        if (!_state.session) {
+          _state.session = await _state.client.connect(
+            {
+              requiredNamespaces: {
+                near: {
+                  chains: [getChainId()],
+                  methods: WC_METHODS,
+                  events: WC_EVENTS,
+                },
               },
             },
-          },
-          qrCodeModal,
-          params.projectId,
-          chainId
-        );
+            qrCodeModal,
+            params.projectId,
+            chainId
+          );
+        }
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
