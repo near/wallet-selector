@@ -53,12 +53,11 @@ export class ContentComponent implements OnInit, OnDestroy {
       this.getAccount(),
     ]);
 
-    this.verifyMessageBrowserWallet();
-
     this.account = account;
     this.messages = messages;
 
     this.subscribeToEvents();
+    await this.verifyMessageBrowserWallet();
   }
 
   async getAccountBalance({ provider, accountId }: GetAccountBalanceProps) {
@@ -203,7 +202,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     );
   }
 
-  verifyMessageBrowserWallet() {
+  async verifyMessageBrowserWallet() {
     const urlParams = new URLSearchParams(
       window.location.hash.substring(1) // skip the first char (#)
     );
@@ -226,7 +225,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       signature,
     };
 
-    this.verifyMessage(message, signedMessage);
+    await this.verifyMessage(message, signedMessage);
 
     const url = new URL(location.href);
     url.hash = "";
