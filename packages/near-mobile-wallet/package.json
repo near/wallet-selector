@@ -1,0 +1,27 @@
+{
+  "name": "@near-wallet-selector/near-mobile-wallet",
+  "version": "8.5.3",
+  "description": "NEAR Mobile wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "injected wallet",
+    "near-mobile-wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-mobile-wallet",
+  "peerDependencies": {
+    "near-api-js": "^1.0.0 || ^2.0.0"
+  }
+}

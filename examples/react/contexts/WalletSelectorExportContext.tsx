@@ -27,6 +27,7 @@ import { Loading } from "../components/Loading";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 
 declare global {
   interface Window {
@@ -89,6 +90,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
             icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
           },
         }),
+        setupNearMobileWallet(),
       ],
     });
     /**
