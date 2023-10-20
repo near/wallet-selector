@@ -67,7 +67,7 @@ const setupWalletState = async (
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ metadata, options, store, params, logger }) => {
+> = async ({ metadata, options, store, params, logger, id }) => {
   const _state = await setupWalletState(params, options.network);
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
@@ -162,6 +162,12 @@ const MyNearWallet: WalletBehaviourFactory<
 
     async signMessage({ message, nonce, recipient, callbackUrl, state }) {
       logger.log("sign message", { message });
+
+      if (id !== "my-near-wallet") {
+        throw Error(
+          `The signMessage method is not supported by ${metadata.name}`
+        );
+      }
 
       const locationUrl =
         typeof window !== "undefined" ? window.location.href : "";
