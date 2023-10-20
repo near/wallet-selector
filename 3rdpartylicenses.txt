@@ -2055,6 +2055,8 @@ DEALINGS IN THE SOFTWARE.
 
 @near-wallet-selector/narwallets
 
+@near-wallet-selector/near-mobile-wallet
+
 @near-wallet-selector/near-snap
 
 @near-wallet-selector/near-wallet
@@ -2107,6 +2109,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
+@peersyst/near-mobile-signer
 
 @ramper/near
 MIT
