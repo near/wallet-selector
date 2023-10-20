@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/account-export",
+  "name": "@near-wallet-selector/near-mobile-wallet",
   "version": "8.7.0",
-  "description": "This is the Export Selector UI package for NEAR Wallet Selector.",
+  "description": "NEAR Mobile wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -9,8 +9,9 @@
     "dapps",
     "near-protocol",
     "near-blockchain",
-    "wallet selector account-export",
-    "account-export"
+    "wallet selector",
+    "injected wallet",
+    "near-mobile-wallet"
   ],
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/magin/packages/account-export",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-mobile-wallet",
   "peerDependencies": {
     "near-api-js": "^1.0.0 || ^2.0.0"
   }
