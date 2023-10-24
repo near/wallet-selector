@@ -1,6 +1,11 @@
 import { NearMobileWallet } from "@peersyst/near-mobile-signer/dist/src/wallet/NearMobileWallet";
 import type { NearMobileWalletInit } from "./near-mobile-wallet.types";
 import type { Network } from "@peersyst/near-mobile-signer/dist/src/common/models";
+import type { Account } from "@near-wallet-selector/core";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
   const { store, options, logger, dAppMetadata } = config;
@@ -14,18 +19,31 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
   async function getAccounts() {
     logger.log("[NearMobileWallet]:getAccounts");
     const accountIds = await nearMobileWallet.getAccounts();
-    const accounts = [];
+    const accounts: Array<Account> = [];
+    const { signedInMessage } = store.getState();
 
-    for (let i = 0; i < accountIds.length; i++) {
-      accounts.push({
-        accountId: accountIds[i],
-        publicKey: (
-          await nearMobileWallet.signer.getPublicKey(
-            accountIds[i],
-            options.network.networkId
-          )
-        ).toString(),
-      });
+    if (accountIds.length > 0) {
+      for (let i = 0; i < accountIds.length; i++) {
+        accounts.push({
+          accountId: accountIds[i],
+          publicKey: (
+            await nearMobileWallet.signer.getPublicKey(
+              accountIds[i],
+              options.network.networkId
+            )
+          ).toString(),
+        });
+      }
+      return accounts;
+    }
+
+    if (signedInMessage) {
+      return [
+        {
+          accountId: signedInMessage.accountId,
+          publicKey: signedInMessage.publicKey,
+        },
+      ];
     }
     return accounts;
   }
@@ -45,7 +63,11 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
 
     async signOut() {
       logger.log("[NearMobileWallet]: signOut");
-      await nearMobileWallet.signOut();
+      const { signedInMessage } = store.getState();
+
+      if (!signedInMessage) {
+        await nearMobileWallet.signOut();
+      }
     },
 
     async getAccounts() {
@@ -87,8 +109,43 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
       };
     },
 
+    async signInMessage(data) {
+      logger.log("HereWallet:signInMessage", data);
+      const { recipient, nonce, ...rest } = data;
+      const response = await nearMobileWallet.signMessage({
+        ...rest,
+        receiver: recipient,
+        nonce: Array.from(nonce),
+      });
+
+      const verifiedSignature = verifySignature({
+        message: data.message,
+        nonce: data.nonce,
+        recipient: data.recipient,
+        publicKey: response.publicKey,
+        signature: response.signature,
+      });
+      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+        publicKey: response.publicKey,
+        accountId: response.accountId,
+        network: options.network,
+      });
+
+      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
+        return response;
+      } else {
+        throw new Error(`Failed to verify the message`);
+      }
+    },
+
     async signAndSendTransactions(data) {
       logger.log("[NearMobileWallet]: signAndSendTransactions", data);
+
+      const { contract } = store.getState();
+      if (!contract) {
+        throw new Error("Wallet not signed in");
+      }
+
       return await nearMobileWallet.signAndSendTransactions(data);
     },
   };
