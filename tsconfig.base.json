@@ -98,6 +98,9 @@
       "@near-wallet-selector/xdefi": [
         "packages/xdefi/src/index.ts"
       ],
+      "@near-wallet-selector/near-mobile-wallet": [
+        "packages/near-mobile-wallet/src/index.ts"
+      ],
       "crypto": [
         "node_modules/crypto-browserify"
       ],
