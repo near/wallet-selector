@@ -43,14 +43,15 @@ modal.show();
 - `accounts` (`Array`): List of objects with an account id and its private key to be exported.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
-- `onComplete` (`(accounts: Array<string>) => void`): Triggers when the user completes the flow. By default it is not set.
+- `onComplete` (`({ accounts: Array<string>, walletName: string }) => void`): Triggers when the user completes the flow. By default it is not set.
 
 ### Supported Wallets
- - [Nightly Wallet](https://github.com/near/wallet-selector/blob/main/packages/nightly/src/lib/nightly.ts#L224)
- - [Meteor Wallet](https://github.com/near/wallet-selector/blob/main/packages/meteor-wallet/src/lib/meteor-wallet.ts#L204)
- - [Welldone Wallet](https://github.com/near/wallet-selector/blob/main/packages/welldone-wallet/src/lib/welldone.ts#L335)
- - [Here Wallet](https://github.com/near/wallet-selector/blob/main/packages/here-wallet/src/lib/selector.ts#LL42)
- - [My Near Wallet](https://github.com/near/wallet-selector/blob/main/packages/my-near-wallet/src/lib/my-near-wallet.ts#L227)
+ - [Nightly Wallet](https://github.com/near/wallet-selector/blob/main/packages/nightly/src/lib/nightly.ts)
+ - [Meteor Wallet](https://github.com/near/wallet-selector/blob/main/packages/meteor-wallet/src/lib/meteor-wallet.ts)
+ - [Welldone Wallet](https://github.com/near/wallet-selector/blob/main/packages/welldone-wallet/src/lib/welldone.ts)
+ - [Here Wallet](https://github.com/near/wallet-selector/blob/main/packages/here-wallet/src/lib/selector.ts)
+ - [My Near Wallet](https://github.com/near/wallet-selector/blob/main/packages/my-near-wallet/src/lib/my-near-wallet.ts)
+ - [Sender Wallet](https://github.com/near/wallet-selector/blob/main/packages/sender/src/lib/sender.ts)
 
 ## Styles & Customizing CSS
 

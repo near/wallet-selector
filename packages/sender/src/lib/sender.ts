@@ -102,6 +102,16 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = async (): Promise<Array<Account>> => {
+    // Add extra wait to ensure Sender's sign in status is read from the
+    // browser extension background env.
+    // Check for isSignedIn() in only if selectedWalletId is set.
+    const { selectedWalletId } = store.getState();
+    if (selectedWalletId) {
+      await waitFor(() => !!_state.wallet?.isSignedIn(), {
+        timeout: 1000,
+      }).catch();
+    }
+
     const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
@@ -321,15 +331,6 @@ export function setupSender({
     }
 
     const installed = await isInstalled();
-
-    // Add extra wait to ensure Sender's sign in status is read from the
-    // browser extension background env.
-    // Check for isSignedIn() in only if extension is installed.
-    if (installed) {
-      await waitFor(() => !!window.near?.isSignedIn(), { timeout: 200 }).catch(
-        () => false
-      );
-    }
 
     return {
       id: "sender",

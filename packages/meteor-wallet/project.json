@@ -48,7 +48,8 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      }
+      },
+      "dependsOn": ["^deploy"]
     }
   },
   "tags": ["injected-wallet"]
