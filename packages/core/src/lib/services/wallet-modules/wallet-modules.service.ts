@@ -83,11 +83,21 @@ export class WalletModules {
       PENDING_CONTRACT
     );
 
-    if (pendingSelectedWalletId && pendingContract) {
+    const pendingSignInMessage = await jsonStorage.getItem<SignInMessageParams>(
+      `${pendingSelectedWalletId}:${PENDING_SIGN_IN_MESSAGE}`
+    );
+
+    if (
+      (pendingSelectedWalletId && pendingContract) ||
+      (pendingSelectedWalletId && pendingSignInMessage)
+    ) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
       await jsonStorage.removeItem(PENDING_CONTRACT);
+      await jsonStorage.removeItem(
+        `${pendingSelectedWalletId}:${PENDING_SIGN_IN_MESSAGE}`
+      );
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
@@ -108,8 +118,8 @@ export class WalletModules {
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
-          message: null,
-          signedInMessageAccount: null,
+          message: pendingSignInMessage,
+          signedInMessageAccount: accounts[0],
         };
       }
     }
@@ -239,7 +249,10 @@ export class WalletModules {
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem(PENDING_SIGN_IN_MESSAGE, message);
+        await jsonStorage.setItem(
+          `${module.id}:${PENDING_SIGN_IN_MESSAGE}`,
+          message
+        );
       }
 
       return;
@@ -388,14 +401,19 @@ export class WalletModules {
 
       const message = params as SignInMessageParams;
       const signedInMessage = await _signInMessage(params);
+      const accounts: Array<Account> = [];
 
-      const { accountId, publicKey } = signedInMessage;
-      const accounts = [{ accountId, publicKey }];
+      if (signedInMessage) {
+        accounts.push({
+          accountId: signedInMessage.accountId,
+          publicKey: signedInMessage.publicKey,
+        });
+      }
 
       await this.onWalletSignedInMessage(wallet.id, {
         accounts,
         message,
-        signedInMessage,
+        signedInMessage: signedInMessage!,
       });
 
       return signedInMessage;
