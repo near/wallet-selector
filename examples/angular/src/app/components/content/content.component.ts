@@ -218,13 +218,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     const publicKey = urlParams.get("publicKey") as string;
     const signature = urlParams.get("signature") as string;
 
-    if (!accId && !publicKey && !signature) {
-      return;
-    }
-
     const message: SignMessageParams = JSON.parse(
       localStorage.getItem("message") as string
     );
+
+    if ((!accId && !publicKey && !signature) || !message) {
+      return;
+    }
 
     const signedMessage = {
       accountId: accId,
