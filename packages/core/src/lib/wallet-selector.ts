@@ -55,9 +55,9 @@ const createSelector = (
       return Boolean(accounts.length);
     },
     signInType() {
-      const { contract, signedInMessage } = store.getState();
+      const { contract, signedInMessageAccount } = store.getState();
 
-      if (!contract && !signedInMessage) {
+      if (!contract && !signedInMessageAccount) {
         throw Error("Wallet not signed in");
       }
       return contract ? "key" : "message";

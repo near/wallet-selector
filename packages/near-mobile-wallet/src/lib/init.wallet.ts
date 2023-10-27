@@ -20,7 +20,7 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
     logger.log("[NearMobileWallet]:getAccounts");
     const accountIds = await nearMobileWallet.getAccounts();
     const accounts: Array<Account> = [];
-    const { signedInMessage } = store.getState();
+    const { signedInMessageAccount } = store.getState();
 
     if (accountIds.length > 0) {
       for (let i = 0; i < accountIds.length; i++) {
@@ -37,14 +37,10 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
       return accounts;
     }
 
-    if (signedInMessage) {
-      return [
-        {
-          accountId: signedInMessage.accountId,
-          publicKey: signedInMessage.publicKey,
-        },
-      ];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
     }
+
     return accounts;
   }
 
@@ -63,9 +59,9 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
 
     async signOut() {
       logger.log("[NearMobileWallet]: signOut");
-      const { signedInMessage } = store.getState();
+      const { signedInMessageAccount } = store.getState();
 
-      if (!signedInMessage) {
+      if (!signedInMessageAccount) {
         await nearMobileWallet.signOut();
       }
     },

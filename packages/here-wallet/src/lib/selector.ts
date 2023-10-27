@@ -23,7 +23,7 @@ export const initHereWallet: SelectorInit = async (config) => {
     logger.log("HereWallet:getAccounts");
     const accountIds = await here.getAccounts();
     const accounts: Array<Account> = [];
-    const { signedInMessage } = store.getState();
+    const { signedInMessageAccount } = store.getState();
 
     if (accountIds.length > 0) {
       for (let i = 0; i < accountIds.length; i++) {
@@ -40,14 +40,10 @@ export const initHereWallet: SelectorInit = async (config) => {
       return accounts;
     }
 
-    if (signedInMessage) {
-      return [
-        {
-          accountId: signedInMessage.accountId,
-          publicKey: signedInMessage.publicKey,
-        },
-      ];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
     }
+
     return accounts;
   }
 

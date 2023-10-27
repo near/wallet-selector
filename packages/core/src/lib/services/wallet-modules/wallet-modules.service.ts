@@ -109,12 +109,12 @@ export class WalletModules {
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
           message: null,
-          signedInMessage: null,
+          signedInMessageAccount: null,
         };
       }
     }
 
-    const { contract, selectedWalletId, message, signedInMessage } =
+    const { contract, selectedWalletId, message, signedInMessageAccount } =
       this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
@@ -129,7 +129,7 @@ export class WalletModules {
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
         message: null,
-        signedInMessage: null,
+        signedInMessageAccount: null,
       };
     }
 
@@ -139,7 +139,7 @@ export class WalletModules {
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
       message,
-      signedInMessage,
+      signedInMessageAccount,
     };
   }
 
@@ -214,7 +214,7 @@ export class WalletModules {
         accounts,
         recentlySignedInWallets,
         message: null,
-        signedInMessage: null,
+        signedInMessageAccount: null,
       },
     });
 
@@ -263,7 +263,7 @@ export class WalletModules {
         accounts,
         recentlySignedInWallets,
         message,
-        signedInMessage: { accountId, publicKey },
+        signedInMessageAccount: { accountId, publicKey },
       },
     });
 
@@ -508,7 +508,7 @@ export class WalletModules {
       selectedWalletId,
       recentlySignedInWallets,
       message,
-      signedInMessage,
+      signedInMessageAccount,
     } = await this.resolveStorageState();
 
     this.store.dispatch({
@@ -520,7 +520,7 @@ export class WalletModules {
         selectedWalletId,
         recentlySignedInWallets,
         message: message,
-        signedInMessage,
+        signedInMessageAccount,
       },
     });
 

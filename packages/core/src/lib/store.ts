@@ -31,7 +31,7 @@ const reducer = (
         selectedWalletId,
         recentlySignedInWallets,
         message,
-        signedInMessage,
+        signedInMessageAccount,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -49,7 +49,7 @@ const reducer = (
         selectedWalletId,
         recentlySignedInWallets,
         message: message,
-        signedInMessage: signedInMessage,
+        signedInMessageAccount,
       };
     }
     case "WALLET_CONNECTED": {
@@ -59,7 +59,7 @@ const reducer = (
         accounts,
         recentlySignedInWallets,
         message,
-        signedInMessage,
+        signedInMessageAccount,
       } = action.payload;
 
       if (!accounts.length) {
@@ -84,7 +84,7 @@ const reducer = (
         selectedWalletId: walletId,
         recentlySignedInWallets,
         message,
-        signedInMessage,
+        signedInMessageAccount,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -100,7 +100,7 @@ const reducer = (
         accounts: [],
         selectedWalletId: null,
         message: null,
-        signedInMessage: null,
+        signedInMessageAccount: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -160,7 +160,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
     message: await jsonStorage.getItem(SIGN_IN_MESSAGE),
-    signedInMessage: await jsonStorage.getItem(SIGNED_IN_MESSAGE),
+    signedInMessageAccount: await jsonStorage.getItem(SIGNED_IN_MESSAGE),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -197,7 +197,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       "recentlySignedInWallets"
     );
     syncStorage(prevState, state, SIGN_IN_MESSAGE, "message");
-    syncStorage(prevState, state, SIGNED_IN_MESSAGE, "signedInMessage");
+    syncStorage(prevState, state, SIGNED_IN_MESSAGE, "signedInMessageAccount");
     prevState = state;
   });
 

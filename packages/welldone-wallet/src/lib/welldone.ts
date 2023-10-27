@@ -110,7 +110,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = (): Array<Account> => {
-    const { signedInMessage } = store.getState();
+    const { signedInMessageAccount } = store.getState();
     if (_state.account) {
       return [
         {
@@ -120,13 +120,8 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       ];
     }
 
-    if (signedInMessage) {
-      return [
-        {
-          accountId: signedInMessage.accountId,
-          publicKey: signedInMessage.publicKey,
-        },
-      ];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
     }
 
     return [];

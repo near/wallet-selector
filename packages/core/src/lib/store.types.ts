@@ -72,7 +72,7 @@ export interface WalletSelectorState {
   /**
    * The Account that was used to sign the message
    */
-  signedInMessage: Account | null;
+  signedInMessageAccount: Account | null;
 }
 
 export type WalletSelectorAction =
@@ -85,7 +85,7 @@ export type WalletSelectorAction =
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
         message: SignInMessageParams | null;
-        signedInMessage: Account | null;
+        signedInMessageAccount: Account | null;
       };
     }
   | {
@@ -96,7 +96,7 @@ export type WalletSelectorAction =
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
         message: SignInMessageParams | null;
-        signedInMessage: Account | null;
+        signedInMessageAccount: Account | null;
       };
     }
   | {

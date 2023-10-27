@@ -55,7 +55,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
-    const { signedInMessage } = store.getState();
+    const { signedInMessageAccount } = store.getState();
 
     if (accountId && account) {
       const publicKey = await account.connection.signer.getPublicKey(
@@ -70,13 +70,8 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       ];
     }
 
-    if (signedInMessage) {
-      return [
-        {
-          accountId: signedInMessage.accountId,
-          publicKey: signedInMessage.publicKey,
-        },
-      ];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
     }
 
     return [];
