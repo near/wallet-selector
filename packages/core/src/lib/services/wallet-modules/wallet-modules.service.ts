@@ -253,6 +253,8 @@ export class WalletModules {
       walletId
     );
 
+    const { accountId, publicKey } = signedInMessage;
+
     this.store.dispatch({
       type: "WALLET_CONNECTED",
       payload: {
@@ -261,7 +263,7 @@ export class WalletModules {
         accounts,
         recentlySignedInWallets,
         message,
-        signedInMessage,
+        signedInMessage: { accountId, publicKey },
       },
     });
 
@@ -518,7 +520,7 @@ export class WalletModules {
         selectedWalletId,
         recentlySignedInWallets,
         message: message,
-        signedInMessage: signedInMessage,
+        signedInMessage,
       },
     });
 
