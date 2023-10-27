@@ -16,7 +16,6 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [XDEFI Wallet](https://www.npmjs.com/package/@near-wallet-selector/xdefi) - Injected wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
-- [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 - [Opto Wallet](https://www.npmjs.com/package/@near-wallet-selector/opto-wallet) - Mobile wallet & Browser wallet.
@@ -67,7 +66,7 @@ yarn add \
   @near-wallet-selector/near-snap \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/nightly-connect \
+  @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \
@@ -90,7 +89,7 @@ npm install \
   @near-wallet-selector/near-snap \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/nightly-connect \
+  @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \
@@ -127,7 +126,6 @@ import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";

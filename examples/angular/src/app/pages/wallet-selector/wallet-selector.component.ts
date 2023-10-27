@@ -19,7 +19,6 @@ import { setupNeth } from "@near-wallet-selector/neth";
 import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
@@ -83,15 +82,6 @@ export class WalletSelectorComponent implements OnInit {
             description: "Example dApp used by NEAR Wallet Selector",
             url: "https://github.com/near/wallet-selector",
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
           },
         }),
         setupRamperWallet(),
