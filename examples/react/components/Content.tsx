@@ -139,7 +139,8 @@ const Content: React.FC = () => {
     const message = "test message to sign";
     const nonce = Buffer.from(Array.from(Array(32).keys()));
     const recipient = "guest-book.testnet";
-    modal.signInMessage({ message, nonce, recipient });
+    const callbackUrl = location.href;
+    modal.signInMessage({ message, nonce, recipient, callbackUrl });
   };
 
   const handleSignOut = async () => {

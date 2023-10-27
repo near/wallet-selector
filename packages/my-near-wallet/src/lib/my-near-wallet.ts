@@ -7,9 +7,17 @@ import type {
   Optional,
   Network,
   Account,
+  JsonStorageService,
+  SignedMessage,
+  SignInMessageParams,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
+import type { SignMessageParams } from "@near-wallet-selector/core";
+import {
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -22,6 +30,7 @@ export interface MyNearWalletParams {
 interface MyNearWalletState {
   wallet: nearAPI.WalletConnection;
   keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
+  signedInMessageAccount: Account | null;
 }
 
 interface MyNearWalletExtraOptions {
@@ -43,9 +52,68 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   }
 };
 
+const verifyMessage = async (
+  message: SignMessageParams,
+  signedMessage: SignedMessage,
+  network: Network
+) => {
+  const verifiedSignature = verifySignature({
+    message: message.message,
+    nonce: Buffer.from(message.nonce),
+    recipient: message.recipient,
+    publicKey: signedMessage.publicKey,
+    signature: signedMessage.signature,
+    callbackUrl: message.callbackUrl,
+  });
+  const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
+    publicKey: signedMessage.publicKey,
+    accountId: signedMessage.accountId,
+    network,
+  });
+
+  return verifiedFullKeyBelongsToUser && verifiedSignature;
+};
+
+const getSignedInMessageAccount = async (
+  storage: JsonStorageService,
+  network: Network
+): Promise<Account | null> => {
+  const urlParams = new URLSearchParams(
+    window.location.hash.substring(1) // skip the first char (#)
+  );
+  const accountId = urlParams.get("accountId") as string;
+  const publicKey = urlParams.get("publicKey") as string;
+  const signature = urlParams.get("signature") as string;
+  const message = await storage.getItem<SignInMessageParams>("message:pending");
+
+  if ((!accountId && !publicKey && !signature) || !message) {
+    return null;
+  }
+  const signedMessage = {
+    accountId,
+    publicKey,
+    signature,
+  };
+  const isMessageVerified = await verifyMessage(
+    message,
+    signedMessage,
+    network
+  );
+  if (!isMessageVerified) {
+    return null;
+  }
+  const url = new URL(location.href);
+  url.hash = "";
+  url.search = "";
+  window.history.replaceState({}, document.title, url);
+
+  return { accountId, publicKey };
+};
+
 const setupWalletState = async (
   params: MyNearWalletExtraOptions,
-  network: Network
+  network: Network,
+  storage: JsonStorageService
 ): Promise<MyNearWalletState> => {
   const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
 
@@ -58,35 +126,50 @@ const setupWalletState = async (
 
   const wallet = new nearAPI.WalletConnection(near, "near_app");
 
+  const signedInMessageAccount = await getSignedInMessageAccount(
+    storage,
+    network
+  );
+
   return {
     wallet,
     keyStore,
+    signedInMessageAccount,
   };
 };
 
 const MyNearWallet: WalletBehaviourFactory<
   BrowserWallet,
   { params: MyNearWalletExtraOptions }
-> = async ({ metadata, options, store, params, logger, id }) => {
-  const _state = await setupWalletState(params, options.network);
+> = async ({ metadata, options, store, params, logger, id, storage }) => {
+  const _state = await setupWalletState(params, options.network, storage);
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
+    const { signedInMessageAccount } = store.getState();
 
-    if (!accountId || !account) {
-      return [];
+    if (accountId && account) {
+      const publicKey = await account.connection.signer.getPublicKey(
+        account.accountId,
+        options.network.networkId
+      );
+      return [
+        {
+          accountId,
+          publicKey: publicKey ? publicKey.toString() : "",
+        },
+      ];
     }
 
-    const publicKey = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
-    return [
-      {
-        accountId,
-        publicKey: publicKey ? publicKey.toString() : "",
-      },
-    ];
+    if (_state.signedInMessageAccount) {
+      return [{ ..._state.signedInMessageAccount }];
+    }
+
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
+    }
+
+    return [];
   };
 
   const transformTransactions = async (
@@ -166,6 +249,39 @@ const MyNearWallet: WalletBehaviourFactory<
       if (id !== "my-near-wallet") {
         throw Error(
           `The signMessage method is not supported by ${metadata.name}`
+        );
+      }
+
+      const locationUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const url = callbackUrl || locationUrl;
+
+      if (!url) {
+        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+      }
+
+      const href = new URL(params.walletUrl);
+      href.pathname = "sign-message";
+      href.searchParams.append("message", message);
+      href.searchParams.append("nonce", nonce.toString());
+      href.searchParams.append("recipient", recipient);
+      href.searchParams.append("callbackUrl", url);
+      if (state) {
+        href.searchParams.append("state", state);
+      }
+
+      window.location.replace(href.toString());
+
+      return;
+    },
+
+    async signInMessage({ message, nonce, recipient, callbackUrl, state }) {
+      logger.log("sign message", { message });
+
+      if (id !== "my-near-wallet") {
+        throw Error(
+          `The signInMessage method is not supported by ${metadata.name}`
         );
       }
 
