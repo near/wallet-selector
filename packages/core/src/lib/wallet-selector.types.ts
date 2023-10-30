@@ -104,9 +104,7 @@ export interface WalletSelector {
   setActiveAccount(accountId: string): void;
 
   /**
-   * Returns the sign-in type.
-   * Returns "key" if signed-in with wallet.signIn.
-   * Returns "message" if signed-in with wallet.signInMessage.
+   * Returns the sign-in type, it can be either "message" or "key".
    */
   signInType(): SignInType;
 

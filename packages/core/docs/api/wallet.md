@@ -338,7 +338,7 @@ Allows users to sign a message for a specific recipient using their NEAR account
   - `state` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). A state for authentication purposes.
 
 **Returns**
-- `Promise<Array<Account>>`
+- `Promise<SignedMessage | void>`
 
 **Description**
 
@@ -356,6 +356,6 @@ Allows users to sign-in (login) to a dApp without creating a LAK by signing a me
   const nonce = Buffer.from(nonceArray);
   const recipient = "myapp.com";
   
-  await wallet.signInMessage({ message, recipient, nonce });
+  await wallet.signInMessage({ message, nonce, recipient });
 })();
 ```
