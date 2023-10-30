@@ -1,8 +1,5 @@
 import type { Account, NetworkId } from "@near-wallet-selector/core";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 import { HereWallet } from "@here-wallet/core";
 import type BN from "bn.js";
 
@@ -140,26 +137,19 @@ export const initHereWallet: SelectorInit = async (config) => {
     async signInMessage(data) {
       logger.log("HereWallet:signInMessage", data);
 
-      const response = await here.signMessage(data);
+      const signedMessage = await here.signMessage(data);
 
-      const verifiedSignature = verifySignature({
-        message: data.message,
-        nonce: data.nonce,
-        recipient: data.recipient,
-        publicKey: response.publicKey,
-        signature: response.signature,
-      });
-      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-        publicKey: response.publicKey,
-        accountId: response.accountId,
-        network: options.network,
-      });
+      const isMessageVerified = await verifyMessageNEP413(
+        data,
+        signedMessage,
+        options.network
+      );
 
-      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
-        return response;
-      } else {
+      if (!isMessageVerified) {
         throw new Error(`Failed to verify the message`);
       }
+
+      return signedMessage;
     },
 
     async signAndSendTransactions(data) {
