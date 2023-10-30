@@ -83,6 +83,7 @@ export {
   verifyFullKeyBelongsToUser,
   verifySignature,
   serializeNep413,
+  verifyMessageNEP413,
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

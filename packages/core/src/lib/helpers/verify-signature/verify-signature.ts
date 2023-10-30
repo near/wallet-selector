@@ -8,6 +8,8 @@ import type {
 } from "./verify-signature.types";
 import { Payload, payloadSchema } from "./payload";
 import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { SignedMessage, SignMessageParams } from "../../wallet";
+import type { Network } from "../../options.types";
 
 export const verifySignature = ({
   publicKey,
@@ -63,4 +65,35 @@ export const verifyFullKeyBelongsToUser = async ({
   });
 
   return permission === "FullAccess";
+};
+
+export const verifyMessageNEP413 = async (
+  message: SignMessageParams,
+  signedMessage: SignedMessage,
+  network: Network
+) => {
+  const isSignatureValid = verifySignature({
+    message: message.message,
+    nonce: message.nonce,
+    recipient: message.recipient,
+    publicKey: signedMessage.publicKey,
+    signature: signedMessage.signature,
+    callbackUrl: message.callbackUrl,
+  });
+
+  if (!isSignatureValid) {
+    throw Error("Failed to verify the signature");
+  }
+
+  const isFullAccess = await verifyFullKeyBelongsToUser({
+    publicKey: signedMessage.publicKey,
+    accountId: signedMessage.accountId,
+    network,
+  });
+
+  if (!isFullAccess) {
+    throw Error("Message was not signed with full access key");
+  }
+
+  return true;
 };

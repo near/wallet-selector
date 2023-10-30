@@ -13,7 +13,7 @@ import {
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
   SIGN_IN_MESSAGE,
-  SIGNED_IN_MESSAGE,
+  SIGNED_IN_MESSAGE_ACCOUNT,
 } from "./constants";
 
 const reducer = (
@@ -160,7 +160,9 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
     message: await jsonStorage.getItem(SIGN_IN_MESSAGE),
-    signedInMessageAccount: await jsonStorage.getItem(SIGNED_IN_MESSAGE),
+    signedInMessageAccount: await jsonStorage.getItem(
+      SIGNED_IN_MESSAGE_ACCOUNT
+    ),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -197,7 +199,12 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       "recentlySignedInWallets"
     );
     syncStorage(prevState, state, SIGN_IN_MESSAGE, "message");
-    syncStorage(prevState, state, SIGNED_IN_MESSAGE, "signedInMessageAccount");
+    syncStorage(
+      prevState,
+      state,
+      SIGNED_IN_MESSAGE_ACCOUNT,
+      "signedInMessageAccount"
+    );
     prevState = state;
   });
 

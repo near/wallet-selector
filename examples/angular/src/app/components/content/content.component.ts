@@ -335,7 +335,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        receiverId: contract!.contractId,
+        receiverId: contract?.contractId || CONTRACT_ID,
         actions: [
           {
             type: "FunctionCall",

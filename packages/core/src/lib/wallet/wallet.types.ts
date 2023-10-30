@@ -201,7 +201,7 @@ export type WalletEvents = {
   };
   signedInMessage: {
     message: SignInMessageParams;
-    signedInMessage: SignedMessage;
+    signedMessage: SignedMessage;
     accounts: Array<Account>;
   };
   signedOut: null;

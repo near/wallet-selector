@@ -2,10 +2,7 @@ import { NearMobileWallet } from "@peersyst/near-mobile-signer/dist/src/wallet/N
 import type { NearMobileWalletInit } from "./near-mobile-wallet.types";
 import type { Network } from "@peersyst/near-mobile-signer/dist/src/common/models";
 import type { Account } from "@near-wallet-selector/core";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 
 export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
   const { store, options, logger, dAppMetadata } = config;
@@ -106,32 +103,26 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
     },
 
     async signInMessage(data) {
-      logger.log("HereWallet:signInMessage", data);
+      logger.log("[NearMobileWallet]: signInMessage", data);
       const { recipient, nonce, ...rest } = data;
-      const response = await nearMobileWallet.signMessage({
+      const signedMessage = await nearMobileWallet.signMessage({
         ...rest,
         receiver: recipient,
         nonce: Array.from(nonce),
       });
 
-      const verifiedSignature = verifySignature({
-        message: data.message,
-        nonce: data.nonce,
-        recipient: data.recipient,
-        publicKey: response.publicKey,
-        signature: response.signature,
-      });
-      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-        publicKey: response.publicKey,
-        accountId: response.accountId,
-        network: options.network,
-      });
+      const message = { message: data.message, nonce, recipient };
+      const isMessageVerified = await verifyMessageNEP413(
+        message,
+        signedMessage,
+        options.network
+      );
 
-      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
-        return response;
-      } else {
-        throw new Error(`Failed to verify the message`);
+      if (!isMessageVerified) {
+        throw new Error("Failed to verify the message");
       }
+
+      return signedMessage;
     },
 
     async signAndSendTransactions(data) {

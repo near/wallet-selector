@@ -4,10 +4,7 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import { NearSnap, NearSnapAccount } from "@near-snap/sdk";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 
 export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
   config
@@ -82,31 +79,22 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
       }
 
       const currentAccount = account || snapAccount;
-
-      const response = await currentAccount!.signMessage({
+      const signedMessage = await currentAccount!.signMessage({
         message,
         nonce,
         recipient,
       });
+      const isMessageVerified = await verifyMessageNEP413(
+        { message, nonce, recipient },
+        signedMessage,
+        options.network
+      );
 
-      const verifiedSignature = verifySignature({
-        message,
-        nonce,
-        recipient,
-        publicKey: response.publicKey,
-        signature: response.signature,
-      });
-      const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-        publicKey: response.publicKey,
-        accountId: response.accountId,
-        network: options.network,
-      });
-
-      if (verifiedSignature && verifiedFullKeyBelongsToUser) {
-        return response;
-      } else {
+      if (!isMessageVerified) {
         throw new Error(`Failed to verify the message`);
       }
+
+      return signedMessage;
     },
 
     async verifyOwner() {

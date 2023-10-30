@@ -8,16 +8,12 @@ import type {
   Network,
   Account,
   JsonStorageService,
-  SignedMessage,
   SignInMessageParams,
+  SignMessageParams,
 } from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
-import type { SignMessageParams } from "@near-wallet-selector/core";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -52,28 +48,6 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
   }
 };
 
-const verifyMessage = async (
-  message: SignMessageParams,
-  signedMessage: SignedMessage,
-  network: Network
-) => {
-  const verifiedSignature = verifySignature({
-    message: message.message,
-    nonce: Buffer.from(message.nonce),
-    recipient: message.recipient,
-    publicKey: signedMessage.publicKey,
-    signature: signedMessage.signature,
-    callbackUrl: message.callbackUrl,
-  });
-  const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-    publicKey: signedMessage.publicKey,
-    accountId: signedMessage.accountId,
-    network,
-  });
-
-  return verifiedFullKeyBelongsToUser && verifiedSignature;
-};
-
 const getSignedInMessageAccount = async (
   storage: JsonStorageService,
   network: Network
@@ -84,30 +58,33 @@ const getSignedInMessageAccount = async (
   const accountId = urlParams.get("accountId") as string;
   const publicKey = urlParams.get("publicKey") as string;
   const signature = urlParams.get("signature") as string;
-  const message = await storage.getItem<SignInMessageParams>("message:pending");
+  let message = await storage.getItem<SignInMessageParams>("message:pending");
 
   if ((!accountId && !publicKey && !signature) || !message) {
     return null;
   }
+
+  message = { ...message, nonce: Buffer.from(message.nonce) };
   const signedMessage = {
     accountId,
     publicKey,
     signature,
   };
-  const isMessageVerified = await verifyMessage(
-    message,
-    signedMessage,
-    network
-  );
-  if (!isMessageVerified) {
+
+  try {
+    const isMessageVerified = await verifyMessageNEP413(
+      message,
+      signedMessage,
+      network
+    );
+    if (!isMessageVerified) {
+      return null;
+    }
+
+    return { accountId, publicKey };
+  } catch (_e) {
     return null;
   }
-  const url = new URL(location.href);
-  url.hash = "";
-  url.search = "";
-  window.history.replaceState({}, document.title, url);
-
-  return { accountId, publicKey };
 };
 
 const setupWalletState = async (
@@ -211,6 +188,35 @@ const MyNearWallet: WalletBehaviourFactory<
     );
   };
 
+  const signMessage = ({
+    message,
+    nonce,
+    recipient,
+    callbackUrl,
+    state,
+  }: SignMessageParams) => {
+    const locationUrl =
+      typeof window !== "undefined" ? window.location.href : "";
+
+    const url = callbackUrl || locationUrl;
+
+    if (!url) {
+      throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+    }
+
+    const href = new URL(params.walletUrl);
+    href.pathname = "sign-message";
+    href.searchParams.append("message", message);
+    href.searchParams.append("nonce", nonce.toString());
+    href.searchParams.append("recipient", recipient);
+    href.searchParams.append("callbackUrl", url);
+    if (state) {
+      href.searchParams.append("state", state);
+    }
+
+    window.location.replace(href.toString());
+  };
+
   return {
     async signIn({ contractId, methodNames, successUrl, failureUrl }) {
       const existingAccounts = await getAccounts();
@@ -243,7 +249,7 @@ const MyNearWallet: WalletBehaviourFactory<
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 
-    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
+    async signMessage(message) {
       logger.log("sign message", { message });
 
       if (id !== "my-near-wallet") {
@@ -251,33 +257,13 @@ const MyNearWallet: WalletBehaviourFactory<
           `The signMessage method is not supported by ${metadata.name}`
         );
       }
-
-      const locationUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      const url = callbackUrl || locationUrl;
-
-      if (!url) {
-        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
-      }
-
-      const href = new URL(params.walletUrl);
-      href.pathname = "sign-message";
-      href.searchParams.append("message", message);
-      href.searchParams.append("nonce", nonce.toString());
-      href.searchParams.append("recipient", recipient);
-      href.searchParams.append("callbackUrl", url);
-      if (state) {
-        href.searchParams.append("state", state);
-      }
-
-      window.location.replace(href.toString());
+      signMessage(message);
 
       return;
     },
 
-    async signInMessage({ message, nonce, recipient, callbackUrl, state }) {
-      logger.log("sign message", { message });
+    async signInMessage(message) {
+      logger.log("signInMessage", { message });
 
       if (id !== "my-near-wallet") {
         throw Error(
@@ -285,26 +271,7 @@ const MyNearWallet: WalletBehaviourFactory<
         );
       }
 
-      const locationUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      const url = callbackUrl || locationUrl;
-
-      if (!url) {
-        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
-      }
-
-      const href = new URL(params.walletUrl);
-      href.pathname = "sign-message";
-      href.searchParams.append("message", message);
-      href.searchParams.append("nonce", nonce.toString());
-      href.searchParams.append("recipient", recipient);
-      href.searchParams.append("callbackUrl", url);
-      if (state) {
-        href.searchParams.append("state", state);
-      }
-
-      window.location.replace(href.toString());
+      signMessage(message);
 
       return;
     },

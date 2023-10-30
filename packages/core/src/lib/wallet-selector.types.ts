@@ -63,7 +63,7 @@ export type WalletSelectorEvents = {
   signedInMessage: {
     walletId: string;
     message: SignInMessageParams;
-    signedInMessage: SignedMessage;
+    signedMessage: SignedMessage;
     accounts: Array<Account>;
   };
   signedOut: {

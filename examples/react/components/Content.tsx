@@ -139,8 +139,7 @@ const Content: React.FC = () => {
     const message = "test message to sign";
     const nonce = Buffer.from(Array.from(Array(32).keys()));
     const recipient = "guest-book.testnet";
-    const callbackUrl = location.href;
-    modal.signInMessage({ message, nonce, recipient, callbackUrl });
+    modal.signInMessage({ message, nonce, recipient });
   };
 
   const handleSignOut = async () => {
@@ -169,6 +168,7 @@ const Content: React.FC = () => {
 
   const addMessages = useCallback(
     async (message: string, donation: string, multiple: boolean) => {
+      const { contract } = selector.store.getState();
       const wallet = await selector.wallet();
       if (!multiple) {
         return wallet
@@ -199,7 +199,7 @@ const Content: React.FC = () => {
       for (let i = 0; i < 2; i += 1) {
         transactions.push({
           signerId: accountId!,
-          receiverId: CONTRACT_ID,
+          receiverId: contract?.contractId || CONTRACT_ID,
           actions: [
             {
               type: "FunctionCall",

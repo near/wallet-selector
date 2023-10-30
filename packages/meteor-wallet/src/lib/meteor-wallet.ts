@@ -7,10 +7,7 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
@@ -193,40 +190,25 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
     },
 
-    async signInMessage({ message, nonce, recipient, state }) {
-      logger.log("MeteorWallet:signInMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
+    async signInMessage(message) {
+      logger.log("MeteorWallet:signInMessage", message);
       const accountId = _state.wallet.getAccountId();
       const response = await _state.wallet.signMessage({
-        message,
-        nonce,
-        recipient,
+        ...message,
         accountId,
-        state,
       });
       if (response.success) {
-        const verifiedSignature = verifySignature({
+        const isMessageVerified = await verifyMessageNEP413(
           message,
-          nonce,
-          recipient,
-          publicKey: response.payload.publicKey,
-          signature: response.payload.signature,
-        });
-        const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-          publicKey: response.payload.publicKey,
-          accountId: response.payload.accountId,
-          network: options.network,
-        });
+          response.payload,
+          options.network
+        );
 
-        if (verifiedSignature && verifiedFullKeyBelongsToUser) {
-          return response.payload;
-        } else {
+        if (!isMessageVerified) {
           throw new Error(`Failed to verify the message`);
         }
+
+        return response.payload;
       } else {
         throw new Error(`Couldn't sign message owner: ${response.message}`);
       }

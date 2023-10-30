@@ -238,7 +238,7 @@ export class WalletModules {
 
   private async onWalletSignedInMessage(
     walletId: string,
-    { accounts, message, signedInMessage }: WalletEvents["signedInMessage"]
+    { accounts, message, signedMessage }: WalletEvents["signedInMessage"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -248,11 +248,13 @@ export class WalletModules {
       // We can't guarantee the user will actually sign in with browser wallets.
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
+        const locationUrl =
+          typeof window !== "undefined" ? window.location.href : undefined;
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem(
-          `${module.id}:${PENDING_SIGN_IN_MESSAGE}`,
-          message
-        );
+        await jsonStorage.setItem(`${module.id}:${PENDING_SIGN_IN_MESSAGE}`, {
+          ...message,
+          callbackUrl: message.callbackUrl || locationUrl,
+        });
       }
 
       return;
@@ -266,7 +268,7 @@ export class WalletModules {
       walletId
     );
 
-    const { accountId, publicKey } = signedInMessage;
+    const { accountId, publicKey } = signedMessage;
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
@@ -283,7 +285,7 @@ export class WalletModules {
     this.emitter.emit("signedInMessage", {
       walletId,
       message,
-      signedInMessage,
+      signedMessage,
       accounts,
     });
   }
@@ -400,7 +402,7 @@ export class WalletModules {
       }
 
       const message = params as SignInMessageParams;
-      const signedInMessage = await _signInMessage(params);
+      const signedInMessage = await _signInMessage(message);
       const accounts: Array<Account> = [];
 
       if (signedInMessage) {
@@ -413,7 +415,7 @@ export class WalletModules {
       await this.onWalletSignedInMessage(wallet.id, {
         accounts,
         message,
-        signedInMessage: signedInMessage!,
+        signedMessage: signedInMessage!,
       });
 
       return signedInMessage;
