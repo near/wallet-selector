@@ -57,7 +57,7 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 
 ```ts
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
-import SnapIconUrl from "@near-wallet-selector/near-snap/assets/snap-icon.png";
+import SnapIconUrl from "@near-wallet-selector/near-snap/assets/snap-icon.svg";
 
 const snapWallet = setupNearSnap({ 
   iconUrl: SnapIconUrl 
