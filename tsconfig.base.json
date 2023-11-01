@@ -77,9 +77,6 @@
       "@near-wallet-selector/nightly-connect": [
         "packages/nightly-connect/src/index.ts"
       ],
-      "@near-wallet-selector/opto-wallet": [
-        "packages/opto-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
       ],

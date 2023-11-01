@@ -16,7 +16,6 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
@@ -74,7 +73,6 @@ export class WalletSelectorComponent implements OnInit {
         setupNeth({
           bundle: false,
         }),
-        setupOptoWallet(),
         setupFinerWallet(),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
