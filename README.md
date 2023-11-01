@@ -19,7 +19,6 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Nightly Connect](https://www.npmjs.com/package/@near-wallet-selector/nightly-connect) - Bridge wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
-- [Opto Wallet](https://www.npmjs.com/package/@near-wallet-selector/opto-wallet) - Mobile wallet & Browser wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
 - [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
 
@@ -69,7 +68,6 @@ yarn add \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
@@ -92,7 +90,6 @@ npm install \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
@@ -130,7 +127,6 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { setupNeth } from "@near-wallet-selector/neth";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
@@ -152,7 +148,6 @@ const selector = await setupWalletSelector({
     setupLedger(),
     setupNearFi(),
     setupCoin98Wallet(),
-    setupOptoWallet(),
     setupNeth(),
     setupXDEFI(),
     setupWalletConnect({
