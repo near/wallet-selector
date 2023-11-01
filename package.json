@@ -164,7 +164,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "13.4.0",
     "@testing-library/react-hooks": "^7.0.2",
-    "@types/big.js": "^6.2.0",
+    "@types/big.js": "^6.2.1",
     "@types/bn.js": "^5.1.1",
     "@types/gh-pages": "^3.2.2",
     "@types/jest": "29.4.4",

@@ -5755,10 +5755,10 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/big.js@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@types/big.js/-/big.js-6.2.0.tgz#e1f6a9a6ce64bc7c131137e71fbad34a5574f987"
-  integrity sha512-ubLURWoc4tCw/8Yds0P3CE9cBG5q+aoycwWBiXXx4gp7XPYZy9ch0L9+Pv6osSoSRgvuQNqJdlwEhP5QhKKl6w==
+"@types/big.js@^6.2.1":
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@types/big.js/-/big.js-6.2.1.tgz#0e5eda9b8ffe33e2cc4540fad6e91a4c7255ca88"
+  integrity sha512-dKzZVT10m3ELZgYIShPJ+3Os/E1s3aDQS+wr1ne7VCLU/8hc/R+z/+gkm9WabxSkV9E8wJhTl5wC+0fD9nitsw==
 
 "@types/bn.js@^5.1.1":
   version "5.1.1"
