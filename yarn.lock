@@ -5859,10 +5859,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/gh-pages@^3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-3.2.2.tgz#5b7d9cfe071e78e5a66432e1dc21ae8cb5d2aa0a"
-  integrity sha512-f6H395J9d0hxXprGKgLni/dPlSM9+cq2PZNqqxIiOaxAP8ThVIbUJpm/lqx8y7G66DkPx95l4KHavccgan6Hcg==
+"@types/gh-pages@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-5.0.0.tgz#856b71ad52d5b18c5fa6deb7bdc4dabbb1c8d0bb"
+  integrity sha512-pVBH6O7Ypty4u8BDLUtWIId/2VbVHnJCcee5tnDt/Jw5bTOdSsxGeCGC6owHrmYcBBPQY3vC8nSg35YG9SHD5g==
 
 "@types/glob@^7.1.1":
   version "7.2.0"
