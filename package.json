@@ -90,7 +90,7 @@
     "@here-wallet/core": "^1.5.1",
     "@jscutlery/semver": "3.1.0",
     "@ledgerhq/hw-transport": "6.27.1",
-    "@ledgerhq/hw-transport-webhid": "6.27.1",
+    "@ledgerhq/hw-transport-webhid": "6.27.19",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.8.0",
     "@near-snap/sdk": "^0.6.0",
