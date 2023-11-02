@@ -169,7 +169,8 @@ const selector = await setupWalletSelector({
       },
     }),
     setupNearMobileWallet(),
-    setupMintbaseWallet({networkId: "mainnet",
+    setupMintbaseWallet({
+          networkId: "mainnet",
           walletUrl: "https://wallet.mintbase.xyz",
           callbackUrl: "https://www.mywebsite.com",
           deprecated: false,
