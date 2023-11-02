@@ -95,7 +95,7 @@
     "@ramper/near": "^0.0.30",
     "@walletconnect/modal": "^2.6.0",
     "@walletconnect/sign-client": "2.9.1",
-    "better-sqlite3": "^8.7.0",
+    "better-sqlite3": "^9.0.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
     "borsh": "^0.7.0",
