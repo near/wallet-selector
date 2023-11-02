@@ -21,6 +21,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 
 import type { ReactNode } from "react";
 import React, {
@@ -95,6 +96,12 @@ export const WalletSelectorContextProvider: React.FC<{
           },
         }),
         setupNearMobileWallet(),
+        setupMintbaseWallet({
+          networkId: "mainnet",
+          walletUrl: "https://wallet.mintbase.xyz",
+          callbackUrl: "https://www.mywebsite.com",
+          deprecated: false,
+        }),
       ],
     });
     const _modal = setupModal(_selector, {

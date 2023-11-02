@@ -23,7 +23,8 @@
     "welldone-wallet",
     "finer-wallet",
     "ramper-wallet",
-    "near-mobile-wallet"
+    "near-mobile-wallet",
+    "mintbase-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -65,6 +66,7 @@
     "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "build:ramper-wallet": "nx run-many --target=build --projects=ramper-wallet --configuration=production",
     "build:near-mobile-wallet": "nx run-many --target=build --projects=near-mobile-wallet --configuration=production",
+    "build:mintbase-wallet": "nx run-many --target=build --projects=mintbase-wallet --configuration=production",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "serve:react": "nx serve react --host=0.0.0.0",
@@ -89,6 +91,7 @@
     "@ledgerhq/hw-transport-webhid": "6.27.1",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^0.8.0",
+    "@mintbase-js/wallet": "0.5.0-beta.0",
     "@near-snap/sdk": "^0.6.0",
     "@nightlylabs/connect-near": "0.0.15",
     "@peersyst/near-mobile-signer": "1.0.7",
