@@ -21,7 +21,6 @@ import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { Loading } from "../components/Loading";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -69,7 +68,6 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupOptoWallet(),
         setupRamperWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
