@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "sender",
+  displayName: "bitget-wallet",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -10,5 +10,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/sender",
+  coverageDirectory: "../../coverage/packages/bitget-wallet",
 };

@@ -1,28 +1,28 @@
 {
-  "name": "sender",
+  "name": "bitget-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/sender/src",
+  "sourceRoot": "packages/bitget-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/sender",
-        "tsConfig": "packages/sender/tsconfig.lib.json",
-        "project": "packages/sender/package.json",
-        "entryFile": "packages/sender/src/index.ts",
+        "outputPath": "dist/packages/bitget-wallet",
+        "tsConfig": "packages/bitget-wallet/tsconfig.lib.json",
+        "project": "packages/bitget-wallet/package.json",
+        "entryFile": "packages/bitget-wallet/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "cjs"],
         "assets": [
           {
-            "glob": "packages/sender/README.md",
+            "glob": "packages/bitget-wallet/README.md",
             "input": ".",
             "output": "."
           },
           {
-            "glob": "packages/sender/assets/*",
+            "glob": "packages/bitget-wallet/assets/*",
             "input": ".",
             "output": "assets"
           }
@@ -33,14 +33,14 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/sender/**/*.ts"]
+        "lintFilePatterns": ["packages/bitget-wallet/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/sender"],
+      "outputs": ["{workspaceRoot}/coverage/packages/bitget-wallet"],
       "options": {
-        "jestConfig": "packages/sender/jest.config.ts",
+        "jestConfig": "packages/bitget-wallet/jest.config.ts",
         "passWithNoTests": true
       }
     },

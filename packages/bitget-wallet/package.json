@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/sender",
+  "name": "@near-wallet-selector/bitget-wallet",
   "version": "8.5.3",
-  "description": "Sender wallet package for NEAR Wallet Selector.",
+  "description": "Bitget wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -11,7 +11,7 @@
     "near-blockchain",
     "wallet selector",
     "injected wallet",
-    "sender wallet"
+    "Bitget wallet"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/sender",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitget-wallet",
   "peerDependencies": {
     "near-api-js": "^1.0.0 || ^2.0.0"
   }

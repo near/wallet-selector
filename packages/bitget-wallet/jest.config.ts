@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: "sender",
+  displayName: "bitget-wallet",
   preset: "../../jest.preset.js",
   globals: {},
   transform: {
@@ -12,5 +12,5 @@ export default {
     ],
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/sender",
+  coverageDirectory: "../../coverage/packages/bitget-wallet",
 };
