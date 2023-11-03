@@ -86,9 +86,9 @@ export class WalletSelectorComponent implements OnInit {
         setupRamperWallet(),
         setupNearMobileWallet(),
         setupMintbaseWallet({
-          networkId: "mainnet",
-          walletUrl: "https://wallet.mintbase.xyz",
-          callbackUrl: "https://www.mywebsite.com",
+          networkId: "testnet",
+          walletUrl: "https://testnet.wallet.mintbase.xyz",
+          callbackUrl: "http://localhost:4200",
           deprecated: false,
         }),
       ],
