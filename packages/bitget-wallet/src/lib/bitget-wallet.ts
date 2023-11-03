@@ -197,25 +197,8 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
     async verifyOwner({ message }) {
       logger.log("BitgetWallet:verifyOwner", { message });
-      // const account = _state.wallet.account();
-
-      // if (!account) {
-      //   throw new Error("Wallet not signed in");
-      // }
-
-      // Note: When the wallet is locked, Bitget Wallet returns an empty Signer interface.
-      // Even after unlocking the wallet, the user will need to refresh to gain
-      // access to these methods.
-      // if (!account.connection.signer.signMessage) {
-      //   throw new Error("Wallet is locked");
-      // }
 
       const networkId = options.network.networkId;
-      // const accountId = account.accountId;
-      // const pubKey = await account.connection.signer.getPublicKey(
-      //   accountId,
-      //   networkId
-      // );
       const accountId = await _state.wallet.getAccountId();
       const pubKey = await _state.wallet.getPublicKey();
 
@@ -231,26 +214,12 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       };
       const encoded = JSON.stringify(data);
 
-      // const signed = await account.connection.signer.signMessage(
-      //   new Uint8Array(Buffer.from(encoded)),
-      //   accountId,
-      //   networkId
-      // );
-
       const signed = await _state.wallet.signMessage(
         // new Uint8Array(Buffer.from(encoded)),
         encoded,
         accountId,
         networkId
       );
-      // debugger;
-      // console.log({
-      //   signed: {
-      //     ...data,
-      //     signature: signed.signature,
-      //     keyType: signed.keyType,
-      //   },
-      // });
       return {
         ...data,
         signature: signed.signature,
