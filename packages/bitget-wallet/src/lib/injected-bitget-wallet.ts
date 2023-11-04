@@ -126,9 +126,6 @@ export interface InjectedBitgetWallet {
   isBitKeepChrome: boolean;
   callbacks: Record<keyof BitgetWalletEvents, unknown>;
   getAccountId: () => string | null;
-  // getPublicKey: Promise<string>;
-  getRpc: () => Promise<GetRpcResponse>;
-  account(): Account | null;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;
@@ -139,8 +136,6 @@ export interface InjectedBitgetWallet {
     event: Event,
     callback: BitgetWalletEvents[Event]
   ) => void;
-  // TODO: Determine return type.
-  sendMoney: (params: SendMoneyParams) => Promise<unknown>;
   signAndSendTransaction: (
     params: SignAndSendTransactionParams
   ) => Promise<SignAndSendTransactionResponse>;

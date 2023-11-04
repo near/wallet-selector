@@ -27,7 +27,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 
-// Sender for Wallet Selector can be setup without any params or it can take one optional param.
+// Bitget Wallet for Wallet Selector can be setup without any params or it can take one optional param.
 const bitgetWallet = setupBitgetWallet());
 
 const selector = await setupWalletSelector({
@@ -49,7 +49,7 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import bitgetWalletIconUrl from "@near-wallet-selector/bitget-wallet/assets/bitget-wallet-icon";
 
-const sender = setupSender({
+const bitgetWallet = setupBitgetWallet({
   iconUrl: bitgetWalletIconUrl
 });
 ```

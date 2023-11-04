@@ -3,9 +3,7 @@ import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
   InjectedWallet,
-  Action,
   Transaction,
-  FunctionCallAction,
   Optional,
   Account,
 } from "@near-wallet-selector/core";
@@ -43,7 +41,6 @@ const setupBitgetWalletState = (): BitgetWalletState => {
 
 const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   options,
-  metadata,
   store,
   provider,
   emitter,
@@ -107,21 +104,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
-    // await waitFor(() => !!_state.wallet.account(), { timeout: 100 });
-
-    // const account = _state.wallet.account();
-
-    // When wallet is locked signer is empty an object {}.
-    // if (!account!.connection.signer.getPublicKey) {
-    //   return [{ accountId, publicKey: undefined }];
-    // }
-
-    // debugger
-    const publicKey = await _state.wallet
-      .getPublicKey
-      // account!.accountId,
-      // options.network.networkId
-      ();
+    const publicKey = await _state.wallet.getPublicKey();
 
     return [
       {
@@ -131,32 +114,13 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     ];
   };
 
-  const isValidActions = (
-    actions: Array<Action>
-  ): actions is Array<FunctionCallAction> => {
-    return actions.every((x) => x.type === "FunctionCall");
-  };
-
-  const transformActions = (actions: Array<Action>) => {
-    const validActions = isValidActions(actions);
-
-    if (!validActions) {
-      throw new Error(
-        `Only 'FunctionCall' actions types are supported by ${metadata.name}`
-      );
-    }
-
-    return actions.map((x) => x.params);
-  };
-
   const transformTransactions = (
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
     return transactions.map((transaction) => {
       return {
         receiverId: transaction.receiverId,
-        actions: transformActions(transaction.actions),
-        // actions: transaction.actions,
+        actions: transaction.actions,
       };
     });
   };
@@ -208,14 +172,12 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         accountId,
         message,
         blockId: block.header.hash,
-        // publicKey: Buffer.from(pubKey.data).toString("base64"),
         publicKey: pubKey,
         keyType: "0", // TODO: get keyType from sdk wallet
       };
       const encoded = JSON.stringify(data);
 
       const signed = await _state.wallet.signMessage(
-        // new Uint8Array(Buffer.from(encoded)),
         encoded,
         accountId,
         networkId
@@ -226,9 +188,6 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         keyType: signed.keyType,
       };
     },
-    // async signMessage(message) {
-    //   debugger
-    // },
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -241,7 +200,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return _state.wallet
         .signAndSendTransaction({
           receiverId: receiverId || contract.contractId,
-          actions: transformActions(actions),
+          actions: actions,
         })
         .then((res) => {
           if (res.error) {
@@ -284,14 +243,6 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
-    async importAccountsInSecureContext({ accounts }) {
-      if (window.bitkeep && window.bitkeep.near) {
-        await window.bitkeep.near.batchImport({
-          keystore: accounts,
-          network: options.network.networkId,
-        });
-      }
-    },
   };
 };
 
@@ -310,9 +261,9 @@ export function setupBitgetWallet({
     // browser extension background env.
     // Check for isSignedIn() in only if extension is installed.
     if (installed) {
-      await waitFor(() => !!window.bitkeep?.near?.isSignedIn(), {
-        timeout: 200,
-      }).catch(() => false);
+      await waitFor(() => !!window.bitkeep?.near?.isSignedIn()).catch(
+        () => false
+      );
     }
 
     return {
