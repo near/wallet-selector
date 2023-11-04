@@ -1,4 +1,4 @@
-import type { Account, providers } from "near-api-js";
+import type { providers } from "near-api-js";
 import type { AccountImportData } from "@near-wallet-selector/core";
 
 export interface AccessKey {
@@ -30,13 +30,6 @@ interface RpcInfo {
   wrapNearContract: string;
 }
 
-interface GetRpcResponse {
-  method: "getRpc";
-  notificationId: number;
-  rpc: RpcInfo;
-  type: "bitget-wallet-result";
-}
-
 interface RequestSignInParams {
   contractId: string;
   methodNames?: Array<string>;
@@ -53,11 +46,6 @@ interface RpcChangedResponse {
   nodeUrl: string;
   walletUrl: string;
   wrapNearContract: string;
-}
-
-interface SendMoneyParams {
-  receiverId: string;
-  amount: string;
 }
 
 interface Action {
@@ -122,6 +110,15 @@ export interface batchImportParams {
   network: string;
 }
 
+interface signMessageResponse {
+  accountId: string;
+  message: string;
+  blockId: string;
+  publicKey: string;
+  keyType: "0"; // TODO: get keyType from sdk wallet
+  signature: string;
+}
+
 export interface InjectedBitgetWallet {
   isBitKeepChrome: boolean;
   callbacks: Record<keyof BitgetWalletEvents, unknown>;
@@ -132,6 +129,12 @@ export interface InjectedBitgetWallet {
   signOut: () => Promise<SignOutResponse>;
   isSignedIn: () => boolean;
   remove: (event: string) => void;
+  getPublicKey: () => string;
+  signMessage: (
+    encoded: string,
+    accountId: string | null,
+    networkId: string
+  ) => Promise<signMessageResponse>;
   on: <Event extends keyof BitgetWalletEvents>(
     event: Event,
     callback: BitgetWalletEvents[Event]
