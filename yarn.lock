@@ -5808,10 +5808,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/gh-pages@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-3.2.1.tgz#0c47e024774461fce161570bca309c51d787ef67"
-  integrity sha512-y5ULkwfoOEUa6sp2te+iEODv2S//DRiKmxpeXboXhhv+s758rSSxLUiBd6NnlR7aAY4nw1X4FGovLrSWEXWLow==
+"@types/gh-pages@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-3.2.2.tgz#5b7d9cfe071e78e5a66432e1dc21ae8cb5d2aa0a"
+  integrity sha512-f6H395J9d0hxXprGKgLni/dPlSM9+cq2PZNqqxIiOaxAP8ThVIbUJpm/lqx8y7G66DkPx95l4KHavccgan6Hcg==
 
 "@types/glob@^7.1.1":
   version "7.2.0"
@@ -7672,13 +7672,13 @@ before-after-hook@^2.2.0:
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.2.2.tgz#a6e8ca41028d90ee2c24222f201c90956091613e"
   integrity sha512-3pZEU3NT5BFUo/AD5ERPWOgQOCZITni6iavr5AUw5AUwQjMlI0kzu5btnyD39AF0gUEsDPwJT+oY1ORBJijPjQ==
 
-better-sqlite3@^8.5.2:
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.5.2.tgz#a1c13e4361125255e39302e8b569a6568c3291e3"
-  integrity sha512-w/EZ/jwuZF+/47mAVC2+rhR2X/gwkZ+fd1pbX7Y90D5NRaRzDQcxrHY10t6ijGiYIonCVsBSF5v1cay07bP5sg==
+better-sqlite3@^8.7.0:
+  version "8.7.0"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.7.0.tgz#bcc341856187b1d110a8a47234fa89c48c8ef538"
+  integrity sha512-99jZU4le+f3G6aIl6PmmV0cxUIWqKieHxsiF7G34CVFiE+/UabpYqkU0NJIkY/96mQKikHeBjtR27vFfs5JpEw==
   dependencies:
     bindings "^1.5.0"
-    prebuild-install "^7.1.0"
+    prebuild-install "^7.1.1"
 
 big-integer@^1.6.44:
   version "1.6.51"
@@ -16589,7 +16589,7 @@ postmate@1.5.2:
   resolved "https://registry.yarnpkg.com/postmate/-/postmate-1.5.2.tgz#d59a78b3780023c5d32225fd40633b364958bdb3"
   integrity sha512-EHLlEmrUA/hALls49oBrtE7BzDXXjB9EiO4MZpsoO3R/jRuBmD+2WKQuYAbeuVEpTzrPpUTT79z2cz4qaFgPRg==
 
-prebuild-install@^7.1.0:
+prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
   integrity sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==

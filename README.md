@@ -68,7 +68,6 @@ yarn add \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \
@@ -92,7 +91,6 @@ npm install \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/nightly-connect \
-  @near-wallet-selector/default-wallets \
   @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/opto-wallet \
   @near-wallet-selector/neth \

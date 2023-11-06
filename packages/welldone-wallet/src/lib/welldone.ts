@@ -9,8 +9,14 @@ import type {
   Optional,
   Transaction,
   Account,
+  SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
-import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
+import {
+  isCurrentBrowserSupported,
+  serializeNep413,
+  waitFor,
+} from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
   WalletProvider,
@@ -163,6 +169,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find account for signing");
       }
+
       try {
         const tx = nearAPI.transactions.Transaction.decode(
           Buffer.from(message)
@@ -178,10 +185,9 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
           publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
         };
       } catch (err) {
-        const decoded = new TextDecoder("utf-8").decode(message);
         const signed = await _state.wallet.request("near", {
           method: "dapp:signMessage",
-          params: [decoded],
+          params: ["0x" + Buffer.from(message).toString("hex")],
         });
 
         return {
@@ -293,6 +299,40 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         ...data,
         signature: Buffer.from(signed.signature).toString("base64"),
       };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async signMessage(message: SignMessageParams): Promise<SignedMessage> {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      const account = await _getAccounts();
+      const accountId = account[0];
+
+      if (!accountId) {
+        throw new Error("Failed to find account for signing");
+      }
+
+      const serializedTx = serializeNep413(message);
+      const signed = await _state.wallet.request("near", {
+        method: "dapp:signMessage",
+        params: ["0x" + serializedTx.toString("hex")],
+      });
+
+      const result = {
+        accountId,
+        publicKey: signed[0].publicKey,
+        signature: Buffer.from(signed[0].signature.substr(2), "hex").toString(
+          "base64"
+        ),
+      };
+
+      if (message.state) {
+        return { ...result, state: message.state };
+      }
+
+      return result;
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
