@@ -248,11 +248,20 @@ const Content: React.FC = () => {
       signature: signedMessage.signature,
       callbackUrl: message.callbackUrl,
     });
+
+    if (!verifiedSignature) {
+      alert("Invalid Signature: Failed to verify the signature");
+    }
+
     const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
       publicKey: signedMessage.publicKey,
       accountId: signedMessage.accountId,
       network: selector.options.network,
     });
+
+    if (!verifiedFullKeyBelongsToUser) {
+      alert("Message was not signed with full access key");
+    }
 
     const isMessageVerified = verifiedFullKeyBelongsToUser && verifiedSignature;
 
