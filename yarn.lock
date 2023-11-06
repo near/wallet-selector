@@ -4902,22 +4902,15 @@
     "@parcel/utils" "2.9.3"
     nullthrows "^1.1.1"
 
-"@peersyst/near-mobile-signer@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.7.tgz#d61637b339cac684cbdbd5cc6c029370d87f3d1d"
-  integrity sha512-4F7H0xKJ62VtKJt7vy5mquX55IDuK7Z3H/bEj3NxQXaOtSme82+9oKtfQ39Q3PlIfSOOcYCXApxtmGdIfzmTyw==
+"@peersyst/near-mobile-signer@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.9.tgz#96cedefaef262313f8283f024475003a9cfd5c91"
+  integrity sha512-56gqL9fEWdeOHq0wpYYD44G/IFVCuuCyWndIFmggs3q5RL0/Sq03egDk+HWqHcwQ3mhFWwErmYfvIMkMF+jKWw==
   dependencies:
-    "@peersyst/react-types" "^1.6.1"
     bn.js "^5.2.1"
     js-sha256 "^0.9.0"
     near-api-js "^2.1.1"
     parcel "^2.9.3"
-    qr-code-styling "^1.6.0-rc.1"
-
-"@peersyst/react-types@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@peersyst/react-types/-/react-types-1.6.1.tgz#9368c216cb3fcd2b07dc8f920c5b8288d75186cd"
-  integrity sha512-sc9/8b5JKDiXr+sZo47B8Ky/CkMgQT/f0X94axejVsDP2OJSvQZAOZl3o4aix3tIpULJZ08UaGtOdvM6v6CtUw==
 
 "@phenomnomnominal/tsquery@~5.0.1":
   version "5.0.1"
@@ -16821,13 +16814,6 @@ q@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==
-
-qr-code-styling@^1.6.0-rc.1:
-  version "1.6.0-rc.1"
-  resolved "https://registry.yarnpkg.com/qr-code-styling/-/qr-code-styling-1.6.0-rc.1.tgz#6c89e185fa50cc9135101085c12ae95b06f1b290"
-  integrity sha512-ModRIiW6oUnsP18QzrRYZSc/CFKFKIdj7pUs57AEVH20ajlglRpN3HukjHk0UbNMTlKGuaYl7Gt6/O5Gg2NU2Q==
-  dependencies:
-    qrcode-generator "^1.4.3"
 
 qr.js@0.0.0:
   version "0.0.0"
