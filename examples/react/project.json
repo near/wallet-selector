@@ -59,11 +59,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/nightly-connect/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -75,11 +70,6 @@
           {
             "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/opto-wallet/assets/",
             "output": "assets/"
           },
           {
