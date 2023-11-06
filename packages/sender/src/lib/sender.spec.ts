@@ -67,6 +67,14 @@ const mockSenderOnWindow = () => {
         ),
       })
     ),
+    signMessage: jest.fn().mockResolvedValue({
+      error: undefined,
+      response: {
+        accountId,
+        publicKey: "ed25519:test",
+        signature: "testSignature",
+      },
+    }),
     batchImport: jest.fn(),
   };
 
@@ -168,5 +176,26 @@ describe("importAccountsInSecureContext", () => {
         network: "testnet",
       });
     }
+  });
+});
+
+describe("signMessage", () => {
+  it("sign message", async () => {
+    const { wallet, injectedSender } = await createSenderWallet();
+
+    const message = {
+      message: "test message",
+      nonce: Buffer.from("30990309-30990309-390A303-292090"),
+      recipient: "test.app",
+    };
+
+    const result = await wallet.signMessage!(message);
+
+    expect(injectedSender?.signMessage).toHaveBeenCalled();
+    expect(result).toEqual({
+      accountId,
+      publicKey: "ed25519:test",
+      signature: "testSignature",
+    });
   });
 });
