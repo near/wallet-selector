@@ -1,5 +1,5 @@
 import type { providers } from "near-api-js";
-import type { AccountImportData } from "@near-wallet-selector/core";
+import type { AccountImportData, Action } from "@near-wallet-selector/core";
 
 export interface AccessKey {
   publicKey: {
@@ -17,18 +17,6 @@ interface RequestSignInResponse {
 }
 
 export type SignOutResponse = true | { error: string | { type: string } };
-
-interface RpcInfo {
-  explorerUrl: string;
-  helperUrl: string;
-  index: number;
-  name: string;
-  network: string;
-  networkId: string;
-  nodeUrl: string;
-  walletUrl: string;
-  wrapNearContract: string;
-}
 
 interface RequestSignInParams {
   contractId: string;
@@ -48,18 +36,6 @@ interface RpcChangedResponse {
   wrapNearContract: string;
 }
 
-interface Action {
-  methodName: string;
-  args: object;
-  gas: string;
-  deposit: string;
-}
-
-interface SignAndSendTransactionParams {
-  receiverId: string;
-  actions: Array<Action>;
-}
-
 export interface FunctionCallError {
   error: {
     index: number;
@@ -70,7 +46,6 @@ export interface FunctionCallError {
   };
 }
 
-// Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
 export interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
@@ -87,15 +62,6 @@ interface SignAndSendTransactionsResponse {
   error?: string;
   response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
   type: "bitget-wallet-extensionResult";
-}
-
-interface Transaction {
-  receiverId: string;
-  actions: Array<Action>;
-}
-
-interface RequestSignTransactionsParams {
-  transactions: Array<Transaction>;
 }
 
 export interface BitgetWalletEvents {
@@ -115,8 +81,20 @@ interface signMessageResponse {
   message: string;
   blockId: string;
   publicKey: string;
-  keyType: "0"; // TODO: get keyType from sdk wallet
+  keyType: 0; // TODO: get keyType from sdk wallet
   signature: string;
+}
+
+interface SignAndSendTransactionParams {
+  receiverId: string;
+  actions: Array<Action>;
+}
+
+interface requestSignTransactionsParams {
+  transactions: Array<{
+    receiverId: string;
+    actions: Array<Action>;
+  }>;
 }
 
 export interface InjectedBitgetWallet {
@@ -143,7 +121,7 @@ export interface InjectedBitgetWallet {
     params: SignAndSendTransactionParams
   ) => Promise<SignAndSendTransactionResponse>;
   requestSignTransactions: (
-    params: RequestSignTransactionsParams
+    params: requestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
   batchImport: (params: batchImportParams) => Promise<unknown>;
 }

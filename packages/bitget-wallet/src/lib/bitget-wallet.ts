@@ -162,9 +162,9 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async verifyOwner({ message }) {
       logger.log("BitgetWallet:verifyOwner", { message });
 
-      const networkId = options.network.networkId;
-      const accountId = await _state.wallet.getAccountId();
-      const pubKey = await _state.wallet.getPublicKey();
+      const networkId = options.network.networkId || "";
+      const accountId = (await _state.wallet.getAccountId()) || "";
+      const pubKey = (await _state.wallet.getPublicKey()) || "";
 
       const block = await provider.block({ finality: "final" });
 
@@ -173,7 +173,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         message,
         blockId: block.header.hash,
         publicKey: pubKey,
-        keyType: "0", // TODO: get keyType from sdk wallet
+        keyType: "0",
       };
       const encoded = JSON.stringify(data);
 
