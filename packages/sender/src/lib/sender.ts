@@ -252,8 +252,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     },
 
-    async signMessage(params) {
-      return _state.wallet.signMessage(params).then((res) => {
+    async signMessage(message) {
+      return _state.wallet.signMessage(message).then((res) => {
         if (res.error) {
           throw new Error(res.error);
         }
