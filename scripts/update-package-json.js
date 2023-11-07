@@ -18,7 +18,6 @@ async function updatePackageJSONTypeField(packageName) {
     if (packageJson.types) {
       packageJson.types = fixPath(packageJson.types);
       await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-      console.log(`Updated package.json for ${packageName}`);
     } else {
       console.log(`No 'types' field found in package.json for ${packageName}`);
     }
@@ -35,6 +34,8 @@ async function updateAllPackagesTypeField() {
     for (const packageName of packageNames) {
       await updatePackageJSONTypeField(packageName);
     }
+    console.log(`Successfully updated types path in package.json for all packages`);
+
   } catch (error) {
     console.error('Error reading packages directory:', error);
   }
