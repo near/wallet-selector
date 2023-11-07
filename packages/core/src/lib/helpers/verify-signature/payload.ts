@@ -29,7 +29,7 @@ export const payloadSchema = new Map([
       fields: [
         ["tag", "u32"],
         ["message", "string"],
-        ["nonce", [32]],
+        ["nonce", ["u8"]],
         ["recipient", "string"],
         [
           "callbackUrl",
