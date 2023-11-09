@@ -29,9 +29,6 @@
       "@near-wallet-selector/core": [
         "packages/core/src/index.ts"
       ],
-      "@near-wallet-selector/default-wallets": [
-        "packages/default-wallets/src/index.ts"
-      ],
       "@near-wallet-selector/finer-wallet": [
         "packages/finer-wallet/src/index.ts"
       ],

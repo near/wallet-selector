@@ -27,6 +27,3 @@ npm publish dist/packages/xdefi --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-snap --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/ramper-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-mobile-wallet --tag "${TAG}" --otp "${OTP}"
-
-# Commented script for default wallets to avoid publishing new versions since the package is now deprecated.
-#npm publish dist/packages/default-wallets --tag "${TAG}" --otp "${OTP}"
