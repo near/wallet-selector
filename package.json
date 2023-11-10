@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "8.7.1",
+  "version": "8.7.2",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -60,7 +60,6 @@
     "build:finer-wallet": "nx run-many --target=build --projects=finer-wallet --configuration=production",
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
-    "build:default-wallets": "nx run-many --target=build --projects=default-wallets --configuration=production",
     "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
     "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "build:ramper-wallet": "nx run-many --target=build --projects=ramper-wallet --configuration=production",
@@ -93,8 +92,8 @@
     "@nightlylabs/connect-near": "0.0.15",
     "@peersyst/near-mobile-signer": "1.0.9",
     "@ramper/near": "^0.0.30",
-    "@walletconnect/modal": "^2.6.0",
-    "@walletconnect/sign-client": "2.9.1",
+    "@walletconnect/modal": "^2.6.2",
+    "@walletconnect/sign-client": "2.10.4",
     "better-sqlite3": "^9.0.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
