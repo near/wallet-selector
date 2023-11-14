@@ -1,4 +1,5 @@
 import React from "react";
+import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
@@ -9,22 +10,23 @@ import { ExportSelector } from "./components/ExportSelector";
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";
 
 let importModalInstance: WalletSelectorModal | null = null;
+let root: Root | null = null;
 
 export const setupExportSelectorModal = (
   selector: WalletSelector,
   options: ExportSelectorOptions
 ): WalletSelectorModal => {
-  const el = document.createElement("div");
-  el.id = MODAL_ELEMENT_ID;
-  if (!document.getElementById(MODAL_ELEMENT_ID)) {
-    document.body.appendChild(el);
+  if (!root) {
+    const body = document.body;
+    const container = document.createElement("div");
+    container.id = MODAL_ELEMENT_ID;
+    body.appendChild(container);
+
+    root = createRoot(container);
   }
 
-  const container = document.getElementById(MODAL_ELEMENT_ID);
-  const root = createRoot(container!);
-
   const render = (visible: boolean) => {
-    root.render(
+    root!.render(
       <ExportSelector
         selector={selector}
         options={options}

@@ -18,11 +18,9 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
 import { Loading } from "../components/Loading";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
@@ -70,7 +68,6 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
-        setupOptoWallet(),
         setupRamperWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
@@ -79,15 +76,6 @@ export const ExportAccountSelectorContextProvider: React.FC<{
             description: "Example dApp used by NEAR Wallet Selector",
             url: "https://github.com/near/wallet-selector",
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
-          },
-        }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
           },
         }),
         setupNearMobileWallet(),
