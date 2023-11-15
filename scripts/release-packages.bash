@@ -28,3 +28,4 @@ npm publish dist/packages/near-snap --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/ramper-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-mobile-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/mintbase-wallet --tag "${TAG}" --otp "${OTP}"
+

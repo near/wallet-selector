@@ -69,13 +69,16 @@ Since `main` is the default branch of this project in case of regular release it
 Criteria for Including New Wallets for Wallet Selector
 # Wallet Product Criteria:
 
-A wallet project must have comply the following product criteria to listed on Wallet Selector.
+A wallet project must implement and comply with the following product criteria to be listed on the Wallet Selector:
 
-1. Non-custodial: The user controls their fund.
-2. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards. (Injected Wallet https://github.com/near/NEPs/pull/408 and  Bridged Wallet https://github.com/near/NEPs/pull/368)
-3. Ease of use: The wallet product provides a usable interface for the end users. Please provide a user guide.
-4. Ability to recover accounts: The wallet product allows users to be able to recover accounts.
-5. Actively maintained: The wallet is actively maintained by a team and can provide user support.
+1. Custody of account must be fully disclosed. In the case of 3rd party identity services, the wallet's onboarding information must include the use of custodial identity services.
+2. Encryption passwords per session are allowed. You must inform the user that a) the password prompt is to encrypt local data and b) that the password expires at the end of the session.
+3. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards;
+   * Injected Wallet Standards - https://github.com/near/NEPs/pull/408
+   * Bridged Wallet Standards - https://github.com/near/NEPs/pull/368
+5. Ease of use: The wallet product provides a usable interface for the end users. Please provide a user guide.
+6. Ability to recover accounts: The wallet product allows users to be able to recover accounts.
+7. Actively maintained: The wallet is actively maintained by a team and can provide user support.
 
 # Wallet Security Criteria:
 
