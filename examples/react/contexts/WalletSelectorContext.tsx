@@ -96,12 +96,7 @@ export const WalletSelectorContextProvider: React.FC<{
           },
         }),
         setupNearMobileWallet(),
-        setupMintbaseWallet({
-          networkId: "testnet",
-          walletUrl: "https://testnet.wallet.mintbase.xyz",
-          callbackUrl: "http://localhost:4200",
-          deprecated: false,
-        }),
+        setupMintbaseWallet(),
       ],
     });
     const _modal = setupModal(_selector, {

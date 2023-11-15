@@ -70,12 +70,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupCoin98Wallet(),
         setupNearFi(),
         setupRamperWallet(),
-        setupMintbaseWallet({
-          networkId: "testnet",
-          walletUrl: "https://testnet.wallet.mintbase.xyz",
-          callbackUrl: "http://localhost:4200",
-          deprecated: false,
-        }),
+        setupMintbaseWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
