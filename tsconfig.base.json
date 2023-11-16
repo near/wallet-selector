@@ -92,6 +92,9 @@
       "@near-wallet-selector/near-mobile-wallet": [
         "packages/near-mobile-wallet/src/index.ts"
       ],
+       "@near-wallet-selector/mintbase-wallet": [
+        "packages/mintbase-wallet/src/index.ts"
+      ],
       "crypto": [
         "node_modules/crypto-browserify"
       ],

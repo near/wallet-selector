@@ -20,6 +20,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
 - [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
+- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
 
 ## Preview
 
@@ -69,7 +70,8 @@ yarn add \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
-  @near-wallet-selector/near-mobile-wallet
+  @near-wallet-selector/near-mobile-wallet  \
+  @near-wallet-selector/mintbase-wallet
 
 # Using NPM.
 npm install \
@@ -90,7 +92,8 @@ npm install \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
-  @near-wallet-selector/near-mobile-wallet
+  @near-wallet-selector/near-mobile-wallet \
+  @near-wallet-selector/mintbase-wallet
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -127,6 +130,7 @@ import { setupNeth } from "@near-wallet-selector/neth";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"; 
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet"; 
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -165,6 +169,12 @@ const selector = await setupWalletSelector({
       },
     }),
     setupNearMobileWallet(),
+    setupMintbaseWallet({
+          networkId: "mainnet",
+          walletUrl: "https://wallet.mintbase.xyz",
+          callbackUrl: "https://www.mywebsite.com",
+          deprecated: false,
+      }),
   ],
 });
 
