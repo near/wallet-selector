@@ -4,6 +4,7 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
@@ -58,6 +59,7 @@ export class WalletSelectorExportComponent implements OnInit {
         setupLedger(),
         setupNearWallet(),
         setupSender(),
+        setupBitgetWallet(),
         setupXDEFI(),
         setupMathWallet(),
         setupNightly(),
