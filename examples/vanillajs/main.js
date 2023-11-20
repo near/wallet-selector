@@ -12,4 +12,8 @@ const modal = setupModal(selector, {
   contractId: "test.testnet",
 });
 
-modal.show();
+window.selector = selector;
+window.modal = modal;
+
+document.getElementById('open-walletselector-button').addEventListener('click', () => modal.show());
+
