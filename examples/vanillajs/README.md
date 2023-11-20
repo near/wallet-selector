@@ -8,7 +8,7 @@ JSPM can also be used for creating a single file production bundle if needed.
 
 ## Creating the import map
 
-There's a yarn script for creating the importmap:
+This is only needed if imports of external scripts are changed. There's a yarn script for creating the importmap:
 
 `yarn examples:vanillajs:generateimportmap`
 
@@ -16,5 +16,5 @@ There's a yarn script for creating the importmap:
 
 [http-server](https://github.com/http-party/http-server) is used for serving the static files if you run:
 
-`yarn examples:vanillajs:serve`
+`yarn serve:vanillajs`
 
