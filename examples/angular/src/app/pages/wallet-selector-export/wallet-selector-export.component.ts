@@ -22,6 +22,7 @@ import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 
 declare global {
   interface Window {
@@ -81,6 +82,7 @@ export class WalletSelectorExportComponent implements OnInit {
         }),
         setupRamperWallet(),
         setupNearMobileWallet(),
+        setupMintbaseWallet(),
       ],
     });
     /**

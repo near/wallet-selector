@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/math-wallet",
+  "name": "@near-wallet-selector/mintbase-wallet",
   "version": "8.8.0",
-  "description": "Math wallet package for NEAR Wallet Selector.",
+  "description": "Mintbase wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -10,8 +10,8 @@
     "near-protocol",
     "near-blockchain",
     "wallet selector",
-    "injected wallet",
-    "math wallet"
+    "browser wallet",
+    "mintbase wallet"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/math-wallet",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/mintbase-wallet",
   "peerDependencies": {
     "near-api-js": "^1.0.0 || ^2.0.0"
   }
