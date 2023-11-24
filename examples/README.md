@@ -9,6 +9,8 @@ This folder contains two example projects that demonstrate how to integrate Near
 
 - **`react/`**: React Example
   - A React example project demonstrating the integration of the Near Wallet Selector.
+- **`vanillajs/`**: Vanillajs Example
+  - A Vanillajs example project demonstrating the integration of the Near Wallet Selector.
 
 ## Getting Started
 
