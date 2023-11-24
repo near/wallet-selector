@@ -252,6 +252,20 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     },
 
+    async signMessage(message) {
+      return _state.wallet.signMessage(message).then((res) => {
+        if (res.error) {
+          throw new Error(res.error);
+        }
+
+        if (!res?.response) {
+          throw new Error("Invalid response");
+        }
+
+        return res.response;
+      });
+    },
+
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
