@@ -6,13 +6,14 @@ import type {
 import { NearSnap, NearSnapAccount } from "@near-snap/sdk";
 import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 
+export const snap = new NearSnap();
+
 export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
   config
 ) => {
   const { store, logger, options } = config;
   const network = options.network.networkId as NetworkId;
 
-  const snap = new NearSnap();
   let account = await NearSnapAccount.restore({ network, snap });
 
   return {

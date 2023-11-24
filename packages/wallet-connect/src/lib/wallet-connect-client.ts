@@ -7,10 +7,6 @@ import type {
   WalletEvents,
 } from "@near-wallet-selector/core";
 
-// NEAR supported WalletIds from WalletConnect Explorer.
-const OPTO_WALLET =
-  "9504a1c1a86cc0702b2d3e47049e1389b373fb2ff22de3208c748d62912433a4";
-
 class WalletConnectClient {
   private client: Client;
   private emitter: EventEmitterService<WalletEvents>;
@@ -55,7 +51,6 @@ class WalletConnectClient {
       projectId,
       chains: [chainId],
       explorerExcludedWalletIds: "ALL",
-      explorerRecommendedWalletIds: [OPTO_WALLET],
     });
 
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
