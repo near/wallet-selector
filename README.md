@@ -18,6 +18,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
+- [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Browser wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
 - [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
@@ -54,6 +55,7 @@ Next, you'll need to install the wallets you want to support:
 # Using Yarn
 yarn add \
   @near-wallet-selector/near-wallet \
+  @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
@@ -76,6 +78,7 @@ yarn add \
 # Using NPM.
 npm install \
   @near-wallet-selector/near-wallet \
+  @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
@@ -111,6 +114,7 @@ Then in your dApp:
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
@@ -136,6 +140,7 @@ const selector = await setupWalletSelector({
   network: "testnet",
   modules: [
     setupNearWallet(),
+    setupBitgetWallet(),
     setupMyNearWallet(),
     setupSender(),
     setupHereWallet(),
