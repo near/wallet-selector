@@ -9,7 +9,7 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         networkId,
         nodeUrl: "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
-        explorerUrl: "https://explorer.near.org",
+        explorerUrl: "https://nearblocks.io",
         indexerUrl: "https://api.kitwallet.app",
       };
     case "testnet":
@@ -17,7 +17,7 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
         networkId,
         nodeUrl: "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
-        explorerUrl: "https://explorer.testnet.near.org",
+        explorerUrl: "https://testnet.nearblocks.io",
         indexerUrl: "https://testnet-api.kitwallet.app",
       };
     default:

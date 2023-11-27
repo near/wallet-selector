@@ -14,6 +14,7 @@ import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
@@ -62,6 +63,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupLedger(),
         setupNearWallet(),
         setupSender(),
+        setupBitgetWallet(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
