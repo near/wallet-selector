@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/coin98-wallet",
-  "version": "8.8.0",
+  "version": "8.9.0",
   "description": "Coin 98 wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
