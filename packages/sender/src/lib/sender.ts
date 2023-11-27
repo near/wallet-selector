@@ -9,7 +9,7 @@ import type {
   Optional,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { verifyMessageNEP413, waitFor } from "@near-wallet-selector/core";
 import type { InjectedSender } from "./injected-sender";
 import icon from "./icon";
 
@@ -105,8 +105,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     // Add extra wait to ensure Sender's sign in status is read from the
     // browser extension background env.
     // Check for isSignedIn() in only if selectedWalletId is set.
-    const { selectedWalletId } = store.getState();
-    if (selectedWalletId) {
+    const { selectedWalletId, signedInMessageAccount } = store.getState();
+    if (selectedWalletId && !signedInMessageAccount) {
       await waitFor(() => !!_state.wallet?.isSignedIn(), {
         timeout: 1000,
       }).catch();
@@ -114,30 +114,34 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
     const accountId = _state.wallet.getAccountId();
 
-    if (!accountId) {
-      return [];
+    if (accountId) {
+      await waitFor(() => !!_state.wallet.account(), { timeout: 100 });
+
+      const account = _state.wallet.account();
+
+      // When wallet is locked signer is empty an object {}.
+      if (!account!.connection.signer.getPublicKey) {
+        return [{ accountId, publicKey: undefined }];
+      }
+
+      const publicKey = await account!.connection.signer.getPublicKey(
+        account!.accountId,
+        options.network.networkId
+      );
+
+      return [
+        {
+          accountId,
+          publicKey: publicKey ? publicKey.toString() : undefined,
+        },
+      ];
     }
 
-    await waitFor(() => !!_state.wallet.account(), { timeout: 100 });
-
-    const account = _state.wallet.account();
-
-    // When wallet is locked signer is empty an object {}.
-    if (!account!.connection.signer.getPublicKey) {
-      return [{ accountId, publicKey: undefined }];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
     }
 
-    const publicKey = await account!.connection.signer.getPublicKey(
-      account!.accountId,
-      options.network.networkId
-    );
-
-    return [
-      {
-        accountId,
-        publicKey: publicKey ? publicKey.toString() : undefined,
-      },
-    ];
+    return [];
   };
 
   const isValidActions = (
@@ -175,12 +179,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn({ contractId, methodNames }) {
-      const existingAccounts = await getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       const { accessKey, error } = await _state.wallet.requestSignIn({
         contractId,
         methodNames,
@@ -264,6 +262,28 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
         return res.response;
       });
+    },
+
+    async signInMessage(message) {
+      const response = await _state.wallet.signMessage(message);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      if (!response?.response) {
+        throw new Error("Invalid response");
+      }
+
+      const isMessageVerified = await verifyMessageNEP413(
+        message,
+        response.response,
+        options.network
+      );
+
+      if (!isMessageVerified) {
+        throw new Error(`Failed to verify the message`);
+      }
+      return response.response;
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
