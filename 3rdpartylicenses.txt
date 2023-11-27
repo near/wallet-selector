@@ -2060,6 +2060,8 @@ DEALINGS IN THE SOFTWARE.
 
 @near-wallet-selector/account-export
 
+@near-wallet-selector/bitget-wallet
+
 @near-wallet-selector/coin98-wallet
 
 @near-wallet-selector/core
