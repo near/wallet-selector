@@ -10,7 +10,6 @@ updates:
       - dependency-name: "@jscutlery/semver"
       - dependency-name: "@ledgerhq/hw*"
       - dependency-name: "@meteorwallet/sdk"
-      - dependency-name: "@nightlylabs/connect-near"
       - dependency-name: "@walletconnect/qrcode-modal"
       - dependency-name: "@walletconnect/sign-client"
       - dependency-name: "better-sqlite3"
