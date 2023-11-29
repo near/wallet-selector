@@ -18,7 +18,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
-- [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Browser wallet.
+- [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Injected wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
 - [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
