@@ -164,15 +164,6 @@ const selector = await setupWalletSelector({
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
       },
     }),
-    setupNightlyConnect({
-      url: "wss://relay.nightly.app/app",
-      appMetadata: {
-        additionalInfo: "",
-        application: "NEAR Wallet Selector",
-        description: "Example dApp used by NEAR Wallet Selector",
-        icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-      },
-    }),
     setupNearMobileWallet(),
     setupMintbaseWallet({
           networkId: "mainnet",
