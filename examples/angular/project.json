@@ -81,11 +81,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/finer-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/here-wallet/assets/",
             "output": "assets/"
           },

@@ -15,7 +15,6 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
@@ -72,7 +71,6 @@ export class WalletSelectorExportComponent implements OnInit {
         setupNeth({
           bundle: false,
         }),
-        setupFinerWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
