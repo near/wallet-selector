@@ -16232,10 +16232,10 @@ next@13.3.0:
     "@next/swc-win32-ia32-msvc" "13.3.0"
     "@next/swc-win32-x64-msvc" "13.3.0"
 
-ngx-deploy-npm@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-7.0.1.tgz#de6d3864d4ddf9db6c2641b4f948f8cd7acb4c43"
-  integrity sha512-YQmYx8ZxnhsGdpLMocIsmvVdV/bnsPNNOZALjJxNyfYomLpJ+OIlMPCVUM3QWA7Lxw8P9GZ+yITeavoBInEkBA==
+ngx-deploy-npm@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-deploy-npm/-/ngx-deploy-npm-7.1.0.tgz#a3eb9f40f892cd5a9ce4a27abcc72520fde9d0dc"
+  integrity sha512-zUv/C9giRVrhmOu3dIG3tjjN+1/bOV5xQzPGgXBZL74M5dgZo+/Dui1JxrVCZH9m8QogR4Zg+0Xq6FeXo2xKrg==
 
 nice-napi@^1.0.2:
   version "1.0.2"
