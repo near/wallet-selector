@@ -16,7 +16,6 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -86,7 +85,6 @@ export const WalletSelectorContextProvider: React.FC<{
           gas: "300000000000000",
           bundle: false,
         }),
-        setupFinerWallet(),
         setupXDEFI(),
         setupWalletConnect({
           projectId: "c4f79cc...",
