@@ -10,6 +10,7 @@ import type {
 class WalletConnectClient {
   private client: Client;
   private emitter: EventEmitterService<WalletEvents>;
+  private modal: WalletConnectModal;
 
   async init(opts: SignClientTypes.Options) {
     this.client = await Client.init(opts);
@@ -47,11 +48,13 @@ class WalletConnectClient {
     projectId: string,
     chainId: string
   ) {
-    const walletConnectModal = new WalletConnectModal({
-      projectId,
-      chains: [chainId],
-      explorerExcludedWalletIds: "ALL",
-    });
+    if (!this.modal) {
+      this.modal = new WalletConnectModal({
+        projectId,
+        chains: [chainId],
+        explorerExcludedWalletIds: "ALL",
+      });
+    }
 
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
       this.client
@@ -59,11 +62,11 @@ class WalletConnectClient {
         .then(({ uri, approval }) => {
           if (uri) {
             if (qrCodeModal) {
-              walletConnectModal.openModal({
+              this.modal.openModal({
                 uri,
                 standaloneChains: [chainId],
               });
-              walletConnectModal.subscribeModal(({ open }) => {
+              this.modal.subscribeModal(({ open }) => {
                 if (!open) {
                   reject(new Error("User cancelled pairing"));
                 }
@@ -76,7 +79,7 @@ class WalletConnectClient {
           approval()
             .then(resolve)
             .catch(reject)
-            .finally(() => walletConnectModal.closeModal());
+            .finally(() => this.modal.closeModal());
         })
         .catch(reject);
     });
