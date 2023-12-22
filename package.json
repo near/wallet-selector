@@ -127,7 +127,7 @@
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "url": "^0.11.0",
-    "zone.js": "0.12.0"
+    "zone.js": "0.14.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "15.2.8",
