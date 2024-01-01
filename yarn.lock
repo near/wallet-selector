@@ -6349,10 +6349,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/gh-pages@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-5.0.0.tgz#856b71ad52d5b18c5fa6deb7bdc4dabbb1c8d0bb"
-  integrity sha512-pVBH6O7Ypty4u8BDLUtWIId/2VbVHnJCcee5tnDt/Jw5bTOdSsxGeCGC6owHrmYcBBPQY3vC8nSg35YG9SHD5g==
+"@types/gh-pages@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@types/gh-pages/-/gh-pages-6.1.0.tgz#63c33b489f3a7618b136897ffb007076b47fe0b7"
+  integrity sha512-Ma9bmKkE+WUtywENLC1rSLXTW66cJHJMWX2RQrJTMKhYM8o+73bRJ1ebfo3RWXUcG+HW3khky2nhVaN7nCsa3Q==
 
 "@types/glob@^7.1.1":
   version "7.2.0"
@@ -12244,10 +12244,10 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-gh-pages@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/gh-pages/-/gh-pages-6.1.0.tgz#e842426edf8bc19f1209ac6ba7af10cda35383ea"
-  integrity sha512-MdXigvqN3I66Y+tAZsQJMzpBWQOI1snD6BYuECmP+GEdryYMMOQvzn4AConk/+qNg/XIuQhB1xNGrl3Rmj1iow==
+gh-pages@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/gh-pages/-/gh-pages-6.1.1.tgz#e80af927a081cb480657fde5a0b87ea2e77d6c74"
+  integrity sha512-upnohfjBwN5hBP9w2dPE7HO5JJTHzSGMV1JrLrHvNuqmjoYHg6TBrCcnEoorjG/e0ejbuvnwyKMdTyM40PEByw==
   dependencies:
     async "^3.2.4"
     commander "^11.0.0"
