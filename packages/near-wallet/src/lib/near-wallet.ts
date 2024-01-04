@@ -27,7 +27,7 @@ const resolveWalletUrl = (network: Network, walletUrl?: string) => {
 export function setupNearWallet({
   walletUrl,
   iconUrl = icon,
-  deprecated = false,
+  deprecated = true,
   successUrl = "",
   failureUrl = "",
 }: NearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
