@@ -3455,10 +3455,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-2.0.0.tgz#4bc2795e5e6f7d8b84b2e845058d2f222c99917d"
   integrity sha512-sFpN+TX13E9fdBDh9lvQeZdJn4qYoRb/6QF2oZZK/Pn559IhCFacPMU1rMuqyXoFQF3JSJfii2l98B87QDPeCQ==
 
-"@meteorwallet/sdk@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-1.0.5.tgz#1a878bc1357b8818cc3240a44709a6fe9971c3e1"
-  integrity sha512-2HT3F6O8lMvj1STD/ir09R43jPLlRVFPoR8dD+qsASUe73ZJumX8r3Uef4g9waAjKZza5B7wmi4XpamFaKrlkg==
+"@meteorwallet/sdk@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-1.0.9.tgz#d10d41ca81a81673379ba43a9ddf2d23b1b4503a"
+  integrity sha512-frJM+rwmx18MCVsfHn0O8oaJfB41BqaXW6cyhZ3EtMw3b87DUJyfSuJi9K0HQl7oGG0+wvMZOKRBVVcMiZzoDg==
   dependencies:
     borsh "^0.7.0"
     nanoid "3.3.6"
