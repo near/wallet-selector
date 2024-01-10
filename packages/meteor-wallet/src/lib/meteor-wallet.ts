@@ -85,7 +85,15 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         });
       }
 
-      return getAccounts();
+      const accounts = await getAccounts();
+
+      logger.log("MeteorWallet:signIn", {
+        contractId,
+        methodNames,
+        account: accounts[0],
+      });
+
+      return accounts;
     },
 
     async signOut() {
