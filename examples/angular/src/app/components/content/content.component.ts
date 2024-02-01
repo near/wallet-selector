@@ -26,6 +26,7 @@ import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
 import type { GetAccountBalanceProps } from "../../interfaces/account-balance";
 import BN from "bn.js";
+import { randomBytes } from "crypto";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -237,7 +238,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   async onSignMessage() {
     const wallet = await this.selector.wallet();
     const message = "test message to sign";
-    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const nonce = randomBytes(32);
     const recipient = "guest-book.testnet";
 
     if (wallet.type === "browser") {
