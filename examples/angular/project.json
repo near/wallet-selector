@@ -21,11 +21,6 @@
           "examples/angular/src/assets",
           {
             "glob": "**/*",
-            "input": "packages/near-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/my-near-wallet/assets/",
             "output": "assets/"
           },

@@ -59,9 +59,6 @@
       "@near-wallet-selector/near-snap": [
         "packages/near-snap/src/index.ts"
       ],
-      "@near-wallet-selector/near-wallet": [
-        "packages/near-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/nearfi": [
         "packages/nearfi/src/index.ts"
       ],

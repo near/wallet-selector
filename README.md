@@ -2,7 +2,6 @@
 
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
-- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
@@ -54,7 +53,6 @@ Next, you'll need to install the wallets you want to support:
 ```bash
 # Using Yarn
 yarn add \
-  @near-wallet-selector/near-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -77,7 +75,6 @@ yarn add \
 
 # Using NPM.
 npm install \
-  @near-wallet-selector/near-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -115,7 +112,6 @@ Then in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
@@ -139,7 +135,6 @@ import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 const selector = await setupWalletSelector({
   network: "testnet",
   modules: [
-    setupNearWallet(),
     setupBitgetWallet(),
     setupMyNearWallet(),
     setupSender(),
