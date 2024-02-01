@@ -19,11 +19,11 @@ Then use it in your wallet:
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [setupNearWallet()],
+  modules: [setupMyNearWallet()],
 });
 
 const modal = setupExportSelectorModal(selector, {
