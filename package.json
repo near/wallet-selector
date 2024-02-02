@@ -105,7 +105,6 @@
     "buffer": "^6.0.3",
     "copy-to-clipboard": "^3.3.3",
     "core-js": "^3.6.5",
-    "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "ethers": "^5.7.2",
     "https-browserify": "^1.0.0",
