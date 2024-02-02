@@ -2086,8 +2086,6 @@ DEALINGS IN THE SOFTWARE.
 
 @near-wallet-selector/near-snap
 
-@near-wallet-selector/near-wallet
-
 @near-wallet-selector/nearfi
 
 @near-wallet-selector/neth
