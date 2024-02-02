@@ -19,7 +19,6 @@ import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import { randomBytes } from "crypto";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
@@ -339,7 +338,7 @@ const Content: React.FC = () => {
     const wallet = await selector.wallet();
 
     const message = "test message to sign";
-    const nonce = randomBytes(32);
+    const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32)));
     const recipient = "guest-book.testnet";
 
     if (wallet.type === "browser") {
