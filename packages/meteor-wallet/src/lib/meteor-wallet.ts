@@ -2,8 +2,6 @@ import type {
   Account,
   InjectedWallet,
   Network,
-  Optional,
-  Transaction,
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
@@ -16,7 +14,6 @@ import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
-import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
 const setupWalletState = async (
@@ -68,45 +65,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     ];
   };
 
-  const transformTransactions = async (
-    transactions: Array<Optional<Transaction, "signerId">>
-  ) => {
-    const account = _state.wallet.account()!;
-    const { networkId, signer, provider } = account.connection;
-
-    const localKey = await signer.getPublicKey(account.accountId, networkId);
-
-    return Promise.all(
-      transactions.map(async (transaction, index) => {
-        const actions = transaction.actions.map((action) =>
-          createAction(action)
-        );
-        const accessKey = await account.accessKeyForTransaction(
-          transaction.receiverId,
-          actions,
-          localKey
-        );
-
-        if (!accessKey) {
-          throw new Error(
-            `Failed to find matching key for transaction sent to ${transaction.receiverId}`
-          );
-        }
-
-        const block = await provider.block({ finality: "final" });
-
-        return nearAPI.transactions.createTransaction(
-          account.accountId,
-          nearAPI.utils.PublicKey.from(accessKey.public_key),
-          transaction.receiverId,
-          accessKey.access_key.nonce + index + 1,
-          actions,
-          nearAPI.utils.serialize.base_decode(block.header.hash)
-        );
-      })
-    );
-  };
-
   return {
     async signIn({ contractId, methodNames = [] }) {
       logger.log("MeteorWallet:signIn", {
@@ -127,7 +85,15 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         });
       }
 
-      return getAccounts();
+      const accounts = await getAccounts();
+
+      logger.log("MeteorWallet:signIn", {
+        contractId,
+        methodNames,
+        account: accounts[0],
+      });
+
+      return accounts;
     },
 
     async signOut() {
@@ -205,7 +171,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
       return account["signAndSendTransaction_direct"]({
         receiverId: receiverId ?? contract!.contractId,
-        actions: actions.map((action) => createAction(action)),
+        actions,
       });
     },
 
@@ -219,7 +185,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
 
       return _state.wallet.requestSignTransactions({
-        transactions: await transformTransactions(transactions),
+        transactions,
       });
     },
 

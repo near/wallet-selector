@@ -28,9 +28,14 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 
+// Near Snap for Wallet Selector can be setup without any params or it can take few optional params, see options below.
+const nearSnap = setupNearSnap({
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
+});
+
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [setupNearSnap()],
+  modules: [nearSnap],
 });
 ```
 
@@ -52,7 +57,7 @@ Assets such as icons can be found in the `/assets` directory of the package. Bel
 
 ```ts
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
-import SnapIconUrl from "@near-wallet-selector/near-snap/assets/snap-icon.png";
+import SnapIconUrl from "@near-wallet-selector/near-snap/assets/snap-icon.svg";
 
 const snapWallet = setupNearSnap({ 
   iconUrl: SnapIconUrl 

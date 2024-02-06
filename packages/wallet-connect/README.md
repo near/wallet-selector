@@ -36,7 +36,7 @@ const walletConnect = setupWalletConnect({
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
   },
   chainId: "near:testnet",
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png",
+  iconUrl: "https://<Wallet Icon URL Here>",
 });
 
 const selector = await setupWalletSelector({

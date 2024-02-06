@@ -28,9 +28,9 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 
-// Math Wallet for Wallet Selector can be setup without any params or it can take one optional param.
+// Math Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const mathWallet = setupMathWallet({
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 const selector = await setupWalletSelector({

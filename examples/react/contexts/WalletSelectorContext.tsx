@@ -7,21 +7,21 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNightly } from "@near-wallet-selector/nightly";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+
 import type { ReactNode } from "react";
 import React, {
   useCallback,
@@ -67,8 +67,8 @@ export const WalletSelectorContextProvider: React.FC<{
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
+        setupBitgetWallet(),
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
@@ -83,8 +83,6 @@ export const WalletSelectorContextProvider: React.FC<{
           gas: "300000000000000",
           bundle: false,
         }),
-        setupOptoWallet(),
-        setupFinerWallet(),
         setupXDEFI(),
         setupWalletConnect({
           projectId: "c4f79cc...",
@@ -95,15 +93,8 @@ export const WalletSelectorContextProvider: React.FC<{
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
           },
         }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-          },
-        }),
+        setupNearMobileWallet(),
+        setupMintbaseWallet(),
       ],
     });
     const _modal = setupModal(_selector, {

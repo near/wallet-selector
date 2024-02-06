@@ -132,3 +132,34 @@ describe("buildImportAccountsUrl", () => {
     );
   });
 });
+
+describe("signMessage", () => {
+  it("sign message", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    const replace = window.location.replace;
+
+    Object.defineProperty(window, "location", {
+      value: { replace: jest.fn() },
+    });
+
+    const attributes = {
+      message: "test message",
+      nonce: Buffer.from("30990309-30990309-390A303-292090"),
+      recipient: "test.app",
+      callbackUrl: "https://test.app",
+    };
+
+    const result = await wallet.signMessage!(attributes);
+
+    const nonceBase64 = attributes.nonce.toString("base64");
+    const urlParams = `https://testnet.mynearwallet.com/sign-message?message=test+message&nonce=${encodeURIComponent(
+      nonceBase64
+    )}&recipient=test.app&callbackUrl=https%3A%2F%2Ftest.app`;
+
+    expect(result).toBe(undefined);
+    expect(window.location.replace).toHaveBeenCalledWith(urlParams);
+
+    window.location.replace = replace;
+  });
+});

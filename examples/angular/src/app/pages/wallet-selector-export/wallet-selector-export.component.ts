@@ -2,8 +2,8 @@ import type { OnInit } from "@angular/core";
 import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
+import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
@@ -14,15 +14,14 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupOptoWallet } from "@near-wallet-selector/opto-wallet";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNightlyConnect } from "@near-wallet-selector/nightly-connect";
 import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 
 declare global {
   interface Window {
@@ -56,8 +55,8 @@ export class WalletSelectorExportComponent implements OnInit {
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
+        setupBitgetWallet(),
         setupXDEFI(),
         setupMathWallet(),
         setupNightly(),
@@ -70,8 +69,6 @@ export class WalletSelectorExportComponent implements OnInit {
         setupNeth({
           bundle: false,
         }),
-        setupOptoWallet(),
-        setupFinerWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
@@ -81,16 +78,9 @@ export class WalletSelectorExportComponent implements OnInit {
             icons: ["https://avatars.githubusercontent.com/u/37784886"],
           },
         }),
-        setupNightlyConnect({
-          url: "wss://relay.nightly.app/app",
-          appMetadata: {
-            additionalInfo: "",
-            application: "NEAR Wallet Selector",
-            description: "Example dApp used by NEAR Wallet Selector",
-            icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
-          },
-        }),
         setupRamperWallet(),
+        setupNearMobileWallet(),
+        setupMintbaseWallet(),
       ],
     });
     /**

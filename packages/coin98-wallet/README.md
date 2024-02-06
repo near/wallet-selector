@@ -28,9 +28,9 @@ npm install @near-wallet-selector/coin98-wallet
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 
-// Coin98 Wallet for Wallet Selector can be setup without any params or it can take one optional param.
+// Coin98 Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const coin98Wallet = setupCoin98Wallet({
-  iconUrl: "https://<Your Icon URL here>"
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 

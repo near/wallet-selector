@@ -245,7 +245,7 @@ interface BrowserWalletSignInMultiParams extends SignInMultiParams {
 interface BrowserWalletSignAndSendTransactionParams
   extends SignAndSendTransactionParams {
   /**
-   * Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+   * Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
    */
   callbackUrl?: string;
 }
@@ -253,7 +253,7 @@ interface BrowserWalletSignAndSendTransactionParams
 interface BrowserWalletSignAndSendTransactionsParams
   extends SignAndSendTransactionsParams {
   /**
-   * Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+   * Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
    */
   callbackUrl?: string;
 }

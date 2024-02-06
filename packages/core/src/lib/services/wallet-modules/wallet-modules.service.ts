@@ -8,6 +8,7 @@ import type {
   Account,
   InstantLinkWallet,
   SignInMultiParams,
+  SignMessageParams,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -286,6 +287,26 @@ export class WalletModules {
     return emitter;
   }
 
+  private validateSignMessageParams({
+    message,
+    nonce,
+    recipient,
+  }: SignMessageParams) {
+    if (!message || message.trim() === "") {
+      throw new Error("Invalid message. It must be a non-empty string.");
+    }
+
+    if (!Buffer.isBuffer(nonce) || nonce.length !== 32) {
+      throw new Error(
+        "Invalid nonce. It must be a Buffer with a length of 32 bytes."
+      );
+    }
+
+    if (!recipient || recipient.trim() === "") {
+      throw new Error("Invalid recipient. It must be a non-empty string.");
+    }
+  }
+
   private decorateWallet(wallet: Wallet): Wallet {
     const _signIn = wallet.signIn;
     const _signInMulti = wallet.signInMulti;
@@ -339,6 +360,8 @@ export class WalletModules {
           `The signMessage method is not supported by ${wallet.metadata.name}`
         );
       }
+
+      this.validateSignMessageParams(params);
 
       return await _signMessage(params);
     };
