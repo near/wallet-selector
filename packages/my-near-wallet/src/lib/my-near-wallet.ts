@@ -207,7 +207,7 @@ const MyNearWallet: WalletBehaviourFactory<
     const href = new URL(params.walletUrl);
     href.pathname = "sign-message";
     href.searchParams.append("message", message);
-    href.searchParams.append("nonce", nonce.toString());
+    href.searchParams.append("nonce", nonce.toString("base64"));
     href.searchParams.append("recipient", recipient);
     href.searchParams.append("callbackUrl", url);
     if (state) {

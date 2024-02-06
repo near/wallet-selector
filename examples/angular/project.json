@@ -21,11 +21,6 @@
           "examples/angular/src/assets",
           {
             "glob": "**/*",
-            "input": "packages/near-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/my-near-wallet/assets/",
             "output": "assets/"
           },
@@ -77,11 +72,6 @@
           {
             "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/finer-wallet/assets/",
             "output": "assets/"
           },
           {

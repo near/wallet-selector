@@ -14,8 +14,8 @@ Unique identifier of the wallet.
 
 ```ts
 (async () => {
-  const wallet = await selector.wallet("near-wallet");
-  console.log(wallet.id); // "near-wallet"
+  const wallet = await selector.wallet("my-near-wallet");
+  console.log(wallet.id); // "my-near-wallet"
 })();
 ```
 
@@ -97,9 +97,9 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 **Example**
 
 ```ts
-// NEAR Wallet.
+// MyNearWallet.
 (async () => {
-  const wallet = await selector.wallet("near-wallet");
+  const wallet = await selector.wallet("my-near-wallet");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
@@ -223,7 +223,7 @@ Signs the message and verifies the owner. Message is not sent to blockchain.
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
   - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
   - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
-  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
 
 **Returns**
 
@@ -260,7 +260,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 
 - `params` (`object`)
   - `transactions` (`Array<Transaction>`): NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` [here](./transactions.md).
-  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
 
 **Returns**
 

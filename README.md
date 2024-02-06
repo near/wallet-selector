@@ -2,8 +2,9 @@
 
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
-- [NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
+- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
+- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
@@ -14,14 +15,12 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
 - [XDEFI Wallet](https://www.npmjs.com/package/@near-wallet-selector/xdefi) - Injected wallet.
-- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
-- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
+- [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Injected wallet.
+- [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Injected wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
 - [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
-- [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Browser wallet.
-- [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Browser wallet.
-- [Near Mobile Wallet](https://nearmobile.app/) - Mobile Wallet.
-- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
+- [Near Mobile Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-mobile-wallet) - Mobile Wallet.
+- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 
 ## Preview
 
@@ -54,7 +53,6 @@ Next, you'll need to install the wallets you want to support:
 ```bash
 # Using Yarn
 yarn add \
-  @near-wallet-selector/near-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -77,7 +75,6 @@ yarn add \
 
 # Using NPM.
 npm install \
-  @near-wallet-selector/near-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -115,7 +112,6 @@ Then in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
@@ -139,7 +135,6 @@ import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 const selector = await setupWalletSelector({
   network: "testnet",
   modules: [
-    setupNearWallet(),
     setupBitgetWallet(),
     setupMyNearWallet(),
     setupSender(),
@@ -162,15 +157,6 @@ const selector = await setupWalletSelector({
         description: "Example dApp used by NEAR Wallet Selector",
         url: "https://github.com/near/wallet-selector",
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
-      },
-    }),
-    setupNightlyConnect({
-      url: "wss://relay.nightly.app/app",
-      appMetadata: {
-        additionalInfo: "",
-        application: "NEAR Wallet Selector",
-        description: "Example dApp used by NEAR Wallet Selector",
-        icon: "https://near.org/wp-content/uploads/2020/09/cropped-favicon-192x192.png",
       },
     }),
     setupNearMobileWallet(),

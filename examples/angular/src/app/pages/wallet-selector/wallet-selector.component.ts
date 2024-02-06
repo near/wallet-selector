@@ -3,7 +3,6 @@ import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -17,7 +16,6 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
@@ -59,7 +57,6 @@ export class WalletSelectorComponent implements OnInit {
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
         setupBitgetWallet(),
         setupXDEFI(),
@@ -75,7 +72,6 @@ export class WalletSelectorComponent implements OnInit {
         setupNeth({
           bundle: false,
         }),
-        setupFinerWallet(),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
           metadata: {

@@ -2,7 +2,6 @@ import type { OnInit } from "@angular/core";
 import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -15,7 +14,6 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNeth } from "@near-wallet-selector/neth";
-import { setupFinerWallet } from "@near-wallet-selector/finer-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { Component } from "@angular/core";
 import { setupExportSelectorModal } from "@near-wallet-selector/account-export";
@@ -57,7 +55,6 @@ export class WalletSelectorExportComponent implements OnInit {
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
         setupBitgetWallet(),
         setupXDEFI(),
@@ -72,7 +69,6 @@ export class WalletSelectorExportComponent implements OnInit {
         setupNeth({
           bundle: false,
         }),
-        setupFinerWallet(),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
