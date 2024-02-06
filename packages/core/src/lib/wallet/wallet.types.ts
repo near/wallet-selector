@@ -113,9 +113,9 @@ interface SignAndSendTransactionParams {
    */
   signerId?: string;
   /**
-   * Account ID to receive the transaction. Defaults to `contractId` defined in `init`.
+   * Account ID to receive the transaction.
    */
-  receiverId?: string;
+  receiverId: string;
   /**
    * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
    */
@@ -191,10 +191,8 @@ type BaseWallet<
 
 export type WalletEvents = {
   signedIn: {
-    contractId: string;
-    methodNames: Array<string>;
     accounts: Array<Account>;
-    contracts: MultiContractState | null;
+    contracts: MultiContractState;
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };

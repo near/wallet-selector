@@ -89,9 +89,8 @@ export class WalletModules {
       PENDING_CONTRACT
     );
 
-    const pendingContracts = await jsonStorage.getItem<MultiContractState>(
-      PENDING_CONTRACTS
-    );
+    const pendingContracts =
+      (await jsonStorage.getItem<MultiContractState>(PENDING_CONTRACTS)) || [];
 
     if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
@@ -119,7 +118,6 @@ export class WalletModules {
 
         return {
           accounts,
-          contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
           contracts: pendingContracts,
@@ -127,7 +125,7 @@ export class WalletModules {
       }
     }
 
-    const { contract, selectedWalletId, contracts } = this.store.getState();
+    const { selectedWalletId, contracts } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
     const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
@@ -137,16 +135,14 @@ export class WalletModules {
     if (!accounts.length) {
       return {
         accounts: [],
-        contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
-        contracts: null,
+        contracts: [],
       };
     }
 
     return {
       accounts,
-      contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
       contracts,
@@ -190,11 +186,10 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames, contracts }: WalletEvents["signedIn"]
+    { accounts, contracts }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-    const contract = { contractId, methodNames };
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
@@ -202,14 +197,10 @@ export class WalletModules {
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
-
-        if (contracts) {
-          await jsonStorage.setItem<MultiContractState>(
-            PENDING_CONTRACTS,
-            contracts
-          );
-        }
+        await jsonStorage.setItem<MultiContractState>(
+          PENDING_CONTRACTS,
+          contracts
+        );
       }
 
       return;
@@ -227,7 +218,6 @@ export class WalletModules {
       type: "WALLET_CONNECTED",
       payload: {
         walletId,
-        contract,
         accounts,
         recentlySignedInWallets,
         contracts,
@@ -236,8 +226,6 @@ export class WalletModules {
 
     this.emitter.emit("signedIn", {
       walletId,
-      contractId,
-      methodNames,
       accounts,
       contracts,
     });
@@ -319,9 +307,7 @@ export class WalletModules {
       const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId,
-        methodNames,
-        contracts: null,
+        contracts: [{ contractId, methodNames }],
       });
 
       return accounts;
@@ -341,8 +327,6 @@ export class WalletModules {
       }));
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId: contracts[0].contractId,
-        methodNames: contracts[0].methodNames,
         contracts,
       });
 
@@ -467,20 +451,14 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const {
-      accounts,
-      contract,
-      selectedWalletId,
-      recentlySignedInWallets,
-      contracts,
-    } = await this.resolveStorageState();
+    const { accounts, selectedWalletId, recentlySignedInWallets, contracts } =
+      await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
       payload: {
         modules,
         accounts,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
         contracts,

@@ -199,19 +199,19 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+    transactions: Array<Optional<Transaction, "signerId">>
   ): Array<Transaction> => {
     const accounts = getAccounts();
-    const { contract } = store.getState();
+    const { contracts } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!accounts.length || contracts.length < 1) {
       throw new Error("Wallet not signed in");
     }
 
     return transactions.map((transaction) => {
       return {
         signerId: transaction.signerId || accounts[0].accountId,
-        receiverId: transaction.receiverId || contract.contractId,
+        receiverId: transaction.receiverId,
         actions: transaction.actions,
       };
     });
@@ -338,10 +338,10 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
       const accounts = getAccounts();
 
-      if (!accounts.length || !contract) {
+      if (!accounts.length || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 

@@ -44,10 +44,6 @@ export type AccountState = Account & {
 
 export interface WalletSelectorState {
   /**
-   * Returns the signed in contract.
-   */
-  contract: ContractState | null;
-  /**
    * Returns the list of available modules.
    */
   modules: Array<ModuleState>;
@@ -64,9 +60,9 @@ export interface WalletSelectorState {
    */
   recentlySignedInWallets: Array<string>;
   /**
-   * The list of contracts when SignInMulti is supported.
+   * The list of contracts for SignIn and SignInMulti.
    */
-  contracts: MultiContractState | null;
+  contracts: MultiContractState;
 }
 
 export type WalletSelectorAction =
@@ -75,20 +71,18 @@ export type WalletSelectorAction =
       payload: {
         modules: Array<ModuleState>;
         accounts: Array<Account>;
-        contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
-        contracts: MultiContractState | null;
+        contracts: MultiContractState;
       };
     }
   | {
       type: "WALLET_CONNECTED";
       payload: {
         walletId: string;
-        contract: ContractState;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
-        contracts: MultiContractState | null;
+        contracts: MultiContractState;
       };
     }
   | {

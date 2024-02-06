@@ -22,7 +22,7 @@ console.log(contract); // { contractId: "test.testnet", methodNames: [] }
 
 **Returns**
 
-- `MultiContractState | null`
+- `MultiContractState`
   - `contractId` (`string`): Account ID of the Smart Contract.
   - `methodNames` (`Array<string>`): List of methods that can only be invoked on the Smart Contract. Empty list means no restriction.
 
