@@ -27,9 +27,9 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 
-// XDEFI for Wallet Selector can be setup without any params or it can take one optional param.
+// XDEFI for Wallet Selector can be setup without any params or it can take few optional params, see options below.
 const xdefi = setupXDEFI({
-  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
+  iconUrl: "https://<Wallet Icon URL Here>" // optional
 });
 
 const selector = await setupWalletSelector({

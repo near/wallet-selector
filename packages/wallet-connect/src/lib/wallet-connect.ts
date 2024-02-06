@@ -12,6 +12,8 @@ import type {
   EventEmitterService,
   VerifiedOwner,
   Account,
+  SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -57,6 +59,13 @@ interface WalletConnectState {
   subscriptions: Array<Subscription>;
 }
 
+interface ConnectParams {
+  state: WalletConnectState;
+  chainId: string;
+  qrCodeModal: boolean;
+  projectId: string;
+}
+
 const WC_METHODS = [
   "near_signIn",
   "near_signOut",
@@ -64,6 +73,7 @@ const WC_METHODS = [
   "near_signTransaction",
   "near_signTransactions",
   "near_verifyOwner",
+  "near_signMessage",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -97,6 +107,38 @@ const setupWalletConnectState = async (
     keystore,
     subscriptions: [],
   };
+};
+
+const connect = async ({
+  state,
+  chainId,
+  qrCodeModal,
+  projectId,
+}: ConnectParams) => {
+  return await state.client.connect(
+    {
+      requiredNamespaces: {
+        near: {
+          chains: [chainId],
+          methods: WC_METHODS,
+          events: WC_EVENTS,
+        },
+      },
+    },
+    qrCodeModal,
+    projectId,
+    chainId
+  );
+};
+
+const disconnect = async ({ state }: { state: WalletConnectState }) => {
+  await state.client.disconnect({
+    topic: state.session!.topic,
+    reason: {
+      code: 5900,
+      message: "User disconnected",
+    },
+  });
 };
 
 const WalletConnect: WalletBehaviourFactory<
@@ -244,6 +286,26 @@ const WalletConnect: WalletBehaviourFactory<
       request: {
         method: "near_verifyOwner",
         params: { accountId, message },
+      },
+    });
+  };
+
+  const requestSignMessage = async (
+    messageParams: SignMessageParams & { accountId?: string }
+  ) => {
+    const { message, nonce, recipient, callbackUrl, accountId } = messageParams;
+    return _state.client.request<SignedMessage>({
+      topic: _state.session!.topic,
+      chainId: getChainId(),
+      request: {
+        method: "near_signMessage",
+        params: {
+          message,
+          nonce,
+          recipient,
+          ...(callbackUrl && { callbackUrl }),
+          ...(accountId && { accountId }),
+        },
       },
     });
   };
@@ -428,13 +490,7 @@ const WalletConnect: WalletBehaviourFactory<
     if (_state.session) {
       await requestSignOut();
 
-      await _state.client.disconnect({
-        topic: _state.session.topic,
-        reason: {
-          code: 5900,
-          message: "User disconnected",
-        },
-      });
+      await disconnect({ state: _state });
     }
 
     await cleanup();
@@ -474,35 +530,27 @@ const WalletConnect: WalletBehaviourFactory<
 
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
-      const existingAccounts = await getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       try {
+        const { contracts } = store.getState();
+        if (_state.session && !contracts) {
+          await disconnect({ state: _state });
+          await cleanup();
+        }
+
         const chainId = getChainId();
 
-        _state.session = await _state.client.connect(
-          {
-            requiredNamespaces: {
-              near: {
-                chains: [getChainId()],
-                methods: WC_METHODS,
-                events: WC_EVENTS,
-              },
-            },
-          },
+        _state.session = await connect({
+          state: _state,
+          chainId,
           qrCodeModal,
-          params.projectId,
-          chainId
-        );
+          projectId: params.projectId,
+        });
 
         await requestSignIn({ receiverId: contractId, methodNames });
 
         await setupEvents();
 
-        return getAccounts();
+        return await getAccounts();
       } catch (err) {
         await signOut();
 
@@ -532,6 +580,38 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       return requestVerifyOwner(account.accountId, message);
+    },
+
+    async signMessage({ message, nonce, recipient, callbackUrl }) {
+      logger.log("WalletConnect:signMessage", { message, nonce, recipient });
+
+      try {
+        const chainId = getChainId();
+
+        if (!_state.session) {
+          _state.session = _state.session = await connect({
+            state: _state,
+            chainId,
+            qrCodeModal: true,
+            projectId: params.projectId,
+          });
+        }
+
+        const account = getActiveAccount(store.getState());
+
+        return await requestSignMessage({
+          message,
+          nonce,
+          recipient,
+          callbackUrl,
+          accountId: account?.accountId,
+        });
+      } catch (err) {
+        await disconnect({ state: _state });
+        await cleanup();
+
+        throw err;
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

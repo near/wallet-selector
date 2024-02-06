@@ -56,7 +56,7 @@ Returns the list of available modules.
 
 ```ts
 const { modules } = selector.store.getState();
-console.log(modules); // [{ id: "near-wallet", ... }]
+console.log(modules); // [{ id: "my-near-wallet", ... }]
 ```
 
 ### `.accounts`
@@ -93,7 +93,7 @@ Returns the ID of the selected wallet.
 
 ```ts
 const { selectedWalletId } = selector.store.getState();
-console.log(selectedWalletId); // "near-wallet"
+console.log(selectedWalletId); // "my-near-wallet"
 ```
 
 ### `.recentlySignedInWallets`
@@ -110,5 +110,5 @@ Returns ID-s of 5 recently signed in wallets.
 
 ```ts
 const { recentlySignedInWallets } = selector.store.getState();
-console.log(recentlySignedInWallets); // ["near-wallet", "sender", ...]
+console.log(recentlySignedInWallets); // ["my-near-wallet", "sender", ...]
 ```

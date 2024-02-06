@@ -23,17 +23,14 @@
       "@near-wallet-selector/account-export": [
         "packages/account-export/src/index.ts"
       ],
+      "@near-wallet-selector/bitget-wallet": [
+        "packages/bitget-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/coin98-wallet": [
         "packages/coin98-wallet/src/index.ts"
       ],
       "@near-wallet-selector/core": [
         "packages/core/src/index.ts"
-      ],
-      "@near-wallet-selector/default-wallets": [
-        "packages/default-wallets/src/index.ts"
-      ],
-      "@near-wallet-selector/finer-wallet": [
-        "packages/finer-wallet/src/index.ts"
       ],
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
@@ -62,9 +59,6 @@
       "@near-wallet-selector/near-snap": [
         "packages/near-snap/src/index.ts"
       ],
-      "@near-wallet-selector/near-wallet": [
-        "packages/near-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/nearfi": [
         "packages/nearfi/src/index.ts"
       ],
@@ -73,12 +67,6 @@
       ],
       "@near-wallet-selector/nightly": [
         "packages/nightly/src/index.ts"
-      ],
-      "@near-wallet-selector/nightly-connect": [
-        "packages/nightly-connect/src/index.ts"
-      ],
-      "@near-wallet-selector/opto-wallet": [
-        "packages/opto-wallet/src/index.ts"
       ],
       "@near-wallet-selector/sender": [
         "packages/sender/src/index.ts"
@@ -97,6 +85,12 @@
       ],
       "@near-wallet-selector/xdefi": [
         "packages/xdefi/src/index.ts"
+      ],
+      "@near-wallet-selector/near-mobile-wallet": [
+        "packages/near-mobile-wallet/src/index.ts"
+      ],
+       "@near-wallet-selector/mintbase-wallet": [
+        "packages/mintbase-wallet/src/index.ts"
       ],
       "crypto": [
         "node_modules/crypto-browserify"

@@ -21,11 +21,6 @@
           "examples/angular/src/assets",
           {
             "glob": "**/*",
-            "input": "packages/near-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/my-near-wallet/assets/",
             "output": "assets/"
           },
@@ -66,11 +61,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/nightly-connect/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -82,16 +72,6 @@
           {
             "glob": "**/*",
             "input": "packages/coin98-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/opto-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/finer-wallet/assets/",
             "output": "assets/"
           },
           {
@@ -118,6 +98,11 @@
             "glob": "**/*",
             "input": "packages/ramper-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/near-mobile-wallet/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/angular/src/styles.scss"],
@@ -125,6 +110,7 @@
       },
       "configurations": {
         "production": {
+          "buildOptimizer": false,
           "budgets": [
             {
               "type": "initial",

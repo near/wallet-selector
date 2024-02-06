@@ -82,6 +82,7 @@ export {
   isCurrentBrowserSupported,
   verifyFullKeyBelongsToUser,
   verifySignature,
+  serializeNep413,
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

@@ -2,7 +2,11 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
-import type { AccountImportData } from "@near-wallet-selector/core";
+import type {
+  AccountImportData,
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
 
 export interface AccessKey {
   publicKey: {
@@ -104,6 +108,15 @@ interface SignAndSendTransactionsResponse {
   type: "sender-wallet-extensionResult";
 }
 
+interface SignMessageResponse {
+  actionType: "DAPP/POPUP_RESPONSE";
+  method: "signMessage";
+  notificationId: number;
+  error?: string;
+  response?: SignedMessage;
+  type: "sender-wallet-extensionResult";
+}
+
 interface Transaction {
   receiverId: string;
   actions: Array<Action>;
@@ -150,4 +163,5 @@ export interface InjectedSender {
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
   batchImport: (params: batchImportParams) => Promise<unknown>;
+  signMessage: (params: SignMessageParams) => Promise<SignMessageResponse>;
 }

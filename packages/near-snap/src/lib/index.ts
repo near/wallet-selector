@@ -1,5 +1,6 @@
+import { isMobile } from "is-mobile";
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
-import { initNearSnap } from "./selector";
+import { initNearSnap, snap } from "./selector";
 import icon from "./icon";
 
 export { icon };
@@ -9,6 +10,11 @@ export function setupNearSnap({
   iconUrl = icon,
 } = {}): WalletModuleFactory {
   return async () => {
+    const mobile = isMobile();
+    if (mobile) {
+      return null;
+    }
+
     return {
       id: "near-snap",
       type: "injected",
@@ -17,9 +23,9 @@ export function setupNearSnap({
         name: "Near Snap",
         description: "Metamask Snap for NEAR Protocol",
         downloadUrl: "https://near-snap.surge.sh",
-        iconUrl,
+        available: await snap.provider.isSnapsAvailable(),
         deprecated,
-        available: true,
+        iconUrl,
       },
     };
   };
