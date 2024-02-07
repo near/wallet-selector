@@ -227,7 +227,9 @@ export const Modal: React.FC<ModalProps> = ({
       const { name } = module.metadata;
 
       const message =
-        err instanceof Error ? err.message : "Something went wrong";
+        err && typeof err === "object" && "message" in err
+          ? (err as { message: string }).message
+          : "Something went wrong";
 
       setAlertMessage(`Failed to sign in with ${name}: ${message}`);
       setRoute({
