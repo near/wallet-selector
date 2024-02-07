@@ -37,8 +37,9 @@ const walletConnect = setupWalletConnect({
   },
   chainId: "near:testnet",
   iconUrl: "https://<Wallet Icon URL Here>",
-  // methods option is optional, by default all are included if not provided here
-  // use only to override the default setting.
+  // Please note that the 'methods' option is discretionary;
+  // if omitted, all methods are included by default.
+  // Use it solely to override the default configuration.
   methods: [
     "near_signIn",
     "near_signOut",
