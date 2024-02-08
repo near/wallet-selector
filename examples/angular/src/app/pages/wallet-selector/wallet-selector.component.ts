@@ -3,7 +3,6 @@ import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -58,7 +57,6 @@ export class WalletSelectorComponent implements OnInit {
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
         setupBitgetWallet(),
         setupXDEFI(),
@@ -76,6 +74,15 @@ export class WalletSelectorComponent implements OnInit {
         }),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
+          // Overrides the default methods on wallet-connect.ts
+          // the near_signMessage and near_verifyOwner are missing here.
+          methods: [
+            "near_signIn",
+            "near_signOut",
+            "near_getAccounts",
+            "near_signTransaction",
+            "near_signTransactions",
+          ],
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",

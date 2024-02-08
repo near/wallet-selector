@@ -160,7 +160,10 @@ export async function connectToWallet(
     modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
   } catch (err) {
     const { name } = module.metadata;
-    const message = err instanceof Error ? err.message : "Something went wrong";
+    const message =
+      err && typeof err === "object" && "message" in err
+        ? (err as { message: string }).message
+        : "Something went wrong";
 
     await renderWalletConnectionFailed(
       module,

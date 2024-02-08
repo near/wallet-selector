@@ -142,13 +142,13 @@ This method signs a list of NEAR Actions before sending via an RPC endpoint. The
 
 Where you might have to construct NEAR Transactions and send them yourself, you can import `near-api-js` and make use of the injected `provider` that's configured based on `options.network`.
 
-> Note: Browser wallets (i.e. NEAR Wallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
+> Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
 
 ### `signAndSendTransactions`
 
 This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
 
-> Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. NEAR Wallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
+> Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. MyNearWallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
 
 ### `signMessage`
 

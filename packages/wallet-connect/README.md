@@ -37,6 +37,18 @@ const walletConnect = setupWalletConnect({
   },
   chainId: "near:testnet",
   iconUrl: "https://<Wallet Icon URL Here>",
+  // Please note that the 'methods' option is discretionary;
+  // if omitted, all methods are included by default.
+  // Use it solely to override the default configuration.
+  methods: [
+    "near_signIn",
+    "near_signOut",
+    "near_getAccounts",
+    "near_signTransaction",
+    "near_signTransactions",
+    "near_verifyOwner",
+    "near_signMessage",
+  ]
 });
 
 const selector = await setupWalletSelector({
@@ -58,6 +70,22 @@ Project ID is required for wallet connect, please obtain it from [walletconnect.
 - `relayUrl` (`string?`): Relay URL for requests. Defaults to `"wss://relay.walletconnect.com"`.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
+- `methods`: (`Array<string>?`): Methods is optional overrides default WC_METHODS. Defaults to `undefined`.
+- `events`: (`Array<string>?`): Events is optional overrides default WC_EVENTS. Defaults to `undefined`.
+
+## Supported methods
+- `near_signIn`
+- `near_signOut`
+- `near_getAccounts`
+- `near_signTransaction`
+- `near_signTransactions`
+- `near_verifyOwner`
+- `near_signMessage`
+
+## Supported events
+
+- `chainChanged`
+- `accountsChanged`
 
 ## Assets
 

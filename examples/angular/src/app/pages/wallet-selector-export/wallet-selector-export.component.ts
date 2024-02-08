@@ -2,7 +2,6 @@ import type { OnInit } from "@angular/core";
 import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/account-export";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -56,7 +55,6 @@ export class WalletSelectorExportComponent implements OnInit {
       modules: [
         setupMyNearWallet(),
         setupLedger(),
-        setupNearWallet(),
         setupSender(),
         setupBitgetWallet(),
         setupXDEFI(),

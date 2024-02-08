@@ -237,7 +237,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   async onSignMessage() {
     const wallet = await this.selector.wallet();
     const message = "test message to sign";
-    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32)));
     const recipient = "guest-book.testnet";
 
     if (wallet.type === "browser") {

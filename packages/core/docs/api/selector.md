@@ -65,7 +65,7 @@ Retrieve the current state. You can find more information on `WalletSelectorStat
 
 ```ts
 const state = selector.store.getState();
-console.log(state); // { modules: [{ id: "near-wallet", ... }], ... }
+console.log(state); // { modules: [{ id: "my-near-wallet", ... }], ... }
 ```
 
 ### `.store.observable`
@@ -126,7 +126,7 @@ Programmatically access wallets and call their methods. It's advised to use `sta
 
 // Specific wallet.
 (async () => {
-  const wallet = await selector.wallet("near-wallet");
+  const wallet = await selector.wallet("my-near-wallet");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 ```
