@@ -135,6 +135,13 @@ const Content: React.FC = () => {
     modal.show();
   };
 
+  const handleSignInMessage = () => {
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+    modal.signInMessage({ message, nonce, recipient });
+  };
+
   const handleSignOut = async () => {
     const wallet = await selector.wallet();
 
@@ -192,7 +199,7 @@ const Content: React.FC = () => {
       for (let i = 0; i < 2; i += 1) {
         transactions.push({
           signerId: accountId!,
-          receiverId: contract!.contractId,
+          receiverId: contract?.contractId || CONTRACT_ID,
           actions: [
             {
               type: "FunctionCall",
@@ -275,13 +282,13 @@ const Content: React.FC = () => {
     const publicKey = urlParams.get("publicKey") as string;
     const signature = urlParams.get("signature") as string;
 
-    if (!accId && !publicKey && !signature) {
-      return;
-    }
-
     const message: SignMessageParams = JSON.parse(
       localStorage.getItem("message")!
     );
+
+    if ((!accId && !publicKey && !signature) || !message) {
+      return;
+    }
 
     const signedMessage = {
       accountId: accId,
@@ -378,6 +385,7 @@ const Content: React.FC = () => {
       <Fragment>
         <div>
           <button onClick={handleSignIn}>Log in</button>
+          <button onClick={handleSignInMessage}>Sign In Message</button>
         </div>
         <SignIn />
       </Fragment>

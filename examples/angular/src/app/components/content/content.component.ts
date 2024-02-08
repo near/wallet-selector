@@ -112,6 +112,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.modal.show();
   }
 
+  signInMessage() {
+    const message = "test message to sign";
+    const nonce = Buffer.from(Array.from(Array(32).keys()));
+    const recipient = "guest-book.testnet";
+    this.modal.signInMessage({ message, nonce, recipient });
+  }
+
   async signOut() {
     const wallet = await this.selector.wallet();
 
@@ -211,13 +218,13 @@ export class ContentComponent implements OnInit, OnDestroy {
     const publicKey = urlParams.get("publicKey") as string;
     const signature = urlParams.get("signature") as string;
 
-    if (!accId && !publicKey && !signature) {
-      return;
-    }
-
     const message: SignMessageParams = JSON.parse(
       localStorage.getItem("message") as string
     );
+
+    if ((!accId && !publicKey && !signature) || !message) {
+      return;
+    }
 
     const signedMessage = {
       accountId: accId,
@@ -328,7 +335,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        receiverId: contract!.contractId,
+        receiverId: contract?.contractId || CONTRACT_ID,
         actions: [
           {
             type: "FunctionCall",

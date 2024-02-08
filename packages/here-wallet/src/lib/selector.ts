@@ -1,4 +1,5 @@
-import type { NetworkId } from "@near-wallet-selector/core";
+import type { Account, NetworkId } from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 import { HereWallet } from "@here-wallet/core";
 import type BN from "bn.js";
 
@@ -18,19 +19,28 @@ export const initHereWallet: SelectorInit = async (config) => {
   async function getAccounts() {
     logger.log("HereWallet:getAccounts");
     const accountIds = await here.getAccounts();
-    const accounts = [];
+    const accounts: Array<Account> = [];
+    const { signedInMessageAccount } = store.getState();
 
-    for (let i = 0; i < accountIds.length; i++) {
-      accounts.push({
-        accountId: accountIds[i],
-        publicKey: (
-          await here.signer.getPublicKey(
-            accountIds[i],
-            options.network.networkId
-          )
-        ).toString(),
-      });
+    if (accountIds.length > 0) {
+      for (let i = 0; i < accountIds.length; i++) {
+        accounts.push({
+          accountId: accountIds[i],
+          publicKey: (
+            await here.signer.getPublicKey(
+              accountIds[i],
+              options.network.networkId
+            )
+          ).toString(),
+        });
+      }
+      return accounts;
     }
+
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
+    }
+
     return accounts;
   }
 
@@ -89,8 +99,10 @@ export const initHereWallet: SelectorInit = async (config) => {
     },
 
     async signOut() {
-      logger.log("HereWallet:signOut");
-      await here.signOut();
+      if (await here.isSignedIn()) {
+        logger.log("HereWallet:signOut");
+        await here.signOut();
+      }
     },
 
     async getAccounts() {
@@ -122,8 +134,31 @@ export const initHereWallet: SelectorInit = async (config) => {
       return await here.signMessage(data);
     },
 
+    async signInMessage(data) {
+      logger.log("HereWallet:signInMessage", data);
+
+      const signedMessage = await here.signMessage(data);
+
+      const isMessageVerified = await verifyMessageNEP413(
+        data,
+        signedMessage,
+        options.network
+      );
+
+      if (!isMessageVerified) {
+        throw new Error(`Failed to verify the message`);
+      }
+
+      return signedMessage;
+    },
+
     async signAndSendTransactions(data) {
       logger.log("HereWallet:signAndSendTransactions", data);
+      const { contract } = store.getState();
+      if (!here.isSignedIn || !contract) {
+        throw new Error("Wallet not signed in");
+      }
+
       return await here.signAndSendTransactions(data);
     },
   };

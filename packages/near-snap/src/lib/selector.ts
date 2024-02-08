@@ -4,6 +4,7 @@ import type {
   WalletBehaviourFactory,
 } from "@near-wallet-selector/core";
 import { NearSnap, NearSnapAccount } from "@near-snap/sdk";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 
 export const snap = new NearSnap();
 
@@ -67,6 +68,36 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
       return await account.signMessage({ message, nonce, recipient });
     },
 
+    async signInMessage({ message, nonce, recipient }) {
+      let snapAccount: NearSnapAccount | null = null;
+      if (account == null) {
+        snapAccount = await NearSnapAccount.connect({
+          contractId: undefined,
+          methods: [],
+          network,
+          snap,
+        });
+      }
+
+      const currentAccount = account || snapAccount;
+      const signedMessage = await currentAccount!.signMessage({
+        message,
+        nonce,
+        recipient,
+      });
+      const isMessageVerified = await verifyMessageNEP413(
+        { message, nonce, recipient },
+        signedMessage,
+        options.network
+      );
+
+      if (!isMessageVerified) {
+        throw new Error(`Failed to verify the message`);
+      }
+
+      return signedMessage;
+    },
+
     async verifyOwner() {
       throw Error("NearSnap:verifyOwner is not released yet");
     },
@@ -74,7 +105,9 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
     async signAndSendTransactions({ transactions }) {
       logger.log("NearSnap:signAndSendTransactions", { transactions });
 
-      if (account == null) {
+      const { contract } = store.getState();
+
+      if (account == null || !contract) {
         throw new Error("Wallet not signed in");
       }
 

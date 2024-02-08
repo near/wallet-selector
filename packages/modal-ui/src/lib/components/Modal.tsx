@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import type {
   EventEmitterService,
   ModuleState,
+  SignInMessageParams,
   WalletSelector,
 } from "@near-wallet-selector/core";
 
@@ -30,6 +31,7 @@ interface ModalProps {
   visible: boolean;
   hide: () => void;
   emitter: EventEmitterService<ModalEvents>;
+  message: SignInMessageParams | null;
 }
 
 const getThemeClass = (theme?: Theme) => {
@@ -49,6 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
   visible,
   hide,
   emitter,
+  message,
 }) => {
   const [route, setRoute] = useState<ModalRoute>({
     name: "WalletHome",
@@ -137,7 +140,6 @@ export const Modal: React.FC<ModalProps> = ({
           module,
         },
       });
-      return;
     }
 
     try {
@@ -193,11 +195,15 @@ export const Modal: React.FC<ModalProps> = ({
           });
         });
 
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          qrCodeModal,
-        });
+        if (message) {
+          await wallet.signInMessage!(message);
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            qrCodeModal,
+          });
+        }
 
         subscription.remove();
         handleDismissClick({ hideReason: "wallet-navigation" });
@@ -205,33 +211,41 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "browser") {
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          successUrl: wallet.metadata.successUrl,
-          failureUrl: wallet.metadata.failureUrl,
-        });
+        if (message) {
+          await wallet.signInMessage!(message);
+        } else {
+          await wallet.signIn({
+            contractId: options.contractId,
+            methodNames: options.methodNames,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        }
 
         handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
 
-      await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      if (message) {
+        await wallet.signInMessage!(message);
+      } else {
+        await wallet.signIn({
+          contractId: options.contractId,
+          methodNames: options.methodNames,
+        });
+      }
 
       handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {
       const { name } = module.metadata;
 
-      const message =
+      const errorMessage =
         err && typeof err === "object" && "message" in err
           ? (err as { message: string }).message
           : "Something went wrong";
 
-      setAlertMessage(`Failed to sign in with ${name}: ${message}`);
+      setAlertMessage(`Failed to sign in with ${name}: ${errorMessage}`);
       setRoute({
         name: "AlertMessage",
         params: {
@@ -302,13 +316,13 @@ export const Modal: React.FC<ModalProps> = ({
                     name: "WalletHome",
                   })
                 }
-                onError={(message, wallet) => {
+                onError={(errorMessage, wallet) => {
                   const { modules } = selector.store.getState();
                   const findModule = modules.find(
                     (module) => module.id === wallet.id
                   );
 
-                  setAlertMessage(message);
+                  setAlertMessage(errorMessage);
                   setRoute({
                     name: "AlertMessage",
                     params: {
@@ -319,6 +333,7 @@ export const Modal: React.FC<ModalProps> = ({
                 onCloseModal={() =>
                   handleDismissClick({ hideReason: "user-triggered" })
                 }
+                message={message}
               />
             )}
             {route.name === "WalletNetworkChanged" && (

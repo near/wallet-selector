@@ -40,6 +40,36 @@ Closes the modal.
 modal.hide();
 ```
 
+### `.signInMessage(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `message` (`string`): The message that wants to be transmitted.
+  - `nonce` (`Buffer`): A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
+  - `recipient` (`string`): The recipient to whom the message is destined (e.g. "alice.near" or "myapp.com").
+  - `callbackUrl` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). The URL to call after the signing process. Defaults to `window.location.href`.
+  - `state` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). A state for authentication purposes.
+
+
+**Returns**
+
+- `void`
+
+**Description**
+
+Opens the modal for users to sign in to their preferred wallet with `signInMessage` [here](../../../core/docs/api/wallet.md#signinmessageparams).
+
+**Example**
+
+```ts
+const message = "test message to sign";
+const nonce = Buffer.from(Array.from(Array(32).keys()));
+const recipient = "guest-book.testnet";
+
+modal.signInMessage({ message, nonce, recipient });
+```
+
 ### `.on(event, callback)`
 
 **Parameters**

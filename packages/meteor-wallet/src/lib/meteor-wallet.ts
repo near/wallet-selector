@@ -5,6 +5,7 @@ import type {
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
+import { verifyMessageNEP413 } from "@near-wallet-selector/core";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
@@ -48,21 +49,26 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
+    const { signedInMessageAccount } = store.getState();
 
-    if (!accountId || !account) {
-      return [];
+    if (accountId && account) {
+      const publicKey = await account.connection.signer.getPublicKey(
+        account.accountId,
+        options.network.networkId
+      );
+      return [
+        {
+          accountId,
+          publicKey: publicKey ? publicKey.toString() : "",
+        },
+      ];
     }
 
-    const publicKey = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
-    return [
-      {
-        accountId,
-        publicKey: publicKey ? publicKey.toString() : "",
-      },
-    ];
+    if (signedInMessageAccount) {
+      return [{ ...signedInMessageAccount }];
+    }
+
+    return [];
   };
 
   return {
@@ -144,6 +150,30 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         state,
       });
       if (response.success) {
+        return response.payload;
+      } else {
+        throw new Error(`Couldn't sign message owner: ${response.message}`);
+      }
+    },
+
+    async signInMessage(message) {
+      logger.log("MeteorWallet:signInMessage", message);
+      const accountId = _state.wallet.getAccountId();
+      const response = await _state.wallet.signMessage({
+        ...message,
+        accountId,
+      });
+      if (response.success) {
+        const isMessageVerified = await verifyMessageNEP413(
+          message,
+          response.payload,
+          options.network
+        );
+
+        if (!isMessageVerified) {
+          throw new Error(`Failed to verify the message`);
+        }
+
         return response.payload;
       } else {
         throw new Error(`Couldn't sign message owner: ${response.message}`);

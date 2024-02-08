@@ -12,6 +12,8 @@ import {
   CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
+  SIGN_IN_MESSAGE,
+  SIGNED_IN_MESSAGE_ACCOUNT,
 } from "./constants";
 
 const reducer = (
@@ -28,6 +30,8 @@ const reducer = (
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        message,
+        signedInMessageAccount,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -44,11 +48,19 @@ const reducer = (
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        message: message,
+        signedInMessageAccount,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts, recentlySignedInWallets } =
-        action.payload;
+      const {
+        walletId,
+        contract,
+        accounts,
+        recentlySignedInWallets,
+        message,
+        signedInMessageAccount,
+      } = action.payload;
 
       if (!accounts.length) {
         return state;
@@ -71,6 +83,8 @@ const reducer = (
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
+        message,
+        signedInMessageAccount,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -85,6 +99,8 @@ const reducer = (
         contract: null,
         accounts: [],
         selectedWalletId: null,
+        message: null,
+        signedInMessageAccount: null,
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -143,6 +159,10 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
+    message: await jsonStorage.getItem(SIGN_IN_MESSAGE),
+    signedInMessageAccount: await jsonStorage.getItem(
+      SIGNED_IN_MESSAGE_ACCOUNT
+    ),
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -177,6 +197,13 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       state,
       RECENTLY_SIGNED_IN_WALLETS,
       "recentlySignedInWallets"
+    );
+    syncStorage(prevState, state, SIGN_IN_MESSAGE, "message");
+    syncStorage(
+      prevState,
+      state,
+      SIGNED_IN_MESSAGE_ACCOUNT,
+      "signedInMessageAccount"
     );
     prevState = state;
   });

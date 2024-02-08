@@ -3,6 +3,7 @@ export type {
   WalletSelectorParams,
   WalletSelectorEvents,
   WalletSelectorStore,
+  SignInType,
 } from "./lib/wallet-selector.types";
 export { setupWalletSelector } from "./lib/wallet-selector";
 
@@ -70,6 +71,7 @@ export type {
   AccountImportData,
   SignedMessage,
   SignMessageParams,
+  SignInMessageParams,
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
@@ -81,6 +83,7 @@ export {
   verifyFullKeyBelongsToUser,
   verifySignature,
   serializeNep413,
+  verifyMessageNEP413,
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

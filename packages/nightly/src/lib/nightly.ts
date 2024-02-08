@@ -9,7 +9,7 @@ import type {
   WalletEvents,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { verifyMessageNEP413, waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { isMobile } from "is-mobile";
 import type { Signer } from "near-api-js";
@@ -147,12 +147,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
   return {
     async signIn() {
-      const existingAccounts = getAccounts();
-
-      if (existingAccounts.length) {
-        return existingAccounts;
-      }
-
       await _state.wallet.connect((newAcc) => {
         if (!newAcc) {
           emitter.emit("signedOut", null);
@@ -205,6 +199,28 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       });
 
       return signature;
+    },
+
+    async signInMessage(message) {
+      logger.log("Nightly:signInMessage", message);
+
+      if (!_state.wallet.isConnected) {
+        await _state.wallet.connect();
+      }
+
+      const signedMessage = await _state.wallet.signMessage(message);
+
+      const isMessageVerified = await verifyMessageNEP413(
+        message,
+        signedMessage,
+        options.network
+      );
+
+      if (!isMessageVerified) {
+        throw new Error(`Failed to verify the message`);
+      }
+
+      return signedMessage;
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

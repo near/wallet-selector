@@ -8,6 +8,9 @@ import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
 import type { SignMessageMethod } from "./wallet/wallet.types";
+import type { SignedMessage, SignInMessageParams } from "./wallet/wallet.types";
+
+export type SignInType = "key" | "message";
 
 export interface WalletSelectorParams {
   /**
@@ -57,6 +60,12 @@ export type WalletSelectorEvents = {
     methodNames: Array<string>;
     accounts: Array<Account>;
   };
+  signedInMessage: {
+    walletId: string;
+    message: SignInMessageParams;
+    signedMessage: SignedMessage;
+    accounts: Array<Account>;
+  };
   signedOut: {
     walletId: string;
   };
@@ -93,6 +102,11 @@ export interface WalletSelector {
    * Programmatically change active account which will be used to sign and send transactions.
    */
   setActiveAccount(accountId: string): void;
+
+  /**
+   * Returns the sign-in type, it can be either "message" or "key".
+   */
+  signInType(): SignInType;
 
   /**
    * Attach an event handler to important events.

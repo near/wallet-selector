@@ -153,6 +153,29 @@ Programmatically change active account which will be used to sign and send trans
 selector.setActiveAccount("sometestaccount.testnet");
 ```
 
+### `.signInType()`
+
+**Parameters**
+
+- N/A
+
+**Returns**
+
+- `SignInType`
+
+**Description**
+
+Programmatically check the sign-in type, if signed-in with `wallet.signIn(params)` returns "key" if signed in with `wallet.signInMessage(params)` returns "message"
+
+> Note: This function will throw when calling without being signed in.
+
+**Example**
+
+```ts
+const signInType = selector.signInType();
+
+```
+
 ### `.on(event, callback)`
 
 **Parameters**
@@ -183,7 +206,7 @@ subscription.remove();
 
 **Parameters**
 
-- `event` (`string`): Name of the event. This can be: `signedIn | signedOut | accountsChanged | networkChanged | uriChanged`.
+- `event` (`string`): Name of the event. This can be: `signedIn | signedInMessage | signedOut | accountsChanged | networkChanged | uriChanged`.
 - `callback` (`Function`): Original handler passed to `.on(event, callback)`.
 
 **Returns**
