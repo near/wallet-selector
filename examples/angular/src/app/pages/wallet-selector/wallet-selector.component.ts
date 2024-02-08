@@ -74,6 +74,15 @@ export class WalletSelectorComponent implements OnInit {
         }),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
+          // Overrides the default methods on wallet-connect.ts
+          // the near_signMessage and near_verifyOwner are missing here.
+          methods: [
+            "near_signIn",
+            "near_signOut",
+            "near_getAccounts",
+            "near_signTransaction",
+            "near_signTransactions",
+          ],
           metadata: {
             name: "NEAR Wallet Selector",
             description: "Example dApp used by NEAR Wallet Selector",

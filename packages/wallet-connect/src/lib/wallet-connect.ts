@@ -28,6 +28,8 @@ export interface WalletConnectParams {
   iconUrl?: string;
   chainId?: string;
   deprecated?: boolean;
+  methods?: Array<string>;
+  events?: Array<string>;
 }
 
 interface WalletConnectExtraOptions {
@@ -35,6 +37,8 @@ interface WalletConnectExtraOptions {
   projectId: string;
   metadata: SignClientTypes.Metadata;
   relayUrl: string;
+  methods?: Array<string>;
+  events?: Array<string>;
 }
 
 interface LimitedAccessKeyPair {
@@ -64,6 +68,8 @@ interface ConnectParams {
   chainId: string;
   qrCodeModal: boolean;
   projectId: string;
+  methods?: Array<string>;
+  events?: Array<string>;
 }
 
 const WC_METHODS = [
@@ -114,14 +120,16 @@ const connect = async ({
   chainId,
   qrCodeModal,
   projectId,
+  methods,
+  events,
 }: ConnectParams) => {
   return await state.client.connect(
     {
       requiredNamespaces: {
         near: {
           chains: [chainId],
-          methods: WC_METHODS,
-          events: WC_EVENTS,
+          methods: methods || WC_METHODS,
+          events: events || WC_EVENTS,
         },
       },
     },
@@ -544,6 +552,8 @@ const WalletConnect: WalletBehaviourFactory<
           chainId,
           qrCodeModal,
           projectId: params.projectId,
+          methods: params.methods,
+          events: params.events,
         });
 
         await requestSignIn({ receiverId: contractId, methodNames });
@@ -697,6 +707,8 @@ export function setupWalletConnect({
   relayUrl = "wss://relay.walletconnect.com",
   iconUrl = icon,
   deprecated = false,
+  methods,
+  events,
 }: WalletConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -717,6 +729,8 @@ export function setupWalletConnect({
             metadata,
             relayUrl,
             chainId,
+            methods,
+            events,
           },
         });
       },
