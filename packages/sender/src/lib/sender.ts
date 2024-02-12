@@ -47,6 +47,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   emitter,
   logger,
+  id,
 }) => {
   const _state = setupSenderState();
 
@@ -106,7 +107,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     // browser extension background env.
     // Check for isSignedIn() in only if selectedWalletId is set.
     const { selectedWalletId } = store.getState();
-    if (selectedWalletId) {
+    if (selectedWalletId === id) {
       await waitFor(() => !!_state.wallet?.isSignedIn(), {
         timeout: 1000,
       }).catch();
