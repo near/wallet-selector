@@ -7,11 +7,17 @@ import type {
   WalletModuleFactory,
   Account,
   InstantLinkWallet,
+  SignInMultiParams,
   SignMessageParams,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type { ContractState, ModuleState, Store } from "../../store.types";
+import type {
+  ContractState,
+  ModuleState,
+  Store,
+  MultiContractState,
+} from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
@@ -20,6 +26,7 @@ import {
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
+  PENDING_CONTRACTS,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
@@ -82,11 +89,19 @@ export class WalletModules {
       PENDING_CONTRACT
     );
 
+    const pendingContracts = await jsonStorage.getItem<MultiContractState>(
+      PENDING_CONTRACTS
+    );
+
     if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
       await jsonStorage.removeItem(PENDING_CONTRACT);
+
+      if (pendingContracts) {
+        await jsonStorage.removeItem(PENDING_CONTRACTS);
+      }
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
@@ -107,11 +122,12 @@ export class WalletModules {
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
+          contracts: pendingContracts,
         };
       }
     }
 
-    const { contract, selectedWalletId } = this.store.getState();
+    const { contract, selectedWalletId, contracts } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
     const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
@@ -124,6 +140,7 @@ export class WalletModules {
         contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
+        contracts: null,
       };
     }
 
@@ -132,6 +149,7 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
+      contracts,
     };
   }
 
@@ -172,7 +190,7 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
+    { accounts, contractId, methodNames, contracts }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
@@ -185,6 +203,13 @@ export class WalletModules {
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
         await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
+
+        if (contracts) {
+          await jsonStorage.setItem<MultiContractState>(
+            PENDING_CONTRACTS,
+            contracts
+          );
+        }
       }
 
       return;
@@ -200,7 +225,13 @@ export class WalletModules {
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, contract, accounts, recentlySignedInWallets },
+      payload: {
+        walletId,
+        contract,
+        accounts,
+        recentlySignedInWallets,
+        contracts,
+      },
     });
 
     this.emitter.emit("signedIn", {
@@ -208,6 +239,7 @@ export class WalletModules {
       contractId,
       methodNames,
       accounts,
+      contracts,
     });
   }
 
@@ -277,6 +309,7 @@ export class WalletModules {
 
   private decorateWallet(wallet: Wallet): Wallet {
     const _signIn = wallet.signIn;
+    const _signInMulti = wallet.signInMulti;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
 
@@ -288,6 +321,29 @@ export class WalletModules {
         accounts,
         contractId,
         methodNames,
+        contracts: null,
+      });
+
+      return accounts;
+    };
+
+    wallet.signInMulti = async (params: never) => {
+      if (_signInMulti === undefined) {
+        throw Error(`Method not supported by ${wallet.metadata.name}.`);
+      }
+
+      const accounts = await _signInMulti(params);
+
+      const { permissions } = params as SignInMultiParams;
+      const contracts: MultiContractState = permissions.map((permission) => ({
+        contractId: permission.receiverId,
+        methodNames: permission.methodNames,
+      }));
+      await this.onWalletSignedIn(wallet.id, {
+        accounts,
+        contractId: contracts[0].contractId,
+        methodNames: contracts[0].methodNames,
+        contracts,
       });
 
       return accounts;
@@ -411,8 +467,13 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
-      await this.resolveStorageState();
+    const {
+      accounts,
+      contract,
+      selectedWalletId,
+      recentlySignedInWallets,
+      contracts,
+    } = await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
@@ -422,6 +483,7 @@ export class WalletModules {
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
       },
     });
 
