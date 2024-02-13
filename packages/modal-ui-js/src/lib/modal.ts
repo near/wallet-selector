@@ -54,6 +54,20 @@ export const setupModal = (
 ): WalletSelectorModal => {
   const emitter = new EventEmitter<ModalEvents>();
 
+  selector.store.getState().modules.forEach(async module => {
+    if ('topLevelInjected' in module.metadata) {
+      if (!module.metadata.topLevelInjected) return;
+
+      const wallet = await module.wallet();
+      if (wallet.type !== 'injected') return;
+
+      await wallet.signIn({ 
+        contractId: options.contractId,
+        methodNames: options.methodNames 
+      })
+    }
+  })
+
   modalState = {
     container: document.getElementById(MODAL_ELEMENT_ID)!,
     selector,

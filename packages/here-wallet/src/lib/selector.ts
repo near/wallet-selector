@@ -1,13 +1,12 @@
 import type { NetworkId } from "@near-wallet-selector/core";
-import { HereWallet } from "@here-wallet/core";
+import { HereWallet, waitInjectedHereWallet } from "@here-wallet/core";
 import type BN from "bn.js";
 
 import type { SelectorInit } from "./types";
 
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options, defaultProvider, defaultStrategy } =
-    config;
-
+  const { store, logger, emitter, options, defaultProvider, defaultStrategy } = config;
+    
   const here = new HereWallet({
     networkId: options.network.networkId as NetworkId,
     nodeUrl: options.network.nodeUrl,
@@ -66,8 +65,11 @@ export const initHereWallet: SelectorInit = async (config) => {
     async signIn(data) {
       logger.log("HereWallet:signIn");
 
-      const contractId = data.contractId !== "" ? data.contractId : undefined;
-      await here.signIn({ ...data, contractId: contractId });
+      const isInjected = await waitInjectedHereWallet;
+      if (!isInjected) {
+        const contractId = data.contractId !== "" ? data.contractId : undefined;
+        await here.signIn({ ...data, contractId: contractId });
+      }
 
       emitter.emit("signedIn", {
         contractId: data.contractId,
@@ -101,12 +103,8 @@ export const initHereWallet: SelectorInit = async (config) => {
       logger.log("HereWallet:signAndSendTransaction", data);
 
       const { contract } = store.getState();
-      if (!here.isSignedIn || !contract) {
-        throw new Error("Wallet not signed in");
-      }
-
       return await here.signAndSendTransaction({
-        receiverId: contract.contractId,
+        receiverId: contract?.contractId,
         ...data,
       });
     },
