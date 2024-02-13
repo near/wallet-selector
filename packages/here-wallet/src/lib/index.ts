@@ -1,4 +1,8 @@
-import { waitInjectedHereWallet, type HereProvider, type HereStrategy } from "@here-wallet/core";
+import {
+  waitInjectedHereWallet,
+  type HereProvider,
+  type HereStrategy,
+} from "@here-wallet/core";
 import type { WalletModuleFactory } from "@near-wallet-selector/core";
 import type { HereWallet } from "./types";
 import { initHereWallet } from "./selector";

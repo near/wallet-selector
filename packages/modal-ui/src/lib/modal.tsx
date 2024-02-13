@@ -34,19 +34,23 @@ export const setupModal = (
 
   const emitter = new EventEmitter<ModalEvents>();
 
-  selector.store.getState().modules.forEach(async module => {
-    if ('topLevelInjected' in module.metadata) {
-      if (!module.metadata.topLevelInjected) return;
+  selector.store.getState().modules.forEach(async (module) => {
+    if ("topLevelInjected" in module.metadata) {
+      if (!module.metadata.topLevelInjected) {
+        return;
+      }
 
       const wallet = await module.wallet();
-      if (wallet.type !== 'injected') return;
+      if (wallet.type !== "injected") {
+        return;
+      }
 
-      await wallet.signIn({ 
+      await wallet.signIn({
         contractId: options.contractId,
-        methodNames: options.methodNames 
-      })
+        methodNames: options.methodNames,
+      });
     }
-  })
+  });
 
   const render = (visible = false) => {
     root!.render(

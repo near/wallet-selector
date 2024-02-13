@@ -5,8 +5,9 @@ import type BN from "bn.js";
 import type { SelectorInit } from "./types";
 
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options, defaultProvider, defaultStrategy } = config;
-    
+  const { store, logger, emitter, options, defaultProvider, defaultStrategy } =
+    config;
+
   const here = new HereWallet({
     networkId: options.network.networkId as NetworkId,
     nodeUrl: options.network.nodeUrl,
