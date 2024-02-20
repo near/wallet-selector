@@ -3465,12 +3465,12 @@
     nanoid "3.3.6"
     query-string "^7.1.3"
 
-"@mintbase-js/wallet@0.5.0-beta.6":
-  version "0.5.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@mintbase-js/wallet/-/wallet-0.5.0-beta.6.tgz#2787f6992ed829e67d07828be84d16dd6f590a5d"
-  integrity sha512-22MDqUDMZm3puGEI8dv927Wtc5olRgGb5E7h67b1a5+N2DTKcLPmoHhzj0TFT3BmI9snrhq4MdAEvS785cjq1Q==
+"@mintbase-js/wallet@0.5.6-beta.0":
+  version "0.5.6-beta.0"
+  resolved "https://registry.yarnpkg.com/@mintbase-js/wallet/-/wallet-0.5.6-beta.0.tgz#a7a0d0c0a265d1eb6d9e5a9bf43c89c591926bc0"
+  integrity sha512-V266ienV5d+GP684V842wlRs5CtpmT0/Qpv1QklljM4et5IHqiqa2iFm7y29mm3KEuyNA2HTYYHBvvP+mQ9tKg==
   dependencies:
-    "@near-wallet-selector/core" "^8.5.4"
+    "@near-wallet-selector/core" "8.9.3"
     bn.js "^5.2.1"
     near-api-js "^2.1.4"
 
@@ -3844,22 +3844,22 @@
   dependencies:
     "@near-wallet-selector/core" "^8.2.0"
 
+"@near-wallet-selector/core@8.9.3":
+  version "8.9.3"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.9.3.tgz#ac15ef869da4762d8337552a9f63b9b3a76245ed"
+  integrity sha512-Mjmos4ska8eHwU/tGiWdAY+hHrFRSIpsmLYEfWuO/Uh1bWbJVueyKI7OGxbyWEOL1GJw1J5rx+MzXRS+U3fJow==
+  dependencies:
+    borsh "0.7.0"
+    events "3.3.0"
+    js-sha256 "0.9.0"
+    rxjs "7.8.1"
+
 "@near-wallet-selector/core@^8.2.0":
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.2.0.tgz#5be2f5e371d84bba99edfcef2b056c03fc99d0c7"
   integrity sha512-IHIGfT2Ce7CI5z9srC4tQkhHw/2acAIrZWIcTWLbfzN9u6eWB143hLxTe3eTD1hUVeJBXVxfZR+Ano9nKKBypw==
   dependencies:
     events "3.3.0"
-    rxjs "7.8.1"
-
-"@near-wallet-selector/core@^8.5.4":
-  version "8.7.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.7.0.tgz#65a681c332b46f47bf4ca51b53ee92726b2d9cda"
-  integrity sha512-H1Mc0xyWsy5Vjscn8gjK8y0X1wG5EBH9VuVQ+mFOtdyt8y+7Pttf/0dD91oAIwCo7Pu/ryPukcr6IGAz1R05cA==
-  dependencies:
-    borsh "0.7.0"
-    events "3.3.0"
-    js-sha256 "0.9.0"
     rxjs "7.8.1"
 
 "@next/env@13.3.0":
