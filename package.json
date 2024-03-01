@@ -85,7 +85,7 @@
     "@angular/platform-browser-dynamic": "15.2.9",
     "@angular/router": "15.2.9",
     "@here-wallet/core": "^1.5.1",
-    "@jscutlery/semver": "3.1.0",
+    "@jscutlery/semver": "5.2.0",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@metamask/detect-provider": "^2.0.0",
