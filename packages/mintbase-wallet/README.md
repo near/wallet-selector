@@ -31,6 +31,7 @@ const mintbaseWallet =  setupMintbaseWallet({
   networkId: 'mainnet',
   walletUrl: 'https://wallet.mintbase.xyz',
   callbackUrl: 'https://www.mywebsite.com',
+  contractId: "yourcontract.near",
   deprecated: false,
 });
 
@@ -46,6 +47,7 @@ const selector = await setupWalletSelector({
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 - `callbackUrl`: (`string?`): Valid url to send your user after txn.
 - `walletUrl`: (`string?`): wallet url: https://wallet.mintbase.xyz for mainnet and https://testnet.wallet.mintbase.xyz for testnet.
+- `contractId`: (`string?`): the contract you want the user to signIn.
 
 
 ## License
