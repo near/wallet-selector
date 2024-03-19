@@ -31,7 +31,7 @@ const mintbaseWallet =  setupMintbaseWallet({
   networkId: 'mainnet',
   walletUrl: 'https://wallet.mintbase.xyz',
   callbackUrl: 'https://www.mywebsite.com',
-  contractId: "yourcontract.near",
+  contractId: "yourcontract.near", //remove if you don't want limited access keys to be generated
   deprecated: false,
 });
 
@@ -47,7 +47,7 @@ const selector = await setupWalletSelector({
 - `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 - `callbackUrl`: (`string?`): Valid url to send your user after txn.
 - `walletUrl`: (`string?`): wallet url: https://wallet.mintbase.xyz for mainnet and https://testnet.wallet.mintbase.xyz for testnet.
-- `contractId`: (`string?`): the contract you want the user to signIn.
+- `contractId`: (`string?`): the contract for which the generated limited access key will allow transactions, if you do not need a limited access key do not add this and it wont be created providing quicker onboarding
 
 
 ## License
