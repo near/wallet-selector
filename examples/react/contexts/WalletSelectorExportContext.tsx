@@ -70,7 +70,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupCoin98Wallet(),
         setupNearFi(),
         setupRamperWallet(),
-        setupMintbaseWallet(),
+        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {
