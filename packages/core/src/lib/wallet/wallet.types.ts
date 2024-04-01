@@ -258,7 +258,6 @@ export type BrowserWallet = BaseWallet<
 
 export type InjectedWalletMetadata = BaseWalletMetadata & {
   downloadUrl: string;
-  topLevelInjected?: boolean;
   useUrlAccountImport?: boolean;
 };
 
