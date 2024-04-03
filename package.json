@@ -1,6 +1,6 @@
 {
   "name": "near-wallet-selector",
-  "version": "8.9.5",
+  "version": "8.9.6",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -90,7 +90,7 @@
     "@ledgerhq/hw-transport-webhid": "6.28.3",
     "@metamask/detect-provider": "^2.0.0",
     "@meteorwallet/sdk": "^1.0.9",
-    "@mintbase-js/wallet": "0.5.0-beta.6",
+    "@mintbase-js/wallet": "0.6.0-beta.3",
     "@near-snap/sdk": "^0.6.0",
     "@peersyst/near-mobile-signer": "^1.0.10",
     "@ramper/near": "^0.0.30",
