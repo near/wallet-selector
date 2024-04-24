@@ -103,6 +103,11 @@
             "glob": "**/*",
             "input": "packages/near-mobile-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ethereum-wallets/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/angular/src/styles.scss"],
