@@ -24,10 +24,17 @@ import {
   type GetAccountReturnType,
   type Config,
 } from "@wagmi/core";
-import { bytesToHex, keccak256, parseAbi, toHex } from "viem";
+import { bytesToHex, keccak256, toHex } from "viem";
+import bs58 from "bs58";
 
 import icon from "./icon";
 import { createModal } from "./modal";
+import {
+  ETHEREUM_ACCOUNT_ABI,
+  DEFAULT_ACCESS_KEY_ALLOWANCE,
+  RLP_EXECUTE,
+  MAX_TGAS,
+} from "./utils";
 
 export interface EthereumWalletsParams {
   wagmiConfig: Config;
@@ -45,14 +52,6 @@ export interface EthereumWalletsParams {
   devModeAccount?: string;
   deprecated?: boolean;
 }
-
-const ETHEREUM_ACCOUNT_ABI = parseAbi([
-  "function functionCall(string receiver_id, string method_name, bytes args, uint64 gas, uint32 yoctoNear) payable",
-  "function transfer(string receiver_id, uint32 yoctoNear) payable",
-  "function addKey(uint8 public_key_kind, bytes public_key, uint64 nonce, bool is_full_access, bool is_limited_allowance, uint128 allowance, string receiver_id, string[] method_names)",
-  "function deleteKey(uint8 public_key_kind, bytes public_key)",
-]);
-const DEFAULT_ACCESS_KEY_ALLOWANCE = "250000000000000000000000";
 
 interface EthereumWalletsState {
   keystore: nearAPI.keyStores.KeyStore;
@@ -104,7 +103,7 @@ const EthereumWallets: WalletBehaviourFactory<
   const getAccounts = async (): Promise<Array<Account>> => {
     const address = getAccount(wagmiConfig).address?.toLowerCase();
     const account = devMode ? address + "." + devModeAccount : address;
-    if (!account) {
+    if (!account || !address) {
       return [];
     }
     const keyPair = await _state.keystore.getKey(
@@ -133,7 +132,7 @@ const EthereumWallets: WalletBehaviourFactory<
     switch (tx.actions[0].type) {
       case "AddKey": {
         const publicKey = bytesToHex(
-          Buffer.from(tx.actions[0].params.publicKey.split(":")[1], "base64")
+          bs58.decode(tx.actions[0].params.publicKey.split(":")[1])
         );
         if (tx.actions[0].params.accessKey.permission === "FullAccess") {
           result = await writeContract(wagmiConfig, {
@@ -180,7 +179,7 @@ const EthereumWallets: WalletBehaviourFactory<
       }
       case "DeleteKey": {
         const publicKey = bytesToHex(
-          Buffer.from(tx.actions[0].params.publicKey.split(":")[1], "base64")
+          bs58.decode(tx.actions[0].params.publicKey.split(":")[1])
         );
         result = await writeContract(wagmiConfig, {
           abi: ETHEREUM_ACCOUNT_ABI,
@@ -198,6 +197,8 @@ const EthereumWallets: WalletBehaviourFactory<
       case "FunctionCall": {
         const yoctoNear = BigInt(tx.actions[0].params.deposit) % BigInt(1e6);
         const value = BigInt(tx.actions[0].params.deposit) / BigInt(1e6);
+        const requestedGas = BigInt(tx.actions[0].params.gas);
+        const gas = requestedGas <= MAX_TGAS ? requestedGas : MAX_TGAS;
         result = await writeContract(wagmiConfig, {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
@@ -206,7 +207,7 @@ const EthereumWallets: WalletBehaviourFactory<
             tx.receiverId,
             tx.actions[0].params.methodName,
             bytesToHex(stringifyJsonOrBytes(tx.actions[0].params.args)),
-            BigInt(tx.actions[0].params.gas),
+            gas,
             +yoctoNear.toString(),
           ],
           value,
@@ -334,6 +335,69 @@ const EthereumWallets: WalletBehaviourFactory<
     });
   };
 
+  const getRelayerOnboardingInfo = async ({
+    accountId,
+  }: {
+    accountId: string;
+  }): Promise<{
+    relayerPublicKey: string;
+    onboardingTransaction: null | Transaction;
+  }> => {
+    let relayerPublicKey: string;
+    try {
+      const response = await fetch(
+        // TODO: update url when available.
+        `https://near-wallet-playground.testnet.aurora.dev/onboard?account=${accountId}`,
+        {
+          method: "GET",
+        }
+      );
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { public_key } = await response.json();
+      relayerPublicKey =
+        "ed25519:" + bs58.encode(Buffer.from(public_key, "hex"));
+    } catch (error) {
+      logger.error(error);
+      throw new Error("Failed to fetch the relayer's public key.");
+    }
+    try {
+      const key = await provider.query<AccessKeyViewRaw>({
+        request_type: "view_access_key",
+        finality: "final",
+        account_id: accountId,
+        public_key: relayerPublicKey,
+      });
+      logger.log("User account ready, relayer access key onboarded.", key);
+      return { relayerPublicKey, onboardingTransaction: null };
+    } catch (error) {
+      logger.warn("Need to add the relayer access key.", error);
+      // Add the relayer's access key on-chain.
+      return {
+        relayerPublicKey,
+        onboardingTransaction: {
+          signerId: accountId,
+          receiverId: accountId,
+          actions: [
+            {
+              type: "AddKey",
+              params: {
+                publicKey: relayerPublicKey,
+                accessKey: {
+                  nonce: 0,
+                  permission: {
+                    receiverId: accountId,
+                    allowance: "0",
+                    methodNames: [RLP_EXECUTE],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      };
+    }
+  };
+
   const signAndSendTransactions = async (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ) => {
@@ -346,7 +410,7 @@ const EthereumWallets: WalletBehaviourFactory<
           request_type: "view_access_key",
           finality: "final",
           account_id: accountLogIn.accountId,
-          public_key: accountLogIn.publicKey.toString(),
+          public_key: accountLogIn.publicKey,
         });
         const accessKeyUsable = validateAccessKey({
           transactions: nearTxs,
@@ -372,7 +436,14 @@ const EthereumWallets: WalletBehaviourFactory<
         );
       }
     }
-    const txs = transformEthereumTransactions(nearTxs);
+    const { relayerPublicKey, onboardingTransaction } =
+      await getRelayerOnboardingInfo({
+        accountId: accountLogIn.accountId,
+      });
+    let txs = transformEthereumTransactions(nearTxs);
+    if (onboardingTransaction) {
+      txs = [onboardingTransaction, ...txs];
+    }
     const { selectedNetworkId } = web3Modal.getState();
     if (selectedNetworkId !== expectedChainId) {
       await switchChain(wagmiConfig, {
@@ -387,6 +458,7 @@ const EthereumWallets: WalletBehaviourFactory<
             reject("User canceled Ethereum wallet transaction(s).");
           },
           txs,
+          relayerPublicKey,
         });
         showModal();
         (async () => {
@@ -420,7 +492,7 @@ const EthereumWallets: WalletBehaviourFactory<
           request_type: "view_access_key",
           finality: "final",
           account_id: accountLogIn.accountId,
-          public_key: accountLogIn.publicKey.toString(),
+          public_key: accountLogIn.publicKey,
         });
         // NOTE: don't await, in case of a connection problem with the wallet, the user should still be disconnected from dApp.
         // If not deleted, the access key will be reused during signIn.
@@ -544,7 +616,7 @@ const EthereumWallets: WalletBehaviourFactory<
             });
             reUseKeyPair = true;
           } catch (error) {
-            logger.error("Local access key cannot be reused.");
+            logger.warn("Local access key cannot be reused.");
             _state.keystore.removeKey(options.network.networkId, accountId);
           }
         }
