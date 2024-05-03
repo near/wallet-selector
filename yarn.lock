@@ -3466,7 +3466,7 @@
     nanoid "3.3.6"
     query-string "^7.1.3"
 
-"@mintbase-js/wallet@^0.6.0-beta.3":
+"@mintbase-js/wallet@0.6.0-beta.3":
   version "0.6.0-beta.3"
   resolved "https://registry.yarnpkg.com/@mintbase-js/wallet/-/wallet-0.6.0-beta.3.tgz#31ee107f2cf888fa120e8ca07f47e5dcd278ca26"
   integrity sha512-fzkqS3LDnSHB4YG0ync8JRuv+xQlMOzcu0btpAN8SC1hZNGUak0BTXBiNxKZQTeuH/DL+6ghh+t9VzJknOorhA==
@@ -5531,10 +5531,10 @@
     "@parcel/utils" "2.10.3"
     nullthrows "^1.1.1"
 
-"@peersyst/near-mobile-signer@^1.0.10":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.11.tgz#b87c448d5bcfb9987c6ce8395fa5e601839e5525"
-  integrity sha512-9jU7rjMa9rEo0CYEeYNcu5Zzpe78ctgfxXuIRylpWK4MHuZ/N0ZmxRyUtGgqGQS9zW0aI6PHVURLSCAB5qsYlg==
+"@peersyst/near-mobile-signer@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.0.12.tgz#26052b4136016e5353297b764811440a0ac4f997"
+  integrity sha512-YxYmH+DKw2FdavOIjzqW6JPKehZvF75IV8eXailE9RHCt3a+z0PG3UFqbdIr/hp6ojSvTa9Zn3g4yWYNw4vvSg==
   dependencies:
     bn.js "^5.2.1"
     js-sha256 "^0.9.0"
