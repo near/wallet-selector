@@ -20,6 +20,7 @@ import {
   getAccount,
   switchChain,
   writeContract,
+  waitForTransactionReceipt,
   disconnect,
   type GetAccountReturnType,
   type Config,
@@ -122,7 +123,13 @@ const EthereumWallets: WalletBehaviourFactory<
     _state.subscriptions = [];
   };
 
-  const executeTransaction = async (tx: Transaction) => {
+  const executeTransaction = async ({
+    tx,
+    relayerPublicKey,
+  }: {
+    tx: Transaction;
+    relayerPublicKey: string;
+  }): Promise<`0x${string}`> => {
     const to = (
       /^0x([A-Fa-f0-9]{40})$/.test(tx.receiverId)
         ? tx.receiverId
@@ -171,6 +178,14 @@ const EthereumWallets: WalletBehaviourFactory<
               tx.actions[0].params.accessKey.permission.receiverId,
               tx.actions[0].params.accessKey.permission.methodNames ?? [],
             ],
+            gasPrice:
+              tx.actions[0].params.publicKey === relayerPublicKey &&
+              tx.receiverId ===
+                tx.actions[0].params.accessKey.permission.receiverId
+                ? // Fix 0 gasPrice to avoid wallet errors when account has 0 NEAR balance.
+                  // The onboarding transaction is always free.
+                  BigInt(0)
+                : undefined,
             chainId: expectedChainId,
             type: "legacy",
           });
@@ -345,17 +360,20 @@ const EthereumWallets: WalletBehaviourFactory<
   }> => {
     let relayerPublicKey: string;
     try {
-      const response = await fetch(
-        // TODO: update url when available.
-        `https://near-wallet-playground.testnet.aurora.dev/onboard?account=${accountId}`,
-        {
-          method: "GET",
-        }
-      );
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { public_key } = await response.json();
+      const response = await fetch(nearRpc, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 3,
+          method: "near_getPublicKey",
+        }),
+      });
+      const { result } = await response.json();
       relayerPublicKey =
-        "ed25519:" + bs58.encode(Buffer.from(public_key, "hex"));
+        "ed25519:" + bs58.encode(Buffer.from(result.public_key, "hex"));
     } catch (error) {
       logger.error(error);
       throw new Error("Failed to fetch the relayer's public key.");
@@ -367,10 +385,18 @@ const EthereumWallets: WalletBehaviourFactory<
         account_id: accountId,
         public_key: relayerPublicKey,
       });
-      logger.log("User account ready, relayer access key onboarded.", key);
+      logger.log(
+        "User account ready, relayer access key onboarded.",
+        relayerPublicKey,
+        key
+      );
       return { relayerPublicKey, onboardingTransaction: null };
     } catch (error) {
-      logger.warn("Need to add the relayer access key.", error);
+      logger.warn(
+        "Need to add the relayer access key.",
+        relayerPublicKey,
+        error
+      );
       // Add the relayer's access key on-chain.
       return {
         relayerPublicKey,
@@ -387,7 +413,8 @@ const EthereumWallets: WalletBehaviourFactory<
                   permission: {
                     receiverId: accountId,
                     allowance: "0",
-                    methodNames: [RLP_EXECUTE],
+                    // methodNames: [RLP_EXECUTE],
+                    methodNames: [],
                   },
                 },
               },
@@ -431,7 +458,7 @@ const EthereumWallets: WalletBehaviourFactory<
         }
       } catch (error) {
         logger.error(
-          "Failed to executed FunctionCall access key transaction, falling back to Ethereum wallet to sign and send transaction.",
+          "Failed to execute FunctionCall access key transaction, falling back to Ethereum wallet to sign and send transaction.",
           error
         );
       }
@@ -465,8 +492,15 @@ const EthereumWallets: WalletBehaviourFactory<
           try {
             for (const [index, tx] of txs.entries()) {
               renderTxs({ selectedIndex: index });
-              const result = await executeTransaction(tx);
-              logger.log(result);
+              const txHash = await executeTransaction({ tx, relayerPublicKey });
+              logger.log(`Sent transaction: ${txHash}`);
+              /*
+              const receipt = await waitForTransactionReceipt(wagmiConfig, {
+                hash: txHash,
+                chainId: expectedChainId,
+              });
+              logger.log(receipt);
+              */
               // TODO get the FinalExecutionOutcome of the rpc transaction
               results.push({} as FinalExecutionOutcome);
             }
@@ -494,9 +528,9 @@ const EthereumWallets: WalletBehaviourFactory<
           account_id: accountLogIn.accountId,
           public_key: accountLogIn.publicKey,
         });
-        // NOTE: don't await, in case of a connection problem with the wallet, the user should still be disconnected from dApp.
+        // NOTE: If connection problem with the wallet, the user can cancel from the modal to skip the disconnect transaction.
         // If not deleted, the access key will be reused during signIn.
-        signAndSendTransactions([
+        await signAndSendTransactions([
           {
             signerId: accountLogIn.accountId,
             receiverId: accountLogIn.accountId,
@@ -505,19 +539,19 @@ const EthereumWallets: WalletBehaviourFactory<
                 type: "DeleteKey",
                 params: {
                   publicKey: accountLogIn.publicKey,
+                  /*
+                  publicKey:
+                    "ed25519:3HDMUBDSSup8jPL7FMLiduSPwir6HhX4zedvZmzy25So",
+                  */
                 },
               },
             ],
           },
-        ]).then(() => {
-          _state.keystore.removeKey(
-            options.network.networkId,
-            accountLogIn.accountId
-          );
-        });
-        // NOTE: await a promise so that event loop calls `signAndSendTransactions` before `disconnect(wagmiConfig)`.
-        await ((ms: number) =>
-          new Promise((resolve) => setTimeout(resolve, ms)))(1);
+        ]);
+        _state.keystore.removeKey(
+          options.network.networkId,
+          accountLogIn.accountId
+        );
       }
       cleanup();
     } catch (error) {
