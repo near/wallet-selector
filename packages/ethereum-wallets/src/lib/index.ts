@@ -4,6 +4,7 @@ import type {
   FinalExecutionOutcome,
   FunctionCallPermissionView,
 } from "near-api-js/lib/providers/provider";
+import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
 import {
   type WalletModuleFactory,
@@ -494,15 +495,24 @@ const EthereumWallets: WalletBehaviourFactory<
               renderTxs({ selectedIndex: index });
               const txHash = await executeTransaction({ tx, relayerPublicKey });
               logger.log(`Sent transaction: ${txHash}`);
-              /*
               const receipt = await waitForTransactionReceipt(wagmiConfig, {
                 hash: txHash,
                 chainId: expectedChainId,
               });
-              logger.log(receipt);
-              */
-              // TODO get the FinalExecutionOutcome of the rpc transaction
-              results.push({} as FinalExecutionOutcome);
+              logger.log("Receipt:", receipt);
+              if (receipt.status !== "success") {
+                throw new Error("Transaction execution failed.");
+              }
+              const nearProvider = new JsonRpcProvider(
+                // @ts-expect-error
+                provider.provider.connection
+              );
+              const nearTx = await nearProvider.txStatus(
+                // @ts-expect-error
+                receipt.nearTransactionHash,
+                accountLogIn.accountId
+              );
+              results.push(nearTx);
             }
             resolve();
           } catch (error) {
