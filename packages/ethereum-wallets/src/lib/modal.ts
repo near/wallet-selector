@@ -159,12 +159,11 @@ export function createModal({
           tx.actions[0].params.accessKey.permission.allowance === "0"
             ? tx.actions[0].params.publicKey === relayerPublicKey &&
               tx.actions[0].params.accessKey.permission.receiverId ===
-                tx.signerId /* &&
+                tx.signerId &&
               tx.actions[0].params.accessKey.permission.methodNames?.length ===
                 1 &&
               tx.actions[0].params.accessKey.permission.methodNames[0] ===
                 RLP_EXECUTE
-              */
               ? "This AddKey transaction will onboard your account and enable you to send the next transactions."
               : "WARNING: this key has unlimited allowance and can spend all your NEAR, only approve this transaction if you know what you are doing !!!"
             : ""

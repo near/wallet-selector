@@ -415,8 +415,7 @@ const EthereumWallets: WalletBehaviourFactory<
                   permission: {
                     receiverId: accountId,
                     allowance: "0",
-                    // methodNames: [RLP_EXECUTE],
-                    methodNames: [],
+                    methodNames: [RLP_EXECUTE],
                   },
                 },
               },
