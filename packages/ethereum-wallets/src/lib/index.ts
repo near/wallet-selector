@@ -262,9 +262,10 @@ const EthereumWallets: WalletBehaviourFactory<
         }
         if (data.address && data.status === "connected") {
           if (store.getState().contract?.contractId) {
+            const address = data.address.toLowerCase();
             const keyPair = await _state.keystore.getKey(
               options.network.networkId,
-              "opa_code28.testnet" // data.address
+              devMode ? address + "." + devModeAccount : address
             );
             if (!keyPair) {
               emitter.emit("signedOut", null);
