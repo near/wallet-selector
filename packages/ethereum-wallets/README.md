@@ -7,11 +7,11 @@ Ethereum wallet support NEP: https://github.com/near/NEPs/issues/518
 
 Any Ethereum wallet can be connected via Web3Modal: the dApp can chose which wallets to support and a multichain dApp can switch networks using the same wallet connection.
 
-SignIn requires a switch to NEAR network, but the user can switch to other networks and will be prompted to switch back to NEAR before a transaction is made.
+SignIn requires a switch to NEAR network, if the user switches to other networks he will be prompted to switch back to NEAR before a transaction is made.
 
 Sign out prompts to remove the FunctionCall access key if there is one, this action is not blocking and the user can sign out without executing the transaction.
 
-A NEAR dApp can connect to multiple Ethereum wallet addresses. If the user switches address and connects from the wallet instead of the dApp, the wallet will be disconnected from the dApp so that it can reconnect with the signIn flow.
+A NEAR dApp can connect to multiple Ethereum wallet addresses. If the user switches to a new address in the Ethereum wallet, the NEAR wallet will be disconnected from the dApp so that it can reconnect with the signIn flow.
 If the dApp doesn't require a FunctionCall access key or the Ethereum wallet address already signed in, then the address connects automatically when changed.
 
 `signMessage` and `verifyOwner` are not implemented because Ethereum wallets are not compatible with these standards, instead a dApp can use `eth_sign` or `eth_signTypedData_v4` to authenticate the wallet by interacting with it directly.
@@ -20,14 +20,12 @@ NEP-518 doesn't support multiple actions within the same transaction, so when mu
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
-
 ```bash
 # Using Yarn
-yarn add near-api-js @web3modal/wagmi @wagmi/core @wagmi/connectors viem @near-wallet-selector/ethereum-wallets
+yarn add near-api-js @web3modal/wagmi wagmi viem @tanstack/react-query @near-wallet-selector/ethereum-wallets
 
 # Using NPM.
-npm install near-api-js @web3modal/wagmi @wagmi/core @wagmi/connectors viem @near-wallet-selector/ethereum-wallets
+npm install near-api-js @web3modal/wagmi wagmi viem @tanstack/react-query @near-wallet-selector/ethereum-wallets
 ```
 
 Then use it in your dApp:

@@ -35,7 +35,7 @@ import { distinctUntilChanged, map } from "rxjs";
 import { createWeb3Modal } from "@web3modal/wagmi";
 import { reconnect, http, createConfig, type Config } from "@wagmi/core";
 import { type Chain } from "@wagmi/core/chains";
-import { injected } from "@wagmi/connectors";
+import { injected, walletConnect } from "@wagmi/connectors";
 
 import { Loading } from "../components/Loading";
 import { CONTRACT_ID } from "../constants";
@@ -88,13 +88,28 @@ const wagmiConfig: Config = createConfig({
   transports: {
     [near.id]: http(),
   },
-  connectors: [injected({ shimDisconnect: true })],
+  connectors: [
+    walletConnect({
+      projectId,
+      metadata: {
+        name: "NEAR Guest Book",
+        description: "A guest book with comments stored on the NEAR blockchain",
+        url: "https://near.github.io/wallet-selector",
+        icons: ["https://near.github.io/wallet-selector/favicon.ico"],
+      },
+      showQrModal: false,
+    }),
+    injected({ shimDisconnect: true }),
+  ],
 });
 reconnect(wagmiConfig);
 
 const web3Modal = createWeb3Modal({
   wagmiConfig: wagmiConfig,
   projectId,
+  featuredWalletIds: [
+    "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18", // Zerion
+  ],
 });
 
 export const WalletSelectorContextProvider: React.FC<{
