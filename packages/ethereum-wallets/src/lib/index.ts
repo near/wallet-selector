@@ -23,9 +23,11 @@ import {
   writeContract,
   waitForTransactionReceipt,
   disconnect,
+  estimateGas,
   type GetAccountReturnType,
   type Config,
 } from "@wagmi/core";
+import { type WriteContractParameters } from "@wagmi/core";
 import { bytesToHex, keccak256, toHex } from "viem";
 import bs58 from "bs58";
 
@@ -136,49 +138,52 @@ const EthereumWallets: WalletBehaviourFactory<
         ? tx.receiverId
         : "0x" + keccak256(toHex(tx.receiverId)).slice(26)
     ) as `0x${string}`;
-    let result;
+    let ethTx: WriteContractParameters;
     switch (tx.actions[0].type) {
       case "AddKey": {
         const publicKey = bytesToHex(
           bs58.decode(tx.actions[0].params.publicKey.split(":")[1])
         );
         if (tx.actions[0].params.accessKey.permission === "FullAccess") {
-          result = await writeContract(wagmiConfig, {
+          const args = [
+            0, // 0 stands for ed25519
+            publicKey,
+            BigInt(tx.actions[0].params.accessKey.nonce ?? 0),
+            true,
+            false, // Not used with is_full_access
+            BigInt(0), // Not used with is_full_access
+            "", // Not used with is_full_access
+            [], // Not used with is_full_access
+          ];
+          ethTx = {
             abi: ETHEREUM_ACCOUNT_ABI,
             address: to,
             functionName: "addKey",
-            args: [
-              0, // 0 stands for ed25519
-              publicKey,
-              BigInt(tx.actions[0].params.accessKey.nonce ?? 0),
-              true,
-              false, // Not used with is_full_access
-              BigInt(0), // Not used with is_full_access
-              "", // Not used with is_full_access
-              [], // Not used with is_full_access
-            ],
+            args,
             chainId: expectedChainId,
             type: "legacy",
-          });
+          };
+          throw new Error("Requesting a FullAccess key is not allowed.");
         } else {
           const allowance = BigInt(
             tx.actions[0].params.accessKey.permission.allowance ??
               DEFAULT_ACCESS_KEY_ALLOWANCE
           );
-          result = await writeContract(wagmiConfig, {
+          const args = [
+            0, // 0 stands for ed25519
+            publicKey,
+            BigInt(tx.actions[0].params.accessKey.nonce ?? 0),
+            false,
+            allowance > 0 ? true : false,
+            allowance,
+            tx.actions[0].params.accessKey.permission.receiverId,
+            tx.actions[0].params.accessKey.permission.methodNames ?? [],
+          ];
+          ethTx = {
             abi: ETHEREUM_ACCOUNT_ABI,
             address: to,
             functionName: "addKey",
-            args: [
-              0, // 0 stands for ed25519
-              publicKey,
-              BigInt(tx.actions[0].params.accessKey.nonce ?? 0),
-              false,
-              allowance > 0 ? true : false,
-              allowance,
-              tx.actions[0].params.accessKey.permission.receiverId,
-              tx.actions[0].params.accessKey.permission.methodNames ?? [],
-            ],
+            args,
             gasPrice:
               tx.actions[0].params.publicKey === relayerPublicKey &&
               tx.receiverId ===
@@ -189,7 +194,7 @@ const EthereumWallets: WalletBehaviourFactory<
                 : undefined,
             chainId: expectedChainId,
             type: "legacy",
-          });
+          };
         }
         break;
       }
@@ -197,59 +202,64 @@ const EthereumWallets: WalletBehaviourFactory<
         const publicKey = bytesToHex(
           bs58.decode(tx.actions[0].params.publicKey.split(":")[1])
         );
-        result = await writeContract(wagmiConfig, {
+        const args = [
+          0, // 0 stands for ed25519
+          publicKey,
+        ];
+        ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
           functionName: "deleteKey",
-          args: [
-            0, // 0 stands for ed25519
-            publicKey,
-          ],
+          args,
           chainId: expectedChainId,
           type: "legacy",
-        });
+        };
         break;
       }
       case "FunctionCall": {
         const yoctoNear = BigInt(tx.actions[0].params.deposit) % BigInt(1e6);
         const value = BigInt(tx.actions[0].params.deposit) / BigInt(1e6);
         const requestedGas = BigInt(tx.actions[0].params.gas);
-        const gas = requestedGas <= MAX_TGAS ? requestedGas : MAX_TGAS;
-        result = await writeContract(wagmiConfig, {
+        const nearGas = requestedGas <= MAX_TGAS ? requestedGas : MAX_TGAS;
+        const args = [
+          tx.receiverId,
+          tx.actions[0].params.methodName,
+          bytesToHex(stringifyJsonOrBytes(tx.actions[0].params.args)),
+          nearGas,
+          +yoctoNear.toString(),
+        ];
+        ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
           functionName: "functionCall",
-          args: [
-            tx.receiverId,
-            tx.actions[0].params.methodName,
-            bytesToHex(stringifyJsonOrBytes(tx.actions[0].params.args)),
-            gas,
-            +yoctoNear.toString(),
-          ],
+          args,
           value,
           chainId: expectedChainId,
           type: "legacy",
-        });
+        };
         break;
       }
       case "Transfer": {
         const yoctoNear = BigInt(tx.actions[0].params.deposit) % BigInt(1e6);
         const value = BigInt(tx.actions[0].params.deposit) / BigInt(1e6);
-        result = await writeContract(wagmiConfig, {
+        const args = [tx.receiverId, +yoctoNear.toString()];
+        ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
           functionName: "transfer",
-          args: [tx.receiverId, +yoctoNear.toString()],
+          args,
           value,
           chainId: expectedChainId,
           type: "legacy",
-        });
+        };
         break;
       }
       default: {
         throw new Error("Invalid action type");
       }
     }
+    const gas = await estimateGas(wagmiConfig, ethTx);
+    const result = await writeContract(wagmiConfig, { ...ethTx, gas });
     return result;
   };
 
