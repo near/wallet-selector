@@ -3,7 +3,8 @@ import type {
   Transaction,
   TransferAction,
 } from "@near-wallet-selector/core";
-import { RLP_EXECUTE } from "./utils";
+import { formatUnits } from "viem";
+import { DEFAULT_ACCESS_KEY_ALLOWANCE, RLP_EXECUTE } from "./utils";
 
 export function createModal({
   onCancel,
@@ -148,10 +149,44 @@ export function createModal({
       }
       txElement.innerHTML = `
         ${
-          tx.actions[0].type === "AddKey" &&
-          tx.actions[0].params.accessKey.permission === "FullAccess"
-            ? "WARNING: you can loose your account and all your assets by giving FullAccess, only approve this transaction if you know what you are doing !!!"
-            : ""
+          tx.actions[0].type === "AddKey"
+            ? tx.actions[0].params.accessKey.permission === "FullAccess"
+              ? "WARNING: The application is requesting a FullAccess key, you can loose your account and all your assets, only approve this transaction if you know what you are doing !!!"
+              : `<p>Connect to ${
+                  tx.actions[0].params.accessKey.permission.receiverId
+                }</p>
+            <p>Network Fee Allowance: ${
+              tx.actions[0].params.accessKey.permission.allowance === "0"
+                ? "unlimited"
+                : formatUnits(
+                    BigInt(
+                      tx.actions[0].params.accessKey.permission.allowance ??
+                        DEFAULT_ACCESS_KEY_ALLOWANCE
+                    ),
+                    24
+                  )
+            } NEAR</p>
+            <p>This allowance is spendable by the application towards network fees incurred during use.</p>
+            `
+            : tx.actions[0].type === "DeleteKey"
+            ? "This is an optional transaction which removes the application access key. If you reject the transaction, the key will be reused when you login again."
+            : tx.actions[0].type === "FunctionCall"
+            ? `
+              <p>Contract execution:</p>
+              <p>from: ${tx.signerId}</p>
+              <p>to: ${tx.receiverId}</p>
+              <p>function: ${tx.actions[0].params.methodName}</p>
+              <p>deposit: ${formatUnits(
+                BigInt(tx.actions[0].params.deposit),
+                24
+              )} NEAR</p>
+            `
+            : tx.actions[0].type === "Transfer"
+            ? `Transfer ${formatUnits(
+                BigInt(tx.actions[0].params.deposit),
+                24
+              )} NEAR from ${tx.signerId} to ${tx.receiverId}`
+            : "Unknown transaction type."
         }
         ${
           tx.actions[0].type === "AddKey" &&
@@ -164,10 +199,12 @@ export function createModal({
                 1 &&
               tx.actions[0].params.accessKey.permission.methodNames[0] ===
                 RLP_EXECUTE
-              ? "This AddKey transaction will onboard your account and enable you to send the next transactions."
+              ? "This transaction will onboard your account and enable you to send the next transactions."
               : "WARNING: this key has unlimited allowance and can spend all your NEAR, only approve this transaction if you know what you are doing !!!"
             : ""
         }
+        <p>Transaction Details:</p>
+        <p>${JSON.stringify(tx.actions[0], null, 2)}</p>
         <p>Status: ${
           i < selectedIndex
             ? "completed"
@@ -175,13 +212,6 @@ export function createModal({
             ? "sign the transaction in your wallet..."
             : "pending..."
         }</p>
-        <p>type: ${tx.actions[0].type}</p>
-        <p>receiverId: ${tx.receiverId}</p>
-        <p>params: ${JSON.stringify(
-          (tx.actions[0] as FunctionCallAction | TransferAction).params,
-          null,
-          2
-        )}</p>
       `;
       container.appendChild(txElement);
     });
