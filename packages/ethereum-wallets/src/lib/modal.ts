@@ -149,6 +149,15 @@ export function createModal({
           tx.actions[0].type === "AddKey"
             ? tx.actions[0].params.accessKey.permission === "FullAccess"
               ? "<p>WARNING: The application is requesting a FullAccess key, you can loose your account and all your assets, only approve this transaction if you know what you are doing !!!<p>"
+              : tx.actions[0].params.accessKey.permission.allowance === "0" &&
+                tx.actions[0].params.publicKey === relayerPublicKey &&
+                tx.actions[0].params.accessKey.permission.receiverId ===
+                  tx.signerId &&
+                tx.actions[0].params.accessKey.permission.methodNames
+                  ?.length === 1 &&
+                tx.actions[0].params.accessKey.permission.methodNames[0] ===
+                  RLP_EXECUTE
+              ? "<p>This transaction will onboard your account and enable you to transact on NEAR Protocol.</p>"
               : `
                   <p>Connect to ${
                     tx.actions[0].params.accessKey.permission.receiverId
@@ -167,7 +176,11 @@ export function createModal({
                           )
                     } NEAR
                   </p>
-                  <p>This allowance is spendable by the application towards network fees incurred during use.</p>
+                  ${
+                    tx.actions[0].params.accessKey.permission.allowance === "0"
+                      ? "<p>WARNING: this key will have unlimited allowance spendable towards network fees, only approve this transaction if you trust the application and you know what you are doing !!!</p>"
+                      : "<p>This allowance is spendable by the application towards network fees incurred during use.</p>"
+                  }
                 `
             : tx.actions[0].type === "DeleteKey"
             ? "<p>This is an optional transaction which removes the application access key. If you reject the transaction, the key will be reused when you login again.</p>"
@@ -194,22 +207,6 @@ export function createModal({
                 </p>
               `
             : "Unknown transaction type."
-        }
-        ${
-          // Relayer onboarding
-          tx.actions[0].type === "AddKey" &&
-          tx.actions[0].params.accessKey.permission !== "FullAccess" &&
-          tx.actions[0].params.accessKey.permission.allowance === "0"
-            ? tx.actions[0].params.publicKey === relayerPublicKey &&
-              tx.actions[0].params.accessKey.permission.receiverId ===
-                tx.signerId &&
-              tx.actions[0].params.accessKey.permission.methodNames?.length ===
-                1 &&
-              tx.actions[0].params.accessKey.permission.methodNames[0] ===
-                RLP_EXECUTE
-              ? "<p>This transaction will onboard your account and enable you to send the next transactions.</p>"
-              : "<p>WARNING: this key has unlimited allowance and can spend all your NEAR, only approve this transaction if you know what you are doing !!!</p>"
-            : ""
         }
         <p>Transaction Details:</p>
         <p>${JSON.stringify(tx.actions[0], null, 2)}</p>
