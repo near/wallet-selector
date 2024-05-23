@@ -7,6 +7,10 @@ import type {
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
 import {
+  parseResultError,
+  parseRpcError,
+} from "near-api-js/lib/utils/rpc_errors";
+import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
   type Subscription,
@@ -22,6 +26,7 @@ import {
   switchChain,
   writeContract,
   waitForTransactionReceipt,
+  getTransactionReceipt,
   disconnect,
   estimateGas,
   type GetAccountReturnType,
@@ -443,6 +448,7 @@ const EthereumWallets: WalletBehaviourFactory<
     const nearTxs = await transformTransactions(transactions);
     const [accountLogIn] = await getAccounts();
     if (accountLogIn.publicKey) {
+      let accessKeyUsable;
       try {
         const accessKey = await provider.query<AccessKeyViewRaw>({
           request_type: "view_access_key",
@@ -450,28 +456,34 @@ const EthereumWallets: WalletBehaviourFactory<
           account_id: accountLogIn.accountId,
           public_key: accountLogIn.publicKey,
         });
-        const accessKeyUsable = validateAccessKey({
+        accessKeyUsable = validateAccessKey({
           transactions: nearTxs,
           accessKey,
         });
-        if (accessKeyUsable) {
-          const signer = new nearAPI.InMemorySigner(_state.keystore);
-          const signedTransactions = await signTransactions(
-            nearTxs,
-            signer,
-            options.network
-          );
-          const results: Array<FinalExecutionOutcome> = [];
-          for (let i = 0; i < signedTransactions.length; i += 1) {
-            results.push(await provider.sendTransaction(signedTransactions[i]));
-          }
-          return results;
-        }
       } catch (error) {
-        logger.error(
-          "Failed to execute FunctionCall access key transaction, falling back to Ethereum wallet to sign and send transaction.",
-          error
+        logger.error(error);
+        accessKeyUsable = false;
+      }
+      if (accessKeyUsable) {
+        const signer = new nearAPI.InMemorySigner(_state.keystore);
+        const signedTransactions = await signTransactions(
+          nearTxs,
+          signer,
+          options.network
         );
+        const results: Array<FinalExecutionOutcome> = [];
+        for (let i = 0; i < signedTransactions.length; i += 1) {
+          const nearTx = await provider.sendTransaction(signedTransactions[i]);
+          if (
+            typeof nearTx.status === "object" &&
+            typeof nearTx.status.Failure === "object" &&
+            nearTx.status.Failure !== null
+          ) {
+            throw parseResultError(nearTx);
+          }
+          results.push(nearTx);
+        }
+        return results;
       }
     }
     const { relayerPublicKey, onboardingTransaction } =
@@ -505,14 +517,20 @@ const EthereumWallets: WalletBehaviourFactory<
               renderTxs({ selectedIndex: index });
               const txHash = await executeTransaction({ tx, relayerPublicKey });
               logger.log(`Sent transaction: ${txHash}`);
-              const receipt = await waitForTransactionReceipt(wagmiConfig, {
-                hash: txHash,
-                chainId: expectedChainId,
-              });
-              logger.log("Receipt:", receipt);
-              if (receipt.status !== "success") {
-                throw new Error("Transaction execution failed.");
+              let receipt;
+              try {
+                receipt = await waitForTransactionReceipt(wagmiConfig, {
+                  hash: txHash,
+                  chainId: expectedChainId,
+                });
+              } catch (error) {
+                logger.error(error);
+                receipt = await getTransactionReceipt(wagmiConfig, {
+                  hash: txHash,
+                  chainId: expectedChainId,
+                });
               }
+              logger.log("Receipt:", receipt);
               const nearProvider = new JsonRpcProvider(
                 // @ts-expect-error
                 provider.provider.connection
@@ -522,6 +540,20 @@ const EthereumWallets: WalletBehaviourFactory<
                 receipt.nearTransactionHash,
                 accountLogIn.accountId
               );
+              if (
+                receipt.status !== "success" &&
+                nearTx.receipts_outcome.length > 1 &&
+                typeof nearTx.receipts_outcome[1].outcome.status === "object" &&
+                typeof nearTx.receipts_outcome[1].outcome.status.Failure ===
+                  "object" &&
+                nearTx.receipts_outcome[1].outcome.status.Failure !== null
+              ) {
+                reject(
+                  parseRpcError(
+                    nearTx.receipts_outcome[1].outcome.status.Failure
+                  )
+                );
+              }
               results.push(nearTx);
             }
             resolve();
