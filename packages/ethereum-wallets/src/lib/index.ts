@@ -679,9 +679,17 @@ const EthereumWallets: WalletBehaviourFactory<
 
       const { selectedNetworkId } = web3Modal.getState();
       if (selectedNetworkId !== expectedChainId) {
-        await switchChain(wagmiConfig, {
-          chainId: expectedChainId,
-        });
+        try {
+          await switchChain(wagmiConfig, {
+            chainId: expectedChainId,
+          });
+        } catch (error) {
+          disconnect(wagmiConfig);
+          logger.error(error);
+          throw new Error(
+            "Wallet does not support NEAR Protocol network, try adding the network manually inside wallet settings."
+          );
+        }
       }
 
       const accountId = devMode ? address + "." + devModeAccount : address;
