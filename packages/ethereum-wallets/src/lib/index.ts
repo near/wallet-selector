@@ -21,20 +21,21 @@ import {
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
-  watchAccount,
-  getAccount,
-  switchChain,
-  writeContract,
-  waitForTransactionReceipt,
-  getTransactionReceipt,
-  disconnect,
-  estimateGas,
+  type WriteContractParameters,
   type GetAccountReturnType,
   type Config,
 } from "@wagmi/core";
-import { type WriteContractParameters } from "@wagmi/core";
 import { bytesToHex, keccak256, toHex } from "viem";
 import bs58 from "bs58";
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+type WagmiCoreActionsType = typeof import("@wagmi/core");
+let wagmiCore: WagmiCoreActionsType | null = null;
+const importWagmiCore = async () => {
+  return import("@wagmi/core").then((module) => {
+    wagmiCore = module;
+  });
+};
 
 import icon from "./icon";
 import { createModal } from "./modal";
@@ -54,6 +55,7 @@ export interface EthereumWalletsParams {
     ) => () => void;
     getState: () => { open: boolean; selectedNetworkId?: number };
   };
+  wagmiCore?: WagmiCoreActionsType;
   chainId?: number;
   rpcUrl?: string;
   iconUrl?: string;
@@ -99,6 +101,9 @@ const EthereumWallets: WalletBehaviourFactory<
     devModeAccount = "eth-wallet.testnet",
   },
 }) => {
+  if (!wagmiCore) {
+    throw new Error("@wagmi/core not imported.");
+  }
   const _state = await setupEthereumWalletsState(id);
   const expectedChainId =
     chainId ?? options.network.networkId === "mainnet" ? 397 : 398;
@@ -110,7 +115,7 @@ const EthereumWallets: WalletBehaviourFactory<
       : "https://near-wallet-relayer.testnet.aurora.dev";
 
   const getAccounts = async (): Promise<Array<Account>> => {
-    const address = getAccount(wagmiConfig).address?.toLowerCase();
+    const address = wagmiCore!.getAccount(wagmiConfig).address?.toLowerCase();
     const account = devMode ? address + "." + devModeAccount : address;
     if (!account || !address) {
       return [];
@@ -263,13 +268,16 @@ const EthereumWallets: WalletBehaviourFactory<
         throw new Error("Invalid action type");
       }
     }
-    const gas = await estimateGas(wagmiConfig, ethTx);
-    const result = await writeContract(wagmiConfig, { ...ethTx, gas });
+    const gas = await wagmiCore!.estimateGas(wagmiConfig, ethTx);
+    const result = await wagmiCore!.writeContract(wagmiConfig, {
+      ...ethTx,
+      gas,
+    });
     return result;
   };
 
   const setupEvents = async () => {
-    const unwatchAccount = watchAccount(wagmiConfig, {
+    const unwatchAccount = wagmiCore!.watchAccount(wagmiConfig, {
       onChange: async (data) => {
         if (!data.address && data.status === "disconnected") {
           emitter.emit("signedOut", null);
@@ -496,7 +504,7 @@ const EthereumWallets: WalletBehaviourFactory<
     }
     const { selectedNetworkId } = web3Modal.getState();
     if (selectedNetworkId !== expectedChainId) {
-      await switchChain(wagmiConfig, {
+      await wagmiCore!.switchChain(wagmiConfig, {
         chainId: expectedChainId,
       });
     }
@@ -519,13 +527,16 @@ const EthereumWallets: WalletBehaviourFactory<
               logger.log(`Sent transaction: ${txHash}`);
               let receipt;
               try {
-                receipt = await waitForTransactionReceipt(wagmiConfig, {
-                  hash: txHash,
-                  chainId: expectedChainId,
-                });
+                receipt = await wagmiCore!.waitForTransactionReceipt(
+                  wagmiConfig,
+                  {
+                    hash: txHash,
+                    chainId: expectedChainId,
+                  }
+                );
               } catch (error) {
                 logger.error(error);
-                receipt = await getTransactionReceipt(wagmiConfig, {
+                receipt = await wagmiCore!.getTransactionReceipt(wagmiConfig, {
                   hash: txHash,
                   chainId: expectedChainId,
                 });
@@ -610,7 +621,7 @@ const EthereumWallets: WalletBehaviourFactory<
       logger.error(error);
     } finally {
       emitter.emit("signedOut", null);
-      disconnect(wagmiConfig);
+      wagmiCore!.disconnect(wagmiConfig);
     }
   };
 
@@ -620,7 +631,7 @@ const EthereumWallets: WalletBehaviourFactory<
 
       let unwatchAccountConnected: (() => void) | undefined;
       let unsubscribeCloseModal: (() => void) | undefined;
-      const account = getAccount(wagmiConfig);
+      const account = wagmiCore!.getAccount(wagmiConfig);
       let address = account.address?.toLowerCase();
       if (!address) {
         // NOTE: open web3Modal and wait for a wallet to be connected or the web3Modal to be closed.
@@ -629,7 +640,7 @@ const EthereumWallets: WalletBehaviourFactory<
           const newData: GetAccountReturnType = await (() => {
             return new Promise((resolve, reject) => {
               try {
-                unwatchAccountConnected = watchAccount(wagmiConfig, {
+                unwatchAccountConnected = wagmiCore!.watchAccount(wagmiConfig, {
                   onChange: (data: GetAccountReturnType) => {
                     if (!data.address) {
                       return;
@@ -639,7 +650,7 @@ const EthereumWallets: WalletBehaviourFactory<
                 });
                 unsubscribeCloseModal = web3Modal.subscribeEvents(
                   (event: { data: { event: string } }) => {
-                    const newAccount = getAccount(wagmiConfig);
+                    const newAccount = wagmiCore!.getAccount(wagmiConfig);
                     if (
                       event.data.event === "MODAL_CLOSE" &&
                       !newAccount.address
@@ -680,11 +691,11 @@ const EthereumWallets: WalletBehaviourFactory<
       const { selectedNetworkId } = web3Modal.getState();
       if (selectedNetworkId !== expectedChainId) {
         try {
-          await switchChain(wagmiConfig, {
+          await wagmiCore!.switchChain(wagmiConfig, {
             chainId: expectedChainId,
           });
         } catch (error) {
-          disconnect(wagmiConfig);
+          wagmiCore!.disconnect(wagmiConfig);
           logger.error(error);
           throw new Error(
             "Wallet does not support NEAR Protocol network, try adding the network manually inside wallet settings."
@@ -805,6 +816,13 @@ const EthereumWallets: WalletBehaviourFactory<
 export function setupEthereumWallets(
   params: EthereumWalletsParams
 ): WalletModuleFactory<InjectedWallet> {
+  if (!wagmiCore) {
+    if (params.wagmiCore) {
+      wagmiCore = params.wagmiCore;
+    } else {
+      importWagmiCore();
+    }
+  }
   return async () => {
     return {
       id: "ethereum-wallets",
