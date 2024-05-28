@@ -816,14 +816,14 @@ const EthereumWallets: WalletBehaviourFactory<
 export function setupEthereumWallets(
   params: EthereumWalletsParams
 ): WalletModuleFactory<InjectedWallet> {
-  if (!wagmiCore) {
-    if (params.wagmiCore) {
-      wagmiCore = params.wagmiCore;
-    } else {
-      importWagmiCore();
-    }
-  }
   return async () => {
+    if (!wagmiCore) {
+      if (params.wagmiCore) {
+        wagmiCore = params.wagmiCore;
+      } else {
+        await importWagmiCore();
+      }
+    }
     return {
       id: "ethereum-wallets",
       type: "injected",
