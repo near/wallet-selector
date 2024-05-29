@@ -77,7 +77,7 @@ const near: Chain = {
   blockExplorers: {
     default: {
       name: "NEAR Explorer",
-      url: "https://explorer.testnet.near.org",
+      url: "https://testnet.nearblocks.io",
     },
   },
   testnet: true,

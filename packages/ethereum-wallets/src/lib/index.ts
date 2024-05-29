@@ -32,6 +32,8 @@ import bs58 from "bs58";
 type WagmiCoreActionsType = typeof import("@wagmi/core");
 let wagmiCore: WagmiCoreActionsType | null = null;
 const importWagmiCore = async () => {
+  // Commonjs support NA with @wagmi/core:
+  // https://wagmi.sh/core/guides/migrate-from-v1-to-v2#dropped-commonjs-support
   return import("@wagmi/core").then((module) => {
     wagmiCore = module;
   });
@@ -280,13 +282,16 @@ const EthereumWallets: WalletBehaviourFactory<
     return result;
   };
 
+  // Watch Ethereum wallet changes.
   const setupEvents = async () => {
     const unwatchAccount = wagmiCore!.watchAccount(wagmiConfig, {
       onChange: async (data) => {
+        // Ethereum wallet disconnected: also disconnect NEAR account.
         if (!data.address && data.status === "disconnected") {
           emitter.emit("signedOut", null);
           return;
         }
+        // Ethereum wallet switched connected account: also switch NEAR account if already signed in or disconnect.
         if (data.address && data.status === "connected") {
           if (store.getState().contract?.contractId) {
             const address = data.address.toLowerCase();
@@ -348,6 +353,7 @@ const EthereumWallets: WalletBehaviourFactory<
       .flat();
   };
 
+  // Check if accessKey is usable to execute all transaction.
   const validateAccessKey = ({
     transactions,
     accessKey,
@@ -379,6 +385,7 @@ const EthereumWallets: WalletBehaviourFactory<
     });
   };
 
+  // Get the relayer public key and onboarding transaction if needed.
   const getRelayerOnboardingInfo = async ({
     accountId,
   }: {
@@ -456,9 +463,9 @@ const EthereumWallets: WalletBehaviourFactory<
   const signAndSendTransactions = async (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ) => {
-    // If transactions can be executed with FunctionCall access key do it, otherwise execute 1 by 1 with Ethereum wallet.
     const nearTxs = await transformTransactions(transactions);
     const [accountLogIn] = await getAccounts();
+    // If transactions can be executed with FunctionCall access key do it, otherwise execute 1 by 1 with Ethereum wallet.
     if (accountLogIn.publicKey) {
       let accessKeyUsable;
       try {
@@ -504,6 +511,7 @@ const EthereumWallets: WalletBehaviourFactory<
       });
     let txs = transformEthereumTransactions(nearTxs);
     if (onboardingTransaction) {
+      // Onboard the relayer before executing other transactions.
       txs = [onboardingTransaction, ...txs];
     }
     const { selectedNetworkId } = web3Modal.getState();
@@ -605,7 +613,7 @@ const EthereumWallets: WalletBehaviourFactory<
           account_id: accountLogIn.accountId,
           public_key: accountLogIn.publicKey,
         });
-        // NOTE: If connection problem with the wallet, the user can cancel from the modal to skip the disconnect transaction.
+        // If there is a connection problem with the wallet, the user can cancel from the modal to skip the disconnect transaction.
         // If not deleted, the access key will be reused during signIn.
         await signAndSendTransactions([
           {
@@ -616,10 +624,6 @@ const EthereumWallets: WalletBehaviourFactory<
                 type: "DeleteKey",
                 params: {
                   publicKey: accountLogIn.publicKey,
-                  /*
-                  publicKey:
-                    "ed25519:3HDMUBDSSup8jPL7FMLiduSPwir6HhX4zedvZmzy25So",
-                  */
                 },
               },
             ],
@@ -647,8 +651,8 @@ const EthereumWallets: WalletBehaviourFactory<
       let unsubscribeCloseModal: (() => void) | undefined;
       const account = wagmiCore!.getAccount(wagmiConfig);
       let address = account.address?.toLowerCase();
+      // Open web3Modal and wait for a wallet to be connected or for the web3Modal to be closed.
       if (!address) {
-        // NOTE: open web3Modal and wait for a wallet to be connected or the web3Modal to be closed.
         try {
           web3Modal.open();
           const newData: GetAccountReturnType = await (() => {
@@ -711,12 +715,14 @@ const EthereumWallets: WalletBehaviourFactory<
         } catch (error) {
           wagmiCore!.disconnect(wagmiConfig);
           logger.error(error);
+          // TODO: add the link to onboarding page when available.
           throw new Error(
             "Wallet does not support NEAR Protocol network, try adding the network manually inside wallet settings."
           );
         }
       }
 
+      // Login with FunctionCall access key, reuse keypair or create a new one.
       const accountId = devMode ? address + "." + devModeAccount : address;
       let publicKey;
       if (contractId) {
