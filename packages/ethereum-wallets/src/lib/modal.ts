@@ -361,6 +361,7 @@ export function createModal({
       const isActive = i === selectedIndex;
       const isPending = i > selectedIndex;
       const isSent = selectedIndex < ethTxHashes.length;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const explorerLink =
         i < ethTxHashes.length
           ? `${explorerUrl}/tx/${ethTxHashes[i]}`
