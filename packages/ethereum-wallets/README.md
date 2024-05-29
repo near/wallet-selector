@@ -79,7 +79,6 @@ Project ID is required, please obtain it from [walletconnect.com](https://wallet
 - `wagmiConfig`: Wagmi Config for interacting with Ethereum wallets.
 - `web3Modal`: Web3Modal object for connecting an Ethereum wallet and switching network.
 - `chainId` (`number?`): Chain ID of the NEAR web3 rpc to connect to. Defaults to `397` (`mainnet`) or `398` (`testnet`) depending on the `setupWalletSelector` network configuration.
-- `rpcUrl` (`string?`): Custom NEAR web3 rpc endpoint to query Ethereum wallet transaction receipts, defaults to `todo` (`mainnet`) or `todo` (`testnet`) depending on the `setupWalletSelector` network configuration.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ethereum-wallets-icon.png`.
 - `wagmiCore` (`typeof import("@wagmi/core")?`): Optional, @wagmi/core functions can be overidden by the dapp to interract with the wallet.
 

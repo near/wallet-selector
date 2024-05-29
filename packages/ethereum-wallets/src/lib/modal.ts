@@ -6,10 +6,12 @@ export function createModal({
   onCancel,
   txs,
   relayerPublicKey,
+  explorerUrl,
 }: {
   onCancel: () => void;
   txs: Array<Transaction>;
   relayerPublicKey: string;
+  explorerUrl: string;
 }) {
   const modalStyles = `
     .ethereum-wallet-modal *,
@@ -67,7 +69,7 @@ export function createModal({
       text-align: left;
       max-width: 400px;
       width: 100%;
-      box-shadow: 
+      box-shadow:
         0px 4px 8px rgba(0, 0, 0, 0.06),
         0px 0px 0px 1px rgba(0, 0, 0, 0.06);
     }
@@ -116,7 +118,7 @@ export function createModal({
       height: 24px;
       width: 24px;
     }
-    
+
     .ethereum-wallet-tx.ethereum-wallet-tx-signing {
       background-color: #F9F9F9;
       padding-bottom: 10px;
@@ -333,7 +335,13 @@ export function createModal({
       hideModal();
     });
 
-  const renderTxs = ({ selectedIndex }: { selectedIndex: number }) => {
+  const renderTxs = ({
+    selectedIndex,
+    ethTxHashes,
+  }: {
+    selectedIndex: number;
+    ethTxHashes: Array<string>;
+  }) => {
     const container = document.querySelector(
       ".ethereum-wallet-txs"
     ) as HTMLElement;
@@ -352,6 +360,11 @@ export function createModal({
       const isCompleted = i < selectedIndex;
       const isActive = i === selectedIndex;
       const isPending = i > selectedIndex;
+      const isSent = selectedIndex < ethTxHashes.length;
+      const explorerLink =
+        i < ethTxHashes.length
+          ? `${explorerUrl}/tx/${ethTxHashes[i]}`
+          : undefined;
 
       if (!singleTx) {
         if (isCompleted) {
@@ -442,12 +455,12 @@ export function createModal({
                     : tx.actions[0].type === "DeleteKey"
                     ? `
                       <div class="ethereum-wallet-tx-info-text">
-                        <p>This is an optional transaction which removes the application access key. If you reject the transaction, the key will be reused when you login again.</p>
+                        <p>This is an optional transaction which removes the application access key. If you reject the transaction, the key will be reused when you login next time.</p>
                       </div>
                       `
                     : tx.actions[0].type === "FunctionCall"
                     ? `
-                    <dl>                    
+                    <dl>
                       <div class="ethereum-wallet-tx-info-row">
                         <dt>From</dt>
                         <dd>${tx.signerId}</dd>
@@ -487,16 +500,22 @@ export function createModal({
                     `
                 }
               </div>
-              <button class="ethereum-wallet-btn ethereum-wallet-btn-details">Show details</button>  
+              <button class="ethereum-wallet-btn ethereum-wallet-btn-details">Show details</button>
               <div class="ethereum-wallet-txs-details">
                 <p>${JSON.stringify(tx.actions[0], null, 2)}</p>
               </div>
               <div class="ethereum-wallet-txs-status">
-                <p>Sign the transaction in your wallet</p>
+                <p>
+                ${
+                  isSent
+                    ? "Sending transaction..."
+                    : "Sign the transaction in your wallet..."
+                }
+                </p>
               </div>
             `
         }
-        
+
       `;
 
       container.appendChild(txElement);

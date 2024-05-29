@@ -57,7 +57,6 @@ export interface EthereumWalletsParams {
   };
   wagmiCore?: WagmiCoreActionsType;
   chainId?: number;
-  rpcUrl?: string;
   iconUrl?: string;
   devMode?: boolean;
   devModeAccount?: string;
@@ -96,7 +95,6 @@ const EthereumWallets: WalletBehaviourFactory<
     wagmiConfig,
     web3Modal,
     chainId,
-    rpcUrl,
     devMode,
     devModeAccount = "eth-wallet.testnet",
   },
@@ -107,12 +105,18 @@ const EthereumWallets: WalletBehaviourFactory<
   const _state = await setupEthereumWalletsState(id);
   const expectedChainId =
     chainId ?? options.network.networkId === "mainnet" ? 397 : 398;
-  const nearRpc =
-    rpcUrl ?? devMode
-      ? "https://near-wallet-relayer.testnet.aurora.dev"
-      : options.network.networkId === "mainnet"
-      ? "https://near-wallet-relayer.mainnet.aurora.dev"
-      : "https://near-wallet-relayer.testnet.aurora.dev";
+  const nearRpc = wagmiConfig.chains.find(
+    (chain) => chain.id === expectedChainId
+  )?.rpcUrls.default.http[0];
+  if (!nearRpc) {
+    throw new Error("Failed to parse NEAR rpc url from wagmiConfig.");
+  }
+  const nearExplorer = wagmiConfig.chains.find(
+    (chain) => chain.id === expectedChainId
+  )?.blockExplorers?.default.url;
+  if (!nearExplorer) {
+    throw new Error("Failed to parse NEAR explorer url from wagmiConfig.");
+  }
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const address = wagmiCore!.getAccount(wagmiConfig).address?.toLowerCase();
@@ -517,14 +521,24 @@ const EthereumWallets: WalletBehaviourFactory<
           },
           txs,
           relayerPublicKey,
+          explorerUrl: nearExplorer,
         });
         showModal();
         (async () => {
           try {
+            const ethTxHashes: Array<string> = [];
             for (const [index, tx] of txs.entries()) {
-              renderTxs({ selectedIndex: index });
+              renderTxs({
+                selectedIndex: index,
+                ethTxHashes,
+              });
               const txHash = await executeTransaction({ tx, relayerPublicKey });
               logger.log(`Sent transaction: ${txHash}`);
+              ethTxHashes.push(txHash);
+              renderTxs({
+                selectedIndex: index,
+                ethTxHashes,
+              });
               let receipt;
               try {
                 receipt = await wagmiCore!.waitForTransactionReceipt(
