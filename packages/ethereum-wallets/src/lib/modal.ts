@@ -119,6 +119,23 @@ export function createModal({
       width: 24px;
     }
 
+    .ethereum-wallet-tx-explorer-link {
+      height: 24px;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+    .ethereum-wallet-tx-explorer-link:hover {
+      background-color: #DDF3E4;
+    }
+    .ethereum-wallet-tx-explorer-link svg {
+      height: 16px;
+      width: 16px;
+      color: #202020;
+    }
+
     .ethereum-wallet-tx.ethereum-wallet-tx-signing {
       background-color: #F9F9F9;
       padding-bottom: 10px;
@@ -230,6 +247,7 @@ export function createModal({
       padding: 10px;
       background: #F1F1F1;
       border-radius: 8px;
+      width: 100%;
       max-width: 100%;
       overflow: auto;
     }
@@ -241,9 +259,12 @@ export function createModal({
       color: #646464;
       word-wrap: break-word;
       overflow-wrap: break-word;
+      white-space: pre-wrap;
+      margin: 0;
     }
 
     .ethereum-wallet-txs-status {
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -259,6 +280,42 @@ export function createModal({
       font-weight: 700;
       font-size: 14px;
       line-height: 20px;
+    }
+
+    .ethereum-wallet-tx-highlight {
+      position: relative;
+      z-index: 1;
+    }
+    .ethereum-wallet-tx-highlight::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: -6px;
+      right: -6px;
+      bottom: -4px;
+      z-index: -1;
+      background-color: #DDF3E4;
+      border-radius: 8px;
+    }
+
+    .ethereum-wallet-spinner {
+      position: absolute;
+      right: 14px;
+      top: 16px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #384EAC;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      animation: rotation 1s linear infinite;
+    }
+    @keyframes rotation {
+      0% {
+          transform: rotate(0deg);
+      }
+      100% {
+          transform: rotate(360deg);
+      }
     }
   `;
 
@@ -294,7 +351,7 @@ export function createModal({
       txs.length === 1 &&
       txs[0].actions.length === 1 &&
       txs[0].actions[0].type === "AddKey"
-        ? "<h2 class='ethereum-wallet-modal-h2'>Log in</h2>"
+        ? "<h2>Log in</h2>"
         : txs.length === 1 &&
           txs[0].actions.length === 1 &&
           txs[0].actions[0].type === "DeleteKey"
@@ -361,7 +418,6 @@ export function createModal({
       const isActive = i === selectedIndex;
       const isPending = i > selectedIndex;
       const isSent = selectedIndex < ethTxHashes.length;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const explorerLink =
         i < ethTxHashes.length
           ? `${explorerUrl}/tx/${ethTxHashes[i]}`
@@ -383,7 +439,18 @@ export function createModal({
           isCompleted
             ? `
                 <div class="ethereum-wallet-tx-list-header">
-                  <p>Transaction ${txNumber}</p>
+                  <div style="display: flex; align-items: center; column-gap: 8px;">
+                    <p>Transaction ${txNumber}</p>
+                    ${
+                      explorerLink
+                        ? `
+                      <a href="${explorerLink}" target="_blank" rel="noopener noreferrer" aria-label="Open explorer link" class="ethereum-wallet-tx-explorer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 8.72a.75.75 0 0 0 1.06 1.06l5.22-5.22v1.69a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75h-3.5a.75.75 0 0 0 0 1.5h1.69L6.22 8.72Z"/><path d="M3.5 6.75c0-.69.56-1.25 1.25-1.25H7A.75.75 0 0 0 7 4H4.75A2.75 2.75 0 0 0 2 6.75v4.5A2.75 2.75 0 0 0 4.75 14h4.5A2.75 2.75 0 0 0 12 11.25V9a.75.75 0 0 0-1.5 0v2.25c0 .69-.56 1.25-1.25 1.25h-4.5c-.69 0-1.25-.56-1.25-1.25v-4.5Z"/></svg>
+                      </a>
+                        `
+                        : ""
+                    }
+                  </div>
                   <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" fill-opacity=".01" d="M0 0h24v24H0z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.403C6.148 1.403 1.403 6.147 1.403 12c0 5.852 4.745 10.596 10.597 10.596 5.852 0 10.596-4.744 10.596-10.596 0-5.853-4.744-10.597-10.596-10.597ZM2.923 12a9.077 9.077 0 1 1 18.153 0 9.077 9.077 0 0 1-18.153 0Zm13.331-3.14a.8.8 0 1 0-1.308-.92l-4.514 6.414L8.57 12.46a.8.8 0 0 0-1.142 1.121l2.534 2.58a.8.8 0 0 0 1.225-.1l5.066-7.2Z" fill="#30A46C"/></svg>
                 </div>
               `
@@ -472,11 +539,13 @@ export function createModal({
                       </div>
                       <div class="ethereum-wallet-tx-info-row">
                         <dt>Type</dt>
-                        <dd>${tx.actions[0].params.methodName}</dd>
+                        <dd class="ethereum-wallet-tx-highlight">${
+                          tx.actions[0].params.methodName
+                        }</dd>
                       </div>
                       <div class="ethereum-wallet-tx-info-row">
                         <dt>Deposit</dt>
-                        <dd>${formatUnits(
+                        <dd class="ethereum-wallet-tx-highlight">${formatUnits(
                           BigInt(tx.actions[0].params.deposit),
                           24
                         )} NEAR</dd>
@@ -485,15 +554,30 @@ export function createModal({
                     `
                     : tx.actions[0].type === "Transfer"
                     ? `
-                      <div class="ethereum-wallet-tx-info-text">
-                        <p>
-                          Transfer ${formatUnits(
+                      <dl>
+                        <div class="ethereum-wallet-tx-info-row">
+                          <dt>From</dt>
+                          <dd>${tx.signerId}</dd>
+                        </div>
+                        <div class="ethereum-wallet-tx-info-row">
+                          <dt>To</dt>
+                          <dd>${tx.receiverId}</dd>
+                        </div>
+                        <div class="ethereum-wallet-tx-info-row">
+                          <dt>Type</dt>
+                          <dd class="ethereum-wallet-tx-highlight">${
+                            tx.actions[0].type
+                          }</dd>
+                        </div>
+                        <div class="ethereum-wallet-tx-info-row">
+                          <dt>Amount</dt>
+                          <dd class="ethereum-wallet-tx-highlight">${formatUnits(
                             BigInt(tx.actions[0].params.deposit),
                             24
-                          )} NEAR from ${tx.signerId} to ${tx.receiverId}
-                        </p>
-                      </div>
-                        `
+                          )} NEAR</dd>
+                        </div>
+                      </dl>
+                      `
                     : `
                       <div class="ethereum-wallet-tx-info-text">
                         <p>Unknown transaction type.</p>
@@ -513,6 +597,7 @@ export function createModal({
                     : "Sign the transaction in your wallet..."
                 }
                 </p>
+                ${isSent ? `<div class="ethereum-wallet-spinner"></div>` : ""}
               </div>
             `
         }
