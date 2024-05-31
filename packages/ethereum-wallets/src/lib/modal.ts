@@ -593,11 +593,11 @@ export function createModal({
                 <p>
                 ${
                   isSent
-                    ? "Sending transaction..."
-                    : "Sign the transaction in your wallet..."
+                    ? "Sending transaction"
+                    : "Sign the transaction in your wallet"
                 }
                 </p>
-                ${isSent ? `<div class="ethereum-wallet-spinner"></div>` : ""}
+                <div class="ethereum-wallet-spinner"></div>
               </div>
             `
         }
