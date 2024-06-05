@@ -543,13 +543,20 @@ export function createModal({
                           tx.actions[0].params.methodName
                         }</dd>
                       </div>
-                      <div class="ethereum-wallet-tx-info-row">
-                        <dt>Deposit</dt>
-                        <dd class="ethereum-wallet-tx-highlight">${formatUnits(
-                          BigInt(tx.actions[0].params.deposit),
-                          24
-                        )} NEAR</dd>
-                      </div>
+                      ${
+                        tx.actions[0].params.deposit === "1" ||
+                        tx.actions[0].params.deposit === "0"
+                          ? ""
+                          : `
+                          <div class="ethereum-wallet-tx-info-row">
+                            <dt>Deposit</dt>
+                            <dd class="ethereum-wallet-tx-highlight">${formatUnits(
+                              BigInt(tx.actions[0].params.deposit),
+                              24
+                            )} NEAR</dd>
+                          </div>
+                        `
+                      }
                     </dl>
                     `
                     : tx.actions[0].type === "Transfer"
