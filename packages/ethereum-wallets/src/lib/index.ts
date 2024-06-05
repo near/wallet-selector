@@ -106,7 +106,7 @@ const EthereumWallets: WalletBehaviourFactory<
   }
   const _state = await setupEthereumWalletsState(id);
   const expectedChainId =
-    chainId ?? options.network.networkId === "mainnet" ? 397 : 398;
+    chainId ?? (options.network.networkId === "mainnet" ? 397 : 398);
   const nearRpc = wagmiConfig.chains.find(
     (chain) => chain.id === expectedChainId
   )?.rpcUrls.default.http[0];
