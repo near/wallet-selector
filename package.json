@@ -69,6 +69,7 @@
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "serve:react": "nx serve react --host=0.0.0.0",
+    "build:react": "nx build react --host=0.0.0.0",
     "serve:angular": "nx serve angular",
     "prepack": "yarn build:core && yarn build:all",
     "test": "nx run-many --target=test --all",
