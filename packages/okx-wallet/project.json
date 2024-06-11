@@ -1,0 +1,56 @@
+{
+  "name": "okx-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/okx-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/okx-wallet",
+        "tsConfig": "packages/okx-wallet/tsconfig.lib.json",
+        "project": "packages/okx-wallet/package.json",
+        "entryFile": "packages/okx-wallet/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/okx-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/okx-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/okx-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/okx-wallet"],
+      "options": {
+        "jestConfig": "packages/okx-wallet/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      },
+      "dependsOn": ["^deploy"]
+    }
+  },
+  "tags": ["injected-wallet"]
+}

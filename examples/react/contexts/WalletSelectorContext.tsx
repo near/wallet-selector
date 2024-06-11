@@ -34,6 +34,7 @@ import { distinctUntilChanged, map } from "rxjs";
 
 import { Loading } from "../components/Loading";
 import { CONTRACT_ID } from "../constants";
+import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 
 declare global {
   interface Window {
@@ -65,6 +66,7 @@ export const WalletSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
+        setupOKXWallet(),
         setupMyNearWallet(),
         setupLedger(),
         setupSender(),
