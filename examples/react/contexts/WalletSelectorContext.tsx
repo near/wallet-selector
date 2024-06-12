@@ -21,6 +21,7 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 
 import type { ReactNode } from "react";
 import React, {
@@ -34,7 +35,6 @@ import { distinctUntilChanged, map } from "rxjs";
 
 import { Loading } from "../components/Loading";
 import { CONTRACT_ID } from "../constants";
-import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 
 declare global {
   interface Window {
