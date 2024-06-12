@@ -1,6 +1,6 @@
 import { isMobile } from "is-mobile";
-import { waitFor } from "@near-wallet-selector/core";
 import { SignedTransaction } from "near-api-js/lib/transaction";
+import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
 
 import type {
   Action,
@@ -14,6 +14,18 @@ import type {
 
 import icon from "./icon";
 import type { InjectedOkx } from "./injected-okx-wallet";
+
+let downloadUrl =
+  "https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge";
+
+if (isCurrentBrowserSupported(["safari"])) {
+  downloadUrl = "https://apps.apple.com/us/app/okx-wallet/id6463797825";
+}
+
+if (isCurrentBrowserSupported(["edge-chromium"])) {
+  downloadUrl =
+    "https://microsoftedge.microsoft.com/addons/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/pbpjkcldjiffchgbbndmhojiacbgflha";
+}
 
 declare global {
   interface Window {
@@ -225,8 +237,7 @@ export function setupOKXWallet({
         name: "OKX Wallet",
         description: "Browser extension wallet",
         iconUrl,
-        downloadUrl:
-          "https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge",
+        downloadUrl,
         deprecated,
         available: installed,
       },

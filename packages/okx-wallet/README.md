@@ -2,6 +2,12 @@
 
 This is the [OKX Wallet](https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge) package for NEAR Wallet Selector.
 
+## Install OKX Wallet
+
+- [Chrome](https://chromewebstore.google.com/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/mcohilncbfahbmgdjkbpemcciiolgcge)
+- [Safari](https://apps.apple.com/us/app/okx-wallet/id6463797825)
+- [Edge](https://microsoftedge.microsoft.com/addons/detail/%E6%AC%A7%E6%98%93-web3-%E9%92%B1%E5%8C%85/pbpjkcldjiffchgbbndmhojiacbgflha)
+
 ## Installation and Usage
 
 The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
