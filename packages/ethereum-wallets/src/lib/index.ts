@@ -1,15 +1,13 @@
 import * as nearAPI from "near-api-js";
 import type {
   AccessKeyViewRaw,
+  ExecutionStatus,
   FinalExecutionOutcome,
   FunctionCallPermissionView,
 } from "near-api-js/lib/providers/provider";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
-import {
-  parseResultError,
-  parseRpcError,
-} from "near-api-js/lib/utils/rpc_errors";
+import { parseRpcError } from "near-api-js/lib/utils/rpc_errors";
 import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
@@ -493,12 +491,14 @@ const EthereumWallets: WalletBehaviourFactory<
         const results: Array<FinalExecutionOutcome> = [];
         for (let i = 0; i < signedTransactions.length; i += 1) {
           const nearTx = await provider.sendTransaction(signedTransactions[i]);
+          logger.log("NEAR transaction:", nearTx);
           if (
             typeof nearTx.status === "object" &&
             typeof nearTx.status.Failure === "object" &&
             nearTx.status.Failure !== null
           ) {
-            throw parseResultError(nearTx);
+            logger.error("Transaction execution error.");
+            throw parseRpcError(nearTx.status.Failure);
           }
           results.push(nearTx);
         }
@@ -573,19 +573,26 @@ const EthereumWallets: WalletBehaviourFactory<
                 receipt.nearTransactionHash,
                 accountLogIn.accountId
               );
-              if (
-                receipt.status !== "success" &&
-                nearTx.receipts_outcome.length > 1 &&
-                typeof nearTx.receipts_outcome[1].outcome.status === "object" &&
-                typeof nearTx.receipts_outcome[1].outcome.status.Failure ===
-                  "object" &&
-                nearTx.receipts_outcome[1].outcome.status.Failure !== null
-              ) {
-                reject(
-                  parseRpcError(
-                    nearTx.receipts_outcome[1].outcome.status.Failure
-                  )
+              logger.log("NEAR transaction:", nearTx);
+              if (receipt.status !== "success") {
+                const failedOutcome = nearTx.receipts_outcome.find(
+                  ({ outcome }) =>
+                    typeof outcome.status === "object" &&
+                    typeof outcome.status.Failure === "object" &&
+                    outcome.status.Failure !== null &&
+                    outcome.executor_id === tx.receiverId
                 );
+                if (failedOutcome) {
+                  reject(
+                    parseRpcError(
+                      (failedOutcome.outcome.status as ExecutionStatus).Failure!
+                    )
+                  );
+                } else {
+                  reject(
+                    "Transaction execution error, failed to parse failure reason."
+                  );
+                }
               }
               results.push(nearTx);
             }
