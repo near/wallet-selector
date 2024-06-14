@@ -23,7 +23,8 @@
     "welldone-wallet",
     "ramper-wallet",
     "near-mobile-wallet",
-    "mintbase-wallet"
+    "mintbase-wallet",
+    "okx-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -64,6 +65,7 @@
     "build:ramper-wallet": "nx run-many --target=build --projects=ramper-wallet --configuration=production",
     "build:near-mobile-wallet": "nx run-many --target=build --projects=near-mobile-wallet --configuration=production",
     "build:mintbase-wallet": "nx run-many --target=build --projects=mintbase-wallet --configuration=production",
+    "build:okx-wallet": "nx run-many --target=build --projects=okx-wallet --configuration=production",
     "examples:vanillajs:generateimportmap": "(cd examples/vanillajs && jspm link index.html -o index.html)",
     "serve:vanillajs": "yarn examples:vanillajs:generateimportmap && http-server -c-1 examples/vanillajs",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
