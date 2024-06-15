@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/mintbase-wallet",
-  "version": "8.9.8",
+  "version": "8.9.9",
   "description": "Mintbase wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

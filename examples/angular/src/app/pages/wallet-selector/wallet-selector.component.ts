@@ -56,7 +56,6 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        setupOKXWallet(),
         setupMyNearWallet(),
         setupLedger(),
         setupSender(),
@@ -65,6 +64,7 @@ export class WalletSelectorComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),

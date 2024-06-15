@@ -66,7 +66,6 @@ export const WalletSelectorContextProvider: React.FC<{
       network: "testnet",
       debug: true,
       modules: [
-        setupOKXWallet(),
         setupMyNearWallet(),
         setupLedger(),
         setupSender(),
@@ -75,6 +74,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNightly(),
         setupMeteorWallet(),
         setupNearSnap(),
+        setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),

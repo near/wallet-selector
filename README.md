@@ -10,6 +10,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
+- [OKX Wallet](https://www.npmjs.com/package/@near-wallet-selector/okx-wallet) - Injected wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
@@ -61,6 +62,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/near-snap \
@@ -83,6 +85,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/near-snap \
@@ -119,6 +122,7 @@ import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
@@ -143,6 +147,7 @@ const selector = await setupWalletSelector({
     setupNightly(),
     setupMeteorWallet(),
     setupNearSnap(),
+    setupOkxWallet(),
     setupNarwallets(),
     setupWelldoneWallet(),
     setupLedger(),
