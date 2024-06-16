@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/bitget-wallet",
+  "name": "@near-wallet-selector/okx-wallet",
   "version": "8.9.9",
-  "description": "Bitget wallet package for NEAR Wallet Selector.",
+  "description": "OKX Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -11,7 +11,7 @@
     "near-blockchain",
     "wallet selector",
     "injected wallet",
-    "Bitget wallet"
+    "okx wallet"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitget-wallet",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/okx-wallet",
   "peerDependencies": {
     "near-api-js": "^1.0.0 || ^2.0.0"
   }

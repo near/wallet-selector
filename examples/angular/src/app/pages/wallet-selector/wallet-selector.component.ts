@@ -23,6 +23,7 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { CONTRACT_ID } from "../../../constants";
 
 declare global {
@@ -63,6 +64,7 @@ export class WalletSelectorComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),

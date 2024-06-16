@@ -103,6 +103,11 @@
             "glob": "**/*",
             "input": "packages/near-mobile-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/okx-wallet/assets/",
+            "output": "assets/"
           }
         ],
         "styles": ["examples/angular/src/styles.scss"],
