@@ -72,8 +72,9 @@ yarn add \
   @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
-  @near-wallet-selector/near-mobile-wallet  \
-  @near-wallet-selector/mintbase-wallet
+  @near-wallet-selector/mintbase-wallet \
+  @near-wallet-selector/bitget-wallet \
+  @near-wallet-selector/okx-wallet
 
 # Using NPM.
 npm install \
@@ -96,7 +97,9 @@ npm install \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet \
-  @near-wallet-selector/mintbase-wallet
+  @near-wallet-selector/mintbase-wallet \
+  @near-wallet-selector/bitget-wallet \
+  @near-wallet-selector/okx-wallet
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
