@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-OTP=123456
-TAG=latest
+OTP=771522
+TAG=8.9.9
 
 npm publish dist/packages/core --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/modal-ui --tag "${TAG}" --otp "${OTP}"
@@ -27,3 +27,4 @@ npm publish dist/packages/ramper-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/near-mobile-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/mintbase-wallet --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/bitget-wallet --tag "${TAG}" --otp "${OTP}"
+npm publish dist/packages/okx-wallet --tag "${TAG}" --otp "${OTP}"
