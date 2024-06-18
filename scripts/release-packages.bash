@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-OTP=771522
-TAG=8.9.9
+OTP=123456
+TAG=latest
 
 npm publish dist/packages/core --tag "${TAG}" --otp "${OTP}"
 npm publish dist/packages/modal-ui --tag "${TAG}" --otp "${OTP}"
