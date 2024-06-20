@@ -4,6 +4,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
+- [Arepa Wallet](https://www.npmjs.com/package/@near-wallet-selector/arepa-wallet) - Browser wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
@@ -54,6 +55,7 @@ Next, you'll need to install the wallets you want to support:
 ```bash
 # Using Yarn
 yarn add \
+  @near-wallet-selector/arepa-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -79,6 +81,7 @@ yarn add \
 
 # Using NPM.
 npm install \
+  @near-wallet-selector/arepa-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
@@ -118,6 +121,7 @@ Then in your dApp:
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupArepaWallet } from "@near-wallet-selector/arepa-wallet";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
@@ -142,7 +146,8 @@ import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [
+  modules: [  
+    setupArepaWallet(),
     setupBitgetWallet(),
     setupMyNearWallet(),
     setupSender(),
