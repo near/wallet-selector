@@ -57,6 +57,7 @@ export interface EthereumWalletsParams {
   };
   wagmiCore?: WagmiCoreActionsType;
   chainId?: number;
+  alwaysOnboardDuringSignIn?: boolean;
   iconUrl?: string;
   devMode?: boolean;
   devModeAccount?: string;
@@ -95,6 +96,7 @@ const EthereumWallets: WalletBehaviourFactory<
     wagmiConfig,
     web3Modal,
     chainId,
+    alwaysOnboardDuringSignIn = false,
     devMode,
     devModeAccount = "eth-wallet.testnet",
   },
@@ -792,6 +794,9 @@ const EthereumWallets: WalletBehaviourFactory<
             throw error;
           }
         }
+      } else if (alwaysOnboardDuringSignIn) {
+        // Check onboarding status and onboard the relayer if needed.
+        await signAndSendTransactions([]);
       }
       const accountLogIn = {
         accountId,
