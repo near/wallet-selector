@@ -655,113 +655,120 @@ const EthereumWallets: WalletBehaviourFactory<
   return {
     async signIn({ contractId, methodNames = [] }) {
       logger.log("EthereumWallets:signIn", { contractId, methodNames });
-
-      let unwatchAccountConnected: (() => void) | undefined;
-      let unsubscribeCloseModal: (() => void) | undefined;
-      const account = wagmiCore!.getAccount(wagmiConfig);
-      let address = account.address?.toLowerCase();
-      // Open web3Modal and wait for a wallet to be connected or for the web3Modal to be closed.
-      if (!address) {
-        try {
-          web3Modal.open();
-          const newData: GetAccountReturnType = await (() => {
-            return new Promise((resolve, reject) => {
-              try {
-                unwatchAccountConnected = wagmiCore!.watchAccount(wagmiConfig, {
-                  onChange: (data: GetAccountReturnType) => {
-                    if (!data.address) {
-                      return;
+      try {
+        let unwatchAccountConnected: (() => void) | undefined;
+        let unsubscribeCloseModal: (() => void) | undefined;
+        const account = wagmiCore!.getAccount(wagmiConfig);
+        let address = account.address?.toLowerCase();
+        // Open web3Modal and wait for a wallet to be connected or for the web3Modal to be closed.
+        if (!address) {
+          try {
+            web3Modal.open();
+            const newData: GetAccountReturnType = await (() => {
+              return new Promise((resolve, reject) => {
+                try {
+                  unwatchAccountConnected = wagmiCore!.watchAccount(
+                    wagmiConfig,
+                    {
+                      onChange: (data: GetAccountReturnType) => {
+                        if (!data.address) {
+                          return;
+                        }
+                        resolve(data);
+                      },
                     }
-                    resolve(data);
-                  },
-                });
-                unsubscribeCloseModal = web3Modal.subscribeEvents(
-                  (event: { data: { event: string } }) => {
-                    const newAccount = wagmiCore!.getAccount(wagmiConfig);
-                    if (
-                      event.data.event === "MODAL_CLOSE" &&
-                      !newAccount.address
-                    ) {
-                      logger.error(
-                        "Web3Modal closed without connecting to an Ethereum wallet."
-                      );
-                      reject(
-                        "Web3Modal closed without connecting to an Ethereum wallet."
-                      );
+                  );
+                  unsubscribeCloseModal = web3Modal.subscribeEvents(
+                    (event: { data: { event: string } }) => {
+                      const newAccount = wagmiCore!.getAccount(wagmiConfig);
+                      if (
+                        event.data.event === "MODAL_CLOSE" &&
+                        !newAccount.address
+                      ) {
+                        logger.error(
+                          "Web3Modal closed without connecting to an Ethereum wallet."
+                        );
+                        reject(
+                          "Web3Modal closed without connecting to an Ethereum wallet."
+                        );
+                      }
                     }
-                  }
-                );
-              } catch (error) {
-                reject("User rejected");
+                  );
+                } catch (error) {
+                  reject("User rejected");
+                }
+              });
+            })();
+            address = newData.address?.toLowerCase();
+            if (!address) {
+              throw new Error("Failed to get Ethereum wallet address");
+            }
+          } catch (error: unknown) {
+            logger.error(error);
+            throw new Error("Failed to connect Ethereum wallet.");
+          } finally {
+            try {
+              // Prevent overshadowing the original exception
+              if (unwatchAccountConnected) {
+                unwatchAccountConnected();
               }
-            });
-          })();
-          address = newData.address?.toLowerCase();
-          if (!address) {
-            throw new Error("Failed to get Ethereum wallet address");
+              if (unsubscribeCloseModal) {
+                unsubscribeCloseModal();
+              }
+            } catch (error) {
+              logger.error(error);
+            }
           }
-        } catch (error: unknown) {
-          logger.error(error);
-          throw new Error("Failed to connect Ethereum wallet.");
-        } finally {
-          if (unwatchAccountConnected) {
-            unwatchAccountConnected();
-          }
-          if (unsubscribeCloseModal) {
-            unsubscribeCloseModal();
-          }
-        }
-      } else {
-        logger.log("Wallet already connected");
-      }
-
-      const { selectedNetworkId } = web3Modal.getState();
-      if (selectedNetworkId !== expectedChainId) {
-        try {
-          await wagmiCore!.switchChain(wagmiConfig, {
-            chainId: expectedChainId,
-          });
-        } catch (error) {
-          wagmiCore!.disconnect(wagmiConfig);
-          logger.error(error);
-          // TODO: add the link to onboarding page when available.
-          throw new Error(
-            "Wallet does not support NEAR Protocol network, try adding the network manually inside wallet settings."
-          );
-        }
-      }
-
-      // Login with FunctionCall access key, reuse keypair or create a new one.
-      const accountId = devMode ? address + "." + devModeAccount : address;
-      let publicKey;
-      if (contractId) {
-        const keyPair = await _state.keystore.getKey(
-          options.network.networkId,
-          accountId
-        );
-        let reUseKeyPair = false;
-        if (keyPair) {
-          try {
-            await provider.query<AccessKeyViewRaw>({
-              request_type: "view_access_key",
-              finality: "final",
-              account_id: accountId,
-              public_key: keyPair.getPublicKey().toString(),
-            });
-            reUseKeyPair = true;
-          } catch (error) {
-            logger.warn("Local access key cannot be reused.");
-            _state.keystore.removeKey(options.network.networkId, accountId);
-          }
-        }
-        if (reUseKeyPair) {
-          publicKey = keyPair.getPublicKey().toString();
-          logger.log("Reusing existing publicKey:", publicKey);
         } else {
-          const newAccessKeyPair = nearAPI.utils.KeyPair.fromRandom("ed25519");
-          publicKey = newAccessKeyPair.getPublicKey().toString();
-          logger.log("Created new publicKey:", publicKey);
+          logger.log("Wallet already connected");
+        }
+
+        const { selectedNetworkId } = web3Modal.getState();
+        if (selectedNetworkId !== expectedChainId) {
           try {
+            await wagmiCore!.switchChain(wagmiConfig, {
+              chainId: expectedChainId,
+            });
+          } catch (error) {
+            logger.error(error);
+            // TODO: add the link to onboarding page when available.
+            throw new Error(
+              "Wallet didn't connect to NEAR Protocol network, try adding and selecting the network manually inside wallet settings."
+            );
+          }
+        }
+
+        // Login with FunctionCall access key, reuse keypair or create a new one.
+        const accountId = devMode ? address + "." + devModeAccount : address;
+        let publicKey;
+        if (contractId) {
+          const keyPair = await _state.keystore.getKey(
+            options.network.networkId,
+            accountId
+          );
+          let reUseKeyPair = false;
+          if (keyPair) {
+            try {
+              await provider.query<AccessKeyViewRaw>({
+                request_type: "view_access_key",
+                finality: "final",
+                account_id: accountId,
+                public_key: keyPair.getPublicKey().toString(),
+              });
+              reUseKeyPair = true;
+            } catch (error) {
+              logger.warn("Local access key cannot be reused.");
+              _state.keystore.removeKey(options.network.networkId, accountId);
+            }
+          }
+          if (reUseKeyPair) {
+            publicKey = keyPair.getPublicKey().toString();
+            logger.log("Reusing existing publicKey:", publicKey);
+          } else {
+            const newAccessKeyPair =
+              nearAPI.utils.KeyPair.fromRandom("ed25519");
+            publicKey = newAccessKeyPair.getPublicKey().toString();
+            logger.log("Created new publicKey:", publicKey);
             await signAndSendTransactions([
               {
                 signerId: accountId,
@@ -789,28 +796,34 @@ const EthereumWallets: WalletBehaviourFactory<
               accountId,
               newAccessKeyPair
             );
-          } catch (error) {
-            await signOut();
-            throw error;
           }
+        } else if (alwaysOnboardDuringSignIn) {
+          // Check onboarding status and onboard the relayer if needed.
+          await signAndSendTransactions([]);
         }
-      } else if (alwaysOnboardDuringSignIn) {
-        // Check onboarding status and onboard the relayer if needed.
-        await signAndSendTransactions([]);
+        const accountLogIn = {
+          accountId,
+          publicKey,
+        };
+        emitter.emit("signedIn", {
+          contractId: contractId,
+          methodNames: methodNames ?? [],
+          accounts: [accountLogIn],
+        });
+        if (!_state.subscriptions.length) {
+          setupEvents();
+        }
+        return [accountLogIn];
+      } catch (error) {
+        try {
+          // Prevent overshadowing the original exception
+          // Disconnect to let user start again from the beginning: wallet selection.
+          wagmiCore!.disconnect(wagmiConfig);
+        } catch (err) {
+          logger.error(err);
+        }
+        throw error;
       }
-      const accountLogIn = {
-        accountId,
-        publicKey,
-      };
-      emitter.emit("signedIn", {
-        contractId: contractId,
-        methodNames: methodNames ?? [],
-        accounts: [accountLogIn],
-      });
-      if (!_state.subscriptions.length) {
-        setupEvents();
-      }
-      return [accountLogIn];
     },
 
     signOut,
