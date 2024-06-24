@@ -180,7 +180,7 @@ const Content: React.FC = () => {
             ],
           })
           .catch((err) => {
-            alert("Failed to add message");
+            alert("Failed to add message " + err);
             console.log("Failed to add message");
 
             throw err;
@@ -379,6 +379,10 @@ const Content: React.FC = () => {
         <div>
           <button onClick={handleSignIn}>Log in</button>
         </div>
+        <div style={{ marginTop: 30 }}>
+          {/* @ts-ignore */}
+          <w3m-button label="Log in with Ethereum" />
+        </div>
         <SignIn />
       </Fragment>
     );
@@ -395,6 +399,12 @@ const Content: React.FC = () => {
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
       </div>
+      {selector.store.getState().selectedWalletId === "ethereum-wallets" && (
+        <div style={{ marginTop: 30 }}>
+          {/* @ts-ignore */}
+          <w3m-button label="Log in with Ethereum" />
+        </div>
+      )}
       <Form
         account={account}
         onSubmit={(e) => handleSubmit(e as unknown as Submitted)}

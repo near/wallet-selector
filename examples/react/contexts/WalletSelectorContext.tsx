@@ -1,5 +1,9 @@
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  AccountState,
+  InjectedWalletBehaviour,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -33,7 +37,14 @@ import React, {
 } from "react";
 import { distinctUntilChanged, map } from "rxjs";
 import { createWeb3Modal } from "@web3modal/wagmi";
-import { reconnect, http, createConfig, type Config } from "@wagmi/core";
+import type { GetAccountReturnType } from "@wagmi/core";
+import {
+  reconnect,
+  http,
+  createConfig,
+  type Config,
+  watchAccount,
+} from "@wagmi/core";
 import { type Chain } from "@wagmi/core/chains";
 import { injected, walletConnect } from "@wagmi/connectors";
 
@@ -119,6 +130,30 @@ export const WalletSelectorContextProvider: React.FC<{
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Log in with Ethereum flow: auto connect to ethereum-wallets without showing the NEAR modal.
+  useEffect(() => {
+    if (!selector || selector.store.getState().selectedWalletId) {
+      // A NEAR wallet is already connected.
+      return;
+    }
+    watchAccount(wagmiConfig, {
+      onChange: (data: GetAccountReturnType) => {
+        if (!data.address) {
+          return;
+        }
+        selector.store
+          .getState()
+          .modules.find((module) => module.id === "ethereum-wallets")
+          ?.wallet()
+          .then((wallet) => {
+            (wallet as InjectedWalletBehaviour).signIn({
+              contractId: CONTRACT_ID,
+            });
+          });
+      },
+    });
+  }, [selector]);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
