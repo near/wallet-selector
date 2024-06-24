@@ -89,6 +89,32 @@ Developent options (before the NEAR protocol upgrade to support 0x accounts nati
 - `devMode` (`boolean?`): During development NEAR protocol doesn't yet support `0x123...abc` accounts natively so in devMode the account with format `0x123...abc.eth-wallet.testnet` is used insead. Setup your devMode account at https://near-wallet-playground.testnet.aurora.dev
 - `devModeAccount` (`string?`): Modify the namespace of the devMode root accounts.
 
+## Log in with Ethereum flow
+
+Dapps can connect to Ethereum wallets directly (using `w3m-button` for example) by watching the connected Ethereum account and connecting to the `ethereum-wallets` module automatically without opening the NEAR modal.
+
+```js
+import { watchAccount } from "@wagmi/core";
+useEffect(() => {
+  if (!selector || selector.store.getState().selectedWalletId) {
+    // A NEAR wallet is already connected.
+    return
+  }
+  watchAccount(wagmiConfig, {
+    onChange: (data) => {
+      if (!data.address) {
+        return
+      }
+      selector.wallet("ethereum-wallets").then((wallet) =>
+        wallet.signIn({
+          contractId: CONTRACT_ID,
+        })
+      )
+    },
+  })
+}, [selector])
+```
+
 ## License
 
 This repository is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
