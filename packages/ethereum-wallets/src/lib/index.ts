@@ -65,6 +65,7 @@ export interface EthereumWalletsParams {
 }
 
 interface EthereumWalletsState {
+  isConnecting: boolean;
   keystore: nearAPI.keyStores.KeyStore;
   subscriptions: Array<Subscription>;
 }
@@ -79,6 +80,7 @@ const setupEthereumWalletsState = async (
   return {
     keystore,
     subscriptions: [],
+    isConnecting: false,
   };
 };
 
@@ -613,8 +615,8 @@ const EthereumWallets: WalletBehaviourFactory<
 
   const signOut = async () => {
     const [accountLogIn] = await getAccounts();
-    try {
-      if (accountLogIn.publicKey) {
+    if (accountLogIn.publicKey) {
+      try {
         // Check that the key exists before making a transaction.
         await provider.query<AccessKeyViewRaw>({
           request_type: "view_access_key",
@@ -642,20 +644,27 @@ const EthereumWallets: WalletBehaviourFactory<
           options.network.networkId,
           accountLogIn.accountId
         );
+      } catch (error) {
+        logger.error(error);
       }
-      cleanup();
+    }
+    try {
+      wagmiCore!.disconnect(wagmiConfig);
     } catch (error) {
       logger.error(error);
-    } finally {
-      emitter.emit("signedOut", null);
-      wagmiCore!.disconnect(wagmiConfig);
     }
+    emitter.emit("signedOut", null);
+    cleanup();
   };
 
   return {
     async signIn({ contractId, methodNames = [] }) {
       logger.log("EthereumWallets:signIn", { contractId, methodNames });
+      if (_state.isConnecting) {
+        throw new Error("SignIn request already received.");
+      }
       try {
+        _state.isConnecting = true;
         let unwatchAccountConnected: (() => void) | undefined;
         let unsubscribeCloseModal: (() => void) | undefined;
         const account = wagmiCore!.getAccount(wagmiConfig);
@@ -813,8 +822,10 @@ const EthereumWallets: WalletBehaviourFactory<
         if (!_state.subscriptions.length) {
           setupEvents();
         }
+        _state.isConnecting = false;
         return [accountLogIn];
       } catch (error) {
+        _state.isConnecting = false;
         try {
           // Prevent overshadowing the original exception
           // Disconnect to let user start again from the beginning: wallet selection.

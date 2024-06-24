@@ -142,15 +142,11 @@ export const WalletSelectorContextProvider: React.FC<{
         if (!data.address) {
           return;
         }
-        selector.store
-          .getState()
-          .modules.find((module) => module.id === "ethereum-wallets")
-          ?.wallet()
-          .then((wallet) => {
-            (wallet as InjectedWalletBehaviour).signIn({
-              contractId: CONTRACT_ID,
-            });
-          });
+        selector.wallet("ethereum-wallets").then((wallet) =>
+          (wallet as InjectedWalletBehaviour).signIn({
+            contractId: CONTRACT_ID,
+          })
+        );
       },
     });
   }, [selector]);
