@@ -48,7 +48,7 @@ import {
 
 export interface EthereumWalletsParams {
   wagmiConfig: Config;
-  web3Modal: {
+  web3Modal?: {
     open: () => void;
     subscribeEvents: (
       f: (event: { data: { event: string } }) => void
@@ -518,12 +518,9 @@ const EthereumWallets: WalletBehaviourFactory<
       // Onboard the relayer before executing other transactions.
       txs = [onboardingTransaction, ...txs];
     }
-    const { selectedNetworkId } = web3Modal.getState();
-    if (selectedNetworkId !== expectedChainId) {
-      await wagmiCore!.switchChain(wagmiConfig, {
-        chainId: expectedChainId,
-      });
-    }
+    await wagmiCore!.switchChain(wagmiConfig, {
+      chainId: expectedChainId,
+    });
     const results: Array<FinalExecutionOutcome> = [];
     await (() => {
       return new Promise<void>((resolve, reject) => {
@@ -672,43 +669,50 @@ const EthereumWallets: WalletBehaviourFactory<
         // Open web3Modal and wait for a wallet to be connected or for the web3Modal to be closed.
         if (!address) {
           try {
-            web3Modal.open();
-            const newData: GetAccountReturnType = await (() => {
-              return new Promise((resolve, reject) => {
-                try {
-                  unwatchAccountConnected = wagmiCore!.watchAccount(
-                    wagmiConfig,
-                    {
-                      onChange: (data: GetAccountReturnType) => {
-                        if (!data.address) {
-                          return;
-                        }
-                        resolve(data);
-                      },
-                    }
-                  );
-                  unsubscribeCloseModal = web3Modal.subscribeEvents(
-                    (event: { data: { event: string } }) => {
-                      const newAccount = wagmiCore!.getAccount(wagmiConfig);
-                      if (
-                        event.data.event === "MODAL_CLOSE" &&
-                        !newAccount.address
-                      ) {
-                        logger.error(
-                          "Web3Modal closed without connecting to an Ethereum wallet."
-                        );
-                        reject(
-                          "Web3Modal closed without connecting to an Ethereum wallet."
-                        );
+            if (web3Modal) {
+              web3Modal.open();
+              const newData: GetAccountReturnType = await (() => {
+                return new Promise((resolve, reject) => {
+                  try {
+                    unwatchAccountConnected = wagmiCore!.watchAccount(
+                      wagmiConfig,
+                      {
+                        onChange: (data: GetAccountReturnType) => {
+                          if (!data.address) {
+                            return;
+                          }
+                          resolve(data);
+                        },
                       }
-                    }
-                  );
-                } catch (error) {
-                  reject("User rejected");
-                }
+                    );
+                    unsubscribeCloseModal = web3Modal.subscribeEvents(
+                      (event: { data: { event: string } }) => {
+                        const newAccount = wagmiCore!.getAccount(wagmiConfig);
+                        if (
+                          event.data.event === "MODAL_CLOSE" &&
+                          !newAccount.address
+                        ) {
+                          logger.error(
+                            "Web3Modal closed without connecting to an Ethereum wallet."
+                          );
+                          reject(
+                            "Web3Modal closed without connecting to an Ethereum wallet."
+                          );
+                        }
+                      }
+                    );
+                  } catch (error) {
+                    reject("User rejected");
+                  }
+                });
+              })();
+              address = newData.address?.toLowerCase();
+            } else {
+              const { accounts } = await wagmiCore!.connect(wagmiConfig, {
+                connector: wagmiCore!.injected(),
               });
-            })();
-            address = newData.address?.toLowerCase();
+              address = accounts[0]?.toLowerCase();
+            }
             if (!address) {
               throw new Error("Failed to get Ethereum wallet address");
             }
@@ -732,19 +736,16 @@ const EthereumWallets: WalletBehaviourFactory<
           logger.log("Wallet already connected");
         }
 
-        const { selectedNetworkId } = web3Modal.getState();
-        if (selectedNetworkId !== expectedChainId) {
-          try {
-            await wagmiCore!.switchChain(wagmiConfig, {
-              chainId: expectedChainId,
-            });
-          } catch (error) {
-            logger.error(error);
-            // TODO: add the link to onboarding page when available.
-            throw new Error(
-              "Wallet didn't connect to NEAR Protocol network, try adding and selecting the network manually inside wallet settings."
-            );
-          }
+        try {
+          await wagmiCore!.switchChain(wagmiConfig, {
+            chainId: expectedChainId,
+          });
+        } catch (error) {
+          logger.error(error);
+          // TODO: add the link to onboarding page when available.
+          throw new Error(
+            "Wallet didn't connect to NEAR Protocol network, try adding and selecting the network manually inside wallet settings."
+          );
         }
 
         // Login with FunctionCall access key, reuse keypair or create a new one.
@@ -884,8 +885,8 @@ export function setupEthereumWallets(
       id: "ethereum-wallets",
       type: "injected",
       metadata: {
-        name: "Ethereum Wallets",
-        description: "Ethereum wallets for NEAR.",
+        name: "Ethereum Wallet",
+        description: "Ethereum wallets (EOA) on NEAR Protocol.",
         iconUrl: params.iconUrl ?? icon,
         deprecated: params.deprecated ?? false,
         available: true,

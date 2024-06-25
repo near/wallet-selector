@@ -78,7 +78,7 @@ Project ID is required, please obtain it from [walletconnect.com](https://wallet
 ## Options
 
 - `wagmiConfig`: Wagmi Config for interacting with Ethereum wallets.
-- `web3Modal`: Web3Modal object for connecting an Ethereum wallet and switching network.
+- `web3Modal` (`Web3Modal?`): Web3Modal object for connecting an Ethereum wallet. If not provided this module will connect to the default injected wallet (MetaMask browser extension, embedded browser wallets...).
 - `chainId` (`number?`): Chain ID of the NEAR web3 rpc to connect to. Defaults to `397` (`mainnet`) or `398` (`testnet`) depending on the `setupWalletSelector` network configuration.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ethereum-wallets-icon.png`.
 - `wagmiCore` (`typeof import("@wagmi/core")?`): Optional, @wagmi/core functions can be overidden by the dapp to interract with the wallet.
@@ -114,6 +114,11 @@ useEffect(() => {
   })
 }, [selector])
 ```
+
+## Use without Web3Modal
+
+Web3Modal and Log in with Ethereum flows are the preferred UX for connecting to any Ethereum wallet.
+But this module is also available to use without Web3Modal: it will connect to the default injected wallet (Metamask browser extension, embedded browser wallets...).
 
 ## License
 
