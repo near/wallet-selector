@@ -153,7 +153,7 @@ describe("sign", () => {
 
     const transaction = createTransactionMock();
     const data = nearAPI.utils.serialize.serialize(
-      nearAPI.transactions.SCHEMA,
+      nearAPI.transactions.SCHEMA.Transaction,
       transaction
     );
 
