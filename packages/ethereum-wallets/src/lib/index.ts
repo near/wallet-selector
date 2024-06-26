@@ -302,6 +302,11 @@ const EthereumWallets: WalletBehaviourFactory<
               devMode ? address + "." + devModeAccount : address
             );
             if (!keyPair) {
+              try {
+                wagmiCore!.disconnect(wagmiConfig);
+              } catch (error) {
+                logger.error(error);
+              }
               emitter.emit("signedOut", null);
               return;
             }
