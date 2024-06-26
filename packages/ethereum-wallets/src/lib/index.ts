@@ -429,12 +429,15 @@ const EthereumWallets: WalletBehaviourFactory<
         key
       );
       return { relayerPublicKey, onboardingTransaction: null };
-    } catch (error) {
-      logger.warn(
-        "Need to add the relayer access key.",
-        relayerPublicKey,
-        error
-      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      logger.error(error);
+      if (!error.message?.includes("does not exist while viewing")) {
+        throw new Error(
+          "Failed to view the relayer public key (view_access_key)."
+        );
+      }
+      logger.warn("Need to add the relayer access key:", relayerPublicKey);
       // Add the relayer's access key on-chain.
       return {
         relayerPublicKey,
@@ -550,6 +553,7 @@ const EthereumWallets: WalletBehaviourFactory<
               });
               let receipt;
               try {
+                // NOTE: error is thrown if tx failed so we catch it to get the receipt.
                 receipt = await wagmiCore!.waitForTransactionReceipt(
                   wagmiConfig,
                   {
@@ -559,21 +563,39 @@ const EthereumWallets: WalletBehaviourFactory<
                 );
               } catch (error) {
                 logger.error(error);
-                receipt = await wagmiCore!.getTransactionReceipt(wagmiConfig, {
-                  hash: txHash,
-                  chainId: expectedChainId,
-                });
+                while (!receipt) {
+                  try {
+                    await new Promise((r) => setTimeout(r, 1000));
+                    receipt = await wagmiCore!.getTransactionReceipt(
+                      wagmiConfig,
+                      {
+                        hash: txHash,
+                        chainId: expectedChainId,
+                      }
+                    );
+                  } catch (err) {
+                    logger.log(err);
+                  }
+                }
               }
               logger.log("Receipt:", receipt);
               const nearProvider = new JsonRpcProvider(
                 // @ts-expect-error
                 provider.provider.connection
               );
-              const nearTx = await nearProvider.txStatus(
-                // @ts-expect-error
-                receipt.nearTransactionHash,
-                accountLogIn.accountId
-              );
+              let nearTx;
+              while (!nearTx) {
+                try {
+                  await new Promise((r) => setTimeout(r, 1000));
+                  nearTx = await nearProvider.txStatus(
+                    // @ts-expect-error
+                    receipt.nearTransactionHash,
+                    accountLogIn.accountId
+                  );
+                } catch (err) {
+                  logger.log(err);
+                }
+              }
               logger.log("NEAR transaction:", nearTx);
               if (receipt.status !== "success") {
                 const failedOutcome = nearTx.receipts_outcome.find(
