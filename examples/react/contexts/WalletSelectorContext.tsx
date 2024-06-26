@@ -133,13 +133,12 @@ export const WalletSelectorContextProvider: React.FC<{
 
   // Log in with Ethereum flow: auto connect to ethereum-wallets without showing the NEAR modal.
   useEffect(() => {
-    if (!selector || selector.store.getState().selectedWalletId) {
-      // A NEAR wallet is already connected.
+    if (!selector) {
       return;
     }
     watchAccount(wagmiConfig, {
       onChange: (data: GetAccountReturnType) => {
-        if (!data.address) {
+        if (!data.address || selector.store.getState().selectedWalletId) {
           return;
         }
         selector.wallet("ethereum-wallets").then((wallet) =>

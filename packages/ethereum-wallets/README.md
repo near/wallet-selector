@@ -96,13 +96,12 @@ Dapps can connect to Ethereum wallets directly (using `w3m-button` for example) 
 ```js
 import { watchAccount } from "@wagmi/core";
 useEffect(() => {
-  if (!selector || selector.store.getState().selectedWalletId) {
-    // A NEAR wallet is already connected.
+  if (!selector) {
     return
   }
   watchAccount(wagmiConfig, {
     onChange: (data) => {
-      if (!data.address) {
+      if (!data.address || selector.store.getState().selectedWalletId) {
         return
       }
       selector.wallet("ethereum-wallets").then((wallet) =>
