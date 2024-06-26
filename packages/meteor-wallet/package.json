@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/meteor-wallet",
   "peerDependencies": {
-    "near-api-js": "^3.0.0 || ^4.0.0"
+    "near-api-js": "^4.0.0"
   }
 }
