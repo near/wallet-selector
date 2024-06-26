@@ -432,7 +432,10 @@ const EthereumWallets: WalletBehaviourFactory<
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       logger.error(error);
-      if (!error.message?.includes("does not exist while viewing")) {
+      if (
+        !error.message?.includes("does not exist while viewing") &&
+        !error.message?.includes("has never been observed on the node")
+      ) {
         throw new Error(
           "Failed to view the relayer public key (view_access_key)."
         );
