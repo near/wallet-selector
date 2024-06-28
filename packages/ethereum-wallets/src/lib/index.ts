@@ -276,11 +276,8 @@ const EthereumWallets: WalletBehaviourFactory<
         throw new Error("Invalid action type");
       }
     }
-    const gas = await wagmiCore!.estimateGas(wagmiConfig, ethTx);
-    const result = await wagmiCore!.writeContract(wagmiConfig, {
-      ...ethTx,
-      gas,
-    });
+    const { request } = await wagmiCore!.simulateContract(wagmiConfig, ethTx);
+    const result = await wagmiCore!.writeContract(wagmiConfig, request);
     return result;
   };
 
