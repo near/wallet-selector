@@ -213,6 +213,10 @@ export function createModal({
       color: #1C2024;
       border: 1px solid rgba(1, 6, 47, 0.173) !important;
       background-color: #fff !important;
+      padding: 14px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
     }
     .ethereum-wallet-btn:hover {
       border: 1px solid rgba(1, 6, 47, 0.173);
@@ -224,21 +228,46 @@ export function createModal({
       outline-color: #8B8D98;
       border: 1px solid rgba(1, 6, 47, 0.173);
     }
-    .ethereum-wallet-btn-cancel {
-      padding: 14px;
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: 700;
-      width: 100%;
+    .ethereum-wallet-btn-sm {
+      padding: 10px 14px;
+      font-size: 12px;
+      line-height: 16px;
     }
-    .ethereum-wallet-btn-details {
-      margin-top: 20px;
+    .ethereum-wallet-btn-xs {
       padding: 8px 12px;
       font-weight: 500;
       font-size: 12px;
       line-height: 16px;
       letter-spacing: 0.04px;
       border-radius: 9999px;
+    }
+    .ethereum-wallet-btn-confirm {
+      width: 100%;
+      margin-top: 24px;
+    }
+    .ethereum-wallet-btn-cancel {
+      width: 100%;
+      background-color: #FFF9F9 !important;
+      color: #dc2626 !important;
+      border: 1px solid #fecaca !important;
+    }
+    .ethereum-wallet-btn-cancel:hover {
+      background-color: #fef2f2 !important;
+    }
+    .ethereum-wallet-btn-details {
+      margin-top: 20px;
+      border-radius: 9999px;
+    }
+
+    .ethereum-wallet-tx-error {
+      font-size: 14px;
+      line-height: 20px;
+      color: #dc2626;
+      font-weight: 700;
+      text-align: center;
+      text-wrap: balance;
+      margin-top: 20px;
+      margin-bottom: 0px;
     }
 
     .ethereum-wallet-txs-details {
@@ -273,6 +302,7 @@ export function createModal({
       border-radius: 8px;
       width: 100%;
       margin-top: 24px;
+      border: 1px solid rgba(0,0,0,0);
     }
     .ethereum-wallet-txs-status p {
       margin: 0;
@@ -344,24 +374,30 @@ export function createModal({
   modalContentContainer.classList.add("ethereum-wallet-modal-container");
 
   // Modal content
+  const isLogIn = txs.find((tx) => tx.actions[0].type === "AddKey");
+  const isOnboard = txs.find(
+    (tx) =>
+      tx.actions[0].type === "AddKey" &&
+      tx.actions[0].params.publicKey === relayerPublicKey
+  );
   const modalContent = window.document.createElement("div");
   modalContent.classList.add("ethereum-wallet-modal-content");
   modalContent.innerHTML = `
     ${
-      txs.length === 1 &&
-      txs[0].actions.length === 1 &&
-      txs[0].actions[0].type === "AddKey"
-        ? "<h2>Log in</h2>"
+      txs.length === 1 && isLogIn
+        ? `<h2>${isOnboard ? "Onboard" : "Log in"}</h2>`
         : txs.length === 1 &&
           txs[0].actions.length === 1 &&
           txs[0].actions[0].type === "DeleteKey"
         ? "<h2>Log out</h2>"
-        : `<h2>Execute ${txs.length} transaction${
+        : isLogIn
+        ? `<h2>Log in: execute ${txs.length} transaction${
             txs.length > 1 ? "s" : ""
           }</h2>`
+        : `<h2>Send ${txs.length} transaction${txs.length > 1 ? "s" : ""}</h2>`
     }
     <div class="ethereum-wallet-txs"></div>
-    <button class="ethereum-wallet-btn ethereum-wallet-btn-cancel">Cancel</button>
+    <button class="ethereum-wallet-btn ethereum-wallet-btn-sm ethereum-wallet-btn-cancel">Cancel</button>
   `;
 
   // // Append the elements to form the complete structure
@@ -395,9 +431,13 @@ export function createModal({
   const renderTxs = ({
     selectedIndex,
     ethTxHashes,
+    error,
+    onConfirm,
   }: {
     selectedIndex: number;
     ethTxHashes: Array<string>;
+    error?: string | null;
+    onConfirm?: () => void;
   }) => {
     const container = document.querySelector(
       ".ethereum-wallet-txs"
@@ -592,27 +632,39 @@ export function createModal({
                     `
                 }
               </div>
-              <button class="ethereum-wallet-btn ethereum-wallet-btn-details">Show details</button>
+              <button class="ethereum-wallet-btn ethereum-wallet-btn-xs ethereum-wallet-btn-details">Show details</button>
               <div class="ethereum-wallet-txs-details">
                 <p>${JSON.stringify(tx.actions[0], null, 2)}</p>
               </div>
-              <div class="ethereum-wallet-txs-status">
-                <p>
-                ${
-                  isSent
-                    ? "Sending transaction"
-                    : "Sign the transaction in your wallet"
-                }
-                </p>
-                <div class="ethereum-wallet-spinner"></div>
-              </div>
+              ${error ? `<p class="ethereum-wallet-tx-error">${error}</p>` : ""}
+              ${
+                onConfirm
+                  ? `<button class="ethereum-wallet-btn ethereum-wallet-btn-confirm" id="confirm-btn-${i}">
+                      Confirm transaction
+                    </button>`
+                  : `<div class="ethereum-wallet-txs-status">
+                      <p>
+                      ${
+                        isSent
+                          ? "Sending transaction"
+                          : "Confirm in your wallet"
+                      }
+                      </p>
+                      <div class="ethereum-wallet-spinner"></div>
+                    </div>`
+              }
             `
         }
-
       `;
-
       container.appendChild(txElement);
     });
+    if (onConfirm) {
+      window.document
+        .querySelector(`#confirm-btn-${selectedIndex}`)
+        ?.addEventListener("click", () => {
+          onConfirm();
+        });
+    }
 
     const toggleButton = window.document.querySelector(
       ".ethereum-wallet-btn-details"

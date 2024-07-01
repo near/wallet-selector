@@ -9,3 +9,4 @@ export const ETHEREUM_ACCOUNT_ABI = parseAbi([
 export const DEFAULT_ACCESS_KEY_ALLOWANCE = "250000000000000000000000"; // 0.25 NEAR
 export const RLP_EXECUTE = "rlp_execute";
 export const MAX_TGAS = BigInt(270e12); // Handle overhead of rlp_execute to validate the Ethereum transaction.
+export class EthTxError extends Error {}
