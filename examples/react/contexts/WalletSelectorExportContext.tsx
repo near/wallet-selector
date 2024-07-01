@@ -27,6 +27,7 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 
 declare global {
   interface Window {
@@ -71,6 +72,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupNearFi(),
         setupRamperWallet(),
         setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupBitteWallet({ contractId: "guest-book.testnet" }),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

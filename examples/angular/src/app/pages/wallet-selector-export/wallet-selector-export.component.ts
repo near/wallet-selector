@@ -22,6 +22,7 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 
 declare global {
   interface Window {
@@ -81,6 +82,7 @@ export class WalletSelectorExportComponent implements OnInit {
         setupRamperWallet(),
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupBitteWallet({ contractId: "guest-book.testnet" }),
       ],
     });
     /**

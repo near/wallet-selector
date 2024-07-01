@@ -92,6 +92,9 @@
        "@near-wallet-selector/mintbase-wallet": [
         "packages/mintbase-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/bitte-wallet": [
+        "packages/bitte-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/okx-wallet": [
         "packages/okx-wallet/src/index.ts"
       ],
