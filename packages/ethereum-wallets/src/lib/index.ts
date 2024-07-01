@@ -51,6 +51,7 @@ export interface EthereumWalletsParams {
   wagmiConfig: Config;
   web3Modal?: {
     open: () => void;
+    close: () => void;
     subscribeEvents: (
       f: (event: { data: { event: string } }) => void
     ) => () => void;
@@ -895,6 +896,14 @@ const EthereumWallets: WalletBehaviourFactory<
           setupEvents();
         }
         _state.isConnecting = false;
+        try {
+          // Hide modal which stays open after adding a new network.
+          if (web3Modal) {
+            web3Modal.close();
+          }
+        } catch (error) {
+          logger.error(error);
+        }
         return [accountLogIn];
       } catch (error) {
         _state.isConnecting = false;
