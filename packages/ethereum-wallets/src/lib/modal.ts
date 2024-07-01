@@ -391,7 +391,7 @@ export function createModal({
           txs[0].actions[0].type === "DeleteKey"
         ? "<h2>Log out</h2>"
         : isLogIn
-        ? `<h2>Log in: execute ${txs.length} transaction${
+        ? `<h2>Log in: send ${txs.length} transaction${
             txs.length > 1 ? "s" : ""
           }</h2>`
         : `<h2>Send ${txs.length} transaction${txs.length > 1 ? "s" : ""}</h2>`
