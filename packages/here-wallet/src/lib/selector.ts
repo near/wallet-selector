@@ -1,6 +1,5 @@
 import type { NetworkId } from "@near-wallet-selector/core";
 import { HereWallet, waitInjectedHereWallet } from "@here-wallet/core";
-import type BN from "bn.js";
 
 import type { SelectorInit } from "./types";
 
@@ -86,7 +85,7 @@ export const initHereWallet: SelectorInit = async (config) => {
       return await here.getHereBalance();
     },
 
-    async getAvailableBalance(): Promise<BN> {
+    async getAvailableBalance(): Promise<bigint> {
       logger.log("HereWallet:getAvailableBalance");
       return await here.getAvailableBalance();
     },

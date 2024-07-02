@@ -1,6 +1,5 @@
 import { createAction } from "./wallet-utils";
 import { transactions, utils } from "near-api-js";
-import BN = require("bn.js");
 
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
@@ -39,7 +38,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit))
+      transactions.functionCall(methodName, args, BigInt(gas), BigInt(deposit))
     );
   });
 
@@ -52,7 +51,7 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual(transactions.transfer(new BN(deposit)));
+    expect(actions).toEqual(transactions.transfer(BigInt(deposit)));
   });
 
   it("correctly transforms 'Stake' action", () => {
@@ -68,7 +67,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey))
+      transactions.stake(BigInt(stake), utils.PublicKey.from(publicKey))
     );
   });
 
@@ -118,7 +117,7 @@ describe("transformActions", () => {
         transactions.functionCallAccessKey(
           receiverId,
           methodNames,
-          new BN(allowance)
+          BigInt(allowance)
         )
       )
     );
