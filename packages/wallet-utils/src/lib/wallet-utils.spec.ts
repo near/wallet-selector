@@ -1,6 +1,8 @@
 import { createAction } from "./wallet-utils";
 import { transactions, utils } from "near-api-js";
 
+const TEST_PUBLIC_KEY = "ed25519:Anu5D32fr5YsQGVULF4fz3R2E3pNaeUhj4hsKcE4vDyk";
+
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
     const actions = createAction({ type: "CreateAccount" });
@@ -56,7 +58,7 @@ describe("transformActions", () => {
 
   it("correctly transforms 'Stake' action", () => {
     const stake = "1";
-    const publicKey = "";
+    const publicKey = TEST_PUBLIC_KEY;
 
     const actions = createAction({
       type: "Stake",
@@ -72,7 +74,7 @@ describe("transformActions", () => {
   });
 
   it("correctly transforms 'AddKey' action with 'FullAccess' permission", () => {
-    const publicKey = "";
+    const publicKey = TEST_PUBLIC_KEY;
     const actions = createAction({
       type: "AddKey",
       params: {
@@ -92,7 +94,7 @@ describe("transformActions", () => {
   });
 
   it("correctly transforms 'AddKey' action with 'FunctionCall' permission", () => {
-    const publicKey = "";
+    const publicKey = TEST_PUBLIC_KEY;
     const receiverId = "test.testnet";
     const allowance = "1";
     const methodNames = ["methodName"];
@@ -124,7 +126,7 @@ describe("transformActions", () => {
   });
 
   it("correctly transforms 'DeleteKey' action", () => {
-    const publicKey = "";
+    const publicKey = TEST_PUBLIC_KEY;
 
     const actions = createAction({
       type: "DeleteKey",
