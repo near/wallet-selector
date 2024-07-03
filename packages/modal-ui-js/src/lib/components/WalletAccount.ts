@@ -29,6 +29,13 @@ export async function renderWalletAccount(
               ${translate("modal.wallet.connectionSuccessful")}
             </span>
           </div>
+          <span class="nws-remember-wallet">
+           ${translate("modal.wallet.rememberWallet")}
+          </span>
+          <label class="nws-switch">
+            <input type="checkbox" />
+            <span class="nws-slider round" />
+          </label>
         </div>
       </div>
     </div>

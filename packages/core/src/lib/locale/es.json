@@ -11,6 +11,7 @@
       "useAWallet": "Usa tu Billetera para resguardar y administrar tus activos en NEAR, e Iniciar sesión en cualquier aplicacion NEAR sin la necesidad de nombres de usuarios y contraseñas",
       "connectionFailed": "Conexión Fallida",
       "connectionSuccessful": "Conexión Existosa",
+      "rememberWallet": "Recordar la elección de la cartera",
       "connected": "Conectado",
       "connectingTo": "Conectando a ",
       "connectingMessage": {

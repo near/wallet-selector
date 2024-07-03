@@ -30,6 +30,13 @@ export const WalletConnected: React.FC<WalletConnectedProps> = ({
             <ConnectionSuccessIcon />
             <span>{translate("modal.wallet.connectionSuccessful")}</span>
           </div>
+          <span className="nws-remember-wallet">
+            {translate("modal.wallet.rememberWallet")}
+          </span>
+          <label className="nws-switch">
+            <input type="checkbox" />
+            <span className="nws-slider round" />
+          </label>
         </div>
       </div>
     </Fragment>
