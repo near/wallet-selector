@@ -94,6 +94,7 @@
     "@meteorwallet/sdk": "^1.0.9",
     "@mintbase-js/wallet": "0.6.0-beta.3",
     "@near-snap/sdk": "^0.6.0",
+    "@near-wallet-selector/modal-ui": "^8.9.10",
     "@peersyst/near-mobile-signer": "^1.0.10",
     "@ramper/near": "^0.0.30",
     "@walletconnect/modal": "^2.6.2",
