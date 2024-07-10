@@ -2992,10 +2992,10 @@
     nanoid "3.3.6"
     query-string "^7.1.3"
 
-"@mintbase-js/wallet@0.6.0-beta.3":
-  version "0.6.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@mintbase-js/wallet/-/wallet-0.6.0-beta.3.tgz#31ee107f2cf888fa120e8ca07f47e5dcd278ca26"
-  integrity sha512-fzkqS3LDnSHB4YG0ync8JRuv+xQlMOzcu0btpAN8SC1hZNGUak0BTXBiNxKZQTeuH/DL+6ghh+t9VzJknOorhA==
+"@mintbase-js/wallet@v0.6.0-beta.7":
+  version "0.6.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@mintbase-js/wallet/-/wallet-0.6.0-beta.7.tgz#5d2ab3a03889624873f15a276652e6d5a3d77fb1"
+  integrity sha512-Trp7WJucfG0j3QLZFw1rcT3H1zp3doOM3ap1i+LiH1l9mK3F52c/K0sgbemSAAv7oglqvJqDD8N660TUQlsFgQ==
   dependencies:
     "@near-wallet-selector/core" "8.9.5"
     "@near-wallet-selector/wallet-utils" "^8.9.5"
