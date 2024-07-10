@@ -531,7 +531,7 @@ export function createModal({
                           .methodNames[0] === RLP_EXECUTE
                       ? `
                         <div class="ethereum-wallet-tx-info-text">
-                          <p>This transaction will onboard your account and enable you to transact on NEAR Protocol.</p>
+                          <p>This one-time transaction will onboard your account and enable you to transact on NEAR Protocol.</p>
                         </div>`
                       : `
                       <div class="ethereum-wallet-tx-info-text">

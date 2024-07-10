@@ -208,9 +208,10 @@ const EthereumWallets: WalletBehaviourFactory<
               tx.actions[0].params.publicKey === relayerPublicKey &&
               tx.receiverId ===
                 tx.actions[0].params.accessKey.permission.receiverId
-                ? // Fix 0 gasPrice to avoid wallet errors when account has 0 NEAR balance.
-                  // The onboarding transaction is always free.
-                  BigInt(0)
+                ? // Free onboarding tx: fix 1 wei gasPrice because some wallets ignore 0 gasPrice.
+                  // Rpc will also return a dust eth_getBalance for accounts not yet onboarded to trick wallets
+                  // into accepting this free transaction even before the user owns NEAR.
+                  BigInt(1)
                 : undefined,
             chainId: expectedChainId,
             type: "legacy",
