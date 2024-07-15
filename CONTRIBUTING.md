@@ -39,6 +39,9 @@ The initial comment has instructions. For your PR to be considered, you must sel
 1. Select the preview tab.
 2. Select the applicable template. This replaces the comment with the correct placeholder text.
 
+![Submit PR Step 1](https://github.com/near/wallet-selector/blob/main/images/submit_PR_step_1.png)
+![Submit PR Step 2](https://github.com/near/wallet-selector/blob/main/images/submit_PR_step_2.png)
+
 # Branching
 
 In this project there are two important branches `main` and `dev` branch. Pushing or committing directly in these two branches is forbidden.
