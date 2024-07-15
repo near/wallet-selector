@@ -33,7 +33,11 @@ Build and deploy angular example
 yarn nx build angular # build the angular example
 yarn nx deploy angular # deploys angular example to gh-pages
 ```
+# Submitting a PR
+The initial comment has instructions. For your PR to be considered, you must select a template, include details, and make the appropriate selections from the checkboxes provided.
 
+1. Select the preview tab.
+2. Select the applicable template. This replaces the comment with the correct placeholder text.
 
 # Branching
 
