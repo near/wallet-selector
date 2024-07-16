@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ramper-wallet",
-  "version": "8.9.7",
+  "version": "8.9.10",
   "description": "Ramper wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

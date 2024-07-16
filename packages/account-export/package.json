@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/account-export",
-  "version": "8.9.7",
+  "version": "8.9.10",
   "description": "This is the Export Selector UI package for NEAR Wallet Selector.",
   "keywords": [
     "near",

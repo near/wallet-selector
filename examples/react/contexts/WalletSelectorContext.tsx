@@ -25,6 +25,8 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 import type { ReactNode } from "react";
@@ -163,6 +165,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNightly(),
         setupMeteorWallet(),
         setupNearSnap(),
+        setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
@@ -185,6 +188,7 @@ export const WalletSelectorContextProvider: React.FC<{
         }),
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupBitteWallet({ contractId: "guest-book.testnet" }),
         setupEthereumWallets({ wagmiConfig, web3Modal, devMode: true }),
       ],
     });

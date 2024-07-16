@@ -4,12 +4,14 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
+- [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Browser wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
+- [OKX Wallet](https://www.npmjs.com/package/@near-wallet-selector/okx-wallet) - Injected wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
@@ -62,6 +64,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/near-snap \
@@ -72,7 +75,10 @@ yarn add \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet  \
-  @near-wallet-selector/mintbase-wallet
+  @near-wallet-selector/bitget-wallet \
+  @near-wallet-selector/okx-wallet \
+  @near-wallet-selector/mintbase-wallet \
+  @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
 
 # Using NPM.
@@ -85,6 +91,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
   @near-wallet-selector/near-snap \
@@ -95,7 +102,10 @@ npm install \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet \
-  @near-wallet-selector/mintbase-wallet
+  @near-wallet-selector/bitget-wallet \
+  @near-wallet-selector/okx-wallet \
+  @near-wallet-selector/mintbase-wallet \
+  @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
 ```
 
@@ -122,6 +132,7 @@ import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
@@ -134,6 +145,7 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"; 
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet"; 
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 const selector = await setupWalletSelector({
@@ -147,6 +159,7 @@ const selector = await setupWalletSelector({
     setupNightly(),
     setupMeteorWallet(),
     setupNearSnap(),
+    setupOkxWallet(),
     setupNarwallets(),
     setupWelldoneWallet(),
     setupLedger(),
@@ -169,7 +182,13 @@ const selector = await setupWalletSelector({
           walletUrl: "https://wallet.mintbase.xyz",
           callbackUrl: "https://www.mywebsite.com",
           deprecated: false,
-      }),
+    }),
+    setupBitteWallet({
+        networkId: "mainnet",
+        walletUrl: "https://wallet.bitte.ai",
+        callbackUrl: "https://www.mywebsite.com",
+        deprecated: false,
+    }),
     setupEthereumWallets({ wagmiConfig, web3Modal }),
   ],
 });
