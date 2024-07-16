@@ -99,10 +99,10 @@
     "@near-snap/sdk": "^0.6.0",
     "@peersyst/near-mobile-signer": "^1.0.10",
     "@ramper/near": "^0.0.30",
-    "@tanstack/react-query": "5.36.2",
+    "@tanstack/react-query": "5.24.8",
     "@walletconnect/modal": "^2.6.2",
     "@walletconnect/sign-client": "2.13.0",
-    "@web3modal/wagmi": "4.2.0",
+    "@web3modal/wagmi": "5.0.6",
     "better-sqlite3": "^9.3.0",
     "big.js": "^6.1.1",
     "bn.js": "^5.2.0",
@@ -132,8 +132,8 @@
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "url": "^0.11.0",
-    "viem": "2.10.5",
-    "wagmi": "2.8.8",
+    "viem": "2.16.2",
+    "wagmi": "2.10.9",
     "zone.js": "0.12.0"
   },
   "devDependencies": {

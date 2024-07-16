@@ -36,7 +36,7 @@ Visit https://docs.walletconnect.com for the latest configuration of Web3Modal.
 ```ts
 import type { Config } from "@wagmi/core";
 import { reconnect, http, createConfig } from "@wagmi/core";
-import { coinbaseWallet, walletConnect, injected } from "@wagmi/connectors";
+import { walletConnect, injected } from "@wagmi/connectors";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
@@ -48,10 +48,6 @@ const wagmiConfig: Config = createConfig({
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),
     injected({ shimDisconnect: true }),
-    coinbaseWallet({
-      appName,
-      appLogoUrl,
-    }),
   ],
 });
 reconnect(wagmiConfig);

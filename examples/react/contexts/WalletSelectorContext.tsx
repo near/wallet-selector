@@ -120,9 +120,8 @@ reconnect(wagmiConfig);
 const web3Modal = createWeb3Modal({
   wagmiConfig: wagmiConfig,
   projectId,
-  featuredWalletIds: [
-    "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18", // Zerion
-  ],
+  enableOnramp: false,
+  allWallets: "SHOW",
 });
 
 export const WalletSelectorContextProvider: React.FC<{
