@@ -79,6 +79,7 @@ yarn add \
   @near-wallet-selector/mintbase-wallet \
   @near-wallet-selector/bitte-wallet
 
+
 # Using NPM.
 npm install \
   @near-wallet-selector/bitget-wallet \

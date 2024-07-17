@@ -20,8 +20,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-snap",
-  "peerDependencies": {
-    "near-api-js": "^4.0.0"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-snap"
 }

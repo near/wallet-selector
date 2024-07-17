@@ -151,10 +151,7 @@ describe("sign", () => {
     });
 
     const transaction = createTransactionMock();
-    const data = nearAPI.utils.serialize.serialize(
-      nearAPI.transactions.SCHEMA,
-      transaction
-    );
+    const data = nearAPI.transactions.encodeTransaction(transaction);
 
     await client.connect();
     const result = await client.sign({
