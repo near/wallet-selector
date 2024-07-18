@@ -95,6 +95,11 @@ export interface WalletSelector {
   setActiveAccount(accountId: string): void;
 
   /**
+   * Programmatically changes the rememberRecentWallets behavior, it can deactivate and activate rememberRecentWallets.
+   */
+  setRememberRecentWallets(): void;
+
+  /**
    * Attach an event handler to important events.
    */
   on<EventName extends keyof WalletSelectorEvents>(

@@ -77,6 +77,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const { recentlySignedInWallets } = selector.store.getState();
+    if (recentlySignedInWallets.length) {
+      setActiveWalletId(recentlySignedInWallets[0]);
+    }
+  }, [selector.store]);
+
   function renderOptionsList(modulesToRender: Array<ModuleState<Wallet>>) {
     return modulesToRender.reduce<Array<JSX.Element>>(
       (result, module, index) => {

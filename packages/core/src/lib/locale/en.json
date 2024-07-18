@@ -11,6 +11,7 @@
       "useAWallet": "Use a wallet to secure and manage your NEAR assets, and to log in to any NEAR app without the need for usernames and passwords.",
       "connectionFailed": "Connection Failed",
       "connectionSuccessful": "Connection Successful",
+      "rememberWallet": "Remember wallets",
       "connected": "Connected",
       "connectingTo": "Connecting to",
       "connectingMessage": {

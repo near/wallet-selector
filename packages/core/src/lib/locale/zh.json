@@ -11,6 +11,7 @@
       "useAWallet": "使用钱包来保护和管理你的 NEAR 资产，无需用户名和密码即可登录任何 NEAR 应用",
       "connectionFailed": "连接失败",
       "connectionSuccessful": "连接成功",
+      "rememberWallet": "记住钱包选择",
       "connected": "已连接",
       "connectingTo": "正在连接"
     },
