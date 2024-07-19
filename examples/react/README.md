@@ -7,7 +7,7 @@ Make sure your node version is 18
 
 Then perform the build:
 ```bash
-yarn build all
+yarn build:all
 ```
 Need to add a separate dependency, otherwise a error `Module not found` will be reported.
 ```bash
