@@ -97,8 +97,8 @@ export const WalletSelectorContextProvider: React.FC<{
           },
         }),
         setupNearMobileWallet(),
-        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
-        setupBitteWallet({ contractId: "guest-book.testnet" }),
+        setupMintbaseWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet({ contractId: CONTRACT_ID }),
       ],
     });
     const _modal = setupModal(_selector, {

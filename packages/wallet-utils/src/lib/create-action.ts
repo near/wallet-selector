@@ -1,4 +1,3 @@
-import { BN } from "bn.js";
 import * as nearAPI from "near-api-js";
 import type { AddKeyPermission, Action } from "@near-wallet-selector/core";
 const { transactions, utils } = nearAPI;
@@ -10,7 +9,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 
   const { receiverId, methodNames = [] } = permission;
   const allowance = permission.allowance
-    ? new BN(permission.allowance)
+    ? BigInt(permission.allowance)
     : undefined;
 
   return transactions.functionCallAccessKey(receiverId, methodNames, allowance);
@@ -31,19 +30,19 @@ export const createAction = (action: Action) => {
       return transactions.functionCall(
         methodName,
         args,
-        new BN(gas),
-        new BN(deposit)
+        BigInt(gas),
+        BigInt(deposit)
       );
     }
     case "Transfer": {
       const { deposit } = action.params;
 
-      return transactions.transfer(new BN(deposit));
+      return transactions.transfer(BigInt(deposit));
     }
     case "Stake": {
       const { stake, publicKey } = action.params;
 
-      return transactions.stake(new BN(stake), utils.PublicKey.from(publicKey));
+      return transactions.stake(BigInt(stake), utils.PublicKey.from(publicKey));
     }
     case "AddKey": {
       const { publicKey, accessKey } = action.params;
