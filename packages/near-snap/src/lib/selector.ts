@@ -46,7 +46,7 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
       logger.log("NearSnap:signAndSendTransaction", data);
       const { contracts } = store.getState();
 
-      if (account == null || contracts.length < 1) {
+      if (account === null || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
