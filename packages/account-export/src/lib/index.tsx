@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
 import type { WalletSelectorModal, ExportSelectorOptions } from "./index.types";
-
 import { ExportSelector } from "./components/ExportSelector";
 
 const MODAL_ELEMENT_ID = "near-wallet-selector-modal";

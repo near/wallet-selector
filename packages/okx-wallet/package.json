@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/okx-wallet",
-  "version": "8.9.10",
+  "version": "8.9.11",
   "description": "OKX Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -20,8 +20,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/okx-wallet",
-  "peerDependencies": {
-    "near-api-js": "^1.0.0 || ^2.0.0"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/okx-wallet"
 }

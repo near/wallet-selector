@@ -11,7 +11,6 @@ import type {
 } from "@near-wallet-selector/core";
 import { verifyFullKeyBelongsToUser } from "@near-wallet-selector/core";
 import { verifySignature } from "@near-wallet-selector/core";
-import BN from "bn.js";
 
 import type { Account, Message } from "../interfaces";
 import { useWalletSelector } from "../contexts/WalletSelectorContext";
@@ -42,8 +41,8 @@ const getAccountBalance = async ({
       finality: "final",
       account_id: accountId,
     });
-    const bn = new BN(amount);
-    return { hasBalance: !bn.isZero() };
+    const bn = BigInt(amount);
+    return { hasBalance: bn !== BigInt(0) };
   } catch {
     return { hasBalance: false };
   }

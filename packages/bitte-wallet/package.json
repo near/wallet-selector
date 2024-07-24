@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/ledger",
+  "name": "@near-wallet-selector/bitte-wallet",
   "version": "8.9.11",
-  "description": "Ledger package for NEAR Wallet Selector.",
+  "description": "Bitte wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -10,8 +10,8 @@
     "near-protocol",
     "near-blockchain",
     "wallet selector",
-    "hardware wallet",
-    "ledger"
+    "browser wallet",
+    "bitte wallet"
   ],
   "repository": {
     "type": "git",
@@ -20,5 +20,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ledger"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitte-wallet"
 }
