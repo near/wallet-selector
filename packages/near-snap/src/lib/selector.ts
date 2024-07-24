@@ -44,19 +44,19 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
 
     async signAndSendTransaction(data) {
       logger.log("NearSnap:signAndSendTransaction", data);
+      const { contracts } = store.getState();
 
-      if (account == null) {
+      if (account == null || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
-      const { contract } = store.getState();
-      const receiverId = data.receiverId ?? contract?.contractId;
+      const receiverId = data.receiverId ?? contracts[0].contractId;
 
       if (receiverId == null) {
         throw new Error("ReceiverId is not defined");
       }
 
-      return await account.executeTransaction({ receiverId, ...data });
+      return await account.executeTransaction({ ...data, receiverId });
     },
 
     async signMessage({ message, nonce, recipient }) {

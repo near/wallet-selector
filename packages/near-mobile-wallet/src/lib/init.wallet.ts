@@ -55,13 +55,13 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
     async signAndSendTransaction(data) {
       logger.log("[NearMobileWallet]: signAndSendTransaction", data);
 
-      const { contract } = store.getState();
-      if (!contract) {
+      const { contracts } = store.getState();
+      if (contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
       return await nearMobileWallet.signAndSendTransaction({
-        receiverId: contract.contractId,
+        receiverId: contracts[0].contractId,
         ...data,
       });
     },

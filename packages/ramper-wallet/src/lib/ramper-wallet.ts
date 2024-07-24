@@ -73,9 +73,9 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     transactions: Array<Optional<Transaction, "signerId">>
   ) => {
     const accounts = await getAccounts();
-    const { contract } = store.getState();
+    const { contracts } = store.getState();
 
-    if (!accounts.length || !contract) {
+    if (!accounts.length || contracts.length < 1) {
       throw new Error("Wallet not signed in");
     }
 
@@ -85,7 +85,7 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       );
 
       return {
-        receiverId: transaction.receiverId || contract.contractId,
+        receiverId: transaction.receiverId,
         actions: parsedActions,
       };
     });
@@ -127,10 +127,10 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }: Omit<Transaction, "signerId">) {
       logger.log("signAndSendTransaction", { receiverId, actions });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
       const accounts = await getAccounts();
 
-      if (!accounts.length || !contract) {
+      if (!accounts.length || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
