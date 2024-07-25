@@ -61,7 +61,7 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
       }
 
       return await nearMobileWallet.signAndSendTransaction({
-        receiverId: contracts[0].contractId,
+        receiverId: data.receiverId,
         ...data,
       });
     },

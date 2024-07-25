@@ -50,7 +50,7 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
         throw new Error("Wallet not signed in");
       }
 
-      const receiverId = data.receiverId ?? contracts[0].contractId;
+      const receiverId = data.receiverId;
 
       if (receiverId == null) {
         throw new Error("ReceiverId is not defined");
