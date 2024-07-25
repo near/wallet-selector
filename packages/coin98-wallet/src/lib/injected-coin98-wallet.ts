@@ -1,4 +1,4 @@
-import { SignedMessage, SignMessageParams } from "@near-wallet-selector/core";
+import type { SignedMessage, SignMessageParams } from "@near-wallet-selector/core";
 import type { Signer } from "near-api-js/lib/signer";
 
 interface IConnectParams {
