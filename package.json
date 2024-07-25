@@ -130,7 +130,7 @@
     "qrcode": "1.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-qr-code": "2.0.12",
+    "react-qr-code": "2.0.15",
     "regenerator-runtime": "0.14.1",
     "rxjs": "7.8.1",
     "stream-browserify": "3.0.0",
