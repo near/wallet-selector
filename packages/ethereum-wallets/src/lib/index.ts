@@ -38,7 +38,7 @@ const importWagmiCore = async () => {
 };
 
 import icon from "./icon";
-import { createModal } from "./modal";
+import { createTxModal, createChainSwitchModal } from "./modal";
 import {
   ETHEREUM_ACCOUNT_ABI,
   DEFAULT_ACCESS_KEY_ALLOWANCE,
@@ -111,15 +111,15 @@ const EthereumWallets: WalletBehaviourFactory<
   const _state = await setupEthereumWalletsState(id);
   const expectedChainId =
     chainId ?? (options.network.networkId === "mainnet" ? 397 : 398);
-  const nearRpc = wagmiConfig.chains.find(
-    (chain) => chain.id === expectedChainId
-  )?.rpcUrls.default.http[0];
+  const chain = wagmiConfig.chains.find((c) => c.id === expectedChainId);
+  if (!chain) {
+    throw new Error("Failed to parse NEAR chain from wagmiConfig.");
+  }
+  const nearRpc = chain.rpcUrls.default.http[0];
   if (!nearRpc) {
     throw new Error("Failed to parse NEAR rpc url from wagmiConfig.");
   }
-  const nearExplorer = wagmiConfig.chains.find(
-    (chain) => chain.id === expectedChainId
-  )?.blockExplorers?.default.url;
+  const nearExplorer = chain.blockExplorers?.default.url;
   if (!nearExplorer) {
     throw new Error("Failed to parse NEAR explorer url from wagmiConfig.");
   }
@@ -473,6 +473,29 @@ const EthereumWallets: WalletBehaviourFactory<
     }
   };
 
+  const switchChain = async () => {
+    const account = wagmiCore!.getAccount(wagmiConfig);
+    if (account.chainId !== expectedChainId) {
+      const { showModal, hideModal } = createChainSwitchModal({
+        chain,
+      });
+      showModal();
+      try {
+        await wagmiCore!.switchChain(wagmiConfig, {
+          chainId: expectedChainId,
+        });
+      } catch (error) {
+        logger.error(error);
+        // TODO: add the link to onboarding page when available.
+        throw new Error(
+          "Wallet didn't connect to NEAR Protocol network, try adding and selecting the network manually inside wallet settings."
+        );
+        // NOTE: we don't hide the modal in case of error to allow the user to add the network manually.
+      }
+      hideModal();
+    }
+  };
+
   const signAndSendTransactions = async (
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ) => {
@@ -529,13 +552,11 @@ const EthereumWallets: WalletBehaviourFactory<
       // Onboard the relayer before executing other transactions.
       txs = [onboardingTransaction, ...txs];
     }
-    await wagmiCore!.switchChain(wagmiConfig, {
-      chainId: expectedChainId,
-    });
+    await switchChain();
     const results: Array<FinalExecutionOutcome> = [];
     await (() => {
       return new Promise<void>((resolve, reject) => {
-        const { showModal, hideModal, renderTxs } = createModal({
+        const { showModal, hideModal, renderTxs } = createTxModal({
           onCancel: () => {
             reject("User canceled Ethereum wallet transaction(s).");
           },
@@ -737,14 +758,14 @@ const EthereumWallets: WalletBehaviourFactory<
         _state.isConnecting = true;
         let unwatchAccountConnected: (() => void) | undefined;
         let unsubscribeCloseModal: (() => void) | undefined;
-        const account = wagmiCore!.getAccount(wagmiConfig);
+        let account = wagmiCore!.getAccount(wagmiConfig);
         let address = account.address?.toLowerCase();
         // Open web3Modal and wait for a wallet to be connected or for the web3Modal to be closed.
         if (!address) {
           try {
             if (web3Modal) {
               web3Modal.open();
-              const newData: GetAccountReturnType = await (() => {
+              await (() => {
                 return new Promise((resolve, reject) => {
                   try {
                     unwatchAccountConnected = wagmiCore!.watchAccount(
@@ -765,9 +786,6 @@ const EthereumWallets: WalletBehaviourFactory<
                           event.data.event === "MODAL_CLOSE" &&
                           !newAccount.address
                         ) {
-                          logger.error(
-                            "Web3Modal closed without connecting to an Ethereum wallet."
-                          );
                           reject(
                             "Web3Modal closed without connecting to an Ethereum wallet."
                           );
@@ -779,13 +797,13 @@ const EthereumWallets: WalletBehaviourFactory<
                   }
                 });
               })();
-              address = newData.address?.toLowerCase();
             } else {
-              const { accounts } = await wagmiCore!.connect(wagmiConfig, {
+              await wagmiCore!.connect(wagmiConfig, {
                 connector: wagmiCore!.injected(),
               });
-              address = accounts[0]?.toLowerCase();
             }
+            account = wagmiCore!.getAccount(wagmiConfig);
+            address = account.address?.toLowerCase();
             if (!address) {
               throw new Error("Failed to get Ethereum wallet address");
             }
@@ -809,17 +827,7 @@ const EthereumWallets: WalletBehaviourFactory<
           logger.log("Wallet already connected");
         }
 
-        try {
-          await wagmiCore!.switchChain(wagmiConfig, {
-            chainId: expectedChainId,
-          });
-        } catch (error) {
-          logger.error(error);
-          // TODO: add the link to onboarding page when available.
-          throw new Error(
-            "Wallet didn't connect to NEAR Protocol network, try adding and selecting the network manually inside wallet settings."
-          );
-        }
+        await switchChain();
 
         // Login with FunctionCall access key, reuse keypair or create a new one.
         const accountId = devMode ? address + "." + devModeAccount : address;
