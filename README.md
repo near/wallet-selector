@@ -81,6 +81,7 @@ yarn add \
   @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
 
+
 # Using NPM.
 npm install \
   @near-wallet-selector/bitget-wallet \
@@ -135,7 +136,6 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupNearFi } from "@near-wallet-selector/nearfi";

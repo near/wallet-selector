@@ -15,11 +15,18 @@
       "es2017",
       "dom"
     ],
+    "jsx": "react-jsx",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
+      "@near-js/types": [
+        "node_modules/@near-js/types"
+      ],
+      "@near-js/keystores": [
+        "node_modules/@near-js/keystores"
+      ],
       "@near-wallet-selector/account-export": [
         "packages/account-export/src/index.ts"
       ],
@@ -89,7 +96,7 @@
       "@near-wallet-selector/near-mobile-wallet": [
         "packages/near-mobile-wallet/src/index.ts"
       ],
-       "@near-wallet-selector/mintbase-wallet": [
+      "@near-wallet-selector/mintbase-wallet": [
         "packages/mintbase-wallet/src/index.ts"
       ],
       "@near-wallet-selector/bitte-wallet": [
@@ -119,7 +126,12 @@
       "fs": [
         "node_modules/browserify-fs"
       ],
-      "path": ["node_modules/path-browserify"]
+      "path": [
+        "node_modules/path-browserify"
+      ],
+      "react": [
+        "node_modules/@types/react"
+      ]
     }
   },
   "exclude": [

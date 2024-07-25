@@ -154,8 +154,8 @@ export class WalletSelectorComponent implements OnInit {
         }),
         setupRamperWallet(),
         setupNearMobileWallet(),
-        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
-        setupBitteWallet({ contractId: "guest-book.testnet" }),
+        setupMintbaseWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet({ contractId: CONTRACT_ID }),
         setupEthereumWallets({ wagmiConfig, web3Modal, devMode: true }),
       ],
     });
