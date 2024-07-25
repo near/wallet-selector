@@ -101,6 +101,11 @@
             "glob": "**/*",
             "input": "packages/okx-wallet/assets/",
             "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/ethereum-wallets/assets/",
+            "output": "assets/"
           }
         ]
       },
