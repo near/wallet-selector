@@ -44,7 +44,7 @@ testem.log
 Thumbs.db
 
 .angular
-.npmrc
+package-lock.json
 
 # Next.js
 .next

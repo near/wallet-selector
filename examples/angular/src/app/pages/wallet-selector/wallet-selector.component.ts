@@ -25,6 +25,11 @@ import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { createWeb3Modal } from "@web3modal/wagmi";
+import { reconnect, http, createConfig, type Config } from "@wagmi/core";
+import { type Chain } from "@wagmi/core/chains";
+import { injected, walletConnect } from "@wagmi/connectors";
 import { CONTRACT_ID } from "../../../constants";
 
 declare global {
@@ -33,6 +38,60 @@ declare global {
     modal: WalletSelectorModal;
   }
 }
+
+// Get a project ID at https://cloud.walletconnect.com
+const projectId = "30147604c5f01d0bc4482ab0665b5697";
+
+// NOTE: This is the NEAR wallet playground used in dev mode.
+// TODO: Replace with the NEAR chain after the protocol upgrade.
+const near: Chain = {
+  id: 398,
+  name: "NEAR wallet playground",
+  nativeCurrency: {
+    decimals: 18,
+    name: "NEAR",
+    symbol: "NEAR",
+  },
+  rpcUrls: {
+    default: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
+    public: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "NEAR Explorer",
+      url: "https://testnet.nearblocks.io",
+    },
+  },
+  testnet: true,
+};
+
+const wagmiConfig: Config = createConfig({
+  chains: [near],
+  transports: {
+    [near.id]: http(),
+  },
+  connectors: [
+    walletConnect({
+      projectId,
+      metadata: {
+        name: "NEAR Guest Book",
+        description: "A guest book with comments stored on the NEAR blockchain",
+        url: "https://near.github.io/wallet-selector",
+        icons: ["https://near.github.io/wallet-selector/favicon.ico"],
+      },
+      showQrModal: false,
+    }),
+    injected({ shimDisconnect: true }),
+  ],
+});
+reconnect(wagmiConfig);
+
+const web3Modal = createWeb3Modal({
+  wagmiConfig: wagmiConfig,
+  projectId,
+  enableOnramp: false,
+  allWallets: "SHOW",
+});
 
 @Component({
   selector: "near-wallet-selector-wallet-selector",
@@ -97,6 +156,7 @@ export class WalletSelectorComponent implements OnInit {
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
+        setupEthereumWallets({ wagmiConfig, web3Modal, devMode: true }),
       ],
     });
 
