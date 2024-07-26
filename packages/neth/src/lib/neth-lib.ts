@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import detectEthereumProvider from "@metamask/detect-provider";
 import * as nearAPI from "near-api-js";
 import { generateSeedPhrase } from "near-seed-phrase";
-import BN from "bn.js";
 import type {
   KeyPair as NearKeyPair,
   Account as NearAccount,
@@ -231,10 +230,8 @@ const createAccount = async ({
     try {
       const balance = await account.getAccountBalance();
       const { available } = balance;
-      const diff = new BN(available).sub(
-        new BN(MIN_NEW_ACCOUNT_THRESH as string)
-      );
-      if (diff.lt(new BN("0"))) {
+      const diff = BigInt(available) - BigInt(MIN_NEW_ACCOUNT_THRESH as string);
+      if (diff < BigInt("0")) {
         // alert(`There is not enough NEAR (${formatNearAmount(MIN_NEW_ACCOUNT_ASK, 4)} minimum) to create a new account and deploy NETH contract. Please deposit more and try again.`)
         if (fundingErrorCB) {
           fundingErrorCB(implicitAccountId, diff.abs().toString());
@@ -292,7 +289,7 @@ const createAccount = async ({
         new_public_key,
       },
       gas,
-      attachedDeposit: new BN(MIN_NEW_ACCOUNT as string),
+      attachedDeposit: BigInt(MIN_NEW_ACCOUNT as string),
     });
   } catch (e) {
     if (!/be created by/.test(JSON.stringify(e))) {
@@ -339,7 +336,7 @@ export const handleMapping = async () => {
       methodName: "set",
       args: { eth_address: ethAddress },
       gas,
-      attachedDeposit: new BN(attachedDepositMapping as string),
+      attachedDeposit: BigInt(attachedDepositMapping as string),
     });
     logger.log(`Account mapping successful`);
   } catch (e) {

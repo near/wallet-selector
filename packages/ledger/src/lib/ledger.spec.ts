@@ -5,7 +5,6 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
 import type { ProviderService } from "../../../core/src/lib/services";
 import type { LedgerClient } from "./ledger-client";
-import { BN } from "bn.js";
 
 const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
@@ -45,7 +44,7 @@ const createLedgerWallet = async () => {
   });
 
   provider.viewAccessKey.mockResolvedValue({
-    nonce: new BN(0),
+    nonce: BigInt(0),
     permission: "FullAccess",
     block_height: 0,
     block_hash: "block_hash",

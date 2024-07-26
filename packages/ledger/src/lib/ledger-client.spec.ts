@@ -3,7 +3,6 @@ import { mock } from "jest-mock-extended";
 import type Transport from "@ledgerhq/hw-transport";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import * as nearAPI from "near-api-js";
-import { BN } from "bn.js";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
@@ -28,9 +27,9 @@ const createTransactionMock = () => {
       "addMessage",
       { text: "test" },
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      new BN(nearAPI.utils.format.parseNearAmount("0.00000000003")!),
+      BigInt(nearAPI.utils.format.parseNearAmount("0.00000000003")!),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      new BN(nearAPI.utils.format.parseNearAmount("0")!)
+      BigInt(nearAPI.utils.format.parseNearAmount("0")!)
     ),
   ];
 
@@ -152,10 +151,7 @@ describe("sign", () => {
     });
 
     const transaction = createTransactionMock();
-    const data = nearAPI.utils.serialize.serialize(
-      nearAPI.transactions.SCHEMA,
-      transaction
-    );
+    const data = nearAPI.transactions.encodeTransaction(transaction);
 
     await client.connect();
     const result = await client.sign({
