@@ -107,7 +107,12 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async signMessage({message, nonce, recipient, state}: SignMessageParams): Promise<SignedMessage>{
+    async signMessage({
+      message, 
+      nonce, 
+      recipient, 
+      state
+    }: SignMessageParams): Promise<SignedMessage>{
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
       }
@@ -125,7 +130,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
         recipient,
         state,
       });
-    
+
       return signature;
     },
 
@@ -153,7 +158,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return provider.sendTransaction(signedTransactions[0]);
     },
 
-    async signAndSendTransactions({ transactions }) {                            
+    async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
       const signedTransactions = await signTransactions(
