@@ -1,7 +1,6 @@
 {
   "name": "near-wallet-selector",
   "version": "8.9.11",
-  "private": true,
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "keywords": [
     "near",
@@ -42,10 +41,6 @@
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "scripts": {
     "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production && node ./scripts/update-package-json.js",
@@ -101,8 +96,8 @@
     "@ledgerhq/hw-transport-webhid": "6.28.6",
     "@metamask/detect-provider": "2.0.0",
     "@meteorwallet/sdk": "1.0.9",
+    "@mintbase-js/wallet": "0.6.0-beta.10",
     "@near-snap/sdk": "0.6.0",
-    "@near-wallet-selector/wallet-utils": "workspace:latest",
     "@noble/ciphers": "0.5.3",
     "@noble/hashes": "1.4.0",
     "@peersyst/near-mobile-signer": "1.0.12",
@@ -152,6 +147,7 @@
     "@angular/compiler-cli": "16.1.8",
     "@angular/language-service": "15.2.9",
     "@babel/preset-react": "7.16.7",
+    "@babel/runtime": "7.24.8",
     "@nrwl/js": "16.0.0",
     "@nrwl/rollup": "16.0.0",
     "@nrwl/tao": "16.0.0",

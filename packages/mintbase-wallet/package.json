@@ -20,9 +20,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/mintbase-wallet",
-  "dependencies": {
-    "@mintbase-js/wallet": "0.6.0-beta.7",
-    "@near-wallet-selector/wallet-utils": "workspace:latest"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/mintbase-wallet"
 }
