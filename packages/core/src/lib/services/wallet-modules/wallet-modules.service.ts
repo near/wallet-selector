@@ -12,19 +12,13 @@ import type {
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type {
-  ContractState,
-  ModuleState,
-  Store,
-  MultiContractState,
-} from "../../store.types";
+import type { ModuleState, Store, MultiContractState } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
-  PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
   PENDING_CONTRACTS,
 } from "../../constants";
@@ -85,22 +79,15 @@ export class WalletModules {
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
-    const pendingContract = await jsonStorage.getItem<ContractState>(
-      PENDING_CONTRACT
-    );
 
     const pendingContracts =
       (await jsonStorage.getItem<MultiContractState>(PENDING_CONTRACTS)) || [];
 
-    if (pendingSelectedWalletId && pendingContract) {
+    if (pendingSelectedWalletId && pendingContracts) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
-      await jsonStorage.removeItem(PENDING_CONTRACT);
-
-      if (pendingContracts) {
-        await jsonStorage.removeItem(PENDING_CONTRACTS);
-      }
+      await jsonStorage.removeItem(PENDING_CONTRACTS);
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();

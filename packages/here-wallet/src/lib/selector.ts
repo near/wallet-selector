@@ -71,7 +71,9 @@ export const initHereWallet: SelectorInit = async (config) => {
 
       emitter.emit("signedIn", {
         accounts: await getAccounts(),
-        contracts: [],
+        contracts: [
+          { methodNames: data.methodNames || [], contractId: data.contractId },
+        ],
       });
 
       return await getAccounts();
