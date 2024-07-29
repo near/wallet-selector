@@ -22,8 +22,8 @@ import {
   PENDING_SELECTED_WALLET_ID,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import type { ProviderService } from "../provider/provider.service.types";
 import type { SignMessageMethod } from "../../wallet";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;

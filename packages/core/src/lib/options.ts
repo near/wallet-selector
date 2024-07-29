@@ -2,12 +2,15 @@ import type { WalletSelectorParams } from "./wallet-selector.types";
 import type { Options, Network, NetworkId } from "./options.types";
 import { WebStorageService } from "./services";
 
-export const getNetworkPreset = (networkId: NetworkId): Network => {
+export const getNetworkPreset = (
+  networkId: NetworkId,
+  fallbackRpcUrls?: Array<string>
+): Network => {
   switch (networkId) {
     case "mainnet":
       return {
         networkId,
-        nodeUrl: "https://rpc.mainnet.near.org",
+        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://nearblocks.io",
         indexerUrl: "https://api.kitwallet.app",
@@ -15,7 +18,7 @@ export const getNetworkPreset = (networkId: NetworkId): Network => {
     case "testnet":
       return {
         networkId,
-        nodeUrl: "https://rpc.testnet.near.org",
+        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://testnet.nearblocks.io",
         indexerUrl: "https://testnet-api.kitwallet.app",
