@@ -90,7 +90,7 @@
     "@angular/platform-browser": "16.1.9",
     "@angular/platform-browser-dynamic": "16.1.9",
     "@angular/router": "16.1.9",
-    "@here-wallet/core": "1.6.6",
+    "@here-wallet/core": "3.3.1",
     "@jscutlery/semver": "3.1.0",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.28.6",
