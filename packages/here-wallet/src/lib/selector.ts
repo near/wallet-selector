@@ -1,17 +1,12 @@
 import {
   HereWallet,
   waitInjectedHereWallet,
-  WidgetStrategy,
 } from "@here-wallet/core";
 import type { SelectorInit } from "./types";
 
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options } = config;
-  const here = await HereWallet.connect({
-    defaultStrategy: new WidgetStrategy({
-      widget: "http://localhost:4173/connector/index.html",
-    }),
-  });
+  const { store, logger, emitter, options, walletOptions } = config;
+  const here = await HereWallet.connect(walletOptions);
 
   async function getAccounts() {
     logger.log("HereWallet:getAccounts");
