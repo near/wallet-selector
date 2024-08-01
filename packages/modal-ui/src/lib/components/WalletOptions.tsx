@@ -133,13 +133,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       {selector.options.optimizeWalletOrder &&
       selector.store.getState().recentlySignedInWallets.length > 0 ? (
         <div className="wallet-options-wrapper">
-          <div className="options-list-section">
+          <div className="options-list-section-recent">
             <div className="options-list-section-header">Recent</div>
             <div className="options-list more-options-list-content">
               {renderOptionsList(recentModules)}
             </div>
           </div>
-          <div className="options-list-section">
+          <div className="options-list-section-more">
             <div className="options-list-section-header">More</div>
             <div className="options-list more-options-list-content">
               {renderOptionsList(moreModules)}

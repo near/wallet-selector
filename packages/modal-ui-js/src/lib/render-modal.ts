@@ -271,7 +271,7 @@ const renderWalletOptions = () => {
     optionsWrapper?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-recent">
         <div class="options-list-section-header">Recent</div>
         <div class="options-list recent-options-list-content"></div>
       </div>
@@ -280,7 +280,7 @@ const renderWalletOptions = () => {
     optionsWrapper?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-more">
         <div class="options-list-section-header">More</div>
         <div class="options-list more-options-list-content"></div>
       </div>
@@ -379,7 +379,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-recent">
         <div class="options-list-section-header">Recent</div>
         <div class="options-list recent-options-list-content"></div>
       </div>
@@ -388,7 +388,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-more">
         <div class="options-list-section-header">More</div>
         <div class="options-list more-options-list-content"></div>
       </div>
