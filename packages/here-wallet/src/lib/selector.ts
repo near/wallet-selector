@@ -1,12 +1,16 @@
-import { HereWallet, waitInjectedHereWallet, WidgetStrategy } from "@here-wallet/core";
+import {
+  HereWallet,
+  waitInjectedHereWallet,
+  WidgetStrategy,
+} from "@here-wallet/core";
 import type { SelectorInit } from "./types";
 
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options, walletOptions } = config;
+  const { store, logger, emitter, options } = config;
   const here = await HereWallet.connect({
     defaultStrategy: new WidgetStrategy({
-      widget: "http://localhost:4173/connector/index.html"
-    })
+      widget: "http://localhost:4173/connector/index.html",
+    }),
   });
 
   async function getAccounts() {
@@ -15,7 +19,10 @@ export const initHereWallet: SelectorInit = async (config) => {
     const accounts = [];
 
     for (let i = 0; i < accountIds.length; i++) {
-      const pub = await here.signer.getPublicKey(accountIds[i], options.network.networkId)
+      const pub = await here.signer.getPublicKey(
+        accountIds[i],
+        options.network.networkId
+      );
       accounts.push({ accountId: accountIds[i], publicKey: pub.toString() });
     }
 
