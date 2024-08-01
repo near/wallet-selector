@@ -130,7 +130,7 @@
     "rxjs": "7.8.1",
     "stream-browserify": "3.0.0",
     "stream-http": "3.2.0",
-    "tslib": "2.6.2",
+    "tslib": "2.6.3",
     "url": "0.11.0",
     "viem": "2.16.2",
     "wagmi": "2.10.9",
