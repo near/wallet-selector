@@ -13,6 +13,8 @@ import {
   RECENTLY_SIGNED_IN_WALLETS,
   CONTRACTS,
   CONTRACT,
+  REMEMBER_RECENT_WALLETS,
+  REMEMBER_RECENT_WALLETS_STATE,
 } from "./constants";
 
 const reducer = (
@@ -29,6 +31,7 @@ const reducer = (
         selectedWalletId,
         recentlySignedInWallets,
         contracts,
+        rememberRecentWallets,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -45,6 +48,7 @@ const reducer = (
         selectedWalletId,
         recentlySignedInWallets,
         contracts,
+        rememberRecentWallets,
       };
     }
     case "WALLET_CONNECTED": {
@@ -130,6 +134,33 @@ const reducer = (
         accounts: accountStates,
       };
     }
+    case "SET_REMEMBER_RECENT_WALLETS": {
+      const { selectedWalletId, recentlySignedInWallets } = state;
+      const { rememberRecentWallets } = action.payload;
+      const newRecentWallets =
+        rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED
+          ? REMEMBER_RECENT_WALLETS_STATE.DISABLED
+          : REMEMBER_RECENT_WALLETS_STATE.ENABLED;
+
+      const newWalletsVal = [...recentlySignedInWallets];
+      if (
+        selectedWalletId &&
+        !recentlySignedInWallets.includes(selectedWalletId)
+      ) {
+        newWalletsVal.push(selectedWalletId);
+      }
+
+      const newRecentlySignedInWallets =
+        newRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED
+          ? newWalletsVal
+          : [];
+
+      return {
+        ...state,
+        rememberRecentWallets: newRecentWallets,
+        recentlySignedInWallets: newRecentlySignedInWallets,
+      };
+    }
     default:
       return state;
   }
@@ -156,6 +187,8 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
     contracts: (await jsonStorage.getItem(CONTRACTS)) || [],
+    rememberRecentWallets:
+      (await jsonStorage.getItem(REMEMBER_RECENT_WALLETS)) || "",
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -191,6 +224,12 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       "recentlySignedInWallets"
     );
     syncStorage(prevState, state, CONTRACTS, "contracts");
+    syncStorage(
+      prevState,
+      state,
+      REMEMBER_RECENT_WALLETS,
+      "rememberRecentWallets"
+    );
     prevState = state;
   });
 

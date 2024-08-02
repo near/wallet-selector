@@ -57,6 +57,16 @@ export const Modal: React.FC<ModalProps> = ({
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
 
+  const { rememberRecentWallets } = selector.store.getState();
+  const [isChecked, setIsChecked] = useState(
+    rememberRecentWallets === "enabled"
+  );
+
+  const handleSwitchChange = () => {
+    setIsChecked((prevIsChecked) => !prevIsChecked);
+    selector.setRememberRecentWallets();
+  };
+
   useEffect(() => {
     setRoute({
       name: "WalletHome",
@@ -252,7 +262,9 @@ export const Modal: React.FC<ModalProps> = ({
       const { name } = module.metadata;
 
       const message =
-        err instanceof Error ? err.message : "Something went wrong";
+        err && typeof err === "object" && "message" in err
+          ? (err as { message: string }).message
+          : "Something went wrong";
 
       setAlertMessage(`Failed to sign in with ${name}: ${message}`);
       setRoute({
@@ -284,6 +296,17 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="modal-left">
           <div className="modal-left-title">
             <h2>{translate("modal.wallet.connectYourWallet")}</h2>
+            <span className="nws-remember-wallet">
+              {translate("modal.wallet.rememberWallet")}
+            </span>
+            <label className="nws-switch">
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleSwitchChange}
+              />
+              <span className="nws-slider round" />
+            </label>
           </div>
           <WalletOptions
             handleWalletClick={(module) => {

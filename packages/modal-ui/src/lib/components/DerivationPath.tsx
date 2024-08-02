@@ -144,7 +144,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     } catch (err) {
       setConnecting(false);
       const message =
-        err instanceof Error ? err.message : "Something went wrong";
+        err && typeof err === "object" && "message" in err
+          ? (err as { message: string }).message
+          : "Something went wrong";
 
       onError(message, wallet);
     } finally {
@@ -174,7 +176,9 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     } catch (err) {
       setConnecting(false);
       const message =
-        err instanceof Error ? err.message : "Something went wrong";
+        err && typeof err === "object" && "message" in err
+          ? (err as { message: string }).message
+          : "Something went wrong";
       onError(message, hardwareWallet!);
     } finally {
       setConnecting(false);

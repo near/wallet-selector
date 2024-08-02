@@ -21,10 +21,12 @@ import {
   PACKAGE_NAME,
   PENDING_SELECTED_WALLET_ID,
   PENDING_CONTRACTS,
+  REMEMBER_RECENT_WALLETS,
+  REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import type { ProviderService } from "../provider/provider.service.types";
 import type { SignMessageMethod } from "../../wallet";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -79,6 +81,9 @@ export class WalletModules {
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
+    const rememberRecentWallets = await jsonStorage.getItem<string>(
+      REMEMBER_RECENT_WALLETS
+    );
 
     const pendingContracts =
       (await jsonStorage.getItem<MultiContractState>(PENDING_CONTRACTS)) || [];
@@ -100,14 +105,18 @@ export class WalletModules {
           });
         }
 
-        const recentlySignedInWalletsFromPending =
-          await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
-
+        let recentlySignedInWalletsFromPending: Array<string> = [];
+        if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
+          recentlySignedInWalletsFromPending =
+            await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+        }
         return {
           accounts,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
           contracts: pendingContracts,
+          rememberRecentWallets:
+            rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
         };
       }
     }
@@ -125,6 +134,8 @@ export class WalletModules {
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
         contracts: [],
+        rememberRecentWallets:
+          rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
       };
     }
 
@@ -133,6 +144,8 @@ export class WalletModules {
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
       contracts,
+      rememberRecentWallets:
+        rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
     };
   }
 
@@ -175,7 +188,7 @@ export class WalletModules {
     walletId: string,
     { accounts, contracts }: WalletEvents["signedIn"]
   ) {
-    const { selectedWalletId } = this.store.getState();
+    const { selectedWalletId, rememberRecentWallets } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
 
     if (!accounts.length) {
@@ -197,17 +210,21 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
-    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
-      walletId
-    );
+    let recentlySignedInWallets: Array<string> = [];
+    if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
+      recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+        walletId
+      );
+    }
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
       payload: {
         walletId,
+        contracts,
         accounts,
         recentlySignedInWallets,
-        contracts,
+        rememberRecentWallets,
       },
     });
 
@@ -438,8 +455,13 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, selectedWalletId, recentlySignedInWallets, contracts } =
-      await this.resolveStorageState();
+    const {
+      accounts,
+      contracts,
+      selectedWalletId,
+      recentlySignedInWallets,
+      rememberRecentWallets,
+    } = await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
@@ -449,6 +471,7 @@ export class WalletModules {
         selectedWalletId,
         recentlySignedInWallets,
         contracts,
+        rememberRecentWallets,
       },
     });
 

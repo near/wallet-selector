@@ -11,6 +11,7 @@
         "useAWallet": "Sử dụng ví để bảo mật và quản lý tài sản trên NEAR của bạn và đăng nhập vào bất kỳ ứng dụng NEAR nào, không cần tên người dùng và mật khẩu.",
         "connectionFailed": "Kết nối thất bại",
         "connectionSuccessful": "Kết nối thành công",
+        "rememberWallet": "Ghi nhớ lựa chọn ví",
         "connected": "Đã kết nối",
         "connectingTo": "Đang kết nối tới",
         "connectingMessage": {

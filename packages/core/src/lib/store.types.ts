@@ -63,6 +63,10 @@ export interface WalletSelectorState {
    * The list of contracts for SignIn and SignInMulti.
    */
   contracts: MultiContractState;
+  /**
+   * Returns a string, which indicates if the functionality about recentlySignedInWallets is active.
+   */
+  rememberRecentWallets: string;
 }
 
 export type WalletSelectorAction =
@@ -74,6 +78,7 @@ export type WalletSelectorAction =
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
         contracts: MultiContractState;
+        rememberRecentWallets: string;
       };
     }
   | {
@@ -83,6 +88,7 @@ export type WalletSelectorAction =
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
         contracts: MultiContractState;
+        rememberRecentWallets: string;
       };
     }
   | {
@@ -102,6 +108,12 @@ export type WalletSelectorAction =
       type: "SET_ACTIVE_ACCOUNT";
       payload: {
         accountId: string;
+      };
+    }
+  | {
+      type: "SET_REMEMBER_RECENT_WALLETS";
+      payload: {
+        rememberRecentWallets: string;
       };
     };
 

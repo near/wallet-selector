@@ -25,7 +25,6 @@ import { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
 import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
 import type { GetAccountBalanceProps } from "../../interfaces/account-balance";
-import BN from "bn.js";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -67,8 +66,8 @@ export class ContentComponent implements OnInit, OnDestroy {
         finality: "final",
         account_id: accountId,
       });
-      const bn = new BN(amount);
-      return { hasBalance: !bn.isZero() };
+      const bn = BigInt(amount);
+      return { hasBalance: bn !== BigInt(0) };
     } catch {
       return { hasBalance: false };
     }

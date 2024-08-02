@@ -10,7 +10,7 @@
 /out-tsc
 
 # dependencies
-/node_modules
+node_modules
 
 # IDEs and editors
 /.idea
@@ -44,7 +44,7 @@ testem.log
 Thumbs.db
 
 .angular
-.npmrc
+package-lock.json
 
 # Next.js
 .next

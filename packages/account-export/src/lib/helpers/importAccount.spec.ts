@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+// why we used it, find out here - https://stackoverflow.com/questions/68468203/why-am-i-getting-textencoder-is-not-defined-in-jest
 import type { AccountImportData } from "@near-wallet-selector/core";
 
 import {
