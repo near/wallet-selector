@@ -141,6 +141,10 @@ export const Modal: React.FC<ModalProps> = ({
     }
 
     try {
+      if (options.contracts.length < 1) {
+        throw new Error("No contract provided");
+      }
+
       const { deprecated, available } = module.metadata;
 
       if (module.type === "injected" && !available) {
@@ -193,15 +197,15 @@ export const Modal: React.FC<ModalProps> = ({
           });
         });
 
-        if (options.contracts) {
+        if (options.contracts.length > 1) {
           await wallet.signInMulti!({
             permissions: options.contracts,
             qrCodeModal,
           });
         } else {
           await wallet.signIn({
-            contractId: options.contractId,
-            methodNames: options.methodNames,
+            contractId: options.contracts[0].receiverId,
+            methodNames: options.contracts[0].methodNames,
             qrCodeModal,
           });
         }
@@ -212,7 +216,7 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "browser") {
-        if (options.contracts) {
+        if (options.contracts.length > 1) {
           await wallet.signInMulti!({
             permissions: options.contracts,
             successUrl: wallet.metadata.successUrl,
@@ -220,8 +224,8 @@ export const Modal: React.FC<ModalProps> = ({
           });
         } else {
           await wallet.signIn({
-            contractId: options.contractId,
-            methodNames: options.methodNames,
+            contractId: options.contracts[0].receiverId,
+            methodNames: options.contracts[0].methodNames,
             successUrl: wallet.metadata.successUrl,
             failureUrl: wallet.metadata.failureUrl,
           });
@@ -232,14 +236,14 @@ export const Modal: React.FC<ModalProps> = ({
         return;
       }
 
-      if (options.contracts) {
+      if (options.contracts.length > 1) {
         await wallet.signInMulti!({
           permissions: options.contracts,
         });
       } else {
         await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
+          contractId: options.contracts[0].receiverId,
+          methodNames: options.contracts[0].methodNames,
         });
       }
 

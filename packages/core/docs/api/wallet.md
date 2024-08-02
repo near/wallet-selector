@@ -309,7 +309,7 @@ Signs the message and verifies the owner. Message is not sent to blockchain.
 
 - `params` (`object`)
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
-  - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
+  - `receiverId` (`string`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
   - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
   - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
 

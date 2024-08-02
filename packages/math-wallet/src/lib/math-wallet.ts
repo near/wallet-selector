@@ -65,11 +65,11 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const transformTransactions = (
-    transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
+    transactions: Array<Optional<Transaction, "signerId">>
   ): Array<Transaction> => {
-    const { contract } = store.getState();
+    const { contracts } = store.getState();
 
-    if (!contract) {
+    if (contracts.length < 1) {
       throw new Error("Wallet not signed in");
     }
 
@@ -82,7 +82,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return transactions.map((transaction) => {
       return {
         signerId: transaction.signerId || account.accountId,
-        receiverId: transaction.receiverId || contract.contractId,
+        receiverId: transaction.receiverId,
         actions: transaction.actions,
       };
     });

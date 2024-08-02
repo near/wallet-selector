@@ -90,9 +90,9 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
   const signTransactions = async (transactions) => {
     logger.log("NETH:signAndSendTransactions", { transactions });
 
-    const { contract } = store.getState();
+    const { contracts } = store.getState();
 
-    if (!(await isSignedIn()) || !contract) {
+    if (!(await isSignedIn()) || contracts.length < 1) {
       throw new Error("Wallet not signed in");
     }
 
@@ -101,7 +101,7 @@ const Neth: WalletBehaviourFactory<InjectedWallet> = async ({
     }
 
     const transformedTxs = transactions.map(({ receiverId, actions }) => ({
-      receiverId: receiverId || contract.contractId,
+      receiverId,
       actions: transformActions(actions),
     }));
 

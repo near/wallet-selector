@@ -70,10 +70,10 @@ export const initHereWallet: SelectorInit = async (config) => {
       await here.signIn({ ...data, contractId: contractId });
 
       emitter.emit("signedIn", {
-        contractId: data.contractId,
-        methodNames: data.methodNames ?? [],
         accounts: await getAccounts(),
-        contracts: null,
+        contracts: [
+          { methodNames: data.methodNames || [], contractId: data.contractId },
+        ],
       });
 
       return await getAccounts();
@@ -101,15 +101,12 @@ export const initHereWallet: SelectorInit = async (config) => {
     async signAndSendTransaction(data) {
       logger.log("HereWallet:signAndSendTransaction", data);
 
-      const { contract } = store.getState();
-      if (!here.isSignedIn || !contract) {
+      const { contracts } = store.getState();
+      if (!here.isSignedIn || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
-      return await here.signAndSendTransaction({
-        receiverId: contract.contractId,
-        ...data,
-      });
+      return await here.signAndSendTransaction(data);
     },
 
     async verifyOwner() {
