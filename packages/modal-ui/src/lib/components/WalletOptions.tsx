@@ -101,6 +101,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             } sidebar ${module.id}`}
             key={module.id}
             onClick={() => {
+              if (
+                selector.options.network.networkId === "testnet" &&
+                module.id === "here-wallet"
+              ) {
+                alert("Here Wallet is not supported on testnet");
+                return;
+              }
               if (module.id === modulesToRender[index].id) {
                 setActiveWalletId(module.id!);
               }

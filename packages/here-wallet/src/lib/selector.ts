@@ -1,18 +1,9 @@
-import type { NetworkId } from "@near-wallet-selector/core";
 import { HereWallet, waitInjectedHereWallet } from "@here-wallet/core";
-
 import type { SelectorInit } from "./types";
 
 export const initHereWallet: SelectorInit = async (config) => {
-  const { store, logger, emitter, options, defaultProvider, defaultStrategy } =
-    config;
-
-  const here = new HereWallet({
-    networkId: options.network.networkId as NetworkId,
-    nodeUrl: options.network.nodeUrl,
-    defaultProvider,
-    defaultStrategy,
-  });
+  const { store, logger, emitter, options, walletOptions } = config;
+  const here = await HereWallet.connect(walletOptions);
 
   async function getAccounts() {
     logger.log("HereWallet:getAccounts");
@@ -20,16 +11,13 @@ export const initHereWallet: SelectorInit = async (config) => {
     const accounts = [];
 
     for (let i = 0; i < accountIds.length; i++) {
-      accounts.push({
-        accountId: accountIds[i],
-        publicKey: (
-          await here.signer.getPublicKey(
-            accountIds[i],
-            options.network.networkId
-          )
-        ).toString(),
-      });
+      const pub = await here.signer.getPublicKey(
+        accountIds[i],
+        options.network.networkId
+      );
+      accounts.push({ accountId: accountIds[i], publicKey: pub.toString() });
     }
+
     return accounts;
   }
 
@@ -42,12 +30,12 @@ export const initHereWallet: SelectorInit = async (config) => {
       return `https://my.herewallet.app/import?network=${options.network.networkId}`;
     },
 
-    async account(id) {
+    async account(id: string) {
       logger.log("HereWallet:account");
       return await here.account(id);
     },
 
-    async switchAccount(id) {
+    async switchAccount(id: string) {
       logger.log("HereWallet:switchAccount");
       await here.switchAccount(id);
     },
@@ -78,16 +66,6 @@ export const initHereWallet: SelectorInit = async (config) => {
       });
 
       return await getAccounts();
-    },
-
-    async getHereBalance() {
-      logger.log("HereWallet:getHereBalance");
-      return await here.getHereBalance();
-    },
-
-    async getAvailableBalance(): Promise<bigint> {
-      logger.log("HereWallet:getAvailableBalance");
-      return await here.getAvailableBalance();
     },
 
     async signOut() {
