@@ -66,8 +66,8 @@ export const setupModal = (
       }
 
       await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
+        contractId: options.contracts[0].receiverId,
+        methodNames: options.contracts[0].methodNames,
       });
     }
   });

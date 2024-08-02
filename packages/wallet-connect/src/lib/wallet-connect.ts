@@ -539,8 +539,8 @@ const WalletConnect: WalletBehaviourFactory<
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
       try {
-        const { contract } = store.getState();
-        if (_state.session && !contract) {
+        const { contracts } = store.getState();
+        if (_state.session && !contracts) {
           await disconnect({ state: _state });
           await cleanup();
         }
@@ -577,9 +577,9 @@ const WalletConnect: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("WalletConnect:verifyOwner", { message });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
 
-      if (!_state.session || !contract) {
+      if (!_state.session || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
@@ -627,9 +627,9 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
 
-      if (!_state.session || !contract) {
+      if (!_state.session || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
@@ -641,7 +641,7 @@ const WalletConnect: WalletBehaviourFactory<
 
       const resolvedTransaction: Transaction = {
         signerId: signerId || account.accountId,
-        receiverId: receiverId || contract.contractId,
+        receiverId,
         actions,
       };
 
@@ -659,9 +659,9 @@ const WalletConnect: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      const { contract } = store.getState();
+      const { contracts } = store.getState();
 
-      if (!_state.session || !contract) {
+      if (!_state.session || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 

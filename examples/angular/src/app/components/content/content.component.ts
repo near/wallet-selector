@@ -291,7 +291,6 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   async addMessages(message: string, donation: string, multiple: boolean) {
-    const { contract } = this.selector.store.getState();
     const wallet = await this.selector.wallet();
 
     if (!multiple) {
@@ -299,6 +298,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         .signAndSendTransaction({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           signerId: this.accountId!,
+          receiverId: CONTRACT_ID,
           actions: [
             {
               type: "FunctionCall",
@@ -327,7 +327,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         signerId: this.accountId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        receiverId: contract!.contractId,
+        receiverId: CONTRACT_ID,
         actions: [
           {
             type: "FunctionCall",

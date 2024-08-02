@@ -21,6 +21,7 @@ export type { Optional } from "./lib/utils.types";
 export type {
   WalletSelectorState,
   ContractState,
+  MultiContractState,
   ModuleState,
   AccountState,
 } from "./lib/store.types";
@@ -35,6 +36,7 @@ export type {
   WalletMetadata,
   WalletEvents,
   SignInParams,
+  SignInMultiParams,
   BrowserWalletMetadata,
   BrowserWalletBehaviour,
   BrowserWallet,

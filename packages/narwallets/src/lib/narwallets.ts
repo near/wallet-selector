@@ -236,15 +236,15 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
-      const { contract, accounts } = store.getState();
+      const { contracts, accounts } = store.getState();
 
-      if (!accounts || accounts.length === 0 || !contract) {
+      if (!accounts || accounts.length === 0 || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
       return callSignAndSendTransaction({
         signerId,
-        receiverId: receiverId || contract.contractId,
+        receiverId,
         actions: actions,
       }) as Promise<FinalExecutionOutcome>;
     },
@@ -252,10 +252,10 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
     async signAndSendTransactions({ transactions }) {
       logger.log("signAndSendTransactions", { transactions });
 
-      const { contract, accounts } = store.getState();
+      const { contracts, accounts } = store.getState();
 
       // test: avoid a call to isSignedIn
-      if (!accounts || accounts.length === 0 || !contract) {
+      if (!accounts || accounts.length === 0 || contracts.length < 1) {
         throw new Error("Wallet not signed in");
       }
 
