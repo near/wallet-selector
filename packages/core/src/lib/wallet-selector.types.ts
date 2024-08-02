@@ -46,6 +46,10 @@ export interface WalletSelectorParams {
    * The URL where DelegateActions are sent by meta transaction enabled wallet modules.
    */
   relayerUrl?: string;
+  /**
+   * Whether multiple RPC URLs are included, used for the FailoverRpcProvider.
+   */
+  fallbackRpcUrls?: Array<string>;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;
