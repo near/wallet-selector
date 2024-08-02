@@ -6002,7 +6002,7 @@ SOFTWARE.
 
 js-sha256
 MIT
-Copyright (c) 2014-2017 Chen, Yi-Cyuan
+Copyright (c) 2014-2024 Chen, Yi-Cyuan
 
 MIT License
 
