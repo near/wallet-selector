@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/sender",
-  "version": "8.9.11",
+  "version": "8.9.12",
   "description": "Sender wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
