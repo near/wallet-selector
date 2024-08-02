@@ -1,10 +1,9 @@
-import {
-  waitInjectedHereWallet,
-  type HereProvider,
-  type HereStrategy,
-} from "@here-wallet/core";
-import type { WalletModuleFactory } from "@near-wallet-selector/core";
-import type { HereWallet } from "./types";
+import type { HereInitializeOptions } from "@here-wallet/core";
+import { waitInjectedHereWallet } from "@here-wallet/core";
+import type {
+  WalletModuleFactory,
+  InjectedWallet,
+} from "@near-wallet-selector/core";
 import { initHereWallet } from "./selector";
 import icon from "./icon";
 
@@ -13,16 +12,14 @@ export { icon };
 interface Options {
   deprecated?: boolean;
   iconUrl?: string;
-  defaultStrategy?: () => HereStrategy;
-  defaultProvider?: HereProvider;
+  walletOptions?: HereInitializeOptions;
 }
 
 export function setupHereWallet({
   deprecated = false,
   iconUrl = icon,
-  defaultStrategy,
-  defaultProvider,
-}: Options = {}): WalletModuleFactory<HereWallet> {
+  walletOptions,
+}: Options = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const isInjected = await waitInjectedHereWallet;
 
@@ -39,12 +36,7 @@ export function setupHereWallet({
         deprecated,
         available: true,
       },
-      init: (config) =>
-        initHereWallet({
-          ...config,
-          defaultStrategy,
-          defaultProvider,
-        }),
+      init: (config) => initHereWallet({ ...config, walletOptions }),
     };
   };
 }
