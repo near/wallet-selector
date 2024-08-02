@@ -295,7 +295,7 @@ const EthereumWallets: WalletBehaviourFactory<
         }
         // Ethereum wallet switched connected account: also switch NEAR account if already signed in or disconnect.
         if (data.address && data.status === "connected") {
-          if (store.getState().contract?.contractId) {
+          if (store.getState().contracts[0].contractId) {
             const address = data.address.toLowerCase();
             const keyPair = await _state.keystore.getKey(
               options.network.networkId,
@@ -324,7 +324,7 @@ const EthereumWallets: WalletBehaviourFactory<
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ): Promise<Array<Transaction>> => {
     const state = store.getState();
-    const { contract } = state;
+    const { contracts } = state;
     const [accountLogIn] = await getAccounts();
 
     if (!accountLogIn) {
@@ -332,14 +332,14 @@ const EthereumWallets: WalletBehaviourFactory<
     }
 
     return transactions.map((transaction) => {
-      if (!contract && !transaction.receiverId) {
+      if (!contracts.length && !transaction.receiverId) {
         throw new Error(`Missing receiverId, got '${transaction.receiverId}'`);
       }
 
       return {
         ...transaction,
         signerId: transaction.signerId || accountLogIn.accountId!,
-        receiverId: transaction.receiverId || contract!.contractId,
+        receiverId: transaction.receiverId!,
       };
     });
   };
@@ -899,8 +899,9 @@ const EthereumWallets: WalletBehaviourFactory<
           publicKey,
         };
         emitter.emit("signedIn", {
-          contractId: contractId,
-          methodNames: methodNames ?? [],
+          contracts: [
+            { contractId: contractId, methodNames: methodNames ?? [] },
+          ],
           accounts: [accountLogIn],
         });
         if (!_state.subscriptions.length) {
