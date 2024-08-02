@@ -61,6 +61,10 @@ export interface WalletSelectorState {
    * Returns ID-s of 5 recently signed in wallets.
    */
   recentlySignedInWallets: Array<string>;
+  /**
+   * Returns a string, which indicates if the functionality about recentlySignedInWallets is active.
+   */
+  rememberRecentWallets: string;
 }
 
 export type WalletSelectorAction =
@@ -72,6 +76,7 @@ export type WalletSelectorAction =
         contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
+        rememberRecentWallets: string;
       };
     }
   | {
@@ -81,6 +86,7 @@ export type WalletSelectorAction =
         contract: ContractState;
         accounts: Array<Account>;
         recentlySignedInWallets: Array<string>;
+        rememberRecentWallets: string;
       };
     }
   | {
@@ -100,6 +106,12 @@ export type WalletSelectorAction =
       type: "SET_ACTIVE_ACCOUNT";
       payload: {
         accountId: string;
+      };
+    }
+  | {
+      type: "SET_REMEMBER_RECENT_WALLETS";
+      payload: {
+        rememberRecentWallets: string;
       };
     };
 

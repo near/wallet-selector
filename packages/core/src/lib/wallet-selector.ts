@@ -49,6 +49,14 @@ const createSelector = (
         payload: { accountId },
       });
     },
+    setRememberRecentWallets: () => {
+      const { rememberRecentWallets } = store.getState();
+
+      store.dispatch({
+        type: "SET_REMEMBER_RECENT_WALLETS",
+        payload: { rememberRecentWallets },
+      });
+    },
     isSignedIn() {
       const { accounts } = store.getState();
 
