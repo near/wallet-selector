@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/neth",
-  "version": "8.9.11",
+  "version": "8.9.12",
   "description": "Control NEAR accounts with ETH accounts",
   "author": "mattlockyer",
   "keywords": [

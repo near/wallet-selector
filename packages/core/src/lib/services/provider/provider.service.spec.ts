@@ -30,7 +30,7 @@ const setup = (url: string) => {
 
   return {
     provider,
-    service: new Provider(url),
+    service: new Provider([url]),
   };
 };
 

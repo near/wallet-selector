@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/modal-ui",
-  "version": "8.9.11",
+  "version": "8.9.12",
   "description": "Modal UI package for NEAR wallet Selector",
   "keywords": [
     "near",

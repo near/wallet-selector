@@ -22,6 +22,8 @@ export type HardwareWalletAccountState = HardwareWalletAccount & {
 };
 let initialRender = true;
 
+let isChecked = false;
+
 const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   if (!modalState) {
     return [];
@@ -237,11 +239,91 @@ function renderOptionsList(
       });
   }
 }
+const renderWalletOptions = () => {
+  if (!modalState) {
+    return;
+  }
+
+  const moreWallets: Array<ModuleState<Wallet>> = [];
+  const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
+
+  modalState.modules.forEach((module) => {
+    if (
+      modalState?.selector.store
+        .getState()
+        .recentlySignedInWallets.includes(module.id)
+    ) {
+      recentlySignedInWallets.push(module);
+    } else {
+      moreWallets.push(module);
+    }
+  });
+
+  const optionsWrapper = document.querySelector(".wallet-options-wrapper");
+  if (optionsWrapper) {
+    optionsWrapper.innerHTML = "";
+  }
+
+  if (
+    modalState.selector.options.optimizeWalletOrder &&
+    recentlySignedInWallets.length > 0
+  ) {
+    optionsWrapper?.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="options-list-section-recent">
+        <div class="options-list-section-header">Recent</div>
+        <div class="options-list recent-options-list-content"></div>
+      </div>
+      `
+    );
+    optionsWrapper?.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="options-list-section-more">
+        <div class="options-list-section-header">More</div>
+        <div class="options-list more-options-list-content"></div>
+      </div>
+      `
+    );
+    renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
+
+    if (modalState.selector.options.randomizeWalletOrder) {
+      renderOptionsList(
+        ".more-options-list-content",
+        moreWallets.sort(() => Math.random() - 0.5)
+      );
+    } else {
+      renderOptionsList(".more-options-list-content", moreWallets);
+    }
+  } else {
+    optionsWrapper?.insertAdjacentHTML(
+      "beforeend",
+      `<div class="options-list"></div>`
+    );
+    renderOptionsList(".options-list", modalState.modules);
+  }
+};
+
+const handleSwitchChange = () => {
+  if (!modalState) {
+    return;
+  }
+
+  isChecked = !isChecked;
+  modalState.selector.setRememberRecentWallets();
+
+  renderWalletOptions();
+};
 
 export function renderModal() {
   if (!modalState) {
     return;
   }
+
+  const { rememberRecentWallets, selectedWalletId } =
+    modalState.selector.store.getState();
+  isChecked = rememberRecentWallets === "enabled";
 
   modalState.container.innerHTML = `
     <div class="nws-modal-wrapper ${
@@ -252,6 +334,15 @@ export function renderModal() {
         <div class="modal-left">
           <div class="modal-left-title">
             <h2>${translate("modal.wallet.connectYourWallet")}</h2>
+            <span class="nws-remember-wallet">
+              ${translate("modal.wallet.rememberWallet")}
+            </span>
+            <label class="nws-switch">
+              <input type="checkbox" ${
+                isChecked ? "checked" : ""
+              } id="rememberWalletSwitch" />
+              <span class="nws-slider round" />
+            </label>
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper"></div>
@@ -261,6 +352,10 @@ export function renderModal() {
       </div>
     </div>
   `;
+
+  document
+    .getElementById("rememberWalletSwitch")
+    ?.addEventListener("change", handleSwitchChange);
 
   const moreWallets: Array<ModuleState<Wallet>> = [];
   const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
@@ -284,7 +379,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-recent">
         <div class="options-list-section-header">Recent</div>
         <div class="options-list recent-options-list-content"></div>
       </div>
@@ -293,7 +388,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section">
+      <div class="options-list-section-more">
         <div class="options-list-section-header">More</div>
         <div class="options-list more-options-list-content"></div>
       </div>
@@ -308,6 +403,13 @@ export function renderModal() {
       );
     } else {
       renderOptionsList(".more-options-list-content", moreWallets);
+    }
+
+    if (!selectedWalletId && recentlySignedInWallets.length > 0) {
+      const firstWallet = recentlySignedInWallets[0];
+      document
+        .querySelector(`#module-${firstWallet.id}`)
+        ?.classList.add("selected-wallet");
     }
   } else {
     document

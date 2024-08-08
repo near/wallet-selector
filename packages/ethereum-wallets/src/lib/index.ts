@@ -688,6 +688,8 @@ const EthereumWallets: WalletBehaviourFactory<
                     "Transaction execution error, failed to parse failure reason."
                   );
                 }
+                // NOTE: after return, `finally { hideModal() }` will run.
+                return;
               }
               results.push(nearTx);
             }

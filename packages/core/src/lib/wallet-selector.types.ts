@@ -46,6 +46,10 @@ export interface WalletSelectorParams {
    * The URL where DelegateActions are sent by meta transaction enabled wallet modules.
    */
   relayerUrl?: string;
+  /**
+   * Whether multiple RPC URLs are included, used for the FailoverRpcProvider.
+   */
+  fallbackRpcUrls?: Array<string>;
 }
 
 export type WalletSelectorStore = ReadOnlyStore;
@@ -93,6 +97,11 @@ export interface WalletSelector {
    * Programmatically change active account which will be used to sign and send transactions.
    */
   setActiveAccount(accountId: string): void;
+
+  /**
+   * Programmatically changes the rememberRecentWallets behavior, it can deactivate and activate rememberRecentWallets.
+   */
+  setRememberRecentWallets(): void;
 
   /**
    * Attach an event handler to important events.

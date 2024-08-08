@@ -11,6 +11,7 @@
       "useAWallet": "استخدم محفظة لتأمين وإدارة أصول نير الخاصة بك، وادخل لأي تطبيق يستخدم نير دون الحاجة إلى اسم المستخدم وكلمةالمرور",
       "connectionFailed": "اتصال فاشل",
       "connectionSuccessful": "اتصال ناجح",
+      "rememberWallet": "تذكر المحافظ",
       "connected": "متصل",
       "connectingTo": "جاري الاتصال ب",
       "connectingMessage": {

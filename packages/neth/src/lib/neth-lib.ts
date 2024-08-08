@@ -984,7 +984,7 @@ export const getEthereum = async () => {
               decimals: 18,
             },
             blockExplorerUrls: ["https://explorer.mainnet.aurora.dev/"],
-            rpcUrls: ["https://mainnet.aurora.dev"],
+            fallbackRpcUrls: ["https://mainnet.aurora.dev"],
           },
         ],
       });
