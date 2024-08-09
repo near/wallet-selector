@@ -439,6 +439,8 @@ const EthereumWallets: WalletBehaviourFactory<
       logger.error(error);
       if (
         !error.message?.includes("does not exist while viewing") &&
+        !error.message?.includes("doesn't exist") &&
+        !error.message?.includes("does not exist") &&
         !error.message?.includes("has never been observed on the node")
       ) {
         throw new Error(
@@ -936,14 +938,14 @@ const EthereumWallets: WalletBehaviourFactory<
     async verifyOwner({ message }) {
       logger.log("EthereumWallets:verifyOwner", { message });
       throw new Error(
-        "Not implemented: ed25519 N/A, use eth_sign or eth_signTypedData_v4 instead."
+        "Not implemented: ed25519 N/A, '\x19Ethereum Signed Message:\n' prefix is not compatible, use personal_sign or eth_signTypedData_v4 instead."
       );
     },
 
     async signMessage({ message, nonce, recipient }) {
       logger.log("EthereumWallets:signMessage", { message, nonce, recipient });
       throw new Error(
-        "Not implemented: ed25519 N/A, use eth_sign or eth_signTypedData_v4 instead."
+        "Not implemented: ed25519 N/A, '\x19Ethereum Signed Message:\n' prefix is not compatible, use personal_sign or eth_signTypedData_v4 instead."
       );
     },
 
