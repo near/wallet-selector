@@ -9,5 +9,8 @@ export const REMEMBER_RECENT_WALLETS_STATE = {
 export const CONTRACT = "contract";
 export const PENDING_CONTRACT = "contract:pending";
 
+export const CONTRACTS = "contracts";
+export const PENDING_CONTRACTS = "contracts:pending";
+
 export const SELECTED_WALLET_ID = `selectedWalletId`;
 export const PENDING_SELECTED_WALLET_ID = `selectedWalletId:pending`;

@@ -1,4 +1,4 @@
-import type { providers, utils } from "near-api-js";
+import type { providers, utils, transactions } from "near-api-js";
 import type {
   EventEmitterService,
   LoggerService,
@@ -10,6 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { MultiContractState } from "../store.types";
 
 interface BaseWalletMetadata {
   /**
@@ -54,6 +55,13 @@ export interface SignInParams {
    * Specify limited access to particular methods on the Smart Contract.
    */
   methodNames?: Array<string>;
+}
+
+export interface SignInMultiParams {
+  /**
+   * The list of contracts to request a FunctionCall access key.
+   */
+  permissions: Array<transactions.FunctionCallPermission>;
 }
 
 export interface VerifyOwnerParams {
@@ -105,9 +113,9 @@ interface SignAndSendTransactionParams {
    */
   signerId?: string;
   /**
-   * Account ID to receive the transaction. Defaults to `contractId` defined in `init`.
+   * Account ID to receive the transaction.
    */
-  receiverId?: string;
+  receiverId: string;
   /**
    * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
    */
@@ -126,6 +134,11 @@ interface BaseWalletBehaviour {
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
    */
   signIn(params: SignInParams): Promise<Array<Account>>;
+
+  /**
+   *  Programmatically sign in with multiple contracts.
+   */
+  signInMulti?(params: SignInMultiParams): Promise<Array<Account>>;
   /**
    * Sign out from the wallet.
    */
@@ -178,9 +191,8 @@ type BaseWallet<
 
 export type WalletEvents = {
   signedIn: {
-    contractId: string;
-    methodNames: Array<string>;
     accounts: Array<Account>;
+    contracts: MultiContractState;
   };
   signedOut: null;
   accountsChanged: { accounts: Array<Account> };
@@ -192,11 +204,11 @@ export type WalletEvents = {
 
 export type BrowserWalletMetadata = BaseWalletMetadata & {
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
    */
   successUrl?: string;
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
 
@@ -208,11 +220,22 @@ export type BrowserWalletMetadata = BaseWalletMetadata & {
 
 interface BrowserWalletSignInParams extends SignInParams {
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After successfully signing in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
    */
   successUrl?: string;
   /**
-   * Optional for browser wallets (e.g MyNearWallet and HERE Wallet). After failing to sign in where to redirect.
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
+   */
+  failureUrl?: string;
+}
+
+interface BrowserWalletSignInMultiParams extends SignInMultiParams {
+  /**
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After successfully signing in where to redirect.
+   */
+  successUrl?: string;
+  /**
+   * Optional for browser wallets (e.g. MyNearWallet and NEAR Wallet). After failing to sign in where to redirect.
    */
   failureUrl?: string;
 }
@@ -239,6 +262,9 @@ export type BrowserWalletBehaviour = Modify<
     buildImportAccountsUrl?(): string;
     importAccountsInSecureContext?: never;
     signIn(params: BrowserWalletSignInParams): Promise<Array<Account>>;
+    signInMulti?(
+      params: BrowserWalletSignInMultiParams
+    ): Promise<Array<Account>>;
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;
@@ -321,9 +347,21 @@ export interface HardwareWalletSignInParams extends SignInParams {
   accounts: Array<HardwareWalletAccount>;
 }
 
+export interface HardwareWalletSignInMultiParams extends SignInMultiParams {
+  /**
+   * Required for hardware wallets (e.g. Ledger). This is a list of `accounts` linked to public keys on your device.
+   */
+  accounts: Array<HardwareWalletAccount>;
+}
+
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
+  {
+    signIn(params: HardwareWalletSignInParams): Promise<Array<Account>>;
+    signInMulti?(
+      params: HardwareWalletSignInMultiParams
+    ): Promise<Array<Account>>;
+  }
 > & {
   getPublicKey(derivationPath: string): Promise<string>;
 };
@@ -338,7 +376,15 @@ export type HardwareWallet = BaseWallet<
 
 interface BridgeWalletSignInParams extends SignInParams {
   /**
-   * Optional for bridge wallets (e.g Wallet Connect).
+   * Optional for bridge wallets (e.g. Wallet Connect).
+   * This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
+   */
+  qrCodeModal?: boolean;
+}
+
+interface BridgeWalletSignInMultiParams extends SignInMultiParams {
+  /**
+   * Optional for bridge wallets (e.g. Wallet Connect).
    * This indicates whether to render QR Code in wallet selector modal or use the default vendor modal.
    */
   qrCodeModal?: boolean;
@@ -348,7 +394,12 @@ export type BridgeWalletMetadata = BaseWalletMetadata;
 
 export type BridgeWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { signIn(params: BridgeWalletSignInParams): Promise<Array<Account>> }
+  {
+    signIn(params: BridgeWalletSignInParams): Promise<Array<Account>>;
+    signInMulti?(
+      params: BridgeWalletSignInMultiParams
+    ): Promise<Array<Account>>;
+  }
 >;
 
 export type BridgeWallet = BaseWallet<

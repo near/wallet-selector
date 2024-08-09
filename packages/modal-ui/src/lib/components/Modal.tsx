@@ -151,6 +151,10 @@ export const Modal: React.FC<ModalProps> = ({
     }
 
     try {
+      if (options.contracts.length < 1) {
+        throw new Error("No contract provided");
+      }
+
       const { deprecated, available } = module.metadata;
 
       if (module.type === "injected" && !available) {
@@ -203,11 +207,18 @@ export const Modal: React.FC<ModalProps> = ({
           });
         });
 
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          qrCodeModal,
-        });
+        if (options.contracts.length > 1) {
+          await wallet.signInMulti!({
+            permissions: options.contracts,
+            qrCodeModal,
+          });
+        } else {
+          await wallet.signIn({
+            contractId: options.contracts[0].receiverId,
+            methodNames: options.contracts[0].methodNames,
+            qrCodeModal,
+          });
+        }
 
         subscription.remove();
         handleDismissClick({ hideReason: "wallet-navigation" });
@@ -215,22 +226,36 @@ export const Modal: React.FC<ModalProps> = ({
       }
 
       if (wallet.type === "browser") {
-        await wallet.signIn({
-          contractId: options.contractId,
-          methodNames: options.methodNames,
-          successUrl: wallet.metadata.successUrl,
-          failureUrl: wallet.metadata.failureUrl,
-        });
+        if (options.contracts.length > 1) {
+          await wallet.signInMulti!({
+            permissions: options.contracts,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        } else {
+          await wallet.signIn({
+            contractId: options.contracts[0].receiverId,
+            methodNames: options.contracts[0].methodNames,
+            successUrl: wallet.metadata.successUrl,
+            failureUrl: wallet.metadata.failureUrl,
+          });
+        }
 
         handleDismissClick({ hideReason: "wallet-navigation" });
 
         return;
       }
 
-      await wallet.signIn({
-        contractId: options.contractId,
-        methodNames: options.methodNames,
-      });
+      if (options.contracts.length > 1) {
+        await wallet.signInMulti!({
+          permissions: options.contracts,
+        });
+      } else {
+        await wallet.signIn({
+          contractId: options.contracts[0].receiverId,
+          methodNames: options.contracts[0].methodNames,
+        });
+      }
 
       handleDismissClick({ hideReason: "wallet-navigation" });
     } catch (err) {

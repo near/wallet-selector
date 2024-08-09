@@ -7,19 +7,20 @@ import type {
   WalletModuleFactory,
   Account,
   InstantLinkWallet,
+  SignInMultiParams,
   SignMessageParams,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type { ContractState, ModuleState, Store } from "../../store.types";
+import type { ModuleState, Store, MultiContractState } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
-  PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
+  PENDING_CONTRACTS,
   REMEMBER_RECENT_WALLETS,
   REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
@@ -80,18 +81,18 @@ export class WalletModules {
     const pendingSelectedWalletId = await jsonStorage.getItem<string>(
       PENDING_SELECTED_WALLET_ID
     );
-    const pendingContract = await jsonStorage.getItem<ContractState>(
-      PENDING_CONTRACT
-    );
     const rememberRecentWallets = await jsonStorage.getItem<string>(
       REMEMBER_RECENT_WALLETS
     );
 
-    if (pendingSelectedWalletId && pendingContract) {
+    const pendingContracts =
+      (await jsonStorage.getItem<MultiContractState>(PENDING_CONTRACTS)) || [];
+
+    if (pendingSelectedWalletId && pendingContracts) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
 
       await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
-      await jsonStorage.removeItem(PENDING_CONTRACT);
+      await jsonStorage.removeItem(PENDING_CONTRACTS);
 
       if (accounts.length) {
         const { selectedWalletId } = this.store.getState();
@@ -111,16 +112,16 @@ export class WalletModules {
         }
         return {
           accounts,
-          contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
+          contracts: pendingContracts,
           rememberRecentWallets:
             rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
         };
       }
     }
 
-    const { contract, selectedWalletId } = this.store.getState();
+    const { selectedWalletId, contracts } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
 
     const recentlySignedInWallets = await jsonStorage.getItem<Array<string>>(
@@ -130,9 +131,9 @@ export class WalletModules {
     if (!accounts.length) {
       return {
         accounts: [],
-        contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
+        contracts: [],
         rememberRecentWallets:
           rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
       };
@@ -140,9 +141,9 @@ export class WalletModules {
 
     return {
       accounts,
-      contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
+      contracts,
       rememberRecentWallets:
         rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
     };
@@ -185,11 +186,10 @@ export class WalletModules {
 
   private async onWalletSignedIn(
     walletId: string,
-    { accounts, contractId, methodNames }: WalletEvents["signedIn"]
+    { accounts, contracts }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId, rememberRecentWallets } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-    const contract = { contractId, methodNames };
 
     if (!accounts.length) {
       const module = this.getModule(walletId)!;
@@ -197,7 +197,10 @@ export class WalletModules {
       // Best we can do is set in storage and validate on init.
       if (module.type === "browser") {
         await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
+        await jsonStorage.setItem<MultiContractState>(
+          PENDING_CONTRACTS,
+          contracts
+        );
       }
 
       return;
@@ -218,7 +221,7 @@ export class WalletModules {
       type: "WALLET_CONNECTED",
       payload: {
         walletId,
-        contract,
+        contracts,
         accounts,
         recentlySignedInWallets,
         rememberRecentWallets,
@@ -227,9 +230,8 @@ export class WalletModules {
 
     this.emitter.emit("signedIn", {
       walletId,
-      contractId,
-      methodNames,
       accounts,
+      contracts,
     });
   }
 
@@ -299,6 +301,7 @@ export class WalletModules {
 
   private decorateWallet(wallet: Wallet): Wallet {
     const _signIn = wallet.signIn;
+    const _signInMulti = wallet.signInMulti;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
 
@@ -308,8 +311,27 @@ export class WalletModules {
       const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId,
-        methodNames,
+        contracts: [{ contractId, methodNames }],
+      });
+
+      return accounts;
+    };
+
+    wallet.signInMulti = async (params: never) => {
+      if (_signInMulti === undefined) {
+        throw Error(`Method not supported by ${wallet.metadata.name}.`);
+      }
+
+      const accounts = await _signInMulti(params);
+
+      const { permissions } = params as SignInMultiParams;
+      const contracts: MultiContractState = permissions.map((permission) => ({
+        contractId: permission.receiverId,
+        methodNames: permission.methodNames,
+      }));
+      await this.onWalletSignedIn(wallet.id, {
+        accounts,
+        contracts,
       });
 
       return accounts;
@@ -435,7 +457,7 @@ export class WalletModules {
 
     const {
       accounts,
-      contract,
+      contracts,
       selectedWalletId,
       recentlySignedInWallets,
       rememberRecentWallets,
@@ -446,9 +468,9 @@ export class WalletModules {
       payload: {
         modules,
         accounts,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
         rememberRecentWallets,
       },
     });

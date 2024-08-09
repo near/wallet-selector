@@ -9,9 +9,10 @@ import type {
 } from "./store.types";
 import {
   PACKAGE_NAME,
-  CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
+  CONTRACTS,
+  CONTRACT,
   REMEMBER_RECENT_WALLETS,
   REMEMBER_RECENT_WALLETS_STATE,
 } from "./constants";
@@ -27,9 +28,9 @@ const reducer = (
       const {
         modules,
         accounts,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
         rememberRecentWallets,
       } = action.payload;
 
@@ -44,14 +45,14 @@ const reducer = (
         ...state,
         modules,
         accounts: accountStates,
-        contract,
         selectedWalletId,
         recentlySignedInWallets,
+        contracts,
         rememberRecentWallets,
       };
     }
     case "WALLET_CONNECTED": {
-      const { walletId, contract, accounts, recentlySignedInWallets } =
+      const { walletId, accounts, recentlySignedInWallets, contracts } =
         action.payload;
 
       if (!accounts.length) {
@@ -71,10 +72,10 @@ const reducer = (
 
       return {
         ...state,
-        contract,
         accounts: accountStates,
         selectedWalletId: walletId,
         recentlySignedInWallets,
+        contracts,
       };
     }
     case "WALLET_DISCONNECTED": {
@@ -86,9 +87,9 @@ const reducer = (
 
       return {
         ...state,
-        contract: null,
         accounts: [],
         selectedWalletId: null,
+        contracts: [],
       };
     }
     case "ACCOUNTS_CHANGED": {
@@ -165,15 +166,27 @@ const reducer = (
   }
 };
 
+const updateOldContractState = async (storage: JsonStorage) => {
+  const oldState = await storage.getItem(CONTRACT);
+
+  if (oldState) {
+    await storage.setItem(CONTRACTS, [oldState]);
+    await storage.removeItem(CONTRACT);
+  }
+};
+
 export const createStore = async (storage: StorageService): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
+
+  await updateOldContractState(jsonStorage);
+
   const initialState: WalletSelectorState = {
     modules: [],
     accounts: [],
-    contract: await jsonStorage.getItem(CONTRACT),
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
+    contracts: (await jsonStorage.getItem(CONTRACTS)) || [],
     rememberRecentWallets:
       (await jsonStorage.getItem(REMEMBER_RECENT_WALLETS)) || "",
   };
@@ -204,13 +217,13 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
   let prevState = state$.getValue();
   state$.subscribe((state) => {
     syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
-    syncStorage(prevState, state, CONTRACT, "contract");
     syncStorage(
       prevState,
       state,
       RECENTLY_SIGNED_IN_WALLETS,
       "recentlySignedInWallets"
     );
+    syncStorage(prevState, state, CONTRACTS, "contracts");
     syncStorage(
       prevState,
       state,

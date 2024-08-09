@@ -7,6 +7,7 @@ import type { ReadOnlyStore } from "./store.types";
 import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
+import type { MultiContractState } from "./store.types";
 import type { SignMessageMethod } from "./wallet/wallet.types";
 
 export interface WalletSelectorParams {
@@ -57,9 +58,8 @@ export type WalletSelectorStore = ReadOnlyStore;
 export type WalletSelectorEvents = {
   signedIn: {
     walletId: string;
-    contractId: string;
-    methodNames: Array<string>;
     accounts: Array<Account>;
+    contracts: MultiContractState;
   };
   signedOut: {
     walletId: string;
