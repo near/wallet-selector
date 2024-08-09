@@ -17,7 +17,7 @@ NEP-518 doesn't support multiple actions within the same transaction, so when mu
 
 NEP-518 rpc relayer uses a FunctionCall access key to execute transactions on behalf of the user by calling `rlp_execute`. If this key is not yet added, the wallet will be onboarded before the first transaction is made.
 
-`signMessage` and `verifyOwner` are not implemented because Ethereum wallets are not compatible with these standards, instead a dApp can use `eth_sign` or `eth_signTypedData_v4` to authenticate the wallet by interacting with it directly.
+`signMessage` and `verifyOwner` are not implemented because Ethereum wallets are not compatible with these standards, instead a dApp can use `personal_sign` or `eth_signTypedData_v4` to authenticate the wallet by interacting with it directly.
 
 ## Installation and Usage
 

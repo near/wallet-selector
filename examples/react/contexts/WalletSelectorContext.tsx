@@ -77,7 +77,7 @@ const projectId = "30147604c5f01d0bc4482ab0665b5697";
 // TODO: Replace with the NEAR chain after the protocol upgrade.
 const near: Chain = {
   id: 398,
-  name: "NEAR wallet playground",
+  name: "NEAR Protocol Testnet",
   nativeCurrency: {
     decimals: 18,
     name: "NEAR",
@@ -188,7 +188,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
-        setupEthereumWallets({ wagmiConfig, web3Modal, devMode: true }),
+        setupEthereumWallets({ wagmiConfig, web3Modal }),
       ],
     });
     const _modal = setupModal(_selector, {
