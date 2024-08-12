@@ -64,6 +64,7 @@ export interface EthereumWalletsParams {
   devMode?: boolean;
   devModeAccount?: string;
   deprecated?: boolean;
+  nearNodeUrl?: string;
 }
 
 interface EthereumWalletsState {
@@ -103,6 +104,7 @@ const EthereumWallets: WalletBehaviourFactory<
     alwaysOnboardDuringSignIn = false,
     devMode,
     devModeAccount = "eth-wallet.testnet",
+    nearNodeUrl,
   },
 }) => {
   if (!wagmiCore) {
@@ -123,6 +125,17 @@ const EthereumWallets: WalletBehaviourFactory<
   if (!nearExplorer) {
     throw new Error("Failed to parse NEAR explorer url from wagmiConfig.");
   }
+  // NOTE: use a custom provider because the failover provider doesn't give error details.
+  const nearProvider = new JsonRpcProvider(
+    nearNodeUrl ??
+      // @ts-expect-error
+      provider.provider.connection ??
+      // @ts-expect-error
+      provider.provider.providers[
+        // @ts-expect-error
+        provider.provider.currentProviderIndex
+      ].connection
+  );
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const address = wagmiCore!.getAccount(wagmiConfig).address?.toLowerCase();
@@ -422,7 +435,7 @@ const EthereumWallets: WalletBehaviourFactory<
       throw new Error("Failed to fetch the relayer's public key.");
     }
     try {
-      const key = await provider.query<AccessKeyViewRaw>({
+      const key = await nearProvider.query<AccessKeyViewRaw>({
         request_type: "view_access_key",
         finality: "final",
         account_id: accountId,
@@ -507,7 +520,7 @@ const EthereumWallets: WalletBehaviourFactory<
     if (accountLogIn.publicKey && nearTxs.length) {
       let accessKeyUsable;
       try {
-        const accessKey = await provider.query<AccessKeyViewRaw>({
+        const accessKey = await nearProvider.query<AccessKeyViewRaw>({
           request_type: "view_access_key",
           finality: "final",
           account_id: accountLogIn.accountId,
@@ -653,10 +666,6 @@ const EthereumWallets: WalletBehaviourFactory<
                 }
               }
               logger.log("Receipt:", receipt);
-              const nearProvider = new JsonRpcProvider(
-                // @ts-expect-error
-                provider.provider.connection
-              );
               let nearTx;
               while (!nearTx) {
                 try {
@@ -713,7 +722,7 @@ const EthereumWallets: WalletBehaviourFactory<
     if (accountLogIn.publicKey) {
       try {
         // Check that the key exists before making a transaction.
-        await provider.query<AccessKeyViewRaw>({
+        await nearProvider.query<AccessKeyViewRaw>({
           request_type: "view_access_key",
           finality: "final",
           account_id: accountLogIn.accountId,
@@ -844,7 +853,7 @@ const EthereumWallets: WalletBehaviourFactory<
           let reUseKeyPair = false;
           if (keyPair) {
             try {
-              await provider.query<AccessKeyViewRaw>({
+              await nearProvider.query<AccessKeyViewRaw>({
                 request_type: "view_access_key",
                 finality: "final",
                 account_id: accountId,
