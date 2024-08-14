@@ -169,7 +169,8 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
     async signMessage(message) {
       try {
-        return _state.wallet.signMessage(message);
+        const signedMessage = await _state.wallet.signMessage(message);
+        return signedMessage;
       } catch (error) {
         throw new Error("sign Error");
       }
