@@ -49,6 +49,11 @@ const mockOkx = () => {
       requestSignTransactions: jest.fn().mockResolvedValue({
         txs: [{ signedTx: "signedTx" }],
       }),
+      signMessage: jest.fn().mockResolvedValue({
+        publickey: "publickey",
+        accountId: "accountId",
+        signature: "signature",
+      }),
     },
   };
 
@@ -129,5 +134,27 @@ describe("signAndSendTransactions", () => {
 
     expect(injectedOkx!.requestSignTransactions).toHaveBeenCalled();
     expect(result.length).toEqual(transactions.length);
+  });
+});
+
+describe("signMessage", () => {
+  it("signMessage in okx wallet", async () => {
+    const { wallet, injectedOkx } = await createOKXWallet();
+    await wallet.signIn({ contractId: "test.testnet" });
+    const result = await wallet.signMessage!({
+      message: "message",
+      recipient: "recipient",
+      nonce: Buffer.from(
+        "4268ebc14ff247f5450d4a8682bec3729a06d268f83b0cb363083ab05b65486b",
+        "hex"
+      ),
+    });
+
+    expect(injectedOkx!.signMessage).toHaveBeenCalled();
+    expect(result).toEqual({
+      publickey: "publickey",
+      accountId: "accountId",
+      signature: "signature",
+    });
   });
 });
