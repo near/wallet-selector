@@ -57,12 +57,12 @@
       "open": "Отворете"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "Хардуерна портфейл",
+      "browser": "Портфейл на браузъра",
+      "injected": "Разширение на портфейл",
+      "bridge": "Мостов портфейл",
+      "mobile": "Мобилен портфейл",
+      "instant-link": "Мгновен портфейл"
     }
   }
 }

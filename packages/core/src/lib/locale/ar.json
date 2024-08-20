@@ -57,12 +57,12 @@
       "open": "فتح"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "محفظة الأجهزة",
+      "browser": "محفظة المتصفح",
+      "injected": "ملحق المحفظة",
+      "bridge": "محفظة الجسر",
+      "mobile": "محفظة الجوال",
+      "instant-link": "محفظة الرابط الفوري"
     }
   }
 }
