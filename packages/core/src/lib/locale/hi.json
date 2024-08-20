@@ -56,12 +56,12 @@
        "open": "खोले|"
      },
      "walletTypes": {
-       "hardware": "Hardware Wallet",
-       "browser": "Browser Wallet",
-       "injected": "Wallet Extension",
-       "bridge": "Bridge Wallet",
-       "mobile": "Mobile Wallet",
-       "instant-link": "Instant Wallet"
+       "hardware": "हार्डवेयर वॉलेट",
+       "browser": "ब्राउज़र वॉलेट",
+       "injected": "वॉलेट एक्सटेंशन",
+       "bridge": "ब्रिज वॉलेट",
+       "mobile": "मोबाइल वॉलेट",
+       "instant-link": "इंस्टेंट वॉलेट"
      }
    }
  }

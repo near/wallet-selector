@@ -57,12 +57,12 @@
       "open": "Abrir"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "Cartera de Hardware",
+      "browser": "Cartera de Navegador",
+      "injected": "Extensión de Cartera",
+      "bridge": "Cartera de Puente",
+      "mobile": "Cartera Móvil",
+      "instant-link": "Cartera Instantánea"
     }
   }
 }
