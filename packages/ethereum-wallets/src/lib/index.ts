@@ -546,11 +546,10 @@ const EthereumWallets: WalletBehaviourFactory<
         );
         const results: Array<FinalExecutionOutcome> = [];
         for (let i = 0; i < signedTransactions.length; i += 1) {
-          /*
           const nearTx = await nearProvider.sendTransaction(
             signedTransactions[i]
           );
-          */
+          /*
           const bytes = encodeTransaction(signedTransactions[i]);
           const nearTx: FinalExecutionOutcome = await nearProvider.sendJsonRpc(
             "send_tx",
@@ -559,6 +558,7 @@ const EthereumWallets: WalletBehaviourFactory<
               wait_until: "EXECUTED_OPTIMISTIC",
             }
           );
+          */
           logger.log("NEAR transaction:", nearTx);
           if (
             typeof nearTx.status === "object" &&
