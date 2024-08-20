@@ -7,7 +7,7 @@ import type {
 } from "near-api-js/lib/providers/provider";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import {
-  encodeTransaction,
+  // encodeTransaction,
   stringifyJsonOrBytes,
 } from "near-api-js/lib/transaction";
 import { parseRpcError } from "near-api-js/lib/utils/rpc_errors";
