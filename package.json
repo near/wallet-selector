@@ -221,8 +221,5 @@
     "util": "0.12.5",
     "webpack": "5.75.0",
     "webpack-merge": "5.8.0"
-  },
-  "resolutions": {
-    "near-api-js": "4.0.3"
   }
 }
