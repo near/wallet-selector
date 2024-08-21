@@ -6,10 +6,7 @@ import type {
   FunctionCallPermissionView,
 } from "near-api-js/lib/providers/provider";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
-import {
-  // encodeTransaction,
-  stringifyJsonOrBytes,
-} from "near-api-js/lib/transaction";
+import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
 import { parseRpcError } from "near-api-js/lib/utils/rpc_errors";
 import {
   type WalletModuleFactory,
@@ -550,16 +547,6 @@ const EthereumWallets: WalletBehaviourFactory<
           const nearTx = await nearProvider.sendTransaction(
             signedTransactions[i]
           );
-          /*
-          const bytes = encodeTransaction(signedTransactions[i]);
-          const nearTx: FinalExecutionOutcome = await nearProvider.sendJsonRpc(
-            "send_tx",
-            {
-              signed_tx_base64: Buffer.from(bytes).toString("base64"),
-              wait_until: "EXECUTED_OPTIMISTIC",
-            }
-          );
-          */
           logger.log("NEAR transaction:", nearTx);
           if (
             typeof nearTx.status === "object" &&
