@@ -96,7 +96,7 @@
     "@ledgerhq/hw-transport-webhid": "6.29.2",
     "@metamask/detect-provider": "2.0.0",
     "@meteorwallet/sdk": "1.0.9",
-    "@mintbase-js/wallet": "0.6.0-beta.10",
+    "@mintbase-js/wallet": "0.6.1",
     "@near-snap/sdk": "0.6.0",
     "@noble/ciphers": "0.5.3",
     "@noble/hashes": "1.4.0",
