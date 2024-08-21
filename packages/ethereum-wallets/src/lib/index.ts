@@ -295,8 +295,9 @@ const EthereumWallets: WalletBehaviourFactory<
         throw new Error("Invalid action type");
       }
     }
-    const { request } = await wagmiCore!.simulateContract(wagmiConfig, ethTx);
-    const result = await wagmiCore!.writeContract(wagmiConfig, request);
+    // NOTE: re-add simulateContract and parse errors after eth_call implements errors.
+    // const { request } = await wagmiCore!.simulateContract(wagmiConfig, ethTx);
+    const result = await wagmiCore!.writeContract(wagmiConfig, ethTx);
     return result;
   };
 
