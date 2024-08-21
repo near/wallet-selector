@@ -17,7 +17,7 @@ NEP-518 doesn't support multiple actions within the same transaction, so when mu
 
 NEP-518 rpc relayer uses a FunctionCall access key to execute transactions on behalf of the user by calling `rlp_execute`. If this key is not yet added, the wallet will be onboarded before the first transaction is made.
 
-`signMessage` and `verifyOwner` are not implemented because Ethereum wallets are not compatible with these standards, instead a dApp can use `eth_sign` or `eth_signTypedData_v4` to authenticate the wallet by interacting with it directly.
+`signMessage` and `verifyOwner` are not implemented because Ethereum wallets are not compatible with these standards, instead a dApp can use `personal_sign` or `eth_signTypedData_v4` to authenticate the wallet by interacting with it directly.
 
 ## Installation and Usage
 
@@ -79,6 +79,7 @@ Project ID is required, please obtain it from [walletconnect.com](https://wallet
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ethereum-wallets-icon.png`.
 - `wagmiCore` (`typeof import("@wagmi/core")?`): Optional, @wagmi/core functions can be overidden by the dapp to interract with the wallet.
 - `alwaysOnboardDuringSignIn` (`boolean?`): A dapp without SignIn access key will not onboard the relayer by default, this option does the relayer onboarding during login.
+- `nearNodeUrl` (`string?`): NEAR node url to query the NEAR transaction status and onboarding access key.
 
 Developent options (before the NEAR protocol upgrade to support 0x accounts natively):
 
