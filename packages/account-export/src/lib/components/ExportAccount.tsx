@@ -15,6 +15,7 @@ import type {
   AccessKeyView,
   AccountView,
 } from "near-api-js/lib/providers/provider";
+import type { KeyPairString } from "@near-js/crypto";
 
 import { AccountSelect } from "./AccountSelect";
 import { Passphrase } from "./Passphrase";
@@ -196,7 +197,9 @@ export const ExportAccount: React.FC<ExportAccountProps> = ({
       setIsLoading(true);
       const accountsWithDetails = await Promise.all(
         accounts.map(async ({ accountId, privateKey }) => {
-          const keyPair = nearAPI.utils.KeyPair.fromString(privateKey);
+          const keyPair = nearAPI.utils.KeyPair.fromString(
+            privateKey as KeyPairString
+          );
           const { type } = await getAccountType({
             provider,
             accountId,
