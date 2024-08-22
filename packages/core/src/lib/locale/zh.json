@@ -51,12 +51,12 @@
       "open": "打开"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "硬件钱包",
+      "browser": "浏览器钱包",
+      "injected": "钱包扩展",
+      "bridge": "桥接钱包",
+      "mobile": "移动钱包",
+      "instant-link": "即时钱包"
     }
   }
 }
