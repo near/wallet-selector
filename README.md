@@ -76,7 +76,6 @@ yarn add \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet  \
   @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/mintbase-wallet \
   @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
@@ -104,7 +103,6 @@ npm install \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet \
   @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/okx-wallet \
   @near-wallet-selector/mintbase-wallet \
   @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
