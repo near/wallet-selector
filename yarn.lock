@@ -4223,7 +4223,7 @@
     uint8-varint "^2.0.1"
     uint8arrays "^5.0.0"
 
-"@near-js/accounts@1.2.1", "@near-js/accounts@^1.2.1":
+"@near-js/accounts@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@near-js/accounts/-/accounts-1.2.1.tgz#6e5c0315a07997bbaacbe7b9021ac23974a80ea0"
   integrity sha512-j6+9n/p0vVLAahmN3YRFve+j0ammOALC9ZUfFhdE3kqtJESbSWMviC5qF/s2m0JQjpJGDtEv/dTADosIJoanWw==
@@ -4240,7 +4240,7 @@
     lru_map "0.4.1"
     near-abi "0.1.1"
 
-"@near-js/accounts@1.2.2":
+"@near-js/accounts@1.2.2", "@near-js/accounts@^1.2.1":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@near-js/accounts/-/accounts-1.2.2.tgz#c0ba5a4644c4438c0f339d842dec8d4d55d35cfb"
   integrity sha512-8XInUVl8WwQyitRkG1HffZKhDmAXUwOaxurgkTYocDUUUp+ZB8NPxidg2uvj6f2wqnC8KAkjpm73wPoyRm6+yQ==
@@ -4257,7 +4257,7 @@
     lru_map "0.4.1"
     near-abi "0.1.1"
 
-"@near-js/crypto@1.2.4", "@near-js/crypto@^1.2.4":
+"@near-js/crypto@1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@near-js/crypto/-/crypto-1.2.4.tgz#fad977d6a6d2c0c836ef42db8c8d355c1f433ec0"
   integrity sha512-hcSj0ygvTcXlW9ftwEd9dbvQUWBCHNWNDLou9NLfmZERW9dr0gH8kUJPZUWfpJFlUPicb+jTiMpNwDTvP7VW4A==
@@ -4268,7 +4268,7 @@
     borsh "1.0.0"
     randombytes "2.1.0"
 
-"@near-js/crypto@1.3.0":
+"@near-js/crypto@1.3.0", "@near-js/crypto@^1.2.4":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@near-js/crypto/-/crypto-1.3.0.tgz#ddcfc2a1dc2ad9ac30df5f7ebd36d3408ac379bf"
   integrity sha512-BIKO6v+rbYCzzrjsSV4KgClVgRiPluIXQ89B4ozIG8RjjBe/7IPFYF9tIxsXUyLzPFhISzeNQkL09ksHHmnymg==
@@ -17745,7 +17745,7 @@ near-abi@0.1.1:
   dependencies:
     "@types/json-schema" "^7.0.11"
 
-near-api-js@4.0.3, near-api-js@^4.0.0:
+near-api-js@4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-4.0.3.tgz#7b31e8d86224acf526cda7c4e5e57f44b23c4719"
   integrity sha512-NNxIUOGjTafDp65WKRmRqjOTdn4gukse5zFzo2YS/1YJMac++WR05mEsiAB2Aj54rDb/PL8TObQZgHtSs/Pjvg==
@@ -17768,7 +17768,7 @@ near-api-js@4.0.3, near-api-js@^4.0.0:
     near-abi "0.1.1"
     node-fetch "2.6.7"
 
-near-api-js@^4.0.3:
+near-api-js@4.0.4, near-api-js@^4.0.0, near-api-js@^4.0.3:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-4.0.4.tgz#e04ef1fa051d3291c1a9bf1b4f07f880c49f80ca"
   integrity sha512-IG+6NAMtn854palu/cIbVgey0OsIzllcajc3fbEbh7cb2pyPNMsfsBIO5WqsV+rY+7Tqr6lqYQ8f+4BHGUttyg==
