@@ -3625,10 +3625,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@jscutlery/semver@5.2.2":
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-5.2.2.tgz#5e1eec2554e38d449c2de4a6c5a41abeb3bc9d7f"
-  integrity sha512-lhklWnwa5X4N6aiBLbybdsZ37agtxa0EBRdXmjOFA+LzViVR6QIYZpk+/X/XLw/TB6z1rLrmFp/MakmNyaJiYg==
+"@jscutlery/semver@5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@jscutlery/semver/-/semver-5.3.1.tgz#6a7f0ba7ce40802e0101ea8ac5b155b0031e0c74"
+  integrity sha512-LJk85tsYnISmRBQid4fjavBYUN8W5QwVQrcZ9KuTv+/D8Qy1A3wbMcc0kfBnnsGwFcKjYTwr4/eGJ/i1HgVk2Q==
   dependencies:
     chalk "4.1.2"
     conventional-changelog "^5.1.0"
