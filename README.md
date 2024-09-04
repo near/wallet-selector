@@ -27,7 +27,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 
 ## Preview
 
-[React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-examples/guest-book/) dApp can be found in the [`examples`](/examples) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
+[React](https://reactjs.org/) / [Next.js](https://nextjs.org/) and [Angular](https://angular.io/) variations of the [Guest Book](https://github.com/near-tmhnix/guest-book/) dApp can be found in the [`tmhnix`](/tmhnix) directory. You can use these to gain a concrete understanding of how to integrate NEAR Wallet Selector into your own dApp.
 
 ![Preview](./images/preview.gif)
 
