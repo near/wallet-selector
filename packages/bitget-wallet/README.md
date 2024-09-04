@@ -1,6 +1,6 @@
 # @near-wallet-selector/bitget-wallet
 
-This is the [Bitget Wallet](https://chrome.google.com/webstore/detail/bitkeep-crypto-nft-wallet/jiidiaalihmmhddjgbnbgdfflelocpak) package for NEAR Wallet Selector.
+This is the [Bitget Wallet](https://chromewebstore.google.com/detail/bitget-wallet-formerly-bi/jiidiaalihmmhddjgbnbgdfflelocpak) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
