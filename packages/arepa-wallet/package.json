@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/wallet-utils",
+  "name": "@near-wallet-selector/arepa-wallet",
   "version": "8.9.13",
-  "description": "Wallet utils package for NEAR Wallet Selector.",
+  "description": "Arepa Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -9,7 +9,9 @@
     "dapps",
     "near-protocol",
     "near-blockchain",
-    "wallet selector"
+    "wallet selector",
+    "browser wallet",
+    "arepa Wallet"
   ],
   "repository": {
     "type": "git",
@@ -18,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/wallet-utils",
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/arepa-wallet",
   "peerDependencies": {
     "near-api-js": "4.0.3"
   }

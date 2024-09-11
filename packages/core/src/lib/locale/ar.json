@@ -57,12 +57,59 @@
       "open": "فتح"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "محفظة الأجهزة",
+      "browser": "محفظة المتصفح",
+      "injected": "ملحق المحفظة",
+      "bridge": "محفظة الجسر",
+      "mobile": "محفظة الجوال",
+      "instant-link": "محفظة الرابط الفوري"
+    },
+    "exportAccounts": {
+      "afterDecide": "بعد اتخاذ قرار بشأن محفظة، يمكنك اختيار الحسابات التي تريد نقلها.",
+      "chooseAWallet": "اختر محفظة",
+      "disclaimer": "لن تتمكن من نقل الحسابات التي لم يتم تمويلها أو استخدامها على NEAR.",
+      "selectAWallet": "اختر محفظة تناسب احتياجاتك وتدعم حساباتك المتصلة.",
+      "selectYourAccounts": "حدد حساباتك",
+      "transferYourAccounts": "نقل حساباتك",
+      "warning": "لا تدعم تصدير الحسابات في الوقت الحالي. يرجى اختيار محفظة أخرى.",
+      "complete": {
+        "button": "أكمل",
+        "descOne": "سيتم توجيهك الآن إلى المحفظة التي اخترتها لإكمال النقل.",
+        "descTwo": "بمجرد إكمال جزء الاستيراد من العملية من المحفظة المحددة، اضغط على الزر لإكمال عملية النقل.",
+        "startOverButton": "ابدأ من جديد",
+        "title": "أكمل النقل"
+      },
+      "getPassphrase": {
+        "button": "تابع",
+        "checkLabel": "لقد قمت بنسخ أو كتابة كلمة المرور",
+        "desc": "ستحتاج إلى إدخال هذه الكلمة السرية عند بدء تصدير حساباتك إلى محفظة مختلفة.",
+        "label": "انقر لنسخ",
+        "title": "انسخ كلمة المرور المؤقتة",
+        "transferButton": "نقل الحسابات"
+      },
+      "selectAccounts": {
+        "button": "تابع",
+        "deselectAll": "إلغاء تحديد الكل",
+        "error": "الحساب غير موجود",
+        "noBalance": "الحساب غير ممول",
+        "selectAll": "تحديد الكل",
+        "title": "حدد الحسابات لنقلها",
+        "unavailable": "النقل غير متاح",
+        "warningLedger": "دعم Ledger مطلوب"
+      },
+      "walletTypes": {
+        "bridge": "محفظة الجسر",
+        "browser": "محفظة المتصفح",
+        "hardware": "محفظة الأجهزة",
+        "injected": "ملحق المحفظة",
+        "mobile": "محفظة الجوال"
+      }
+    }
+  },
+  "component": {
+    "clickToCopy": {
+      "label": "تم النسخ",
+      "tooltip": "انقر لنسخ"
     }
   }
 }

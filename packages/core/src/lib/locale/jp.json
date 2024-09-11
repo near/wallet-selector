@@ -1,0 +1,115 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "ウォレットを接続",
+      "whatIsAWallet": "ウォレットとは？",
+      "secureAndManage": "デジタル資産を安全に管理",
+      "safelyStore": "暗号通貨やNFTを安全に保存し、転送します。",
+      "logInToAny": "すべてのNEARアプリにログイン",
+      "noNeedToCreate": "新しいアカウントや資格情報を作成する必要はありません。ウォレットを接続するだけで準備完了です！",
+      "getAWallet": "ウォレットを取得",
+      "useAWallet": "ウォレットを使ってNEARの資産を安全に管理し、ユーザー名やパスワードなしでNEARアプリにログインします。",
+      "connectionFailed": "接続失敗",
+      "connectionSuccessful": "接続成功",
+      "rememberWallet": "ウォレットを記憶",
+      "connected": "接続済み",
+      "connectingTo": "接続中",
+      "connectingMessage": {
+        "injected": "拡張機能ウィンドウで接続を確認",
+        "browser": "リダイレクト後にウォレットで接続を確認",
+        "hardware": "Ledgerデバイスで接続を確認",
+        "bridge": "ウォレットで接続を確認"
+      }
+    },
+    "ledger": {
+      "connectWithLedger": "Ledgerで接続",
+      "makeSureYourLedger": "Ledgerが安全に接続され、NEARアプリがデバイスで開いていることを確認してください",
+      "continue": "続行",
+      "specifyHDPath": "HDパスを指定",
+      "enterYourPreferredHDPath": "希望のHDパスを入力し、アクティブなアカウントをスキャンします。",
+      "scan": "スキャン",
+      "retry": "再試行",
+      "ledgerIsNotAvailable": "Ledgerが使用できません",
+      "accessDeniedToUseLedgerDevice": "Ledgerデバイスの使用が拒否されました",
+      "noAccountsFound": "アカウントが見つかりません",
+      "selectYourAccounts": "アカウントを選択",
+      "connecting1Account": "1アカウントに接続中",
+      "cantFindAnyAccount": "このLedgerに関連付けられたアカウントが見つかりません。新しいNEARアカウントを作成してください",
+      "orConnectAnAnotherLedger": "または別のLedgerを接続してください。",
+      "connecting": "接続中",
+      "ofAccounts": "アカウントの",
+      "failedToAutomatically": "アカウントIDを自動的に見つけることができませんでした。手動で提供してください:",
+      "overviewTheListOfAuthorized": "認可されたアカウントのリストを確認し、以下のボタンをクリックしてサインインを完了します。",
+      "finish": "完了"
+    },
+    "install": {
+      "youllNeedToInstall": "インストールが必要です",
+      "toContinueAfterInstalling": "続行するには",
+      "refreshThePage": "ページを更新してください。",
+      "open": "開く"
+    },
+    "qr": {
+      "copiedToClipboard": "クリップボードにコピーされました",
+      "failedToCopy": "クリップボードにコピーできませんでした",
+      "scanWithYourMobile": "モバイルデバイスでスキャン",
+      "copyToClipboard": "クリップボードにコピー",
+      "preferTheOfficial": "公式ダイアログを推奨します",
+      "open": "開く"
+    },
+    "walletTypes": {
+      "hardware": "ハードウェアウォレット",
+      "browser": "ブラウザウォレット",
+      "injected": "ウォレット拡張機能",
+      "bridge": "ブリッジウォレット",
+      "mobile": "モバイルウォレット",
+      "instant-link": "インスタントウォレット"
+    },
+    "exportAccounts": {
+      "chooseAWallet": "ウォレットを選択",
+      "transferYourAccounts": "アカウントを転送",
+      "selectAWallet": "ニーズに合ったウォレットを選択し、接続されたアカウントをサポートしているものを選びます。",
+      "selectYourAccounts": "アカウントを選択",
+      "afterDecide": "ウォレットを決定した後、転送したいアカウントを選択できます。",
+      "disclaimer": "NEARで資金が提供されたことがないアカウントは転送できません。",
+      "warning": "現在、アカウントのエクスポートをサポートしていません。他のウォレットを選択してください。",
+      "walletTypes": {
+        "hardware": "ハードウェアウォレット",
+        "browser": "ブラウザウォレット",
+        "injected": "ウォレット拡張機能",
+        "bridge": "ブリッジウォレット",
+        "mobile": "モバイルウォレット"
+      },
+      "selectAccounts": {
+        "title": "転送するアカウントを選択",
+        "button": "続行",
+        "deselectAll": "すべて選択解除",
+        "selectAll": "すべて選択",
+        "unavailable": "転送不可",
+        "error": "アカウントが存在しません",
+        "warningLedger": "Ledgerサポートが必要です",
+        "noBalance": "アカウントに資金がありません"
+      },
+      "getPassphrase": {
+        "title": "一時パスワードをコピー",
+        "desc": "アカウントを別のウォレットにエクスポートする際にこのパスワードを入力する必要があります。",
+        "button": "続行",
+        "transferButton": "アカウントを転送",
+        "label": "クリックしてコピー",
+        "checkLabel": "パスワードをコピーまたは書き留めた"
+      },
+      "complete": {
+        "title": "転送を完了",
+        "descOne": "選択したウォレットにリダイレクトされ、転送を完了します。",
+        "descTwo": "選択したウォレットからインポートの一部が完了した後、転送プロセスを完了するためにボタンを押してください。",
+        "startOverButton": "最初からやり直す",
+        "button": "完了"
+      }
+    }
+  },
+  "component": {
+    "clickToCopy": {
+      "label": "コピー済み",
+      "tooltip": "コピーするにはクリック"
+    }
+  }
+}
