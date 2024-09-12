@@ -12,12 +12,13 @@ import type {
 } from "./provider.service.types";
 import { JsonRpcProvider } from "near-api-js/lib/providers";
 import type { SignedTransaction } from "near-api-js/lib/transaction";
+import {FailoverRpcProvider} from "@near-js/providers";
 
 export class Provider implements ProviderService {
   private provider: nearAPI.providers.FailoverRpcProvider;
 
   constructor(urls: Array<string>) {
-    this.provider = new nearAPI.providers.FailoverRpcProvider(
+    this.provider = new FailoverRpcProvider(
       this.urlsToProviders(urls)
     );
   }
