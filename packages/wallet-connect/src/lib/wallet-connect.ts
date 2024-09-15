@@ -354,7 +354,10 @@ const WalletConnect: WalletBehaviourFactory<
       },
     });
 
-    return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
+    // @ts-ignore
+    const isBuffer = result?.type === "Buffer";
+    const txResult = isBuffer ? result : Object.values(result);
+    return nearAPI.transactions.SignedTransaction.decode(Buffer.from(txResult));
   };
 
   const requestSignTransactions = async (transactions: Array<Transaction>) => {
@@ -408,7 +411,12 @@ const WalletConnect: WalletBehaviourFactory<
     });
 
     return results.map((result) => {
-      return nearAPI.transactions.SignedTransaction.decode(Buffer.from(result));
+      // @ts-ignore
+      const isBuffer = result?.type === "Buffer";
+      const txResult = isBuffer ? result : Object.values(result);
+      return nearAPI.transactions.SignedTransaction.decode(
+        Buffer.from(txResult)
+      );
     });
   };
 
