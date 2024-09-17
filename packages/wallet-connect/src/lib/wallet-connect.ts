@@ -149,6 +149,18 @@ const disconnect = async ({ state }: { state: WalletConnectState }) => {
   });
 };
 
+const getSignatureData = (result: Uint8Array) => {
+  if (result instanceof Uint8Array) {
+    return result;
+  } else if (Array.isArray(result)) {
+    return new Uint8Array(result);
+  } else if (typeof result === "object" && result !== null) {
+    return new Uint8Array(Object.values(result));
+  } else {
+    throw new Error("Unexpected result type from near_signTransaction");
+  }
+};
+
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
@@ -354,10 +366,11 @@ const WalletConnect: WalletBehaviourFactory<
       },
     });
 
-    // @ts-ignore
-    const isBuffer = result?.type === "Buffer";
-    const txResult = isBuffer ? result : Object.values(result);
-    return nearAPI.transactions.SignedTransaction.decode(Buffer.from(txResult));
+    const signatureData = getSignatureData(result);
+
+    return nearAPI.transactions.SignedTransaction.decode(
+      Buffer.from(signatureData)
+    );
   };
 
   const requestSignTransactions = async (transactions: Array<Transaction>) => {
@@ -411,11 +424,10 @@ const WalletConnect: WalletBehaviourFactory<
     });
 
     return results.map((result) => {
-      // @ts-ignore
-      const isBuffer = result?.type === "Buffer";
-      const txResult = isBuffer ? result : Object.values(result);
+      const signatureData = getSignatureData(result);
+
       return nearAPI.transactions.SignedTransaction.decode(
-        Buffer.from(txResult)
+        Buffer.from(signatureData)
       );
     });
   };
