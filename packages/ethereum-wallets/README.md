@@ -49,6 +49,7 @@ import type { Chain } from "@wagmi/core/chains";
 import { reconnect, http, createConfig } from "@wagmi/core";
 import { walletConnect, injected } from "@wagmi/connectors";
 import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 // Mainnet
