@@ -995,7 +995,7 @@ export function setupEthereumWallets(
         iconUrl: params.iconUrl ?? icon,
         deprecated: params.deprecated ?? false,
         available: true,
-        downloadUrl: "",
+        downloadUrl: "https://explorer.walletconnect.com",
       },
       init: (config) => {
         return EthereumWallets({
