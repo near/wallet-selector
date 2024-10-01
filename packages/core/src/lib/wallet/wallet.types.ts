@@ -214,7 +214,7 @@ interface BaseWalletBehaviour {
    * Signs one or more NEAR Actions which can be broadcasted to the network.
    * The user must be signed in to call this method.
    */
-  signTransaction(
+  signTransaction?(
     params: SignTransactionParams | SignTransactionActionsParams
   ): Promise<[Uint8Array, SignedTransaction]>;
 }
