@@ -10,6 +10,11 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type {
+  SignedTransaction,
+  Transaction as Tx,
+} from "near-api-js/lib/transaction";
+import type { Signer } from "near-api-js/lib/signer";
 
 interface BaseWalletMetadata {
   /**
@@ -121,6 +126,56 @@ interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
+interface SignTransactionParams {
+  /**
+   * The Transaction object to sign
+   */
+  transaction: Tx;
+  /**
+   * The {Signer} object that assists with signing keys
+   */
+  signer: Signer;
+  /**
+   * The human-readable NEAR account name
+   */
+  accountId?: string;
+  /**
+   * The targeted network. (ex. default, betanet, etc…)
+   */
+  networkId?: string;
+}
+
+interface SignTransactionActionsParams {
+  /**
+   * The NEAR account ID of the transaction receiver.
+   */
+  receiverId: string;
+  /**
+   * Tx nonce.
+   */
+  nonce: bigint;
+  /**
+   * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
+   */
+  actions: Array<Action>;
+  /**
+   *  Block hash
+   */
+  blockHash: Uint8Array;
+  /**
+   * The {Signer} object that assists with signing keys
+   */
+  signer: Signer;
+  /**
+   * The human-readable NEAR account name
+   */
+  accountId?: string;
+  /**
+   * The targeted network. (ex. default, betanet, etc…)
+   */
+  networkId?: string;
+}
+
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -155,6 +210,13 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Signs one or more NEAR Actions which can be broadcasted to the network.
+   * The user must be signed in to call this method.
+   */
+  signTransaction(
+    params: SignTransactionParams | SignTransactionActionsParams
+  ): Promise<[Uint8Array, SignedTransaction]>;
 }
 
 type BaseWallet<
