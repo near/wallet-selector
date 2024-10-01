@@ -301,6 +301,7 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
+    const _signTransaction = wallet.signTransaction;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -330,6 +331,16 @@ export class WalletModules {
       this.validateSignMessageParams(params);
 
       return await _signMessage(params);
+    };
+
+    wallet.signTransaction = async (params: never) => {
+      if (_signTransaction === undefined) {
+        throw Error(
+          `The signTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signTransaction(params);
     };
 
     return wallet;
