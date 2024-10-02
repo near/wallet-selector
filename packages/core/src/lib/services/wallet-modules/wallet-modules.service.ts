@@ -335,12 +335,20 @@ export class WalletModules {
 
     wallet.signTransaction = async (params: never) => {
       if (_signTransaction === undefined) {
-        throw Error(
+        throw new Error(
           `The signTransaction method is not supported by ${wallet.metadata.name}`
         );
       }
 
-      return await _signTransaction(params);
+      try {
+        return await _signTransaction(params);
+      } catch (error) {
+        throw new Error(
+          `Failed to sign transaction: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
     };
 
     return wallet;
