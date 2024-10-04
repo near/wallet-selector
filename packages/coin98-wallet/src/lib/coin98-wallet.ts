@@ -108,11 +108,11 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
     },
 
     async signMessage({
-      message, 
-      nonce, 
-      recipient, 
-      state
-    }: SignMessageParams): Promise<SignedMessage>{
+      message,
+      nonce,
+      recipient,
+      state,
+    }: SignMessageParams): Promise<SignedMessage> {
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
       }
