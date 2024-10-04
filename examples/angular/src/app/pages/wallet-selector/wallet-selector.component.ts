@@ -42,8 +42,6 @@ declare global {
 // Get a project ID at https://cloud.walletconnect.com
 const projectId = "30147604c5f01d0bc4482ab0665b5697";
 
-// NOTE: This is the NEAR wallet playground used in dev mode.
-// TODO: Replace with the NEAR chain after the protocol upgrade.
 const near: Chain = {
   id: 398,
   name: "NEAR Protocol Testnet",
@@ -53,13 +51,13 @@ const near: Chain = {
     symbol: "NEAR",
   },
   rpcUrls: {
-    default: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
-    public: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
+    default: { http: ["https://eth-rpc.testnet.near.org"] },
+    public: { http: ["https://eth-rpc.testnet.near.org"] },
   },
   blockExplorers: {
     default: {
       name: "NEAR Explorer",
-      url: "https://testnet.nearblocks.io",
+      url: "https://eth-explorer-testnet.near.org",
     },
   },
   testnet: true,
