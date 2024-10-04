@@ -1,0 +1,29 @@
+{
+  "name": "@near-wallet-selector/ethereum-wallets",
+  "version": "8.9.13",
+  "description": "Ethereum wallets package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "injected wallet",
+    "wallet connect",
+    "web3Modal",
+    "wagmi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ethereum-wallets",
+  "peerDependencies": {
+    "near-api-js": "^1.0.0 || ^2.0.0"
+  }
+}

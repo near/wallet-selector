@@ -116,11 +116,13 @@ const MyNearWallet: WalletBehaviourFactory<
 
         const block = await provider.block({ finality: "final" });
 
+        const nonce = accessKey.access_key.nonce + BigInt(index + 1);
+
         return nearAPI.transactions.createTransaction(
           account.accountId,
           nearAPI.utils.PublicKey.from(accessKey.public_key),
           transaction.receiverId,
-          accessKey.access_key.nonce + index + 1,
+          nonce,
           actions,
           nearAPI.utils.serialize.base_decode(block.header.hash)
         );

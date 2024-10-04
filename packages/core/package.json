@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/core",
-  "version": "8.9.11",
+  "version": "8.9.13",
   "description": "This is the core package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/core"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/core",
+  "peerDependencies": {
+    "near-api-js": "4.0.3",
+    "@near-js/providers": "latest"
+  }
 }

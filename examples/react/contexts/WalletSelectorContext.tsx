@@ -1,5 +1,9 @@
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import type { AccountState, WalletSelector } from "@near-wallet-selector/core";
+import type {
+  AccountState,
+  InjectedWalletBehaviour,
+  WalletSelector,
+} from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -23,6 +27,7 @@ import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 import type { ReactNode } from "react";
 import React, {
@@ -33,6 +38,17 @@ import React, {
   useMemo,
 } from "react";
 import { distinctUntilChanged, map } from "rxjs";
+import { createWeb3Modal } from "@web3modal/wagmi";
+import type { GetAccountReturnType } from "@wagmi/core";
+import {
+  reconnect,
+  http,
+  createConfig,
+  type Config,
+  watchAccount,
+} from "@wagmi/core";
+import { type Chain } from "@wagmi/core/chains";
+import { injected, walletConnect } from "@wagmi/connectors";
 
 import { Loading } from "../components/Loading";
 import { CONTRACT_ID } from "../constants";
@@ -54,6 +70,60 @@ interface WalletSelectorContextValue {
 const WalletSelectorContext =
   React.createContext<WalletSelectorContextValue | null>(null);
 
+// Get a project ID at https://cloud.walletconnect.com
+const projectId = "30147604c5f01d0bc4482ab0665b5697";
+
+// NOTE: This is the NEAR wallet playground used in dev mode.
+// TODO: Replace with the NEAR chain after the protocol upgrade.
+const near: Chain = {
+  id: 398,
+  name: "NEAR Protocol Testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "NEAR",
+    symbol: "NEAR",
+  },
+  rpcUrls: {
+    default: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
+    public: { http: ["https://near-wallet-relayer.testnet.aurora.dev"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "NEAR Explorer",
+      url: "https://testnet.nearblocks.io",
+    },
+  },
+  testnet: true,
+};
+
+const wagmiConfig: Config = createConfig({
+  chains: [near],
+  transports: {
+    [near.id]: http(),
+  },
+  connectors: [
+    walletConnect({
+      projectId,
+      metadata: {
+        name: "NEAR Guest Book",
+        description: "A guest book with comments stored on the NEAR blockchain",
+        url: "https://near.github.io/wallet-selector",
+        icons: ["https://near.github.io/wallet-selector/favicon.ico"],
+      },
+      showQrModal: false,
+    }),
+    injected({ shimDisconnect: true }),
+  ],
+});
+reconnect(wagmiConfig);
+
+const web3Modal = createWeb3Modal({
+  wagmiConfig: wagmiConfig,
+  projectId,
+  enableOnramp: false,
+  allWallets: "SHOW",
+});
+
 export const WalletSelectorContextProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
@@ -61,6 +131,25 @@ export const WalletSelectorContextProvider: React.FC<{
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Log in with Ethereum flow: auto connect to ethereum-wallets without showing the NEAR modal.
+  useEffect(() => {
+    if (!selector) {
+      return;
+    }
+    watchAccount(wagmiConfig, {
+      onChange: (data: GetAccountReturnType) => {
+        if (!data.address || selector.store.getState().selectedWalletId) {
+          return;
+        }
+        selector.wallet("ethereum-wallets").then((wallet) =>
+          (wallet as InjectedWalletBehaviour).signIn({
+            contractId: CONTRACT_ID,
+          })
+        );
+      },
+    });
+  }, [selector]);
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
@@ -99,6 +188,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
+        setupEthereumWallets({ wagmiConfig, web3Modal }),
       ],
     });
     const _modal = setupModal(_selector, {

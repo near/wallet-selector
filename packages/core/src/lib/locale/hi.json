@@ -11,6 +11,7 @@
        "useAWallet": "अपनी NEAR संपत्तियों को सुरक्षित और प्रबंधित करने के लिए वॉलेट का उपयोग करें और किसी भी NEAR ऐप (app) में लॉग इन करें, किसी उपयोगकर्ता (user) नाम और पासवर्ड की आवश्यकता नहीं है।",
        "connectionFailed": "कनेक्शन विफल|",
        "connectionSuccessful": "कनेक्शन सफल|",
+       "rememberWallet": "वॉलेटों को याद रखें",
        "connected": "वॉलेट जुड़ गया|",
        "connectingTo": "वॉलेट जुड़ रहा हे|",
        "connectingMessage": {
@@ -55,12 +56,12 @@
        "open": "खोले|"
      },
      "walletTypes": {
-       "hardware": "Hardware Wallet",
-       "browser": "Browser Wallet",
-       "injected": "Wallet Extension",
-       "bridge": "Bridge Wallet",
-       "mobile": "Mobile Wallet",
-       "instant-link": "Instant Wallet"
+       "hardware": "हार्डवेयर वॉलेट",
+       "browser": "ब्राउज़र वॉलेट",
+       "injected": "वॉलेट एक्सटेंशन",
+       "bridge": "ब्रिज वॉलेट",
+       "mobile": "मोबाइल वॉलेट",
+       "instant-link": "इंस्टेंट वॉलेट"
      }
    }
  }

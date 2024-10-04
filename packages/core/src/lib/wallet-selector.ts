@@ -1,14 +1,14 @@
-import { resolveOptions } from "./options";
+import { getNetworkPreset, resolveOptions } from "./options";
 import { createStore } from "./store";
 import type {
   WalletSelector,
   WalletSelectorEvents,
   WalletSelectorParams,
 } from "./wallet-selector.types";
-import { EventEmitter, Logger, Provider, WalletModules } from "./services";
+import { EventEmitter, Logger, WalletModules, Provider } from "./services";
 import type { Wallet } from "./wallet";
 import type { Store } from "./store.types";
-import type { Options } from "./options.types";
+import type { NetworkId, Options } from "./options.types";
 
 let walletSelectorInstance: WalletSelector | null = null;
 
@@ -49,6 +49,14 @@ const createSelector = (
         payload: { accountId },
       });
     },
+    setRememberRecentWallets: () => {
+      const { rememberRecentWallets } = store.getState();
+
+      store.dispatch({
+        type: "SET_REMEMBER_RECENT_WALLETS",
+        payload: { rememberRecentWallets },
+      });
+    },
     isSignedIn() {
       const { accounts } = store.getState();
 
@@ -76,13 +84,23 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage);
+  const network = await getNetworkPreset(
+    options.network.networkId as NetworkId,
+    params.fallbackRpcUrls
+  );
+
+  const rpcProviderUrls =
+    params.fallbackRpcUrls && params.fallbackRpcUrls.length > 0
+      ? params.fallbackRpcUrls
+      : [network.nodeUrl];
+
   const walletModules = new WalletModules({
     factories: params.modules,
     storage,
     options,
     store,
     emitter,
-    provider: new Provider(options.network.nodeUrl),
+    provider: new Provider(rpcProviderUrls),
   });
 
   await walletModules.setup();

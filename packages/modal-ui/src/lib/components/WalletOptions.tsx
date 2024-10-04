@@ -77,6 +77,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const { recentlySignedInWallets } = selector.store.getState();
+    if (recentlySignedInWallets.length) {
+      setActiveWalletId(recentlySignedInWallets[0]);
+    }
+  }, [selector.store]);
+
   function renderOptionsList(modulesToRender: Array<ModuleState<Wallet>>) {
     return modulesToRender.reduce<Array<JSX.Element>>(
       (result, module, index) => {
@@ -94,6 +101,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
             } sidebar ${module.id}`}
             key={module.id}
             onClick={() => {
+              if (
+                selector.options.network.networkId === "testnet" &&
+                module.id === "here-wallet"
+              ) {
+                alert("Here Wallet is not supported on testnet");
+                return;
+              }
               if (module.id === modulesToRender[index].id) {
                 setActiveWalletId(module.id!);
               }
@@ -126,13 +140,13 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
       {selector.options.optimizeWalletOrder &&
       selector.store.getState().recentlySignedInWallets.length > 0 ? (
         <div className="wallet-options-wrapper">
-          <div className="options-list-section">
+          <div className="options-list-section-recent">
             <div className="options-list-section-header">Recent</div>
             <div className="options-list more-options-list-content">
               {renderOptionsList(recentModules)}
             </div>
           </div>
-          <div className="options-list-section">
+          <div className="options-list-section-more">
             <div className="options-list-section-header">More</div>
             <div className="options-list more-options-list-content">
               {renderOptionsList(moreModules)}

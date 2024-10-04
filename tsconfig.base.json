@@ -30,6 +30,9 @@
       "@near-wallet-selector/account-export": [
         "packages/account-export/src/index.ts"
       ],
+      "@near-wallet-selector/arepa-wallet": [
+        "packages/arepa-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/bitget-wallet": [
         "packages/bitget-wallet/src/index.ts"
       ],
@@ -104,6 +107,9 @@
       ],
       "@near-wallet-selector/okx-wallet": [
         "packages/okx-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/ethereum-wallets": [
+        "packages/ethereum-wallets/src/index.ts"
       ],
       "crypto": [
         "node_modules/crypto-browserify"
