@@ -1,0 +1,1 @@
+export { setupHereWallet } from "./lib";

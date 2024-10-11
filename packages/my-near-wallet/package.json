@@ -2,6 +2,45 @@
   "name": "@near-wallet-selector/my-near-wallet",
   "version": "8.9.13",
   "description": "My Near Wallet package for NEAR Wallet Selector.",
+  "scripts": {
+    "compile:esm": "yarn tsc -p tsconfig.esm.json",
+    "compile:cjs": "yarn tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/my-near-wallet/src/index.d.ts",
+  "main": "./dist/cjs/my-near-wallet/src/index.js",
+  "module": "./dist/esm/my-near-wallet/src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@near-js/crypto": "*",
+    "@near-js/keystores-browser": "*",
+    "@near-js/signers": "*",
+    "@near-js/transactions": "*",
+    "@near-js/utils": "*",
+    "@near-js/wallet-account": "*",
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@near-js/types": "*",
+    "@types/jest": "*",
+    "@types/node": "*",
+    "jest": "*",
+    "jest-mock-extended": "*",
+    "near-api-js": "*",
+    "rimraf": "6.0.1",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/my-near-wallet/src/index.js",
+      "import": "./dist/esm/my-near-wallet/src/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",

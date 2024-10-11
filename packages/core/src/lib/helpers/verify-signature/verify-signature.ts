@@ -1,13 +1,15 @@
-import { utils, providers } from "near-api-js";
-import { serialize } from "borsh";
-import { sha256 } from "js-sha256";
+import {serialize} from "borsh";
+import {sha256} from "js-sha256";
 import type {
   VerifyFullKeyBelongsToUserParams,
   VerifySignatureParams,
   ViewAccessKeyParams,
 } from "./verify-signature.types";
-import { Payload, payloadSchema } from "./payload";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import {Payload, payloadSchema} from "./payload";
+import type { AccessKeyView } from "@near-js/types";
+import {KeyType, PublicKey, publicKeyFrom} from "../../../../../../../near-api-js/packages/crypto";
+// import {KeyType, PublicKey, publicKeyFrom} from "@near-js/crypto";
+import {JsonRpcProvider} from "@near-js/providers";
 
 export const verifySignature = ({
   publicKey,
@@ -18,7 +20,7 @@ export const verifySignature = ({
   callbackUrl,
 }: VerifySignatureParams) => {
   // Reconstruct the payload that was **actually signed**
-  const payload = new Payload({ message, nonce, recipient, callbackUrl });
+  const payload: Payload = { message, nonce, recipient, callbackUrl };
 
   // Serialize payload based on payloadSchema
   const borshPayload = serialize(payloadSchema, payload);
@@ -30,7 +32,7 @@ export const verifySignature = ({
 
   // Convert real signature to buffer base64
   const realSignature = Buffer.from(signature, "base64");
-  const pk = utils.PublicKey.from(publicKey);
+  const pk: PublicKey = publicKeyFrom(publicKey);
 
   // Verify the signature
   return pk.verify(hashedPayload, realSignature);
@@ -41,7 +43,7 @@ const fetchAllUserKeys = async ({
   network,
   publicKey,
 }: ViewAccessKeyParams): Promise<AccessKeyView> => {
-  const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+  const provider = new JsonRpcProvider({ url: network.nodeUrl });
   const key = await provider.query({
     request_type: "view_access_key",
     account_id: accountId,

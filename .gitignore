@@ -48,3 +48,8 @@ package-lock.json
 
 # Next.js
 .next
+
+# Yarn ~4.5.0 related
+.yarn
+.pnp.cjs
+.pnp.loader.mjs

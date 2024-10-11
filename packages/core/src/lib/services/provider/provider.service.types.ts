@@ -4,8 +4,8 @@ import type {
   BlockResult,
   QueryResponseKind,
   FinalExecutionOutcome,
-} from "near-api-js/lib/providers/provider";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+} from "@near-js/types";
+import type { SignedTransaction } from "@near-js/transactions";
 
 export type QueryParams = { [key in string]: unknown };
 

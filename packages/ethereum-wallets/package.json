@@ -2,6 +2,42 @@
   "name": "@near-wallet-selector/ethereum-wallets",
   "version": "8.9.13",
   "description": "Ethereum wallets package for NEAR Wallet Selector.",
+  "scripts": {
+    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "type": "module",
+  "dependencies": {
+    "@near-js/providers": "*",
+    "@near-js/transactions": "*",
+    "@near-js/utils": "*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "@wagmi/core": "*",
+    "bs58": "*",
+    "near-api-js": "*",
+    "viem": "*",
+    "wagmi": "*"
+  },
+  "devDependencies": {
+    "@near-js/types": "*",
+    "@types/node": "*",
+    "rimraf": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",
@@ -22,8 +58,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ethereum-wallets",
-  "peerDependencies": {
-    "near-api-js": "^1.0.0 || ^2.0.0"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ethereum-wallets"
 }

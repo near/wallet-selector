@@ -2,6 +2,38 @@
   "name": "@near-wallet-selector/meteor-wallet",
   "version": "8.9.13",
   "description": "Meteor wallet package for NEAR Wallet Selector.",
+  "scripts": {
+    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "type": "module",
+  "dependencies": {
+    "@meteorwallet/sdk": "*",
+    "@near-wallet-selector/core": "workspace:*",
+    "near-api-js": "*"
+  },
+  "devDependencies": {
+    "@types/jest": "*",
+    "@types/node": "*",
+    "jest": "*",
+    "jest-mock-extended": "*",
+    "rimraf": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",

@@ -2,6 +2,36 @@
   "name": "@near-wallet-selector/here-wallet",
   "version": "8.9.13",
   "description": "Here wallet package for NEAR Wallet Selector.",
+  "scripts": {
+    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "type": "module",
+  "dependencies": {
+    "@here-wallet/core": "*",
+    "@near-wallet-selector/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jest": "*",
+    "@types/node": "*",
+    "jest": "*",
+    "rimraf": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",

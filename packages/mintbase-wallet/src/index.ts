@@ -1,3 +1,3 @@
-import { setupMintbaseWallet } from "@mintbase-js/wallet";
+import { setupBitteWallet } from "@mintbase-js/wallet";
 
-export { setupMintbaseWallet };
+export { setupBitteWallet };

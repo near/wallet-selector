@@ -1,4 +1,3 @@
-import type { providers, utils } from "near-api-js";
 import type {
   EventEmitterService,
   LoggerService,
@@ -9,7 +8,8 @@ import type { Options } from "../options.types";
 import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "@near-js/types";
+import { KeyType } from "@near-js/crypto";
 
 interface BaseWalletMetadata {
   /**
@@ -77,7 +77,7 @@ export interface VerifiedOwner {
   blockId: string;
   publicKey: string;
   signature: string;
-  keyType: utils.key_pair.KeyType;
+  keyType: KeyType;
 }
 
 export interface SignMessageParams {
@@ -146,14 +146,14 @@ interface BaseWalletBehaviour {
    */
   signAndSendTransaction(
     params: SignAndSendTransactionParams
-  ): Promise<providers.FinalExecutionOutcome>;
+  ): Promise<FinalExecutionOutcome>;
   /**
    * Signs one or more transactions before sending to the network.
    * The user must be signed in to call this method as there's at least charges for gas spent.
    */
   signAndSendTransactions(
     params: SignAndSendTransactionsParams
-  ): Promise<Array<providers.FinalExecutionOutcome>>;
+  ): Promise<Array<FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
 }
 

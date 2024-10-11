@@ -1,4 +1,5 @@
-import * as nearAPI from "near-api-js";
+import { WalletConnection } from "@near-js/wallet-account";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
@@ -8,6 +9,11 @@ import type {
   Network,
   Account,
 } from "@near-wallet-selector/core";
+
+import { createTransaction } from "@near-js/transactions";
+import { baseDecode } from "@near-js/utils";
+import { PublicKey } from "@near-js/crypto";
+import { connect } from "near-api-js";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
@@ -20,8 +26,8 @@ export interface MyNearWalletParams {
 }
 
 interface MyNearWalletState {
-  wallet: nearAPI.WalletConnection;
-  keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
+  wallet: WalletConnection;
+  keyStore: BrowserLocalStorageKeyStore;
 }
 
 interface MyNearWalletExtraOptions {
@@ -47,16 +53,17 @@ const setupWalletState = async (
   params: MyNearWalletExtraOptions,
   network: Network
 ): Promise<MyNearWalletState> => {
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore();
+  const keyStore = new BrowserLocalStorageKeyStore();
 
-  const near = await nearAPI.connect({
+  const near = await connect({
     keyStore,
+    // deps: { keyStore },
     walletUrl: params.walletUrl,
     ...network,
     headers: {},
   });
 
-  const wallet = new nearAPI.WalletConnection(near, "near_app");
+  const wallet = new WalletConnection(near, "near_app");
 
   return {
     wallet,
@@ -118,13 +125,13 @@ const MyNearWallet: WalletBehaviourFactory<
 
         const nonce = accessKey.access_key.nonce + BigInt(index + 1);
 
-        return nearAPI.transactions.createTransaction(
+        return createTransaction(
           account.accountId,
-          nearAPI.utils.PublicKey.from(accessKey.public_key),
+          PublicKey.from(accessKey.public_key),
           transaction.receiverId,
           nonce,
           actions,
-          nearAPI.utils.serialize.base_decode(block.header.hash)
+          baseDecode(block.header.hash)
         );
       })
     );
@@ -143,6 +150,7 @@ const MyNearWallet: WalletBehaviourFactory<
         methodNames,
         successUrl,
         failureUrl,
+        keyType: "ed25519",
       });
 
       return getAccounts();
@@ -201,6 +209,8 @@ const MyNearWallet: WalletBehaviourFactory<
       actions,
       callbackUrl,
     }) {
+      // console.log('alohaws mnw signAndSendTransaction', signerId, receiverId, actions, callbackUrl)
+
       logger.log("signAndSendTransaction", {
         signerId,
         receiverId,

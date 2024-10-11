@@ -7,7 +7,7 @@ export default {
     "^.+\\.[tj]s$": [
       "ts-jest",
       {
-        tsconfig: "<rootDir>/tsconfig.spec.json",
+        tsconfig: "<rootDir>/delme-tsconfig.spec.json",
       },
     ],
   },

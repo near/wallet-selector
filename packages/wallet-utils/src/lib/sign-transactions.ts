@@ -1,19 +1,25 @@
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
-import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
-import { createAction } from "./create-action";
+// import type { Signer } from "near-api-js";
+import type {Signer} from "@near-js/signers";
+import {KeyType, PublicKey} from "@near-js/crypto";
+import type {SignedTransaction} from "@near-js/transactions";
+import {createTransaction, signTransaction} from "@near-js/transactions";
+import {baseDecode} from "@near-js/utils";
+// import * as nearAPI from "near-api-js";
+import {JsonRpcProvider} from "@near-js/providers";
+import type {Network, Transaction} from "@near-wallet-selector/core/src";
+import type {AccessKeyViewRaw} from "@near-js/types";
+import {createAction} from "./create-action";
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
   signer: Signer,
   network: Network
 ) => {
-  const provider = new nearAPI.providers.JsonRpcProvider({
+  const provider = new JsonRpcProvider({
     url: network.nodeUrl,
   });
 
-  const signedTransactions: Array<nearAPI.transactions.SignedTransaction> = [];
+  const signedTransactions: Array<SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
     const publicKey = await signer.getPublicKey(
@@ -35,16 +41,20 @@ export const signTransactions = async (
       createAction(action)
     );
 
-    const transaction = nearAPI.transactions.createTransaction(
+    const transaction = createTransaction(
       transactions[i].signerId,
-      nearAPI.utils.PublicKey.from(publicKey.toString()),
+      new PublicKey({
+        keyType: KeyType.ED25519,
+        data: publicKey.data
+      }),
+      // PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       actions,
-      nearAPI.utils.serialize.base_decode(block.header.hash)
+      baseDecode(block.header.hash)
     );
 
-    const response = await nearAPI.transactions.signTransaction(
+    const response = await signTransaction(
       transaction,
       signer,
       transactions[i].signerId,

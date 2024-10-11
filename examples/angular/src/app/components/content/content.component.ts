@@ -4,7 +4,7 @@ import { providers, utils } from "near-api-js";
 import type {
   AccountView,
   CodeResult,
-} from "near-api-js/lib/providers/provider";
+} from "near-api-js/dist/esm/providers/provider";
 import type {
   AccountState,
   SignMessageParams,

@@ -1,0 +1,1 @@
+export { setupEthereumWallets } from "./lib";

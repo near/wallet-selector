@@ -1,23 +1,32 @@
-import * as nearAPI from "near-api-js";
 import type {
   AccessKeyView,
   BlockReference,
   QueryResponseKind,
   RpcQueryRequest,
-} from "near-api-js/lib/providers/provider";
+} from "@near-js/types";
 import type {
   ProviderService,
   QueryParams,
   ViewAccessKeyParams,
 } from "./provider.service.types";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import { JsonRpcProvider, FailoverRpcProvider } from "@near-js/providers";
+import type { SignedTransaction } from "@near-js/transactions";
 
 export class Provider implements ProviderService {
-  private provider: nearAPI.providers.FailoverRpcProvider;
+  /*
+  private provider: JsonRpcProvider;
 
   constructor(urls: Array<string>) {
-    this.provider = new nearAPI.providers.FailoverRpcProvider(
+    this.provider = new JsonRpcProvider(
+      this.urlsToProviders(urls)
+    );
+  }
+   */
+
+  private provider: FailoverRpcProvider;
+
+  constructor(urls: Array<string>) {
+    this.provider = new FailoverRpcProvider(
       this.urlsToProviders(urls)
     );
   }

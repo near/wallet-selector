@@ -1,0 +1,107 @@
+{
+    "modal": {
+        "wallet": {
+            "connectYourWallet": "Povežite svojo denarnico!",
+            "whatIsAWallet": "Kaj je denarnica?",
+            "secureAndManage": "Zavarujte in upravljajte svoja digitalna sredstva.",
+            "safelyStore": "Varno shranjujte in prenašajte svoje kriptovalute in NFTje.",
+            "logInToAny": "Prijavite se v katero koli aplikacijo na NEAR",
+            "noNeedToCreate": "Ni vam treba ustvarjati novih računov. Povežite svojo denarnico in začnite!",
+            "getAWallet": "Ustvarite denarnico",
+            "useAWallet": "Uporabite denarnico, da bi zavarovali in upravljali s svoja NEAR digitalna sredstva, in se prijavite v katero koli aplikacijo ekosistema NEAR",
+            "connectionFailed": "Povezava ni bila uspešna.",
+            "connectionSuccessful": "Povezava je bila uspešna.",
+            "rememberWallet": "Zapomni si denarnice",
+            "connected": "Vaša denarnica je povezana.",
+            "connectingTo": "Povezovanje z",
+            "connectingMessage": {
+                "injected": "Potrdite povezavo v oknu razširitve",
+                "browser": "Po preusmeritvi potrdite povezavo v denarnici",
+                "hardware": "Potrdite povezavo s hladno denarnico",
+                "bridge": "Potrdite povezavo v denarnici"
+            }
+        },
+        "ledger": {
+            "connectWithLedger": "Povežite se z Ledger",
+            "makeSureYourLedger": "Prepričajte se, da je vaš Ledger varno povezan in da je aplikacija NEAR odprta v vaši napravi",
+            "continue": "Nadaljuj",
+            "specifyHDPath": "Določite HD pot",
+            "enterYourPreferredHDPath": "Vnesite želeno HD pot, nato poiščite vse aktivne račune.",
+            "scan": "Skenirajte",
+            "retry": "Poskusite znova",
+            "ledgerIsNotAvailable": "Ledger ni na voljo",
+            "accessDeniedToUseLedgerDevice": "Dostop za uporabo naprave Ledger zavrnjen",
+            "noAccountsFound": "Ni najdenih računov",
+            "selectYourAccounts": "Izberite Vaši računi",
+            "connecting1Account": "Povezovanje enega računa",
+            "cantFindAnyAccount": "Ni mogoče najti nobenega računa, povezanega s tem Ledgerjem. Ustvarite nov NEAR račun ",
+            "orConnectAnAnotherLedger": "ali povežite drug Ledger..",
+            "connecting": "Povezovanje",
+            "ofAccounts": "računov",
+            "failedToAutomatically": "ID-ja računa ni bilo mogoče samodejno najti. Zagotovite ga ročno:",
+            "overviewTheListOfAuthorized": "Oglejte si seznam pooblaščenih računov, dokončajte prijavo s klikom na spodnji gumb.",
+            "finish": "Končajte"
+        },
+        "install": {
+            "youllNeedToInstall": "Morali ga boste namestiti",
+            "toContinueAfterInstalling": "nadaljevati. Po namestitvi",
+            "refreshThePage": "Osvežite stran.",
+            "open": "Odprite"
+        },
+        "qr": {
+            "copiedToClipboard": "Kopirano v podložni mapi",
+            "failedToCopy": "Kopiranje v podložni mapi ni uspelo",
+            "scanWithYourMobile": "Skenirajte s svojo mobilno napravo",
+            "copyToClipboard": " Kopirajte v podložni mapi",
+            "preferTheOfficial": "Preferirajte uradno pogovorno okno",
+            "open": "Odprite"
+        },
+        "walletTypes": {
+            "hardware": "Hladna denarnica",
+            "browser": "Denarnica brskalnika",
+            "injected": "Razširitev za denarnico",
+            "bridge": "Bridge denarnica",
+            "mobile": "Mobilna denarnica",
+            "instant-link": "Takojšnja denarnica"
+        },
+        "exportAccounts": {
+            "chooseAWallet": "Izberite denarnico",
+            "transferYourAccounts": "Prenesite svoje račune",
+            "selectAWallet": "Izberite denarnico, ki ustreza vašim potrebam in podpira vaše povezane račune.",
+            "selectYourAccounts": "Izberite vaši računi",
+            "afterDecide": "Ko se odločite za denarnico, lahko izberete, katere račune želite prenesti.",
+            "disclaimer": "Ne boste mogli prenesti Računov, ki nikoli niso bili financirani ali uporabljeni na NEAR.",
+            "warning": "trenutno ne podpira izvoza računa. Izberite drugo denarnico",
+            "walletTypes": {
+                "hardware": "Hladna denarnica",
+                "browser": "Denarnica brskalnika",
+                "injected": "Razširitev za denarnico",
+                "bridge": "Bridge denarnica",
+                "mobile": "Mobilna denarnica"
+            },
+            "selectAccounts": {
+                "title": "Izberite računi za prenos.",
+                "button": "Pridobite geslo",
+                "deselectAll": "Prekliči izbiro vseh",
+                "selectAll": "Izberi vse",
+                "unavailable": "Prenos ni na voljo",
+                "error": "Račun ne obstaja",
+                "warningLedger": "Potrebna je podpora za Ledger",
+                "noBalance": "Račun ni financiran"
+            },
+            "getPassphrase": {
+                "title": "Kopiraj začasno geslo",
+                "desc": "To geslo boste morali vnesti, ko boste začeli izvažati svoje račune v drugo denarnico.",
+                "button": "Nadaljujte",
+                "label": "Kliknite za kopiranje",
+                "checkLabel": "Geslo sem kopiral ali zapisal"
+            },
+            "complete": {
+                "title": "Dokončajte prenos",
+                "descOne": "Zdaj boste preusmerjeni v denarnico, ki ste jo izbrali za dokončanje prenosa.",
+                "descTwo": "Ko je uvozni del postopka končan iz izbrane denarnice, pritisnite gumb za dokončanje postopka prenosa.",
+                "button": "Končajte"
+            }
+        }
+    }
+}

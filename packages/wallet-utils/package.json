@@ -2,6 +2,40 @@
   "name": "@near-wallet-selector/wallet-utils",
   "version": "8.9.13",
   "description": "Wallet utils package for NEAR Wallet Selector.",
+  "scripts": {
+    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/wallet-utils/src/index.d.ts",
+  "main": "./dist/cjs/wallet-utils/src/index.js",
+  "module": "./dist/esm/wallet-utils/src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@near-js/crypto": "*",
+    "@near-js/providers": "*",
+    "@near-js/signers": "*",
+    "@near-js/transactions": "*",
+    "@near-js/utils": "*",
+    "@near-wallet-selector/core": "workspace:*",
+    "near-api-js": "*"
+  },
+  "devDependencies": {
+    "@near-js/types": "*",
+    "@types/node": "*",
+    "rimraf": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/wallet-utils/src/index.js",
+      "import": "./dist/esm/wallet-utils/src/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",
@@ -18,8 +52,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/wallet-utils",
-  "peerDependencies": {
-    "near-api-js": "4.0.3"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/wallet-utils"
 }

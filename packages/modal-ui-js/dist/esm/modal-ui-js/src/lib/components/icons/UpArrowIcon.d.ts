@@ -1,0 +1,2 @@
+export declare const UpArrowIcon = "\n<svg width=\"10\" height=\"7\" viewBox=\"0 0 10 7\" fill=\"none\"\n  xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M9 5.4762L5 1.4762L1 5.4762\" stroke=\"#4F7CD1\" stroke-width=\"1.5\" stroke-linecap=\"round\"\n    stroke-linejoin=\"round\"></path>\n</svg>";
+//# sourceMappingURL=UpArrowIcon.d.ts.map

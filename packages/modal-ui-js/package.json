@@ -2,6 +2,36 @@
   "name": "@near-wallet-selector/modal-ui-js",
   "version": "8.9.13",
   "description": "Modal UI package for NEAR wallet Selector",
+  "scripts": {
+    "compile:esm": "tsc -p tsconfig.esm.json",
+    "compile:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "yarn rimraf dist"
+  },
+  "types": "./dist/esm/modal-ui-js/src/index.d.ts",
+  "main": "./dist/cjs/modal-ui-js/src/index.js",
+  "module": "./dist/esm/modal-ui-js/src/index.js",
+  "type": "module",
+  "dependencies": {
+    "copy-to-clipboard": "*",
+    "qrcode": "*",
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "jest": "*",
+    "rimraf": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "./dist/esm",
+    "./dist/cjs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/modal-ui-js/src/index.js",
+      "import": "./dist/esm/modal-ui-js/src/index.js"
+    }
+  },
   "keywords": [
     "near",
     "blockchain",

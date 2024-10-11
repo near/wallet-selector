@@ -1,3 +1,8 @@
+yarn tsc -b packages/my-near-wallet
+
+rm -rf ~/.yarn/berry/cache
+
+
 # NEAR Wallet Selector
 
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:

@@ -8,33 +8,14 @@
     "jest": true
   },
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx", "@typescript-eslint", "prettier", "react-hooks"],
+  "plugins": ["@typescript-eslint", "prettier", "react-hooks"],
   "overrides": [
-    {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
-              }
-            ]
-          }
-        ]
-      }
-    },
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
         "project": ["tsconfig.*?.json"]
       },
       "extends": [
-        "plugin:@nx/typescript",
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "prettier"
@@ -94,7 +75,6 @@
         "default-case": "off",
         "no-caller": "error",
         "no-case-declarations": "off",
-        "no-console": "error",
         "no-debugger": "error",
         "no-eval": "error",
         "no-fallthrough": "error",
@@ -122,7 +102,6 @@
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
       "rules": {}
     }
   ]

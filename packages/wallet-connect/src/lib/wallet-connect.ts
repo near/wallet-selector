@@ -1,6 +1,6 @@
 import type { KeyPair, providers } from "near-api-js";
 import * as nearAPI from "near-api-js";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
+import type { AccessKeyViewRaw } from "@near-js/types";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -19,7 +19,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
-import icon from "./icon";
+import icon from "./icon.js";
 
 export interface WalletConnectParams {
   projectId: string;

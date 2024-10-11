@@ -1,1 +1,0 @@
-export { setupNearSnap } from "./lib";

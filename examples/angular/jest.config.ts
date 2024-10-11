@@ -9,7 +9,7 @@ module.exports = {
     "^.+\\.(ts|mjs|js|html)$": [
       "jest-preset-angular",
       {
-        tsconfig: "<rootDir>/tsconfig.spec.json",
+        tsconfig: "<rootDir>/delme-tsconfig.spec.json",
         stringifyContentPathRegex: "\\.(html|svg)$",
       },
     ],

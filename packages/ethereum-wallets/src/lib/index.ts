@@ -1,13 +1,8 @@
 import * as nearAPI from "near-api-js";
-import type {
-  AccessKeyViewRaw,
-  ExecutionStatus,
-  FinalExecutionOutcome,
-  FunctionCallPermissionView,
-} from "near-api-js/lib/providers/provider";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
-import { parseRpcError } from "near-api-js/lib/utils/rpc_errors";
+import type { AccessKeyViewRaw, ExecutionStatus, FinalExecutionOutcome, FunctionCallPermissionView, } from "@near-js/types";
+import { JsonRpcProvider } from "@near-js/providers";
+import { stringifyJsonOrBytes } from "@near-js/transactions";
+import { parseRpcError } from "@near-js/utils";
 import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
@@ -171,8 +166,27 @@ const EthereumWallets: WalletBehaviourFactory<
         ? tx.receiverId
         : "0x" + keccak256(toHex(tx.receiverId)).slice(26)
     ) as `0x${string}`;
+    // Created this defaults variable during the process
+    // of getting wallet selector packages and near-js packages
+    // working smoothly on LTS node version.
+    // Feel free to update/remove/whatever
+    let ethTxDefaults: WriteContractParameters = {
+      abi: [],
+      functionName: "",
+      address: `0x`,
+      chain: undefined,
+      account: `0x`
+    };
     let ethTx: WriteContractParameters;
     switch (tx.actions[0].type) {
+      case "CreateAccount":
+        break;
+      case "DeployContract":
+        break;
+      case "Stake":
+        break;
+      case "DeleteAccount":
+        break;
       case "AddKey": {
         const publicKey = bytesToHex(
           bs58.decode(tx.actions[0].params.publicKey.split(":")[1])
@@ -191,6 +205,8 @@ const EthereumWallets: WalletBehaviourFactory<
           ethTx = {
             abi: ETHEREUM_ACCOUNT_ABI,
             address: to,
+            account: ethTxDefaults.account,
+            chain: ethTxDefaults.chain,
             functionName: "addKey",
             args,
             chainId: expectedChainId,
@@ -215,6 +231,8 @@ const EthereumWallets: WalletBehaviourFactory<
           ethTx = {
             abi: ETHEREUM_ACCOUNT_ABI,
             address: to,
+            account: ethTxDefaults.account,
+            chain: ethTxDefaults.chain,
             functionName: "addKey",
             args,
             gasPrice:
@@ -228,6 +246,7 @@ const EthereumWallets: WalletBehaviourFactory<
                 : undefined,
             chainId: expectedChainId,
             type: "legacy",
+            // uhhh
           };
         }
         break;
@@ -243,6 +262,8 @@ const EthereumWallets: WalletBehaviourFactory<
         ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
+          account: ethTxDefaults.account,
+          chain: ethTxDefaults.chain,
           functionName: "deleteKey",
           args,
           chainId: expectedChainId,
@@ -265,6 +286,8 @@ const EthereumWallets: WalletBehaviourFactory<
         ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
+          account: ethTxDefaults.account,
+          chain: ethTxDefaults.chain,
           functionName: "functionCall",
           args,
           value,
@@ -280,6 +303,8 @@ const EthereumWallets: WalletBehaviourFactory<
         ethTx = {
           abi: ETHEREUM_ACCOUNT_ABI,
           address: to,
+          account: ethTxDefaults.account,
+          chain: ethTxDefaults.chain,
           functionName: "transfer",
           args,
           value,
@@ -674,7 +699,7 @@ const EthereumWallets: WalletBehaviourFactory<
                 try {
                   await new Promise((r) => setTimeout(r, 1000));
                   nearTx = await nearProvider.txStatus(
-                    // @ts-expect-error
+                    /* // @ts-expect-error */
                     receipt.nearTransactionHash,
                     accountLogIn.accountId
                   );

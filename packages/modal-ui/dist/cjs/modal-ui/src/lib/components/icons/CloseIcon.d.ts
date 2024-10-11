@@ -1,0 +1,3 @@
+import React from "react";
+export declare const CloseIcon: React.FC;
+//# sourceMappingURL=CloseIcon.d.ts.map

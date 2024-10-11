@@ -27,6 +27,8 @@ export const createAction = (action: Action) => {
     case "FunctionCall": {
       const { methodName, args, gas, deposit } = action.params;
 
+      console.log('alohaws action', action)
+
       return transactions.functionCall(
         methodName,
         args,

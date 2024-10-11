@@ -4,7 +4,7 @@ export type {
   WalletSelectorEvents,
   WalletSelectorStore,
 } from "./lib/wallet-selector.types";
-export { setupWalletSelector } from "./lib/wallet-selector";
+export { setupWalletSelector } from "./lib/wallet-selector.js";
 
 export type { Network, NetworkId } from "./lib/options.types";
 export type {
@@ -72,7 +72,7 @@ export type {
   SignMessageParams,
 } from "./lib/wallet";
 
-export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+export type { FinalExecutionOutcome } from "@near-js/types";
 
 export {
   waitFor,
@@ -84,3 +84,5 @@ export {
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";
+
+export { mockWallet } from './lib/testUtils'
