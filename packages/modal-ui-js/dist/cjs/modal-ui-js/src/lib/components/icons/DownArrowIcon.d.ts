@@ -1,2 +1,0 @@
-export declare const DownArrowIcon = "\n<svg width=\"10\" height=\"7\" viewBox=\"0 0 10 7\" fill=\"none\"\n  xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M1 1.52382L5 5.52382L9 1.52382\" stroke=\"#4F7CD1\" stroke-width=\"1.5\" stroke-linecap=\"round\"\n    stroke-linejoin=\"round\"></path>\n</svg>";
-//# sourceMappingURL=DownArrowIcon.d.ts.map
