@@ -44,8 +44,16 @@
   },
   "private": true,
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "packages/core",
+    "packages/ethereum-wallets",
+    "packages/here-wallet",
+    "packages/meteor-wallet",
+    "packages/mintbase-wallet",
+    "packages/modal-ui",
+    "packages/modal-ui-js",
+    "packages/my-near-wallet",
+    "packages/wallet-connect",
+    "packages/wallet-utils"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
