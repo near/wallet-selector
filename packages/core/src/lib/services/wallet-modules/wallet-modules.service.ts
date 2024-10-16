@@ -302,6 +302,7 @@ export class WalletModules {
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
     const _signTransaction = wallet.signTransaction;
+    const _signDelegateAction = wallet.signDelegateAction;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -345,6 +346,24 @@ export class WalletModules {
       } catch (error) {
         throw new Error(
           `Failed to sign transaction: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    };
+
+    wallet.signDelegateAction = async (params: never) => {
+      if (_signDelegateAction === undefined) {
+        throw new Error(
+          `The signDelegateAction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      try {
+        return await _signDelegateAction(params);
+      } catch (error) {
+        throw new Error(
+          `Failed to sign delegate action: ${
             error instanceof Error ? error.message : String(error)
           }`
         );

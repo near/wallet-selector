@@ -13,8 +13,10 @@ import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import type {
   SignedTransaction,
   Transaction as Tx,
+  Signature,
 } from "near-api-js/lib/transaction";
 import type { Signer } from "near-api-js/lib/signer";
+import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
   /**
@@ -176,6 +178,62 @@ interface SignTransactionActionsParams {
   networkId?: string;
 }
 
+interface MessageSigner {
+  sign(message: Uint8Array): Promise<Uint8Array>;
+}
+
+interface DelegateAction {
+  /**
+   * Account ID for the intended signer of the delegate action
+   */
+  senderId: string;
+  /**
+   * The set of actions to be included in the meta transaction
+   */
+  actions: Array<Action>;
+  /**
+   * Number of blocks past the current block height for which the SignedDelegate action may be included in a meta transaction
+   */
+  blockHeightTtl: number;
+  /**
+   * Account ID for the intended receiver of the meta transaction
+   */
+  receiverId: string;
+  /**
+   * Current nonce on the access key used to sign the delegate action
+   */
+  nonce: bigint;
+  /**
+   * The maximum block height for which this action can be executed as part of a transaction
+   */
+  maxBlockHeight: bigint;
+  /**
+   * Public key for the access key used to sign the delegate action
+   */
+  publicKey: PublicKey;
+}
+
+interface SignDelegateOptions {
+  /**
+   * Delegate action to be signed by the meta transaction sender
+   */
+  delegateAction: DelegateAction;
+  /**
+   * Signer instance for the meta transaction sender
+   */
+  signer: MessageSigner;
+}
+
+interface SignedDelegate {
+  delegateAction: DelegateAction;
+  signature: Signature;
+}
+
+interface SignedDelegateWithHash {
+  hash: Uint8Array;
+  signedDelegateAction: SignedDelegate;
+}
+
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -217,6 +275,12 @@ interface BaseWalletBehaviour {
   signTransaction?(
     params: SignTransactionParams | SignTransactionActionsParams
   ): Promise<[Uint8Array, SignedTransaction]>;
+  /**
+   * Composes and signs a SignedDelegate action to be executed in a transaction
+   */
+  signDelegateAction?(
+    params: SignDelegateOptions
+  ): Promise<SignedDelegateWithHash>;
 }
 
 type BaseWallet<
