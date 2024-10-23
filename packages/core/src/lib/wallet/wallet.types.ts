@@ -10,6 +10,13 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type {
+  SignedTransaction,
+  Transaction as Tx,
+  Signature,
+} from "near-api-js/lib/transaction";
+import type { Signer } from "near-api-js/lib/signer";
+import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
   /**
@@ -121,6 +128,112 @@ interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
+interface SignTransactionParams {
+  /**
+   * The Transaction object to sign
+   */
+  transaction: Tx;
+  /**
+   * The {Signer} object that assists with signing keys
+   */
+  signer: Signer;
+  /**
+   * The human-readable NEAR account name
+   */
+  accountId?: string;
+  /**
+   * The targeted network. (ex. default, betanet, etc…)
+   */
+  networkId?: string;
+}
+
+interface SignTransactionActionsParams {
+  /**
+   * The NEAR account ID of the transaction receiver.
+   */
+  receiverId: string;
+  /**
+   * Tx nonce.
+   */
+  nonce: bigint;
+  /**
+   * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
+   */
+  actions: Array<Action>;
+  /**
+   *  Block hash
+   */
+  blockHash: Uint8Array;
+  /**
+   * The {Signer} object that assists with signing keys
+   */
+  signer: Signer;
+  /**
+   * The human-readable NEAR account name
+   */
+  accountId?: string;
+  /**
+   * The targeted network. (ex. default, betanet, etc…)
+   */
+  networkId?: string;
+}
+
+interface MessageSigner {
+  sign(message: Uint8Array): Promise<Uint8Array>;
+}
+
+interface DelegateAction {
+  /**
+   * Account ID for the intended signer of the delegate action
+   */
+  senderId: string;
+  /**
+   * The set of actions to be included in the meta transaction
+   */
+  actions: Array<Action>;
+  /**
+   * Number of blocks past the current block height for which the SignedDelegate action may be included in a meta transaction
+   */
+  blockHeightTtl: number;
+  /**
+   * Account ID for the intended receiver of the meta transaction
+   */
+  receiverId: string;
+  /**
+   * Current nonce on the access key used to sign the delegate action
+   */
+  nonce: bigint;
+  /**
+   * The maximum block height for which this action can be executed as part of a transaction
+   */
+  maxBlockHeight: bigint;
+  /**
+   * Public key for the access key used to sign the delegate action
+   */
+  publicKey: PublicKey;
+}
+
+interface SignDelegateOptions {
+  /**
+   * Delegate action to be signed by the meta transaction sender
+   */
+  delegateAction: DelegateAction;
+  /**
+   * Signer instance for the meta transaction sender
+   */
+  signer: MessageSigner;
+}
+
+interface SignedDelegate {
+  delegateAction: DelegateAction;
+  signature: Signature;
+}
+
+interface SignedDelegateWithHash {
+  hash: Uint8Array;
+  signedDelegateAction: SignedDelegate;
+}
+
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -155,6 +268,19 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Signs one or more NEAR Actions which can be broadcasted to the network.
+   * The user must be signed in to call this method.
+   */
+  signTransaction?(
+    params: SignTransactionParams | SignTransactionActionsParams
+  ): Promise<[Uint8Array, SignedTransaction]>;
+  /**
+   * Composes and signs a SignedDelegate action to be executed in a transaction
+   */
+  signDelegateAction?(
+    params: SignDelegateOptions
+  ): Promise<SignedDelegateWithHash>;
 }
 
 type BaseWallet<
