@@ -65,6 +65,7 @@ export interface EthereumWalletsParams {
   devModeAccount?: string;
   deprecated?: boolean;
   nearNodeUrl?: string;
+  skipSignInAccessKey?: boolean;
 }
 
 interface EthereumWalletsState {
@@ -105,6 +106,7 @@ const EthereumWallets: WalletBehaviourFactory<
     devMode,
     devModeAccount = "eth-wallet.testnet",
     nearNodeUrl,
+    skipSignInAccessKey,
   },
 }) => {
   if (!wagmiCore) {
@@ -848,7 +850,7 @@ const EthereumWallets: WalletBehaviourFactory<
         // Login with FunctionCall access key, reuse keypair or create a new one.
         const accountId = devMode ? address + "." + devModeAccount : address;
         let publicKey;
-        if (contractId) {
+        if (contractId && !skipSignInAccessKey) {
           const keyPair = await _state.keystore.getKey(
             options.network.networkId,
             accountId
@@ -995,7 +997,7 @@ export function setupEthereumWallets(
         iconUrl: params.iconUrl ?? icon,
         deprecated: params.deprecated ?? false,
         available: true,
-        downloadUrl: "",
+        downloadUrl: "https://explorer.walletconnect.com",
       },
       init: (config) => {
         return EthereumWallets({
