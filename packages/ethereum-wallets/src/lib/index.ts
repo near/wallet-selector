@@ -317,7 +317,7 @@ const EthereumWallets: WalletBehaviourFactory<
               options.network.networkId,
               devMode ? address + "." + devModeAccount : address
             );
-            if (!keyPair) {
+            if (!keyPair && !skipSignInAccessKey) {
               try {
                 wagmiCore!.disconnect(wagmiConfig);
               } catch (error) {
