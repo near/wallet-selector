@@ -98,11 +98,15 @@ export function createTxModal({
     selectedIndex,
     ethTxHashes,
     error,
+    showDetails,
+    onShowDetails,
     onConfirm,
   }: {
     selectedIndex: number;
     ethTxHashes: Array<string>;
     error?: string | null;
+    onShowDetails?: (state: boolean) => void;
+    showDetails?: boolean;
     onConfirm?: () => void;
   }) => {
     const container = document.querySelector(
@@ -339,6 +343,16 @@ export function createTxModal({
       ".ethereum-wallet-txs-details"
     ) as HTMLElement | null;
 
+    if (detailsContainer && toggleButton) {
+      if (showDetails) {
+        detailsContainer.style.display = "block";
+        toggleButton.textContent = "Hide details";
+      } else {
+        detailsContainer.style.display = "none";
+        toggleButton.textContent = "Show details";
+      }
+    }
+
     toggleButton?.addEventListener("click", () => {
       if (!detailsContainer || !toggleButton) {
         return;
@@ -350,9 +364,15 @@ export function createTxModal({
       ) {
         detailsContainer.style.display = "block";
         toggleButton.textContent = "Hide details";
+        if (onShowDetails) {
+          onShowDetails(true);
+        }
       } else {
         detailsContainer.style.display = "none";
         toggleButton.textContent = "Show details";
+        if (onShowDetails) {
+          onShowDetails(false);
+        }
       }
     });
   };

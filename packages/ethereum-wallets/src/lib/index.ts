@@ -591,6 +591,7 @@ const EthereumWallets: WalletBehaviourFactory<
             for (const [index, tx] of txs.entries()) {
               let txHash;
               let txError: string | null = null;
+              let showDetails = false;
               while (!txHash) {
                 try {
                   await (() => {
@@ -599,6 +600,10 @@ const EthereumWallets: WalletBehaviourFactory<
                         selectedIndex: index,
                         ethTxHashes,
                         error: txError,
+                        showDetails,
+                        onShowDetails: (state: boolean) => {
+                          showDetails = state;
+                        },
                         onConfirm: async () => {
                           try {
                             txError = null;
@@ -606,6 +611,7 @@ const EthereumWallets: WalletBehaviourFactory<
                               selectedIndex: index,
                               ethTxHashes,
                               error: txError,
+                              showDetails,
                             });
                             txHash = await executeTransaction({
                               tx,
