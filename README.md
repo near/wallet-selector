@@ -2,28 +2,28 @@
 
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
-- [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
-- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
-- [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Browser wallet.
-- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
-- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
-- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
-- [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
-- [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
-- [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
-- [OKX Wallet](https://www.npmjs.com/package/@near-wallet-selector/okx-wallet) - Injected wallet.
-- [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
-- [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
-- [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
-- [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
-- [XDEFI Wallet](https://www.npmjs.com/package/@near-wallet-selector/xdefi) - Injected wallet.
-- [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Injected wallet.
 - [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Injected wallet.
-- [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
-- [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
-- [Near Mobile Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-mobile-wallet) - Mobile Wallet.
-- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
+- [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Browser wallet.
+- [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Ethereum wallets](https://www.npmjs.com/package/@near-wallet-selector/ethereum-wallets) - Injected wallet.
+- [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
+- [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
+- [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
+- [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
+- [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
+- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
+- [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
+- [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
+- [Near Mobile Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-mobile-wallet) - Mobile Wallet.
+- [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
+- [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
+- [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
+- [OKX Wallet](https://www.npmjs.com/package/@near-wallet-selector/okx-wallet) - Injected wallet.
+- [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Injected wallet.
+- [Sender](https://www.npmjs.com/package/@near-wallet-selector/sender) - Injected wallet.
+- [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
+- [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
+- [XDEFI Wallet](https://www.npmjs.com/package/@near-wallet-selector/xdefi) - Injected wallet.
 
 ## Preview
 
