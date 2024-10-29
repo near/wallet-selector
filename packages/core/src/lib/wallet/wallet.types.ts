@@ -12,10 +12,8 @@ import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import type {
   SignedTransaction,
-  Transaction as Tx,
   Signature,
 } from "near-api-js/lib/transaction";
-import type { Signer } from "near-api-js/lib/signer";
 import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
@@ -130,45 +128,14 @@ interface SignAndSendTransactionsParams {
 
 interface SignTransactionParams {
   /**
-   * The Transaction object to sign
-   */
-  transaction: Tx;
-  /**
-   * The {Signer} object that assists with signing keys
-   */
-  signer: Signer;
-  /**
-   * The human-readable NEAR account name
-   */
-  accountId?: string;
-  /**
-   * The targeted network. (ex. default, betanet, etc…)
-   */
-  networkId?: string;
-}
-
-interface SignTransactionActionsParams {
-  /**
    * The NEAR account ID of the transaction receiver.
    */
   receiverId: string;
-  /**
-   * Tx nonce.
-   */
-  nonce: bigint;
   /**
    * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
    */
   actions: Array<Action>;
   /**
-   *  Block hash
-   */
-  blockHash: Uint8Array;
-  /**
-   * The {Signer} object that assists with signing keys
-   */
-  signer: Signer;
-  /**
    * The human-readable NEAR account name
    */
   accountId?: string;
@@ -176,10 +143,7 @@ interface SignTransactionActionsParams {
    * The targeted network. (ex. default, betanet, etc…)
    */
   networkId?: string;
-}
-
-interface MessageSigner {
-  sign(message: Uint8Array): Promise<Uint8Array>;
+  callbackUrl?: string;
 }
 
 interface DelegateAction {
@@ -211,17 +175,6 @@ interface DelegateAction {
    * Public key for the access key used to sign the delegate action
    */
   publicKey: PublicKey;
-}
-
-interface SignDelegateOptions {
-  /**
-   * Delegate action to be signed by the meta transaction sender
-   */
-  delegateAction: DelegateAction;
-  /**
-   * Signer instance for the meta transaction sender
-   */
-  signer: MessageSigner;
 }
 
 interface SignedDelegate {
@@ -273,14 +226,17 @@ interface BaseWalletBehaviour {
    * The user must be signed in to call this method.
    */
   signTransaction?(
-    params: SignTransactionParams | SignTransactionActionsParams
-  ): Promise<[Uint8Array, SignedTransaction]>;
+    params: SignTransactionParams
+  ): Promise<[Uint8Array, SignedTransaction] | void>;
   /**
    * Composes and signs a SignedDelegate action to be executed in a transaction
    */
   signDelegateAction?(
-    params: SignDelegateOptions
-  ): Promise<SignedDelegateWithHash>;
+    senderId: string,
+    receiverId: string,
+    actions: Array<Action>,
+    callbackUrl?: string
+  ): Promise<SignedDelegateWithHash | void>;
 }
 
 type BaseWallet<
