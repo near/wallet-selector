@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/core",
   "peerDependencies": {
-    "near-api-js": "4.0.3",
-    "@near-js/providers": "latest"
+    "near-api-js": "4.0.3"
   }
 }
