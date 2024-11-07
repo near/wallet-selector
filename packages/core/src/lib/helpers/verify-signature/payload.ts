@@ -1,4 +1,5 @@
 import type { SignMessageParams } from "../../wallet";
+import type { Schema } from "borsh";
 import { serialize } from "borsh";
 
 export class Payload {
@@ -21,27 +22,15 @@ export class Payload {
   }
 }
 
-export const payloadSchema = new Map([
-  [
-    Payload,
-    {
-      kind: "struct",
-      fields: [
-        ["tag", "u32"],
-        ["message", "string"],
-        ["nonce", [32]],
-        ["recipient", "string"],
-        [
-          "callbackUrl",
-          {
-            kind: "option",
-            type: "string",
-          },
-        ],
-      ],
-    },
-  ],
-]);
+export const payloadSchema: Schema = {
+  struct: {
+    tag: "u32",
+    message: "string",
+    nonce: { array: { type: "u8", len: 32 } },
+    recipient: "string",
+    callbackUrl: { option: "string" },
+  },
+};
 
 export const serializeNep413 = (
   signMessageParams: SignMessageParams
