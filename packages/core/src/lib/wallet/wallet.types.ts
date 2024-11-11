@@ -10,10 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type {
-  SignedTransaction,
-  Signature,
-} from "near-api-js/lib/transaction";
+import type { SignedTransaction, Signature } from "near-api-js/lib/transaction";
 import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
@@ -146,6 +143,13 @@ interface SignTransactionParams {
   callbackUrl?: string;
 }
 
+interface SignDelegateActionParams {
+  senderId: string;
+  receiverId: string;
+  actions: Array<Action>;
+  callbackUrl?: string;
+}
+
 interface DelegateAction {
   /**
    * Account ID for the intended signer of the delegate action
@@ -232,10 +236,7 @@ interface BaseWalletBehaviour {
    * Composes and signs a SignedDelegate action to be executed in a transaction
    */
   signDelegateAction?(
-    senderId: string,
-    receiverId: string,
-    actions: Array<Action>,
-    callbackUrl?: string
+    params: SignDelegateActionParams
   ): Promise<SignedDelegateWithHash | void>;
 }
 
