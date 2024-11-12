@@ -1,7 +1,9 @@
 import { setupWalletSelector } from "./wallet-selector";
-import { FailoverRpcProvider } from "@near-js/providers";
 import { getNetworkPreset } from "./options";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
+import {
+  FailoverRpcProvider,
+  JsonRpcProvider,
+} from "near-api-js/lib/providers";
 import type { Network } from "./options.types";
 import type { Store } from "./store.types";
 import type { WalletModuleFactory } from "./wallet";
@@ -52,8 +54,8 @@ jest.mock("./store", () => {
   };
 });
 
-jest.mock("@near-js/providers", () => {
-  const originalModule = jest.requireActual("@near-js/providers");
+jest.mock("near-api-js/lib/providers", () => {
+  const originalModule = jest.requireActual("near-api-js/lib/providers");
   return {
     ...originalModule,
     FailoverRpcProvider: jest.fn(),
