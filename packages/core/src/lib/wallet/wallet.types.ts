@@ -221,7 +221,7 @@ interface BaseWalletBehaviour {
    * Signs one or more NEAR Actions before sending to the network.
    * The user must be signed in to call this method as there's at least charges for gas spent.
    */
-  signAndSendTransactionAsync(
+  signAndSendTransactionAsync?(
     params: SignAndSendTransactionParams
   ): Promise<Uint8Array>;
   /**
@@ -332,7 +332,7 @@ export type BrowserWalletBehaviour = Modify<
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;
-    signAndSendTransactionAsync(
+    signAndSendTransactionAsync?(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<Uint8Array | void>;
     signAndSendTransactions(
