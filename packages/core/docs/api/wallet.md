@@ -275,7 +275,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 
 **Returns**
 
-- `Uint8Array | void`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/api/rpc/transactions#send-transaction-await).
+- `Promise<Uint8Array | void>`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/api/rpc/transactions#send-transaction-await).
 
 **Description**
 
@@ -288,7 +288,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 ```ts
 (async () => {
   const wallet = await selector.wallet("sender");
-  const txHash = wallet.signAndSendTransactionAsync({
+  const txHash = await wallet.signAndSendTransactionAsync({
     actions: [{
       type: "FunctionCall",
       params: {

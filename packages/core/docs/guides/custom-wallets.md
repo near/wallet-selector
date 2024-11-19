@@ -62,7 +62,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       // Sign a list of NEAR Actions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
       
-      return provider.sendTransaction(signedTx);
+      return provider.sendTransactionAsync(signedTx);
     },
 
     async signAndSendTransactions({ transactions }) {
