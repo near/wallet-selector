@@ -263,6 +263,45 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 })();
 ```
 
+### `.signAndSendTransactionAsync(params)`
+
+**Parameters**
+
+- `params` (`object`)
+  - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
+  - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
+  - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
+
+**Returns**
+
+- `Uint8Array | void`: Browser wallets won't return the transaction outcome as they may need to redirect for signing. More details on this can be found [here](https://docs.near.org/api/rpc/transactions#send-transaction-await).
+
+**Description**
+
+Signs one or more NEAR Actions before sending to the network. The user must be signed in to call this method as there's at least charges for gas spent.
+
+> Note: Sender only supports `"FunctionCall"` action types right now. If you wish to use other NEAR Actions in your dApp, it's recommended to remove this wallet in your configuration.
+
+**Example**
+
+```ts
+(async () => {
+  const wallet = await selector.wallet("sender");
+  const txHash = wallet.signAndSendTransactionAsync({
+    actions: [{
+      type: "FunctionCall",
+      params: {
+        methodName: "addMessage",
+        args: { text: "Hello World!" },
+        gas: "30000000000000",
+        deposit: "10000000000000000000000",
+      }
+    }]
+  });
+})();
+```
+
 ### `.signAndSendTransactions(params)`
 
 **Parameters**

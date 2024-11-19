@@ -58,6 +58,13 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       return provider.sendTransaction(signedTx);
     },
 
+    async signAndSendTransactionAsync({ signerId, receiverId, actions }) {
+      // Sign a list of NEAR Actions before sending via an RPC endpoint.
+      // An RPC provider is injected to make this process easier and configured based on options.network.
+      
+      return provider.sendTransaction(signedTx);
+    },
+
     async signAndSendTransactions({ transactions }) {
       // Sign a list of Transactions before sending via an RPC endpoint.
       // An RPC provider is injected to make this process easier and configured based on options.network.
@@ -144,6 +151,12 @@ Where you might have to construct NEAR Transactions and send them yourself, you 
 
 > Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
 
+### `signAndSendTransactionAsync`
+
+This method is similar to `signAndSendTransaction` but instead returns the transaction hash as a `Uint8Array` instead of a `FinalExecutionOutcome`, allowing the users to monitor the transaction success or failure.
+
+> Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Uint8Array`.
+
 ### `signAndSendTransactions`
 
 This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
@@ -154,3 +167,11 @@ This method is similar to `signAndSendTransaction` but instead sends a batch of 
 
 This method allows users to sign a message for a specific recipient using their NEAR account.
 Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
+
+### `signTransaction`
+
+This method is similar to `signMessage` but instead signs and returns a `SignedTransaction` which can be broadcasted to the network.
+
+This method composes and signs a SignedDelegate action to be executed in a transaction. Returns the `SignedDelegateWithHash` object.
+
+> Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<SignedDelegateWithHash>`.

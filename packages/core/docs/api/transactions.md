@@ -14,7 +14,7 @@ interface Transaction {
 
 ### Actions
 
-Below are the 8 supported NEAR Actions used by `signAndSendTransaction` and `signAndSendTransactions`:
+Below are the 8 supported NEAR Actions used by `signAndSendTransaction`, `signAndSendTransactions` and `signAndSendTransactionAsync`:
 
 ```ts
 interface CreateAccountAction {
