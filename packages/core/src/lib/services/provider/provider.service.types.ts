@@ -23,4 +23,7 @@ export interface ProviderService {
   sendTransaction(
     signedTransaction: SignedTransaction
   ): Promise<FinalExecutionOutcome>;
+  sendTransactionAsync(
+    signedTransaction: SignedTransaction
+  ): Promise<FinalExecutionOutcome>;
 }
