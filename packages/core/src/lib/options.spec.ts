@@ -11,7 +11,7 @@ describe("getNetworkPreset", () => {
       nodeUrl: "https://rpc.mainnet.near.org",
       helperUrl: "https://helper.mainnet.near.org",
       explorerUrl: "https://nearblocks.io",
-      indexerUrl: "https://api.kitwallet.app",
+      indexerUrl: "https://api.fastnear.com/v0",
     });
   });
 
@@ -29,7 +29,7 @@ describe("getNetworkPreset", () => {
       nodeUrl: "https://rpc1.mainnet.near.org",
       helperUrl: "https://helper.mainnet.near.org",
       explorerUrl: "https://nearblocks.io",
-      indexerUrl: "https://api.kitwallet.app",
+      indexerUrl: "https://api.fastnear.com/v0",
     });
   });
 
@@ -42,7 +42,7 @@ describe("getNetworkPreset", () => {
       nodeUrl: "https://rpc.testnet.near.org",
       helperUrl: "https://helper.testnet.near.org",
       explorerUrl: "https://testnet.nearblocks.io",
-      indexerUrl: "https://testnet-api.kitwallet.app",
+      indexerUrl: "https://test.api.fastnear.com/v0",
     });
   });
 
@@ -60,7 +60,7 @@ describe("getNetworkPreset", () => {
       nodeUrl: "https://rpc1.testnet.near.org",
       helperUrl: "https://helper.testnet.near.org",
       explorerUrl: "https://testnet.nearblocks.io",
-      indexerUrl: "https://testnet-api.kitwallet.app",
+      indexerUrl: "https://test.api.fastnear.com/v0",
     });
   });
 });
