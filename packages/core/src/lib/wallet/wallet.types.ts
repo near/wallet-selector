@@ -223,7 +223,7 @@ interface BaseWalletBehaviour {
    */
   signAndSendTransactionAsync?(
     params: SignAndSendTransactionParams
-  ): Promise<Uint8Array>;
+  ): Promise<string>;
   /**
    * Signs one or more transactions before sending to the network.
    * The user must be signed in to call this method as there's at least charges for gas spent.
@@ -334,7 +334,7 @@ export type BrowserWalletBehaviour = Modify<
     ): Promise<FinalExecutionOutcome | void>;
     signAndSendTransactionAsync?(
       params: BrowserWalletSignAndSendTransactionParams
-    ): Promise<Uint8Array | void>;
+    ): Promise<string | void>;
     signAndSendTransactions(
       params: BrowserWalletSignAndSendTransactionsParams
     ): Promise<void>;
