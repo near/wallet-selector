@@ -13,7 +13,7 @@ export const getNetworkPreset = (
         nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://nearblocks.io",
-        indexerUrl: "https://api.kitwallet.app",
+        indexerUrl: "https://api.fastnear.com/v0",
       };
     case "testnet":
       return {
@@ -21,7 +21,7 @@ export const getNetworkPreset = (
         nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://testnet.nearblocks.io",
-        indexerUrl: "https://testnet-api.kitwallet.app",
+        indexerUrl: "https://test.api.fastnear.com/v0",
       };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);
