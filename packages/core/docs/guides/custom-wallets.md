@@ -175,3 +175,10 @@ This method is similar to `signMessage` but instead signs and returns a `SignedT
 This method composes and signs a SignedDelegate action to be executed in a transaction. Returns the `SignedDelegateWithHash` object.
 
 > Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<SignedDelegateWithHash>`.
+
+
+### `sendTransaction`
+
+This method sends a previously signed transaction to the network. It takes a transaction hash and a signed transaction object, and optionally a callback URL. Returns a `FinalExecutionOutcome` when successful.
+
+> Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.

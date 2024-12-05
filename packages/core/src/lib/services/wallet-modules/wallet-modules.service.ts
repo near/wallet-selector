@@ -302,6 +302,7 @@ export class WalletModules {
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
     const _signTransaction = wallet.signTransaction;
+    const _sendTransaction = wallet.sendTransaction;
     const _signDelegateAction = wallet.signDelegateAction;
 
     wallet.signIn = async (params: never) => {
@@ -350,6 +351,16 @@ export class WalletModules {
           }`
         );
       }
+    };
+
+    wallet.sendTransaction = async (signedTransaction: never) => {
+      if (_sendTransaction === undefined) {
+        throw new Error(
+          `The sendTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _sendTransaction(signedTransaction);
     };
 
     wallet.signDelegateAction = async (params: never) => {
