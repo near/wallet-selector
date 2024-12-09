@@ -10,6 +10,8 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { SignedTransaction, Signature } from "near-api-js/lib/transaction";
+import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
   /**
@@ -121,6 +123,65 @@ interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
+interface SignTransactionParams {
+  /**
+   * The NEAR account ID of the transaction receiver.
+   */
+  receiverId: string;
+  /**
+   * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
+   */
+  actions: Array<Action>;
+  /**
+   * The human-readable NEAR account name
+   */
+  accountId?: string;
+  /**
+   * The targeted network. (ex. default, betanet, etc…)
+   */
+  networkId?: string;
+  callbackUrl?: string;
+}
+
+export interface SignDelegateActionParams {
+  blockHeightTtl: number;
+  receiverId: string;
+  actions: Array<Action>;
+  callbackUrl?: string;
+}
+
+interface DelegateAction {
+  /**
+   * Account ID for the intended signer of the delegate action
+   */
+  senderId: string;
+  /**
+   * The set of actions to be included in the meta transaction
+   */
+  actions: Array<Action>;
+  /**
+   * Account ID for the intended receiver of the meta transaction
+   */
+  receiverId: string;
+  /**
+   * Current nonce on the access key used to sign the delegate action
+   */
+  nonce: bigint;
+  /**
+   * The maximum block height for which this action can be executed as part of a transaction
+   */
+  maxBlockHeight: bigint;
+  /**
+   * Public key for the access key used to sign the delegate action
+   */
+  publicKey: PublicKey;
+}
+
+export interface SignedDelegate {
+  delegateAction: DelegateAction;
+  signature: Signature;
+}
+
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -148,6 +209,13 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionParams
   ): Promise<providers.FinalExecutionOutcome>;
   /**
+   * Signs one or more NEAR Actions before sending to the network.
+   * The user must be signed in to call this method as there's at least charges for gas spent.
+   */
+  signAndSendTransactionAsync?(
+    params: SignAndSendTransactionParams
+  ): Promise<string>;
+  /**
    * Signs one or more transactions before sending to the network.
    * The user must be signed in to call this method as there's at least charges for gas spent.
    */
@@ -155,6 +223,27 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Signs one or more NEAR Actions which can be broadcasted to the network.
+   * The user must be signed in to call this method.
+   */
+  signTransaction?(
+    params: SignTransactionParams
+  ): Promise<[Uint8Array, SignedTransaction] | void>;
+  /**
+   * Sends a signed transaction to the network.
+   */
+  sendTransaction?(params: {
+    hash: Uint8Array;
+    signedTransaction: SignedTransaction;
+    callbackUrl?: string;
+  }): Promise<providers.FinalExecutionOutcome>;
+  /**
+   * Composes and signs a Signed Delegate Action to be executed in a transaction
+   */
+  signDelegateAction?(
+    params: SignDelegateActionParams
+  ): Promise<SignedDelegate | void>;
 }
 
 type BaseWallet<
@@ -242,9 +331,23 @@ export type BrowserWalletBehaviour = Modify<
     signAndSendTransaction(
       params: BrowserWalletSignAndSendTransactionParams
     ): Promise<FinalExecutionOutcome | void>;
+    signAndSendTransactionAsync?(
+      params: BrowserWalletSignAndSendTransactionParams
+    ): Promise<string | void>;
     signAndSendTransactions(
       params: BrowserWalletSignAndSendTransactionsParams
     ): Promise<void>;
+    signTransaction?(
+      params: SignTransactionParams
+    ): Promise<[Uint8Array, SignedTransaction] | void>;
+    sendTransaction?(params: {
+      hash: Uint8Array;
+      signedTransaction: SignedTransaction;
+      callbackUrl?: string;
+    }): Promise<FinalExecutionOutcome | void>;
+    signDelegateAction?(
+      params: SignDelegateActionParams
+    ): Promise<SignedDelegate | void>;
   }
 >;
 

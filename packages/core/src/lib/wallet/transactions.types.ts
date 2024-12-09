@@ -67,6 +67,16 @@ export interface DeleteAccountAction {
   };
 }
 
+export interface SignDelegateAction {
+  type: "SignDelegateAction";
+  params: {
+    blockHeightTtl: number;
+    receiverId: string;
+    actions: Array<Action>;
+    callbackUrl?: string;
+  };
+}
+
 export type Action =
   | CreateAccountAction
   | DeployContractAction
@@ -75,7 +85,8 @@ export type Action =
   | StakeAction
   | AddKeyAction
   | DeleteKeyAction
-  | DeleteAccountAction;
+  | DeleteAccountAction
+  | SignDelegateAction;
 
 export type ActionType = Action["type"];
 

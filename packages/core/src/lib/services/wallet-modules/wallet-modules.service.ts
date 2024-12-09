@@ -301,6 +301,9 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
+    const _signTransaction = wallet.signTransaction;
+    const _sendTransaction = wallet.sendTransaction;
+    const _signDelegateAction = wallet.signDelegateAction;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -330,6 +333,52 @@ export class WalletModules {
       this.validateSignMessageParams(params);
 
       return await _signMessage(params);
+    };
+
+    wallet.signTransaction = async (params: never) => {
+      if (_signTransaction === undefined) {
+        throw new Error(
+          `The signTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      try {
+        return await _signTransaction(params);
+      } catch (error) {
+        throw new Error(
+          `Failed to sign transaction: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
+    };
+
+    wallet.sendTransaction = async (signedTransaction: never) => {
+      if (_sendTransaction === undefined) {
+        throw new Error(
+          `The sendTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _sendTransaction(signedTransaction);
+    };
+
+    wallet.signDelegateAction = async (params: never) => {
+      if (_signDelegateAction === undefined) {
+        throw new Error(
+          `The signDelegateAction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      try {
+        return await _signDelegateAction(params);
+      } catch (error) {
+        throw new Error(
+          `Failed to sign delegate action: ${
+            error instanceof Error ? error.message : String(error)
+          }`
+        );
+      }
     };
 
     return wallet;
