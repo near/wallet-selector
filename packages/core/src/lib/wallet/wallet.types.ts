@@ -143,8 +143,8 @@ interface SignTransactionParams {
   callbackUrl?: string;
 }
 
-interface SignDelegateActionParams {
-  senderId: string;
+export interface SignDelegateActionParams {
+  blockHeightTtl: number;
   receiverId: string;
   actions: Array<Action>;
   callbackUrl?: string;
@@ -159,10 +159,6 @@ interface DelegateAction {
    * The set of actions to be included in the meta transaction
    */
   actions: Array<Action>;
-  /**
-   * Number of blocks past the current block height for which the SignedDelegate action may be included in a meta transaction
-   */
-  blockHeightTtl: number;
   /**
    * Account ID for the intended receiver of the meta transaction
    */
@@ -181,14 +177,9 @@ interface DelegateAction {
   publicKey: PublicKey;
 }
 
-interface SignedDelegate {
+export interface SignedDelegate {
   delegateAction: DelegateAction;
   signature: Signature;
-}
-
-interface SignedDelegateWithHash {
-  hash: Uint8Array;
-  signedDelegateAction: SignedDelegate;
 }
 
 interface BaseWalletBehaviour {
@@ -248,11 +239,11 @@ interface BaseWalletBehaviour {
     callbackUrl?: string;
   }): Promise<providers.FinalExecutionOutcome>;
   /**
-   * Composes and signs a SignedDelegate action to be executed in a transaction
+   * Composes and signs a Signed Delegate Action to be executed in a transaction
    */
   signDelegateAction?(
     params: SignDelegateActionParams
-  ): Promise<SignedDelegateWithHash | void>;
+  ): Promise<SignedDelegate | void>;
 }
 
 type BaseWallet<
@@ -354,6 +345,9 @@ export type BrowserWalletBehaviour = Modify<
       signedTransaction: SignedTransaction;
       callbackUrl?: string;
     }): Promise<FinalExecutionOutcome | void>;
+    signDelegateAction?(
+      params: SignDelegateActionParams
+    ): Promise<SignedDelegate | void>;
   }
 >;
 
