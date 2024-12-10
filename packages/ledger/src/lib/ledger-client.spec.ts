@@ -47,6 +47,19 @@ const createTransactionMock = () => {
   );
 };
 
+const createSignMessageMock = () => {
+  /**
+   * This is a hex encoded payload that is sent to the Ledger device.
+   * message: "Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts./Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts./Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts.",
+   * nonce: new Array(32).fill(42),
+   * recipient: "alice.near",
+   * callbackUrl: "myapp.com/callback",
+   */
+  const hexEncodedPayload =
+    "180200004d616b657320697420706f737369626c6520746f2061757468656e74696361746520757365727320776974686f757420686176696e6720746f20616464206e657720616363657373206b6579732e20546869732077696c6c20696d70726f76652055582c2073617665206d6f6e657920616e642077696c6c206e6f7420696e63726561736520746865206f6e2d636861696e2073746f72616765206f662074686520757365727327206163636f756e74732e2f4d616b657320697420706f737369626c6520746f2061757468656e74696361746520757365727320776974686f757420686176696e6720746f20616464206e657720616363657373206b6579732e20546869732077696c6c20696d70726f76652055582c2073617665206d6f6e657920616e642077696c6c206e6f7420696e63726561736520746865206f6e2d636861696e2073746f72616765206f662074686520757365727327206163636f756e74732e2f4d616b657320697420706f737369626c6520746f2061757468656e74696361746520757365727320776974686f757420686176696e6720746f20616464206e657720616363657373206b6579732e20546869732077696c6c20696d70726f76652055582c2073617665206d6f6e657920616e642077696c6c206e6f7420696e63726561736520746865206f6e2d636861696e2073746f72616765206f662074686520757365727327206163636f756e74732e2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a0a000000616c6963652e6e65617201120000006d796170702e636f6d2f63616c6c6261636b";
+  return Buffer.from(hexEncodedPayload, "hex");
+};
+
 const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const client = mock<TransportWebHID>(params.client);
   const transport = mock<Transport>(params.transport);
@@ -63,9 +76,7 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
   const {
     LedgerClient,
     CLA,
-    INS_SIGN,
-    INS_GET_APP_VERSION,
-    INS_GET_PUBLIC_KEY,
+    NEAR_INS,
     P1_LAST,
     P1_IGNORE,
     P2_IGNORE,
@@ -80,9 +91,11 @@ const createLedgerClient = (params: CreateLedgerClientParams = {}) => {
     parseDerivationPath,
     constants: {
       CLA,
-      INS_SIGN,
-      INS_GET_APP_VERSION,
-      INS_GET_PUBLIC_KEY,
+      INS_SIGN_TRANSACTION: NEAR_INS.SIGN_TRANSACTION,
+      INS_GET_APP_VERSION: NEAR_INS.GET_VERSION,
+      INS_GET_PUBLIC_KEY: NEAR_INS.GET_PUBLIC_KEY,
+      INS_NEP413_SIGN_MESSAGE: NEAR_INS.NEP413_SIGN_MESSAGE,
+      INS_NEP366_SIGN_DELEGATE_ACTION: NEAR_INS.NEP366_SIGN_DELEGATE_ACTION,
       P1_LAST,
       P1_IGNORE,
       P2_IGNORE,
@@ -154,32 +167,93 @@ describe("sign", () => {
     const data = nearAPI.transactions.encodeTransaction(transaction);
 
     await client.connect();
+
     const result = await client.sign({
-      data,
+      data: Buffer.from(data),
       derivationPath: "44'/397'/0'/0'/1'",
     });
 
-    expect(transport.send).toHaveBeenCalledWith(
+    //Get version call
+    expect(transport.send).toHaveBeenNthCalledWith(
+      1,
       constants.CLA,
       constants.INS_GET_APP_VERSION,
       constants.P1_IGNORE,
       constants.P2_IGNORE
     );
-    expect(transport.send).toHaveBeenCalledWith(
+
+    //Sign call
+    expect(transport.send).toHaveBeenNthCalledWith(
+      2,
       constants.CLA,
-      constants.INS_SIGN,
-      constants.P1_IGNORE,
-      constants.P2_IGNORE,
-      expect.any(Buffer)
-    );
-    expect(transport.send).toHaveBeenCalledWith(
-      constants.CLA,
-      constants.INS_SIGN,
+      constants.INS_SIGN_TRANSACTION,
       constants.P1_LAST,
       constants.P2_IGNORE,
       expect.any(Buffer)
     );
-    expect(transport.send).toHaveBeenCalledTimes(3);
+
+    expect(transport.send).toHaveBeenCalledTimes(2);
+    expect(result).toEqual(Buffer.from([1]));
+  });
+});
+
+describe("signMessage", () => {
+  it("returns the signature", async () => {
+    const { client, transport, constants } = createLedgerClient({
+      transport: {
+        send: jest.fn().mockResolvedValue(Buffer.from([1, 2, 3])),
+      },
+    });
+
+    const data = createSignMessageMock();
+
+    await client.connect();
+
+    const result = await client.signMessage({
+      data,
+      derivationPath: "44'/397'/0'/0'/1'",
+    });
+
+    //Get version call
+    expect(transport.send).toHaveBeenNthCalledWith(
+      1,
+      constants.CLA,
+      constants.INS_GET_APP_VERSION,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE
+    );
+
+    //Sign call 1
+    expect(transport.send).toHaveBeenNthCalledWith(
+      2,
+      constants.CLA,
+      constants.INS_NEP413_SIGN_MESSAGE,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE,
+      expect.any(Buffer)
+    );
+
+    //Sign call 2
+    expect(transport.send).toHaveBeenNthCalledWith(
+      3,
+      constants.CLA,
+      constants.INS_NEP413_SIGN_MESSAGE,
+      constants.P1_IGNORE,
+      constants.P2_IGNORE,
+      expect.any(Buffer)
+    );
+
+    //Sign call 3
+    expect(transport.send).toHaveBeenNthCalledWith(
+      4,
+      constants.CLA,
+      constants.INS_NEP413_SIGN_MESSAGE,
+      constants.P1_LAST,
+      constants.P2_IGNORE,
+      expect.any(Buffer)
+    );
+
+    expect(transport.send).toHaveBeenCalledTimes(4);
     expect(result).toEqual(Buffer.from([1]));
   });
 });
