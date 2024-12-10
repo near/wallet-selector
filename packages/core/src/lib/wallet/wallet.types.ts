@@ -146,7 +146,7 @@ interface SignTransactionParams {
 export interface SignDelegateActionParams {
   blockHeightTtl: number;
   receiverId: string;
-  actions: Array<Action>;
+  actions: Array<DelegateAction>;
   callbackUrl?: string;
 }
 

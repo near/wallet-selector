@@ -86,7 +86,8 @@ export type Action =
   | AddKeyAction
   | DeleteKeyAction
   | DeleteAccountAction
-  | SignDelegateAction;
+
+export type DelegateAction = Action | SignDelegateAction;
 
 export type ActionType = Action["type"];
 
