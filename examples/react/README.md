@@ -3,7 +3,16 @@
 This React example shows how to integrate Near Wallet Selector into your React application for easy Near wallet integration.
 
 # Usage
+Make sure your node version is 18
 
+Then perform the build:
+```bash
+yarn build:all
+```
+Need to add a separate dependency, otherwise a error `Module not found` will be reported.
+```bash
+yarn add @near-wallet-selector/modal-ui
+```
 Start the development server:
 ```bash
 yarn nx serve react
