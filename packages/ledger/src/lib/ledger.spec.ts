@@ -26,7 +26,10 @@ const createLedgerWallet = async () => {
     signMessage: jest
       .fn()
       .mockResolvedValue(
-        Buffer.from("fn39aKtzVFDMJOYZiYTWBiE6HQh1QsmGbESQRMRS9dTidGcrDogXIarCvsMUfKsx79iDLicwjGCN7XO8fnYWDA==", "base64")
+        Buffer.from(
+          "fn39aKtzVFDMJOYZiYTWBiE6HQh1QsmGbESQRMRS9dTidGcrDogXIarCvsMUfKsx79iDLicwjGCN7XO8fnYWDA==",
+          "base64"
+        )
       ),
   });
 
@@ -34,8 +37,8 @@ const createLedgerWallet = async () => {
     return {
       ...jest.requireActual("@near-wallet-selector/core"),
       verifySignature: jest.fn().mockReturnValue(true),
-    }
-  })
+    };
+  });
 
   jest.mock("./ledger-client", () => {
     const module = jest.requireActual("./ledger-client");
@@ -217,7 +220,6 @@ describe("signMessage", () => {
     expect(result!.accountId).toEqual(accountId);
 
     expect(result!.publicKey).toEqual("ed25519:" + publicKey);
-
   });
 });
 
