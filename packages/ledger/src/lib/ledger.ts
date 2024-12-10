@@ -317,7 +317,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       });
 
       if (!publicKeyExistsInAccount) {
-        throw new Error("Failed to find account for signing");
+        throw new Error("Public key not found for the active account.");
       }
 
       // Note: Connection must be triggered by user interaction.
