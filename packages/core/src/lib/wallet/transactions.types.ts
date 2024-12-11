@@ -75,7 +75,7 @@ export type Action =
   | StakeAction
   | AddKeyAction
   | DeleteKeyAction
-  | DeleteAccountAction
+  | DeleteAccountAction;
 
 export type ActionType = Action["type"];
 
