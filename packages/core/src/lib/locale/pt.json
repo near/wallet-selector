@@ -1,0 +1,62 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Conecte sua carteira",
+      "whatIsAWallet": "O que é uma carteira?",
+      "secureAndManage": "Proteja e gerencie seus ativos digitais",
+      "safelyStore": "Armazene e transfira com segurança suas criptomoedas e NFTs",
+      "logInToAny": "Faça login em qualquer aplicativo NEAR",
+      "noNeedToCreate": "Não há necessidade de criar uma nova conta ou senha. Conecte sua carteira e comece agora!",
+      "getAWallet": "Obtenha uma carteira",
+      "useAWallet": "Use uma carteira para proteger e gerenciar seus ativos NEAR sem precisar de nome de usuário ou senha",
+      "connectionFailed": "Falha na conexão",
+      "connectionSuccessful": "Conexão bem-sucedida",
+      "rememberWallet": "Lembrar da carteira selecionada",
+      "connected": "Conectado",
+      "connectingTo": "Conectando a"
+    },
+    "ledger": {
+      "connectWithLedger": "Conectar com Ledger",
+      "makeSureYourLedger": "Certifique-se de que seu Ledger esteja conectado com segurança e que o app NEAR esteja aberto no dispositivo",
+      "continue": "Continuar",
+      "specifyHDPath": "Especificar caminho HD",
+      "enterYourPreferredHDPath": "Insira o caminho HD preferido e escaneie para encontrar contas ativas",
+      "scan": "Escanear",
+      "retry": "Tentar novamente",
+      "ledgerIsNotAvailable": "Ledger não disponível",
+      "accessDeniedToUseLedgerDevice": "Acesso negado ao dispositivo Ledger",
+      "noAccountsFound": "Nenhuma conta encontrada",
+      "selectYourAccounts": "Selecione suas contas",
+      "connecting1Account": "Conectando 1 conta",
+      "cantFindAnyAccount": "Não foi possível encontrar contas associadas a este Ledger. Por favor",
+      "orConnectAnAnotherLedger.": "ou conecte outro Ledger",
+      "connecting": "Conectando",
+      "ofAccounts": "de contas",
+      "failedToAutomatically": "Não foi possível encontrar automaticamente o ID da conta. Por favor, forneça-o manualmente:",
+      "overviewTheListOfAuthorized": "Revise a lista de contas autorizadas e clique no botão abaixo para concluir o login",
+      "finish": "Concluir"
+    },
+    "install": {
+      "youllNeedToInstall": "Você precisará instalar",
+      "toContinueAfterInstalling": "para continuar. Após instalar",
+      "refreshThePage": "Atualize a página",
+      "open": "Abrir"
+    },
+    "qr": {
+      "copiedToClipboard": "Copiado para a área de transferência",
+      "failedToCopy": "Falha ao copiar para a área de transferência",
+      "scanWithYourMobile": "Escaneie com seu celular",
+      "copyToClipboard": "Copiar para a área de transferência",
+      "preferTheOfficial": "Prefira usar a caixa de diálogo oficial no",
+      "open": "Abrir"
+    },
+    "walletTypes": {
+      "hardware": "Carteira de hardware",
+      "browser": "Carteira de navegador",
+      "injected": "Extensão de carteira",
+      "bridge": "Carteira de ponte",
+      "mobile": "Carteira móvel",
+      "instant-link": "Carteira instantânea"
+    }
+  }
+}
