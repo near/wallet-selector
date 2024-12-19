@@ -8,8 +8,14 @@ import type {
   HardwareWallet,
   Transaction,
   Optional,
+  SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
-import { getActiveAccount } from "@near-wallet-selector/core";
+import {
+  getActiveAccount,
+  verifyFullKeyBelongsToUser,
+  verifySignature,
+} from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
@@ -17,6 +23,7 @@ import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
+import { serializeLedgerNEP413Payload } from "./nep413/ledger-payload";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -86,7 +93,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       }
 
       const signature = await _state.client.sign({
-        data: message,
+        data: Buffer.from(message),
         derivationPath: account.derivationPath,
       });
 
@@ -275,6 +282,79 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       await connectLedgerDevice();
 
       return await _state.client.getPublicKey({ derivationPath });
+    },
+
+    async signMessage({
+      message,
+      nonce,
+      recipient,
+      callbackUrl,
+    }: SignMessageParams): Promise<SignedMessage | void> {
+      logger.log("signMessage", { message, nonce, recipient, callbackUrl });
+
+      if (!_state.accounts.length) {
+        throw new Error("Wallet not signed in");
+      }
+
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      const ledgerAccount = _state.accounts.find(
+        (a) => a.accountId === account.accountId
+      );
+
+      if (!ledgerAccount) {
+        throw new Error("Failed to find account for signing");
+      }
+
+      const publicKeyExistsInAccount = await verifyFullKeyBelongsToUser({
+        publicKey: ledgerAccount.publicKey,
+        accountId: account.accountId,
+        network: options.network,
+      });
+
+      if (!publicKeyExistsInAccount) {
+        throw new Error("Public key not found for the active account.");
+      }
+
+      // Note: Connection must be triggered by user interaction.
+      await connectLedgerDevice();
+
+      const serializedPayload = serializeLedgerNEP413Payload({
+        message,
+        nonce,
+        recipient,
+        callbackUrl,
+      });
+
+      const signature = await _state.client.signMessage({
+        data: serializedPayload,
+        derivationPath: ledgerAccount.derivationPath,
+      });
+
+      const encodedSignature = Buffer.from(signature).toString("base64");
+
+      const isSignatureValid = verifySignature({
+        publicKey: ledgerAccount.publicKey,
+        signature: encodedSignature,
+        message,
+        nonce,
+        recipient,
+        callbackUrl,
+      });
+
+      if (!isSignatureValid) {
+        throw new Error("Failed to verify signature");
+      }
+
+      return {
+        accountId: ledgerAccount.accountId,
+        publicKey: "ed25519:" + ledgerAccount.publicKey,
+        signature: encodedSignature,
+      };
     },
   };
 };
