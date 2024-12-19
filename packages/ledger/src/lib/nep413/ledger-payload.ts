@@ -1,4 +1,5 @@
 import { serialize } from "borsh";
+import type { Schema } from "borsh";
 
 export class LedgerPayload {
   message: string;
@@ -16,26 +17,14 @@ export class LedgerPayload {
   }
 }
 
-export const ledgerPayloadSchema = new Map([
-  [
-    LedgerPayload,
-    {
-      kind: "struct",
-      fields: [
-        ["message", "string"],
-        ["nonce", [32]],
-        ["recipient", "string"],
-        [
-          "callbackUrl",
-          {
-            kind: "option",
-            type: "string",
-          },
-        ],
-      ],
-    },
-  ],
-]);
+export const ledgerPayloadSchema: Schema = {
+  struct: {
+    message: "string",
+    nonce: { array: { type: "u8", len: 32 } },
+    recipient: "string",
+    callbackUrl: { option: "string" },
+  },
+};
 
 export const serializeLedgerNEP413Payload = (
   ledgerPayload: LedgerPayload
