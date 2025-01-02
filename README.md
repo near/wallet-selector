@@ -11,6 +11,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
+- [Meteor Wallet App](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet-app) - Instant link wallet.
 - [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
@@ -64,6 +65,7 @@ yarn add \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/meteor-wallet-app \
   @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
@@ -91,6 +93,7 @@ npm install \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/meteor-wallet-app \
   @near-wallet-selector/okx-wallet \
   @near-wallet-selector/narwallets \
   @near-wallet-selector/welldone-wallet \
@@ -131,6 +134,7 @@ import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
@@ -156,6 +160,7 @@ const selector = await setupWalletSelector({
     setupMathWallet(),
     setupNightly(),
     setupMeteorWallet(),
+    setupMeteorWalletApp({ contractId: "guest-book.testnet" }),
     setupNearSnap(),
     setupOkxWallet(),
     setupNarwallets(),
