@@ -51,6 +51,7 @@
     "build:ledger": "nx run-many --target=build --projects=ledger --configuration=production",
     "build:math-wallet": "nx run-many --target=build --projects=math-wallet --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
+    "build:meteor-wallet-app": "nx run-many --target=build --projects=meteor-wallet-app --configuration=production",
     "build:mintbase-wallet": "nx run-many --target=build --projects=mintbase-wallet --configuration=production",
     "build:bitte-wallet": "nx run-many --target=build --projects=bitte-wallet --configuration=production",
     "build:modal-ui": "nx run-many --target=build --projects=modal-ui --configuration=production",
