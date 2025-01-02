@@ -100,14 +100,14 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
     contractId?: string;
   }
 > = async ({ metadata }) => {
-  let signedInAccounts: Array<Account> = []
+  let signedInAccounts: Array<Account> = [];
 
   return {
     getContractId() {
       return metadata.contractId;
     },
     async getAccounts() {
-      return signedInAccounts
+      return signedInAccounts;
     },
     async signAndSendTransaction(params) {
       promiseId++;
@@ -146,12 +146,12 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
         promiseId,
       });
 
-      signedInAccounts = data
-      
+      signedInAccounts = data;
+
       return data;
     },
     async signOut() {
-      if(signedInAccounts.length > 0){
+      if (signedInAccounts.length > 0) {
         promiseId++;
 
         await tryPostOrFail<Array<Account>>({
@@ -160,7 +160,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
           promiseId,
         });
 
-        signedInAccounts = []
+        signedInAccounts = [];
       }
     },
     async verifyOwner() {
