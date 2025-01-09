@@ -44,18 +44,7 @@ const postMessage = function (data: string) {
       if (window !== window.top) {
         // in an iframe
         if (window.top.location) {
-          const parentUrl =
-            window.location !== window.parent.location
-              ? document.referrer
-              : document.location.href;
-
-          const enablePostMessage = window.localStorage.getItem(
-            "__meteor_app_enable_post_message"
-          );
-
-          if (parentUrl === "https://xxx.com" || enablePostMessage) {
-            return window.top.postMessage(data, "*");
-          }
+          return window.top.postMessage(data, "*");
         }
       }
     }
@@ -76,6 +65,7 @@ const tryPostOrFail = <R extends Result>(
     JSON.stringify({
       ...action,
       nonce,
+      source: "meteor-wallet-app-selector",
     })
   );
 
