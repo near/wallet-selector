@@ -14,6 +14,7 @@ enum EMethod {
   sign_and_send_transaction = "sign_and_send_transaction",
   sign_and_send_transactions = "sign_and_send_transactions",
   sign_message = "sign_message",
+  ping = "ping",
 }
 
 type Result =
@@ -28,9 +29,8 @@ interface IMeteorWalletAppAction {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   };
-  promiseId: number;
+  nonce: string;
 }
-let promiseId = 0;
 
 const postMessage = function (data: string) {
   // why this?
@@ -65,11 +65,32 @@ const postMessage = function (data: string) {
 };
 
 const tryPostOrFail = <R extends Result>(
-  action: IMeteorWalletAppAction
+  action: Omit<IMeteorWalletAppAction, "nonce">,
+  timeoutInMs?: number
 ): Promise<R> => {
-  postMessage(JSON.stringify(action));
+  const nonce = Buffer.from(
+    crypto.getRandomValues(new Uint8Array(10))
+  ).toString("base64");
+
+  postMessage(
+    JSON.stringify({
+      ...action,
+      nonce,
+    })
+  );
+
   return new Promise<R>((resolve, reject) => {
     const abortController = new AbortController();
+    let resolved = false;
+
+    if (timeoutInMs) {
+      setTimeout(() => {
+        if (!resolved) {
+          abortController.abort();
+          reject(new Error(`Timeout of ${timeoutInMs}ms`));
+        }
+      }, timeoutInMs);
+    }
 
     window.addEventListener(
       "message",
@@ -77,8 +98,9 @@ const tryPostOrFail = <R extends Result>(
         if (
           typeof ev.data === "object" &&
           ev.data?.response &&
-          ev.data?.promiseId === action.promiseId
+          ev.data?.nonce === nonce
         ) {
+          resolved = true;
           if (ev.data.isError) {
             reject(new Error(ev.data.response));
           } else {
@@ -110,7 +132,6 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       return signedInAccounts;
     },
     async signAndSendTransaction(params) {
-      promiseId++;
       const receiverId = params.receiverId ?? metadata.contractId;
       if (!receiverId) {
         throw new Error("No receiver found to send the transaction to");
@@ -122,28 +143,29 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
           ...params,
           receiverId,
         },
-        promiseId,
       });
       return data;
     },
     async signAndSendTransactions(params) {
-      promiseId++;
-
       const data = await tryPostOrFail<Array<FinalExecutionOutcome>>({
         method: EMethod.sign_and_send_transactions,
         args: {
           ...params,
         },
-        promiseId,
       });
       return data;
     },
     async signIn(params) {
-      promiseId++;
+      await tryPostOrFail(
+        {
+          method: EMethod.ping,
+          args: {},
+        },
+        1000
+      );
       const data = await tryPostOrFail<Array<Account>>({
         method: EMethod.sign_in,
         args: params,
-        promiseId,
       });
 
       signedInAccounts = data;
@@ -152,12 +174,9 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
     },
     async signOut() {
       if (signedInAccounts.length > 0) {
-        promiseId++;
-
         await tryPostOrFail<Array<Account>>({
           method: EMethod.sign_out,
           args: {},
-          promiseId,
         });
 
         signedInAccounts = [];
@@ -169,15 +188,12 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       );
     },
     async signMessage(params) {
-      promiseId++;
-
       const data = await tryPostOrFail<SignedMessage>({
         method: EMethod.sign_message,
         args: {
           ...params,
           nonce: [...params.nonce],
         },
-        promiseId,
       });
       return data;
     },
