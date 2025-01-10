@@ -84,5 +84,3 @@ export {
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";
-
-export { WalletManager } from "./lib/wallet-manager";
