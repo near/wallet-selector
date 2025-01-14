@@ -66,6 +66,7 @@ const tryPostOrFail = <R extends Result>(
       ...action,
       nonce,
       source: "meteor-wallet-app-selector",
+      href: window.location.href,
     })
   );
 
