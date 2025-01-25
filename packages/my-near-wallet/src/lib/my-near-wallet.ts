@@ -10,7 +10,6 @@ import type {
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
-import { PublicKey } from "near-api-js/lib/utils";
 import { MyNearWalletConnection } from "./my-near-wallet-connection";
 
 export interface MyNearWalletParams {
@@ -24,7 +23,6 @@ export interface MyNearWalletParams {
 interface MyNearWalletState {
   wallet: MyNearWalletConnection;
   keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
-  // resetWallet: ()=>void;
 }
 
 interface MyNearWalletExtraOptions {
@@ -60,11 +58,10 @@ const setupWalletState = async (
   });
 
   let wallet = new MyNearWalletConnection(near, "near_app");
-  // const resetWallet = () =>{wallet = new nearAPI.WalletConnection(near, "near_app")}
+
   return {
     wallet,
     keyStore,
-    // resetWallet
   };
 };
 
@@ -90,13 +87,6 @@ const MyNearWallet: WalletBehaviourFactory<
         publicKey: publicKey ? publicKey.toString() : "",
       },
     ];
-    // const {accountId,publicKey} =  JSON.parse(localStorage.getItem('my-near-wallet') || "{}");
-
-    // if(!accountId || !publicKey){
-    //   return [];
-    // }
-
-    // return [{accountId,publicKey}];
   };
 
   const transformTransactions = async (
@@ -148,75 +138,18 @@ const MyNearWallet: WalletBehaviourFactory<
         return existingAccounts;
       }
 
-      // await _state.wallet.requestSignIn({
-      //   contractId,
-      //   methodNames,
-      //   successUrl,
-      //   failureUrl,
-      // });
-
-      // return getAccounts();
-
-
-      const url = await _state.wallet.requestSignInUrl({
+      await _state.wallet.requestSignIn({
         contractId,
         methodNames,
         successUrl,
         failureUrl,
       });
-  
-      // contractId && publishUrl.searchParams.set('contractId', contractId );
-      // methodNames && publishUrl.searchParams.set('methodNames', methodNames.join(",") );
 
-      console.log("Url requestSignInUrl 23",url);
-      
-      // @ts-ignore
-      const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
-      
-      return await new Promise((resolve, reject) => {
-        const checkWindowClosed = setInterval(() => {
-          if (childWindow?.closed) {
-            clearInterval(checkWindowClosed);
-            reject(new Error('La ventana se cerró antes de completar la transacción.'));
-          }
-        }, 500);
-        window.addEventListener('message', async(event) => {
-          if (event.data?.status === 'success') {
-      
-            console.log("check",event.data);
-            
-            const { public_key:publicKey, all_keys:allKeys, account_id:accountId } = event.data;
-            console.log({publicKey, allKeys, accountId});
-
-            // _state.keyStore.setKey(options.network.networkId, account_id,public_key);
-            // const keyPair = await this._keyStore.getKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + publicKey);
-            // await this._keyStore.setKey(this._networkId, accountId, keyPair);
-            // await this._keyStore.removeKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + publicKey);
-
-            await _state.wallet.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
-      //  ?account_id=maguila.testnet&all_keys=ed25519%3AAtH7GEjv2qmBVoT8qoRhWXizXM5CC12DC6tiqY9iNoRm
-            childWindow?.close();
-            window.removeEventListener('message', () => { });
-            // emitter.emit("signedIn", {
-            //   contractId: contractId,
-            //   methodNames: methodNames ?? [],
-            //   accounts: await getAccounts(),
-            // });
-      
-            // return await getAccounts();
-            // window.location.assign(parsedUrl.toString());
-            // _state.wallet.isSignedIn = () => true;
-            // _state.resetWallet();
-            return resolve([{accountId,publicKey}]);
-          }
-        });
-      }) 
-      // return getAccounts();
+      return getAccounts();
     },
 
     async signOut() {
       if (_state.wallet.isSignedIn()) {
-        // _state.wallet.isSignedIn = () => false;
         _state.wallet.signOut();
       }
     },
@@ -280,69 +213,14 @@ const MyNearWallet: WalletBehaviourFactory<
       if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not signed in");
       }
-      // const account = _state.wallet.account();
-      // console.log( "pepe",account["signAndSendTransaction"])
-      // const account = _state.wallet.account();
-      // // const { networkId, signer, provider } = account.connection;
-      // return account["signAndSendTransaction"]({
-      //   receiverId: receiverId || contract.contractId,
-      //   actions: actions.map((action) => createAction(action)),
-      //   walletCallbackUrl: callbackUrl,
-      // });
       const account = _state.wallet.account();
-      const { networkId, signer, provider } = account.connection;
-
-      const block = await provider.block({ finality: "final" });
-
-
-      const transactions = await nearAPI.transactions.createTransaction(
-        signerId || account.accountId,
-        PublicKey.fromString("ed25519:AtH7GEjv2qmBVoT8qoRhWXizXM5CC12DC6tiqY9iNoRm"),
-        receiverId || contract.contractId,
-        0,
-        actions.map((action) => createAction(action)),
-        new Uint8Array(32)
-      );
-      // @ts-ignore
-      // console.log({transactions,test:atob(transactions.encode())});
-      // console.log("orginal",atob("DwAAAG1hZ3VpbGEudGVzdG5ldACS3ARWu0sYjX63OYbDojizriWL55RnrStWodM6c%2BbIrMrc%2F3zXjAAAGwAAAGhlbGxvLm5lYXItZXhhbXBsZXMudGVzdG5ldF6mKSLVD4Nu%2ByY53uE0fD4CCaELfzNdK18eVlDURC4QAQAAAAIMAAAAc2V0X2dyZWV0aW5nEQAAAHsiZ3JlZXRpbmciOiJoaSJ9AOBX60gbAAAAAAAAAAAAAAAAAAAAAAAA"));
-      console.log({signerId,
-        receiverId,
-        actions,
-        callbackUrl});
+      console.log({ receiverId, contractId: contract.contractId,actions, callbackUrl });
       
-
-    
-      const publishUrl = new URL('sign', `https://localhost:1234`);
-      publishUrl.searchParams.set('transactions', Buffer.from(transactions.encode()).toString("base64"));
-      publishUrl.searchParams.set('callbackUrl', "http://localhost:3000/hello-near");
-      // @ts-ignore
-      const childWindow = window.open(publishUrl.toString(),"My Near Wallet", "width=480,height=640");
-
-      // const childWindow = window.open("https://localhost:1234/sign?transactions=DwAAAG1hZ3VpbGEudGVzdG5ldACS3ARWu0sYjX63OYbDojizriWL55RnrStWodM6c%2BbIrMrc%2F3zXjAAAGwAAAGhlbGxvLm5lYXItZXhhbXBsZXMudGVzdG5ldF6mKSLVD4Nu%2ByY53uE0fD4CCaELfzNdK18eVlDURC4QAQAAAAIMAAAAc2V0X2dyZWV0aW5nEQAAAHsiZ3JlZXRpbmciOiJoaSJ9AOBX60gbAAAAAAAAAAAAAAAAAAAAAAAA&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fhello-near", "Ventana Secundaria", "width=400,height=400");
-        
-      
-      return new Promise((resolve, reject) => {
-        const checkWindowClosed = setInterval(() => {
-          if (childWindow?.closed) {
-            clearInterval(checkWindowClosed);
-            reject(new Error('La ventana se cerró antes de completar la transacción.'));
-          }
-        }, 1000);
-        window.addEventListener('message', async(event) => {
-          clearInterval(checkWindowClosed);
-          if (event.data?.status === 'success') {
-            console.log('Transacción exitosa');
-            childWindow?.close();
-            window.removeEventListener('message', () => { });
-
-            
-            const result = await provider.txStatus(event.data?.transactionHashes, 'unused',"NONE");
-            
-            resolve(result);
-          }
-        });
-      }) 
+      return account["signAndSendTransaction"]({
+        receiverId: receiverId || contract.contractId,
+        actions: actions.map((action) => createAction(action)),
+        walletCallbackUrl: callbackUrl,
+      });
     },
 
     async signAndSendTransactions({ transactions, callbackUrl }) {

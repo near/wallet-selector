@@ -1,7 +1,11 @@
 import { serialize } from "borsh";
-import { ConnectedWalletAccount, InMemorySigner, KeyPair, Near } from "near-api-js";
+import { Account, Connection, InMemorySigner, KeyPair, Near } from "near-api-js";
+import { SignAndSendTransactionOptions } from "near-api-js/lib/account";
 import { KeyStore } from "near-api-js/lib/key_stores";
-import { SCHEMA, Transaction } from "near-api-js/lib/transaction";
+import { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import { Action, SCHEMA, Transaction, createTransaction } from "near-api-js/lib/transaction";
+import { PublicKey } from "near-api-js/lib/utils";
+import { base_decode } from "near-api-js/lib/utils/serialize";
 
 const LOGIN_WALLET_URL_SUFFIX = '/login/';
 const MULTISIG_HAS_METHOD = 'add_request_and_confirm';
@@ -64,7 +68,7 @@ export class MyNearWalletConnection {
     _near: Near;
 
     /** @hidden */
-    _connectedAccount: ConnectedWalletAccount;
+    _connectedAccount: MyNearConnectedWalletAccount;
 
     /** @hidden */
     _completeSignInPromise: Promise<void>;
@@ -185,9 +189,31 @@ export class MyNearWalletConnection {
      * ```
      */
     async requestSignIn(options: SignInOptions) {
-        const url = await this.requestSignInUrl(options);
+        
+      const url = await this.requestSignInUrl(options);
+      
+      // @ts-ignore
+      const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
+      
+      return await new Promise((resolve, reject) => {
+        const checkWindowClosed = setInterval(() => {
+          if (childWindow?.closed) {
+            clearInterval(checkWindowClosed);
+            reject(new Error('La ventana se cerró antes de completar la transacción.'));
+          }
+        }, 500);
+        window.addEventListener('message', async(event) => {
+          if (event.data?.status === 'success') {
+            
+            const { public_key:publicKey, all_keys:allKeys, account_id:accountId } = event.data;
 
-        window.location.assign(url);
+            await this.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
+            childWindow?.close();
+            window.removeEventListener('message', () => { });
+            return resolve([{accountId,publicKey}]);
+          }
+        });
+      }) 
     }
 
     /**
@@ -226,6 +252,34 @@ export class MyNearWalletConnection {
         const url = this.requestSignTransactionsUrl(options);
 
         window.location.assign(url);
+    }
+
+
+    requestSignTransaction(options: RequestSignTransactionsOptions): Promise<string> {
+        const url = this.requestSignTransactionsUrl(options);
+        // @ts-ignore
+        const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
+  
+        return new Promise((resolve, reject) => {
+          const checkWindowClosed = setInterval(() => {
+            if (childWindow?.closed) {
+              clearInterval(checkWindowClosed);
+              reject(new Error('La ventana se cerró antes de completar la transacción.'));
+            }
+          }, 1000);
+          window.addEventListener('message', async(event) => {
+            clearInterval(checkWindowClosed);
+            if (event.data?.status === 'success') {
+              console.log('Transacción exitosa');
+              childWindow?.close();
+              window.removeEventListener('message', () => {});
+              console.log("eventos",event.data?.transactionHashes);
+              
+              resolve(event.data?.transactionHashes);
+            }
+          });
+        }) 
+
     }
 
     /**
@@ -268,6 +322,7 @@ export class MyNearWalletConnection {
             await this._moveKeyFromTempToPermanent(accountId, publicKey);
         }
         this._authData = authData;
+        this.updateAccount()
     }
 
     /**
@@ -296,8 +351,145 @@ export class MyNearWalletConnection {
      */
     account() {
         if (!this._connectedAccount) {
-            this._connectedAccount = new ConnectedWalletAccount(this, this._near.connection, this._authData.accountId || "");
+            this._connectedAccount = new MyNearConnectedWalletAccount(this, this._near.connection, this._authData.accountId || "");
         }
         return this._connectedAccount;
+    }
+
+    updateAccount() {
+        this._connectedAccount = new MyNearConnectedWalletAccount(this, this._near.connection, this._authData.accountId || "");
+    }
+}
+
+/**
+ * {@link Account} implementation which redirects to wallet using {@link WalletConnection} when no local key is available.
+ */
+
+export class MyNearConnectedWalletAccount extends Account {
+    walletConnection: MyNearWalletConnection;
+
+    constructor(walletConnection: MyNearWalletConnection, connection: Connection, accountId: string) {
+        super(connection, accountId);
+        this.walletConnection = walletConnection;
+    }
+
+    // Overriding Account methods
+
+    /**
+     * Sign a transaction by redirecting to the NEAR Wallet
+     * @see {@link WalletConnection#requestSignTransactions}
+     * @param options An optional options object
+     * @param options.receiverId The NEAR account ID of the transaction receiver.
+     * @param options.actions An array of transaction actions to be performed.
+     * @param options.walletMeta Additional metadata to be included in the wallet signing request.
+     * @param options.walletCallbackUrl URL to redirect upon completion of the wallet signing process. Default: current URL.
+     */
+    async signAndSendTransaction({ receiverId, actions, walletMeta, walletCallbackUrl = window.location.href }: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
+        const localKey = await this.connection.signer.getPublicKey(this.accountId, this.connection.networkId);
+        let accessKey = await this.accessKeyForTransaction(receiverId, actions, localKey);
+        if (!accessKey) {
+            throw new Error(`Cannot find matching key for transaction sent to ${receiverId}`);
+        }
+
+        if (localKey && localKey.toString() === accessKey.public_key) {
+            try {
+                return await super.signAndSendTransaction({ receiverId, actions });
+            } catch (e: unknown) {
+                if (typeof e === 'object' && e !== null && 'type' in e && (e as any).type === 'NotEnoughAllowance') {
+                    accessKey = await this.accessKeyForTransaction(receiverId, actions);
+                } else {
+                    throw e;
+                }
+            }
+        }
+
+        const block = await this.connection.provider.block({ finality: 'final' });
+        const blockHash = base_decode(block.header.hash);
+
+        const publicKey = PublicKey.from(accessKey.public_key);
+        // TODO: Cache & listen for nonce updates for given access key
+        const nonce = accessKey.access_key.nonce + BigInt("1");
+        const transaction = createTransaction(this.accountId, publicKey, receiverId, nonce, actions, blockHash);
+        const transactionHashes = await this.walletConnection.requestSignTransaction({
+            transactions: [transaction],
+            meta: walletMeta,
+            callbackUrl: walletCallbackUrl
+        });
+        
+        return new Promise(async(resolve, reject) => {
+            const result = await this.connection.provider.txStatus(transactionHashes, 'unused',"NONE");
+            resolve(result);
+            setTimeout(() => {
+                reject(new Error('Failed to redirect to sign transaction'));
+            }, 1000);
+        });
+
+        
+
+        // TODO: Aggregate multiple transaction request with "debounce".
+        // TODO: Introduce TransactionQueue which also can be used to watch for status?
+    }
+
+    /**
+     * Check if given access key allows the function call or method attempted in transaction
+     * @param accessKey Array of \{access_key: AccessKey, public_key: PublicKey\} items
+     * @param receiverId The NEAR account attempting to have access
+     * @param actions The action(s) needed to be checked for access
+     */
+    async accessKeyMatchesTransaction(accessKey: any, receiverId: string, actions: Action[]): Promise<boolean> {
+        const { access_key: { permission } } = accessKey;
+        if (permission === 'FullAccess') {
+            return true;
+        }
+
+        if (permission.FunctionCall) {
+            const { receiver_id: allowedReceiverId, method_names: allowedMethods } = permission.FunctionCall;
+            /********************************
+            Accept multisig access keys and let wallets attempt to signAndSendTransaction
+            If an access key has itself as receiverId and method permission add_request_and_confirm, then it is being used in a wallet with multisig contract: https://github.com/near/core-contracts/blob/671c05f09abecabe7a7e58efe942550a35fc3292/multisig/src/lib.rs#L149-L153
+            ********************************/
+            if (allowedReceiverId === this.accountId && allowedMethods.includes(MULTISIG_HAS_METHOD)) {
+                return true;
+            }
+            if (allowedReceiverId === receiverId) {
+                if (actions.length !== 1) {
+                    return false;
+                }
+                const [{ functionCall }] = actions;
+                return functionCall &&
+                    (!functionCall.deposit || functionCall.deposit.toString() === '0') && // TODO: Should support charging amount smaller than allowance?
+                    (allowedMethods.length === 0 || allowedMethods.includes(functionCall.methodName));
+                // TODO: Handle cases when allowance doesn't have enough to pay for gas
+            }
+        }
+        // TODO: Support other permissions than FunctionCall
+
+        return false;
+    }
+
+    /**
+     * Helper function returning the access key (if it exists) to the receiver that grants the designated permission
+     * @param receiverId The NEAR account seeking the access key for a transaction
+     * @param actions The action(s) sought to gain access to
+     * @param localKey A local public key provided to check for access
+     */
+    async accessKeyForTransaction(receiverId: string, actions: Action[], localKey?: PublicKey): Promise<any> {
+        const accessKeys = await this.getAccessKeys();
+
+        if (localKey) {
+            const accessKey = accessKeys.find(key => key.public_key.toString() === localKey.toString());
+            if (accessKey && await this.accessKeyMatchesTransaction(accessKey, receiverId, actions)) {
+                return accessKey;
+            }
+        }
+
+        const walletKeys = this.walletConnection._authData.allKeys;
+        for (const accessKey of accessKeys) {
+            if (walletKeys && walletKeys.indexOf(accessKey.public_key) !== -1 && await this.accessKeyMatchesTransaction(accessKey, receiverId, actions)) {
+                return accessKey;
+            }
+        }
+
+        return null;
     }
 }
