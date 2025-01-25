@@ -11,7 +11,6 @@ import type {
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 import { PublicKey } from "near-api-js/lib/utils";
-import { MyNearWalletConnection } from "./my-near-wallet-connection";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -22,9 +21,8 @@ export interface MyNearWalletParams {
 }
 
 interface MyNearWalletState {
-  wallet: MyNearWalletConnection;
+  wallet: nearAPI.WalletConnection;
   keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
-  // resetWallet: ()=>void;
 }
 
 interface MyNearWalletExtraOptions {
@@ -59,12 +57,11 @@ const setupWalletState = async (
     headers: {},
   });
 
-  let wallet = new MyNearWalletConnection(near, "near_app");
-  // const resetWallet = () =>{wallet = new nearAPI.WalletConnection(near, "near_app")}
+  const wallet = new nearAPI.WalletConnection(near, "near_app");
+
   return {
     wallet,
     keyStore,
-    // resetWallet
   };
 };
 
@@ -148,14 +145,14 @@ const MyNearWallet: WalletBehaviourFactory<
         return existingAccounts;
       }
 
-      // await _state.wallet.requestSignIn({
-      //   contractId,
-      //   methodNames,
-      //   successUrl,
-      //   failureUrl,
-      // });
+      await _state.wallet.requestSignIn({
+        contractId,
+        methodNames,
+        successUrl,
+        failureUrl,
+      });
 
-      // return getAccounts();
+      return getAccounts();
 
 
       const url = await _state.wallet.requestSignInUrl({
@@ -193,7 +190,10 @@ const MyNearWallet: WalletBehaviourFactory<
             // await this._keyStore.setKey(this._networkId, accountId, keyPair);
             // await this._keyStore.removeKey(this._networkId, PENDING_ACCESS_KEY_PREFIX + publicKey);
 
-            await _state.wallet.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
+            localStorage.setItem('near_app_wallet_auth_key', JSON.stringify({ accountId, allKeys }));
+            if (publicKey) {
+              _state.keyStore.setKey(options.network.networkId, accountId,publicKey);
+            }
       //  ?account_id=maguila.testnet&all_keys=ed25519%3AAtH7GEjv2qmBVoT8qoRhWXizXM5CC12DC6tiqY9iNoRm
             childWindow?.close();
             window.removeEventListener('message', () => { });
@@ -205,8 +205,7 @@ const MyNearWallet: WalletBehaviourFactory<
       
             // return await getAccounts();
             // window.location.assign(parsedUrl.toString());
-            // _state.wallet.isSignedIn = () => true;
-            // _state.resetWallet();
+            _state.wallet.isSignedIn = () => true;
             return resolve([{accountId,publicKey}]);
           }
         });
@@ -282,67 +281,66 @@ const MyNearWallet: WalletBehaviourFactory<
       }
       // const account = _state.wallet.account();
       // console.log( "pepe",account["signAndSendTransaction"])
-      // const account = _state.wallet.account();
-      // // const { networkId, signer, provider } = account.connection;
-      // return account["signAndSendTransaction"]({
-      //   receiverId: receiverId || contract.contractId,
-      //   actions: actions.map((action) => createAction(action)),
-      //   walletCallbackUrl: callbackUrl,
-      // });
       const account = _state.wallet.account();
-      const { networkId, signer, provider } = account.connection;
+      // const { networkId, signer, provider } = account.connection;
+      return account["signAndSendTransaction"]({
+        receiverId: receiverId || contract.contractId,
+        actions: actions.map((action) => createAction(action)),
+        walletCallbackUrl: callbackUrl,
+      });
+      // const account = _state.wallet.account();
+      // const { networkId, signer, provider } = account.connection;
 
-      const block = await provider.block({ finality: "final" });
+      // const block = await provider.block({ finality: "final" });
 
 
-      const transactions = await nearAPI.transactions.createTransaction(
-        signerId || account.accountId,
-        PublicKey.fromString("ed25519:AtH7GEjv2qmBVoT8qoRhWXizXM5CC12DC6tiqY9iNoRm"),
-        receiverId || contract.contractId,
-        0,
-        actions.map((action) => createAction(action)),
-        new Uint8Array(32)
-      );
-      // @ts-ignore
-      // console.log({transactions,test:atob(transactions.encode())});
-      // console.log("orginal",atob("DwAAAG1hZ3VpbGEudGVzdG5ldACS3ARWu0sYjX63OYbDojizriWL55RnrStWodM6c%2BbIrMrc%2F3zXjAAAGwAAAGhlbGxvLm5lYXItZXhhbXBsZXMudGVzdG5ldF6mKSLVD4Nu%2ByY53uE0fD4CCaELfzNdK18eVlDURC4QAQAAAAIMAAAAc2V0X2dyZWV0aW5nEQAAAHsiZ3JlZXRpbmciOiJoaSJ9AOBX60gbAAAAAAAAAAAAAAAAAAAAAAAA"));
-      console.log({signerId,
-        receiverId,
-        actions,
-        callbackUrl});
+      // const transactions = await nearAPI.transactions.createTransaction(
+      //   signerId || account.accountId,
+      //   PublicKey.fromString("ed25519:AtH7GEjv2qmBVoT8qoRhWXizXM5CC12DC6tiqY9iNoRm"),
+      //   receiverId || contract.contractId,
+      //   0,
+      //   actions.map((action) => createAction(action)),
+      //   new Uint8Array(32)
+      // );
+      // // @ts-ignore
+      // // console.log({transactions,test:atob(transactions.encode())});
+      // // console.log("orginal",atob("DwAAAG1hZ3VpbGEudGVzdG5ldACS3ARWu0sYjX63OYbDojizriWL55RnrStWodM6c%2BbIrMrc%2F3zXjAAAGwAAAGhlbGxvLm5lYXItZXhhbXBsZXMudGVzdG5ldF6mKSLVD4Nu%2ByY53uE0fD4CCaELfzNdK18eVlDURC4QAQAAAAIMAAAAc2V0X2dyZWV0aW5nEQAAAHsiZ3JlZXRpbmciOiJoaSJ9AOBX60gbAAAAAAAAAAAAAAAAAAAAAAAA"));
+      // console.log({signerId,
+      //   receiverId,
+      //   actions,
+      //   callbackUrl});
       
 
     
-      const publishUrl = new URL('sign', `https://localhost:1234`);
-      publishUrl.searchParams.set('transactions', Buffer.from(transactions.encode()).toString("base64"));
-      publishUrl.searchParams.set('callbackUrl', "http://localhost:3000/hello-near");
-      // @ts-ignore
-      const childWindow = window.open(publishUrl.toString(),"My Near Wallet", "width=480,height=640");
+      // const publishUrl = new URL('sign', `https://localhost:1234`);
+      // publishUrl.searchParams.set('transactions', Buffer.from(transactions.encode()).toString("base64"));
+      // publishUrl.searchParams.set('callbackUrl', "http://localhost:3000/hello-near");
+      // // @ts-ignore
+      // const childWindow = window.open(publishUrl.toString(),"My Near Wallet", "width=480,height=640");
 
       // const childWindow = window.open("https://localhost:1234/sign?transactions=DwAAAG1hZ3VpbGEudGVzdG5ldACS3ARWu0sYjX63OYbDojizriWL55RnrStWodM6c%2BbIrMrc%2F3zXjAAAGwAAAGhlbGxvLm5lYXItZXhhbXBsZXMudGVzdG5ldF6mKSLVD4Nu%2ByY53uE0fD4CCaELfzNdK18eVlDURC4QAQAAAAIMAAAAc2V0X2dyZWV0aW5nEQAAAHsiZ3JlZXRpbmciOiJoaSJ9AOBX60gbAAAAAAAAAAAAAAAAAAAAAAAA&callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fhello-near", "Ventana Secundaria", "width=400,height=400");
         
       
-      return new Promise((resolve, reject) => {
-        const checkWindowClosed = setInterval(() => {
-          if (childWindow?.closed) {
-            clearInterval(checkWindowClosed);
-            reject(new Error('La ventana se cerró antes de completar la transacción.'));
-          }
-        }, 1000);
-        window.addEventListener('message', async(event) => {
-          clearInterval(checkWindowClosed);
-          if (event.data?.status === 'success') {
-            console.log('Transacción exitosa');
-            childWindow?.close();
-            window.removeEventListener('message', () => { });
+      // return new Promise((resolve, reject) => {
+      //   const checkWindowClosed = setInterval(() => {
+      //     if (childWindow?.closed) {
+      //       clearInterval(checkWindowClosed);
+      //       reject(new Error('La ventana se cerró antes de completar la transacción.'));
+      //     }
+      //   }, 500);
+      //   window.addEventListener('message', async(event) => {
+      //     if (event.data?.status === 'success') {
+      //       console.log('Transacción exitosa');
+      //       childWindow?.close();
+      //       window.removeEventListener('message', () => { });
 
             
-            const result = await provider.txStatus(event.data?.transactionHashes, 'unused',"NONE");
+      //       const result = await provider.txStatus(event.data?.transactionHashes, 'unused',"NONE");
             
-            resolve(result);
-          }
-        });
-      }) 
+      //       resolve(result);
+      //     }
+      //   });
+      // }) 
     },
 
     async signAndSendTransactions({ transactions, callbackUrl }) {
@@ -397,3 +395,56 @@ export function setupMyNearWallet({
     };
   };
 }
+
+// signAndSendTransaction({receiverId, actions, walletMeta, walletCallbackUrl=window.location.href}) {
+//   const _super = Object.create(null, {
+//       signAndSendTransaction: {
+//           get: ()=>super.signAndSendTransaction
+//       }
+//   });
+//   return __awaiter(this, void 0, void 0, function*() {
+//       const localKey = yield this.connection.signer.getPublicKey(this.accountId, this.connection.networkId);
+//       let accessKey = yield this.accessKeyForTransaction(receiverId, actions, localKey);
+//       if (!accessKey) {
+//           throw new Error(`Cannot find matching key for transaction sent to ${receiverId}`);
+//       }
+//       if (localKey && localKey.toString() === accessKey.public_key) {
+//           try {
+//               return yield _super.signAndSendTransaction.call(this, {
+//                   receiverId,
+//                   actions
+//               });
+//           } catch (e) {
+//               if (e.type === 'NotEnoughAllowance') {
+//                   accessKey = yield this.accessKeyForTransaction(receiverId, actions);
+//               } else {
+//                   throw e;
+//               }
+//           }
+//       }
+//       const block = yield this.connection.provider.block({
+//           finality: 'final'
+//       });
+//       const blockHash = (0,
+//       utils_1.baseDecode)(block.header.hash);
+//       const publicKey = crypto_1.PublicKey.from(accessKey.public_key);
+//       // TODO: Cache & listen for nonce updates for given access key
+//       const nonce = accessKey.access_key.nonce + BigInt(1);
+//       const transaction = (0,
+//       transactions_1.createTransaction)(this.accountId, publicKey, receiverId, nonce, actions, blockHash);
+//       yield this.walletConnection.requestSignTransactions({
+//           transactions: [transaction],
+//           meta: walletMeta,
+//           callbackUrl: walletCallbackUrl
+//       });
+//       return new Promise((resolve,reject)=>{
+//           setTimeout(()=>{
+//               reject(new Error('Failed to redirect to sign transaction'));
+//           }
+//           , 1000);
+//       }
+//       );
+//       // TODO: Aggregate multiple transaction request with "debounce".
+//       // TODO: Introduce TransactionQueue which also can be used to watch for status?
+//   });
+// }
