@@ -11,7 +11,6 @@ import type {
 } from "@near-wallet-selector/core";
 import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import { isMobile } from "is-mobile";
 import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
@@ -260,11 +259,6 @@ export function setupNightly({
   deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const mobile = isMobile();
-    if (mobile) {
-      return null;
-    }
-
     const installed = await isInstalled();
 
     return {
