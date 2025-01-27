@@ -8,6 +8,7 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
@@ -63,6 +64,7 @@ export class WalletSelectorExportComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupMeteorWalletApp({ contractId: CONTRACT_ID }),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),

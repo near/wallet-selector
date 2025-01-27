@@ -1,0 +1,51 @@
+{
+  "name": "meteor-wallet-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/meteor-wallet-app/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/meteor-wallet-app",
+        "tsConfig": "packages/meteor-wallet-app/tsconfig.lib.json",
+        "project": "packages/meteor-wallet-app/package.json",
+        "entryFile": "packages/meteor-wallet-app/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/meteor-wallet-app/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/meteor-wallet-app/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/meteor-wallet-app"],
+      "options": {
+        "jestConfig": "packages/meteor-wallet-app/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      },
+      "dependsOn": ["^deploy"]
+    }
+  },
+  "tags": ["injected-wallet"]
+}

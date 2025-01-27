@@ -17,6 +17,7 @@ import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -67,6 +68,7 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupMeteorWalletApp({ contractId: CONTRACT_ID }),
         setupWelldoneWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
