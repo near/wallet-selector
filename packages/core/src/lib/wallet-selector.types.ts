@@ -118,4 +118,39 @@ export interface WalletSelector {
     eventName: EventName,
     callback: (event: WalletSelectorEvents[EventName]) => void
   ): void;
+
+  /**
+   * Sets up a callback function that triggers whenever the accountId is updated.
+   */
+  subscribeOnAccountChange(onAccountChangeFn: (account: string) => void): void;
+  /**
+   * Executes a view function on a specified smart contract.
+   */
+  viewMethod(
+    contractId: string,
+    method: string,
+    args: Record<string, unknown>
+  ): Promise<unknown>;
+  /**
+   * Executes a mutable function on a specified smart contract.
+   * Requires to be signed in.
+   * @throws {Error} if a user isn't signed in
+   */
+  callMethod(
+    contractId: string,
+    method: string,
+    args: Record<string, unknown>,
+    gas: string,
+    deposit: string
+  ): Promise<unknown>;
+  /**
+   * Retrieves the account's balance in yoctoNear by querying the specified account's state.
+   * Requires to be signed in.
+   * @throws {Error} if a user isn't signed in
+   */
+  getSignedInAccountBalance(): Promise<string>;
+  /**
+   * Retrieves signed in account's ID
+   */
+  getAccountId(): string | undefined;
 }

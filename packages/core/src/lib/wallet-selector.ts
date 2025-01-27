@@ -7,8 +7,14 @@ import type {
 } from "./wallet-selector.types";
 import { EventEmitter, Logger, WalletModules, Provider } from "./services";
 import type { Wallet } from "./wallet";
-import type { Store } from "./store.types";
+import type { Store, WalletSelectorState } from "./store.types";
 import type { NetworkId, Options } from "./options.types";
+import type {
+  AccountView,
+  FinalExecutionOutcome,
+  RpcQueryRequest,
+} from "near-api-js/lib/providers/provider";
+import { providers } from "near-api-js";
 
 let walletSelectorInstance: WalletSelector | null = null;
 
@@ -16,7 +22,8 @@ const createSelector = (
   options: Options,
   store: Store,
   walletModules: WalletModules,
-  emitter: EventEmitter<WalletSelectorEvents>
+  emitter: EventEmitter<WalletSelectorEvents>,
+  provider: Provider
 ): WalletSelector => {
   return {
     options,
@@ -68,6 +75,77 @@ const createSelector = (
     off: (eventName, callback) => {
       emitter.off(eventName, callback);
     },
+    async getSignedInAccountBalance() {
+      const accountId = this.getAccountId();
+
+      if (!accountId) {
+        throw new Error(`Not signed in`);
+      }
+
+      const request: RpcQueryRequest = {
+        request_type: "view_account",
+        account_id: accountId,
+        finality: "final",
+      };
+      const account = await provider.query<AccountView>(request);
+
+      return account.amount || "0";
+    },
+    subscribeOnAccountChange(onAccountChangeFn) {
+      this.store.observable.subscribe(async (state: WalletSelectorState) => {
+        const signedAccount = state?.accounts.find(
+          (account) => account.active
+        )?.accountId;
+
+        onAccountChangeFn(signedAccount || "");
+      });
+    },
+    async viewMethod(contractId, method, args) {
+      const request: RpcQueryRequest = {
+        request_type: "call_function",
+        account_id: contractId,
+        method_name: method,
+        args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
+        finality: "optimistic",
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await provider.query<any>(request);
+
+      return JSON.parse(Buffer.from(response.result).toString());
+    },
+    async callMethod(contractId, method, args, gas, deposit) {
+      const wallet = await this.wallet();
+
+      const outcome = await wallet.signAndSendTransaction({
+        receiverId: contractId,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: method,
+              args,
+              gas,
+              deposit,
+            },
+          },
+        ],
+      });
+
+      return providers.getTransactionLastResult(
+        outcome as FinalExecutionOutcome
+      );
+    },
+    getAccountId() {
+      const { accounts } = store.getState();
+
+      if (accounts.length === 0) {
+        return undefined;
+      }
+
+      const { accountId } = accounts.at(0)!;
+
+      return accountId;
+    },
   };
 };
 
@@ -94,19 +172,20 @@ export const setupWalletSelector = async (
       ? params.fallbackRpcUrls
       : [network.nodeUrl];
 
+  const provider = new Provider(rpcProviderUrls);
   const walletModules = new WalletModules({
     factories: params.modules,
     storage,
     options,
     store,
     emitter,
-    provider: new Provider(rpcProviderUrls),
+    provider,
   });
 
   await walletModules.setup();
 
   if (params.allowMultipleSelectors) {
-    return createSelector(options, store, walletModules, emitter);
+    return createSelector(options, store, walletModules, emitter, provider);
   }
 
   if (!walletSelectorInstance) {
@@ -114,7 +193,8 @@ export const setupWalletSelector = async (
       options,
       store,
       walletModules,
-      emitter
+      emitter,
+      provider
     );
   }
 
