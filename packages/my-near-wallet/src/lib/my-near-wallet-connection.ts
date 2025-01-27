@@ -12,6 +12,11 @@ const MULTISIG_HAS_METHOD = 'add_request_and_confirm';
 const LOCAL_STORAGE_KEY_SUFFIX = '_wallet_auth_key';
 const PENDING_ACCESS_KEY_PREFIX = 'pending_key'; // browser storage key for a pending access key (i.e. key has been generated but we are not sure it was added yet)
 
+
+const DEFAULT_POPUP_WIDTH = 480;
+const DEFAULT_POPUP_HEIGHT = 640;
+const POLL_INTERVAL = 500;
+
 interface SignInOptions {
     contractId?: string;
     methodNames?: string[];
@@ -20,6 +25,13 @@ interface SignInOptions {
     failureUrl?: string;
     keyType?: 'ed25519' | 'secp256k1'
 }
+
+interface WalletMessage {
+    status: 'success' | 'failure' | 'pending';
+    transactionHashes?: string;
+    error?: string;
+    [key: string]: unknown;
+  }
 
 /**
  * Information to send NEAR wallet for signing transactions and redirecting the browser back to the calling application
@@ -174,6 +186,76 @@ export class MyNearWalletConnection {
         return newUrl.toString();
     }
 
+    async handlePopupTransaction<T>(
+        url: string,
+        callback: (result: WalletMessage) => T
+      ): Promise<T> {
+
+        const screenWidth = window.innerWidth || screen.width;
+        const screenHeight = window.innerHeight || screen.height;
+        const left = (screenWidth - DEFAULT_POPUP_WIDTH) / 2;
+        const top = (screenHeight - DEFAULT_POPUP_HEIGHT) / 2;
+        const childWindow = window.open(
+          url,
+          "My Near Wallet",
+          `width=${DEFAULT_POPUP_WIDTH},height=${DEFAULT_POPUP_HEIGHT},top=${top},left=${left}`
+        );
+    
+        if (!childWindow) {
+          throw new Error('Popup window blocked. Please allow popups for this site.');
+        }
+    
+        return new Promise((resolve, reject) => {
+          const cleanup = () => {
+            window.removeEventListener('message', messageHandler);
+            clearInterval(intervalId);
+          };
+    
+          const messageHandler = this.setupMessageHandler(resolve, reject, childWindow,callback);
+          const intervalId = setInterval(() => {
+            if (childWindow.closed) {
+              cleanup();
+              reject(new Error('User closed the wallet window'));
+            }
+          }, POLL_INTERVAL);
+        });
+      }
+
+      private validateMessageOrigin(event: MessageEvent): boolean {
+        const expectedOrigin = new URL(this._walletBaseUrl).origin;
+        return event.origin === expectedOrigin;
+      }
+
+      private setupMessageHandler<T>(
+        resolve: (value: T) => void,
+        reject: (reason?: unknown) => void,
+        childWindow: Window | null,
+        callback: (result: WalletMessage) => T
+      ): (event: MessageEvent) => Promise<any> {
+        const handler = async (event: MessageEvent) => {
+        //   if (!this.validateMessageOrigin(event)) {
+        //     reject(new Error('Invalid message origin'));
+        //     return;
+        //   }
+    
+          const message = event.data as WalletMessage;
+          switch (message.status) {
+            case 'success':
+              childWindow?.close();
+              resolve(callback(message));
+              break;
+            case 'failure':
+              childWindow?.close();
+              reject(new Error(message.error || 'Transaction failed'));
+              break;
+            default:
+              console.warn('Unhandled message status:', message.status);
+          }
+        };
+    
+        window.addEventListener('message', handler);
+        return handler;
+      }
     /**
      * Redirects current page to the wallet authentication page.
      * @param options An optional options object
@@ -191,29 +273,35 @@ export class MyNearWalletConnection {
     async requestSignIn(options: SignInOptions) {
         
       const url = await this.requestSignInUrl(options);
-      
-      // @ts-ignore
-      const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
-      
-      return await new Promise((resolve, reject) => {
-        const checkWindowClosed = setInterval(() => {
-          if (childWindow?.closed) {
-            clearInterval(checkWindowClosed);
-            reject(new Error('La ventana se cerró antes de completar la transacción.'));
-          }
-        }, 500);
-        window.addEventListener('message', async(event) => {
-          if (event.data?.status === 'success') {
-            
-            const { public_key:publicKey, all_keys:allKeys, account_id:accountId } = event.data;
+      return await this.handlePopupTransaction(url,async(data)=>{
+        const { public_key: publicKey, all_keys: allKeys, account_id: accountId } = data as any;
+        await this.completeSignInWithAccessKeys({ accountId, publicKey, allKeys });
+        return [{ accountId, publicKey }];
+      });
 
-            await this.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
-            childWindow?.close();
-            window.removeEventListener('message', () => { });
-            return resolve([{accountId,publicKey}]);
-          }
-        });
-      }) 
+      
+    //   // @ts-ignore
+    //   const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
+      
+    //   return await new Promise((resolve, reject) => {
+    //     const checkWindowClosed = setInterval(() => {
+    //       if (childWindow?.closed) {
+    //         clearInterval(checkWindowClosed);
+    //         reject(new Error('La ventana se cerró antes de completar la transacción.'));
+    //       }
+    //     }, 500);
+    //     window.addEventListener('message', async(event) => {
+    //       if (event.data?.status === 'success') {
+            
+    //         const { public_key:publicKey, all_keys:allKeys, account_id:accountId } = event.data;
+
+    //         await this.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
+    //         childWindow?.close();
+    //         window.removeEventListener('message', () => { });
+    //         return resolve([{accountId,publicKey}]);
+    //       }
+    //     });
+    //   }) 
     }
 
     /**
@@ -256,29 +344,33 @@ export class MyNearWalletConnection {
 
 
     requestSignTransaction(options: RequestSignTransactionsOptions): Promise<string> {
+
         const url = this.requestSignTransactionsUrl(options);
-        // @ts-ignore
-        const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
+    
+        console.log("it is magic",url);
+        
+        return this.handlePopupTransaction(url, (data) => data?.transactionHashes) as Promise<string>;
+        // const url = this.requestSignTransactionsUrl(options);
+        // // @ts-ignore
+        // const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
   
-        return new Promise((resolve, reject) => {
-          const checkWindowClosed = setInterval(() => {
-            if (childWindow?.closed) {
-              clearInterval(checkWindowClosed);
-              reject(new Error('La ventana se cerró antes de completar la transacción.'));
-            }
-          }, 1000);
-          window.addEventListener('message', async(event) => {
-            clearInterval(checkWindowClosed);
-            if (event.data?.status === 'success') {
-              console.log('Transacción exitosa');
-              childWindow?.close();
-              window.removeEventListener('message', () => {});
-              console.log("eventos",event.data?.transactionHashes);
+        // return new Promise((resolve, reject) => {
+        //   const checkWindowClosed = setInterval(() => {
+        //     if (childWindow?.closed) {
+        //       clearInterval(checkWindowClosed);
+        //       reject(new Error('La ventana se cerró antes de completar la transacción.'));
+        //     }
+        //   }, 1000);
+        //   window.addEventListener('message', async(event) => {
+        //     clearInterval(checkWindowClosed);
+        //     if (event.data?.status === 'success') {
+        //       childWindow?.close();
+        //       window.removeEventListener('message', () => {});
               
-              resolve(event.data?.transactionHashes);
-            }
-          });
-        }) 
+        //       resolve(event.data?.transactionHashes);
+        //     }
+        //   });
+        // }) 
 
     }
 

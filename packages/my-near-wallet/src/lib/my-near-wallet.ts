@@ -190,7 +190,8 @@ const MyNearWallet: WalletBehaviourFactory<
         href.searchParams.append("state", state);
       }
 
-      window.location.replace(href.toString());
+      await _state.wallet.handlePopupTransaction(href.toString(),()=>{});
+      
 
       return;
     },
