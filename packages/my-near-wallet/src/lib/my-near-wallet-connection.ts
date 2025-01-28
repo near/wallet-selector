@@ -231,8 +231,6 @@ export class MyNearWalletConnection {
         const handler = async (event: MessageEvent) => {
 
             const message = event.data as WalletMessage;
-
-            console.log('message', message);
             
             if (event.origin != this._walletBaseUrl) {
                 return;
