@@ -51,7 +51,7 @@
       "open": "Abrir"
     },
     "walletTypes": {
-      "hardware": "Carteira de hardware",
+      "hardware": "Carteira Física",
       "browser": "Carteira de navegador",
       "injected": "Extensão de carteira",
       "bridge": "Carteira de ponte",
