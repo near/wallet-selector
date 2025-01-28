@@ -77,7 +77,9 @@ const createSelector = (
     },
     async getSignedAccountBalance() {
       const { accounts } = store.getState();
-      if (!accounts.length) return undefined;
+      if (!accounts.length) {
+        return undefined;
+      }
 
       const { accountId } = accounts.at(0)!;
 
@@ -106,9 +108,19 @@ const createSelector = (
     async signOut<Variation extends Wallet = Wallet>() {
       const { selectedWalletId } = store.getState();
       const wallet = await walletModules.getWallet<Variation>(selectedWalletId);
-      if (wallet) wallet.signOut();
+      if (wallet) {
+        wallet.signOut();
+      }
     },
-    async viewMethod({ contractId, method, args = {} }: { contractId: string, method: string, args?: Record<string, unknown> }) {
+    async viewMethod({
+      contractId,
+      method,
+      args = {},
+    }: {
+      contractId: string;
+      method: string;
+      args?: Record<string, unknown>;
+    }) {
       const request: RpcQueryRequest = {
         request_type: "call_function",
         account_id: contractId,
@@ -121,11 +133,25 @@ const createSelector = (
 
       return JSON.parse(Buffer.from(response.result).toString());
     },
-    async callMethod({ contractId, method, args = {}, gas = "30000000000000", deposit = "0" }: { contractId: string, method: string, args?: Record<string, unknown>, gas?: string | number | bigint, deposit?: string | bigint }) {
+    async callMethod({
+      contractId,
+      method,
+      args = {},
+      gas = "30000000000000",
+      deposit = "0",
+    }: {
+      contractId: string;
+      method: string;
+      args?: Record<string, unknown>;
+      gas?: string | number | bigint;
+      deposit?: string | bigint;
+    }) {
       const { selectedWalletId } = store.getState();
       const wallet = await walletModules.getWallet(selectedWalletId);
 
-      if (!wallet) { throw new Error("No wallet selected"); }
+      if (!wallet) {
+        throw new Error("No wallet selected");
+      }
 
       const outcome = await wallet.signAndSendTransaction({
         receiverId: contractId,
@@ -150,10 +176,12 @@ const createSelector = (
       const { selectedWalletId } = store.getState();
       const wallet = await walletModules.getWallet(selectedWalletId);
 
-      if (!wallet) { throw new Error("No wallet selected"); }
+      if (!wallet) {
+        throw new Error("No wallet selected");
+      }
 
       return wallet.signAndSendTransactions({ transactions });
-    }
+    },
   };
 };
 
