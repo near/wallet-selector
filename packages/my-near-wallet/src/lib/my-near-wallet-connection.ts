@@ -16,7 +16,7 @@ const PENDING_ACCESS_KEY_PREFIX = 'pending_key'; // browser storage key for a pe
 
 const DEFAULT_POPUP_WIDTH = 480;
 const DEFAULT_POPUP_HEIGHT = 640;
-const POLL_INTERVAL = 500;
+const POLL_INTERVAL = 300;
 
 interface SignInOptions {
     contractId?: string;
@@ -210,16 +210,13 @@ export class MyNearWalletConnection {
         }
 
         return new Promise((resolve, reject) => {
-            const cleanup = () => {
-                window.removeEventListener('message', messageHandler);
-                clearInterval(intervalId);
-            };
-
             const messageHandler = this.setupMessageHandler(resolve, reject, childWindow, callback);
+
             const intervalId = setInterval(() => {
                 if (childWindow.closed) {
-                    cleanup();
-                    reject(new Error('User closed the wallet window'));
+                    window.removeEventListener('message', messageHandler);
+                    clearInterval(intervalId);
+                    reject(new Error('User closed the window'));
                 }
             }, POLL_INTERVAL);
         });
@@ -234,7 +231,7 @@ export class MyNearWalletConnection {
         const handler = async (event: MessageEvent) => {
 
             const message = event.data as WalletMessage;
-            
+
             switch (message.status) {
                 case 'success':
                     childWindow?.close();
@@ -383,6 +380,7 @@ export class MyNearWalletConnection {
     signOut() {
         this._authData = {};
         window.localStorage.removeItem(this._authDataKey);
+        this._keyStore.clear();
     }
 
     /**
