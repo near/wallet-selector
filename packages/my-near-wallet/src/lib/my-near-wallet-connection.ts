@@ -232,6 +232,11 @@ export class MyNearWalletConnection {
 
             const message = event.data as WalletMessage;
 
+            console.log('message', message);
+            
+            if (event.origin != this._walletBaseUrl) {
+                return;
+            }
             switch (message.status) {
                 case 'success':
                     childWindow?.close();

@@ -179,7 +179,8 @@ const MyNearWallet: WalletBehaviourFactory<
       if (!url) {
         throw new Error(`The callbackUrl is missing for ${metadata.name}`);
       }
-
+      console.log("signMessage", {message, nonce, recipient, url, state});
+      
       const href = new URL(params.walletUrl);
       href.pathname = "sign-message";
       href.searchParams.append("message", message);
