@@ -1,8 +1,8 @@
 import { setupWalletSelector } from "./wallet-selector";
 import { getNetworkPreset } from "./options";
 import {
-  FailoverRpcProvider,
   JsonRpcProvider,
+  FailoverRpcProvider,
 } from "near-api-js/lib/providers";
 import type { Network } from "./options.types";
 import type { Store } from "./store.types";

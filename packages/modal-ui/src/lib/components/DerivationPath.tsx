@@ -69,21 +69,19 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [headerTitle, setHeaderTitle] = useState(initalHeaderTitle);
 
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
-    const response = await fetch(
-      `${selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
-    );
+    const url = `${selector.options.network.indexerUrl}/public_key/ed25519:${publicKey}`;
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error("Failed to get account id from public key");
+      throw new Error("Failed to get account ID from public key");
     }
 
-    const accountIds = await response.json();
+    const jsonResponse: { account_ids: Array<string>; public_key: string } =
+      await response.json();
 
-    if (!Array.isArray(accountIds) || !accountIds.length) {
-      return [];
-    }
+    const { account_ids: accountIds } = jsonResponse;
 
-    return accountIds;
+    return Array.isArray(accountIds) ? accountIds : [];
   };
 
   const resolveAccounts = async (

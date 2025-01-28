@@ -21,12 +21,6 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-js/types": [
-        "node_modules/@near-js/types"
-      ],
-      "@near-js/keystores": [
-        "node_modules/@near-js/keystores"
-      ],
       "@near-wallet-selector/account-export": [
         "packages/account-export/src/index.ts"
       ],
@@ -53,6 +47,9 @@
       ],
       "@near-wallet-selector/meteor-wallet": [
         "packages/meteor-wallet/src/index.ts"
+      ],
+      "@near-wallet-selector/meteor-wallet-app": [
+        "packages/meteor-wallet-app/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui": [
         "dist/packages/modal-ui"
