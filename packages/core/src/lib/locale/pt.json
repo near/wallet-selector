@@ -53,7 +53,7 @@
     "walletTypes": {
       "hardware": "Carteira Física",
       "browser": "Carteira de navegador",
-      "injected": "Extensão de carteira",
+      "injected": "Extensão",
       "bridge": "Carteira de ponte",
       "mobile": "Carteira móvel",
       "instant-link": "Carteira instantânea"
