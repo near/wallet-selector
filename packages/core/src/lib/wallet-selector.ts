@@ -75,8 +75,11 @@ const createSelector = (
     off: (eventName, callback) => {
       emitter.off(eventName, callback);
     },
-    async getSignedInAccountBalance() {
-      const accountId = this.getAccountId();
+    async getSignedAccountBalance() {
+      const { accounts } = store.getState();
+      if (!accounts.length) return undefined;
+
+      const { accountId } = accounts.at(0)!;
 
       if (!accountId) {
         throw new Error(`Not signed in`);
@@ -100,7 +103,12 @@ const createSelector = (
         onAccountChangeFn(signedAccount || "");
       });
     },
-    async viewMethod(contractId, method, args) {
+    async signOut<Variation extends Wallet = Wallet>() {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet<Variation>(selectedWalletId);
+      if (wallet) wallet.signOut();
+    },
+    async viewMethod({ contractId, method, args = {} }: { contractId: string, method: string, args?: Record<string, unknown> }) {
       const request: RpcQueryRequest = {
         request_type: "call_function",
         account_id: contractId,
@@ -113,8 +121,11 @@ const createSelector = (
 
       return JSON.parse(Buffer.from(response.result).toString());
     },
-    async callMethod(contractId, method, args, gas, deposit) {
-      const wallet = await this.wallet();
+    async callMethod({ contractId, method, args = {}, gas = "30000000000000", deposit = "0" }: { contractId: string, method: string, args?: Record<string, unknown>, gas?: string | number | bigint, deposit?: string | bigint }) {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet(selectedWalletId);
+
+      if (!wallet) { throw new Error("No wallet selected"); }
 
       const outcome = await wallet.signAndSendTransaction({
         receiverId: contractId,
@@ -124,8 +135,8 @@ const createSelector = (
             params: {
               methodName: method,
               args,
-              gas,
-              deposit,
+              gas: gas.toString(),
+              deposit: deposit.toString(),
             },
           },
         ],
@@ -135,17 +146,14 @@ const createSelector = (
         outcome as FinalExecutionOutcome
       );
     },
-    getAccountId() {
-      const { accounts } = store.getState();
+    async signAndSendTransactions({ transactions }) {
+      const { selectedWalletId } = store.getState();
+      const wallet = await walletModules.getWallet(selectedWalletId);
 
-      if (accounts.length === 0) {
-        return undefined;
-      }
+      if (!wallet) { throw new Error("No wallet selected"); }
 
-      const { accountId } = accounts.at(0)!;
-
-      return accountId;
-    },
+      return wallet.signAndSendTransactions({ transactions });
+    }
   };
 };
 
