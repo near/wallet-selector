@@ -1,3 +1,4 @@
+import { SignedMessage } from "@near-wallet-selector/core";
 import { serialize } from "borsh";
 import { Account, Connection, InMemorySigner, KeyPair, Near } from "near-api-js";
 import { SignAndSendTransactionOptions } from "near-api-js/lib/account";
@@ -31,7 +32,10 @@ interface WalletMessage {
     transactionHashes?: string;
     error?: string;
     [key: string]: unknown;
-  }
+    signedRequest?: SignedMessage;
+    errorMessage?: string;
+    errorCode?: string;
+}
 
 /**
  * Information to send NEAR wallet for signing transactions and redirecting the browser back to the calling application
@@ -86,13 +90,13 @@ export class MyNearWalletConnection {
     _completeSignInPromise: Promise<void>;
 
     constructor(near: Near, appKeyPrefix: string) {
-        if (typeof(appKeyPrefix) !== 'string') {
+        if (typeof (appKeyPrefix) !== 'string') {
             throw new Error('Please define a clear appKeyPrefix for this WalletConnection instance as the second argument to the constructor');
         }
 
         this._near = near;
         const authDataKey = appKeyPrefix + LOCAL_STORAGE_KEY_SUFFIX;
-        const authData = JSON.parse(window.localStorage.getItem(authDataKey||'') || '{}');
+        const authData = JSON.parse(window.localStorage.getItem(authDataKey || '') || '{}');
         this._networkId = near.config.networkId;
         this._walletBaseUrl = near.config.walletUrl;
         appKeyPrefix = appKeyPrefix || near.config.contractName || 'default';
@@ -161,7 +165,7 @@ export class MyNearWalletConnection {
      * const url = await wallet.requestSignInUrl({ contractId: 'account-with-deploy-contract.near' });
      * ```
      */
-    async requestSignInUrl({contractId, methodNames, successUrl, failureUrl, keyType = 'ed25519'}: SignInOptions): Promise<string> {
+    async requestSignInUrl({ contractId, methodNames, successUrl, failureUrl, keyType = 'ed25519' }: SignInOptions): Promise<string> {
         const currentUrl = new URL(window.location.href);
         const newUrl = new URL(this._walletBaseUrl + LOGIN_WALLET_URL_SUFFIX);
         newUrl.searchParams.set('success_url', successUrl || currentUrl.href);
@@ -189,73 +193,65 @@ export class MyNearWalletConnection {
     async handlePopupTransaction<T>(
         url: string,
         callback: (result: WalletMessage) => T
-      ): Promise<T> {
+    ): Promise<T> {
 
         const screenWidth = window.innerWidth || screen.width;
         const screenHeight = window.innerHeight || screen.height;
         const left = (screenWidth - DEFAULT_POPUP_WIDTH) / 2;
         const top = (screenHeight - DEFAULT_POPUP_HEIGHT) / 2;
         const childWindow = window.open(
-          url,
-          "My Near Wallet",
-          `width=${DEFAULT_POPUP_WIDTH},height=${DEFAULT_POPUP_HEIGHT},top=${top},left=${left}`
+            url,
+            "My Near Wallet",
+            `width=${DEFAULT_POPUP_WIDTH},height=${DEFAULT_POPUP_HEIGHT},top=${top},left=${left}`
         );
-    
+
         if (!childWindow) {
-          throw new Error('Popup window blocked. Please allow popups for this site.');
+            throw new Error('Popup window blocked. Please allow popups for this site.');
         }
-    
+
         return new Promise((resolve, reject) => {
-          const cleanup = () => {
-            window.removeEventListener('message', messageHandler);
-            clearInterval(intervalId);
-          };
-    
-          const messageHandler = this.setupMessageHandler(resolve, reject, childWindow,callback);
-          const intervalId = setInterval(() => {
-            if (childWindow.closed) {
-              cleanup();
-              reject(new Error('User closed the wallet window'));
-            }
-          }, POLL_INTERVAL);
+            const cleanup = () => {
+                window.removeEventListener('message', messageHandler);
+                clearInterval(intervalId);
+            };
+
+            const messageHandler = this.setupMessageHandler(resolve, reject, childWindow, callback);
+            const intervalId = setInterval(() => {
+                if (childWindow.closed) {
+                    cleanup();
+                    reject(new Error('User closed the wallet window'));
+                }
+            }, POLL_INTERVAL);
         });
-      }
+    }
 
-      private validateMessageOrigin(event: MessageEvent): boolean {
-        const expectedOrigin = new URL(this._walletBaseUrl).origin;
-        return event.origin === expectedOrigin;
-      }
-
-      private setupMessageHandler<T>(
+    private setupMessageHandler<T>(
         resolve: (value: T) => void,
         reject: (reason?: unknown) => void,
         childWindow: Window | null,
         callback: (result: WalletMessage) => T
-      ): (event: MessageEvent) => Promise<any> {
+    ): (event: MessageEvent) => Promise<any> {
         const handler = async (event: MessageEvent) => {
-        //   if (!this.validateMessageOrigin(event)) {
-        //     reject(new Error('Invalid message origin'));
-        //     return;
-        //   }
-    
-          const message = event.data as WalletMessage;
-          switch (message.status) {
-            case 'success':
-              childWindow?.close();
-              resolve(callback(message));
-              break;
-            case 'failure':
-              childWindow?.close();
-              reject(new Error(message.error || 'Transaction failed'));
-              break;
-            default:
-              console.warn('Unhandled message status:', message.status);
-          }
+
+            const message = event.data as WalletMessage;
+            
+            switch (message.status) {
+                case 'success':
+                    childWindow?.close();
+                    resolve(callback(message));
+                    break;
+                case 'failure':
+                    childWindow?.close();
+                    reject(new Error(message.errorMessage || 'Transaction failed'));
+                    break;
+                default:
+                    console.warn('Unhandled message status:', message.status);
+            }
         };
-    
+
         window.addEventListener('message', handler);
         return handler;
-      }
+    }
     /**
      * Redirects current page to the wallet authentication page.
      * @param options An optional options object
@@ -271,37 +267,13 @@ export class MyNearWalletConnection {
      * ```
      */
     async requestSignIn(options: SignInOptions) {
-        
-      const url = await this.requestSignInUrl(options);
-      return await this.handlePopupTransaction(url,async(data)=>{
-        const { public_key: publicKey, all_keys: allKeys, account_id: accountId } = data as any;
-        await this.completeSignInWithAccessKeys({ accountId, publicKey, allKeys });
-        return [{ accountId, publicKey }];
-      });
 
-      
-    //   // @ts-ignore
-    //   const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
-      
-    //   return await new Promise((resolve, reject) => {
-    //     const checkWindowClosed = setInterval(() => {
-    //       if (childWindow?.closed) {
-    //         clearInterval(checkWindowClosed);
-    //         reject(new Error('La ventana se cerró antes de completar la transacción.'));
-    //       }
-    //     }, 500);
-    //     window.addEventListener('message', async(event) => {
-    //       if (event.data?.status === 'success') {
-            
-    //         const { public_key:publicKey, all_keys:allKeys, account_id:accountId } = event.data;
-
-    //         await this.completeSignInWithAccessKeys({accountId,publicKey,allKeys});
-    //         childWindow?.close();
-    //         window.removeEventListener('message', () => { });
-    //         return resolve([{accountId,publicKey}]);
-    //       }
-    //     });
-    //   }) 
+        const url = await this.requestSignInUrl(options);
+        return await this.handlePopupTransaction(url, async (data) => {
+            const { public_key: publicKey, all_keys: allKeys, account_id: accountId } = data as any;
+            await this.completeSignInWithAccessKeys({ accountId, publicKey, allKeys });
+            return [{ accountId, publicKey }];
+        });
     }
 
     /**
@@ -344,34 +316,9 @@ export class MyNearWalletConnection {
 
 
     requestSignTransaction(options: RequestSignTransactionsOptions): Promise<string> {
-
         const url = this.requestSignTransactionsUrl(options);
-    
-        console.log("it is magic",url);
-        
-        return this.handlePopupTransaction(url, (data) => data?.transactionHashes) as Promise<string>;
-        // const url = this.requestSignTransactionsUrl(options);
-        // // @ts-ignore
-        // const childWindow = window.open(url,"My Near Wallet", "width=480,height=640");
-  
-        // return new Promise((resolve, reject) => {
-        //   const checkWindowClosed = setInterval(() => {
-        //     if (childWindow?.closed) {
-        //       clearInterval(checkWindowClosed);
-        //       reject(new Error('La ventana se cerró antes de completar la transacción.'));
-        //     }
-        //   }, 1000);
-        //   window.addEventListener('message', async(event) => {
-        //     clearInterval(checkWindowClosed);
-        //     if (event.data?.status === 'success') {
-        //       childWindow?.close();
-        //       window.removeEventListener('message', () => {});
-              
-        //       resolve(event.data?.transactionHashes);
-        //     }
-        //   });
-        // }) 
 
+        return this.handlePopupTransaction(url, (data) => data?.transactionHashes) as Promise<string>;
     }
 
     /**
@@ -404,7 +351,7 @@ export class MyNearWalletConnection {
         window.history.replaceState({}, document.title, currentUrl.toString());
     }
 
-    async completeSignInWithAccessKeys({accountId,allKeys,publicKey}: {accountId: string, allKeys: string[], publicKey: string}) {
+    async completeSignInWithAccessKeys({ accountId, allKeys, publicKey }: { accountId: string, allKeys: string[], publicKey: string }) {
         const authData = {
             accountId,
             allKeys
@@ -507,16 +454,14 @@ export class MyNearConnectedWalletAccount extends Account {
             meta: walletMeta,
             callbackUrl: walletCallbackUrl
         });
-        
-        return new Promise(async(resolve, reject) => {
-            const result = await this.connection.provider.txStatus(transactionHashes, 'unused',"NONE");
+
+        return new Promise(async (resolve, reject) => {
+            const result = await this.connection.provider.txStatus(transactionHashes, 'unused', "NONE");
             resolve(result);
             setTimeout(() => {
                 reject(new Error('Failed to redirect to sign transaction'));
             }, 1000);
         });
-
-        
 
         // TODO: Aggregate multiple transaction request with "debounce".
         // TODO: Introduce TransactionQueue which also can be used to watch for status?

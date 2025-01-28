@@ -190,12 +190,15 @@ const MyNearWallet: WalletBehaviourFactory<
         href.searchParams.append("state", state);
       }
 
-      await _state.wallet.handlePopupTransaction(href.toString(),()=>{});
-      
-
-      return;
+      return await _state.wallet.handlePopupTransaction(href.toString(),(value)=>{
+        return {
+          accountId: value?.signedRequest?.accountId || "" ,
+          publicKey: value?.signedRequest?.publicKey || "",
+          signature: value?.signedRequest?.signature || "",
+        }
+      });
     },
-    
+
     async signAndSendTransaction({
       signerId,
       receiverId,
@@ -215,7 +218,6 @@ const MyNearWallet: WalletBehaviourFactory<
         throw new Error("Wallet not signed in");
       }
       const account = _state.wallet.account();
-      console.log({ receiverId, contractId: contract.contractId,actions, callbackUrl });
       
       return account["signAndSendTransaction"]({
         receiverId: receiverId || contract.contractId,
