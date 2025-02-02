@@ -1,6 +1,6 @@
 {
-  "name": "@near-wallet-selector/react-hook",
-  "version": "8.9.15",
+  "name": "maguila95.react-hook",
+  "version": "8.9.17",
   "description": "This is the core package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook",
+  "peerDependencies": {
+    "@near-wallet-selector/core": "8.9.15",
+    "@near-wallet-selector/modal-ui": "8.9.15",
+    "react": "18.2.0"
+  }
 }
