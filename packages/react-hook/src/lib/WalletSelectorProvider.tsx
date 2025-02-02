@@ -42,5 +42,3 @@ export function WalletSelectorProvider({ children, config }: { children: React.R
     </WalletSelectorContext.Provider>
   );
 }
-
-
