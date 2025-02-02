@@ -1,2 +1,2 @@
-export {useWalletSelector} from './hooks/useWalletSelector';
-export {WalletSelectorProvider} from './context/WalletSelectorProvider';
+export { useWalletSelector } from './lib/useWalletSelector';
+export { WalletSelectorProvider } from './lib/WalletSelectorProvider';
