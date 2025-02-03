@@ -8,7 +8,9 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 
-export type setupParams = WalletSelectorParams & { createAccessKeyFor?: string };
+export type setupParams = WalletSelectorParams & {
+  createAccessKeyFor?: string;
+};
 
 export type WalletSelectorProviderValue = {
   walletSelector: WalletSelector | null;
