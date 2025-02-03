@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: "near-wallet-selector",
+  displayName: "react-hook",
   preset: "../../jest.preset.js",
   transform: {
     "^.+\\.[tj]sx?$": "babel-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/near-wallet-selector",
+  coverageDirectory: "../../coverage/packages/react-hook",
 };

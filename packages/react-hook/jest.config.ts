@@ -1,17 +1,15 @@
 /* eslint-disable */
 export default {
-  displayName: "core",
-  preset: "../../jest.preset.js",
+  displayName: "react-hook",
+  preset: "ts-jest",
   globals: {},
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
+  transformIgnorePatterns: [
+    "/node_modules/(?!@wallet-selector/react-hook)",
+  ],
   transform: {
-    "^.+\\.[tj]sx?$": [
-      "ts-jest",
-      {
-        tsconfig: "<rootDir>/tsconfig.spec.json",
-      },
-    ],
+    "^.+\\.(ts|tsx|js|jsx)$": "babel-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../coverage/packages/core",
+  coverageDirectory: "../../coverage/packages/react-hook",
 };
