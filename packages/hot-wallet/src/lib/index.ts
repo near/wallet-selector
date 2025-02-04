@@ -1,6 +1,5 @@
 import { type WalletModuleFactory, type InjectedWallet } from "@near-wallet-selector/core";
-import { verifySignature } from "@hot-wallet/sdk/nep0314";
-import { HOT } from "@hot-wallet/sdk";
+import { HOT, verifySignature } from "@hot-wallet/sdk";
 
 export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
   return async () => {

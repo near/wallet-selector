@@ -5,7 +5,6 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "bundler",
   },
   "files": [],
   "include": [],
