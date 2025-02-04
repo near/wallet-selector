@@ -59,7 +59,7 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
               "hot:near-account",
               JSON.stringify(accounts)
             );
-            
+
             config.emitter.emit("signedIn", {
               contractId: data.contractId,
               methodNames: data.methodNames ?? [],
