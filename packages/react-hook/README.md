@@ -42,10 +42,32 @@ export default function App({ Component }) {
 import { useWalletSelector } from '@near-wallet-selector/react'
 
 export default function OtherComponent() {
-  const { signedAccountId, walletSelector, wallet, modal } = useWalletSelector();
+  const { 
+    walletSelector,
+    signedAccountId,
+    wallet,
+    signIn,
+    signOut,
+    viewFunction,
+    callFunction,
+    getBalance,
+    getAccessKeys,
+    signAndSendTransactions,
+    signMessage
+  } = useWalletSelector();
   ...
-  // modal.show() to show the wallet selector modal
-  // walletSelector.signOut() to log out the user
+  // walletSelector to interact with the wallet.
+  // signedAccountId to get the current signed in account id.
+  // wallet to get the current wallet.
+  // signIn opens a modal to sign in the user.
+  // signOut to sign out the user.
+  // viewFunction to call contract view.
+  // callFunction to call a function of the contract.
+  // getBalance to get the balance of an account.
+  // getAccessKeys to get the access keys of an account.
+  // signAndSendTransactions to sign and send transactions.
+  // signMessage to sign a message.
+
   ...
   }
 ```
