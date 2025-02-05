@@ -8,7 +8,6 @@ import type {
   WalletSelectorParams,
 } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
@@ -49,7 +48,7 @@ export interface WalletSelectorProviderValue {
   walletSelector: Promise<WalletSelector>;
   signedAccountId: string | null;
   wallet: Wallet | null;
-  signIn: () => Promise<void>;
+  signIn: () => void;
   signOut: () => Promise<void>;
   viewFunction: (params: ViewMethodParams) => Promise<unknown>;
   callFunction: (params: CallMethodParams) => Promise<unknown>;
@@ -76,7 +75,6 @@ export function WalletSelectorProvider({
   config: SetupParams;
 }) {
   const walletSelector = setupWalletSelector(config);
-  const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
@@ -92,9 +90,6 @@ export function WalletSelectorProvider({
   useEffect(() => {
     const initWalletSelector = async () => {
       const ws = await walletSelector;
-      const modalInstance = setupModal(ws, {
-        contractId: config.createAccessKeyFor || "",
-      });
 
       ws.store.observable.subscribe(async (state) => {
         const signedAccount = state?.accounts.find(
@@ -110,20 +105,26 @@ export function WalletSelectorProvider({
           setWallet(null);
         }
       });
-
-      setModal(modalInstance);
     };
 
     initWalletSelector();
   }, [config]);
 
-  const signIn = useCallback(async () => {
-    if (!modal) {
-      throw new WalletError("Wallet modal not initialized");
-    }
-    modal.show();
-  }, [modal]);
+  /**
+   * Displays a modal to login the user
+   * @returns {Promise<void>} - a promise that resolves when the modal is opened
+   */
+  const signIn = async () => {
+    const ws = await walletSelector;
+    const modalInstance = setupModal(ws, {
+      contractId: config.createAccessKeyFor || "",
+    });
+    modalInstance.show();
+  };
 
+  /**
+   * Logout the user
+   */
   const signOut = useCallback(async () => {
     if (!wallet) {
       throw new WalletError("No wallet connected");
@@ -131,6 +132,14 @@ export function WalletSelectorProvider({
     await wallet.signOut();
   }, [wallet]);
 
+  /**
+   * Makes a read-only call to a contract
+   * @param {Object} options - the options for the call
+   * @param {string} options.contractId - the contract's account id
+   * @param {string} options.method - the method to call
+   * @param {Object} options.args - the arguments to pass to the method
+   * @returns {Promise<JSON.value>} - the result of the method call
+   */
   const viewFunction = async ({
     contractId,
     method,
@@ -148,31 +157,16 @@ export function WalletSelectorProvider({
     return JSON.parse(Buffer.from(res.result).toString());
   };
 
-  const getBalance = async (accountId: string): Promise<bigint> => {
-    if (!walletSelector) {
-      throw new WalletError("Wallet selector not initialized");
-    }
-
-    const account = (await provider.query({
-      request_type: "view_account",
-      account_id: accountId,
-      finality: "final",
-    })) as QueryResponseKindWithAmount;
-
-    return account.amount ? BigInt(account.amount) : BigInt(0);
-  };
-
-  const getAccessKeys = async (accountId: string): Promise<Array<unknown>> => {
-    // Retrieve account state from the network
-    const keys = await provider.query({
-      request_type: "view_access_key_list",
-      account_id: accountId,
-      finality: "final",
-    });
-
-    return (keys as unknown as { keys: Array<unknown> }).keys;
-  };
-
+  /**
+   * Makes a call to a contract
+   * @param {Object} options - the options for the call
+   * @param {string} options.contractId - the contract's account id
+   * @param {string} options.method - the method to call
+   * @param {Object} options.args - the arguments to pass to the method
+   * @param {string} options.gas - the amount of gas to use
+   * @param {string} options.deposit - the amount of yoctoNEAR to deposit
+   * @returns {Promise<Transaction>} - the resulting transaction
+   */
   const callFunction = useCallback(
     async ({
       contractId,
@@ -207,6 +201,48 @@ export function WalletSelectorProvider({
     [wallet]
   );
 
+  /**
+   * Gets the balance of an account
+   * @param {string} accountId - the account id to get the balance of
+   * @returns {Promise<number>} - the balance of the account
+   *
+   */
+  const getBalance = async (accountId: string): Promise<bigint> => {
+    if (!walletSelector) {
+      throw new WalletError("Wallet selector not initialized");
+    }
+
+    const account = (await provider.query({
+      request_type: "view_account",
+      account_id: accountId,
+      finality: "final",
+    })) as QueryResponseKindWithAmount;
+
+    return account.amount ? BigInt(account.amount) : BigInt(0);
+  };
+
+  /**
+   * Gets the access keys for an account
+   * @param {string} accountId - the account id to get the access keys for
+   * @returns {Promise<Object[]>} - the access keys for the
+   */
+  const getAccessKeys = async (accountId: string): Promise<Array<unknown>> => {
+    // Retrieve account state from the network
+    const keys = await provider.query({
+      request_type: "view_access_key_list",
+      account_id: accountId,
+      finality: "final",
+    });
+
+    return (keys as unknown as { keys: Array<unknown> }).keys;
+  };
+
+  /**
+   * Signs and sends transactions
+   * @param {Object[]} transactions - the transactions to sign and send
+   * @returns {Promise<Transaction[]>} - the resulting transactions
+   *
+   */
   const signAndSendTransactions = useCallback(
     ({ transactions }: { transactions: Array<Transaction> }) => {
       if (!wallet) {
@@ -218,6 +254,14 @@ export function WalletSelectorProvider({
     [wallet]
   );
 
+  /**
+   * Signs a message
+   * @param {Object} options - the options for the message
+   * @param {string} options.message - the message to sign
+   * @param {string} options.recipient - the recipient of the message
+   * @param {Buffer} options.nonce - the nonce of the message
+   * @returns {Promise<SignedMessage>} - the signed message
+   */
   const signMessage = useCallback(
     ({ message, recipient, nonce }: SignMessageParams) => {
       if (!wallet) {
