@@ -8,8 +8,6 @@ import type { Network, NetworkId, Options } from "./options.types";
 import type { Subscription, StorageService } from "./services";
 import type { SupportedLanguage } from "./translate/translate";
 import type { SignMessageMethod } from "./wallet/wallet.types";
-import type { Transaction } from "./wallet/transactions.types";
-import type { providers } from "near-api-js";
 
 export interface WalletSelectorParams {
   /**
@@ -125,57 +123,4 @@ export interface WalletSelector {
    * Sets up a callback function that triggers whenever the user logs in or out.
    */
   subscribeOnAccountChange(onAccountChangeFn: (account: string) => void): void;
-
-  /**
-   * Executes a view function on a specified smart contract.
-   */
-  viewMethod({
-    contractId,
-    method,
-    args,
-  }: {
-    contractId: string;
-    method: string;
-    args?: Record<string, unknown>;
-  }): Promise<unknown>;
-
-  /**
-   * Executes a mutable function on a specified smart contract.
-   * Requires to be signed in.
-   * @throws {Error} if a user isn't signed in
-   */
-  callMethod({
-    contractId,
-    method,
-    args,
-    gas,
-    amount,
-  }: {
-    contractId: string;
-    method: string;
-    args?: Record<string, unknown>;
-    gas?: string;
-    amount?: string;
-  }): Promise<unknown>;
-
-  /**
-   * Sign Out from the active wallet
-   */
-  signOut(): void;
-
-  /**
-   * Retrieves the account's balance in yoctoNear by querying the specified account's state.
-   * Requires to be signed in.
-   * @throws {Error} if a user isn't signed in
-   */
-  getSignedAccountBalance(): Promise<string | undefined>;
-
-  /**
-   * Requests the wallet to sign a transaction or batch of transactions.
-   */
-  signAndSendTransactions({
-    transactions,
-  }: {
-    transactions: Array<Transaction>;
-  }): Promise<void | Array<providers.FinalExecutionOutcome>>;
 }

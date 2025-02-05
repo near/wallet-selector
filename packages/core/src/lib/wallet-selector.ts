@@ -9,12 +9,6 @@ import { EventEmitter, Logger, WalletModules, Provider } from "./services";
 import type { Wallet } from "./wallet";
 import type { Store, WalletSelectorState } from "./store.types";
 import type { NetworkId, Options } from "./options.types";
-import type {
-  AccountView,
-  FinalExecutionOutcome,
-  RpcQueryRequest,
-} from "near-api-js/lib/providers/provider";
-import { providers } from "near-api-js";
 
 let walletSelectorInstance: WalletSelector | null = null;
 
@@ -22,8 +16,7 @@ const createSelector = (
   options: Options,
   store: Store,
   walletModules: WalletModules,
-  emitter: EventEmitter<WalletSelectorEvents>,
-  provider: Provider
+  emitter: EventEmitter<WalletSelectorEvents>
 ): WalletSelector => {
   return {
     options,
@@ -75,27 +68,6 @@ const createSelector = (
     off: (eventName, callback) => {
       emitter.off(eventName, callback);
     },
-    async getSignedAccountBalance() {
-      const { accounts } = store.getState();
-      if (!accounts.length) {
-        return undefined;
-      }
-
-      const { accountId } = accounts.at(0)!;
-
-      if (!accountId) {
-        throw new Error(`Not signed in`);
-      }
-
-      const request: RpcQueryRequest = {
-        request_type: "view_account",
-        account_id: accountId,
-        finality: "final",
-      };
-      const account = await provider.query<AccountView>(request);
-
-      return account.amount || "0";
-    },
     subscribeOnAccountChange(onAccountChangeFn) {
       this.store.observable.subscribe(async (state: WalletSelectorState) => {
         const signedAccount = state?.accounts.find(
@@ -104,83 +76,6 @@ const createSelector = (
 
         onAccountChangeFn(signedAccount || "");
       });
-    },
-    async signOut<Variation extends Wallet = Wallet>() {
-      const { selectedWalletId } = store.getState();
-      const wallet = await walletModules.getWallet<Variation>(selectedWalletId);
-      if (wallet) {
-        wallet.signOut();
-      }
-    },
-    async viewMethod({
-      contractId,
-      method,
-      args = {},
-    }: {
-      contractId: string;
-      method: string;
-      args?: Record<string, unknown>;
-    }) {
-      const request: RpcQueryRequest = {
-        request_type: "call_function",
-        account_id: contractId,
-        method_name: method,
-        args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
-        finality: "optimistic",
-      };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await provider.query<any>(request);
-
-      return JSON.parse(Buffer.from(response.result).toString());
-    },
-    async callMethod({
-      contractId,
-      method,
-      args = {},
-      gas = "30000000000000",
-      deposit = "0",
-    }: {
-      contractId: string;
-      method: string;
-      args?: Record<string, unknown>;
-      gas?: string | number | bigint;
-      deposit?: string | bigint;
-    }) {
-      const { selectedWalletId } = store.getState();
-      const wallet = await walletModules.getWallet(selectedWalletId);
-
-      if (!wallet) {
-        throw new Error("No wallet selected");
-      }
-
-      const outcome = await wallet.signAndSendTransaction({
-        receiverId: contractId,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: method,
-              args,
-              gas: gas.toString(),
-              deposit: deposit.toString(),
-            },
-          },
-        ],
-      });
-
-      return providers.getTransactionLastResult(
-        outcome as FinalExecutionOutcome
-      );
-    },
-    async signAndSendTransactions({ transactions }) {
-      const { selectedWalletId } = store.getState();
-      const wallet = await walletModules.getWallet(selectedWalletId);
-
-      if (!wallet) {
-        throw new Error("No wallet selected");
-      }
-
-      return wallet.signAndSendTransactions({ transactions });
     },
   };
 };
@@ -208,20 +103,19 @@ export const setupWalletSelector = async (
       ? params.fallbackRpcUrls
       : [network.nodeUrl];
 
-  const provider = new Provider(rpcProviderUrls);
   const walletModules = new WalletModules({
     factories: params.modules,
     storage,
     options,
     store,
     emitter,
-    provider,
+    provider: new Provider(rpcProviderUrls),
   });
 
   await walletModules.setup();
 
   if (params.allowMultipleSelectors) {
-    return createSelector(options, store, walletModules, emitter, provider);
+    return createSelector(options, store, walletModules, emitter);
   }
 
   if (!walletSelectorInstance) {
@@ -229,8 +123,7 @@ export const setupWalletSelector = async (
       options,
       store,
       walletModules,
-      emitter,
-      provider
+      emitter
     );
   }
 
