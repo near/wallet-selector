@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import type {
   FinalExecutionOutcome,
   SignedMessage,
@@ -45,7 +45,7 @@ export type SetupParams = WalletSelectorParams & {
 };
 
 export interface WalletSelectorProviderValue {
-  walletSelector: Promise<WalletSelector>;
+  walletSelector: Promise<WalletSelector> | null;
   signedAccountId: string | null;
   wallet: Wallet | null;
   signIn: () => void;
@@ -74,7 +74,7 @@ export function WalletSelectorProvider({
   children: React.ReactNode;
   config: SetupParams;
 }) {
-  const walletSelector = setupWalletSelector(config);
+  const walletSelectorRef = useRef<Promise<WalletSelector> | null>(null);
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
@@ -88,10 +88,11 @@ export function WalletSelectorProvider({
   );
 
   useEffect(() => {
-    const initWalletSelector = async () => {
-      const ws = await walletSelector;
+    const walletSelector = setupWalletSelector(config);
+    walletSelectorRef.current = walletSelector;
 
-      ws.store.observable.subscribe(async (state) => {
+    walletSelector.then(async (selector) => {
+      selector.store.observable.subscribe(async (state) => {
         const signedAccount = state?.accounts.find(
           (account) => account.active
         )?.accountId;
@@ -99,31 +100,29 @@ export function WalletSelectorProvider({
         setSignedAccountId(signedAccount || null);
 
         if (signedAccount) {
-          const walletInstance = await ws.wallet();
+          const walletInstance = await selector.wallet();
           setWallet(walletInstance);
         } else {
           setWallet(null);
         }
       });
-    };
-
-    initWalletSelector();
+    });
   }, [config]);
 
   /**
-   * Displays a modal to login the user
+   * Displays a modal for the user to sign in
    * @returns {Promise<void>} - a promise that resolves when the modal is opened
    */
   const signIn = async () => {
-    const ws = await walletSelector;
-    const modalInstance = setupModal(ws, {
+    const ws = await walletSelectorRef.current;
+    const modalInstance = setupModal(ws!, {
       contractId: config.createAccessKeyFor || "",
     });
     modalInstance.show();
   };
 
   /**
-   * Logout the user
+   * Logs out the wallet
    */
   const signOut = useCallback(async () => {
     if (!wallet) {
@@ -202,16 +201,11 @@ export function WalletSelectorProvider({
   );
 
   /**
-   * Gets the balance of an account
+   * Gets the balance of an account in yoctoNEAR
    * @param {string} accountId - the account id to get the balance of
    * @returns {Promise<number>} - the balance of the account
-   *
    */
   const getBalance = async (accountId: string): Promise<bigint> => {
-    if (!walletSelector) {
-      throw new WalletError("Wallet selector not initialized");
-    }
-
     const account = (await provider.query({
       request_type: "view_account",
       account_id: accountId,
@@ -238,10 +232,9 @@ export function WalletSelectorProvider({
   };
 
   /**
-   * Signs and sends transactions
+   * Signs transactions and broadcasts them to the network
    * @param {Object[]} transactions - the transactions to sign and send
    * @returns {Promise<Transaction[]>} - the resulting transactions
-   *
    */
   const signAndSendTransactions = useCallback(
     ({ transactions }: { transactions: Array<Transaction> }) => {
@@ -255,7 +248,7 @@ export function WalletSelectorProvider({
   );
 
   /**
-   * Signs a message
+   * Signs a message off-chain
    * @param {Object} options - the options for the message
    * @param {string} options.message - the message to sign
    * @param {string} options.recipient - the recipient of the message
@@ -278,7 +271,7 @@ export function WalletSelectorProvider({
   );
 
   const contextValue: WalletSelectorProviderValue = {
-    walletSelector,
+    walletSelector: walletSelectorRef.current,
     signedAccountId,
     wallet,
     signIn,
