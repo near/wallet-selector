@@ -10,7 +10,7 @@ import type {
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { providers, utils } from "near-api-js";
+import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
 
 class WalletError extends Error {
@@ -53,7 +53,8 @@ export interface WalletSelectorProviderValue {
   signOut: () => Promise<void>;
   viewFunction: (params: ViewMethodParams) => Promise<unknown>;
   callFunction: (params: CallMethodParams) => Promise<unknown>;
-  getBalance: (accountId: string) => Promise<number>;
+  getBalance: (accountId: string) => Promise<bigint>;
+  getAccessKeys: (accountId: string) => Promise<Array<unknown>>;
   signAndSendTransactions: (params: {
     transactions: Array<Transaction>;
   }) => Promise<void | Array<FinalExecutionOutcome>>;
@@ -79,11 +80,14 @@ export function WalletSelectorProvider({
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
-  const rpcProviderUrls = config.fallbackRpcUrls && config.fallbackRpcUrls.length > 0
-    ? config.fallbackRpcUrls
-    : [`https://rpc.${config.network}.near.org`];
+  const rpcProviderUrls =
+    config.fallbackRpcUrls && config.fallbackRpcUrls.length > 0
+      ? config.fallbackRpcUrls
+      : [`https://rpc.${config.network}.near.org`];
 
-  const provider = new providers.FailoverRpcProvider(rpcProviderUrls.map(url => new providers.JsonRpcProvider({ url })));
+  const provider = new providers.FailoverRpcProvider(
+    rpcProviderUrls.map((url) => new providers.JsonRpcProvider({ url }))
+  );
 
   useEffect(() => {
     const initWalletSelector = async () => {
@@ -127,7 +131,11 @@ export function WalletSelectorProvider({
     await wallet.signOut();
   }, [wallet]);
 
-  const viewMethod = async ({ contractId, method, args = {} }: ViewMethodParams) => {
+  const viewFunction = async ({
+    contractId,
+    method,
+    args = {},
+  }: ViewMethodParams) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res = await provider.query<any>({
       request_type: "call_function",
@@ -138,9 +146,34 @@ export function WalletSelectorProvider({
     });
 
     return JSON.parse(Buffer.from(res.result).toString());
-  }
+  };
 
-  const callMethod = useCallback(
+  const getBalance = async (accountId: string): Promise<bigint> => {
+    if (!walletSelector) {
+      throw new WalletError("Wallet selector not initialized");
+    }
+
+    const account = (await provider.query({
+      request_type: "view_account",
+      account_id: accountId,
+      finality: "final",
+    })) as QueryResponseKindWithAmount;
+
+    return account.amount ? BigInt(account.amount) : BigInt(0);
+  };
+
+  const getAccessKeys = async (accountId: string): Promise<Array<unknown>> => {
+    // Retrieve account state from the network
+    const keys = await provider.query({
+      request_type: "view_access_key_list",
+      account_id: accountId,
+      finality: "final",
+    });
+
+    return (keys as unknown as { keys: Array<unknown> }).keys;
+  };
+
+  const callFunction = useCallback(
     async ({
       contractId,
       method,
@@ -152,67 +185,41 @@ export function WalletSelectorProvider({
         throw new WalletError("No wallet connected");
       }
 
-      try {
-        const outcome = await wallet.signAndSendTransaction({
-          receiverId: contractId,
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: method,
-                args,
-                gas: gas.toString(),
-                deposit: deposit.toString(),
-              },
+      const outcome = await wallet.signAndSendTransaction({
+        receiverId: contractId,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: method,
+              args,
+              gas: gas.toString(),
+              deposit: deposit.toString(),
             },
-          ],
-        });
+          },
+        ],
+      });
 
-        return await providers.getTransactionLastResult(
-          outcome as FinalExecutionOutcome
-        );
-      } catch (error) {
-        console.error(`Failed to call method ${method}:`, error);
-        throw new WalletError(`Failed to call method ${method}`);
-      }
+      return providers.getTransactionLastResult(
+        outcome as FinalExecutionOutcome
+      );
     },
     [wallet]
   );
 
-  const getBalance = async (accountId: string) => {
-    if (!walletSelector) {
-      throw new WalletError("Wallet selector not initialized");
-    }
-
-    const account = (await provider.query({
-      request_type: "view_account",
-      account_id: accountId,
-      finality: "final",
-    })) as QueryResponseKindWithAmount;
-
-    return account.amount
-      ? Number(utils.format.formatNearAmount(account.amount))
-      : 0;
-  }
-
   const signAndSendTransactions = useCallback(
-    async ({ transactions }: { transactions: Array<Transaction> }) => {
+    ({ transactions }: { transactions: Array<Transaction> }) => {
       if (!wallet) {
         throw new WalletError("No wallet connected");
       }
 
-      try {
-        return await wallet.signAndSendTransactions({ transactions });
-      } catch (error) {
-        console.error("Failed to sign and send transactions:", error);
-        throw new WalletError("Failed to sign and send transactions");
-      }
+      return wallet.signAndSendTransactions({ transactions });
     },
     [wallet]
   );
 
   const signMessage = useCallback(
-    async ({ message, recipient, nonce }: SignMessageParams) => {
+    ({ message, recipient, nonce }: SignMessageParams) => {
       if (!wallet) {
         throw new WalletError("No wallet connected");
       }
@@ -221,12 +228,7 @@ export function WalletSelectorProvider({
         throw new WalletError("Wallet does not support message signing");
       }
 
-      try {
-        return await wallet.signMessage({ message, recipient, nonce });
-      } catch (error) {
-        console.error("Failed to sign message:", error);
-        throw new WalletError("Failed to sign message");
-      }
+      return wallet.signMessage({ message, recipient, nonce });
     },
     [wallet]
   );
@@ -237,9 +239,10 @@ export function WalletSelectorProvider({
     wallet,
     signIn,
     signOut,
-    viewFunction: viewMethod,
-    callFunction: callMethod,
+    viewFunction,
+    callFunction,
     getBalance,
+    getAccessKeys,
     signAndSendTransactions,
     signMessage,
   };
