@@ -46,16 +46,13 @@ export type SetupParams = WalletSelectorParams & {
 };
 
 export interface WalletSelectorProviderValue {
-  walletSelector: WalletSelector | null;
-  modal: WalletSelectorModal | null;
+  walletSelector: Promise<WalletSelector>;
   signedAccountId: string | null;
   wallet: Wallet | null;
-  isConnected: boolean;
-  isLoading: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
-  viewMethod: (params: ViewMethodParams) => Promise<unknown>;
-  callMethod: (params: CallMethodParams) => Promise<unknown>;
+  viewFunction: (params: ViewMethodParams) => Promise<unknown>;
+  callFunction: (params: CallMethodParams) => Promise<unknown>;
   getBalance: (accountId: string) => Promise<number>;
   signAndSendTransactions: (params: {
     transactions: Array<Transaction>;
@@ -77,16 +74,20 @@ export function WalletSelectorProvider({
   children: React.ReactNode;
   config: SetupParams;
 }) {
-  const [walletSelector, setSelector] = useState<WalletSelector | null>(null);
+  const walletSelector = setupWalletSelector(config);
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isConnected, setIsConnected] = useState(false);
+
+  const rpcProviderUrls = config.fallbackRpcUrls && config.fallbackRpcUrls.length > 0
+    ? config.fallbackRpcUrls
+    : [`https://rpc.${config.network}.near.org`];
+
+  const provider = new providers.FailoverRpcProvider(rpcProviderUrls.map(url => new providers.JsonRpcProvider({ url })));
 
   useEffect(() => {
     const initWalletSelector = async () => {
-      const ws = await setupWalletSelector(config);
+      const ws = await walletSelector;
       const modalInstance = setupModal(ws, {
         contractId: config.createAccessKeyFor || "",
       });
@@ -97,7 +98,6 @@ export function WalletSelectorProvider({
         )?.accountId;
 
         setSignedAccountId(signedAccount || null);
-        setIsConnected(!!signedAccount);
 
         if (signedAccount) {
           const walletInstance = await ws.wallet();
@@ -107,10 +107,7 @@ export function WalletSelectorProvider({
         }
       });
 
-      setSelector(ws);
       setModal(modalInstance);
-
-      setIsLoading(false);
     };
 
     initWalletSelector();
@@ -130,35 +127,18 @@ export function WalletSelectorProvider({
     await wallet.signOut();
   }, [wallet]);
 
-  const viewMethod = useCallback(
-    async ({ contractId, method, args = {} }: ViewMethodParams) => {
-      if (!walletSelector) {
-        throw new WalletError("Wallet selector not initialized");
-      }
+  const viewMethod = async ({ contractId, method, args = {} }: ViewMethodParams) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await provider.query<any>({
+      request_type: "call_function",
+      account_id: contractId,
+      method_name: method,
+      args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
+      finality: "optimistic",
+    });
 
-      const { network } = walletSelector.options;
-      const provider = new providers.JsonRpcProvider({
-        url: `https://rpc.${network.networkId}.near.org`,
-      });
-
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res = await provider.query<any>({
-          request_type: "call_function",
-          account_id: contractId,
-          method_name: method,
-          args_base64: Buffer.from(JSON.stringify(args)).toString("base64"),
-          finality: "optimistic",
-        });
-
-        return JSON.parse(Buffer.from(res.result).toString());
-      } catch (error) {
-        console.error(`Failed to call view method ${method}:`, error);
-        throw new WalletError(`Failed to call view method ${method}`);
-      }
-    },
-    [walletSelector]
-  );
+    return JSON.parse(Buffer.from(res.result).toString());
+  }
 
   const callMethod = useCallback(
     async ({
@@ -199,34 +179,21 @@ export function WalletSelectorProvider({
     [wallet]
   );
 
-  const getBalance = useCallback(
-    async (accountId: string) => {
-      if (!walletSelector) {
-        throw new WalletError("Wallet selector not initialized");
-      }
+  const getBalance = async (accountId: string) => {
+    if (!walletSelector) {
+      throw new WalletError("Wallet selector not initialized");
+    }
 
-      try {
-        const { network } = walletSelector.options;
-        const provider = new providers.JsonRpcProvider({
-          url: network.nodeUrl,
-        });
+    const account = (await provider.query({
+      request_type: "view_account",
+      account_id: accountId,
+      finality: "final",
+    })) as QueryResponseKindWithAmount;
 
-        const account = (await provider.query({
-          request_type: "view_account",
-          account_id: accountId,
-          finality: "final",
-        })) as QueryResponseKindWithAmount;
-
-        return account.amount
-          ? Number(utils.format.formatNearAmount(account.amount))
-          : 0;
-      } catch (error) {
-        console.error("Failed to get balance:", error);
-        throw new WalletError("Failed to get balance");
-      }
-    },
-    [walletSelector]
-  );
+    return account.amount
+      ? Number(utils.format.formatNearAmount(account.amount))
+      : 0;
+  }
 
   const signAndSendTransactions = useCallback(
     async ({ transactions }: { transactions: Array<Transaction> }) => {
@@ -266,15 +233,12 @@ export function WalletSelectorProvider({
 
   const contextValue: WalletSelectorProviderValue = {
     walletSelector,
-    modal,
     signedAccountId,
     wallet,
-    isConnected,
-    isLoading,
     signIn,
     signOut,
-    viewMethod,
-    callMethod,
+    viewFunction: viewMethod,
+    callFunction: callMethod,
     getBalance,
     signAndSendTransactions,
     signMessage,
