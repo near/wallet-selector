@@ -36,9 +36,6 @@
       "@near-wallet-selector/core": [
         "packages/core/src/index.ts"
       ],
-      "@near-wallet-selector/hot-wallet": [
-        "packages/hot-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
       ],

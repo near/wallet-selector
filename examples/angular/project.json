@@ -81,11 +81,6 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/hot-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
             "input": "packages/narwallets/assets/",
             "output": "assets/"
           },

@@ -5,7 +5,6 @@ import type {
   WalletSelector,
 } from "@near-wallet-selector/core";
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
@@ -169,7 +168,6 @@ export const WalletSelectorContextProvider: React.FC<{
         setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
-        setupHotWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
