@@ -11,6 +11,7 @@
       "useAWallet": "Използвайте портфейла, за да защитите и управлявате активите си на NEAR както и да използвате всяко приложение на NEAR без нужда от потребителски имена и пароли.",
       "connectionFailed": "Свързването неуспешно",
       "connectionSuccessful": "Свързването успешно",
+      "rememberWallet": "Запази портфейлите",
       "connected": "Свързан",
       "connectingTo": "Свързване към",
       "connectingMessage": {
@@ -56,12 +57,12 @@
       "open": "Отворете"
     },
     "walletTypes": {
-      "hardware": "Hardware Wallet",
-      "browser": "Browser Wallet",
-      "injected": "Wallet Extension",
-      "bridge": "Bridge Wallet",
-      "mobile": "Mobile Wallet",
-      "instant-link": "Instant Wallet"
+      "hardware": "Хардуерен портфейл",
+      "browser": "Портфейл в браузъра",
+      "injected": "Разширение на портфейл",
+      "bridge": "Мостов портфейл",
+      "mobile": "Мобилен портфейл",
+      "instant-link": "Мигновен портфейл"
     }
   }
 }

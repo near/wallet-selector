@@ -11,6 +11,7 @@
       "useAWallet": "Koristite crypto novčanik da biste osigurali i upravljali svojom NEAR imovinom, te se prijavite u bilo koju NEAR aplikaciju bez korisničkog imena i lozinke.",
       "connectionFailed": "Neuspješno povezivanje.",
       "connectionSuccessful": "Uspješno povezivanje.",
+      "rememberWallet": "Zapamti novčanike",
       "connected": "Povezano.",
       "connectingTo": "Povezivanje u tijeku",
       "connectingMessage": {

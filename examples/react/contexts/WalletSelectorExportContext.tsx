@@ -17,6 +17,7 @@ import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -27,6 +28,8 @@ import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { CONTRACT_ID } from "../constants";
 
 declare global {
   interface Window {
@@ -65,12 +68,14 @@ export const ExportAccountSelectorContextProvider: React.FC<{
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupMeteorWalletApp({ contractId: CONTRACT_ID }),
         setupWelldoneWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
         setupRamperWallet(),
-        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupMintbaseWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet({ contractId: CONTRACT_ID }),
         setupWalletConnect({
           projectId: "c4f79cc...",
           metadata: {

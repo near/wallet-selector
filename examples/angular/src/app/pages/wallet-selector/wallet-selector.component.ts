@@ -9,6 +9,7 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
@@ -23,7 +24,13 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { createWeb3Modal } from "@web3modal/wagmi";
+import { reconnect, http, createConfig, type Config } from "@wagmi/core";
+import { type Chain } from "@wagmi/core/chains";
+import { injected, walletConnect } from "@wagmi/connectors";
 import { CONTRACT_ID } from "../../../constants";
 
 declare global {
@@ -32,6 +39,58 @@ declare global {
     modal: WalletSelectorModal;
   }
 }
+
+// Get a project ID at https://cloud.walletconnect.com
+const projectId = "30147604c5f01d0bc4482ab0665b5697";
+
+const near: Chain = {
+  id: 398,
+  name: "NEAR Protocol Testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "NEAR",
+    symbol: "NEAR",
+  },
+  rpcUrls: {
+    default: { http: ["https://eth-rpc.testnet.near.org"] },
+    public: { http: ["https://eth-rpc.testnet.near.org"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "NEAR Explorer",
+      url: "https://eth-explorer-testnet.near.org",
+    },
+  },
+  testnet: true,
+};
+
+const wagmiConfig: Config = createConfig({
+  chains: [near],
+  transports: {
+    [near.id]: http(),
+  },
+  connectors: [
+    walletConnect({
+      projectId,
+      metadata: {
+        name: "NEAR Guest Book",
+        description: "A guest book with comments stored on the NEAR blockchain",
+        url: "https://near.github.io/wallet-selector",
+        icons: ["https://near.github.io/wallet-selector/favicon.ico"],
+      },
+      showQrModal: false,
+    }),
+    injected({ shimDisconnect: true }),
+  ],
+});
+reconnect(wagmiConfig);
+
+const web3Modal = createWeb3Modal({
+  wagmiConfig: wagmiConfig,
+  projectId,
+  enableOnramp: false,
+  allWallets: "SHOW",
+});
 
 @Component({
   selector: "near-wallet-selector-wallet-selector",
@@ -56,7 +115,6 @@ export class WalletSelectorComponent implements OnInit {
       network: "testnet",
       debug: true,
       modules: [
-        setupOKXWallet(),
         setupMyNearWallet(),
         setupLedger(),
         setupSender(),
@@ -65,6 +123,8 @@ export class WalletSelectorComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupMeteorWalletApp({ contractId: CONTRACT_ID }),
+        setupOKXWallet(),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
@@ -94,7 +154,9 @@ export class WalletSelectorComponent implements OnInit {
         }),
         setupRamperWallet(),
         setupNearMobileWallet(),
-        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupMintbaseWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet({ contractId: CONTRACT_ID }),
+        setupEthereumWallets({ wagmiConfig, web3Modal }),
       ],
     });
 

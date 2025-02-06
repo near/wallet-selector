@@ -7,13 +7,21 @@ import * as nearAPI from "near-api-js";
 // - https://github.com/LedgerHQ/app-near/blob/master/workdir/app-near/src/constants.h
 
 export const CLA = 0x80; // Always the same for Ledger.
-export const INS_SIGN = 0x02; // Sign
-export const INS_GET_PUBLIC_KEY = 0x04; // Get Public Key
-export const INS_GET_APP_VERSION = 0x06; // Get App Version
+
+export enum NEAR_INS {
+  GET_VERSION = 0x06,
+  GET_PUBLIC_KEY = 0x04,
+  GET_WALLET_ID = 0x05,
+  SIGN_TRANSACTION = 0x02,
+  NEP413_SIGN_MESSAGE = 0x07,
+  NEP366_SIGN_DELEGATE_ACTION = 0x08,
+}
+
 export const P1_LAST = 0x80; // End of Bytes to Sign (finalize)
 export const P1_MORE = 0x00; // More bytes coming
 export const P1_IGNORE = 0x00;
 export const P2_IGNORE = 0x00;
+export const CHUNK_SIZE = 250;
 
 // Converts BIP32-compliant derivation path to a Buffer.
 // More info here: https://github.com/LedgerHQ/ledger-live-common/blob/master/docs/derivation.md
@@ -46,8 +54,15 @@ interface GetPublicKeyParams {
 }
 
 interface SignParams {
-  data: Uint8Array;
+  data: Buffer;
   derivationPath: string;
+}
+
+interface InternalSignParams extends SignParams {
+  ins:
+    | NEAR_INS.NEP366_SIGN_DELEGATE_ACTION
+    | NEAR_INS.NEP413_SIGN_MESSAGE
+    | NEAR_INS.SIGN_TRANSACTION;
 }
 
 interface EventMap {
@@ -128,7 +143,7 @@ export class LedgerClient {
 
     const res = await this.transport.send(
       CLA,
-      INS_GET_APP_VERSION,
+      NEAR_INS.GET_VERSION,
       P1_IGNORE,
       P2_IGNORE
     );
@@ -145,7 +160,7 @@ export class LedgerClient {
 
     const res = await this.transport.send(
       CLA,
-      INS_GET_PUBLIC_KEY,
+      NEAR_INS.GET_PUBLIC_KEY,
       P2_IGNORE,
       networkId,
       parseDerivationPath(derivationPath)
@@ -154,7 +169,11 @@ export class LedgerClient {
     return nearAPI.utils.serialize.base_encode(res.subarray(0, -2));
   };
 
-  sign = async ({ data, derivationPath }: SignParams) => {
+  private internalSign = async ({
+    data,
+    derivationPath,
+    ins,
+  }: InternalSignParams) => {
     if (!this.transport) {
       throw new Error("Device not connected");
     }
@@ -162,19 +181,14 @@ export class LedgerClient {
     // NOTE: getVersion call resets state to avoid starting from partially filled buffer
     await this.getVersion();
 
-    // 128 - 5 service bytes
-    const CHUNK_SIZE = 123;
-    const allData = Buffer.concat([
-      parseDerivationPath(derivationPath),
-      Buffer.from(data),
-    ]);
+    const allData = Buffer.concat([parseDerivationPath(derivationPath), data]);
 
     for (let offset = 0; offset < allData.length; offset += CHUNK_SIZE) {
       const isLastChunk = offset + CHUNK_SIZE >= allData.length;
 
       const response = await this.transport.send(
         CLA,
-        INS_SIGN,
+        ins,
         isLastChunk ? P1_LAST : P1_MORE,
         P2_IGNORE,
         Buffer.from(allData.subarray(offset, offset + CHUNK_SIZE))
@@ -186,5 +200,29 @@ export class LedgerClient {
     }
 
     throw new Error("Invalid data or derivation path");
+  };
+
+  sign = async ({ data, derivationPath }: SignParams) => {
+    return this.internalSign({
+      data,
+      derivationPath,
+      ins: NEAR_INS.SIGN_TRANSACTION,
+    });
+  };
+
+  signMessage = async ({ data, derivationPath }: SignParams) => {
+    return this.internalSign({
+      data,
+      derivationPath,
+      ins: NEAR_INS.NEP413_SIGN_MESSAGE,
+    });
+  };
+
+  signDelegateAction = async ({ data, derivationPath }: SignParams) => {
+    return this.internalSign({
+      data,
+      derivationPath,
+      ins: NEAR_INS.NEP366_SIGN_DELEGATE_ACTION,
+    });
   };
 }

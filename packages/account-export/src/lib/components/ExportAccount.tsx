@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from "react";
-import BN from "bn.js";
 import type {
   BrowserWalletBehaviour,
   InjectedWalletBehaviour,
@@ -121,8 +120,8 @@ const getAccountBalance = async ({
       finality: "final",
       account_id: accountId,
     });
-    const bn = new BN(amount);
-    return { hasBalance: !bn.isZero() };
+    const bn = BigInt(amount);
+    return { hasBalance: bn !== BigInt(0) };
   } catch {
     return { hasBalance: false };
   }

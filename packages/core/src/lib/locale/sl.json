@@ -11,6 +11,7 @@
       "useAWallet": "Uporabite denarnico, da bi zavarovali in upravljali s svoja NEAR digitalna sredstva, in se prijavite v katero koli aplikacijo ekosistema NEAR",
       "connectionFailed": "Povezava ni bila uspešna.",
       "connectionSuccessful": "Povezava je bila uspešna.",
+      "rememberWallet": "Zapomni si denarnice",
       "connected": "Vaša denarnica je povezana.",
       "connectingTo": "Povezovanje z",
       "connectingMessage": {

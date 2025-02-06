@@ -1,0 +1,56 @@
+{
+  "name": "arepa-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/arepa-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/arepa-wallet",
+        "tsConfig": "packages/arepa-wallet/tsconfig.lib.json",
+        "project": "packages/arepa-wallet/package.json",
+        "entryFile": "packages/arepa-wallet/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/arepa-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/arepa-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/arepa-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/arepa-wallet"],
+      "options": {
+        "jestConfig": "packages/arepa-wallet/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      },
+      "dependsOn": ["^deploy"]
+    }
+  },
+  "tags": ["browser-wallet"]
+}

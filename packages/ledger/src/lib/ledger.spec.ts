@@ -5,7 +5,6 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
 import type { ProviderService } from "../../../core/src/lib/services";
 import type { LedgerClient } from "./ledger-client";
-import { BN } from "bn.js";
 
 const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
@@ -24,6 +23,21 @@ const createLedgerWallet = async () => {
           218, 45, 220, 10, 4,
         ])
       ),
+    signMessage: jest
+      .fn()
+      .mockResolvedValue(
+        Buffer.from(
+          "fn39aKtzVFDMJOYZiYTWBiE6HQh1QsmGbESQRMRS9dTidGcrDogXIarCvsMUfKsx79iDLicwjGCN7XO8fnYWDA==",
+          "base64"
+        )
+      ),
+  });
+
+  jest.mock("@near-wallet-selector/core", () => {
+    return {
+      ...jest.requireActual("@near-wallet-selector/core"),
+      verifySignature: jest.fn().mockReturnValue(true),
+    };
   });
 
   jest.mock("./ledger-client", () => {
@@ -45,7 +59,7 @@ const createLedgerWallet = async () => {
   });
 
   provider.viewAccessKey.mockResolvedValue({
-    nonce: new BN(0),
+    nonce: BigInt(0),
     permission: "FullAccess",
     block_height: 0,
     block_hash: "block_hash",
@@ -172,6 +186,40 @@ describe("signAndSendTransactions", () => {
     });
     expect(ledgerClient.sign).toHaveBeenCalled();
     expect(result.length).toEqual(transactions.length);
+  });
+});
+
+describe("signMessage", () => {
+  it("returns signature", async () => {
+    const accountId = "amirsaran.testnet";
+    const derivationPath = "44'/397'/0'/0'/1'";
+    const { wallet, ledgerClient, publicKey } = await createLedgerWallet();
+
+    await wallet.signIn({
+      accounts: [{ derivationPath, publicKey, accountId }],
+      contractId: "guest-book.testnet",
+    });
+
+    const message =
+      "Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts./Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts./Makes it possible to authenticate users without having to add new access keys. This will improve UX, save money and will not increase the on-chain storage of the users' accounts.";
+    const nonce = Buffer.from(new Array(32).fill(42));
+    const recipient = "alice.near";
+    const callbackUrl = "myapp.com/callback";
+
+    const result = await wallet.signMessage!({
+      message,
+      nonce,
+      recipient,
+      callbackUrl,
+    });
+
+    expect(ledgerClient.signMessage).toHaveBeenCalled();
+
+    expect(result!.signature).toBeDefined();
+
+    expect(result!.accountId).toEqual(accountId);
+
+    expect(result!.publicKey).toEqual("ed25519:" + publicKey);
   });
 });
 

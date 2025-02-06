@@ -20,10 +20,12 @@ import {
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
+  REMEMBER_RECENT_WALLETS,
+  REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import type { ProviderService } from "../provider/provider.service.types";
 import type { SignMessageMethod } from "../../wallet";
+import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -81,6 +83,9 @@ export class WalletModules {
     const pendingContract = await jsonStorage.getItem<ContractState>(
       PENDING_CONTRACT
     );
+    const rememberRecentWallets = await jsonStorage.getItem<string>(
+      REMEMBER_RECENT_WALLETS
+    );
 
     if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
@@ -99,14 +104,18 @@ export class WalletModules {
           });
         }
 
-        const recentlySignedInWalletsFromPending =
-          await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
-
+        let recentlySignedInWalletsFromPending: Array<string> = [];
+        if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
+          recentlySignedInWalletsFromPending =
+            await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+        }
         return {
           accounts,
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
+          rememberRecentWallets:
+            rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
         };
       }
     }
@@ -124,6 +133,8 @@ export class WalletModules {
         contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
+        rememberRecentWallets:
+          rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
       };
     }
 
@@ -132,6 +143,8 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
+      rememberRecentWallets:
+        rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
     };
   }
 
@@ -174,7 +187,7 @@ export class WalletModules {
     walletId: string,
     { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
-    const { selectedWalletId } = this.store.getState();
+    const { selectedWalletId, rememberRecentWallets } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const contract = { contractId, methodNames };
 
@@ -194,13 +207,22 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
-    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
-      walletId
-    );
+    let recentlySignedInWallets: Array<string> = [];
+    if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
+      recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+        walletId
+      );
+    }
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: { walletId, contract, accounts, recentlySignedInWallets },
+      payload: {
+        walletId,
+        contract,
+        accounts,
+        recentlySignedInWallets,
+        rememberRecentWallets,
+      },
     });
 
     this.emitter.emit("signedIn", {
@@ -411,8 +433,13 @@ export class WalletModules {
 
     this.modules = modules;
 
-    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
-      await this.resolveStorageState();
+    const {
+      accounts,
+      contract,
+      selectedWalletId,
+      recentlySignedInWallets,
+      rememberRecentWallets,
+    } = await this.resolveStorageState();
 
     this.store.dispatch({
       type: "SETUP_WALLET_MODULES",
@@ -422,6 +449,7 @@ export class WalletModules {
         contract,
         selectedWalletId,
         recentlySignedInWallets,
+        rememberRecentWallets,
       },
     });
 

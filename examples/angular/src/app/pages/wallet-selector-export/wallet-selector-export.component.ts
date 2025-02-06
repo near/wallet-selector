@@ -8,6 +8,7 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
@@ -22,6 +23,8 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { CONTRACT_ID } from "../../../constants";
 
 declare global {
   interface Window {
@@ -61,6 +64,7 @@ export class WalletSelectorExportComponent implements OnInit {
         setupMathWallet(),
         setupNightly(),
         setupMeteorWallet(),
+        setupMeteorWalletApp({ contractId: CONTRACT_ID }),
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
@@ -80,7 +84,8 @@ export class WalletSelectorExportComponent implements OnInit {
         }),
         setupRamperWallet(),
         setupNearMobileWallet(),
-        setupMintbaseWallet({ contractId: "guest-book.testnet" }),
+        setupMintbaseWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet({ contractId: CONTRACT_ID }),
       ],
     });
     /**
