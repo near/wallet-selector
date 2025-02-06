@@ -1,3 +1,8 @@
+import type {
+  SignedMessage,
+  SignMessageParams,
+} from "@near-wallet-selector/core";
+
 export interface AccessKey {
   publicKey: string;
   secretKey: string;
@@ -70,4 +75,5 @@ export interface InjectedOkx {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<RequestSignTransactionsResponse>;
+  signMessage: (params: SignMessageParams) => Promise<SignedMessage>;
 }
