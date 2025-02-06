@@ -13,6 +13,7 @@ import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
@@ -128,6 +129,7 @@ export class WalletSelectorComponent implements OnInit {
         setupNarwallets(),
         setupWelldoneWallet(),
         setupHereWallet(),
+        setupHotWallet(),
         setupCoin98Wallet(),
         setupNearFi(),
         setupNearSnap(),
