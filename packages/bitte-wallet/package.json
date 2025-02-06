@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/bitte-wallet",
-  "version": "8.9.16",
+  "version": "8.10.0",
   "description": "Bitte wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

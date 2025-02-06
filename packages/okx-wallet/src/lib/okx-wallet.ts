@@ -167,8 +167,13 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 
-    async signMessage() {
-      throw new Error(`Method not supported by ${metadata.name}`);
+    async signMessage(message) {
+      try {
+        const signedMessage = await _state.wallet.signMessage(message);
+        return signedMessage;
+      } catch (error) {
+        throw new Error("sign Error");
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {

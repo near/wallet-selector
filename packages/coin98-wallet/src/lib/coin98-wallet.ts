@@ -6,6 +6,8 @@ import type {
   Account,
   Optional,
   Transaction,
+  SignMessageParams,
+  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
@@ -103,6 +105,33 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       await _state.wallet.near.connect({ prefix: "near_selector", contractId });
       return getAccounts();
+    },
+
+    async signMessage({
+      message,
+      nonce,
+      recipient,
+      state,
+    }: SignMessageParams): Promise<SignedMessage> {
+      if (!_state.wallet) {
+        throw new Error("Wallet is not installed");
+      }
+
+      logger.log("Coin98:signMessage", {
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      const signature = await _state.wallet.near.signMessage({
+        message,
+        nonce,
+        recipient,
+        state,
+      });
+
+      return signature;
     },
 
     async signOut() {
