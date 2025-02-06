@@ -231,10 +231,15 @@ export class MyNearWalletConnection {
         const handler = async (event: MessageEvent) => {
 
             const message = event.data as WalletMessage;
-            
-            if (event.origin != this._walletBaseUrl) {
+
+            // check if the URL are the same
+            const origin = new URL(event.origin);
+            const walletBaseUrl = new URL(this._walletBaseUrl);
+            if (origin.origin !== walletBaseUrl.origin) {
+                console.warn('Ignoring message from different origin', origin.origin);
                 return;
             }
+
             switch (message.status) {
                 case 'success':
                     childWindow?.close();
