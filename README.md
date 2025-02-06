@@ -61,7 +61,6 @@ yarn add \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
-  @near-wallet-selector/hot-wallet \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -90,7 +89,6 @@ npm install \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/nearfi \
-  @near-wallet-selector/hot-wallet \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -131,7 +129,6 @@ import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
@@ -159,7 +156,6 @@ const selector = await setupWalletSelector({
     setupBitgetWallet(),
     setupMyNearWallet(),
     setupSender(),
-    setupHotWallet(),
     setupHereWallet(),
     setupMathWallet(),
     setupNightly(),
