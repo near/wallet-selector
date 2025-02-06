@@ -153,7 +153,7 @@ Project ID is required, please obtain it from [walletconnect.com](https://wallet
 - `skipSignInAccessKey` (`boolean?`): Allows connecting Ethereum wallets without adding a Limited Access Key which would require owning NEAR to execute the transaction (for rainbowbridge.app and welcome.near.org).
 - `nearNodeUrl` (`string?`): NEAR node url to query the NEAR transaction status and onboarding access key.
 
-Developent options (before the NEAR protocol upgrade to support 0x accounts natively):
+Development options (before the NEAR protocol upgrade to support 0x accounts natively):
 
 - `devMode` (`boolean?`): During development NEAR protocol doesn't yet support `0x123...abc` accounts natively so in devMode the account with format `0x123...abc.eth-wallet.testnet` is used insead. Setup your devMode account at https://near-wallet-playground.testnet.aurora.dev
 - `devModeAccount` (`string?`): Modify the namespace of the devMode root accounts.
