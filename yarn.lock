@@ -4530,8 +4530,8 @@
     rxjs "7.8.1"
 
 "@near-wallet-selector/core@^8.9.13":
-  version "8.9.16"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.9.16.tgz#33cf9ffd0d6eedb17fe8954505cad9ecb00a04b8"
+  version "8.10.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.10.0.tgz#33cf9ffd0d6eedb17fe8954505cad9ecb00a04b8"
   integrity sha512-Bq+bZvwpsYgs8g4mtDMEMUpHwD/+VlHY3hj5pLv6o6C/3Ym0/540/8ydd9VUhMsdpY0Dhv2SLamKiL6PJK6THA==
   dependencies:
     borsh "1.0.0"
