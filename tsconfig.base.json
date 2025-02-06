@@ -52,7 +52,7 @@
         "packages/meteor-wallet-app/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui": [
-        "dist/packages/modal-ui"
+        "packages/modal-ui/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"

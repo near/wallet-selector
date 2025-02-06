@@ -118,4 +118,9 @@ export interface WalletSelector {
     eventName: EventName,
     callback: (event: WalletSelectorEvents[EventName]) => void
   ): void;
+
+  /**
+   * Sets up a callback function that triggers whenever the user logs in or out.
+   */
+  subscribeOnAccountChange(onAccountChangeFn: (account: string) => void): void;
 }

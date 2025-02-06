@@ -66,6 +66,7 @@
     "build:okx-wallet": "nx run-many --target=build --projects=okx-wallet --configuration=production",
     "build:ethereum-wallets": "nx run-many --target=build --projects=ethereum-wallets --configuration=production",
     "build:ramper-wallet": "nx run-many --target=build --projects=ramper-wallet --configuration=production",
+    "build:react-hook": "nx run-many --target=build --projects=react-hook --configuration=production",
     "build:sender": "nx run-many --target=build --projects=sender --configuration=production",
     "build:wallet-connect": "nx run-many --target=build --projects=wallet-connect --configuration=production",
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
