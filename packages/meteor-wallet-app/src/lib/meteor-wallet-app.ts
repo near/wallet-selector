@@ -35,9 +35,9 @@ interface IMeteorWalletAppAction {
 const postMessage = function (data: string) {
   // why this?
   // https://github.com/react-native-webview/react-native-webview/issues/323#issuecomment-511824940
-  // @ts-expect-error
+  // @ts-ignore
   if (window?.ReactNativeWebView?.postMessage) {
-    // @ts-expect-error
+    // @ts-ignore
     return window?.ReactNativeWebView?.postMessage(data);
   } else {
     if (window.top) {
