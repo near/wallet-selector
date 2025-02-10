@@ -777,6 +777,8 @@ SOFTWARE.
 @here-wallet/core
 ISC
 
+@hot-wallet/sdk
+
 @ledgerhq/devices
 Apache-2.0
 The MIT License
@@ -1395,11 +1397,15 @@ DEALINGS IN THE SOFTWARE.
 
 @near-wallet-selector/here-wallet
 
+@near-wallet-selector/hot-wallet
+
 @near-wallet-selector/ledger
 
 @near-wallet-selector/math-wallet
 
 @near-wallet-selector/meteor-wallet
+
+@near-wallet-selector/meteor-wallet-app
 
 @near-wallet-selector/mintbase-wallet
 
