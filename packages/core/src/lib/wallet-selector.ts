@@ -7,7 +7,7 @@ import type {
 } from "./wallet-selector.types";
 import { EventEmitter, Logger, WalletModules, Provider } from "./services";
 import type { Wallet } from "./wallet";
-import type { Store } from "./store.types";
+import type { Store, WalletSelectorState } from "./store.types";
 import type { NetworkId, Options } from "./options.types";
 
 let walletSelectorInstance: WalletSelector | null = null;
@@ -67,6 +67,15 @@ const createSelector = (
     },
     off: (eventName, callback) => {
       emitter.off(eventName, callback);
+    },
+    subscribeOnAccountChange(onAccountChangeFn) {
+      this.store.observable.subscribe(async (state: WalletSelectorState) => {
+        const signedAccount = state?.accounts.find(
+          (account) => account.active
+        )?.accountId;
+
+        onAccountChangeFn(signedAccount || "");
+      });
     },
   };
 };

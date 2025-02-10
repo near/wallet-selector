@@ -1,0 +1,62 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Podłącz swój portfel",
+      "whatIsAWallet": "Co to jest portfel?",
+      "secureAndManage": "Chroń i zarządzaj swoimi cyfrowymi zasobami",
+      "safelyStore": "Bezpiecznie przechowuj i przesyłaj swoje kryptowaluty oraz NFT",
+      "logInToAny": "Zaloguj się do dowolnej aplikacji NEAR",
+      "noNeedToCreate": "Nie musisz tworzyć nowego konta ani hasła. Podłącz portfel i zacznij korzystać!",
+      "getAWallet": "Uzyskaj portfel",
+      "useAWallet": "Użyj portfela do ochrony i zarządzania swoimi zasobami NEAR bez potrzeby korzystania z nazwy użytkownika i hasła",
+      "connectionFailed": "Połączenie nie powiodło się",
+      "connectionSuccessful": "Połączenie udane",
+      "rememberWallet": "Zapamiętaj wybór portfela",
+      "connected": "Połączono",
+      "connectingTo": "Łączenie z"
+    },
+    "ledger": {
+      "connectWithLedger": "Połącz Ledger",
+      "makeSureYourLedger": "Upewnij się, że Twój Ledger jest bezpiecznie podłączony, a aplikacja NEAR jest otwarta na Twoim urządzeniu",
+      "continue": "Kontynuuj",
+      "specifyHDPath": "Określ ścieżkę HD",
+      "enterYourPreferredHDPath": "Wprowadź preferowaną ścieżkę HD, a następnie zeskanuj dowolne aktywne konto",
+      "scan": "Skanuj",
+      "retry": "Ponów próbę",
+      "ledgerIsNotAvailable": "Ledger niedostępny",
+      "accessDeniedToUseLedgerDevice": "Odmowa dostępu do urządzenia Ledger",
+      "noAccountsFound": "Nie znaleziono kont",
+      "selectYourAccounts": "Wybierz swoje konta",
+      "connecting1Account": "Łączenie z 1 kontem",
+      "cantFindAnyAccount": "Nie można znaleźć żadnych kont powiązanych z tym Ledgerem. Proszę",
+      "orConnectAnAnotherLedger.": "lub podłącz inny Ledger",
+      "connecting": "Łączenie",
+      "ofAccounts": "kont",
+      "failedToAutomatically": "Nie udało się automatycznie znaleźć ID konta, podaj je ręcznie:",
+      "overviewTheListOfAuthorized": "Przejrzyj listę autoryzowanych kont i kliknij poniższy przycisk, aby zakończyć logowanie",
+      "finish": "Zakończ"
+    },
+    "install": {
+      "youllNeedToInstall": "Musisz zainstalować",
+      "toContinueAfterInstalling": "aby kontynuować. Po zainstalowaniu",
+      "refreshThePage": "Odśwież stronę",
+      "open": "Otwórz"
+    },
+    "qr": {
+      "copiedToClipboard": "Skopiowano do schowka",
+      "failedToCopy": "Nie udało się skopiować do schowka",
+      "scanWithYourMobile": "Zeskanuj swoim telefonem",
+      "copyToClipboard": "Skopiuj do schowka",
+      "preferTheOfficial": "Preferujesz użycie oficjalnego okna dialogowego w",
+      "open": "Otwórz"
+    },
+    "walletTypes": {
+      "hardware": "Portfel sprzętowy",
+      "browser": "Portfel przeglądarkowy",
+      "injected": "Rozszerzenie portfela",
+      "bridge": "Portfel bridge",
+      "mobile": "Portfel mobilny",
+      "instant-link": "Portfel natychmiastowy"
+    }
+  }
+}

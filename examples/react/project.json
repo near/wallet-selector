@@ -19,6 +19,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/hot-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/sender/assets/",
             "output": "assets/"
           },
