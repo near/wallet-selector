@@ -65,8 +65,8 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const initalHeaderTitle = translate("modal.ledger.connectWithLedger");
-  const [headerTitle, setHeaderTitle] = useState(initalHeaderTitle);
+  const initialHeaderTitle = translate("modal.ledger.connectWithLedger");
+  const [headerTitle, setHeaderTitle] = useState(initialHeaderTitle);
 
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
     const url = `${selector.options.network.indexerUrl}/public_key/ed25519:${publicKey}`;
