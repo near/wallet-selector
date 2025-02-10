@@ -94,25 +94,32 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
           },
 
           async signAndSendTransaction(params) {
-            const { transaction } = await HOT.request(
-              "near:signAndSendTransaction",
-              params
+            const receiverId =
+              params.receiverId || config.store.getState().contract?.contractId;
+
+            const { transactions } = await HOT.request(
+              "near:signAndSendTransactions",
+              {
+                transactions: [
+                  {
+                    actions: params.actions,
+                    signerId: params.signerId,
+                    receiverId: receiverId || "",
+                  },
+                ],
+              }
             );
 
-            return transaction as any;
+            return transactions[0] as any;
           },
 
           async signAndSendTransactions(params) {
-            const results: Array<string> = [];
-            for (const tx of params.transactions) {
-              const { transaction } = await HOT.request(
-                "near:signAndSendTransaction",
-                tx
-              );
-              results.push(transaction);
-            }
+            const { transactions } = await HOT.request(
+              "near:signAndSendTransactions",
+              params
+            );
 
-            return results as Array<any>;
+            return transactions as Array<any>;
           },
 
           async verifyOwner() {

@@ -3310,10 +3310,10 @@
     sha1 "^1.1.1"
     uuid4 "2.0.3"
 
-"@hot-wallet/sdk@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@hot-wallet/sdk/-/sdk-1.0.7.tgz#d57e6e13e1a79189410a6a8373b5c9919a6abff3"
-  integrity sha512-atFCg7w50II4y9FIIvbJmPT2lZ0AeCHy/MY1q5da3tXQdpc6vv3qG4XQwlh2hpegDiixvRi1hATuHpy163INHg==
+"@hot-wallet/sdk@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@hot-wallet/sdk/-/sdk-1.0.8.tgz#52b959af64363f7fc30b2b0300cb2dc5763ecc3d"
+  integrity sha512-HPS/y8NNhT9mUw1xLYQUlENn1F8NULqNYAiy25idGGreGJUbSEiHmCPVed7MSJbxEAli+b4GnhbNmirfhA12og==
   dependencies:
     "@near-js/crypto" "^1.4.0"
     "@near-js/utils" "^1.0.0"
