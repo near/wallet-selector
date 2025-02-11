@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/react-hook",
-  "version": "8.9.15",
+  "version": "8.10.0",
   "description": "React Hook and Context for Wallet Selector",
   "keywords": [
     "near",
@@ -20,14 +20,14 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook",
   "peerDependencies": {
-    "@near-wallet-selector/core": "8.9.15",
-    "@near-wallet-selector/modal-ui": "8.9.15",
+    "@near-wallet-selector/core": ">=8.10",
+    "@near-wallet-selector/modal-ui": ">=8.10",
     "react": "18.2.0",
-    "near-api-js": ">=4.0.0 <6.0.0"
+    "near-api-js": ">=4.0.0"
   },
   "devDependencies": {
-    "@near-wallet-selector/core": "8.9.15",
-    "@near-wallet-selector/modal-ui": "8.9.15",
-    "near-api-js": ">=4.0.0 <6.0.0"
+    "@near-wallet-selector/core": ">=8.10",
+    "@near-wallet-selector/modal-ui": ">=8.10",
+    "near-api-js": ">=4.0.0"
   }
 }
