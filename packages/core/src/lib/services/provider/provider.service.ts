@@ -50,6 +50,10 @@ export class Provider implements ProviderService {
     return this.provider.sendTransaction(signedTransaction);
   }
 
+  sendTransactionAsync(signedTransaction: SignedTransaction) {
+    return this.provider.sendTransactionAsync(signedTransaction);
+  }
+
   private urlsToProviders(urls: Array<string>) {
     return urls && urls.length > 0
       ? urls.map((url) => new JsonRpcProvider({ url }))
