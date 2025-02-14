@@ -2,14 +2,15 @@ import * as nearAPI from "near-api-js";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
-  BrowserWallet,
   Transaction,
   Optional,
   Network,
   Account,
+  InjectedWallet,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
+import { MyNearWalletConnection } from "./my-near-wallet-connection";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -20,7 +21,7 @@ export interface MyNearWalletParams {
 }
 
 interface MyNearWalletState {
-  wallet: nearAPI.WalletConnection;
+  wallet: MyNearWalletConnection;
   keyStore: nearAPI.keyStores.BrowserLocalStorageKeyStore;
 }
 
@@ -56,7 +57,7 @@ const setupWalletState = async (
     headers: {},
   });
 
-  const wallet = new nearAPI.WalletConnection(near, "near_app");
+  const wallet = new MyNearWalletConnection(near, "near_app");
 
   return {
     wallet,
@@ -65,14 +66,13 @@ const setupWalletState = async (
 };
 
 const MyNearWallet: WalletBehaviourFactory<
-  BrowserWallet,
+  InjectedWallet,
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger, id }) => {
   const _state = await setupWalletState(params, options.network);
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
     const account = _state.wallet.account();
-
     if (!accountId || !account) {
       return [];
     }
@@ -131,7 +131,7 @@ const MyNearWallet: WalletBehaviourFactory<
   };
 
   return {
-    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
+    async signIn({ contractId, methodNames }) {
       const existingAccounts = await getAccounts();
 
       if (existingAccounts.length) {
@@ -141,8 +141,6 @@ const MyNearWallet: WalletBehaviourFactory<
       await _state.wallet.requestSignIn({
         contractId,
         methodNames,
-        successUrl,
-        failureUrl,
       });
 
       return getAccounts();
@@ -190,22 +188,23 @@ const MyNearWallet: WalletBehaviourFactory<
         href.searchParams.append("state", state);
       }
 
-      window.location.replace(href.toString());
-
-      return;
+      return await _state.wallet.handlePopupTransaction(
+        href.toString(),
+        (value) => {
+          return {
+            accountId: value?.signedRequest?.accountId || "",
+            publicKey: value?.signedRequest?.publicKey || "",
+            signature: value?.signedRequest?.signature || "",
+          };
+        }
+      );
     },
 
-    async signAndSendTransaction({
-      signerId,
-      receiverId,
-      actions,
-      callbackUrl,
-    }) {
+    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", {
         signerId,
         receiverId,
         actions,
-        callbackUrl,
       });
 
       const { contract } = store.getState();
@@ -213,18 +212,16 @@ const MyNearWallet: WalletBehaviourFactory<
       if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not signed in");
       }
-
       const account = _state.wallet.account();
 
       return account["signAndSendTransaction"]({
         receiverId: receiverId || contract.contractId,
         actions: actions.map((action) => createAction(action)),
-        walletCallbackUrl: callbackUrl,
       });
     },
 
-    async signAndSendTransactions({ transactions, callbackUrl }) {
-      logger.log("signAndSendTransactions", { transactions, callbackUrl });
+    async signAndSendTransactions({ transactions }) {
+      logger.log("signAndSendTransactions", { transactions });
 
       if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not signed in");
@@ -232,7 +229,6 @@ const MyNearWallet: WalletBehaviourFactory<
 
       return _state.wallet.requestSignTransactions({
         transactions: await transformTransactions(transactions),
-        callbackUrl,
       });
     },
 
@@ -246,13 +242,11 @@ export function setupMyNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
-  successUrl = "",
-  failureUrl = "",
-}: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
+}: MyNearWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async (moduleOptions) => {
     return {
       id: "my-near-wallet",
-      type: "browser",
+      type: "injected",
       metadata: {
         name: "MyNearWallet",
         description:
@@ -260,9 +254,7 @@ export function setupMyNearWallet({
         iconUrl,
         deprecated,
         available: true,
-        successUrl,
-        failureUrl,
-        walletUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
+        downloadUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
       },
       init: (options) => {
         return MyNearWallet({
