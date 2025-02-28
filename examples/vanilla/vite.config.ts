@@ -2,6 +2,7 @@
 import { defineConfig } from "vite";
 
 import viteTsConfigPaths from "vite-tsconfig-paths";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
   cacheDir: "../../node_modules/.vite/vanilla",
@@ -15,27 +16,33 @@ export default defineConfig({
     port: 4300,
     host: "localhost",
   },
-  define: {
-    // By default, Vite doesn't include shims for NodeJS/
-    // necessary for segment analytics lib to work
-    global: {},
-    "process.env": {},
-  },
   plugins: [
     viteTsConfigPaths({
       root: "../../",
     }),
+    nodePolyfills({
+      // To exclude specific polyfills, add them to this list
+      exclude: [
+        // Example: 'fs', // Excludes the polyfill for 'fs' and 'node:fs'
+      ],
+      // Whether to polyfill specific globals
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+      // Whether to polyfill Node.js builtins
+      protocolImports: true,
+    }),
   ],
-
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [
-  //    viteTsConfigPaths({
-  //      root: '../../',
-  //    }),
-  //  ],
-  // },
-
+  resolve: {
+    alias: {
+      // ...existing code...
+      http: "vite-plugin-node-polyfills/polyfills/http",
+      https: "vite-plugin-node-polyfills/polyfills/http",
+      stream: "vite-plugin-node-polyfills/polyfills/stream",
+    },
+  },
   test: {
     globals: true,
     cache: {

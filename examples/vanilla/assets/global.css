@@ -167,8 +167,11 @@ li {
   }
 }
 
-
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap");
+.is-premium {
+  border-left: 0.25em solid var(--secondary);
+  padding-left: 0.25em;
+  margin-left: -0.5em;
+}
 
 #near-wallet-selector-modal {
   --backdrop-bg: #26262630;
