@@ -10,7 +10,6 @@ import type {
 } from "@near-wallet-selector/core";
 import {
   setupWalletSelector,
-  verifyFullKeyBelongsToUser,
   verifySignature,
 } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
@@ -99,10 +98,15 @@ export function WalletSelectorProvider({
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [accounts, setAccounts] = useState<Array<AccountState>>();
 
+  const networkURL =
+    typeof config.network === "string"
+      ? `https://rpc.${config.network}.near.org`
+      : config.network.nodeUrl;
+
   const rpcProviderUrls =
     config.fallbackRpcUrls && config.fallbackRpcUrls.length > 0
       ? config.fallbackRpcUrls
-      : [`https://rpc.${config.network}.near.org`];
+      : [networkURL];
 
   const provider = new providers.FailoverRpcProvider(
     rpcProviderUrls.map((url) => new providers.JsonRpcProvider({ url }))
@@ -294,7 +298,7 @@ export function WalletSelectorProvider({
   );
 
   const fetchAllUserKeys = async () => {
-    const keys = await fetch(`https://rpc.${config.network}.near.org`, {
+    const keys = await fetch(networkURL, {
       method: "post",
       headers: { "Content-Type": "application/json; charset=utf-8" },
       body: `{"jsonrpc":"2.0", "method":"query", "params":["access_key/${signedAccountId}", ""], "id":1}`,

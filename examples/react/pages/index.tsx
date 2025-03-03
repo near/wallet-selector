@@ -32,7 +32,6 @@ import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { WalletSelectorContextProvider } from "../contexts/WalletSelectorContext";
 
 const walletSelectorConfig = {
   network: NETWORK_ID,
@@ -91,11 +90,9 @@ const Home: NextPage = () => {
           <ExportContent />
         </ExportAccountSelectorContextProvider>
       ) : (
-        <WalletSelectorContextProvider>
-          <WalletSelectorProvider config={walletSelectorConfig}>
-            <Content />
-          </WalletSelectorProvider>
-        </WalletSelectorContextProvider>
+        <WalletSelectorProvider config={walletSelectorConfig}>
+          <Content />
+        </WalletSelectorProvider>
       )}
     </Fragment>
   );

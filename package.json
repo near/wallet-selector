@@ -72,7 +72,6 @@
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
-    "examples:vanillajs:generateimportmap": "(cd examples/vanillajs && jspm link index.html -o index.html)",
     "find:unused": "ts-prune -p tsprune.json",
     "postinstall": "yarn build:all",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
@@ -81,7 +80,7 @@
     "prepublishOnly": "yarn build:core && yarn build:all",
     "serve:angular": "nx serve angular",
     "serve:react": "nx serve react --host=0.0.0.0",
-    "serve:vanillajs": "yarn examples:vanillajs:generateimportmap && http-server -c-1 examples/vanillajs",
+    "serve:vanilla": "nx serve vanilla",
     "test": "nx run-many --target=test --all"
   },
   "dependencies": {
