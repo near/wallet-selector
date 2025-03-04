@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import Content from "../components/Content";
 import { ExportAccountSelectorContextProvider } from "../contexts/WalletSelectorExportContext";
 import ExportContent from "../components/ExportContent";
-import { wagmiConfig, web3Modal } from "../wallets/web3modal";
+import { wagmiAdapter, web3Modal } from "../wallets/web3modal";
 
 import { WalletSelectorProvider } from "@near-wallet-selector/react-hook";
 
@@ -70,7 +70,11 @@ const walletSelectorConfig = {
     setupNearMobileWallet(),
     setupMintbaseWallet({ contractId: CONTRACT_ID }),
     setupBitteWallet({ contractId: CONTRACT_ID }),
-    setupEthereumWallets({ wagmiConfig, web3Modal }),
+    // setupEthereumWallets({ wagmiConfig, web3Modal }),
+    setupEthereumWallets({
+      wagmiConfig: wagmiAdapter.wagmiConfig,
+      web3Modal,
+    }),
   ],
 };
 

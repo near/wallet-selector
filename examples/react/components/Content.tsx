@@ -66,10 +66,12 @@ const Content: React.FC = () => {
   }, [getAccountProvider, getBalance, signOut, signedAccountId]);
 
   const getMessages = useCallback(async () => {
-    return (await viewFunction({
-      contractId: CONTRACT_ID,
-      method: "getMessages",
-    })) as Array<Message>;
+    return [
+      ...(await viewFunction({
+        contractId: CONTRACT_ID,
+        method: "getMessages",
+      })),
+    ].reverse() as Array<Message>;
   }, [viewFunction]);
 
   useEffect(() => {
