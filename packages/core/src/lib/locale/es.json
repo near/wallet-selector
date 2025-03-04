@@ -77,7 +77,7 @@
       "disclaimer": "No podrás transferir cuentas que nunca hayan sido financiadas o utilizadas en NEAR.",
       "getPassphrase": {
         "button": "Continuar",
-        "checkLabel": "Copié o anoté la contraseña",
+        "checkLabel": "Copie o anote la contraseña",
         "desc": "Necesitarás ingresar esta contraseña cuando comiences a exportar tus cuentas a otra billetera.",
         "label": "Haga clic para Copiar",
         "title": "Copiar Contraseña Temporal",
