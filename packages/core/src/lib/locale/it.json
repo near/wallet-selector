@@ -1,0 +1,62 @@
+{
+  "modal": {
+    "wallet": {
+      "connectYourWallet": "Connetti il tuo portafoglio",
+      "whatIsAWallet": "Cos'è un portafoglio?",
+      "secureAndManage": "Proteggi e gestisci i tuoi beni digitali",
+      "safelyStore": "Conserva e trasferisci in sicurezza le tue criptovalute e NFT",
+      "logInToAny": "Accedi a qualsiasi applicazione NEAR",
+      "noNeedToCreate": "Non è necessario creare un nuovo account o password. Connetti il tuo portafoglio e inizia subito!",
+      "getAWallet": "Ottieni un portafoglio",
+      "useAWallet": "Usa un portafoglio per proteggere e gestire i tuoi asset NEAR senza bisogno di nome utente o password",
+      "connectionFailed": "Connessione fallita",
+      "connectionSuccessful": "Connessione riuscita",
+      "rememberWallet": "Ricorda la scelta del portafoglio",
+      "connected": "Connesso",
+      "connectingTo": "Connessione a"
+    },
+    "ledger": {
+      "connectWithLedger": "Connetti Ledger",
+      "makeSureYourLedger": "Assicurati che il tuo Ledger sia collegato in sicurezza e che l'app NEAR sia aperta sul tuo dispositivo",
+      "continue": "Continua",
+      "specifyHDPath": "Specifica il percorso HD",
+      "enterYourPreferredHDPath": "Inserisci il percorso HD preferito, quindi scansiona per eventuali account attivi",
+      "scan": "Scansiona",
+      "retry": "Riprova",
+      "ledgerIsNotAvailable": "Ledger non disponibile",
+      "accessDeniedToUseLedgerDevice": "Accesso negato al dispositivo Ledger",
+      "noAccountsFound": "Nessun account trovato",
+      "selectYourAccounts": "Seleziona i tuoi account",
+      "connecting1Account": "Connessione di 1 account",
+      "cantFindAnyAccount": "Impossibile trovare account associati a questo Ledger. Per favore",
+      "orConnectAnAnotherLedger.": "oppure connetti un altro Ledger",
+      "connecting": "Connessione",
+      "ofAccounts": "account",
+      "failedToAutomatically": "Impossibile trovare automaticamente l'ID dell'account, forniscilo manualmente:",
+      "overviewTheListOfAuthorized": "Esamina l'elenco degli account autorizzati e fai clic sul pulsante qui sotto per completare l'accesso",
+      "finish": "Termina"
+    },
+    "install": {
+      "youllNeedToInstall": "Devi installare",
+      "toContinueAfterInstalling": "per continuare. Una volta installato",
+      "refreshThePage": "Aggiorna la pagina",
+      "open": "Apri"
+    },
+    "qr": {
+      "copiedToClipboard": "Copiato negli appunti",
+      "failedToCopy": "Copia negli appunti fallita",
+      "scanWithYourMobile": "Scansiona con il tuo cellulare",
+      "copyToClipboard": "Copia negli appunti",
+      "preferTheOfficial": "Preferisci utilizzare la finestra di dialogo ufficiale in",
+      "open": "Apri"
+    },
+    "walletTypes": {
+      "hardware": "Portafoglio hardware",
+      "browser": "Portafoglio browser",
+      "injected": "Estensione del portafoglio",
+      "bridge": "Portafoglio bridge",
+      "mobile": "Portafoglio mobile",
+      "instant-link": "Portafoglio istantaneo"
+    }
+  }
+}

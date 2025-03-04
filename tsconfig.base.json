@@ -36,6 +36,9 @@
       "@near-wallet-selector/core": [
         "packages/core/src/index.ts"
       ],
+      "@near-wallet-selector/hot-wallet": [
+        "packages/hot-wallet/src/index.ts"
+      ],
       "@near-wallet-selector/here-wallet": [
         "packages/here-wallet/src/index.ts"
       ],
@@ -52,7 +55,7 @@
         "packages/meteor-wallet-app/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui": [
-        "dist/packages/modal-ui"
+        "packages/modal-ui/src/index.ts"
       ],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"
