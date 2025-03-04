@@ -17,7 +17,7 @@ import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
 
-import { wagmiConfig, web3Modal } from './web3modal';
+import { wagmiAdapter, web3Modal } from './web3modal';
 
 
 const THIRTY_TGAS = '30000000000000';
@@ -54,7 +54,7 @@ export class Wallet {
       network: this.networkId,
       modules: [
         setupMeteorWallet(),
-        setupEthereumWallets({ wagmiConfig, web3Modal, alwaysOnboardDuringSignIn: true }),
+        setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
         setupLedger(),
         setupBitteWallet(),
         setupHereWallet(),

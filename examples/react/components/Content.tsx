@@ -338,7 +338,7 @@ const Content: React.FC = () => {
         </div>
         <div style={{ marginTop: 30 }}>
           {/* @ts-ignore */}
-          <w3m-button label="Log in with Ethereum" />
+          <appkit-button label="Log in with Ethereum" />
         </div>
         <SignIn />
       </Fragment>
@@ -358,7 +358,7 @@ const Content: React.FC = () => {
       {isEthereumWallet && (
         <div style={{ marginTop: 30 }}>
           {/* @ts-ignore */}
-          <w3m-button label="Log in with Ethereum" />
+          <appkit-button label="Log in with Ethereum" />
         </div>
       )}
       <Form
