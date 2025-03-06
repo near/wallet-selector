@@ -89,10 +89,6 @@ export class MyNearWalletConnection {
     this._keyStore = (near.connection.signer as InMemorySigner).keyStore;
     this._authData = authData;
     this._authDataKey = authDataKey;
-
-    if (!this.isSignedIn()) {
-      this._completeSignInPromise = this._completeSignInWithAccessKey();
-    }
   }
 
   isSignedIn(): boolean {
@@ -298,32 +294,6 @@ export class MyNearWalletConnection {
       url,
       (data) => data?.transactionHashes
     ) as Promise<string>;
-  }
-
-  async _completeSignInWithAccessKey() {
-    const currentUrl = new URL(window.location.href);
-    const publicKey = currentUrl.searchParams.get("public_key") || "";
-    const allKeys = (currentUrl.searchParams.get("all_keys") || "").split(",");
-    const accountId = currentUrl.searchParams.get("account_id") || "";
-    // TODO: Handle errors during login
-    if (accountId) {
-      const authData = {
-        accountId,
-        allKeys,
-      };
-      window.localStorage.setItem(this._authDataKey, JSON.stringify(authData));
-      if (publicKey) {
-        await this._moveKeyFromTempToPermanent(accountId, publicKey);
-      }
-      this._authData = authData;
-    }
-    currentUrl.searchParams.delete("public_key");
-    currentUrl.searchParams.delete("all_keys");
-    currentUrl.searchParams.delete("account_id");
-    currentUrl.searchParams.delete("meta");
-    currentUrl.searchParams.delete("transactionHashes");
-
-    window.history.replaceState({}, document.title, currentUrl.toString());
   }
 
   async completeSignInWithAccessKeys({
