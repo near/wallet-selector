@@ -103,7 +103,7 @@
     "@near-snap/sdk": "0.6.0",
     "@noble/ciphers": "0.5.3",
     "@noble/hashes": "1.4.0",
-    "@peersyst/near-mobile-signer": "1.1.2",
+    "@peersyst/near-mobile-signer": "1.1.4",
     "@ramper/near": "0.0.30",
     "@reown/appkit": "1.5.2",
     "@reown/appkit-adapter-wagmi": "1.5.2",
