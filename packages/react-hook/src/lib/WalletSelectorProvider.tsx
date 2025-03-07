@@ -237,12 +237,18 @@ export function WalletSelectorProvider({
    * @returns {Promise<Transaction[]>} - the resulting transactions
    */
   const signAndSendTransactions = useCallback(
-    ({ transactions }: { transactions: Array<Transaction> }) => {
+    async ({ transactions }: { transactions: Array<Transaction> }) => {
       if (!wallet) {
         throw new WalletError("No wallet connected");
       }
 
-      return wallet.signAndSendTransactions({ transactions });
+      const sentTxs = (await wallet.signAndSendTransactions({
+        transactions,
+      })) as Array<FinalExecutionOutcome>;
+
+      return sentTxs.map((tx: FinalExecutionOutcome) =>
+        providers.getTransactionLastResult(tx)
+      );
     },
     [wallet]
   );
