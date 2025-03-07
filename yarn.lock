@@ -5860,10 +5860,10 @@
     "@parcel/utils" "2.13.3"
     nullthrows "^1.1.1"
 
-"@peersyst/near-mobile-signer@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.1.2.tgz#2eff1eb8dae9468089240e167a21ca840bfd95c9"
-  integrity sha512-KLTIHvZ0mpRmhBxC8mWTvFbS4tRsnt+B5N6nbisXQYRGdOnmtakd8URxnmMGFhxmNzlihcUZ/xoU1m9OiyW6Wg==
+"@peersyst/near-mobile-signer@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@peersyst/near-mobile-signer/-/near-mobile-signer-1.1.4.tgz#50e86b03bb220b6aaf943cf2684140ad50971e8a"
+  integrity sha512-e2q56YaODntFo+oX7u4HCh2G7/eTf+kfluhc+dkT0q+3h5iH6MqkpIvpgbMrJCht2qxcgyVwbEpQ94ZLC8O/8A==
   dependencies:
     bn.js "^5.2.1"
     borsh "^0.7.0"
