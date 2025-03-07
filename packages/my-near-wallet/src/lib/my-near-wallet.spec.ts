@@ -1,26 +1,59 @@
 /* eslint-disable @nx/enforce-module-boundaries */
+import type {
+  Near,
+  WalletConnection,
+  ConnectedWalletAccount,
+} from "near-api-js";
+import type { AccountView } from "near-api-js/lib/providers/provider";
 import { mock } from "jest-mock-extended";
+
 import { mockWallet } from "../../../core/src/lib/testUtils";
-
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
-import { setupMyNearWallet } from "./my-near-wallet";
-import type { MyNearWalletConnection } from "./my-near-wallet-connection";
-
-const accountId = "amirsaran.testnet";
-const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
+import type { BrowserWallet } from "../../../core/src/lib/wallet";
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
-  const walletConnection = mock<MyNearWalletConnection>();
+  const walletConnection = mock<WalletConnection>();
+  const account = mock<ConnectedWalletAccount>({
+    connection: {
+      signer: {
+        getPublicKey: jest.fn().mockReturnValue(""),
+      },
+    },
+  });
 
-  const { wallet } = await mockWallet<InjectedWallet>(
-    setupMyNearWallet(),
-    deps
+  jest.mock("near-api-js", () => {
+    const module = jest.requireActual("near-api-js");
+    return {
+      ...module,
+      connect: jest.fn().mockResolvedValue(mock<Near>()),
+      WalletConnection: jest.fn().mockReturnValue(walletConnection),
+    };
+  });
+
+  walletConnection.isSignedIn.calledWith().mockReturnValue(true);
+  walletConnection.getAccountId
+    .calledWith()
+    .mockReturnValue("test-account.testnet");
+  walletConnection.account.calledWith().mockReturnValue(account);
+  // @ts-ignore
+  // near-api-js marks this method as protected.
+  // TODO: return value instead of null
+  account.signAndSendTransaction.calledWith().mockReturnValue(null);
+  account.state.calledWith().mockResolvedValue(
+    mock<AccountView>({
+      amount: "1000000000000000000000000",
+    })
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { setupMyNearWallet } = require("./my-near-wallet");
+  const { wallet } = await mockWallet<BrowserWallet>(setupMyNearWallet(), deps);
+
   return {
-    walletConnection,
+    nearApiJs: require("near-api-js"),
     wallet,
+    walletConnection,
+    account,
   };
 };
 
@@ -29,17 +62,17 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it.skip("sign into mynearwallet", async () => {
-    const { wallet, walletConnection } = await createMyNearWallet();
+  it("sign into near wallet", async () => {
+    const { wallet, nearApiJs } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
 
-    expect(walletConnection.requestSignIn).toHaveBeenCalled();
+    expect(nearApiJs.connect).toHaveBeenCalled();
   });
 });
 
 describe("signOut", () => {
-  it.skip("sign out of mynearwallet", async () => {
+  it("sign out of near wallet", async () => {
     const { wallet, walletConnection } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -50,54 +83,83 @@ describe("signOut", () => {
 });
 
 describe("getAccounts", () => {
-  it.skip("returns array of accounts", async () => {
-    const { wallet } = await createMyNearWallet();
+  it("returns array of accounts", async () => {
+    const { wallet, walletConnection } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
     const result = await wallet.getAccounts();
 
-    expect(result).toEqual([{ accountId, publicKey }]);
+    expect(walletConnection.getAccountId).toHaveBeenCalled();
+    expect(result).toEqual([
+      { accountId: "test-account.testnet", publicKey: "" },
+    ]);
   });
 });
 
 describe("signAndSendTransaction", () => {
-  it.skip("sign transaction in mynearwallet", async () => {
-    const { wallet, walletConnection } = await createMyNearWallet();
+  // TODO: Figure out why imports to core are returning undefined.
+  it("signs and sends transaction", async () => {
+    const { wallet, walletConnection, account } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
-    await wallet.signAndSendTransaction({
-      signerId: accountId,
-      receiverId: "test.testnet",
+    const result = await wallet.signAndSendTransaction({
+      receiverId: "guest-book.testnet",
       actions: [],
     });
 
     expect(walletConnection.account).toHaveBeenCalled();
+    // near-api-js marks this method as protected.
+    // @ts-ignore
+    expect(account.signAndSendTransaction).toHaveBeenCalled();
+    // @ts-ignore
+    expect(account.signAndSendTransaction).toBeCalledWith({
+      actions: [],
+      receiverId: "guest-book.testnet",
+    });
+    expect(result).toEqual(null);
   });
 });
 
-describe("signAndSendTransactions", () => {
-  it.skip("sign transactions in mynearwallet", async () => {
-    const { wallet, walletConnection } = await createMyNearWallet();
+describe("buildImportAccountsUrl", () => {
+  it("returns import url", async () => {
+    const { wallet } = await createMyNearWallet();
 
-    const transactions = [
-      {
-        signerId: accountId,
-        receiverId: "test.testnet",
-        actions: [],
-      },
-      {
-        signerId: accountId,
-        receiverId: "test.testnet",
-        actions: [],
-      },
-    ];
+    expect(typeof wallet.buildImportAccountsUrl).toBe("function");
 
-    await wallet.signIn({ contractId: "test.testnet" });
-    const result = await wallet.signAndSendTransactions({
-      transactions,
+    // @ts-ignore
+    expect(wallet?.buildImportAccountsUrl()).toEqual(
+      "https://testnet.mynearwallet.com/batch-import"
+    );
+  });
+});
+
+describe("signMessage", () => {
+  it("sign message", async () => {
+    const { wallet } = await createMyNearWallet();
+
+    const replace = window.location.replace;
+
+    Object.defineProperty(window, "location", {
+      value: { replace: jest.fn() },
     });
 
-    expect(walletConnection.account).toHaveBeenCalled();
-    expect(result.length).toEqual(transactions.length);
+    const attributes = {
+      message: "test message",
+      nonce: Buffer.from("30990309-30990309-390A303-292090"),
+      recipient: "test.app",
+      callbackUrl: "https://test.app",
+    };
+
+    const result = await wallet.signMessage!(attributes);
+
+    const nonceBase64 = attributes.nonce.toString("base64");
+    const urlParams = `https://testnet.mynearwallet.com/sign-message?message=test+message&nonce=${encodeURIComponent(
+      nonceBase64
+    )}&recipient=test.app&callbackUrl=https%3A%2F%2Ftest.app`;
+
+    expect(result).toBe(undefined);
+    expect(window.location.replace).toHaveBeenCalledWith(urlParams);
+
+    window.location.replace = replace;
   });
 });
