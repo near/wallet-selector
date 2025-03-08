@@ -8,7 +8,7 @@ import type {
 import { verifyFullKeyBelongsToUser } from "@near-wallet-selector/core";
 import { verifySignature } from "@near-wallet-selector/core";
 
-import type { Account, Message } from "../interfaces";
+import type { Message } from "../interfaces";
 import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
@@ -24,99 +24,32 @@ const BOATLOAD_OF_GAS = "30000000000000";
 
 const Content: React.FC = () => {
   const {
+    accounts,
     signedAccountId,
-    getBalance,
     signOut,
     signIn,
     viewFunction,
     callFunction,
     signAndSendTransactions,
     wallet,
-    getAccount: getAccountProvider,
     signMessage,
-    accounts,
     walletSelector,
   } = useWalletSelector();
 
-  const [isEthereumWallet, setIsEthereumWallet] = useState(false);
-  const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const getAccount = useCallback(async (): Promise<Account | null> => {
-    if (!signedAccountId) {
-      return null;
-    }
-    const hasBalance = !!(await getBalance(signedAccountId));
-
-    if (!hasBalance) {
-      window.alert(
-        `Account ID: ${signedAccountId} has not been founded. Please send some NEAR into this account.`
-      );
-      await signOut();
-      return null;
-    }
-
-    return getAccountProvider(signedAccountId).then(
-      (data) =>
-        ({
-          ...data,
-          account_id: signedAccountId,
-        } as Account)
-    );
-  }, [getAccountProvider, getBalance, signOut, signedAccountId]);
 
   const getMessages = useCallback(async () => {
-    return [
-      ...(await viewFunction({
-        contractId: CONTRACT_ID,
-        method: "getMessages",
-      })),
-    ].reverse() as Array<Message>;
+    const messages = await viewFunction({
+      contractId: CONTRACT_ID,
+      method: "getMessages",
+    }) as Array<Message>;
+
+    return messages.reverse();
   }, [viewFunction]);
 
   useEffect(() => {
-    // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
-
-    const timeoutId = setTimeout(() => {
-      verifyMessageBrowserWallet();
-    }, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (!signedAccountId) {
-      return setAccount(null);
-    }
-
-    setLoading(true);
-
-    getAccount().then((nextAccount) => {
-      setAccount(nextAccount);
-      setLoading(false);
-    });
-  }, [signedAccountId, getAccount]);
-
-  useEffect(() => {
-    if (!walletSelector) {
-      return;
-    }
-    const checkIfEthereumWallet = async () => {
-      const selector = await walletSelector;
-      if (!selector) {
-        throw new Error("No selector found");
-      }
-      setIsEthereumWallet(
-        selector.store.getState().selectedWalletId === "ethereum-wallets"
-      );
-    };
-
-    checkIfEthereumWallet();
-  }, [setIsEthereumWallet, walletSelector]);
 
   const handleSwitchAccount = () => {
     if (!accounts) {
@@ -218,43 +151,10 @@ const Content: React.FC = () => {
       : "Failed to verify";
 
     alert(
-      `${alertMessage} signed message: '${
-        message.message
+      `${alertMessage} signed message: '${message.message
       }': \n ${JSON.stringify(signedMessage)}`
     );
   };
-
-  const verifyMessageBrowserWallet = useCallback(async () => {
-    const urlParams = new URLSearchParams(
-      window.location.hash.substring(1) // skip the first char (#)
-    );
-    const accId = urlParams.get("accountId") as string;
-    const publicKey = urlParams.get("publicKey") as string;
-    const signature = urlParams.get("signature") as string;
-
-    if (!accId && !publicKey && !signature) {
-      return;
-    }
-
-    const message: SignMessageParams = JSON.parse(
-      localStorage.getItem("message")!
-    );
-
-    const signedMessage = {
-      accountId: accId,
-      publicKey,
-      signature,
-    };
-
-    await verifyMessage(message, signedMessage);
-
-    const url = new URL(location.href);
-    url.hash = "";
-    url.search = "";
-    window.history.replaceState({}, document.title, url);
-    localStorage.removeItem("message");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleSubmit = useCallback(
     async (e: Submitted) => {
@@ -328,19 +228,11 @@ const Content: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return null;
-  }
-
-  if (!account) {
+  if (!signedAccountId) {
     return (
       <Fragment>
         <div>
           <button onClick={signIn}>Log in</button>
-        </div>
-        <div style={{ marginTop: 30 }}>
-          {/* @ts-ignore */}
-          <appkit-button label="Log in with Ethereum" />
         </div>
         <SignIn />
       </Fragment>
@@ -357,14 +249,8 @@ const Content: React.FC = () => {
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
       </div>
-      {isEthereumWallet && (
-        <div style={{ marginTop: 30 }}>
-          {/* @ts-ignore */}
-          <appkit-button label="Log in with Ethereum" />
-        </div>
-      )}
       <Form
-        account={account}
+        signedAccountId={signedAccountId}
         onSubmit={(e) => handleSubmit(e as unknown as Submitted)}
       />
       <Messages messages={messages} />
