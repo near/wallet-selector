@@ -200,18 +200,6 @@ const Content: React.FC = () => {
     const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32)));
     const recipient = "guest-book.testnet";
 
-    if (wallet.type === "browser") {
-      localStorage.setItem(
-        "message",
-        JSON.stringify({
-          message,
-          nonce: [...nonce],
-          recipient,
-          callbackUrl: location.href,
-        })
-      );
-    }
-
     try {
       const signedMessage = await signMessage({
         message,
@@ -242,12 +230,12 @@ const Content: React.FC = () => {
   return (
     <Fragment>
       <div>
-        <button onClick={signOut}>Log out</button>
         <button onClick={signIn}>Switch Wallet</button>
         <button onClick={handleSignMessage}>Sign Message</button>
         {accounts && accounts.length > 1 && (
           <button onClick={handleSwitchAccount}>Switch Account</button>
         )}
+        <button onClick={signOut}>Log out {signedAccountId}</button>
       </div>
       <Form
         signedAccountId={signedAccountId}

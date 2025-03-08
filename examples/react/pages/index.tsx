@@ -1,10 +1,11 @@
 import type { NextPage } from "next";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import Content from "../components/Content";
 import { wagmiAdapter, web3Modal } from "../wallets/web3modal";
 
 import { WalletSelectorProvider } from "@near-wallet-selector/react-hook";
 
+//import "@near-wallet-selector/modal-ui/dist/styles.css"
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
@@ -44,7 +45,7 @@ const walletSelectorConfig: SetupParams = {
     setupMyNearWallet(),
     setupLedger(),
     setupSender(),
-    setupNightly(),
+    // setupNightly(),
     setupBitgetWallet(),
     setupMathWallet(),
     setupMeteorWalletApp({ contractId: CONTRACT_ID }),
