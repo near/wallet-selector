@@ -31,7 +31,6 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 
 const walletSelectorConfig = {
   network: NETWORK_ID,
-  createAccessKeyFor: CONTRACT_ID,
   debug: true,
   modules: [
     setupEthereumWallets({
