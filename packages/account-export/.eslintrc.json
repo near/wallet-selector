@@ -1,5 +1,6 @@
 {
   "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
+  "plugins": ["react-hooks"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {

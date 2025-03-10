@@ -11,7 +11,7 @@ import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
 import { setupNearFi } from "@near-wallet-selector/nearfi";
-import { setupNightly } from "@near-wallet-selector/nightly";
+// import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
@@ -28,9 +28,8 @@ import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { SetupParams } from "packages/react-hook/src/lib/WalletSelectorProvider";
 
-const walletSelectorConfig: SetupParams = {
+const walletSelectorConfig = {
   network: NETWORK_ID,
   createAccessKeyFor: CONTRACT_ID,
   debug: true,

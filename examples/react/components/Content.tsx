@@ -39,17 +39,17 @@ const Content: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const getMessages = useCallback(async () => {
-    const messages = await viewFunction({
+    const msgs = (await viewFunction({
       contractId: CONTRACT_ID,
       method: "getMessages",
-    }) as Array<Message>;
+    })) as Array<Message>;
 
-    return messages.reverse();
+    return msgs.reverse();
   }, [viewFunction]);
 
   useEffect(() => {
     getMessages().then(setMessages);
-  }, []);
+  }, [getMessages]);
 
   const handleSwitchAccount = () => {
     if (!accounts) {
@@ -151,7 +151,8 @@ const Content: React.FC = () => {
       : "Failed to verify";
 
     alert(
-      `${alertMessage} signed message: '${message.message
+      `${alertMessage} signed message: '${
+        message.message
       }': \n ${JSON.stringify(signedMessage)}`
     );
   };

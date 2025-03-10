@@ -81,7 +81,8 @@
     "serve:angular": "nx serve angular",
     "serve:react": "nx serve react --host=0.0.0.0",
     "serve:vanilla": "nx serve vanilla",
-    "test": "nx run-many --target=test --all"
+    "test": "nx run-many --target=test --all",
+    "nxs": "nx run react:lint --fix"
   },
   "dependencies": {
     "@angular/animations": "16.1.9",
@@ -196,7 +197,7 @@
     "css-loader": "7.1.2",
     "cypress": "12.2.0",
     "eslint": "8.15.0",
-    "eslint-config-next": "15.2.1",
+    "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "2.10.3",
     "eslint-plugin-import": "2.26.0",

@@ -1,8 +1,6 @@
 import type { FormEventHandler } from "react";
 import React from "react";
 
-import type { Account } from "../interfaces";
-
 interface FormProps {
   signedAccountId: string;
   onSubmit: FormEventHandler;
