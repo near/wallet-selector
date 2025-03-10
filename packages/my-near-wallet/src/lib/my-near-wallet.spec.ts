@@ -5,13 +5,13 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { InjectedWallet } from "../../../core/src/lib/wallet";
 import { setupMyNearWallet } from "./my-near-wallet";
-import type { MyNearWalletConnection } from "./my-near-wallet-connection";
+import type { MyNearWalletConnector } from "./mnw-connect";
 
 const accountId = "amirsaran.testnet";
 const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
 
 const createMyNearWallet = async (deps: MockWalletDependencies = {}) => {
-  const walletConnection = mock<MyNearWalletConnection>();
+  const walletConnection = mock<MyNearWalletConnector>();
 
   const { wallet } = await mockWallet<InjectedWallet>(
     setupMyNearWallet(),
@@ -29,7 +29,7 @@ afterEach(() => {
 });
 
 describe("signIn", () => {
-  it.skip("sign into mynearwallet", async () => {
+  it.skip("sign into meteor wallet", async () => {
     const { wallet, walletConnection } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -39,7 +39,7 @@ describe("signIn", () => {
 });
 
 describe("signOut", () => {
-  it.skip("sign out of mynearwallet", async () => {
+  it.skip("sign out of meteor wallet", async () => {
     const { wallet, walletConnection } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -61,7 +61,7 @@ describe("getAccounts", () => {
 });
 
 describe("signAndSendTransaction", () => {
-  it.skip("sign transaction in mynearwallet", async () => {
+  it.skip("sign transaction in meteor wallet", async () => {
     const { wallet, walletConnection } = await createMyNearWallet();
 
     await wallet.signIn({ contractId: "test.testnet" });
@@ -71,12 +71,12 @@ describe("signAndSendTransaction", () => {
       actions: [],
     });
 
-    expect(walletConnection.account).toHaveBeenCalled();
+    expect(walletConnection.signAndSendTransaction).toHaveBeenCalled();
   });
 });
 
 describe("signAndSendTransactions", () => {
-  it.skip("sign transactions in mynearwallet", async () => {
+  it.skip("sign transactions in meteor wallet", async () => {
     const { wallet, walletConnection } = await createMyNearWallet();
 
     const transactions = [
@@ -97,7 +97,7 @@ describe("signAndSendTransactions", () => {
       transactions,
     });
 
-    expect(walletConnection.account).toHaveBeenCalled();
+    expect(walletConnection.signAndSendTransactions).toHaveBeenCalled();
     expect(result.length).toEqual(transactions.length);
   });
 });
