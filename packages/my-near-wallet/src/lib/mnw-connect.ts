@@ -7,7 +7,13 @@ import type {
   Transaction,
 } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import { connect, keyStores, providers, transactions } from "near-api-js";
+import {
+  Account,
+  Connection,
+  InMemorySigner,
+  providers,
+  transactions,
+} from "near-api-js";
 import type { KeyPairString, PublicKey } from "near-api-js/lib/utils";
 import { KeyPair, serialize } from "near-api-js/lib/utils";
 import * as borsh from "borsh";
@@ -270,16 +276,19 @@ export class MyNearWalletConnector {
     actions: Array<Action>;
   }): Promise<FinalExecutionOutcome> {
     // instantiate an account (NEAR API is a nightmare)
-    const myKeyStore = new keyStores.InMemoryKeyStore();
     const keyPair = KeyPair.fromString(this.functionCallKey!.privateKey);
-    await myKeyStore.setKey(
+    const signer = await InMemorySigner.fromKeyPair(
       this.network.networkId,
       this.signedAccountId,
       keyPair
     );
-
-    const near = await connect({ ...this.network, keyStore: myKeyStore });
-    const account = await near.account(this.signedAccountId);
+    const connection = new Connection(
+      this.network.networkId,
+      this.provider,
+      signer,
+      ""
+    );
+    const account = new Account(connection, this.signedAccountId);
     return account.signAndSendTransaction({
       receiverId,
       actions: actions.map((a) => createAction(a)),
