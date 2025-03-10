@@ -1,4 +1,3 @@
-import type { OnInit } from "@angular/core";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Account } from "../../interfaces/account";
 
