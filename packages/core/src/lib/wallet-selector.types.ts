@@ -86,7 +86,7 @@ export interface WalletSelector {
    */
   wallet<Variation extends Wallet = Wallet>(
     id?: string
-  ): Promise<Variation & SignMessageMethod>;
+  ): Promise<(Variation & SignMessageMethod) | null>;
 
   /**
    * Determines whether we're signed in to one or more accounts.

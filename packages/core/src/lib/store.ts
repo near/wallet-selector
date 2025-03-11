@@ -14,6 +14,7 @@ import {
   RECENTLY_SIGNED_IN_WALLETS,
   REMEMBER_RECENT_WALLETS,
   REMEMBER_RECENT_WALLETS_STATE,
+  ACCOUNTS,
 } from "./constants";
 
 const reducer = (
@@ -23,9 +24,16 @@ const reducer = (
   logger.log("Store Action", action);
 
   switch (action.type) {
-    case "SETUP_WALLET_MODULES": {
+    case "ADD_WALLET_MODULE": {
+      const { module } = action.payload;
+
+      return {
+        ...state,
+        modules: [...state.modules, module],
+      };
+    }
+    case "SETUP": {
       const {
-        modules,
         accounts,
         contract,
         selectedWalletId,
@@ -42,7 +50,6 @@ const reducer = (
 
       return {
         ...state,
-        modules,
         accounts: accountStates,
         contract,
         selectedWalletId,
@@ -169,7 +176,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
   const jsonStorage = new JsonStorage(storage, PACKAGE_NAME);
   const initialState: WalletSelectorState = {
     modules: [],
-    accounts: [],
+    accounts: (await jsonStorage.getItem(ACCOUNTS)) || [],
     contract: await jsonStorage.getItem(CONTRACT),
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
@@ -203,6 +210,7 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
 
   let prevState = state$.getValue();
   state$.subscribe((state) => {
+    syncStorage(prevState, state, ACCOUNTS, "accounts");
     syncStorage(prevState, state, SELECTED_WALLET_ID, "selectedWalletId");
     syncStorage(prevState, state, CONTRACT, "contract");
     syncStorage(

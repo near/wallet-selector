@@ -117,13 +117,8 @@ export function WalletSelectorProvider({
     walletSelectorRef.current = walletSelector;
 
     walletSelector.then(async (selector) => {
-      selector.store.observable.subscribe(async (state) => {
-        const signedAccount = state?.accounts.find(
-          (account) => account.active
-        )?.accountId;
-        setAccounts(state.accounts);
+      selector.subscribeOnAccountChange(async (signedAccount) => {
         setSignedAccountId(signedAccount || null);
-
         if (signedAccount) {
           const walletInstance = await selector.wallet();
           setWallet(walletInstance);
