@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import type {
-  AccountState,
   FinalExecutionOutcome,
   SignedMessage,
   Transaction,
@@ -61,7 +60,6 @@ export interface WalletSelectorProviderValue {
   walletSelector: Promise<WalletSelector> | null;
   signedAccountId: string | null;
   wallet: Wallet | null;
-  accounts: Array<AccountState> | undefined;
   signIn: () => void;
   signOut: () => Promise<void>;
   viewFunction: (params: ViewMethodParams) => Promise<unknown>;
@@ -96,7 +94,6 @@ export function WalletSelectorProvider({
   const walletSelectorRef = useRef<Promise<WalletSelector> | null>(null);
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
-  const [accounts, setAccounts] = useState<Array<AccountState>>();
 
   const networkURL =
     typeof config.network === "string"
@@ -117,13 +114,8 @@ export function WalletSelectorProvider({
     walletSelectorRef.current = walletSelector;
 
     walletSelector.then(async (selector) => {
-      selector.store.observable.subscribe(async (state) => {
-        const signedAccount = state?.accounts.find(
-          (account) => account.active
-        )?.accountId;
-        setAccounts(state.accounts);
+      selector.subscribeOnAccountChange(async (signedAccount) => {
         setSignedAccountId(signedAccount || null);
-
         if (signedAccount) {
           const walletInstance = await selector.wallet();
           setWallet(walletInstance);
@@ -354,7 +346,6 @@ export function WalletSelectorProvider({
     walletSelector: walletSelectorRef.current,
     signedAccountId,
     wallet,
-    accounts,
     signIn,
     signOut,
     viewFunction,

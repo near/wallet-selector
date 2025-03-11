@@ -11,15 +11,13 @@ import type {
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type { ContractState, ModuleState, Store } from "../../store.types";
+import type { ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
-  PENDING_CONTRACT,
-  PENDING_SELECTED_WALLET_ID,
   REMEMBER_RECENT_WALLETS,
   REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
@@ -77,48 +75,9 @@ export class WalletModules {
 
   private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
-    const pendingSelectedWalletId = await jsonStorage.getItem<string>(
-      PENDING_SELECTED_WALLET_ID
-    );
-    const pendingContract = await jsonStorage.getItem<ContractState>(
-      PENDING_CONTRACT
-    );
     const rememberRecentWallets = await jsonStorage.getItem<string>(
       REMEMBER_RECENT_WALLETS
     );
-
-    if (pendingSelectedWalletId && pendingContract) {
-      const accounts = await this.validateWallet(pendingSelectedWalletId);
-
-      await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
-      await jsonStorage.removeItem(PENDING_CONTRACT);
-
-      if (accounts.length) {
-        const { selectedWalletId } = this.store.getState();
-        const selectedWallet = await this.getWallet(selectedWalletId);
-
-        if (selectedWallet && pendingSelectedWalletId !== selectedWalletId) {
-          await selectedWallet.signOut().catch((err) => {
-            logger.log("Failed to sign out existing wallet");
-            logger.error(err);
-          });
-        }
-
-        let recentlySignedInWalletsFromPending: Array<string> = [];
-        if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
-          recentlySignedInWalletsFromPending =
-            await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
-        }
-        return {
-          accounts,
-          contract: pendingContract,
-          selectedWalletId: pendingSelectedWalletId,
-          recentlySignedInWallets: recentlySignedInWalletsFromPending,
-          rememberRecentWallets:
-            rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
-        };
-      }
-    }
 
     const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
@@ -188,20 +147,7 @@ export class WalletModules {
     { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId, rememberRecentWallets } = this.store.getState();
-    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const contract = { contractId, methodNames };
-
-    if (!accounts.length) {
-      const module = this.getModule(walletId)!;
-      // We can't guarantee the user will actually sign in with browser wallets.
-      // Best we can do is set in storage and validate on init.
-      if (module.type === "browser") {
-        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
-        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
-      }
-
-      return;
-    }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
       await this.signOutWallet(selectedWalletId);
@@ -389,49 +335,66 @@ export class WalletModules {
   }
 
   async setup() {
-    const modules: Array<ModuleState> = [];
-
-    for (let i = 0; i < this.factories.length; i += 1) {
-      const module = await this.factories[i]({ options: this.options }).catch(
-        (err) => {
-          logger.log("Failed to setup module");
-          logger.error(err);
-
-          return null;
-        }
-      );
-
-      // Filter out wallets that aren't available.
-      if (!module) {
-        continue;
-      }
-
-      // Skip duplicated module.
-      if (modules.some((x) => x.id === module.id)) {
-        continue;
-      }
-
-      modules.push({
-        id: module.id,
-        type: module.type,
-        metadata: module.metadata,
-        wallet: async () => {
-          let instance = this.instances[module.id];
-
-          if (instance) {
-            return instance;
+    for (let i = 0; i < this.factories.length; i++) {
+      const factory = this.factories[i];
+      factory({ options: this.options })
+        .then(async (module) => {
+          // Filter out wallets that aren't available.
+          if (!module) {
+            return;
           }
 
-          instance = await this.setupInstance(module);
+          const moduleState = {
+            id: module.id,
+            type: module.type,
+            metadata: module.metadata,
+            listIndex: i,
+            wallet: async () => {
+              let instance = this.instances[module.id];
 
-          this.instances[module.id] = instance;
+              if (instance) {
+                return instance;
+              }
 
-          return instance;
-        },
-      });
+              instance = await this.setupInstance(module);
+
+              this.instances[module.id] = instance;
+
+              return instance;
+            },
+          };
+
+          this.modules.push(moduleState);
+
+          this.store.dispatch({
+            type: "ADD_WALLET_MODULE",
+            payload: {
+              module: moduleState,
+            },
+          });
+
+          if (moduleState.type !== "instant-link") {
+            return;
+          }
+
+          const wallet = (await moduleState.wallet()) as InstantLinkWallet;
+          if (!wallet.metadata.runOnStartup) {
+            return;
+          }
+
+          try {
+            await wallet.signIn({ contractId: wallet.getContractId() });
+          } catch (err) {
+            logger.error(
+              "Failed to sign in to wallet. " + wallet.metadata.name + err
+            );
+          }
+        })
+        .catch((err) => {
+          logger.log("Failed to setup module");
+          logger.error(err);
+        });
     }
-
-    this.modules = modules;
 
     const {
       accounts,
@@ -442,9 +405,8 @@ export class WalletModules {
     } = await this.resolveStorageState();
 
     this.store.dispatch({
-      type: "SETUP_WALLET_MODULES",
+      type: "SETUP",
       payload: {
-        modules,
         accounts,
         contract,
         selectedWalletId,
@@ -452,22 +414,5 @@ export class WalletModules {
         rememberRecentWallets,
       },
     });
-
-    for (let i = 0; i < this.modules.length; i++) {
-      if (this.modules[i].type !== "instant-link") {
-        continue;
-      }
-
-      const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
-      if (!wallet.metadata.runOnStartup) {
-        continue;
-      }
-
-      try {
-        await wallet.signIn({ contractId: wallet.getContractId() });
-      } catch (err) {
-        logger.error("Failed to sign in to wallet. " + err);
-      }
-    }
   }
 }

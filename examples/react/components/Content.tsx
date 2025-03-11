@@ -24,7 +24,6 @@ const BOATLOAD_OF_GAS = "30000000000000";
 
 const Content: React.FC = () => {
   const {
-    accounts,
     signedAccountId,
     signOut,
     signIn,
@@ -50,28 +49,6 @@ const Content: React.FC = () => {
   useEffect(() => {
     getMessages().then(setMessages);
   }, [getMessages]);
-
-  const handleSwitchAccount = () => {
-    if (!accounts) {
-      throw new Error("No accounts found");
-    }
-
-    if (!walletSelector) {
-      throw new Error("No selector found");
-    }
-    const currentIndex = accounts.findIndex(
-      (x) => x.accountId === signedAccountId
-    );
-    const nextIndex = currentIndex < accounts.length - 1 ? currentIndex + 1 : 0;
-
-    const nextAccountId = accounts[nextIndex].accountId;
-
-    walletSelector.then((selector) => {
-      selector.setActiveAccount(nextAccountId);
-    });
-
-    alert("Switched account to " + nextAccountId);
-  };
 
   const addMessages = useCallback(
     async (message: string, donation: string, multiple: boolean) => {
@@ -233,9 +210,6 @@ const Content: React.FC = () => {
       <div>
         <button onClick={signIn}>Switch Wallet</button>
         <button onClick={handleSignMessage}>Sign Message</button>
-        {accounts && accounts.length > 1 && (
-          <button onClick={handleSwitchAccount}>Switch Account</button>
-        )}
         <button onClick={signOut}>Log out {signedAccountId}</button>
       </div>
       <Form
