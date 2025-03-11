@@ -6,6 +6,5 @@ export const REMEMBER_RECENT_WALLETS_STATE = {
   DISABLED: "disabled",
 };
 
-export const ACCOUNTS = "accounts";
 export const CONTRACT = "contract";
 export const SELECTED_WALLET_ID = `selectedWalletId`;

@@ -335,9 +335,8 @@ export class WalletModules {
   }
 
   async setup() {
-    const modules: Array<ModuleState> = [];
-
-    for (const factory of this.factories) {
+    for (let i = 0; i < this.factories.length; i++) {
+      const factory = this.factories[i];
       factory({ options: this.options })
         .then(async (module) => {
           // Filter out wallets that aren't available.
@@ -349,6 +348,7 @@ export class WalletModules {
             id: module.id,
             type: module.type,
             metadata: module.metadata,
+            listIndex: i,
             wallet: async () => {
               let instance = this.instances[module.id];
 
@@ -395,7 +395,6 @@ export class WalletModules {
           logger.error(err);
         });
     }
-    this.modules = modules;
 
     const {
       accounts,

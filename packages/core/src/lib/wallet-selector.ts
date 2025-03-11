@@ -27,6 +27,13 @@ const createSelector = (
         id || selectedWalletId
       );
 
+      if (!wallet) {
+        if (id) {
+          throw new Error("Invalid wallet id");
+        }
+
+        throw new Error("No wallet selected");
+      }
       return wallet;
     },
     setActiveAccount: (accountId: string) => {

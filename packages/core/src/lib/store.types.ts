@@ -28,6 +28,10 @@ export type ModuleState<Variation extends Wallet = Wallet> = {
    */
   metadata: Variation["metadata"];
   /**
+   * Relative position of the wallet in the list of wallets.
+   */
+  listIndex: number;
+  /**
    * Access functionality of the wallet.
    */
   wallet(): Promise<Variation & SignMessageMethod>;
@@ -69,14 +73,19 @@ export interface WalletSelectorState {
 
 export type WalletSelectorAction =
   | {
-      type: "SETUP_WALLET_MODULES";
+      type: "SETUP";
       payload: {
-        modules: Array<ModuleState>;
         accounts: Array<Account>;
         contract: ContractState | null;
         selectedWalletId: string | null;
         recentlySignedInWallets: Array<string>;
         rememberRecentWallets: string;
+      };
+    }
+  | {
+      type: "ADD_WALLET_MODULE";
+      payload: {
+        module: ModuleState;
       };
     }
   | {

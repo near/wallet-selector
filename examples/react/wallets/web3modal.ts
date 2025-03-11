@@ -50,7 +50,6 @@ export const wagmiAdapter = new WagmiAdapter({
   connectors,
   networks: [near],
 });
-reconnect(wagmiAdapter.wagmiConfig);
 
 export const web3Modal = createAppKit({
   adapters: [wagmiAdapter],
@@ -68,3 +67,5 @@ export const web3Modal = createAppKit({
   coinbasePreference: "eoaOnly", // Smart accounts (Safe contract) not available on NEAR Protocol, only EOA.
   allWallets: "SHOW",
 });
+
+reconnect(wagmiAdapter.wagmiConfig);

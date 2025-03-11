@@ -10,13 +10,10 @@ import { setupMathWallet } from "@near-wallet-selector/math-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
 import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
-import { setupNearFi } from "@near-wallet-selector/nearfi";
-// import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupSender } from "@near-wallet-selector/sender";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupNeth } from "@near-wallet-selector/neth";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
@@ -25,13 +22,13 @@ import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
-import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 
 const walletSelectorConfig = {
   network: NETWORK_ID,
-  debug: true,
+  debug: false,
   modules: [
     setupEthereumWallets({
       wagmiConfig: wagmiAdapter.wagmiConfig,
@@ -43,29 +40,15 @@ const walletSelectorConfig = {
     setupMyNearWallet(),
     setupLedger(),
     setupSender(),
-    // setupNightly(),
+    setupNightly(),
     setupBitgetWallet(),
     setupMathWallet(),
     setupMeteorWalletApp({ contractId: CONTRACT_ID }),
     setupOKXWallet(),
     setupWelldoneWallet(),
     setupCoin98Wallet(),
-    setupNearFi(),
     setupRamperWallet(),
-    setupNeth({
-      gas: "300000000000000",
-      bundle: false,
-    }),
     setupXDEFI(),
-    setupWalletConnect({
-      projectId: "c4f79cc...",
-      metadata: {
-        name: "NEAR Wallet Selector",
-        description: "Example dApp used by NEAR Wallet Selector",
-        url: "https://github.com/near/wallet-selector",
-        icons: ["https://avatars.githubusercontent.com/u/37784886"],
-      },
-    }),
     setupNearMobileWallet(),
   ],
 };
