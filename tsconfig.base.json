@@ -18,9 +18,6 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
-      "@near-wallet-selector/account-export": [
-        "packages/account-export/src/index.ts"
-      ],
       "@near-wallet-selector/arepa-wallet": [
         "packages/arepa-wallet/src/index.ts"
       ],

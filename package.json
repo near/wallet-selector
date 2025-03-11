@@ -42,7 +42,6 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build:account-export": "nx run-many --target=build --projects=account-export --configuration=production",
     "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production && node ./scripts/update-package-json.js",
     "build:arepa-wallet": "nx run-many --target=build --projects=arepa-wallet --configuration=production",
     "build:bitget-wallet": "nx run-many --target=build --projects=bitget-wallet --configuration=production",
