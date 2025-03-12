@@ -11,13 +11,15 @@ import type {
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
-import type { ModuleState, Store } from "../../store.types";
+import type { ContractState, ModuleState, Store } from "../../store.types";
 import { EventEmitter } from "../event-emitter/event-emitter.service";
 import type { WalletSelectorEvents } from "../../wallet-selector.types";
 import { Logger, logger } from "../logger/logger.service";
 import {
   RECENTLY_SIGNED_IN_WALLETS,
   PACKAGE_NAME,
+  PENDING_CONTRACT,
+  PENDING_SELECTED_WALLET_ID,
   REMEMBER_RECENT_WALLETS,
   REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
@@ -75,9 +77,48 @@ export class WalletModules {
 
   private async resolveStorageState() {
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
+    const pendingSelectedWalletId = await jsonStorage.getItem<string>(
+      PENDING_SELECTED_WALLET_ID
+    );
+    const pendingContract = await jsonStorage.getItem<ContractState>(
+      PENDING_CONTRACT
+    );
     const rememberRecentWallets = await jsonStorage.getItem<string>(
       REMEMBER_RECENT_WALLETS
     );
+
+    if (pendingSelectedWalletId && pendingContract) {
+      const accounts = await this.validateWallet(pendingSelectedWalletId);
+
+      await jsonStorage.removeItem(PENDING_SELECTED_WALLET_ID);
+      await jsonStorage.removeItem(PENDING_CONTRACT);
+
+      if (accounts.length) {
+        const { selectedWalletId } = this.store.getState();
+        const selectedWallet = await this.getWallet(selectedWalletId);
+
+        if (selectedWallet && pendingSelectedWalletId !== selectedWalletId) {
+          await selectedWallet.signOut().catch((err) => {
+            logger.log("Failed to sign out existing wallet");
+            logger.error(err);
+          });
+        }
+
+        let recentlySignedInWalletsFromPending: Array<string> = [];
+        if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
+          recentlySignedInWalletsFromPending =
+            await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+        }
+        return {
+          accounts,
+          contract: pendingContract,
+          selectedWalletId: pendingSelectedWalletId,
+          recentlySignedInWallets: recentlySignedInWalletsFromPending,
+          rememberRecentWallets:
+            rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
+        };
+      }
+    }
 
     const { contract, selectedWalletId } = this.store.getState();
     const accounts = await this.validateWallet(selectedWalletId);
@@ -147,7 +188,20 @@ export class WalletModules {
     { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
     const { selectedWalletId, rememberRecentWallets } = this.store.getState();
+    const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const contract = { contractId, methodNames };
+
+    if (!accounts.length) {
+      const module = this.getModule(walletId)!;
+      // We can't guarantee the user will actually sign in with browser wallets.
+      // Best we can do is set in storage and validate on init.
+      if (module.type === "browser") {
+        await jsonStorage.setItem(PENDING_SELECTED_WALLET_ID, walletId);
+        await jsonStorage.setItem<ContractState>(PENDING_CONTRACT, contract);
+      }
+
+      return;
+    }
 
     if (selectedWalletId && selectedWalletId !== walletId) {
       await this.signOutWallet(selectedWalletId);
