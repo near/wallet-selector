@@ -15,9 +15,7 @@ import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupNearSnap } from "@near-wallet-selector/near-snap";
-import { setupNeth } from "@near-wallet-selector/neth";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { Component } from "@angular/core";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
@@ -143,11 +141,7 @@ export class WalletSelectorComponent implements OnInit {
         setupWelldoneWallet(),
         setupHereWallet(),
         setupCoin98Wallet(),
-        setupNearFi(),
         setupNearSnap(),
-        setupNeth({
-          bundle: false,
-        }),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
           // Overrides the default methods on wallet-connect.ts

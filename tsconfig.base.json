@@ -65,8 +65,6 @@
         "packages/near-mobile-wallet/src/index.ts"
       ],
       "@near-wallet-selector/near-snap": ["packages/near-snap/src/index.ts"],
-      "@near-wallet-selector/nearfi": ["packages/nearfi/src/index.ts"],
-      "@near-wallet-selector/neth": ["packages/neth/src/index.ts"],
       "@near-wallet-selector/nightly": ["packages/nightly/src/index.ts"],
       "@near-wallet-selector/okx-wallet": ["packages/okx-wallet/src/index.ts"],
       "@near-wallet-selector/ramper-wallet": [

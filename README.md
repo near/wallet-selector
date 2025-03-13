@@ -16,8 +16,6 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [Near Mobile Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-mobile-wallet) - Mobile Wallet.
-- [NearFi Wallet](https://www.npmjs.com/package/@near-wallet-selector/nearfi) - Mobile wallet.
-- [Neth](https://www.npmjs.com/package/@near-wallet-selector/neth) - Injected wallet.
 - [Nightly](https://www.npmjs.com/package/@near-wallet-selector/nightly) - Injected wallet.
 - [OKX Wallet](https://www.npmjs.com/package/@near-wallet-selector/okx-wallet) - Injected wallet.
 - [Ramper Wallet](https://www.npmjs.com/package/@near-wallet-selector/ramper-wallet) - Injected wallet.
@@ -60,7 +58,6 @@ yarn add \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
-  @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -73,7 +70,6 @@ yarn add \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet  \
@@ -88,7 +84,6 @@ npm install \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
-  @near-wallet-selector/nearfi \
   @near-wallet-selector/here-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
@@ -101,7 +96,6 @@ npm install \
   @near-wallet-selector/ledger \
   @near-wallet-selector/wallet-connect \
   @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/neth \
   @near-wallet-selector/xdefi \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet \
@@ -140,9 +134,7 @@ import { setupNarwallets } from "@near-wallet-selector/narwallets";
 import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupNearFi } from "@near-wallet-selector/nearfi";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupNeth } from "@near-wallet-selector/neth";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"; 
@@ -166,9 +158,7 @@ const selector = await setupWalletSelector({
     setupNarwallets(),
     setupWelldoneWallet(),
     setupLedger(),
-    setupNearFi(),
     setupCoin98Wallet(),
-    setupNeth(),
     setupXDEFI(),
     setupWalletConnect({
       projectId: "c4f79cc...",
