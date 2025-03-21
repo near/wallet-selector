@@ -37,11 +37,7 @@ const selector = await setupWalletSelector({
 
 ## Options
 
-- `networkId`: (`string?`): 'mainnet' or 'testnet' . Defaults to `mainnet`.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
-- `callbackUrl`: (`string?`): Valid url to send your user after txn.
 - `walletUrl`: (`string?`): wallet url: https://wallet.bitte.ai for mainnet and https://testnet.wallet.bitte.ai for testnet.
-- `contractId`: (`string?`): the contract for which the generated limited access key will allow transactions, if you do not need a limited access key do not add this and it wont be created providing quicker onboarding
 
 
 ## License
