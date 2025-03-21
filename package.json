@@ -22,7 +22,6 @@
     "welldone-wallet",
     "ramper-wallet",
     "near-mobile-wallet",
-    "mintbase-wallet",
     "bitte-wallet",
     "okx-wallet"
   ],
@@ -49,7 +48,6 @@
     "build:math-wallet": "nx run-many --target=build --projects=math-wallet --configuration=production",
     "build:meteor-wallet": "nx run-many --target=build --projects=meteor-wallet --configuration=production",
     "build:meteor-wallet-app": "nx run-many --target=build --projects=meteor-wallet-app --configuration=production",
-    "build:mintbase-wallet": "nx run-many --target=build --projects=mintbase-wallet --configuration=production",
     "build:bitte-wallet": "nx run-many --target=build --projects=bitte-wallet --configuration=production",
     "build:modal-ui": "nx run-many --target=build --projects=modal-ui --configuration=production",
     "build:modal-ui-js": "nx run-many --target=build --projects=modal-ui-js --configuration=production",
@@ -96,7 +94,6 @@
     "@ledgerhq/hw-transport-webhid": "6.29.4",
     "@metamask/detect-provider": "2.0.0",
     "@meteorwallet/sdk": "1.0.9",
-    "@mintbase-js/wallet": "0.6.1",
     "@near-snap/sdk": "0.6.0",
     "@noble/ciphers": "0.5.3",
     "@noble/hashes": "1.4.0",
