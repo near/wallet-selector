@@ -137,8 +137,8 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
-import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"; 
-import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet"; 
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
+import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
@@ -176,12 +176,7 @@ const selector = await setupWalletSelector({
           callbackUrl: "https://www.mywebsite.com",
           deprecated: false,
     }),
-    setupBitteWallet({
-        networkId: "mainnet",
-        walletUrl: "https://wallet.bitte.ai",
-        callbackUrl: "https://www.mywebsite.com",
-        deprecated: false,
-    }),
+    setupBitteWallet(),
     setupEthereumWallets({ wagmiConfig, web3Modal }),
   ],
 });

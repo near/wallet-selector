@@ -35,7 +35,7 @@ const walletSelectorConfig = {
       web3Modal,
     }),
     setupMeteorWallet(),
-    setupBitteWallet({ contractId: CONTRACT_ID }),
+    setupBitteWallet(),
     setupHotWallet(),
     setupMyNearWallet(),
     setupLedger(),

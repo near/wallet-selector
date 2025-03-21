@@ -27,13 +27,7 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 
-const bitteWallet =  setupBitteWallet({
-  networkId: 'mainnet',
-  walletUrl: 'https://wallet.bitte.ai',
-  callbackUrl: 'https://www.mywebsite.com',
-  contractId: "yourcontract.near", //remove if you don't want limited access keys to be generated
-  deprecated: false,
-});
+const bitteWallet =  setupBitteWallet();
 
 const selector = await setupWalletSelector({
   network: "testnet",

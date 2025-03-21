@@ -163,7 +163,7 @@ export class WalletSelectorComponent implements OnInit {
         setupRamperWallet(),
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
-        setupBitteWallet({ contractId: CONTRACT_ID }),
+        setupBitteWallet(),
         setupEthereumWallets({
           wagmiConfig: wagmiAdapter.wagmiConfig,
           web3Modal,

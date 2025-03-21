@@ -88,6 +88,7 @@
     "@angular/platform-browser": "16.1.9",
     "@angular/platform-browser-dynamic": "16.1.9",
     "@angular/router": "16.1.9",
+    "@bitte-ai/wallet": "0.7.2",
     "@here-wallet/core": "3.4.0",
     "@hot-wallet/sdk": "1.0.8",
     "@jscutlery/semver": "5.3.1",
