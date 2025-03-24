@@ -3,7 +3,7 @@
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
 - [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Injected wallet.
-- [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Browser wallet.
+- [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Ethereum wallets](https://www.npmjs.com/package/@near-wallet-selector/ethereum-wallets) - Injected wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
@@ -12,7 +12,6 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
 - [Meteor Wallet](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet) - Injected wallet.
 - [Meteor Wallet App](https://www.npmjs.com/package/@near-wallet-selector/meteor-wallet-app) - Instant link wallet.
-- [Mintbase Wallet](https://www.npmjs.com/package/@near-wallet-selector/mintbase-wallet) - Browser wallet.
 - [My NEAR Wallet](https://www.npmjs.com/package/@near-wallet-selector/my-near-wallet) - Browser wallet.
 - [Narwallets](https://www.npmjs.com/package/@near-wallet-selector/narwallets) - Injected wallet.
 - [Near Mobile Wallet](https://www.npmjs.com/package/@near-wallet-selector/near-mobile-wallet) - Mobile Wallet.
@@ -74,7 +73,6 @@ yarn add \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet  \
   @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/mintbase-wallet \
   @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
 
@@ -100,7 +98,6 @@ npm install \
   @near-wallet-selector/ramper-wallet \
   @near-wallet-selector/near-mobile-wallet \
   @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/mintbase-wallet \
   @near-wallet-selector/bitte-wallet \
   @near-wallet-selector/ethereum-wallets
 ```
@@ -137,8 +134,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
-import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"; 
-import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet"; 
+import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 
@@ -170,18 +166,7 @@ const selector = await setupWalletSelector({
       },
     }),
     setupNearMobileWallet(),
-    setupMintbaseWallet({
-          networkId: "mainnet",
-          walletUrl: "https://wallet.mintbase.xyz",
-          callbackUrl: "https://www.mywebsite.com",
-          deprecated: false,
-    }),
-    setupBitteWallet({
-        networkId: "mainnet",
-        walletUrl: "https://wallet.bitte.ai",
-        callbackUrl: "https://www.mywebsite.com",
-        deprecated: false,
-    }),
+    setupBitteWallet(),
     setupEthereumWallets({ wagmiConfig, web3Modal }),
   ],
 });

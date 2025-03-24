@@ -1,3 +1,3 @@
-import { setupBitteWallet } from "@mintbase-js/wallet";
+import { setupBitteWallet } from "@bitte-ai/wallet";
 
 export { setupBitteWallet };

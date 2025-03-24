@@ -50,9 +50,6 @@
       "@near-wallet-selector/meteor-wallet-app": [
         "packages/meteor-wallet-app/src/index.ts"
       ],
-      "@near-wallet-selector/mintbase-wallet": [
-        "packages/mintbase-wallet/src/index.ts"
-      ],
       "@near-wallet-selector/modal-ui": ["packages/modal-ui/src/index.ts"],
       "@near-wallet-selector/modal-ui-js": [
         "packages/modal-ui-js/src/index.ts"
