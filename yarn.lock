@@ -2583,10 +2583,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitte-ai/wallet@0.7.3-fix-wallet-issues-6f0464e":
-  version "0.7.3-fix-wallet-issues-6f0464e"
-  resolved "https://registry.yarnpkg.com/@bitte-ai/wallet/-/wallet-0.7.3-fix-wallet-issues-6f0464e.tgz#f01c92d3fa2ae03a903c2fb8498cf644f35d8724"
-  integrity sha512-jnvcEY4kCOB8NBc8URnNODViSuHTUHvw3KkgL30DVCg9IvqZAWxgEPewDypnx8O7t6RsTfEo9hH2CkHBGQScdA==
+"@bitte-ai/wallet@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@bitte-ai/wallet/-/wallet-0.8.1.tgz#263488f473d58280cede9b47375988c574cb9fbd"
+  integrity sha512-od6yJPHZb0OzZO/0VvWHkS5bNbh+jChsg/THXlMxj21p6JF2c1Sr97LpyHIf8NaztIkxb5afp9a2jitHnN9cjA==
   dependencies:
     "@near-wallet-selector/core" "^8.10.1"
     "@near-wallet-selector/wallet-utils" "^8.10.1"
