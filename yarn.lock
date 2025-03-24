@@ -2583,14 +2583,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitte-ai/wallet@0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@bitte-ai/wallet/-/wallet-0.7.2.tgz#c656d3f23616c0fd79071955ae31a0fe4dec7fde"
-  integrity sha512-zKInm2j7ULU8OSDGAhGhMllokL0hgdTxFB1CtN73ZiccEo0FWzjIQh34KUZ/6LhHvIkZgLq6H0V6u27jMdD/EQ==
+"@bitte-ai/wallet@0.7.3-fix-wallet-issues-6f0464e":
+  version "0.7.3-fix-wallet-issues-6f0464e"
+  resolved "https://registry.yarnpkg.com/@bitte-ai/wallet/-/wallet-0.7.3-fix-wallet-issues-6f0464e.tgz#f01c92d3fa2ae03a903c2fb8498cf644f35d8724"
+  integrity sha512-jnvcEY4kCOB8NBc8URnNODViSuHTUHvw3KkgL30DVCg9IvqZAWxgEPewDypnx8O7t6RsTfEo9hH2CkHBGQScdA==
   dependencies:
-    "@near-wallet-selector/core" "^8.9.16"
-    "@near-wallet-selector/wallet-utils" "^8.9.16"
-    near-api-js "^5.0.1"
+    "@near-wallet-selector/core" "^8.10.1"
+    "@near-wallet-selector/wallet-utils" "^8.10.1"
+    near-api-js "^5.1.1"
 
 "@chainsafe/is-ip@^2.0.1":
   version "2.0.2"
@@ -4753,7 +4753,7 @@
   dependencies:
     "@near-wallet-selector/core" "^8.2.0"
 
-"@near-wallet-selector/core@8.10.1", "@near-wallet-selector/core@^8.9.16":
+"@near-wallet-selector/core@8.10.1", "@near-wallet-selector/core@^8.10.1":
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.10.1.tgz#fc0e5414117796c5e2e72d036b19290eaf290b1c"
   integrity sha512-FHZNLIPF3Qvj2M8cwyeHFH0Gwq58q7ibw02r+TkekyzZgXESvd/kU/OcF11T4r3WG1OrHPiZay7XXeAwDc9Txw==
@@ -4783,7 +4783,7 @@
     js-sha256 "0.9.0"
     rxjs "7.8.1"
 
-"@near-wallet-selector/wallet-utils@^8.9.16":
+"@near-wallet-selector/wallet-utils@^8.10.1":
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/@near-wallet-selector/wallet-utils/-/wallet-utils-8.10.1.tgz#e19bb7fc47e600564356a2ac338bf5bd82e40d41"
   integrity sha512-1NxFCGo7bo+CiKOOS4yjSAwAfnjhYYXo3i1UCuu4MhHrQS+EvwMCxCadUKSNGXn1IC1TpKmWMVaENkv7gWKlZQ==
@@ -18983,7 +18983,7 @@ near-api-js@^4.0.0:
     near-abi "0.1.1"
     node-fetch "2.6.7"
 
-near-api-js@^5.0.1:
+near-api-js@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/near-api-js/-/near-api-js-5.1.1.tgz#64905f74d0ad9ce0b4f5ad6ec4aaa8403b8e5968"
   integrity sha512-h23BGSKxNv8ph+zU6snicstsVK1/CTXsQz4LuGGwoRE24Hj424nSe4+/1tzoiC285Ljf60kPAqRCmsfv9etF2g==
