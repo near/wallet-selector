@@ -68,7 +68,7 @@ export interface WalletSelectorProviderValue {
   getAccessKeys: (accountId: string) => Promise<Array<unknown>>;
   signAndSendTransactions: (params: {
     transactions: Array<Transaction>;
-  }) => Promise<void | Array<FinalExecutionOutcome>>;
+  }) => Promise<Array<object | string | number | null>>;
   signMessage: (params: SignMessageParams) => Promise<void | SignedMessage>;
   getAccount: (accountId: string) => Promise<QueryResponseKindWithAmount>;
   verifyMessage: (
