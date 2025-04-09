@@ -53,6 +53,39 @@ export class MyNearWalletConnector {
   network: Network;
 
   constructor(walletUrl: string, network: Network) {
+    // compatibility with old versions
+    const walletAuthKey = localStorage.getItem("near_app_wallet_auth_key");
+
+    if (walletAuthKey) {
+      // Transform to the new format
+      const { accountId } = JSON.parse(walletAuthKey);
+      localStorage.setItem("signedAccountId", accountId);
+      localStorage.removeItem("near_app_wallet_auth_key");
+
+      // Check for access key in local storage
+      const privateKey = localStorage.getItem(
+        `near-api-js:keystore:${accountId}:${network.networkId}`
+      );
+
+      if (privateKey) {
+        const { contractId, methodNames } = JSON.parse(
+          localStorage.getItem("near-wallet-selector:contract") || "{}"
+        );
+        this.functionCallKey = {
+          privateKey: privateKey as KeyPairString,
+          contractId,
+          methods: methodNames || [],
+        };
+        localStorage.setItem(
+          "functionCallKey",
+          JSON.stringify(this.functionCallKey)
+        );
+        localStorage.removeItem(
+          `near-api-js:keystore:${accountId}:${network.networkId}`
+        );
+      }
+    }
+
     this.walletUrl = walletUrl;
     this.provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
     this.signedAccountId = localStorage.getItem("signedAccountId") || "";
