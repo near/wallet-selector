@@ -63,7 +63,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl`, `useUrlAccountImport` and `topLevelInjected` for injected wallets or `contractId`,  `runOnStartup` for instant-link wallets and `walletUrl` for browser wallets.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl`, `useUrlAccountImport (deprecated)` and `topLevelInjected` for injected wallets or `contractId`,  `runOnStartup` for instant-link wallets and `walletUrl` for browser wallets.
 
 - `name`: Displayed in modal-ui as wallet name
 - `description`: Displayed in modal-ui as wallet description
@@ -71,7 +71,7 @@ Returns meta information about the wallet such as `name`, `description`, `iconUr
 - `deprecated`: Makes the wallet unselectable via modal-ui
 - `available`: Makes the wallet unselectable via modal-ui, use if the wallet cannot be selected in the user's environment.
 - `downloadUrl`: Link to download injected wallet, available via modal-ui
-- `useUrlAccountImport`: If `true`, then this injected wallet supports @account-export api and will be available in the account export modal window
+- `useUrlAccountImport (Deprecated)`: If `true`, then this injected wallet supports @account-export api and will be available in the account export modal window
 - `topLevelInjected`: If the value `true` is passed for an injected wallet, modal-ui will call the signIn method of this wallet immediately upon initializing setupModal. This will allow wallet applications that open the dApp in the internal browser to immediately log in with the user's wallet.
 
 **Example**

@@ -23,9 +23,8 @@ const reducer = (
   logger.log("Store Action", action);
 
   switch (action.type) {
-    case "SETUP_WALLET_MODULES": {
+    case "SETUP": {
       const {
-        modules,
         accounts,
         contract,
         selectedWalletId,
@@ -42,12 +41,23 @@ const reducer = (
 
       return {
         ...state,
-        modules,
         accounts: accountStates,
         contract,
         selectedWalletId,
         recentlySignedInWallets,
         rememberRecentWallets,
+      };
+    }
+    case "ADD_WALLET_MODULE": {
+      const { module } = action.payload;
+      let modules = [...state.modules, module];
+
+      // sort by listIndex
+      modules = modules.sort((a, b) => a.listIndex - b.listIndex);
+
+      return {
+        ...state,
+        modules,
       };
     }
     case "WALLET_CONNECTED": {

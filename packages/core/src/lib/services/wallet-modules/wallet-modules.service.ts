@@ -389,49 +389,66 @@ export class WalletModules {
   }
 
   async setup() {
-    const modules: Array<ModuleState> = [];
-
-    for (let i = 0; i < this.factories.length; i += 1) {
-      const module = await this.factories[i]({ options: this.options }).catch(
-        (err) => {
-          logger.log("Failed to setup module");
-          logger.error(err);
-
-          return null;
-        }
-      );
-
-      // Filter out wallets that aren't available.
-      if (!module) {
-        continue;
-      }
-
-      // Skip duplicated module.
-      if (modules.some((x) => x.id === module.id)) {
-        continue;
-      }
-
-      modules.push({
-        id: module.id,
-        type: module.type,
-        metadata: module.metadata,
-        wallet: async () => {
-          let instance = this.instances[module.id];
-
-          if (instance) {
-            return instance;
+    for (let i = 0; i < this.factories.length; i++) {
+      const factory = this.factories[i];
+      factory({ options: this.options })
+        .then(async (module) => {
+          // Filter out wallets that aren't available.
+          if (!module) {
+            return;
           }
 
-          instance = await this.setupInstance(module);
+          const moduleState = {
+            id: module.id,
+            type: module.type,
+            metadata: module.metadata,
+            listIndex: i,
+            wallet: async () => {
+              let instance = this.instances[module.id];
 
-          this.instances[module.id] = instance;
+              if (instance) {
+                return instance;
+              }
 
-          return instance;
-        },
-      });
+              instance = await this.setupInstance(module);
+
+              this.instances[module.id] = instance;
+
+              return instance;
+            },
+          };
+
+          this.modules.push(moduleState);
+
+          this.store.dispatch({
+            type: "ADD_WALLET_MODULE",
+            payload: {
+              module: moduleState,
+            },
+          });
+
+          if (moduleState.type !== "instant-link") {
+            return;
+          }
+
+          const wallet = (await moduleState.wallet()) as InstantLinkWallet;
+          if (!wallet.metadata.runOnStartup) {
+            return;
+          }
+
+          try {
+            await wallet.signIn({ contractId: wallet.getContractId() });
+          } catch (err) {
+            logger.error(
+              "Failed to sign in to wallet. " + wallet.metadata.name + err
+            );
+          }
+        })
+        .catch((err) => {
+          logger.log("Failed to setup module");
+          logger.error(err);
+        });
     }
-
-    this.modules = modules;
 
     const {
       accounts,
@@ -442,9 +459,8 @@ export class WalletModules {
     } = await this.resolveStorageState();
 
     this.store.dispatch({
-      type: "SETUP_WALLET_MODULES",
+      type: "SETUP",
       payload: {
-        modules,
         accounts,
         contract,
         selectedWalletId,
@@ -452,22 +468,5 @@ export class WalletModules {
         rememberRecentWallets,
       },
     });
-
-    for (let i = 0; i < this.modules.length; i++) {
-      if (this.modules[i].type !== "instant-link") {
-        continue;
-      }
-
-      const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
-      if (!wallet.metadata.runOnStartup) {
-        continue;
-      }
-
-      try {
-        await wallet.signIn({ contractId: wallet.getContractId() });
-      } catch (err) {
-        logger.error("Failed to sign in to wallet. " + err);
-      }
-    }
   }
 }

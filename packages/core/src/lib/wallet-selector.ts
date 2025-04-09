@@ -34,7 +34,6 @@ const createSelector = (
 
         throw new Error("No wallet selected");
       }
-
       return wallet;
     },
     setActiveAccount: (accountId: string) => {
@@ -112,7 +111,7 @@ export const setupWalletSelector = async (
     provider: new Provider(rpcProviderUrls),
   });
 
-  await walletModules.setup();
+  walletModules.setup();
 
   if (params.allowMultipleSelectors) {
     return createSelector(options, store, walletModules, emitter);

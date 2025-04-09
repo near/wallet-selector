@@ -49,6 +49,9 @@ export const mockWallet = async <Variation extends Wallet>(
 
   await walletModules.setup();
 
+  // await 300ms to allow wallet modules to initialize
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
   const { modules } = store.getState();
   const wallet = await walletModules.getWallet<Variation>(modules[0].id);
 
