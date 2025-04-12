@@ -389,66 +389,67 @@ export class WalletModules {
   }
 
   async setup() {
-    for (let i = 0; i < this.factories.length; i++) {
-      const factory = this.factories[i];
-      factory({ options: this.options })
-        .then(async (module) => {
-          // Filter out wallets that aren't available.
-          if (!module) {
-            return;
-          }
+    await Promise.all(
+      this.factories.map((factory, i) =>
+        factory({ options: this.options })
+          .then(async (module) => {
+            // Filter out wallets that aren't available.
+            if (!module) {
+              return;
+            }
 
-          const moduleState = {
-            id: module.id,
-            type: module.type,
-            metadata: module.metadata,
-            listIndex: i,
-            wallet: async () => {
-              let instance = this.instances[module.id];
+            const moduleState = {
+              id: module.id,
+              type: module.type,
+              metadata: module.metadata,
+              listIndex: i,
+              wallet: async () => {
+                let instance = this.instances[module.id];
 
-              if (instance) {
+                if (instance) {
+                  return instance;
+                }
+
+                instance = await this.setupInstance(module);
+
+                this.instances[module.id] = instance;
+
                 return instance;
-              }
+              },
+            };
 
-              instance = await this.setupInstance(module);
+            this.modules.push(moduleState);
 
-              this.instances[module.id] = instance;
+            this.store.dispatch({
+              type: "ADD_WALLET_MODULE",
+              payload: {
+                module: moduleState,
+              },
+            });
 
-              return instance;
-            },
-          };
+            if (moduleState.type !== "instant-link") {
+              return;
+            }
 
-          this.modules.push(moduleState);
+            const wallet = (await moduleState.wallet()) as InstantLinkWallet;
+            if (!wallet.metadata.runOnStartup) {
+              return;
+            }
 
-          this.store.dispatch({
-            type: "ADD_WALLET_MODULE",
-            payload: {
-              module: moduleState,
-            },
-          });
-
-          if (moduleState.type !== "instant-link") {
-            return;
-          }
-
-          const wallet = (await moduleState.wallet()) as InstantLinkWallet;
-          if (!wallet.metadata.runOnStartup) {
-            return;
-          }
-
-          try {
-            await wallet.signIn({ contractId: wallet.getContractId() });
-          } catch (err) {
-            logger.error(
-              "Failed to sign in to wallet. " + wallet.metadata.name + err
-            );
-          }
-        })
-        .catch((err) => {
-          logger.log("Failed to setup module");
-          logger.error(err);
-        });
-    }
+            try {
+              await wallet.signIn({ contractId: wallet.getContractId() });
+            } catch (err) {
+              logger.error(
+                "Failed to sign in to wallet. " + wallet.metadata.name + err
+              );
+            }
+          })
+          .catch((err) => {
+            logger.log("Failed to setup module");
+            logger.error(err);
+          })
+      )
+    );
 
     const {
       accounts,
