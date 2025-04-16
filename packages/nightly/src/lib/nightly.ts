@@ -59,9 +59,7 @@ const setupNightlyState = async (
   };
 };
 const isInstalled = () => {
-  return waitFor(() => !!window.nightly?.near, { timeout: 5000 }).catch(
-    () => false
-  );
+  return waitFor(() => !!window.nightly?.near, {}).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
