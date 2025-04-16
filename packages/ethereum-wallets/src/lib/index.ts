@@ -168,13 +168,15 @@ const EthereumWallets: WalletBehaviourFactory<
     tx: Transaction;
     relayerPublicKey: string;
   }): Promise<`0x${string}`> => {
-    //  Metamask has a check that prevents the execution of 'external' transactions (i.e., those originating outside MetaMask)
-    //  when these transactions have an 'internal' account address in the to field (i.e., a user's own address within MetaMask) and contain non-empty data.
+    //  Metamask has a check (https://github.com/MetaMask/core/blob/v360.0.0/packages/transaction-controller/src/utils/validation.ts#L100-L110) that
+    //  prevents the execution of 'external' transactions (i.e., those originating outside MetaMask) when these transactions have an 'internal'
+    //  account address in the to field (i.e., a user's own address within MetaMask) and contain non-empty data.
     //  When issuing an onboarding transaction, we set the to field to the user's own address and utilize the data field to pass required parameters to the Wallet Contract,
     //  specifically to add the provided public key to the account.
     //  We hash to value for AddKey/DeleteKey to bypass that metamask check. In the Wallet Contract itself contract compares to address with address hash.
     const to = (
-      /^0x([A-Fa-f0-9]{40})$/.test(tx.receiverId) && !["AddKey", "DeleteKey"].includes(tx.actions[0].type)
+      /^0x([A-Fa-f0-9]{40})$/.test(tx.receiverId) &&
+      !["AddKey", "DeleteKey"].includes(tx.actions[0].type)
         ? tx.receiverId
         : "0x" + keccak256(toHex(tx.receiverId)).slice(26)
     ) as `0x${string}`;
