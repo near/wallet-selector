@@ -1,84 +1,49 @@
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+name: on release
 
-permissions:
-  actions: write
-  issues: write
-  pull-requests: write
-  contents: write
+on: pull_request
 
 jobs:
-  release:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish-github-registry:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          ref: ycg/publish-version
           fetch-depth: 0
-      - name: Setup Git
-        run: |
-          git config user.name "GitHub Bot"
-          git config user.email "gituser@example.com"
-      - run: echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ./.npmrc
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
           cache: 'yarn'
-      - name: Check example apps
-        run: echo "EXAMPLE_APPS=$(ls ./examples | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile --prefer-offline
-
-      - name: Bump version
-        if: github.ref == 'refs/heads/main'
-        run: yarn nx run core:version --dryRun
-
-      - name: Bump version
-        if: github.ref != 'refs/heads/main'
-        run: yarn nx run core:version:dev --dryRun
-
-      - name: Tag version
-        if: github.ref == 'refs/heads/main'
-        run: echo "GIT_TAG=$(git describe --exact-match --tags $(git log -n1 --pretty='%h') 2> /dev/null)" >> $GITHUB_ENV
-
-      - name: Run Build All
-        run: yarn build:all
-
-      # Use npx instead of yarn because yarn automatically sets NPM_* environment variables
-      # like NPM_CONFIG_REGISTRY so npm publish ends up ignoring the .npmrc file
-      # which is set up by `setup-node` action.
-      - name: Deploy
-        run: npx nx run-many --target=deploy --all --noBuild --exclude=$EXAMPLE_APPS --dry-run
+      - name: Build
+        # run: yarn nx run-many --target=build --projects=core,ethereum-wallets,modal-ui,my-near-wallet --configuration=production
+        run: yarn nx run-many --target=build --projects=ethereum-wallets --configuration=production
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
         env:
-          EXAMPLE_APPS: ${{ env.EXAMPLE_APPS }}
-
-      # Drafts your next Release notes as Pull Requests are merged into "main"
-      - name: Draft Release notes
-        id: draft-release-notes
-        uses: release-drafter/release-drafter@v5
-        if: github.ref == 'refs/heads/main'
-        with:
-          config-name: release-drafter.yml
-          publish: true
-          tag: ${{ env.GIT_TAG }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          force: true
-          tags: true
-
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish Core
+      #   run:  cd ./dist/packages/core && npm pkg set name=aurora-is-near/wallet-selector/core &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/core && npm publish --access public 
+      # - name: Publish Modal ui
+      #   run:  cd .. && cd ./modal-ui && npm pkg set name=aurora-is-near/wallet-selector/modal-ui &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/modal-ui && npm publish --access public 
+      # - name: Publish My Near Wallet
+      #   run:  cd .. && cd ./my-near-wallet && npm pkg set name=aurora-is-near/wallet-selector/my-near-wallet &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/my-near-wallet && npm publish --access public 
+      - name: Publish Ethereum Wallets
+        run:   cd ./dist/packages/ethereum-wallets && npm pkg set name=@aurora-is-near/ethereum-wallets &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/ethereum-wallets && npm publish --access public 
+      # - name: Publish Core
+      #   run:  cd ./dist/packages/core && npm pkg set name=aurora-is-near/wallet-selector/core &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/core && npm publish --access public 
+      # - name: Publish Modal ui
+      #   run:  cd .. && cd ./modal-ui && npm pkg set name=aurora-is-near/wallet-selector/modal-ui &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/modal-ui && npm publish --access public 
+      # - name: Publish My Near Wallet
+      #   run:  cd .. && cd ./my-near-wallet && npm pkg set name=aurora-is-near/wallet-selector/my-near-wallet &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/my-near-wallet && npm publish --access public 
+      # - name: Publish Ethereum Wallets
+      #   run:  cd .. && cd ./ethereum-wallets && npm pkg set name=aurora-is-near/wallet-selector/ethereum-wallets &&  npm pkg set repository.url=https://github.com/aurora-is-near/wallet-selector.git && npm pkg set bugs.url=https://github.com/aurora-is-near/issues && npm pkg set homepage=https://github.com/aurora-is-near/wallet-selector/tree/main/packages/ethereum-wallets && npm publish --access public 
