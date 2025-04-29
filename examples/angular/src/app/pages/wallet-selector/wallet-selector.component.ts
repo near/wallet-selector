@@ -28,6 +28,7 @@ import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 import { createWeb3Modal } from "@web3modal/wagmi";
 import { reconnect, http, createConfig, type Config } from "@wagmi/core";
 import { type Chain } from "@wagmi/core/chains";
@@ -159,6 +160,7 @@ export class WalletSelectorComponent implements OnInit {
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
         setupEthereumWallets({ wagmiConfig, web3Modal }),
+        setupIntearWallet(),
       ],
     });
 

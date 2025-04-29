@@ -26,7 +26,8 @@
     "near-mobile-wallet",
     "mintbase-wallet",
     "bitte-wallet",
-    "okx-wallet"
+    "okx-wallet",
+    "intear-wallet"
   ],
   "homepage": "https://github.com/near/wallet-selector#README",
   "bugs": {
@@ -72,6 +73,7 @@
     "build:wallet-utils": "nx run-many --target=build --projects=wallet-utils --configuration=production",
     "build:welldone-wallet": "nx run-many --target=build --projects=welldone-wallet --configuration=production",
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
+    "build:intear-wallet": "nx run-many --target=build --projects=intear-wallet --configuration=production",
     "examples:vanillajs:generateimportmap": "(cd examples/vanillajs && jspm link index.html -o index.html)",
     "find:unused": "ts-prune -p tsprune.json",
     "postinstall": "yarn build:all",
