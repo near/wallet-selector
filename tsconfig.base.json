@@ -111,6 +111,9 @@
       "@near-wallet-selector/ethereum-wallets": [
         "packages/ethereum-wallets/src/index.ts"
       ],
+      "@near-wallet-selector/intear-wallet": [
+        "packages/intear-wallet/src/index.ts"
+      ],
       "crypto": [
         "node_modules/crypto-browserify"
       ],

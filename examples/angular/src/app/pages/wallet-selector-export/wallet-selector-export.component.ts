@@ -24,6 +24,7 @@ import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 import { CONTRACT_ID } from "../../../constants";
 
 declare global {
@@ -86,6 +87,7 @@ export class WalletSelectorExportComponent implements OnInit {
         setupNearMobileWallet(),
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
+        setupIntearWallet(),
       ],
     });
     /**

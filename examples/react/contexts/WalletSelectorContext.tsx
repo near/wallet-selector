@@ -29,6 +29,7 @@ import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 
 import type { ReactNode } from "react";
 import React, {
@@ -190,6 +191,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupMintbaseWallet({ contractId: CONTRACT_ID }),
         setupBitteWallet({ contractId: CONTRACT_ID }),
         setupEthereumWallets({ wagmiConfig, web3Modal }),
+        setupIntearWallet(),
       ],
     });
     const _modal = setupModal(_selector, {
