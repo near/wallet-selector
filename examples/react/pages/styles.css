@@ -3,7 +3,6 @@
 }
 
 @import "../../../dist/packages/modal-ui/styles.css";
-@import "../../../dist/packages/account-export/styles.css";
 
 html {
   --bg: #fff;

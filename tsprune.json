@@ -4,7 +4,6 @@
     "tmp",
     "dist",
     "**/jest.config.*",
-    "**/neth",
     "**/ledger"
   ]
 }
