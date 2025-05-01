@@ -8,7 +8,7 @@
     "jest": true
   },
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx", "@typescript-eslint", "prettier", "react-hooks"],
+  "plugins": ["@nx", "@typescript-eslint", "prettier"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
