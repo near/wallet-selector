@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ethereum-wallets",
-  "version": "9.0.0-beta.3",
+  "version": "8.10.2",
   "description": "Ethereum wallets package for NEAR Wallet Selector.",
   "keywords": [
     "near",
