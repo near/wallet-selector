@@ -901,7 +901,7 @@ export function setupIntearWallet({
       type: "injected",
       metadata: {
         name: "Intear Wallet",
-        description: "A stupid wallet for people who want to cry.",
+        description: "Simple browser wallet for NEAR",
         iconUrl,
         deprecated,
         available: true,
