@@ -79,7 +79,9 @@ const WC_METHODS = [
   "near_signTransaction",
   "near_signTransactions",
   "near_verifyOwner",
-  "near_signMessage",
+  // disabling this due to WalletConnect not supporting it
+  // see https://docs.reown.com/advanced/multichain/rpc-reference/near-rpc
+  // "near_signMessage",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
