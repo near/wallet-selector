@@ -102,10 +102,11 @@ class LogoutWebSocket {
             signature
           )}`;
           break;
-        // TODO: Uncomment when naj is updated
-        // case KeyType.SECP256K1:
-        //   signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(signature)}`;
-        //   break;
+        case KeyType.SECP256K1:
+          signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
+            signature
+          )}`;
+          break;
         default:
           throw new Error("Unsupported key type");
       }
@@ -250,7 +251,7 @@ export type IntearWalletParams = {
 
 type SavedData = {
   accounts: [Account, ...Array<Account>];
-  key: string; // TODO: use nearAPI.utils.KeyPairString when naj is updated
+  key: nearAPI.utils.KeyPairString;
   contractId: string;
   methodNames: Array<string>;
   logoutKey: string; // there's no PublicKeyString type
@@ -275,9 +276,10 @@ async function generateAuthSignature(
       return `ed25519:${nearAPI.utils.serialize.base_encode(
         signature.signature
       )}`;
-    // TODO: Uncomment when naj is updated
-    // case KeyType.SECP256K1:
-    //   return `secp256k1:${nearAPI.utils.serialize.base_encode(signature.signature)}`;
+    case KeyType.SECP256K1:
+      return `secp256k1:${nearAPI.utils.serialize.base_encode(
+        signature.signature
+      )}`;
     default:
       throw new Error("Unsupported key type");
   }
