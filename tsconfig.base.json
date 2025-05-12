@@ -79,6 +79,7 @@
       ],
       "@near-wallet-selector/react-hook" : ["packages/react-hook/src/index.ts"],
       "@near-wallet-selector/xdefi": ["packages/xdefi/src/index.ts"],
+      "@near-wallet-selector/intear-wallet": ["packages/intear-wallet/src/index.ts"],
       "crypto": ["node_modules/crypto-browserify"],
       "fs": ["node_modules/browserify-fs"],
       "http": ["node_modules/stream-http"],

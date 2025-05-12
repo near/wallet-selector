@@ -22,6 +22,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [WalletConnect](https://www.npmjs.com/package/@near-wallet-selector/wallet-connect) - Bridge wallet.
 - [WELLDONE Wallet](https://www.npmjs.com/package/@near-wallet-selector/welldone-wallet) - Injected wallet.
 - [XDEFI Wallet](https://www.npmjs.com/package/@near-wallet-selector/xdefi) - Injected wallet.
+- [Intear Wallet](https://www.npmjs.com/package/@near-wallet-selector/intear-wallet) - Injected wallet.
 
 ## Preview
 
@@ -74,7 +75,8 @@ yarn add \
   @near-wallet-selector/near-mobile-wallet  \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/bitte-wallet \
-  @near-wallet-selector/ethereum-wallets
+  @near-wallet-selector/ethereum-wallets \
+  @near-wallet-selector/intear-wallet
 
 
 # Using NPM.
@@ -99,7 +101,8 @@ npm install \
   @near-wallet-selector/near-mobile-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/bitte-wallet \
-  @near-wallet-selector/ethereum-wallets
+  @near-wallet-selector/ethereum-wallets \
+  @near-wallet-selector/intear-wallet
 ```
 
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
@@ -137,6 +140,7 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
@@ -168,6 +172,7 @@ const selector = await setupWalletSelector({
     setupNearMobileWallet(),
     setupBitteWallet(),
     setupEthereumWallets({ wagmiConfig, web3Modal }),
+    setupIntearWallet(),
   ],
 });
 

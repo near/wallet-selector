@@ -25,6 +25,7 @@ import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet"
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { createAppKit } from "@reown/appkit/react";
 import { defineChain } from "@reown/appkit/networks";
@@ -166,6 +167,7 @@ export class WalletSelectorComponent implements OnInit {
           wagmiConfig: wagmiAdapter.wagmiConfig,
           web3Modal,
         }),
+        setupIntearWallet(),
       ],
     });
 
