@@ -346,4 +346,44 @@ describe("IntearWallet", () => {
       await expect(signMessagePromise).rejects.toThrow("Popup closed");
     });
   });
+
+  describe("signOut", () => {
+    it("should remove storage and notify logout bridge service", async () => {
+      const mockSavedData = {
+        accounts: [{ accountId: "test.near" }],
+        key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+        contractId: "test.near",
+        methodNames: [],
+        logoutKey: nearAPI.KeyPair.fromRandom("ed25519")
+          .getPublicKey()
+          .toString(),
+      };
+      window.localStorage.getItem = jest
+        .fn()
+        .mockReturnValue(JSON.stringify(mockSavedData));
+      window.localStorage.removeItem = jest.fn();
+      window.fetch = jest.fn().mockResolvedValue({ ok: true });
+      await wallet.signOut();
+      expect(window.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("/api/logout_app/testnet"),
+        expect.objectContaining({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: expect.any(String),
+        })
+      );
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith(
+        "_intear_wallet_connected_account"
+      );
+    });
+
+    it("should do nothing if there is no saved data", async () => {
+      window.localStorage.getItem = jest.fn().mockReturnValue(null);
+      window.fetch = jest.fn();
+      window.localStorage.removeItem = jest.fn();
+      await wallet.signOut();
+      expect(window.fetch).not.toHaveBeenCalled();
+      expect(window.localStorage.removeItem).not.toHaveBeenCalled();
+    });
+  });
 });
