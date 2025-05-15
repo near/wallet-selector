@@ -1,5 +1,25 @@
 # Contributing
 
+## Installation
+
+This project makes use of yarn version 1 (classic). Developers can use [proto](https://moonrepo.dev/proto) to match the compatible versions for Yarn and Node:
+
+```
+proto use
+```
+
+This will install the correct versions of Node and Yarn for development.
+
+Afterwards, simple run:
+
+```
+yarn
+```
+
+This should download all required dependencies and build out the project modules.
+
+## NX Dependency Management
+
 This project is using an [NX](https://nx.dev) style [monorepository](https://monorepo.tools) that helps divide and map the project dependencies for each project.
 
 The core modules are in the `packages` directory and the example apps are in the `examples` directory. In order to figure out the commands you need to run, you can use the `nx` command line tool.
