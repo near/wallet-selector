@@ -1,5 +1,9 @@
 import Client from "@walletconnect/sign-client";
-import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
+import type {
+  SignClientTypes,
+  EngineTypes,
+  ISignClient,
+} from "@walletconnect/types";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let WalletConnectModal: typeof import("@walletconnect/modal").WalletConnectModal;
 import("@walletconnect/modal").then((module) => {
@@ -24,14 +28,16 @@ class WalletConnectClient {
     this.emitter = emitter;
   }
 
-  get session() {
+  get session(): ISignClient["session"] {
     return this.client.session;
   }
 
   on<Event extends SignClientTypes.Event>(
     event: Event,
     callback: (args: SignClientTypes.EventArguments[Event]) => void
-  ) {
+  ): {
+    remove: ISignClient["events"]["removeListener"];
+  } {
     this.client.on(event, callback);
 
     return {
