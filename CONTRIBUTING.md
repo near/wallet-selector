@@ -2,6 +2,8 @@
 
 ## Installation
 
+### (Optional) Proto for Node and Yarn version management
+
 This project makes use of yarn version 1 (classic). Developers can use [proto](https://moonrepo.dev/proto) to match the compatible versions for Yarn and Node:
 
 ```
@@ -10,7 +12,7 @@ proto use
 
 This will install the correct versions of Node and Yarn for development.
 
-Afterwards, simple run:
+### Install project dependencies
 
 ```
 yarn
