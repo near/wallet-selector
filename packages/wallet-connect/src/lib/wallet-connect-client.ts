@@ -12,6 +12,7 @@ import("@walletconnect/modal").then((module) => {
 import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
+  Subscription,
   WalletEvents,
 } from "@near-wallet-selector/core";
 
@@ -35,9 +36,7 @@ class WalletConnectClient {
   on<Event extends SignClientTypes.Event>(
     event: Event,
     callback: (args: SignClientTypes.EventArguments[Event]) => void
-  ): {
-    remove: ISignClient["events"]["removeListener"];
-  } {
+  ): Subscription {
     this.client.on(event, callback);
 
     return {
