@@ -1,7 +1,7 @@
 {
-  "name": "@near-wallet-selector/modal-ui-js",
+  "name": "@near-wallet-selector/intear-wallet",
   "version": "9.0.2",
-  "description": "Modal UI package for NEAR wallet Selector",
+  "description": "Intear wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
     "blockchain",
@@ -9,7 +9,10 @@
     "dapps",
     "near-protocol",
     "near-blockchain",
-    "wallet selector"
+    "wallet selector",
+    "injected wallet",
+    "intear",
+    "intear wallet"
   ],
   "repository": {
     "type": "git",
@@ -18,5 +21,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/modal-ui-js"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/intear-wallet"
 }
