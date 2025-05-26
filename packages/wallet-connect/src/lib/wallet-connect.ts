@@ -576,7 +576,7 @@ const WalletConnect: WalletBehaviourFactory<
           events: params.events,
         });
 
-        await requestSignIn({ receiverId: contractId, methodNames });
+        await requestSignIn({ receiverId: contractId || "", methodNames });
 
         await setupEvents();
 
