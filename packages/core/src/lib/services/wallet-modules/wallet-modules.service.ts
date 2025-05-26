@@ -308,7 +308,7 @@ export class WalletModules {
       const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId,
+        contractId: contractId || "",
         methodNames,
       });
 

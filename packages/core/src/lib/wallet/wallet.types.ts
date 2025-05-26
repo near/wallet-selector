@@ -49,7 +49,7 @@ export interface SignInParams {
   /**
    * Account ID of the Smart Contract.
    */
-  contractId: string;
+  contractId?: string;
   /**
    * Specify limited access to particular methods on the Smart Contract.
    */
