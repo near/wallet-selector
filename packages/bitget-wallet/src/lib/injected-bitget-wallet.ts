@@ -19,7 +19,7 @@ interface RequestSignInResponse {
 export type SignOutResponse = true | { error: string | { type: string } };
 
 interface RequestSignInParams {
-  contractId?: string;
+  contractId: string;
   methodNames?: Array<string>;
   amount?: string; // in yoctoⓃ
 }

@@ -45,7 +45,7 @@ interface GetRpcResponse {
 }
 
 interface RequestSignInParams {
-  contractId?: string;
+  contractId: string;
   methodNames?: Array<string>;
   amount?: string; // in yoctoⓃ
 }
