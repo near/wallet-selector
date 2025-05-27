@@ -178,7 +178,7 @@ type BaseWallet<
 
 export type WalletEvents = {
   signedIn: {
-    contractId: string;
+    contractId?: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
   };
