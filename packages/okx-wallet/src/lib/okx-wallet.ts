@@ -140,7 +140,7 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signIn({ contractId, methodNames }) {
       try {
         const { accessKey, accountId } = await _state.wallet.requestSignIn({
-          contractId,
+          contractId: contractId || "",
           methodNames,
         });
         setupEvents();

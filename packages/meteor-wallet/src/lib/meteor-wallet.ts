@@ -76,12 +76,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
-          contract_id: contractId,
+          contract_id: contractId || "",
         });
       } else {
         await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
-          contract_id: contractId,
+          contract_id: contractId || "",
         });
       }
 

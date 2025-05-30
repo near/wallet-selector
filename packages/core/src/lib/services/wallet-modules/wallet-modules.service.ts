@@ -187,6 +187,7 @@ export class WalletModules {
     walletId: string,
     { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
+    contractId = contractId || "";
     const { selectedWalletId, rememberRecentWallets } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const contract = { contractId, methodNames };
@@ -308,7 +309,7 @@ export class WalletModules {
       const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId,
+        contractId: contractId || "",
         methodNames,
       });
 

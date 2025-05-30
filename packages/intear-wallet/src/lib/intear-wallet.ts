@@ -517,7 +517,7 @@ const IntearWallet: WalletBehaviourFactory<
               const dataToSave: SavedData = {
                 accounts,
                 key: key.toString(),
-                contractId: functionCallKeyAdded ? contractId : "",
+                contractId: functionCallKeyAdded ? (contractId as string) : "",
                 methodNames: functionCallKeyAdded ? methodNames ?? [] : [],
                 logoutKey: logoutKey.toString(),
               };

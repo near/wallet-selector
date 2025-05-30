@@ -26,9 +26,11 @@ import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
+import type { SetupParams } from "@near-wallet-selector/react-hook";
 
-const walletSelectorConfig = {
+const walletSelectorConfig: SetupParams = {
   network: NETWORK_ID,
+  // createAccessKeyFor: CONTRACT_ID,
   debug: false,
   modules: [
     setupEthereumWallets({

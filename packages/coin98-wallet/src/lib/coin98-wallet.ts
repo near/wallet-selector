@@ -103,7 +103,10 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _state.wallet.near.connect({ prefix: "near_selector", contractId });
+      await _state.wallet.near.connect({
+        prefix: "near_selector",
+        contractId: contractId || "",
+      });
       return getAccounts();
     },
 

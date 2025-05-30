@@ -183,7 +183,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId,
+        contractId: contractId || "",
         methodNames,
       });
 
