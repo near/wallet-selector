@@ -242,6 +242,18 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return results;
     },
 
+    async signTransaction({ actions, receiverId, signerId }) {
+      logger.log("signTransaction", { signerId, receiverId, actions });
+
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ signerId, receiverId, actions }]),
+        signer,
+        options.network
+      );
+
+      return signedTx;
+    },
+
     async importAccountsInSecureContext(params) {
       _state.wallet.importWalletsNear(params.accounts);
     },
