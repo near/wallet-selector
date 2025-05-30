@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import type {
+  Action,
   FinalExecutionOutcome,
   SignedMessage,
   Transaction,
@@ -14,6 +15,7 @@ import {
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 class WalletError extends Error {
   constructor(message: string) {
@@ -52,6 +54,12 @@ export interface SignMessageParams {
   callbackUrl?: string;
 }
 
+export interface SignTransactionParams {
+  signerId?: string;
+  receiverId?: string;
+  actions: Array<Action>;
+}
+
 export type SetupParams = WalletSelectorParams & {
   createAccessKeyFor?: string;
 };
@@ -75,6 +83,7 @@ export interface WalletSelectorProviderValue {
     message: SignMessageParams,
     signedMessage: SignedMessage
   ) => Promise<boolean>;
+  signTransaction: (params: SignTransactionParams) => Promise<SignedTransaction | void>;
 }
 
 const DEFAULT_GAS = "30000000000000";
@@ -213,6 +222,30 @@ export function WalletSelectorProvider({
       return providers.getTransactionLastResult(
         outcome as FinalExecutionOutcome
       );
+    },
+    [wallet]
+  );
+
+  const signTransaction = useCallback(
+    async ({
+      actions,
+      receiverId,
+      signerId
+    }: SignTransactionParams) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      if (!wallet.signTransaction) {
+        throw new WalletError("Wallet does not support sign transaction only. Please use callFunction or signAndSendTransactions instead.");
+      }
+
+      const signedTx = await wallet.signTransaction({
+        receiverId: receiverId,
+        actions: actions,
+      });
+
+      return signedTx;
     },
     [wallet]
   );
@@ -356,6 +389,7 @@ export function WalletSelectorProvider({
     signMessage,
     getAccount,
     verifyMessage,
+    signTransaction,
   };
 
   return (
