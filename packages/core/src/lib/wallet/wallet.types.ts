@@ -10,6 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import { SignedTransaction } from "near-api-js/lib/transaction";
 
 interface BaseWalletMetadata {
   /**
@@ -155,6 +156,12 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
+   */
+  signTransaction?(
+    params: SignAndSendTransactionParams
+  ): Promise<SignedTransaction | void>;
 }
 
 type BaseWallet<
