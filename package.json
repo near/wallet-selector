@@ -74,7 +74,7 @@
     "prepack": "yarn build:core && yarn build:all",
     "prepublishOnly": "yarn build:core && yarn build:all",
     "serve:angular": "nx serve angular",
-    "serve:react": "nx serve react --host=0.0.0.0 --skip-nx-cache  --configuration=development",
+    "serve:react": "nx serve react --host=0.0.0.0",
     "serve:vanilla": "nx serve vanilla",
     "test": "nx run-many --target=test --all",
     "nxs": "nx run react:lint --fix"
@@ -114,7 +114,7 @@
     "ethers": "5.7.2",
     "https-browserify": "1.0.0",
     "is-mobile": "4.0.0",
-    "near-api-js": "5.1.1",
+    "near-api-js": "5.0.0",
     "near-seed-phrase": "0.2.0",
     "next": "13.3.0",
     "ngx-deploy-npm": "7.1.0",
@@ -228,11 +228,6 @@
     "webpack-merge": "5.8.0"
   },
   "resolutions": {
-    "near-api-js": "5.1.1"
-  },
-  "overrides": {
-    "@hot-wallet/sdk": {
-      "near-api-js": "5.0.0"
-    }
+    "near-api-js": "5.0.0"
   }
 }
