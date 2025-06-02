@@ -129,7 +129,8 @@ const Content: React.FC = () => {
       : "Failed to verify";
 
     alert(
-      `${alertMessage} signed message: '${message.message
+      `${alertMessage} signed message: '${
+        message.message
       }': \n ${JSON.stringify(signedMessage)}`
     );
   };
@@ -138,31 +139,39 @@ const Content: React.FC = () => {
     async (e: Submitted) => {
       e.preventDefault();
 
-      const { fieldset, message, donation, multiple, signonly } = e.target.elements;
+      const { fieldset, message, donation, multiple, signonly } =
+        e.target.elements;
 
       fieldset.disabled = true;
 
       if (signonly.checked) {
         return signTransaction({
           receiverId: CONTRACT_ID,
-          actions: [{
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS,
-              deposit: utils.format.parseNearAmount(donation.value) || "0",
+          actions: [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: message.value },
+                gas: BOATLOAD_OF_GAS,
+                deposit: utils.format.parseNearAmount(donation.value) || "0",
+              },
             },
-          }]
-        }).then((signedTransaction) => {
-          alert("Successfully signed transaction. Signature is:\n" + signedTransaction);
-          console.log("signedTx", signedTransaction)
-          return signedTransaction;
-        }).catch((err) => {
-          alert("Failed to sign transaction " + err);
-          console.log("Failed to sign transaction");
-          throw err;
+          ],
         })
+          .then((signedTransaction) => {
+            alert(
+              "Successfully signed transaction. Signature is:\n" +
+                signedTransaction
+            );
+            console.log("signedTx", signedTransaction);
+            return signedTransaction;
+          })
+          .catch((err) => {
+            alert("Failed to sign transaction " + err);
+            console.log("Failed to sign transaction");
+            throw err;
+          });
       }
 
       return addMessages(message.value, donation.value || "0", multiple.checked)
