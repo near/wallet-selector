@@ -180,6 +180,12 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to send transactions");
       }
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

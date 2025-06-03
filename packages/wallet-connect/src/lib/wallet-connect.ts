@@ -164,7 +164,16 @@ const getSignatureData = (result: Uint8Array) => {
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, provider, emitter, logger }) => {
+> = async ({
+  id,
+  options,
+  store,
+  params,
+  provider,
+  emitter,
+  logger,
+  metadata,
+}) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -716,6 +725,12 @@ const WalletConnect: WalletBehaviourFactory<
 
         return results;
       }
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

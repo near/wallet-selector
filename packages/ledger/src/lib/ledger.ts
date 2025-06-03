@@ -356,6 +356,25 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         signature: encodedSignature,
       };
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      if (!_state.accounts.length) {
+        throw new Error("Wallet not signed in");
+      }
+
+      // Note: Connection must be triggered by user interaction.
+      await connectLedgerDevice();
+
+      const [signedTransactions] = await signTransactions(
+        transformTransactions([{ receiverId, actions }]),
+        signer,
+        options.network
+      );
+
+      return signedTransactions;
+    },
   };
 };
 

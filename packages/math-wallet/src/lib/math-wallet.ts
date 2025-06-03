@@ -181,6 +181,18 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return results;
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ receiverId, actions }]),
+        _state.wallet.signer,
+        options.network
+      );
+
+      return signedTx;
+    },
   };
 };
 

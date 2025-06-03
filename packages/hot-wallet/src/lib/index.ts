@@ -127,6 +127,14 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
               "HOT:verifyOwner is deprecated, use signMessage method with implementation NEP0413 Standard"
             );
           },
+
+          async createSignedTransaction(receiverId, actions) {
+            config.logger.log("HOTWallet:createSignedTransaction", {
+              actions,
+              receiverId,
+            });
+            throw new Error(`Method not supported by HOT Wallet`);
+          },
         };
       },
     };

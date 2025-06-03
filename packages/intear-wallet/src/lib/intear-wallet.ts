@@ -888,6 +888,12 @@ const IntearWallet: WalletBehaviourFactory<
         logger
       );
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   });
 };
 

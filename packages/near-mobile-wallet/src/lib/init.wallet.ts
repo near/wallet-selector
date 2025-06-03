@@ -91,5 +91,10 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
       logger.log("[NearMobileWallet]: signAndSendTransactions", data);
       return await nearMobileWallet.signAndSendTransactions(data);
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+      throw new Error(`Method not supported by ${config.metadata.name}`);
+    },
   };
 };
