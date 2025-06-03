@@ -84,3 +84,5 @@ export {
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";
+
+export { WalletSelectorSigner } from "./lib/signer";

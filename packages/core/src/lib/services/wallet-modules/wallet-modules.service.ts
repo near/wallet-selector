@@ -301,6 +301,7 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
+    const _getPublicKey = wallet.getPublicKey;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -330,6 +331,16 @@ export class WalletModules {
       this.validateSignMessageParams(params);
 
       return await _signMessage(params);
+    };
+
+    wallet.getPublicKey = async (accountId: string) => {
+      if (_getPublicKey === undefined) {
+        throw new Error(
+          `getPublicKey isn't implemented by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _getPublicKey(accountId);
     };
 
     return wallet;

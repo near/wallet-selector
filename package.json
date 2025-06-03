@@ -145,6 +145,7 @@
     "@babel/preset-react": "7.16.7",
     "@babel/runtime": "7.24.8",
     "@near-js/keystores": "0.2.0",
+    "@near-js/signers": "2.0.1",
     "@near-js/types": "0.3.0",
     "@nrwl/js": "16.0.0",
     "@nrwl/rollup": "16.0.0",
