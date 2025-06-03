@@ -30,7 +30,7 @@ const Content: React.FC = () => {
     viewFunction,
     callFunction,
     signAndSendTransactions,
-    signTransaction,
+    createSignedTransaction,
     wallet,
     signMessage,
     walletSelector,
@@ -145,21 +145,19 @@ const Content: React.FC = () => {
       fieldset.disabled = true;
 
       if (signonly.checked) {
-        return signTransaction({
-          receiverId: CONTRACT_ID,
-          actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: { text: message.value },
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount(donation.value) || "0",
-              },
+        return createSignedTransaction(CONTRACT_ID, [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: { text: message.value },
+              gas: BOATLOAD_OF_GAS,
+              deposit: utils.format.parseNearAmount(donation.value) || "0",
             },
-          ],
-        })
+          },
+        ])
           .then((signedTransaction) => {
+            fieldset.disabled = false;
             alert(
               "Successfully signed transaction. Signature is:\n" +
                 signedTransaction

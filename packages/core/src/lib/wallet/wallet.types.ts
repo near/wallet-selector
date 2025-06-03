@@ -159,8 +159,9 @@ interface BaseWalletBehaviour {
   /**
    * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
    */
-  signTransaction?(
-    params: SignAndSendTransactionParams
+  createSignedTransaction(
+    receiverId: string,
+    actions: Array<Action>
   ): Promise<SignedTransaction | void>;
 }
 

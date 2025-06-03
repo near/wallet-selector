@@ -54,12 +54,6 @@ export interface SignMessageParams {
   callbackUrl?: string;
 }
 
-export interface SignTransactionParams {
-  signerId?: string;
-  receiverId?: string;
-  actions: Array<Action>;
-}
-
 export type SetupParams = WalletSelectorParams & {
   createAccessKeyFor?: string;
 };
@@ -83,8 +77,9 @@ export interface WalletSelectorProviderValue {
     message: SignMessageParams,
     signedMessage: SignedMessage
   ) => Promise<boolean>;
-  signTransaction: (
-    params: SignTransactionParams
+  createSignedTransaction: (
+    receiverId: string,
+    actions: Array<Action>
   ) => Promise<SignedTransaction | void>;
 }
 
@@ -228,22 +223,22 @@ export function WalletSelectorProvider({
     [wallet]
   );
 
-  const signTransaction = useCallback(
-    async ({ actions, receiverId }: SignTransactionParams) => {
+  const createSignedTransaction = useCallback(
+    async (receiverId: string, actions: Array<Action>) => {
       if (!wallet) {
         throw new WalletError("No wallet connected");
       }
 
-      if (!wallet.signTransaction) {
+      if (!wallet.createSignedTransaction) {
         throw new WalletError(
           "Wallet does not support sign transaction only. Please use callFunction or signAndSendTransactions instead."
         );
       }
 
-      const signedTx = await wallet.signTransaction({
-        receiverId: receiverId,
-        actions: actions,
-      });
+      const signedTx = await wallet.createSignedTransaction(
+        receiverId,
+        actions
+      );
 
       return signedTx;
     },
@@ -389,7 +384,7 @@ export function WalletSelectorProvider({
     signMessage,
     getAccount,
     verifyMessage,
-    signTransaction,
+    createSignedTransaction,
   };
 
   return (

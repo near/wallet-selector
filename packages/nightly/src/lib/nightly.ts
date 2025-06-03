@@ -242,11 +242,11 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return results;
     },
 
-    async signTransaction({ actions, receiverId, signerId }) {
-      logger.log("signTransaction", { signerId, receiverId, actions });
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
 
       const [signedTx] = await signTransactions(
-        transformTransactions([{ signerId, receiverId, actions }]),
+        transformTransactions([{ receiverId, actions }]),
         signer,
         options.network
       );
