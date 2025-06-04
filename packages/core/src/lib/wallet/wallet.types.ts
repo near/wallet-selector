@@ -10,6 +10,7 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { PublicKey } from "near-api-js/lib/utils";
 
 interface BaseWalletMetadata {
   /**
@@ -155,6 +156,7 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  getPublicKey?(accountId: string): Promise<PublicKey>;
 }
 
 type BaseWallet<
