@@ -995,6 +995,12 @@ const EthereumWallets: WalletBehaviourFactory<
 
       throw new Error(`Method not supported by Ethereum Wallets`);
     },
+
+    async signTransaction(transaction) {
+      logger.log("EthereumWallets:signTransaction", { transaction });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
   };
 };
 

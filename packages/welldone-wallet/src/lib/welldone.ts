@@ -384,6 +384,17 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return signedTx;
     },
 
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      return await nearAPI.transactions.signTransaction(
+        transaction as unknown as nearAPI.transactions.Transaction,
+        signer,
+        transaction.signerId,
+        options.network.networkId
+      );
+    },
+
     async importAccountsInSecureContext({ accounts }) {
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");

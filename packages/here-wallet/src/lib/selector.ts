@@ -110,5 +110,11 @@ export const initHereWallet: SelectorInit = async (config) => {
       });
       throw new Error(`Method not supported by Here Wallet`);
     },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by Here Wallet`);
+    },
   };
 };

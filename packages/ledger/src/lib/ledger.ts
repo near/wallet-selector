@@ -375,6 +375,17 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       return signedTransactions;
     },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      return await nearAPI.transactions.signTransaction(
+        transaction as unknown as nearAPI.transactions.Transaction,
+        signer,
+        transaction.signerId,
+        options.network.networkId
+      );
+    },
   };
 };
 

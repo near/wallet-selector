@@ -240,6 +240,12 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to create signed transaction");
       }
     },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

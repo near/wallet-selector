@@ -11,6 +11,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import nearAPITransactions from "near-api-js/lib/transaction";
 import icon from "./icon";
 
 declare global {
@@ -192,6 +193,17 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       );
 
       return signedTx;
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      return await nearAPITransactions.signTransaction(
+        transaction as unknown as nearAPITransactions.Transaction,
+        _state.wallet.signer,
+        transaction.signerId,
+        options.network.networkId
+      );
     },
   };
 };

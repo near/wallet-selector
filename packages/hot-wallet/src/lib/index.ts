@@ -135,6 +135,12 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
             });
             throw new Error(`Method not supported by HOT Wallet`);
           },
+
+          async signTransaction(transaction) {
+            config.logger.log("signTransaction", { transaction });
+
+            throw new Error(`Method not supported by HOT Wallet`);
+          },
         };
       },
     };

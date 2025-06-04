@@ -240,6 +240,12 @@ const ArepaWallet: WalletBehaviourFactory<
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

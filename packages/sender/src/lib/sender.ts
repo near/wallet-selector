@@ -338,6 +338,12 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 
