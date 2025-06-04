@@ -122,6 +122,15 @@ interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
+interface SignTransactionParams {
+  signerId: string;
+  publicKey: string;
+  nonce: bigint;
+  receiverId: string;
+  actions: Array<Action>;
+  blockHash: Uint8Array;
+}
+
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -163,6 +172,12 @@ interface BaseWalletBehaviour {
     receiverId: string,
     actions: Array<Action>
   ): Promise<SignedTransaction | void>;
+  /**
+   * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
+   */
+  signTransaction(
+    transaction: SignTransactionParams
+  ): Promise<[Uint8Array, SignedTransaction]>;
 }
 
 type BaseWallet<
