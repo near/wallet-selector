@@ -49,7 +49,7 @@ export interface SignInParams {
   /**
    * Account ID of the Smart Contract.
    */
-  contractId: string;
+  contractId?: string;
   /**
    * Specify limited access to particular methods on the Smart Contract.
    */
@@ -178,7 +178,7 @@ type BaseWallet<
 
 export type WalletEvents = {
   signedIn: {
-    contractId: string;
+    contractId?: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
   };

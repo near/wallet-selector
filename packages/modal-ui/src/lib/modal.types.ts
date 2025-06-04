@@ -3,7 +3,7 @@ import type { Subscription } from "@near-wallet-selector/core";
 export type Theme = "dark" | "light" | "auto";
 
 export interface ModalOptions {
-  contractId: string;
+  contractId?: string;
   methodNames?: Array<string>;
   theme?: Theme;
   description?: string;
