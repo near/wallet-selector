@@ -199,7 +199,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signTransaction", { transaction });
 
       return await nearAPITransactions.signTransaction(
-        transaction as unknown as nearAPITransactions.Transaction,
+        transaction,
         _state.wallet.signer,
         transaction.signerId,
         options.network.networkId

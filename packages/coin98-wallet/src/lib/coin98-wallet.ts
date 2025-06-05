@@ -201,7 +201,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signTransaction", { transaction });
 
       return await nearAPI.transactions.signTransaction(
-        transaction as unknown as nearAPI.transactions.Transaction,
+        transaction,
         _state.wallet.near.signer,
         transaction.signerId,
         options.network.networkId

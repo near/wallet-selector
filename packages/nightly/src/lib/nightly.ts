@@ -258,7 +258,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signTransaction", { transaction });
 
       return await nearAPI.transactions.signTransaction(
-        transaction as unknown as nearAPI.transactions.Transaction,
+        transaction,
         signer,
         transaction.signerId,
         options.network.networkId
