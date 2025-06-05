@@ -139,7 +139,7 @@ export function WalletSelectorProvider({
   const signIn = async () => {
     const ws = await walletSelectorRef.current;
     const modalInstance = setupModal(ws!, {
-      contractId: config.createAccessKeyFor || "",
+      contractId: config.createAccessKeyFor,
     });
     modalInstance.show();
   };

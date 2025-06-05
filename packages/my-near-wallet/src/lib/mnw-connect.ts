@@ -120,7 +120,7 @@ export class MyNearWalletConnector {
     contractId,
     methodNames,
   }: {
-    contractId: string;
+    contractId?: string;
     methodNames?: Array<string>;
   }): Promise<Array<{ accountId: string; publicKey: string }>> {
     const url = await this.requestSignInUrl({ contractId, methodNames });
@@ -143,7 +143,7 @@ export class MyNearWalletConnector {
     contractId,
     methodNames,
   }: {
-    contractId: string;
+    contractId?: string;
     methodNames?: Array<string>;
   }): Promise<string> {
     const currentUrl = new URL(window.location.href);

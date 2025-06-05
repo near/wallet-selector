@@ -139,7 +139,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId,
+        contractId: contractId || "",
         methodNames,
       });
 
