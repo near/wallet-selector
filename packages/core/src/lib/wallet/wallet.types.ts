@@ -10,7 +10,10 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import type {
+  SignedTransaction,
+  Transaction as nearAPITransaction,
+} from "near-api-js/lib/transaction";
 
 interface BaseWalletMetadata {
   /**
@@ -122,15 +125,6 @@ interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-interface SignTransactionParams {
-  signerId: string;
-  publicKey: string;
-  nonce: bigint;
-  receiverId: string;
-  actions: Array<Action>;
-  blockHash: Uint8Array;
-}
-
 interface BaseWalletBehaviour {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
@@ -176,7 +170,7 @@ interface BaseWalletBehaviour {
    * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
    */
   signTransaction(
-    transaction: SignTransactionParams
+    transaction: nearAPITransaction
   ): Promise<[Uint8Array, SignedTransaction]>;
 }
 
