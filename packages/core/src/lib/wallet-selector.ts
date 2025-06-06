@@ -111,7 +111,7 @@ export const setupWalletSelector = async (
     provider: new Provider(rpcProviderUrls),
   });
 
-  walletModules.setup();
+  await walletModules.setup();
 
   if (params.allowMultipleSelectors) {
     return createSelector(options, store, walletModules, emitter);
