@@ -986,6 +986,21 @@ const EthereumWallets: WalletBehaviourFactory<
       logger.log("EthereumWallets:signAndSendTransactions", { transactions });
       return await signAndSendTransactions(transactions);
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("EthereumWallets:createSignedTransaction", {
+        receiverId,
+        actions,
+      });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("EthereumWallets:signTransaction", { transaction });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
   };
 };
 

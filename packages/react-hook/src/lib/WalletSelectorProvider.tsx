@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import type {
+  Action,
   FinalExecutionOutcome,
   SignedMessage,
   Transaction,
@@ -14,6 +15,7 @@ import {
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
+import type { SignedTransaction } from "near-api-js/lib/transaction";
 
 class WalletError extends Error {
   constructor(message: string) {
@@ -75,6 +77,10 @@ export interface WalletSelectorProviderValue {
     message: SignMessageParams,
     signedMessage: SignedMessage
   ) => Promise<boolean>;
+  createSignedTransaction: (
+    receiverId: string,
+    actions: Array<Action>
+  ) => Promise<SignedTransaction | void>;
 }
 
 const DEFAULT_GAS = "30000000000000";
@@ -213,6 +219,28 @@ export function WalletSelectorProvider({
       return providers.getTransactionLastResult(
         outcome as FinalExecutionOutcome
       );
+    },
+    [wallet]
+  );
+
+  const createSignedTransaction = useCallback(
+    async (receiverId: string, actions: Array<Action>) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      if (!wallet.createSignedTransaction) {
+        throw new WalletError(
+          "Wallet does not support sign transaction only. Please use callFunction or signAndSendTransactions instead."
+        );
+      }
+
+      const signedTx = await wallet.createSignedTransaction(
+        receiverId,
+        actions
+      );
+
+      return signedTx;
     },
     [wallet]
   );
@@ -356,6 +384,7 @@ export function WalletSelectorProvider({
     signMessage,
     getAccount,
     verifyMessage,
+    createSignedTransaction,
   };
 
   return (

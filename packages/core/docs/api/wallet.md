@@ -335,3 +335,42 @@ Allows users to sign a message for a specific recipient using their NEAR account
   await wallet.signMessage({ message, recipient, nonce });
 })();
 ```
+
+### `.createSignedTransaction(receiverId, actions)`
+
+**Parameters**
+
+- `receiverId` (`string`): Account ID to receive the transaction.
+- `actions` (`Array<Action>`): NEAR Action(s) to sign. You can find more information on `Action` [here](./transactions.md).
+
+**Returns**
+
+- `Promise<SignedTransaction | void>`: Returns a signed transaction that is ready to be broadcast to the network. Browser wallets may not return the signed transaction as they may need to redirect for signing.
+
+**Description**
+
+Signs one or more NEAR Actions and returns a signed transaction that is ready to be broadcast to the network. The user must be signed in to call this method. This is useful when you want to sign a transaction but broadcast it later or through a different mechanism.
+
+**Example**
+
+```ts
+(async () => {
+  const signedTx = await wallet.createSignedTransaction(
+    "guest-book.testnet",
+    [{
+      type: "FunctionCall",
+      params: {
+        methodName: "addMessage",
+        args: { text: "Hello World!" },
+        gas: "30000000000000",
+        deposit: "10000000000000000000000",
+      }
+    }]
+  );
+  
+  if (signedTx) {
+    // Broadcast the signed transaction using your preferred method
+    // e.g. using near-api-js provider
+  }
+})();
+```

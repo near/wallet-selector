@@ -102,5 +102,19 @@ export const initHereWallet: SelectorInit = async (config) => {
       logger.log("HereWallet:signAndSendTransactions", data);
       return await here.signAndSendTransactions(data);
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("HereWallet:createSignedTransaction", {
+        actions,
+        receiverId,
+      });
+      throw new Error(`Method not supported by Here Wallet`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by Here Wallet`);
+    },
   };
 };

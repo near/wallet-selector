@@ -31,6 +31,10 @@ const Form: React.FC<FormProps> = ({ signedAccountId, onSubmit }) => {
           <label htmlFor="multiple">Multiple Transactions:</label>
           <input id="multiple" type="checkbox" />
         </p>
+        <p>
+          <label htmlFor="signonly">Sign only and Return Signature:</label>
+          <input id="signonly" type="checkbox" />
+        </p>
         <button type="submit">Sign</button>
       </fieldset>
     </form>

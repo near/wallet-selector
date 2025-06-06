@@ -220,6 +220,32 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("sign Error");
       }
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+      const { contract } = store.getState();
+
+      if (!_state.wallet.isSignedIn() || !contract) {
+        throw new Error("Wallet not signed in");
+      }
+
+      try {
+        const signedTx = await _state.wallet.signTransaction({
+          receiverId: receiverId || contract.contractId,
+          actions: transformActions(actions),
+        });
+        const signedTransaction = getSignedTransaction(signedTx);
+        return signedTransaction;
+      } catch (error) {
+        throw new Error("Failed to create signed transaction");
+      }
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

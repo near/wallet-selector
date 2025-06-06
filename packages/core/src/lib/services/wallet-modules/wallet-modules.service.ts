@@ -8,6 +8,7 @@ import type {
   Account,
   InstantLinkWallet,
   SignMessageParams,
+  Action,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -302,6 +303,7 @@ export class WalletModules {
     const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
+    const _createSignedTransaction = wallet.createSignedTransaction;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -331,6 +333,19 @@ export class WalletModules {
       this.validateSignMessageParams(params);
 
       return await _signMessage(params);
+    };
+
+    wallet.createSignedTransaction = async (
+      receiverId: string,
+      actions: Array<Action>
+    ) => {
+      if (_createSignedTransaction === undefined) {
+        throw Error(
+          `The createSignedTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _createSignedTransaction(receiverId, actions);
     };
 
     return wallet;

@@ -80,5 +80,17 @@ export const initNearSnap: WalletBehaviourFactory<InjectedWallet> = async (
 
       return await account.executeTransactions(transactions);
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${config.metadata.name}`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${config.metadata.name}`);
+    },
   };
 };
