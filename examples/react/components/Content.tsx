@@ -167,8 +167,9 @@ const Content: React.FC = () => {
           })
           .catch((err) => {
             alert("Failed to sign transaction " + err);
-            console.log("Failed to sign transaction");
-            throw err;
+            console.error("Failed to sign transaction", err);
+
+            fieldset.disabled = false;
           });
       }
 
@@ -197,7 +198,7 @@ const Content: React.FC = () => {
           fieldset.disabled = false;
         });
     },
-    [addMessages, getMessages]
+    [addMessages, createSignedTransaction, getMessages]
   );
 
   const handleSignMessage = async () => {
