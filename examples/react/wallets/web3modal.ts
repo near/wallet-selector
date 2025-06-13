@@ -31,15 +31,17 @@ const near = defineChain({
   testnet: true,
 });
 
+const metadata = {
+  name: "NEAR Guest Book",
+  description: "A guest book with comments stored on the NEAR blockchain",
+  url: "https://near.github.io/wallet-selector",
+  icons: ["https://near.github.io/wallet-selector/favicon.ico"],
+};
+
 export const connectors: Array<CreateConnectorFn> = [
   walletConnect({
     projectId,
-    metadata: {
-      name: "NEAR Guest Book",
-      description: "A guest book with comments stored on the NEAR blockchain",
-      url: "https://near.github.io/wallet-selector",
-      icons: ["https://near.github.io/wallet-selector/favicon.ico"],
-    },
+    metadata,
     showQrModal: false, // showQrModal must be false
   }),
   injected({ shimDisconnect: true }),
@@ -47,7 +49,6 @@ export const connectors: Array<CreateConnectorFn> = [
 
 export const wagmiAdapter = new WagmiAdapter({
   projectId,
-  connectors,
   networks: [near],
 });
 
@@ -64,6 +65,7 @@ export const web3Modal = createAppKit({
     email: false, // Smart accounts (Safe contract) not available on NEAR Protocol, only EOA.
     socials: false, // Smart accounts (Safe contract) not available on NEAR Protocol, only EOA.
   },
+  metadata,
   coinbasePreference: "eoaOnly", // Smart accounts (Safe contract) not available on NEAR Protocol, only EOA.
   allWallets: "SHOW",
 });
