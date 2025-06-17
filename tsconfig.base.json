@@ -67,6 +67,7 @@
       "@near-wallet-selector/ramper-wallet": [
         "packages/ramper-wallet/src/index.ts"
       ],
+      "@near-wallet-selector/unity-wallet": ["packages/unity-wallet/src/index.ts"],
       "@near-wallet-selector/sender": ["packages/sender/src/index.ts"],
       "@near-wallet-selector/wallet-connect": [
         "packages/wallet-connect/src/index.ts"
