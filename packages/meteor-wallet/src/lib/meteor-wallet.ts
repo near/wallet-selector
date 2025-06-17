@@ -42,7 +42,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params }) => {
+> = async ({ options, logger, store, params, metadata }) => {
   const _state = await setupWalletState(params, options.network);
 
   const getAccounts = async (): Promise<Array<Account>> => {
@@ -76,12 +76,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
-          contract_id: contractId,
+          contract_id: contractId || "",
         });
       } else {
         await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
-          contract_id: contractId,
+          contract_id: contractId || "",
         });
       }
 
@@ -187,6 +187,18 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       return _state.wallet.requestSignTransactions({
         transactions,
       });
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     buildImportAccountsUrl() {

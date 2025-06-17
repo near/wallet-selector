@@ -45,6 +45,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   emitter,
   logger,
+  metadata,
 }) => {
   const _state = setupBitgetWalletState();
 
@@ -138,7 +139,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId,
+        contractId: contractId || "",
         methodNames,
       });
 
@@ -242,6 +243,18 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
           return res.response;
         });
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

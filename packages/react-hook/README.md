@@ -53,7 +53,8 @@ export default function OtherComponent() {
     getBalance,
     getAccessKeys,
     signAndSendTransactions,
-    signMessage
+    signMessage,
+    createSignedTransaction
   } = useWalletSelector();
   ...
   // walletSelector to interact with the wallet.

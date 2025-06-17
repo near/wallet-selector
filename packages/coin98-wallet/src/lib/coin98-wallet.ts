@@ -13,6 +13,7 @@ import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import * as nearAPI from "near-api-js";
 import icon from "./icon";
 
 declare global {
@@ -103,7 +104,10 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _state.wallet.near.connect({ prefix: "near_selector", contractId });
+      await _state.wallet.near.connect({
+        prefix: "near_selector",
+        contractId: contractId || "",
+      });
       return getAccounts();
     },
 
@@ -179,6 +183,29 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       return results;
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      const [signedTx] = await signTransactions(
+        transformTransactions([{ receiverId, actions }]),
+        _state.wallet.near.signer,
+        options.network
+      );
+
+      return signedTx;
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      return await nearAPI.transactions.signTransaction(
+        transaction,
+        _state.wallet.near.signer,
+        transaction.signerId,
+        options.network.networkId
+      );
     },
   };
 };

@@ -112,7 +112,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
   {
     contractId?: string;
   }
-> = async ({ metadata }) => {
+> = async ({ metadata, logger }) => {
   let signedInAccounts: Array<Account> = [];
 
   return {
@@ -187,6 +187,16 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
         },
       });
       return data;
+    },
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

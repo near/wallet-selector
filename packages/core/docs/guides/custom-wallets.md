@@ -74,6 +74,12 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       // that allows users to sign a message for a specific receiver using their NEAR account
       return await wallet.signMessage({ message, nonce, recipient, callbackUrl, state });
     },
+
+    async createSignedTransaction(receiverId, actions) {
+      // Creates a signed transaction without sending it to the network. 
+      // The signing process uses the each wallet's signing to create a valid transaction that can later be broadcast.
+      return await wallet.signTransaction({receiverId, actions})
+    }
   };
 };
 
@@ -154,3 +160,10 @@ This method is similar to `signAndSendTransaction` but instead sends a batch of 
 
 This method allows users to sign a message for a specific recipient using their NEAR account.
 Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
+
+### `createSignedTransaction`
+This method creates a signed transaction without sending it to the network. It's useful when you need to create a signed transaction that will be sent later.
+
+The method takes the same parameters as `signAndSendTransaction` but returns a signed transaction object instead of sending it. This gives more flexibility in how the transaction is ultimately processed.
+
+> Note: Not all wallets support this functionality. Check the wallet's capabilities before using this method.

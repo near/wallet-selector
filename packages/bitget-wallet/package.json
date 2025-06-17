@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/bitget-wallet",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "description": "Bitget wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

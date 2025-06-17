@@ -78,8 +78,10 @@ const WC_METHODS = [
   "near_getAccounts",
   "near_signTransaction",
   "near_signTransactions",
-  "near_verifyOwner",
-  "near_signMessage",
+  // disabling these two due to WalletConnect not supporting it
+  // see https://docs.reown.com/advanced/multichain/rpc-reference/near-rpc
+  // "near_verifyOwner",
+  // "near_signMessage",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -164,7 +166,16 @@ const getSignatureData = (result: Uint8Array) => {
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({ id, options, store, params, provider, emitter, logger }) => {
+> = async ({
+  id,
+  options,
+  store,
+  params,
+  provider,
+  emitter,
+  logger,
+  metadata,
+}) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -576,7 +587,7 @@ const WalletConnect: WalletBehaviourFactory<
           events: params.events,
         });
 
-        await requestSignIn({ receiverId: contractId, methodNames });
+        await requestSignIn({ receiverId: contractId || "", methodNames });
 
         await setupEvents();
 
@@ -716,6 +727,18 @@ const WalletConnect: WalletBehaviourFactory<
 
         return results;
       }
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

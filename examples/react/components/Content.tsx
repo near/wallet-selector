@@ -30,6 +30,7 @@ const Content: React.FC = () => {
     viewFunction,
     callFunction,
     signAndSendTransactions,
+    createSignedTransaction,
     wallet,
     signMessage,
     walletSelector,
@@ -138,9 +139,39 @@ const Content: React.FC = () => {
     async (e: Submitted) => {
       e.preventDefault();
 
-      const { fieldset, message, donation, multiple } = e.target.elements;
+      const { fieldset, message, donation, multiple, signonly } =
+        e.target.elements;
 
       fieldset.disabled = true;
+
+      if (signonly.checked) {
+        return createSignedTransaction(CONTRACT_ID, [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "addMessage",
+              args: { text: message.value },
+              gas: BOATLOAD_OF_GAS,
+              deposit: utils.format.parseNearAmount(donation.value) || "0",
+            },
+          },
+        ])
+          .then((signedTransaction) => {
+            fieldset.disabled = false;
+            alert(
+              "Successfully signed transaction. Signature is:\n" +
+                signedTransaction
+            );
+            console.log("signedTx", signedTransaction);
+            return signedTransaction;
+          })
+          .catch((err) => {
+            alert("Failed to sign transaction " + err);
+            console.error("Failed to sign transaction", err);
+
+            fieldset.disabled = false;
+          });
+      }
 
       return addMessages(message.value, donation.value || "0", multiple.checked)
         .then(() => {
@@ -151,6 +182,7 @@ const Content: React.FC = () => {
               donation.value = SUGGESTED_DONATION;
               fieldset.disabled = false;
               multiple.checked = false;
+              signonly.checked = false;
               message.focus();
             })
             .catch((err) => {
@@ -166,7 +198,7 @@ const Content: React.FC = () => {
           fieldset.disabled = false;
         });
     },
-    [addMessages, getMessages]
+    [addMessages, createSignedTransaction, getMessages]
   );
 
   const handleSignMessage = async () => {

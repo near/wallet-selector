@@ -10,6 +10,10 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type {
+  SignedTransaction,
+  Transaction as nearAPITransaction,
+} from "near-api-js/lib/transaction";
 
 interface BaseWalletMetadata {
   /**
@@ -49,7 +53,7 @@ export interface SignInParams {
   /**
    * Account ID of the Smart Contract.
    */
-  contractId: string;
+  contractId?: string;
   /**
    * Specify limited access to particular methods on the Smart Contract.
    */
@@ -155,6 +159,19 @@ interface BaseWalletBehaviour {
     params: SignAndSendTransactionsParams
   ): Promise<Array<providers.FinalExecutionOutcome>>;
   signMessage?(params: SignMessageParams): Promise<SignedMessage | void>;
+  /**
+   * Create a signed transaction that is ready to be broadcast to the network
+   */
+  createSignedTransaction?(
+    receiverId: string,
+    actions: Array<Action>
+  ): Promise<SignedTransaction | void>;
+  /**
+   * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
+   */
+  signTransaction(
+    transaction: nearAPITransaction
+  ): Promise<[Uint8Array, SignedTransaction]>;
 }
 
 type BaseWallet<
@@ -178,7 +195,7 @@ type BaseWallet<
 
 export type WalletEvents = {
   signedIn: {
-    contractId: string;
+    contractId?: string;
     methodNames: Array<string>;
     accounts: Array<Account>;
   };

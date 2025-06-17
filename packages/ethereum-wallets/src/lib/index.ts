@@ -112,6 +112,9 @@ const EthereumWallets: WalletBehaviourFactory<
     throw new Error("@wagmi/core not imported.");
   }
   const _state = await setupEthereumWalletsState(id);
+  // Attempt to reconnect to any previously connected Ethereum wallet
+  await wagmiCore.reconnect(wagmiConfig);
+
   const expectedChainId =
     chainId ?? (options.network.networkId === "mainnet" ? 397 : 398);
   const chain = wagmiConfig.chains.find((c) => c.id === expectedChainId);
@@ -985,6 +988,21 @@ const EthereumWallets: WalletBehaviourFactory<
     async signAndSendTransactions({ transactions }) {
       logger.log("EthereumWallets:signAndSendTransactions", { transactions });
       return await signAndSendTransactions(transactions);
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("EthereumWallets:createSignedTransaction", {
+        receiverId,
+        actions,
+      });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("EthereumWallets:signTransaction", { transaction });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
     },
   };
 };

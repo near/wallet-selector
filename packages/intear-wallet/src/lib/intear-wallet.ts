@@ -517,7 +517,7 @@ const IntearWallet: WalletBehaviourFactory<
               const dataToSave: SavedData = {
                 accounts,
                 key: key.toString(),
-                contractId: functionCallKeyAdded ? contractId : "",
+                contractId: functionCallKeyAdded ? (contractId as string) : "",
                 methodNames: functionCallKeyAdded ? methodNames ?? [] : [],
                 logoutKey: logoutKey.toString(),
               };
@@ -887,6 +887,18 @@ const IntearWallet: WalletBehaviourFactory<
         new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
         logger
       );
+    },
+
+    async createSignedTransaction(receiverId, actions) {
+      logger.log("createSignedTransaction", { receiverId, actions });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signTransaction(transaction) {
+      logger.log("signTransaction", { transaction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   });
 };
