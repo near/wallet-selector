@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback, useRef } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import type {
   Action,
   FinalExecutionOutcome,
@@ -97,7 +97,7 @@ export function WalletSelectorProvider({
   children: React.ReactNode;
   config: SetupParams;
 }) {
-  const walletSelectorRef = useRef<Promise<WalletSelector> | null>(null);
+  const walletSelector = setupWalletSelector(config);
   const [signedAccountId, setSignedAccountId] = useState<string | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
@@ -116,9 +116,6 @@ export function WalletSelectorProvider({
   );
 
   useEffect(() => {
-    const walletSelector = setupWalletSelector(config);
-    walletSelectorRef.current = walletSelector;
-
     walletSelector.then(async (selector) => {
       selector.subscribeOnAccountChange(async (signedAccount) => {
         setSignedAccountId(signedAccount || null);
@@ -137,7 +134,7 @@ export function WalletSelectorProvider({
    * @returns {Promise<void>} - a promise that resolves when the modal is opened
    */
   const signIn = async () => {
-    const ws = await walletSelectorRef.current;
+    const ws = await walletSelector;
     const modalInstance = setupModal(ws!, {
       contractId: config.createAccessKeyFor,
     });
@@ -371,7 +368,7 @@ export function WalletSelectorProvider({
   };
 
   const contextValue: WalletSelectorProviderValue = {
-    walletSelector: walletSelectorRef.current,
+    walletSelector,
     signedAccountId,
     wallet,
     signIn,
