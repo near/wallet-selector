@@ -112,6 +112,8 @@ export const setupWalletSelector = async (
   });
 
   await walletModules.setup();
+  await walletModules.setupV2(params.modulesV2 || []);
+  await walletModules.resolveState();
 
   if (params.allowMultipleSelectors) {
     return createSelector(options, store, walletModules, emitter);

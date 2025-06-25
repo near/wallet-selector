@@ -5,6 +5,7 @@ import type {
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
+  WalletModuleFactoryV2,
   Account,
   InstantLinkWallet,
   SignMessageParams,
@@ -27,6 +28,7 @@ import {
 import { JsonStorage } from "../storage/json-storage.service";
 import type { SignMessageMethod } from "../../wallet";
 import type { ProviderService } from "../provider/provider.service.types";
+import { IframeWalletAdapter } from "../iframe/iframe-adapter";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -378,6 +380,20 @@ export class WalletModules {
     return this.decorateWallet(wallet) as Wallet & SignMessageMethod;
   }
 
+  private bindWalletMethods(adapter: IframeWalletAdapter) {
+    return {
+      signIn: adapter.signIn.bind(adapter),
+      signOut: adapter.signOut.bind(adapter),
+      getAccounts: adapter.getAccounts.bind(adapter),
+      verifyOwner: adapter.verifyOwner.bind(adapter),
+      signAndSendTransaction: adapter.signAndSendTransaction.bind(adapter),
+      signAndSendTransactions: adapter.signAndSendTransactions.bind(adapter),
+      signTransaction: adapter.signTransaction.bind(adapter),
+      signMessage: adapter.signMessage.bind(adapter),
+      createSignedTransaction: adapter.createSignedTransaction.bind(adapter),
+    };
+  }
+
   private getModule(id: string | null) {
     return this.modules.find((x) => x.id === id);
   }
@@ -464,7 +480,54 @@ export class WalletModules {
           })
       )
     );
+  }
 
+  async setupV2(modules: Array<WalletModuleFactoryV2>) {
+    const listIndex = this.modules.length;
+    modules.forEach((module, idx) => {
+      const wallet = {
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+        ...this.bindWalletMethods(
+          new IframeWalletAdapter({
+            options: {
+              id: module.id,
+              type: module.type,
+              metadata: module.metadata,
+              options: this.options,
+              store: this.store.toReadOnly(),
+              provider: this.provider,
+              emitter: this.setupWalletEmitter(module.id),
+              logger: new Logger(module.id),
+              storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
+            },
+            config: {
+              source: module.source,
+            },
+          })
+        ),
+      } as unknown as Wallet;
+      const moduleState: ModuleState = {
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+        listIndex: listIndex + idx,
+        wallet: async () => this.decorateWallet(wallet),
+      };
+
+      this.modules.push(moduleState);
+      this.store.dispatch({
+        type: "ADD_WALLET_MODULE",
+        payload: {
+          module: moduleState,
+        },
+      });
+      return;
+    });
+  }
+
+  async resolveState() {
     const {
       accounts,
       contract,
