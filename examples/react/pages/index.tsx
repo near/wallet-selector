@@ -18,6 +18,7 @@ import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
@@ -36,6 +37,15 @@ const walletSelectorConfig: SetupParams = {
     setupEthereumWallets({
       wagmiConfig: wagmiAdapter.wagmiConfig,
       web3Modal,
+    }),
+    setupUnityWallet({
+      projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
+      metadata: {
+        name: "Your dApp name",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
     }),
     setupMeteorWallet(),
     setupBitteWallet(),

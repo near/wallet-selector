@@ -7,6 +7,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Ethereum wallets](https://www.npmjs.com/package/@near-wallet-selector/ethereum-wallets) - Injected wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
+- [Unity Wallet](https://www.npmjs.com/package/@near-wallet-selector/unity-wallet) - Mobile wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
@@ -59,6 +60,7 @@ yarn add \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/here-wallet \
+  @near-wallet-selector/unity-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -85,6 +87,7 @@ npm install \
   @near-wallet-selector/my-near-wallet \
   @near-wallet-selector/sender \
   @near-wallet-selector/here-wallet \
+  @near-wallet-selector/unity-wallet \
   @near-wallet-selector/math-wallet \
   @near-wallet-selector/nightly \
   @near-wallet-selector/meteor-wallet \
@@ -137,6 +140,7 @@ import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
@@ -164,6 +168,15 @@ const selector = await setupWalletSelector({
       projectId: "c4f79cc...",
       metadata: {
         name: "NEAR Wallet Selector",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    }),
+    setupUnityWallet({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "Your dApp name",
         description: "Example dApp used by NEAR Wallet Selector",
         url: "https://github.com/near/wallet-selector",
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
