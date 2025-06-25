@@ -37,7 +37,7 @@ export class WalletModules {
   private provider: ProviderService;
 
   private modules: Array<ModuleState>;
-  private instances: Record<string, Wallet & SignMessageMethod>;
+  private instances: Record<string, Wallet>;
 
   constructor({
     factories,
@@ -244,36 +244,36 @@ export class WalletModules {
     this.emitter.emit("signedOut", { walletId });
   }
 
-  private setupWalletEmitter(module: WalletModule) {
+  private setupWalletEmitter(walletId: string): EventEmitter<WalletEvents> {
     const emitter = new EventEmitter<WalletEvents>();
 
     emitter.on("signedOut", () => {
-      this.onWalletSignedOut(module.id);
+      this.onWalletSignedOut(walletId);
     });
 
     emitter.on("signedIn", (event) => {
-      this.onWalletSignedIn(module.id, event);
+      this.onWalletSignedIn(walletId, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
-      this.emitter.emit("accountsChanged", { walletId: module.id, accounts });
+      this.emitter.emit("accountsChanged", { walletId: walletId, accounts });
 
       if (!accounts.length) {
-        return this.signOutWallet(module.id);
+        return this.signOutWallet(walletId);
       }
 
       this.store.dispatch({
         type: "ACCOUNTS_CHANGED",
-        payload: { walletId: module.id, accounts },
+        payload: { walletId: walletId, accounts },
       });
     });
 
     emitter.on("networkChanged", ({ networkId }) => {
-      this.emitter.emit("networkChanged", { walletId: module.id, networkId });
+      this.emitter.emit("networkChanged", { walletId: walletId, networkId });
     });
 
     emitter.on("uriChanged", ({ uri }) => {
-      this.emitter.emit("uriChanged", { walletId: module.id, uri });
+      this.emitter.emit("uriChanged", { walletId: walletId, uri });
     });
 
     return emitter;
@@ -351,9 +351,7 @@ export class WalletModules {
     return wallet;
   }
 
-  private async setupInstance(
-    module: WalletModule
-  ): Promise<Wallet & SignMessageMethod> {
+  private async setupInstance(module: WalletModule): Promise<Wallet> {
     if (!module.metadata.available) {
       const message =
         module.type === "injected" ? "not installed" : "not available";
@@ -371,7 +369,7 @@ export class WalletModules {
         options: this.options,
         store: this.store.toReadOnly(),
         provider: this.provider,
-        emitter: this.setupWalletEmitter(module),
+        emitter: this.setupWalletEmitter(module.id),
         logger: new Logger(module.id),
         storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
       })),
