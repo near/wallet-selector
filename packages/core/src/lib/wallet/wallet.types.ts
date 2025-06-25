@@ -428,3 +428,10 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
 export type WalletModuleFactory<Variation extends Wallet = Wallet> = (
   options: WalletModuleOptions
 ) => Promise<WalletModule<Variation> | null>;
+
+export interface WalletModuleFactoryV2 {
+  id: string;
+  type: WalletType;
+  metadata: WalletMetadata;
+  source: string;
+}

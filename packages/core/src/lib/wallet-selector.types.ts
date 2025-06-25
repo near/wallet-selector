@@ -2,6 +2,7 @@ import type {
   Account,
   Wallet,
   WalletModuleFactory,
+  WalletModuleFactoryV2,
 } from "./wallet/wallet.types";
 import type { ReadOnlyStore } from "./store.types";
 import type { Network, NetworkId, Options } from "./options.types";
@@ -18,6 +19,10 @@ export interface WalletSelectorParams {
    * List of wallet module factory functions
    */
   modules: Array<WalletModuleFactory>;
+  /**
+   * List of wallet module factory functions
+   */
+  modulesV2?: Array<WalletModuleFactoryV2>;
   /**
    * Custom storage service
    */
