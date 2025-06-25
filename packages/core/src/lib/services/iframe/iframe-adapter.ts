@@ -47,7 +47,7 @@ export class IframeWalletAdapter implements BaseWalletBehaviour {
     config: IframeConfig;
     options: WalletBehaviourOptions<Wallet>;
   }) {
-    this.iframeManager = new IframeManager(config);
+    this.iframeManager = new IframeManager(config, options);
     this.config = config;
     this.options = options;
   }
@@ -115,8 +115,7 @@ export class IframeWalletAdapter implements BaseWalletBehaviour {
 
     try {
       await this.iframeManager.initialize();
-      const iframe = this.iframeManager.getIframe();
-      this.messageBridge = new MessageBridge(iframe, this.options, this.config);
+      this.messageBridge = new MessageBridge(this.iframeManager, this.options);
       this.initialized = true;
     } catch (error) {
       throw new Error("IframeWalletAdapter initialization failed");

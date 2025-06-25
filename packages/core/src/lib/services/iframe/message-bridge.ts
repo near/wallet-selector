@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Wallet, WalletBehaviourOptions } from "../../wallet";
-import type { IframeConfig } from "./iframe-manager";
+import type { IframeManager } from "./iframe-manager";
 
 export interface PendingMessage {
   resolve: (value: any) => void;
@@ -18,15 +18,12 @@ export interface IframeMessage extends MessageEvent {
 export class MessageBridge {
   private iframe: HTMLIFrameElement;
   private pendingMessages = new Map<string, PendingMessage>();
-  private options: WalletBehaviourOptions<Wallet>;
 
   constructor(
-    iframe: HTMLIFrameElement,
-    options: WalletBehaviourOptions<Wallet>,
-    private config: IframeConfig
+    private iframeManager: IframeManager,
+    private options: WalletBehaviourOptions<Wallet>
   ) {
-    this.iframe = iframe;
-    this.options = options;
+    this.iframe = this.iframeManager.getIframe();
     this.setupMessageListener();
   }
 

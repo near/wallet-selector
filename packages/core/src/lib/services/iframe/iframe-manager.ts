@@ -1,3 +1,5 @@
+import type { Wallet, WalletBehaviourOptions } from "../../wallet";
+
 export interface IframeConfig {
   source: string;
   timeout?: number;
@@ -5,12 +7,12 @@ export interface IframeConfig {
 
 export class IframeManager {
   private iframe: HTMLIFrameElement | null = null;
-  private config: IframeConfig;
   private readyPromise: Promise<void> | null = null;
 
-  constructor(config: IframeConfig) {
-    this.config = config;
-  }
+  constructor(
+    private config: IframeConfig,
+    private options: WalletBehaviourOptions<Wallet>
+  ) {}
 
   async initialize(): Promise<void> {
     if (this.iframe) {
