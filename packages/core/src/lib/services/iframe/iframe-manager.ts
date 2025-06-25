@@ -88,109 +88,212 @@ export class IframeManager {
 
   private getIframeCode(): string {
     const handlerScript = `
-      async function sendMessageToParent(type, data = {}) {
-        return new Promise((resolve) => {
-          const id = Date.now().toString();
+      const MESSAGE_TYPES = {
+        STORAGE: "STORAGE",
+        STORE: "STORE",
+        PROVIDER: "PROVIDER",
+        EMITTER: "EMITTER",
+        WALLET_METHOD_CALL: "WALLET_METHOD_CALL",
+        WALLET_RESPONSE: "WALLET_RESPONSE",
+        IFRAME_READY: "IFRAME_READY",
+        RESPONSE: "RESPONSE",
+      };
+
+      class MessageHandler {
+        constructor() {
+          this.messageId = 0;
+        }
+
+        generateId() {
+          return \`\${++this.messageId}_\${Date.now()}\`;
+        }
+
+        async sendRequest(type, data = {}) {
+          return new Promise((resolve, reject) => {
+            const id = this.generateId();
+
           const handler = (event) => {
-            console.log("Received message from parent:", event.data);
             if (event.data.id === id) {
-              window.removeEventListener('message', handler);
-              resolve(event.data.result);
+                window.removeEventListener("message", handler);
+                event.data.success === false
+                  ? reject(new Error(event.data.error))
+                  : resolve(event.data.result);
             }
           };
-          window.addEventListener('message', handler);
-          window.parent.postMessage({ type, id, ...data }, '*');
+
+            window.addEventListener("message", handler);
+            window.parent.postMessage({ type, id, ...data }, "*");
         });
       }
 
-      const storageWrapper = {
-        getItem: (key) => sendMessageToParent('STORAGE', { method: "getItem", params: { key } }),
-        setItem: (key, value) => sendMessageToParent('STORAGE', { method: "setItem", params: { key, value } }),
-        removeItem: (key) => sendMessageToParent('STORAGE', { method: "removeItem", params: { key } }),
-      };
+        sendMessage(message) {
+          window.parent.postMessage(message, "*");
+        }
+      }
 
-      class WalletIframeHandler {
+      class StorageService extends MessageHandler {
+        getItem(key) {
+          return this.sendRequest(MESSAGE_TYPES.STORAGE, {
+            method: "getItem",
+            params: { key },
+          });
+        }
+
+        setItem(key, value) {
+          return this.sendRequest(MESSAGE_TYPES.STORAGE, {
+            method: "setItem",
+            params: { key, value },
+          });
+        }
+
+        removeItem(key) {
+          return this.sendRequest(MESSAGE_TYPES.STORAGE, {
+            method: "removeItem",
+            params: { key },
+          });
+        }
+      }
+
+      class StoreService extends MessageHandler {
+        getState() {
+          return this.sendRequest(MESSAGE_TYPES.STORE, { method: "getState" });
+        }
+      }
+
+      class Logger {
+        log() {}
+        info() {}
+        warn() {}
+        error() {}
+      }
+
+      class ProviderService extends MessageHandler {
+        async query(params) {
+          return this.sendRequest(MESSAGE_TYPES.PROVIDER, {
+            method: "query",
+            params,
+          });
+        }
+
+        async viewAccessKey(params) {
+          return this.sendRequest(MESSAGE_TYPES.PROVIDER, {
+            method: "viewAccessKey",
+            params,
+          });
+        }
+
+        async block(reference) {
+          return this.sendRequest(MESSAGE_TYPES.PROVIDER, {
+            method: "block",
+            params: { reference },
+          });
+        }
+
+        async sendTransaction(signedTransaction) {
+          return this.sendRequest(MESSAGE_TYPES.PROVIDER, {
+            method: "sendTransaction",
+            params: { signedTransaction },
+          });
+        }
+      }
+
+      class WalletIframeHandler extends MessageHandler{
         constructor() {
+          super();
           this.wallet = null;
           this.isInitialized = false;
           
-          window.addEventListener('message', this.handleMessage.bind(this));
+          this.storage = new StorageService();
+          this.store = new StoreService();
+          this.logger = new Logger();
+          this.provider = new ProviderService();
 
-          this.initializeWallet();
+          window.addEventListener("message", this.handleMessage.bind(this));
+          this.initialize();
         }
 
-        async initializeWallet() {
+        async initialize() {
           try {
             const walletFactory = await window.setupWallet();
             this.wallet = await walletFactory.init({
-              storage: storageWrapper,
+              id: "${this.options.id}",
+              metadata: ${JSON.stringify(this.options.metadata)},
+              options: ${JSON.stringify(this.options.options)},
+              store: this.store,
+              provider: this.provider,
               emitter: {},
-              logger: {},
-              provider: {},
-              store: {},
-              options: {}
+              logger: this.logger,
+              storage: this.storage,
             });
+
             this.isInitialized = true;
-            this.sendToParent({
-              type: 'IFRAME_READY',
-              walletId: this.wallet.id
+            this.sendMessage({
+              type: MESSAGE_TYPES.IFRAME_READY,
+              walletId: this.wallet.id,
+              success: true,
             });
           } catch (error) {
-            console.error('Wallet initialization failed:', error);
-            this.sendToParent({
-              type: 'RESPONSE',
+            console.error("Wallet initialization failed:", error);
+            this.sendMessage({
+              type: MESSAGE_TYPES.RESPONSE,
               success: false,
-              error: error.message
+              error: error.message,
             });
           }
         }
 
         async handleMessage(event) {
           const { type, method, params, id } = event.data;
-          if (type !== 'WALLET_METHOD_CALL') return;
+
+          if (type !== MESSAGE_TYPES.WALLET_METHOD_CALL || !id) return;
 
           try {
-            if (!this.isInitialized) {
-              await this.initializeWallet();
-            }
+            await this.ensureInitialized();
 
             if (!this.wallet[method]) {
-              throw new Error('Method not found');
+              throw new Error(\`Method not '\${method}' found\`);
             }
 
             const result = await this.wallet[method](params);
-            this.sendToParent({
+            this.sendMessage({
               id,
-              type: 'WALLET_RESPONSE',
+              type: MESSAGE_TYPES.WALLET_RESPONSE,
               success: true,
-              result
+              result,
             });
           } catch (error) {
-            this.sendToParent({
-              type: 'WALLET_RESPONSE',
+            this.sendMessage({
               id,
+              type: MESSAGE_TYPES.WALLET_RESPONSE,
               success: false, 
-              error: error.message
+              error: error.message,
             });
           }
         }
 
-        sendToParent(message) {
-          window.parent.postMessage(message, '*');
+        async ensureInitialized() {
+          if (!this.isInitialized) {
+            await this.initialize();
+          }
+          if (!this.wallet) {
+            throw new Error("Wallet initialization failed");
+          }
         }
       }
 
       const initHandler = () => {
         if (window.walletHandler) return;
         window.walletHandler = new WalletIframeHandler();
+        return window.walletHandler;
       };
 
-      if (document.readyState === 'loading') {
-        window.addEventListener('DOMContentLoaded', initHandler);
+      if (document.readyState === "loading") {
+        window.addEventListener("DOMContentLoaded", initHandler);
       } else {
         initHandler();
       }
     `;
+
     return handlerScript;
   }
 

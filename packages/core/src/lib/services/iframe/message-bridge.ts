@@ -8,7 +8,13 @@ export interface PendingMessage {
 }
 
 export interface IframeMessage extends MessageEvent {
-  type: "RESPONSE" | "WALLET_RESPONSE" | "STORAGE" | "EMITTER";
+  type:
+    | "RESPONSE"
+    | "WALLET_RESPONSE"
+    | "STORAGE"
+    | "EMITTER"
+    | "STORE"
+    | "PROVIDER";
   id: string;
   timestamp: number;
   data: any;
@@ -36,18 +42,11 @@ export class MessageBridge {
     };
 
     return new Promise<T>((resolve, reject) => {
-      const timer = setTimeout(() => {
-        if (this.pendingMessages.has(messageId)) {
-          this.pendingMessages.delete(messageId);
-          reject(new Error("Message timeout exceeded"));
-        }
-      }, this.config.timeout || 5000);
       this.pendingMessages.set(messageId, { resolve, reject });
       try {
         this.iframe.contentWindow!.postMessage(fullMessage, "*");
       } catch (error) {
         this.pendingMessages.delete(messageId);
-        clearTimeout(timer);
         reject(new Error("Failed to send message to iframe: " + error));
       }
     });
@@ -79,7 +78,17 @@ export class MessageBridge {
       }
 
       if (message.type === "EMITTER") {
-        // this.handleEmitterRequest(message);
+        this.handleEmitterRequest(message);
+        return;
+      }
+
+      if (message.type === "STORE") {
+        this.handleStoreRequest(message);
+        return;
+      }
+
+      if (message.type === "PROVIDER") {
+        this.handleProviderRequest(message);
         return;
       }
     });
@@ -138,9 +147,104 @@ export class MessageBridge {
     }
   }
 
-  // private async handleEmitterRequest(message: any): Promise<void> {
-  //   const emitter = this.options.emitter;
-  // }
+  private async handleProviderRequest(message: any): Promise<void> {
+    try {
+      const { method, params } = message;
+      let result: unknown = null;
+
+      switch (method) {
+        case "query":
+          result = await this.options.provider.query(params);
+          break;
+        case "viewAccessKey":
+          result = await this.options.provider.viewAccessKey(params);
+          break;
+        case "block":
+          result = await this.options.provider.block(params);
+          break;
+        case "sendTransaction":
+          result = await this.options.provider.sendTransaction(params);
+          break;
+        default:
+          throw new Error(`Unknown provider method: ${method}`);
+      }
+      this.iframe.contentWindow!.postMessage(
+        {
+          id: message.id,
+          type: "PROVIDER_RESPONSE",
+          status: "success",
+          result,
+        },
+        "*"
+      );
+    } catch (error) {
+      this.iframe.contentWindow!.postMessage(
+        {
+          id: message.id,
+          type: "PROVIDER_RESPONSE",
+          status: "error",
+          error: error instanceof Error ? error.message : String(error),
+        },
+        "*"
+      );
+    }
+  }
+
+  private handleStoreRequest(message: any): void {
+    const result = this.options.store.getState();
+    this.iframe.contentWindow!.postMessage(
+      {
+        id: message.id,
+        type: "STORE_RESPONSE",
+        status: "success",
+        result: JSON.parse(JSON.stringify(result)),
+      },
+      "*"
+    );
+  }
+
+  private async handleEmitterRequest(message: any): Promise<void> {
+    try {
+      const { method, params } = message;
+      let result: unknown = null;
+
+      switch (method) {
+        case "emit":
+          this.options.emitter.emit(params.event, params.data);
+          result = true;
+          break;
+        case "on":
+          this.options.emitter.on(params.event, params.callback);
+          result = true;
+          break;
+        case "off":
+          this.options.emitter.off(params.event, params.callback);
+          result = true;
+          break;
+        default:
+          throw new Error(`Unknown emitter method: ${method}`);
+      }
+      this.iframe.contentWindow!.postMessage(
+        {
+          id: message.id,
+          type: "EMITTER_RESPONSE",
+          status: "success",
+          result,
+        },
+        "*"
+      );
+    } catch (error) {
+      this.iframe.contentWindow!.postMessage(
+        {
+          id: message.id,
+          type: "EMITTER_RESPONSE",
+          status: "error",
+          error: error instanceof Error ? error.message : String(error),
+        },
+        "*"
+      );
+    }
+  }
 
   private generateMessageId(): string {
     return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
