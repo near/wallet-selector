@@ -112,19 +112,19 @@ export class IframeManager {
           return new Promise((resolve, reject) => {
             const id = this.generateId();
 
-          const handler = (event) => {
-            if (event.data.id === id) {
+            const handler = (event) => {
+              if (event.data.id === id) {
                 window.removeEventListener("message", handler);
                 event.data.success === false
                   ? reject(new Error(event.data.error))
                   : resolve(event.data.result);
-            }
-          };
+              }
+            };
 
             window.addEventListener("message", handler);
             window.parent.postMessage({ type, id, ...data }, "*");
-        });
-      }
+          });
+        }
 
         sendMessage(message) {
           window.parent.postMessage(message, "*");
@@ -223,7 +223,7 @@ export class IframeManager {
           super();
           this.wallet = null;
           this.isInitialized = false;
-          
+
           this.storage = new StorageService();
           this.store = new StoreService();
           this.logger = new Logger();
@@ -286,7 +286,7 @@ export class IframeManager {
             this.sendMessage({
               id,
               type: MESSAGE_TYPES.WALLET_RESPONSE,
-              success: false, 
+              success: false,
               error: error.message,
             });
           }
