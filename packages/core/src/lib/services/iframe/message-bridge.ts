@@ -210,15 +210,15 @@ export class MessageBridge {
 
       switch (method) {
         case "emit":
-          this.options.emitter.emit(params.event, params.data);
+          this.options.emitter.emit(params.eventName, params.data);
           result = true;
           break;
         case "on":
-          this.options.emitter.on(params.event, params.callback);
+          this.options.emitter.on(params.eventName, params.callback);
           result = true;
           break;
         case "off":
-          this.options.emitter.off(params.event, params.callback);
+          this.options.emitter.off(params.eventName, params.callback);
           result = true;
           break;
         default:

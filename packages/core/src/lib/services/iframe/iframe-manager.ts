@@ -160,6 +160,27 @@ export class IframeManager {
         }
       }
 
+      class EmitterService extends MessageHandler {
+        async emit(eventName, data) {
+          return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+            method: "emit",
+            params: { eventName, data },
+          });
+        }
+        async on(eventName, callback) {
+          return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+            method: "on",
+            params: { eventName, callback },
+          });
+        }
+        async off(eventName, callback) {
+          return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+            method: "off",
+            params: { eventName, callback },
+          });
+        }
+      }
+
       class Logger {
         log() {}
         info() {}
