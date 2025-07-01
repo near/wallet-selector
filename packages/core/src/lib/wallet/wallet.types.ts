@@ -434,4 +434,5 @@ export interface WalletModuleFactoryV2 {
   type: WalletType;
   metadata: WalletMetadata;
   source: string;
+  permissions?: Array<string>;
 }

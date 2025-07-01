@@ -2,6 +2,7 @@ import type { Wallet, WalletBehaviourOptions } from "../../wallet";
 
 export interface IframeConfig {
   source: string;
+  permissions: Array<string>;
   timeout?: number;
 }
 
@@ -36,7 +37,10 @@ export class IframeManager {
     this.iframe = document.createElement("iframe");
     this.iframe.setAttribute("id", "wallet-iframe");
 
-    this.iframe.sandbox.add("allow-scripts", "allow-popups");
+    this.iframe.sandbox.add("allow-scripts");
+    this.config.permissions.forEach((permission) => {
+      this.iframe!.sandbox.add(permission);
+    });
 
     Object.assign(this.iframe.style, {
       display: "none",

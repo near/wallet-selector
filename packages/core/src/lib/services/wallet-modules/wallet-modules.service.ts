@@ -504,6 +504,7 @@ export class WalletModules {
             },
             config: {
               source: module.source,
+              permissions: module.permissions || [],
             },
           })
         ),
