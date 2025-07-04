@@ -126,6 +126,7 @@ export class IframeManager {
     const handlerScript = `
       const MESSAGE_TYPES = {
         STORAGE: "STORAGE",
+        LOCAL_STORAGE: "LOCAL_STORAGE",
         STORE: "STORE",
         PROVIDER: "PROVIDER",
         EMITTER: "EMITTER",
@@ -202,7 +203,8 @@ export class IframeManager {
 
         setItem(key, value) {
           this.localStorage[key] = value;
-          this.sendRequest(MESSAGE_TYPES.LOCAL_STORAGE, {
+          this.sendMessage({
+            type: MESSAGE_TYPES.LOCAL_STORAGE,
             method: "setItem",
             params: { key, value },
           });
@@ -211,7 +213,8 @@ export class IframeManager {
 
         removeItem(key) {
           delete this.localStorage[key];
-          this.sendRequest(MESSAGE_TYPES.LOCAL_STORAGE, {
+          this.sendMessage({
+            type: MESSAGE_TYPES.LOCAL_STORAGE,
             method: "removeItem",
             params: { key },
           });
@@ -226,7 +229,6 @@ export class IframeManager {
           return Object.keys(this.localStorage)[index];
         }
       }
-
 
       class StoreService extends MessageHandler {
         getState() {
