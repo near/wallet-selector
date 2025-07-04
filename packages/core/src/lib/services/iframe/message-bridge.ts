@@ -14,7 +14,8 @@ export interface IframeMessage extends MessageEvent {
     | "STORAGE"
     | "EMITTER"
     | "STORE"
-    | "PROVIDER";
+    | "PROVIDER"
+    | "LOCAL_STORAGE";
   id: string;
   timestamp: number;
   data: any;
@@ -72,6 +73,11 @@ export class MessageBridge {
         return;
       }
 
+      if (message.type === "LOCAL_STORAGE") {
+        this.handleLocalStorageRequest(message);
+        return;
+      }
+
       if (message.type === "STORAGE") {
         this.handleStorageRequest(message);
         return;
@@ -105,6 +111,25 @@ export class MessageBridge {
     } else {
       pending.resolve(message.result);
     }
+  }
+
+  private handleLocalStorageRequest(message: any): void {
+    const { method, params } = message;
+
+    if (method === "length") {
+      const result = window.localStorage.length;
+      this.iframe.contentWindow!.postMessage(
+        { id: message.id, type: "LOCAL_STORAGE_RESPONSE", result },
+        "*"
+      );
+      return;
+    }
+
+    const result = window.localStorage[method](params);
+    this.iframe.contentWindow!.postMessage(
+      { id: message.id, type: "LOCAL_STORAGE_RESPONSE", result },
+      "*"
+    );
   }
 
   private async handleStorageRequest(message: any): Promise<void> {

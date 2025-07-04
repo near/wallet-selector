@@ -28,7 +28,7 @@ const setupWalletState = async (
   network: Network
 ): Promise<MeteorWalletState> => {
   const keyStore = new IframeLocalStorageKeyStore(
-    window.selector.storage,
+    window.selector.localStorage,
     "_meteor_wallet"
   );
 

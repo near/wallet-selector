@@ -9,7 +9,7 @@ export class IframeLocalStorageKeyStore extends KeyStore {
   private prefix: string;
 
   constructor(
-    localStorage: any = window.localStorage,
+    localStorage: any = window.selector.localStorage,
     prefix = LOCAL_STORAGE_KEY_PREFIX
   ) {
     super();
@@ -81,8 +81,8 @@ export class IframeLocalStorageKeyStore extends KeyStore {
   }
 
   private async *storageKeys(): AsyncIterableIterator<string> {
-    const keys = await this.localStorage.keys();
-    for (let i = 0; i < keys.length; i++) {
+    const length = await this.localStorage.length();
+    for (let i = 0; i < length; i++) {
       yield this.localStorage.key(i);
     }
   }

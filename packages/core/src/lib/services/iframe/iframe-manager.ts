@@ -33,6 +33,29 @@ export class IframeManager {
     }
   }
 
+  private async fetchAndModifyScript(sourceUrl: string): Promise<string> {
+    const response = await fetch(sourceUrl);
+    let scriptContent = await response.text();
+
+    scriptContent = scriptContent.replace(
+      /window\.localStorage/g,
+      "window.selector.localStorage"
+    );
+    scriptContent = scriptContent.replace(/window\.top/g, "window.selector");
+
+    return scriptContent;
+  }
+
+  private getAllLocalStorage(): Record<string, string> {
+    const keys = Object.keys(window.localStorage);
+    const values = keys.map((key) => window.localStorage.getItem(key));
+
+    return keys.reduce((acc, key, index) => {
+      acc[key] = values[index] || "";
+      return acc;
+    }, {} as Record<string, string>);
+  }
+
   private async createAndSetupIframe(): Promise<void> {
     this.iframe = document.createElement("iframe");
     this.iframe.setAttribute("id", "wallet-iframe");
@@ -49,6 +72,7 @@ export class IframeManager {
       border: "none",
     });
 
+    const modifiedScript = await this.fetchAndModifyScript(this.config.source);
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -56,8 +80,17 @@ export class IframeManager {
           <meta charset="UTF-8">
         </head>
         <body>
-          <script src="${this.config.source}"></script>
           <script>${this.getIframeCode()}</script>
+          <script>${modifiedScript}</script>
+          <script>
+            const initHandler = () => {
+              if (window.walletHandler) return;
+              window.walletHandler = new WalletIframeHandler();
+              return window.walletHandler;
+            };
+
+            window.addEventListener("DOMContentLoaded", initHandler);
+          </script>
         </body>
       </html>
   `;
@@ -66,7 +99,6 @@ export class IframeManager {
       htmlContent
     )}`;
     this.iframe.src = dataUrl;
-    this.iframe.sandbox.add("allow-scripts", "allow-popups");
 
     document.body.appendChild(this.iframe);
 
@@ -157,6 +189,44 @@ export class IframeManager {
           });
         }
       }
+
+      class LocalStorageService extends MessageHandler {
+        constructor() {
+          super();
+          this.localStorage = ${JSON.stringify(this.getAllLocalStorage())};
+        }
+
+        getItem(key) {
+          return this.localStorage[key];
+        }
+
+        setItem(key, value) {
+          this.localStorage[key] = value;
+          this.sendRequest(MESSAGE_TYPES.LOCAL_STORAGE, {
+            method: "setItem",
+            params: { key, value },
+          });
+          return true;
+        }
+
+        removeItem(key) {
+          delete this.localStorage[key];
+          this.sendRequest(MESSAGE_TYPES.LOCAL_STORAGE, {
+            method: "removeItem",
+            params: { key },
+          });
+          return true;
+        }
+
+        length() {
+          return Object.keys(this.localStorage).length;
+        }
+
+        key(index) {
+          return Object.keys(this.localStorage)[index];
+        }
+      }
+
 
       class StoreService extends MessageHandler {
         getState() {
@@ -306,17 +376,14 @@ export class IframeManager {
         }
       }
 
-      const initHandler = () => {
-        if (window.walletHandler) return;
-        window.walletHandler = new WalletIframeHandler();
-        return window.walletHandler;
+      window.selector = {
+        localStorage: new LocalStorageService(),
+        location: "${window.location.href}",        
+        outerHeight: ${window.outerHeight},
+        screenY: ${window.screenY},
+        outerWidth: ${window.outerWidth},
+        screenX: ${window.screenX},
       };
-
-      if (document.readyState === "loading") {
-        window.addEventListener("DOMContentLoaded", initHandler);
-      } else {
-        initHandler();
-      }
     `;
 
     return handlerScript;
