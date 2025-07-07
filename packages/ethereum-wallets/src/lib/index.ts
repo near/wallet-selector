@@ -24,6 +24,7 @@ import {
   type Config,
 } from "@wagmi/core";
 import { bytesToHex, keccak256, toHex } from "viem";
+import { isBannedNearAddress } from "@aurora-is-near/is-banned-near-address";
 import bs58 from "bs58";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -858,6 +859,10 @@ const EthereumWallets: WalletBehaviourFactory<
           }
         } else {
           logger.log("Wallet already connected");
+        }
+
+        if (isBannedNearAddress(address.toLowerCase())) {
+          throw new Error("Your Ethereum (ETH) address has been restricted from use on the NEAR network for security reasons. Please disconnect this address and connect a different one to continue. If you have any questions, feel free to contact NEAR support through any official channel.");
         }
 
         await switchChain();
