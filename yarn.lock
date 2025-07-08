@@ -305,6 +305,11 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.10.1.tgz#70e45678f06c72fa2e350e8553ec4a4d72b92e06"
   integrity sha512-H71nDOOL8Y7kWRLqf6Sums+01Q5msqBW2KhDUTemh1tvY04eSkSXrK0uj/4mmY0Xr16/3zyZmsrxN7CKuRbNRg==
 
+"@aurora-is-near/is-banned-near-address@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@aurora-is-near/is-banned-near-address/-/is-banned-near-address-1.3.2.tgz#d22ed802cdfe5201f3401ef0629e5287d39b6691"
+  integrity sha512-hr5/p78+QRi06tbr0pOcLaV6vzW63GooIghIHlEqpGxkWx0Dlx8eAaP/U0xOyxMReyIIbGdh+CqrDZxT/2IvUA==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.21.4", "@babel/code-frame@^7.24.7":
   version "7.24.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.24.7.tgz#882fd9e09e8ee324e496bd040401c6f046ef4465"
