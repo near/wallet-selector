@@ -300,15 +300,20 @@ export class WalletModules {
   }
 
   private decorateWallet(wallet: Wallet): Wallet {
-    const _signIn = wallet.signIn;
+    const _signIn = wallet.signIn as (
+      params: SignInParams
+    ) => Promise<Array<Account>>;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
     const _createSignedTransaction = wallet.createSignedTransaction;
 
-    wallet.signIn = async (params: never) => {
-      const accounts = await _signIn(params);
+    wallet.signIn = async (params: SignInParams) => {
+      const accounts = await _signIn({
+        ...this.options.createAccessKeyFor,
+        ...params,
+      });
 
-      const { contractId, methodNames = [] } = params as SignInParams;
+      const { contractId, methodNames = [] } = params;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
         contractId: contractId || "",
