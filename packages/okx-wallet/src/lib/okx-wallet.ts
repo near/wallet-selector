@@ -246,6 +246,30 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
+
+    async getPublicKey() {
+      logger.log("getPublicKey", {});
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
+      logger.log("signNep413Message", {
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signDelegateAction(delegateAction) {
+      logger.log("signDelegateAction", { delegateAction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
   };
 };
 

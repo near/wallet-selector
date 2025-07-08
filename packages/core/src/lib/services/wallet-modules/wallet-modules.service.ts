@@ -304,6 +304,10 @@ export class WalletModules {
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
     const _createSignedTransaction = wallet.createSignedTransaction;
+    const _getPublicKey = wallet.getPublicKey;
+    const _signNep413Message = wallet.signNep413Message;
+    const _signTransaction = wallet.signTransaction;
+    const _signDelegateAction = wallet.signDelegateAction;
 
     wallet.signIn = async (params: never) => {
       const accounts = await _signIn(params);
@@ -346,6 +350,53 @@ export class WalletModules {
       }
 
       return await _createSignedTransaction(receiverId, actions);
+    };
+
+    // hardware wallets have its own implementation of getPublicKey
+    // which will be removed in the next major release
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    wallet.getPublicKey = async (derivationPath?: string): Promise<any> => {
+      if (_getPublicKey === undefined) {
+        throw Error(
+          `The getPublicKey method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      if (typeof derivationPath === "undefined") {
+        return await _getPublicKey();
+      } else {
+        return await _getPublicKey(derivationPath);
+      }
+    };
+
+    wallet.signNep413Message = async (...args) => {
+      if (_signNep413Message === undefined) {
+        throw Error(
+          `The signNep413Message method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signNep413Message(...args);
+    };
+
+    wallet.signTransaction = async (...args) => {
+      if (_signTransaction === undefined) {
+        throw Error(
+          `The signTransaction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signTransaction(...args);
+    };
+
+    wallet.signDelegateAction = async (...args) => {
+      if (_signDelegateAction === undefined) {
+        throw Error(
+          `The signDelegateAction method is not supported by ${wallet.metadata.name}`
+        );
+      }
+
+      return await _signDelegateAction(...args);
     };
 
     return wallet;

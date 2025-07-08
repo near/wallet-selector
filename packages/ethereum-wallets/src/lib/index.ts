@@ -1004,6 +1004,30 @@ const EthereumWallets: WalletBehaviourFactory<
 
       throw new Error(`Method not supported by Ethereum Wallets`);
     },
+
+    async getPublicKey() {
+      logger.log("getPublicKey", {});
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
+
+    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
+      logger.log("signNep413Message", {
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
+
+    async signDelegateAction(delegateAction) {
+      logger.log("signDelegateAction", { delegateAction });
+
+      throw new Error(`Method not supported by Ethereum Wallets`);
+    },
   };
 };
 

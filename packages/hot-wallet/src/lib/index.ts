@@ -141,6 +141,36 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
 
             throw new Error(`Method not supported by HOT Wallet`);
           },
+
+          async getPublicKey() {
+            config.logger.log("getPublicKey", {});
+
+            throw new Error(`Method not supported by HOT Wallet`);
+          },
+
+          async signNep413Message(
+            message,
+            accountId,
+            recipient,
+            nonce,
+            callbackUrl
+          ) {
+            config.logger.log("signNep413Message", {
+              message,
+              accountId,
+              recipient,
+              nonce,
+              callbackUrl,
+            });
+
+            throw new Error(`Method not supported by HOT Wallet`);
+          },
+
+          async signDelegateAction(delegateAction) {
+            config.logger.log("signDelegateAction", { delegateAction });
+
+            throw new Error(`Method not supported by HOT Wallet`);
+          },
         };
       },
     };
