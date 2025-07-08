@@ -31,7 +31,10 @@ import type { SetupParams } from "@near-wallet-selector/react-hook";
 
 const walletSelectorConfig: SetupParams = {
   network: NETWORK_ID,
-  // createAccessKeyFor: CONTRACT_ID,
+  // createAccessKeyFor: {
+  //   contractId: CONTRACT_ID,
+  //   methodNames: [],
+  // },
   debug: false,
   modules: [
     setupEthereumWallets({
