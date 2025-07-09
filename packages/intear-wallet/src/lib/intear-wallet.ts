@@ -12,7 +12,13 @@ import * as nearAPI from "near-api-js";
 import { KeyType } from "near-api-js/lib/utils/key_pair";
 import type { AccessKeyView } from "near-api-js/lib/providers/provider";
 import { createAction } from "@near-wallet-selector/wallet-utils";
-import type { LoggerService } from "@near-wallet-selector/core/src/lib/services";
+
+interface LoggerService {
+  log(...params: Array<unknown>): void;
+  info(...params: Array<unknown>): void;
+  warn(...params: Array<unknown>): void;
+  error(...params: Array<unknown>): void;
+}
 
 const DEFAULT_WALLET_DOMAIN = "https://wallet.intear.tech";
 const DEFAULT_LOGOUT_BRIDGE_SERVICE =
