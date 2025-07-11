@@ -885,8 +885,6 @@ const EthereumWallets: WalletBehaviourFactory<
           throw new Error(
             "Your Ethereum (ETH) address has been restricted from use on the NEAR network for security reasons. Please disconnect this address and connect a different one to continue. If you have any questions, feel free to contact NEAR support through any official channel."
           );
-        } else {
-          alert("PACKAGE NOT IMPORTEED");
         }
 
         console.log(
