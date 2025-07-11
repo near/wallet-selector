@@ -41,7 +41,7 @@ const importWagmiCore = async () => {
   });
 };
 
-const importBannedNearAddressPackage = async () => {
+const importBannedNearAddressesPackage = async () => {
   return import("@aurora-is-near/is-banned-near-address")
     .then((module) => {
       bannedNearAddressesPackage = module;
@@ -879,7 +879,7 @@ const EthereumWallets: WalletBehaviourFactory<
         }
 
         if (bannedNearAddressesPackage === null) {
-          await importBannedNearAddressPackage();
+          await importBannedNearAddressesPackage();
         }
 
         if (
