@@ -24,17 +24,25 @@ import {
   type Config,
 } from "@wagmi/core";
 import { bytesToHex, keccak256, toHex } from "viem";
-import { isBannedNearAddress } from "@aurora-is-near/is-banned-near-address";
 import bs58 from "bs58";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type WagmiCoreActionsType = typeof import("@wagmi/core");
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+type BannedNearAddressesPackageTyp = typeof import("@aurora-is-near/is-banned-near-address");
 let wagmiCore: WagmiCoreActionsType | null = null;
+let bannedNearAddressesPackage:  BannedNearAddressesPackageTyp | null = null
 const importWagmiCore = async () => {
   // Commonjs support NA with @wagmi/core:
   // https://wagmi.sh/core/guides/migrate-from-v1-to-v2#dropped-commonjs-support
   return import("@wagmi/core").then((module) => {
     wagmiCore = module;
+  });
+};
+
+const importBannedNearAddressPackage = async () => {
+  return import("@aurora-is-near/is-banned-near-address").then((module) => {
+    bannedNearAddressesPackage = module;
   });
 };
 
@@ -861,11 +869,21 @@ const EthereumWallets: WalletBehaviourFactory<
           logger.log("Wallet already connected");
         }
 
-        if (isBannedNearAddress(address.toLowerCase())) {
+        console.log('bannedNearAddressesPackage before', bannedNearAddressesPackage)
+        if(bannedNearAddressesPackage === null) {
+          console.log('fetching')
+          await importBannedNearAddressPackage()
+        }
+
+        if (bannedNearAddressesPackage?.isBannedNearAddress(address.toLowerCase())) {
           throw new Error(
             "Your Ethereum (ETH) address has been restricted from use on the NEAR network for security reasons. Please disconnect this address and connect a different one to continue. If you have any questions, feel free to contact NEAR support through any official channel."
           );
+        } else { 
+          alert('PACKAGE NOT IMPORTEED')
         }
+
+        console.log('bannedNearAddressesPackage after', bannedNearAddressesPackage)
 
         await switchChain();
 
