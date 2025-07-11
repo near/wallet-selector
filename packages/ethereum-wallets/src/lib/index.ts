@@ -28,8 +28,8 @@ import bs58 from "bs58";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type WagmiCoreActionsType = typeof import("@wagmi/core");
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type BannedNearAddressesPackageType =
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   typeof import("@aurora-is-near/is-banned-near-address");
 let wagmiCore: WagmiCoreActionsType | null = null;
 let bannedNearAddressesPackage: BannedNearAddressesPackageType | null = null;
