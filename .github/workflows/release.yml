@@ -11,6 +11,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    # ignore on forks
+    if: github.repository == "near/wallet-selector"
     permissions:
       contents: write
       issues: write
