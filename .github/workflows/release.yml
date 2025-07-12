@@ -36,9 +36,6 @@ jobs:
       - name: Build Packages
         run: yarn build:all
 
-      - name: Print repository
-        run: echo "Repository is ${{ github.repository }}"
-
       - name: Create Release Pull Request or Publish to NPM
         uses: changesets/action@v1
         with:
