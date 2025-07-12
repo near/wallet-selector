@@ -146,6 +146,7 @@
     "@angular/language-service": "15.2.9",
     "@babel/preset-react": "7.16.7",
     "@babel/runtime": "7.24.8",
+    "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.5",
     "@near-js/keystores": "0.2.0",
     "@near-js/types": "0.3.0",
