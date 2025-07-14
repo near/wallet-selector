@@ -89,6 +89,11 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/unity-wallet/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/near-mobile-wallet/assets/",
             "output": "assets/"
           },
