@@ -50,4 +50,11 @@ export interface Options {
    * The URL where DelegateActions are sent by meta transaction enabled wallet modules.
    */
   relayerUrl: string | undefined;
+  /**
+   * The contract ID and method names to create a function call access key for
+   */
+  createAccessKeyFor?: {
+    contractId: string;
+    methodNames: Array<string>;
+  };
 }
