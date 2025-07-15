@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/unity-wallet",
-  "version": "1.0.0",
+  "version": "9.0.4",
   "description": "Unity Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

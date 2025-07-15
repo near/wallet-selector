@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/okx-wallet",
-  "version": "9.0.3",
+  "version": "9.0.4",
   "description": "OKX Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
