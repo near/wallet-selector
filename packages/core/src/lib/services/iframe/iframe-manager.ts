@@ -385,6 +385,11 @@ export class IframeManager {
         screenY: ${window.screenY},
         outerWidth: ${window.outerWidth},
         screenX: ${window.screenX},
+        storage: new StorageService(),
+        emitter: new EmitterService(),
+        logger: new Logger(),
+        provider: new ProviderService(),
+        store: new StoreService(),
       };
     `;
 
