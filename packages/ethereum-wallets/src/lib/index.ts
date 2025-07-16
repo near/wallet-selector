@@ -545,7 +545,9 @@ const EthereumWallets: WalletBehaviourFactory<
     for (let i = 0; i < nearTxs.length; i++) {
       for (let y = 0; y < nearTxs[i].actions.length; y++) {
         const action = nearTxs[i].actions[y]
+        //@ts-ignore
         if (action.type === "FunctionCall" && action.params.methodName.includes("transfer") && action.params.args.receiver_id && bannedNearAddressesPackage?.isBannedNearAddress(action.params.args.receiver_id.toLowerCase())) {
+          //@ts-ignore
           error = `Pizda ${action.params.args.receiver_id}`
           break;
         }
