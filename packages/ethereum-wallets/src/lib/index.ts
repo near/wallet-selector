@@ -551,6 +551,7 @@ const EthereumWallets: WalletBehaviourFactory<
         }
       }
     }
+    console.log('ERROR', error)
     
     if(error) {
       await (() => {
