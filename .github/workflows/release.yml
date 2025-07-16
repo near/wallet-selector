@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    # ignore on forks
+    if: github.repository == "near/wallet-selector"
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    environment: NPM
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
+      - name: Setup yarn
+        run: npm install -g yarn
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Packages
+        run: yarn build:all
+
+      - name: Create Release Pull Request or Publish to NPM
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
+          commit: "chore(release): publish packages"
+          title: "Publish packages"
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # setup-node by default reads from this env var
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

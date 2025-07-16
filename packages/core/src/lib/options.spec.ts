@@ -1,5 +1,6 @@
-import { getNetworkPreset, resolveNetwork } from "./options";
+import { getNetworkPreset, resolveNetwork, resolveOptions } from "./options";
 import type { NetworkId, Network } from "./options.types";
+import type { WalletSelectorParams } from "./wallet-selector.types";
 
 describe("getNetworkPreset", () => {
   it("returns the correct config for 'mainnet' without fallbackRpcUrls", () => {
@@ -82,5 +83,105 @@ describe("resolveNetwork", () => {
     };
 
     expect(resolveNetwork(network)).toEqual(network);
+  });
+});
+
+describe("resolveOptions", () => {
+  it("should resolve options with createAccessKeyFor when provided", () => {
+    const params: WalletSelectorParams = {
+      network: "testnet",
+      modules: [],
+      createAccessKeyFor: {
+        contractId: "test-contract.near",
+        methodNames: ["view", "call"],
+      },
+    };
+
+    const result = resolveOptions(params);
+
+    expect(result.options.createAccessKeyFor).toEqual({
+      contractId: "test-contract.near",
+      methodNames: ["view", "call"],
+    });
+  });
+
+  it("should resolve options without createAccessKeyFor when not provided", () => {
+    const params: WalletSelectorParams = {
+      network: "testnet",
+      modules: [],
+    };
+
+    const result = resolveOptions(params);
+
+    expect(result.options.createAccessKeyFor).toBeUndefined();
+  });
+
+  it("should handle createAccessKeyFor with empty methodNames array", () => {
+    const params: WalletSelectorParams = {
+      network: "testnet",
+      modules: [],
+      createAccessKeyFor: {
+        contractId: "test-contract.near",
+        methodNames: [],
+      },
+    };
+
+    const result = resolveOptions(params);
+
+    expect(result.options.createAccessKeyFor).toEqual({
+      contractId: "test-contract.near",
+      methodNames: [],
+    });
+  });
+
+  it("should resolve options with multiple method names", () => {
+    const params: WalletSelectorParams = {
+      network: "testnet",
+      modules: [],
+      createAccessKeyFor: {
+        contractId: "complex-contract.near",
+        methodNames: ["method1", "method2", "method3", "method4"],
+      },
+    };
+
+    const result = resolveOptions(params);
+
+    expect(result.options.createAccessKeyFor).toEqual({
+      contractId: "complex-contract.near",
+      methodNames: ["method1", "method2", "method3", "method4"],
+    });
+  });
+
+  it("should preserve other options when createAccessKeyFor is provided", () => {
+    const params: WalletSelectorParams = {
+      network: "mainnet",
+      modules: [],
+      debug: true,
+      optimizeWalletOrder: false,
+      randomizeWalletOrder: true,
+      languageCode: "en",
+      relayerUrl: "https://relayer.example.com",
+      createAccessKeyFor: {
+        contractId: "test-contract.near",
+        methodNames: ["view"],
+      },
+    };
+
+    const result = resolveOptions(params);
+
+    expect(result.options).toEqual({
+      languageCode: "en",
+      network: expect.objectContaining({
+        networkId: "mainnet",
+      }),
+      debug: true,
+      optimizeWalletOrder: false,
+      randomizeWalletOrder: true,
+      relayerUrl: "https://relayer.example.com",
+      createAccessKeyFor: {
+        contractId: "test-contract.near",
+        methodNames: ["view"],
+      },
+    });
   });
 });

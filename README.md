@@ -2,11 +2,14 @@
 
 NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem:
 
+- [Arepa Wallet](https://www.npmjs.com/package/@near-wallet-selector/arepa-wallet) - Browser wallet.
 - [Bitget Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitget-wallet) - Injected wallet.
 - [Bitte Wallet](https://www.npmjs.com/package/@near-wallet-selector/bitte-wallet) - Injected wallet.
 - [Coin98 Wallet](https://www.npmjs.com/package/@near-wallet-selector/coin98-wallet) - Injected wallet.
 - [Ethereum wallets](https://www.npmjs.com/package/@near-wallet-selector/ethereum-wallets) - Injected wallet.
 - [Here Wallet](https://www.npmjs.com/package/@near-wallet-selector/here-wallet) - Mobile wallet.
+- [HOT Wallet](https://www.npmjs.com/package/@near-wallet-selector/hot-wallet) - Injected wallet.
+- [Unity Wallet](https://www.npmjs.com/package/@near-wallet-selector/unity-wallet) - Mobile wallet.
 - [Ledger](https://www.npmjs.com/package/@near-wallet-selector/ledger) - Hardware wallet.
 - [Math Wallet](https://www.npmjs.com/package/@near-wallet-selector/math-wallet) - Injected wallet.
 - [Metamask Snap](https://www.npmjs.com/package/@near-wallet-selector/near-snap) - Injected wallet.
@@ -55,57 +58,63 @@ Next, you'll need to install the wallets you want to support:
 ```bash
 # Using Yarn
 yarn add \
-  @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/my-near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/here-wallet \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/nightly \
-  @near-wallet-selector/meteor-wallet \
-  @near-wallet-selector/meteor-wallet-app \
-  @near-wallet-selector/okx-wallet \
-  @near-wallet-selector/narwallets \
-  @near-wallet-selector/welldone-wallet \
-  @near-wallet-selector/near-snap \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/xdefi \
-  @near-wallet-selector/ramper-wallet \
-  @near-wallet-selector/near-mobile-wallet  \
+  @near-wallet-selector/arepa-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/bitte-wallet \
+  @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/ethereum-wallets \
-  @near-wallet-selector/intear-wallet
+  @near-wallet-selector/here-wallet \
+  @near-wallet-selector/hot-wallet \
+  @near-wallet-selector/intear-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/meteor-wallet-app \
+  @near-wallet-selector/my-near-wallet \
+  @near-wallet-selector/narwallets \
+  @near-wallet-selector/near-mobile-wallet \
+  @near-wallet-selector/near-snap \
+  @near-wallet-selector/nightly \
+  @near-wallet-selector/okx-wallet \
+  @near-wallet-selector/ramper-wallet \
+  @near-wallet-selector/react-hook \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/unity-wallet \
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/welldone-wallet \
+  @near-wallet-selector/xdefi
 
 
 # Using NPM.
 npm install \
-  @near-wallet-selector/bitget-wallet \
-  @near-wallet-selector/my-near-wallet \
-  @near-wallet-selector/sender \
-  @near-wallet-selector/here-wallet \
-  @near-wallet-selector/math-wallet \
-  @near-wallet-selector/nightly \
-  @near-wallet-selector/meteor-wallet \
-  @near-wallet-selector/meteor-wallet-app \
-  @near-wallet-selector/okx-wallet \
-  @near-wallet-selector/narwallets \
-  @near-wallet-selector/welldone-wallet \
-  @near-wallet-selector/near-snap \
-  @near-wallet-selector/ledger \
-  @near-wallet-selector/wallet-connect \
-  @near-wallet-selector/coin98-wallet \
-  @near-wallet-selector/xdefi \
-  @near-wallet-selector/ramper-wallet \
-  @near-wallet-selector/near-mobile-wallet \
+  @near-wallet-selector/arepa-wallet \
   @near-wallet-selector/bitget-wallet \
   @near-wallet-selector/bitte-wallet \
+  @near-wallet-selector/coin98-wallet \
   @near-wallet-selector/ethereum-wallets \
-  @near-wallet-selector/intear-wallet
+  @near-wallet-selector/here-wallet \
+  @near-wallet-selector/hot-wallet \
+  @near-wallet-selector/intear-wallet \
+  @near-wallet-selector/ledger \
+  @near-wallet-selector/math-wallet \
+  @near-wallet-selector/meteor-wallet \
+  @near-wallet-selector/meteor-wallet-app \
+  @near-wallet-selector/my-near-wallet \
+  @near-wallet-selector/narwallets \
+  @near-wallet-selector/near-mobile-wallet \
+  @near-wallet-selector/near-snap \
+  @near-wallet-selector/nightly \
+  @near-wallet-selector/okx-wallet \
+  @near-wallet-selector/ramper-wallet \
+  @near-wallet-selector/react-hook \
+  @near-wallet-selector/sender \
+  @near-wallet-selector/unity-wallet \
+  @near-wallet-selector/wallet-connect \
+  @near-wallet-selector/welldone-wallet \
+  @near-wallet-selector/xdefi
 ```
 
-Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
+Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) (react) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
 ```bash
 # Using Yarn
@@ -115,51 +124,78 @@ yarn add @near-wallet-selector/modal-ui
 npm install @near-wallet-selector/modal-ui
 ```
 
+For React applications, you can also install the [`react-hook`](https://www.npmjs.com/package/@near-wallet-selector/react-hook) package which provides a React Hook and Context for easier integration:
+
+```bash
+# Using Yarn
+yarn add @near-wallet-selector/react-hook
+
+# Using NPM.
+npm install @near-wallet-selector/react-hook
+```
+
 Then in your dApp:
 
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupArepaWallet } from "@near-wallet-selector/arepa-wallet";
 import { setupBitgetWallet } from "@near-wallet-selector/bitget-wallet";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import { setupSender } from "@near-wallet-selector/sender";
+import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
+import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import { setupNearSnap } from "@near-wallet-selector/near-snap";
+import { setupHotWallet } from "@near-wallet-selector/hot-wallet";
+import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
 import { setupMathWallet } from "@near-wallet-selector/math-wallet";
-import { setupNightly } from "@near-wallet-selector/nightly";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 import { setupMeteorWalletApp } from "@near-wallet-selector/meteor-wallet-app";
-import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
-import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
-import { setupLedger } from "@near-wallet-selector/ledger";
-import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
-import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
-import { setupXDEFI } from "@near-wallet-selector/xdefi";
-import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
-import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
-import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
-import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
+import { setupNearSnap } from "@near-wallet-selector/near-snap";
+import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupOkxWallet } from "@near-wallet-selector/okx-wallet";
+import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
+import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
+import { setupWalletConnect } from "@near-wallet-selector/wallet-connect";
+import { setupWelldoneWallet } from "@near-wallet-selector/welldone-wallet";
+import { setupXDEFI } from "@near-wallet-selector/xdefi";
 
 const selector = await setupWalletSelector({
   network: "testnet",
   modules: [
+    setupArepaWallet(),
     setupBitgetWallet(),
-    setupMyNearWallet(),
-    setupSender(),
+    setupBitteWallet(),
+    setupCoin98Wallet(),
+    setupEthereumWallets({ wagmiConfig, web3Modal }),
     setupHereWallet(),
+    setupHotWallet(),
+    setupIntearWallet(),
+    setupLedger(),
     setupMathWallet(),
-    setupNightly(),
     setupMeteorWallet(),
     setupMeteorWalletApp({ contractId: "guest-book.testnet" }),
-    setupNearSnap(),
-    setupOkxWallet(),
+    setupMyNearWallet(),
     setupNarwallets(),
-    setupWelldoneWallet(),
-    setupLedger(),
-    setupCoin98Wallet(),
-    setupXDEFI(),
+    setupNearMobileWallet(),
+    setupNearSnap(),
+    setupNightly(),
+    setupOkxWallet(),
+    setupRamperWallet(),
+    setupSender(),
+    setupUnityWallet({
+      projectId: "c4f79cc...",
+      metadata: {
+        name: "Your dApp name",
+        description: "Example dApp used by NEAR Wallet Selector",
+        url: "https://github.com/near/wallet-selector",
+        icons: ["https://avatars.githubusercontent.com/u/37784886"],
+      },
+    }),
     setupWalletConnect({
       projectId: "c4f79cc...",
       metadata: {
@@ -169,10 +205,8 @@ const selector = await setupWalletSelector({
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
       },
     }),
-    setupNearMobileWallet(),
-    setupBitteWallet(),
-    setupEthereumWallets({ wagmiConfig, web3Modal }),
-    setupIntearWallet(),
+    setupWelldoneWallet(),
+    setupXDEFI(),
   ],
 });
 

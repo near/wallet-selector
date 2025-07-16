@@ -116,5 +116,29 @@ export const initHereWallet: SelectorInit = async (config) => {
 
       throw new Error(`Method not supported by Here Wallet`);
     },
+
+    async getPublicKey() {
+      logger.log("getPublicKey", {});
+
+      throw new Error(`Method not supported by Here Wallet`);
+    },
+
+    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
+      logger.log("signNep413Message", {
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by Here Wallet`);
+    },
+
+    async signDelegateAction(delegateAction) {
+      logger.log("signDelegateAction", { delegateAction });
+
+      throw new Error(`Method not supported by Here Wallet`);
+    },
   };
 };

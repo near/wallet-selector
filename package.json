@@ -2,6 +2,7 @@
   "name": "near-wallet-selector",
   "version": "9.0.3",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
+  "private": true,
   "keywords": [
     "near",
     "blockchain",
@@ -21,6 +22,7 @@
     "meteor-wallet",
     "welldone-wallet",
     "ramper-wallet",
+    "unity-wallet",
     "near-mobile-wallet",
     "bitte-wallet",
     "okx-wallet",
@@ -40,7 +42,7 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production && node ./scripts/update-package-json.js",
+    "build:all": "nx run-many --target=build --all --exclude=react,angular --configuration=production",
     "build:arepa-wallet": "nx run-many --target=build --projects=arepa-wallet --configuration=production",
     "build:bitget-wallet": "nx run-many --target=build --projects=bitget-wallet --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",
@@ -53,6 +55,7 @@
     "build:modal-ui": "nx run-many --target=build --projects=modal-ui --configuration=production",
     "build:modal-ui-js": "nx run-many --target=build --projects=modal-ui-js --configuration=production",
     "build:my-near-wallet": "nx run-many --target=build --projects=my-near-wallet --configuration=production",
+    "build:unity-wallet": "nx run-many --target=build --projects=unity-wallet --configuration=production",
     "build:narwallets": "nx run-many --target=build --projects=narwallets --configuration=production",
     "build:near-mobile-wallet": "nx run-many --target=build --projects=near-mobile-wallet --configuration=production",
     "build:near-snap": "nx run-many --target=build --projects=near-snap --configuration=production",
@@ -68,16 +71,15 @@
     "build:xdefi-wallet": "nx run-many --target=build --projects=xdefi --configuration=production",
     "build:intear-wallet": "nx run-many --target=build --projects=intear-wallet --configuration=production",
     "find:unused": "ts-prune -p tsprune.json",
-    "postinstall": "yarn build:all",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "prepack": "yarn build:core && yarn build:all",
-    "prepublishOnly": "yarn build:core && yarn build:all",
     "serve:angular": "nx serve angular",
     "serve:react": "nx serve react --host=0.0.0.0",
     "serve:vanilla": "nx serve vanilla",
     "test": "nx run-many --target=test --all",
-    "nxs": "nx run react:lint --fix"
+    "nxs": "nx run react:lint --fix",
+    "release": "changeset publish"
   },
   "dependencies": {
     "@angular/animations": "16.1.9",
@@ -95,6 +97,7 @@
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.29.4",
     "@meteorwallet/sdk": "1.0.9",
+    "@near-js/signers": "2.1.0",
     "@near-snap/sdk": "0.6.0",
     "@noble/hashes": "1.7.1",
     "@peersyst/near-mobile-signer": "1.1.4",
@@ -130,7 +133,8 @@
     "viem": "^2.21.26",
     "vite-plugin-node-polyfills": "0.23.0",
     "wagmi": "^2.12.17",
-    "zone.js": "0.12.0"
+    "zone.js": "0.12.0",
+    "@aurora-is-near/is-banned-near-address": "1.3.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "16.1.8",
@@ -144,6 +148,8 @@
     "@angular/language-service": "15.2.9",
     "@babel/preset-react": "7.16.7",
     "@babel/runtime": "7.24.8",
+    "@changesets/changelog-github": "0.5.1",
+    "@changesets/cli": "2.29.5",
     "@near-js/keystores": "0.2.0",
     "@near-js/types": "0.3.0",
     "@nrwl/js": "16.0.0",
@@ -229,5 +235,8 @@
   },
   "resolutions": {
     "near-api-js": "5.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
