@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ycg/test-ban
+          ref: ycg/test-kek-2
           fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v3
