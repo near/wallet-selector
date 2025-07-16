@@ -378,6 +378,77 @@ export function createTxModal({
   };
   return { showModal, hideModal, renderTxs };
 }
+export function createMessageModal({
+  onCancel,
+  title,
+  message
+}: {
+  onCancel?: () => void;
+  title: string;
+  message: string;
+}) {
+  // Create a style element and append the CSS styles
+  const styleElement = window.document.createElement("style");
+  styleElement.textContent = modalStyles;
+  window.document.head.appendChild(styleElement);
+
+  // Container with display none/block
+  const modalContainer = window.document.createElement("div");
+  modalContainer.classList.add("ethereum-wallet-modal");
+  modalContainer.setAttribute("aria-labelledby", "modal-title");
+  modalContainer.setAttribute("role", "dialog");
+  modalContainer.setAttribute("aria-modal", "true");
+
+  // Backdrop
+  const backdrop = window.document.createElement("div");
+  backdrop.classList.add("ethereum-wallet-modal-backdrop");
+
+  // Wrapper for modal
+  const modalWrapper = window.document.createElement("div");
+  modalWrapper.classList.add("ethereum-wallet-modal-wrapper");
+
+  // Modal content container
+  const modalContentContainer = window.document.createElement("div");
+  modalContentContainer.classList.add("ethereum-wallet-modal-container");
+
+  // Modal content
+  const modalContent = window.document.createElement("div");
+  modalContent.classList.add("ethereum-wallet-modal-content");
+  modalContent.innerHTML = `<h2>${title}</h2>
+    <div class="ethereum-wallet-message">${message}</div>
+    <button class="ethereum-wallet-btn ethereum-wallet-btn-sm ethereum-wallet-btn-cancel">Cancel</button>
+  `;
+
+  // // Append the elements to form the complete structure
+  modalContentContainer.appendChild(modalContent);
+  modalWrapper.appendChild(modalContentContainer);
+  modalContainer.appendChild(backdrop);
+  modalContainer.appendChild(modalWrapper);
+
+  // Append modal container to document body
+  window.document.body.appendChild(modalContainer);
+
+  // Function to show the modal
+  const showModal = () => {
+    modalContainer.style.display = "block";
+  };
+
+  // Function to hide the modal
+  const hideModal = () => {
+    // modalContainer.style.display = "none";
+    modalContainer.remove();
+  };
+
+  // On cancel button click
+  window.document
+    .querySelector(".ethereum-wallet-btn-cancel")
+    ?.addEventListener("click", () => {
+      if(onCancel) onCancel();
+      hideModal();
+    });
+
+  return { showModal, hideModal };
+}
 
 export function createChainSwitchModal({ chain }: { chain: Chain }) {
   // Create a style element and append the CSS styles

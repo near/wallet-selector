@@ -41,14 +41,14 @@ const importWagmiCore = async () => {
   });
 };
 
-const importBannedNearAddressPackage = async () => {
+const importBannedNearAddressesPackage = async () => {
   return import("@aurora-is-near/is-banned-near-address").then((module) => {
     bannedNearAddressesPackage = module;
   });
 };
 
 import icon from "./icon";
-import { createTxModal, createChainSwitchModal } from "./modal";
+import { createTxModal, createChainSwitchModal, createMessageModal } from "./modal";
 import {
   ETHEREUM_ACCOUNT_ABI,
   DEFAULT_ACCESS_KEY_ALLOWANCE,
@@ -537,6 +537,31 @@ const EthereumWallets: WalletBehaviourFactory<
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ) => {
     const nearTxs = await transformTransactions(transactions);
+    if (bannedNearAddressesPackage === null) {
+      await importBannedNearAddressesPackage();
+    }
+
+    let error = null
+    for (let i = 0; i < nearTxs.length; i++) {
+      for (let y = 0; y < nearTxs[i].actions.length; y++) {
+        const action = nearTxs[i].actions[y]
+        if (action.type === "FunctionCall" && action.params.methodName.includes("transfer") && action.params.args.receiver_id && bannedNearAddressesPackage?.isBannedNearAddress(action.params.args.receiver_id.toLowerCase())) {
+          error = `Pizda ${action.params.args.receiver_id}`
+          break;
+        }
+      }
+    }
+    
+    if(error) {
+      await (() => {
+        return new Promise<void>((_resolve, reject) => {
+          const onCancel = () =>  { reject(error) }
+          const { showModal } = createMessageModal({ title:'Warning', message: error, onCancel })
+          showModal()
+        })})
+    }
+
+
     const [accountLogIn] = await getAccounts();
     // If transactions can be executed with FunctionCall access key do it, otherwise execute 1 by 1 with Ethereum wallet.
     if (accountLogIn.publicKey && nearTxs.length) {
@@ -876,7 +901,7 @@ const EthereumWallets: WalletBehaviourFactory<
         );
         if (bannedNearAddressesPackage === null) {
           console.log("fetching");
-          await importBannedNearAddressPackage();
+          await importBannedNearAddressesPackage();
         }
 
         if (
