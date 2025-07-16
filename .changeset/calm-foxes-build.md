@@ -1,5 +1,5 @@
 ---
-"@near-wallet-selector/unity-wallet": major
+"@near-wallet-selector/unity-wallet": minor 
 ---
 
 Added unity wallet package
