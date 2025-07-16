@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook",
+  "publishConfig": {
+    "directory": "../../dist/packages/react-hook"
+  }
 }

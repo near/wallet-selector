@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/narwallets"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/narwallets",
+  "publishConfig": {
+    "directory": "../../dist/packages/narwallets"
+  }
 }
