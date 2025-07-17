@@ -101,7 +101,7 @@ export type SignMessageMethod = {
   signMessage(params: SignMessageParams): Promise<SignedMessage | void>;
 };
 
-interface SignAndSendTransactionParams {
+export interface SignAndSendTransactionParams {
   /**
    * Account ID used to sign the transaction. Defaults to the first account.
    */
@@ -116,14 +116,14 @@ interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
-interface SignAndSendTransactionsParams {
+export interface SignAndSendTransactionsParams {
   /**
    * NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
    */
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-interface BaseWalletBehaviour extends Signer {
+export interface BaseWalletBehaviour extends Signer {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
    */
@@ -427,3 +427,11 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
 export type WalletModuleFactory<Variation extends Wallet = Wallet> = (
   options: WalletModuleOptions
 ) => Promise<WalletModule<Variation> | null>;
+
+export interface WalletModuleFactoryV2 {
+  id: string;
+  type: WalletType;
+  metadata: WalletMetadata;
+  source: string;
+  permissions?: Array<string>;
+}
