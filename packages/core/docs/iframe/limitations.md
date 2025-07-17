@@ -55,33 +55,33 @@ The implementation uses a MessageHandler class that provides the foundation for 
 ```tsx
 class MessageHandler {
   constructor() {
-	this.messageId = 0;
+    this.messageId = 0;
   }
 
   generateId() {
-	return \`\${++this.messageId}_\${Date.now()}\`;
+    return \`\${++this.messageId}_\${Date.now()}\`;
   }
 
   async sendRequest(type, data = {}) {
-	return new Promise((resolve, reject) => {
-	  const id = this.generateId();
+    return new Promise((resolve, reject) => {
+      const id = this.generateId();
 
-	  const handler = (event) => {
-		if (event.data.id === id) {
-		  window.removeEventListener("message", handler);
-		  event.data.success === false
-			? reject(new Error(event.data.error))
-			: resolve(event.data.result);
-		}
-	  };
+      const handler = (event) => {
+        if (event.data.id === id) {
+          window.removeEventListener("message", handler);
+          event.data.success === false
+            ? reject(new Error(event.data.error))
+            : resolve(event.data.result);
+        }
+      };
 
-	  window.addEventListener("message", handler);
-	  window.parent.postMessage({ type, id, ...data }, "*");
-	});
+      window.addEventListener("message", handler);
+      window.parent.postMessage({ type, id, ...data }, "*");
+    });
   }
 
   sendMessage(message) {
-	window.parent.postMessage(message, "*");
+    window.parent.postMessage(message, "*");
   }
 }
 ```
@@ -96,40 +96,40 @@ Solution: Two-tier storage approach with local cache and parent sync
 // ✅ Use message passing for storage operations
 class LocalStorageService extends MessageHandler {
   constructor() {
-	super();
-	this.localStorage = ${JSON.stringify(this.getAllLocalStorage())};
+    super();
+    this.localStorage = ${JSON.stringify(this.getAllLocalStorage())};
   }
 
   getItem(key) {
-	return this.localStorage[key];
+    return this.localStorage[key];
   }
 
   setItem(key, value) {
-	this.localStorage[key] = value;
-	this.sendMessage({
-	  type: MESSAGE_TYPES.LOCAL_STORAGE,
-	  method: "setItem",
-	  params: { key, value },
-	});
-	return true;
+    this.localStorage[key] = value;
+    this.sendMessage({
+      type: MESSAGE_TYPES.LOCAL_STORAGE,
+      method: "setItem",
+      params: { key, value },
+    });
+    return true;
   }
 
   removeItem(key) {
-	delete this.localStorage[key];
-	this.sendMessage({
-	  type: MESSAGE_TYPES.LOCAL_STORAGE,
-	  method: "removeItem",
-	  params: { key },
-	});
-	return true;
+    delete this.localStorage[key];
+    this.sendMessage({
+      type: MESSAGE_TYPES.LOCAL_STORAGE,
+      method: "removeItem",
+      params: { key },
+    });
+    return true;
   }
 
   length() {
-	return Object.keys(this.localStorage).length;
+    return Object.keys(this.localStorage).length;
   }
 
   key(index) {
-	return Object.keys(this.localStorage)[index];
+    return Object.keys(this.localStorage)[index];
   }
 }
 ```
@@ -140,11 +140,11 @@ class LocalStorageService extends MessageHandler {
 // ✅ Proxy network requests through parent
 class IframeNetworkAdapter {
   async fetch(url: string, options?: RequestInit) {
-	return await this.sendRequest('network:fetch', { url, options });
+    return await this.sendRequest('network:fetch', { url, options });
   }
 
   async createWebSocket(url: string) {
-	return await this.sendRequest('network:websocket', { url });
+    return await this.sendRequest('network:websocket', { url });
   }
 }
 ```
@@ -158,24 +158,24 @@ class IframeNetworkAdapter {
 ```tsx
 class EmitterService extends MessageHandler {
   async emit(eventName, data) {
-	return this.sendRequest(MESSAGE_TYPES.EMITTER, {
-	  method: "emit",
-	  params: { eventName, data },
-	});
+    return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+      method: "emit",
+      params: { eventName, data },
+    });
   }
   
   async on(eventName, callback) {
-	return this.sendRequest(MESSAGE_TYPES.EMITTER, {
-	  method: "on",
-	  params: { eventName, callback },
-	});
+    return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+      method: "on",
+      params: { eventName, callback },
+    });
   }
   
   async off(eventName, callback) {
-	return this.sendRequest(MESSAGE_TYPES.EMITTER, {
-	  method: "off",
-	  params: { eventName, callback },
-	});
+    return this.sendRequest(MESSAGE_TYPES.EMITTER, {
+      method: "off",
+      params: { eventName, callback },
+    });
   }
 }
 ```
