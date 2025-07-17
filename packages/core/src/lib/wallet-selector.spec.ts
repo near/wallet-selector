@@ -33,7 +33,7 @@ global.localStorage = {
 jest.mock("./options", () => {
   return {
     ...jest.requireActual("./options"),
-    getNetworkPreset: jest.fn().mockResolvedValue({
+    getNetworkPreset: jest.fn().mockReturnValue({
       networkId: "testnet",
       nodeUrl: "http://node.example.com",
       helperUrl: "http://helper.example.com",
@@ -152,7 +152,7 @@ describe("setupWalletSelector", () => {
       () => mockedRpcProvider as unknown as FailoverRpcProvider
     );
 
-    const networkPreset = await getNetworkPreset("testnet", []);
+    const networkPreset = getNetworkPreset("testnet", []);
 
     await setupWalletSelector({
       ...params,
