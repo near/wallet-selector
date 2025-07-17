@@ -93,7 +93,7 @@
     "@bitte-ai/wallet": "0.8.2",
     "@here-wallet/core": "3.4.0",
     "@hot-wallet/sdk": "1.0.8",
-    "@jscutlery/semver": "5.3.1",
+    "@jscutlery/semver": "5.7.1",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.29.4",
     "@meteorwallet/sdk": "1.0.9",
