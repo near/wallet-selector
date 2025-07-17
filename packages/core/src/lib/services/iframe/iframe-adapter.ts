@@ -17,9 +17,12 @@ import type {
   Wallet,
   WalletBehaviourOptions,
 } from "../../wallet";
+import type { SignedMessage as SignerSignedMessage } from "@near-js/signers";
+import type { DelegateAction, SignedDelegate } from "@near-js/transactions";
 import type { IframeConfig } from "./iframe-manager";
 import { MessageBridge } from "./message-bridge";
 import { IframeManager } from "./iframe-manager";
+import type { PublicKey } from "@near-js/crypto";
 
 type WalletMethod =
   | "signIn"
@@ -31,7 +34,10 @@ type WalletMethod =
   | "signTransaction"
   | "signMessage"
   | "createSignedTransaction"
-  | "signMessage";
+  | "signMessage"
+  | "getPublicKey"
+  | "signNep413Message"
+  | "signDelegateAction";
 
 export class IframeWalletAdapter implements BaseWalletBehaviour {
   private readonly iframeManager: IframeManager;
@@ -100,6 +106,32 @@ export class IframeWalletAdapter implements BaseWalletBehaviour {
       receiverId,
       actions,
     });
+  }
+
+  async getPublicKey(): Promise<PublicKey> {
+    return this.executeMethod("getPublicKey");
+  }
+
+  async signNep413Message(
+    message: string,
+    accountId: string,
+    recipient: string,
+    nonce: Uint8Array,
+    callbackUrl?: string
+  ): Promise<SignerSignedMessage> {
+    return this.executeMethod("signNep413Message", {
+      message,
+      accountId,
+      recipient,
+      nonce,
+      callbackUrl,
+    });
+  }
+
+  async signDelegateAction(
+    delegateAction: DelegateAction
+  ): Promise<[Uint8Array, SignedDelegate]> {
+    return this.executeMethod("signDelegateAction", delegateAction);
   }
 
   private async ensureIframeReady(): Promise<void> {
