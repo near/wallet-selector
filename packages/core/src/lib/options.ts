@@ -40,6 +40,12 @@ export const resolveOptions = (params: WalletSelectorParams) => {
     optimizeWalletOrder: params.optimizeWalletOrder === false ? false : true,
     randomizeWalletOrder: params.randomizeWalletOrder || false,
     relayerUrl: params.relayerUrl || undefined,
+    createAccessKeyFor: params.createAccessKeyFor
+      ? {
+          contractId: params.createAccessKeyFor.contractId,
+          methodNames: params.createAccessKeyFor.methodNames,
+        }
+      : undefined,
   };
 
   return {

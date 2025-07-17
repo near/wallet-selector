@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ramper-wallet"
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ramper-wallet",
+  "publishConfig": {
+    "directory": "../../dist/packages/ramper-wallet"
+  }
 }

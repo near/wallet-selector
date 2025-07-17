@@ -55,6 +55,13 @@ export interface WalletSelectorParams {
    * Whether multiple RPC URLs are included, used for the FailoverRpcProvider.
    */
   fallbackRpcUrls?: Array<string>;
+  /**
+   * The contract ID and method names to create a function call access key for.
+   */
+  createAccessKeyFor?: {
+    contractId: string;
+    methodNames: Array<string>;
+  };
 }
 
 export type WalletSelectorStore = ReadOnlyStore;

@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/unity-wallet",
-  "version": "1.0.0",
+  "version": "9.0.3",
   "description": "Unity Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -22,7 +22,10 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/unity-wallet",
+  "publishConfig": {
+    "directory": "../../dist/packages/unity-wallet"
+  },
   "dependencies": {
-    "@near-wallet-selector/wallet-connect": "9.0.2"
+    "@near-wallet-selector/wallet-connect": "*"
   }
 }

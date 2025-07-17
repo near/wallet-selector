@@ -10,10 +10,8 @@ import type { ReadOnlyStore } from "../store.types";
 import type { Transaction, Action } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type {
-  SignedTransaction,
-  Transaction as nearAPITransaction,
-} from "near-api-js/lib/transaction";
+import type { SignedTransaction } from "near-api-js/lib/transaction";
+import type { Signer } from "@near-js/signers";
 
 interface BaseWalletMetadata {
   /**
@@ -125,7 +123,7 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-export interface BaseWalletBehaviour {
+export interface BaseWalletBehaviour extends Signer {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
    */
@@ -166,12 +164,6 @@ export interface BaseWalletBehaviour {
     receiverId: string,
     actions: Array<Action>
   ): Promise<SignedTransaction | void>;
-  /**
-   * Signs one or more transactions and returns a signed transaction that is ready to be broadcast to the network
-   */
-  signTransaction(
-    transaction: nearAPITransaction
-  ): Promise<[Uint8Array, SignedTransaction]>;
 }
 
 type BaseWallet<
@@ -338,12 +330,19 @@ export interface HardwareWalletSignInParams extends SignInParams {
   accounts: Array<HardwareWalletAccount>;
 }
 
+type GetPublicKeyForHardwareWallet = {
+  /** @deprecated this will be removed in favor for the function from {@link Signer} */
+  (derivationPath: string): Promise<string>;
+  (): ReturnType<Signer["getPublicKey"]>;
+};
+
 export type HardwareWalletBehaviour = Modify<
   BaseWalletBehaviour,
-  { signIn(params: HardwareWalletSignInParams): Promise<Array<Account>> }
-> & {
-  getPublicKey(derivationPath: string): Promise<string>;
-};
+  {
+    signIn(params: HardwareWalletSignInParams): Promise<Array<Account>>;
+    getPublicKey: GetPublicKeyForHardwareWallet;
+  }
+>;
 
 export type HardwareWallet = BaseWallet<
   "hardware",

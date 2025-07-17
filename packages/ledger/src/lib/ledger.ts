@@ -278,10 +278,33 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       return results;
     },
-    async getPublicKey(derivationPath: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async getPublicKey(derivationPath?: string): Promise<any> {
       await connectLedgerDevice();
 
-      return await _state.client.getPublicKey({ derivationPath });
+      if (typeof derivationPath === "string") {
+        return await _state.client.getPublicKey({ derivationPath });
+      } else {
+        const account = getActiveAccount(store.getState());
+
+        if (!account) {
+          throw new Error("No active account");
+        }
+
+        const activeAccount = _state.accounts.find(
+          ({ accountId }) => accountId === account.accountId
+        );
+
+        if (!activeAccount) {
+          throw new Error("No active account in state");
+        }
+
+        const pk = await _state.client.getPublicKey({
+          derivationPath: activeAccount.derivationPath,
+        });
+
+        return nearAPI.utils.PublicKey.fromString(pk);
+      }
     },
 
     async signMessage({
@@ -385,6 +408,24 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         transaction.signerId,
         options.network.networkId
       );
+    },
+
+    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
+      logger.log("signNep413Message", {
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl,
+      });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
+    },
+
+    async signDelegateAction(delegateAction) {
+      logger.log("signDelegateAction", { delegateAction });
+
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };
