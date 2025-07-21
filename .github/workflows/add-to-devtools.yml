@@ -15,7 +15,7 @@ jobs:
     name: Add issue/PR to project
     runs-on: ubuntu-latest
     # ignore on forks
-    if: github.repository == "near/wallet-selector"
+    if: ${{ github.repository }} == "near/wallet-selector"
     steps:
       - uses: actions/add-to-project@v1.0.0
         with:
