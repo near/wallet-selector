@@ -531,6 +531,13 @@ importers:
     publishDirectory: ../../dist/packages/ramper-wallet
 
   packages/react-hook:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/modal-ui':
+        specifier: workspace:*
+        version: link:../../dist/packages/modal-ui
     publishDirectory: ../../dist/packages/react-hook
 
   packages/sender:
