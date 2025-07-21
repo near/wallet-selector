@@ -8,14 +8,14 @@ The easiest way to use this package is to install it from the NPM registry, this
 
 ```bash
 # Using Yarn
-yarn add near-api-js@^1.0.0
+pnpm add -w near-api-js@^1.0.0
 
 # Using NPM.
 npm install near-api-js@^1.0.0
 ```
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/xdefi
+pnpm add -w @near-wallet-selector/xdefi
 
 # Using NPM.
 npm install @near-wallet-selector/xdefi

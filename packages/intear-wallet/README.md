@@ -8,7 +8,7 @@ The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/intear-wallet
+pnpm add -w @near-wallet-selector/intear-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/intear-wallet

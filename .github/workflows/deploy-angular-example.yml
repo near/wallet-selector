@@ -18,16 +18,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: yarn nx build angular
+        run: pnpm nx build angular
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

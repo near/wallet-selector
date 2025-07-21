@@ -10,14 +10,14 @@ The easiest way to use this package is to install it from the NPM registry, this
 
 ```bash
 # Using Yarn
-yarn add near-api-js
+pnpm add -w near-api-js
 
 # Using NPM.
 npm install near-api-js
 ```
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/meteor-wallet-app
+pnpm add -w @near-wallet-selector/meteor-wallet-app
 
 # Using NPM.
 npm install @near-wallet-selector/meteor-wallet-app
