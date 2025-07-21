@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ramper-wallet",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*"
   },
   "publishConfig": {
     "directory": "../../dist/packages/ramper-wallet"

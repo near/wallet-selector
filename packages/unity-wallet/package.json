@@ -26,6 +26,7 @@
     "directory": "../../dist/packages/unity-wallet"
   },
   "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-connect": "workspace:*"
   }
 }

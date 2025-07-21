@@ -461,15 +461,33 @@ importers:
         version: 5.8.0
 
   packages/arepa-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/arepa-wallet
 
   packages/bitget-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/bitget-wallet
 
   packages/bitte-wallet:
     publishDirectory: ../../dist/packages/bitte-wallet
 
   packages/coin98-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/coin98-wallet
 
   packages/core:
@@ -487,21 +505,54 @@ importers:
     publishDirectory: ../../dist/packages/ethereum-wallets
 
   packages/here-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/here-wallet
 
   packages/hot-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/hot-wallet
 
   packages/intear-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/intear-wallet
 
   packages/ledger:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/ledger
 
   packages/math-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/math-wallet
 
   packages/meteor-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/meteor-wallet
 
   packages/meteor-wallet-app:
@@ -519,12 +570,27 @@ importers:
     publishDirectory: ../../dist/packages/modal-ui
 
   packages/modal-ui-js:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/modal-ui-js
 
   packages/my-near-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/my-near-wallet
 
   packages/narwallets:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/narwallets
 
   packages/near-mobile-wallet:
@@ -535,12 +601,24 @@ importers:
     publishDirectory: ../../dist/packages/near-mobile-wallet
 
   packages/near-snap:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/near-snap
 
   packages/nightly:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/nightly
 
   packages/okx-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/okx-wallet
 
   packages/ramper-wallet:
@@ -548,6 +626,9 @@ importers:
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/ramper-wallet
 
   packages/react-hook:
@@ -561,10 +642,17 @@ importers:
     publishDirectory: ../../dist/packages/react-hook
 
   packages/sender:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/sender
 
   packages/unity-wallet:
     dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
       '@near-wallet-selector/wallet-connect':
         specifier: workspace:*
         version: link:../../dist/packages/wallet-connect
@@ -575,6 +663,9 @@ importers:
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
       near-api-js:
         specifier: 5.0.0
         version: 5.0.0(encoding@0.1.13)
@@ -582,15 +673,29 @@ importers:
 
   packages/wallet-utils:
     dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
       near-api-js:
         specifier: 5.0.0
         version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/wallet-utils
 
   packages/welldone-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
     publishDirectory: ../../dist/packages/welldone-wallet
 
   packages/xdefi:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/xdefi
 
 packages:
