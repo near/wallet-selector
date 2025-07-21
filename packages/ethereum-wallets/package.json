@@ -23,6 +23,9 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ethereum-wallets",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/ethereum-wallets"
   }

@@ -9,7 +9,7 @@ The easiest way to use this package is to install it from the NPM registry, this
 
 ```bash
 # Using Yarn
-yarn add near-api-js
+pnpm add -w near-api-js
 
 # Using NPM.
 npm install near-api-js
@@ -17,7 +17,7 @@ npm install near-api-js
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/nightly
+pnpm add -w @near-wallet-selector/nightly
 
 # Using NPM.
 npm install @near-wallet-selector/nightly

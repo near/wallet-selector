@@ -7,15 +7,15 @@ Make sure your node version is 18
 
 Then perform the build:
 ```bash
-yarn build:all
+pnpm build:all
 ```
 Need to add a separate dependency, otherwise a error `Module not found` will be reported.
 ```bash
-yarn add @near-wallet-selector/modal-ui
+pnpm add -w @near-wallet-selector/modal-ui
 ```
 Start the development server:
 ```bash
-yarn nx serve react
+pnpm nx serve react
 ```
 
 Open your web browser and navigate to http://localhost:4200/ to see the React example in action.

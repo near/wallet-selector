@@ -5,7 +5,7 @@ This Angular example shows how to integrate Near Wallet Selector into your Angul
 
 Start the development server:
 ```bash
-yarn nx serve angular
+pnpm nx serve angular
 ```
 
 Open your web browser and navigate to http://localhost:4200/wallet-selector to see the Angular example in action.
