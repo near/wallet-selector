@@ -480,6 +480,10 @@ importers:
     publishDirectory: ../../dist/packages/core
 
   packages/ethereum-wallets:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/ethereum-wallets
 
   packages/here-wallet:
@@ -501,9 +505,17 @@ importers:
     publishDirectory: ../../dist/packages/meteor-wallet
 
   packages/meteor-wallet-app:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/meteor-wallet-app
 
   packages/modal-ui:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/modal-ui
 
   packages/modal-ui-js:
@@ -516,6 +528,10 @@ importers:
     publishDirectory: ../../dist/packages/narwallets
 
   packages/near-mobile-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/near-mobile-wallet
 
   packages/near-snap:
@@ -528,6 +544,10 @@ importers:
     publishDirectory: ../../dist/packages/okx-wallet
 
   packages/ramper-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
     publishDirectory: ../../dist/packages/ramper-wallet
 
   packages/react-hook:
@@ -552,6 +572,9 @@ importers:
 
   packages/wallet-connect:
     dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
       near-api-js:
         specifier: 5.0.0
         version: 5.0.0(encoding@0.1.13)
