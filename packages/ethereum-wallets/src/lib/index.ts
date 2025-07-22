@@ -553,28 +553,35 @@ const EthereumWallets: WalletBehaviourFactory<
       await importBannedNearAddressesPackage();
     }
 
-    let restrictedActionError: string | null = null;
+    let restrictedActionError = "";
     for (let i = 0; i < nearTxs.length; i++) {
       for (let y = 0; y < nearTxs[i].actions.length; y++) {
         const action = nearTxs[i].actions[y];
-        if (action.type !== "FunctionCall") continue
-        let accountId = null 
+        if (action.type !== "FunctionCall") {
+          continue;
+        }
+        let accountId = null;
         if (action.params.methodName.includes("transfer")) {
           //@ts-ignore
           accountId = action.params?.args?.receiver_id;
-        } else if (action.params.methodName === 'storage_deposit') {
+        } else if (action.params.methodName === "storage_deposit") {
           //@ts-ignore
           accountId = action.params?.args?.account_id;
         }
 
-        if (accountId && bannedNearAddressesPackage?.isBannedNearAddress(accountId.toLowerCase())) {
+        if (
+          accountId &&
+          bannedNearAddressesPackage?.isBannedNearAddress(
+            accountId.toLowerCase()
+          )
+        ) {
           restrictedActionError = `Transferring funds to ${accountId} has been restricted due to security reasons in order to prevent users from losing funds. If you have any questions, feel free to contact NEAR Support through any official channel.`;
           break;
         }
       }
     }
 
-    if (restrictedActionError !== null) {
+    if (restrictedActionError) {
       await (() => {
         return new Promise<void>((_resolve, reject) => {
           const onCancel = () => {
@@ -587,7 +594,7 @@ const EthereumWallets: WalletBehaviourFactory<
           });
           showModal();
         });
-       })();
+      })();
     }
 
     const [accountLogIn] = await getAccounts();
