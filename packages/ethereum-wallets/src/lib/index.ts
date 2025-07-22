@@ -56,7 +56,11 @@ const importBannedNearAddressesPackage = async () => {
 };
 
 import icon from "./icon";
-import { createTxModal, createChainSwitchModal } from "./modal";
+import {
+  createTxModal,
+  createChainSwitchModal,
+  createMessageModal,
+} from "./modal";
 import {
   ETHEREUM_ACCOUNT_ABI,
   DEFAULT_ACCESS_KEY_ALLOWANCE,
@@ -545,6 +549,47 @@ const EthereumWallets: WalletBehaviourFactory<
     transactions: Array<Optional<Transaction, "signerId" | "receiverId">>
   ) => {
     const nearTxs = await transformTransactions(transactions);
+    if (bannedNearAddressesPackage === null) {
+      await importBannedNearAddressesPackage();
+    }
+
+    let restrictedActionError: string | null = null;
+    for (let i = 0; i < nearTxs.length; i++) {
+      for (let y = 0; y < nearTxs[i].actions.length; y++) {
+        const action = nearTxs[i].actions[y];
+        if (action.type !== "FunctionCall") continue
+        let accountId = null 
+        if (action.params.methodName.includes("transfer")) {
+          //@ts-ignore
+          accountId = action.params?.args?.receiver_id;
+        } else if (action.params.methodName === 'storage_deposit') {
+          //@ts-ignore
+          accountId = action.params?.args?.account_id;
+        }
+
+        if (accountId && bannedNearAddressesPackage?.isBannedNearAddress(accountId.toLowerCase())) {
+          restrictedActionError = `Transferring funds to ${accountId} has been restricted due to security reasons in order to prevent users from losing funds. If you have any questions, feel free to contact NEAR Support through any official channel.`;
+          break;
+        }
+      }
+    }
+
+    if (restrictedActionError !== null) {
+      await (() => {
+        return new Promise<void>((_resolve, reject) => {
+          const onCancel = () => {
+            reject(restrictedActionError);
+          };
+          const { showModal } = createMessageModal({
+            title: "Warning",
+            message: restrictedActionError,
+            onCancel,
+          });
+          showModal();
+        });
+       })();
+    }
+
     const [accountLogIn] = await getAccounts();
     // If transactions can be executed with FunctionCall access key do it, otherwise execute 1 by 1 with Ethereum wallet.
     if (accountLogIn.publicKey && nearTxs.length) {
