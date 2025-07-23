@@ -556,27 +556,34 @@ const EthereumWallets: WalletBehaviourFactory<
     let restrictedActionError = "";
     for (let i = 0; i < nearTxs.length; i++) {
       for (let y = 0; y < nearTxs[i].actions.length; y++) {
-        const action = nearTxs[i].actions[y];
-        if (action.type !== "FunctionCall") {
-          continue;
-        }
-        let accountId = null;
-        if (action.params.methodName.includes("transfer")) {
-          //@ts-ignore
-          accountId = action.params?.args?.receiver_id;
-        } else if (action.params.methodName === "storage_deposit") {
-          //@ts-ignore
-          accountId = action.params?.args?.account_id;
-        }
+        try {
+          const action = nearTxs[i].actions[y];
+          if (action.type !== "FunctionCall") {
+            continue;
+          }
+          let accountId = null;
+          if (action.params.methodName.includes("transfer")) {
+            //@ts-ignore
+            accountId = action.params?.args?.receiver_id;
+          } else if (action.params.methodName === "storage_deposit") {
+            //@ts-ignore
+            accountId = action.params?.args?.account_id;
+          }
 
-        if (
-          accountId &&
-          bannedNearAddressesPackage?.isBannedNearAddress(
-            accountId.toLowerCase()
-          )
-        ) {
-          restrictedActionError = `Transferring funds to ${accountId} has been restricted due to security reasons in order to prevent users from losing funds. If you have any questions, feel free to contact NEAR Support through any official channel.`;
-          break;
+          if (
+            accountId &&
+            bannedNearAddressesPackage?.isBannedNearAddress(
+              accountId.toLowerCase()
+            )
+          ) {
+            restrictedActionError = `Transferring funds to ${accountId} has been restricted due to security reasons in order to prevent users from losing funds. If you have any questions, feel free to contact NEAR Support through any official channel.`;
+            break;
+          }
+        } catch {
+          // eslint-disable-next-line no-console
+          console.error(
+            "Failed to validate NEAR transactions for transfers to restricted addresses."
+          );
         }
       }
     }
