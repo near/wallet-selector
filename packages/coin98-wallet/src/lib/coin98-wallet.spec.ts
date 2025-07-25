@@ -5,7 +5,7 @@ import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { InjectedWallet } from "../../../core/src/lib/wallet";
 import { setupCoin98Wallet } from "./coin98-wallet";
-import type { Signer } from "near-api-js/lib/signer";
+import type { Signer } from "near-api-js/lib/signer.js";
 
 const accountId = "amirsaran.testnet";
 const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";

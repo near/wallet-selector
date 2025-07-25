@@ -21,7 +21,7 @@ import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import icon from "./icon";
 import { serializeLedgerNEP413Payload } from "./nep413/ledger-payload";
 

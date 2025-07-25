@@ -4,14 +4,14 @@ import type {
   BlockReference,
   QueryResponseKind,
   RpcQueryRequest,
-} from "near-api-js/lib/providers/provider";
+} from "near-api-js/lib/providers/provider.js";
 import type {
   ProviderService,
   QueryParams,
   ViewAccessKeyParams,
 } from "./provider.service.types";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
+import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 
 export class Provider implements ProviderService {
   private provider: nearAPI.providers.FailoverRpcProvider;

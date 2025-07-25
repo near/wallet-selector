@@ -14,11 +14,11 @@ import {
   providers,
   transactions,
 } from "near-api-js";
-import type { KeyPairString, PublicKey } from "near-api-js/lib/utils";
-import { KeyPair, serialize } from "near-api-js/lib/utils";
+import type { KeyPairString, PublicKey } from "near-api-js/lib/utils/index.js";
+import { KeyPair, serialize } from "near-api-js/lib/utils/index.js";
 import * as borsh from "borsh";
-import { SCHEMA } from "near-api-js/lib/transaction";
-import type { JsonRpcProvider } from "near-api-js/lib/providers";
+import { SCHEMA } from "near-api-js/lib/transaction.js";
+import type { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
 
 const DEFAULT_POPUP_WIDTH = 480;
 const DEFAULT_POPUP_HEIGHT = 640;

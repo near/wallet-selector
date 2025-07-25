@@ -14,7 +14,7 @@ import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import icon from "./icon";
 
 declare global {

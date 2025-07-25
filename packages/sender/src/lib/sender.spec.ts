@@ -9,7 +9,7 @@ import type {
   SenderEvents,
   SignOutResponse,
 } from "./injected-sender";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import { setupSender } from "./sender";
 
 const accountId = "test-account.testnet";

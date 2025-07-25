@@ -1,7 +1,7 @@
 import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
 import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
+import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider.js";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (

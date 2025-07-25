@@ -14,8 +14,8 @@ import {
 } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
-import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import type { QueryResponseKind } from "near-api-js/lib/providers/provider.js";
+import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 
 class WalletError extends Error {
   constructor(message: string) {

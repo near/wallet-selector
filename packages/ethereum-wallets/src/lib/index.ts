@@ -4,10 +4,10 @@ import type {
   ExecutionStatus,
   FinalExecutionOutcome,
   FunctionCallPermissionView,
-} from "near-api-js/lib/providers/provider";
-import { JsonRpcProvider } from "near-api-js/lib/providers";
-import { stringifyJsonOrBytes } from "near-api-js/lib/transaction";
-import { parseRpcError } from "near-api-js/lib/utils/rpc_errors";
+} from "near-api-js/lib/providers/provider.js";
+import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
+import { stringifyJsonOrBytes } from "near-api-js/lib/transaction.js";
+import { parseRpcError } from "near-api-js/lib/utils/rpc_errors.js";
 import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
