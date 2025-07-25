@@ -4,18 +4,20 @@ import type {
   ViewAccessKeyParams,
 } from "./provider.service.types";
 import { mock } from "jest-mock-extended";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type { JsonRpcProvider } from "near-api-js/lib/providers";
+import type {
+  FinalExecutionOutcome,
+  JsonRpcProvider,
+} from "near-api-js/lib/providers/index.js";
 import * as nearAPI from "near-api-js";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
 } from "./provider.service.mocks";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 import type {
   BlockReference,
   BlockResult,
-} from "near-api-js/lib/providers/provider";
+} from "near-api-js/lib/providers/provider.js";
 
 const defaults = {
   url: "https://rpc.testnet.near.org",
