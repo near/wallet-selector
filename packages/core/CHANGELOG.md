@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.2.0
+
+### Patch Changes
+
+- [#1374](https://github.com/near/wallet-selector/pull/1374) [`d8b7902`](https://github.com/near/wallet-selector/commit/d8b79022492ffe3ea1a0f5b8204fb554f8b153bf) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Remove unnecessary await from getNetworkPreset function
+
 ## 9.1.0
 
 ### Patch Changes

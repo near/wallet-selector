@@ -1,5 +1,11 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 9.2.0
+
+### Minor Changes
+
+- [#1377](https://github.com/near/wallet-selector/pull/1377) [`9200528`](https://github.com/near/wallet-selector/commit/92005288d7ac8760cfca45365f8ae9e3bbcdfef1) Thanks [@yellowCrimsonGator](https://github.com/yellowCrimsonGator)! - Block tx to restricted adresses in eth wallet
+
 ## 9.1.0
 
 ### Minor Changes
