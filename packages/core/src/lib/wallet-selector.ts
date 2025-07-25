@@ -92,7 +92,7 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage);
-  const network = await getNetworkPreset(
+  const network = getNetworkPreset(
     options.network.networkId as NetworkId,
     params.fallbackRpcUrls
   );
