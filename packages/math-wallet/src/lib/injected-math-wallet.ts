@@ -1,4 +1,4 @@
-import type { Signer } from "near-api-js/lib/signer";
+import type { Signer } from "near-api-js/lib/signer.js";
 
 interface LoginParams {
   contractId?: string;

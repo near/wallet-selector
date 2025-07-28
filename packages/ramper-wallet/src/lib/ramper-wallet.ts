@@ -19,7 +19,7 @@ import {
   signIn,
   sendTransaction,
 } from "@ramper/near";
-import type { Action } from "near-api-js/lib/transaction";
+import type { Action } from "near-api-js/lib/transaction.js";
 
 interface RamperWalletState {
   wallet: InjectedRamperWallet;

@@ -10,8 +10,8 @@ import type {
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import * as nearAPITransactions from "near-api-js/lib/transaction";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+import * as nearAPITransactions from "near-api-js/lib/transaction.js";
 import icon from "./icon";
 
 declare global {

@@ -4,7 +4,7 @@ import type {
   WalletConnection,
   ConnectedWalletAccount,
 } from "near-api-js";
-import type { AccountView } from "near-api-js/lib/providers/provider";
+import type { AccountView } from "near-api-js/lib/providers/provider.js";
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
