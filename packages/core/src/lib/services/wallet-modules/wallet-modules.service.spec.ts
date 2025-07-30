@@ -442,6 +442,7 @@ describe("WalletModules", () => {
       });
 
       jest
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .spyOn(walletModules as any, "validateWallet")
         .mockResolvedValue(storedAccounts);
 
@@ -458,6 +459,7 @@ describe("WalletModules", () => {
         ) // REMEMBER_RECENT_WALLETS
         .mockResolvedValueOnce(JSON.stringify(storedRecentWallets)); // RECENTLY_SIGNED_IN_WALLETS
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await (walletModules as any).resolveStorageState();
 
       expect(result).toEqual({
