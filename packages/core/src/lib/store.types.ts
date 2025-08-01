@@ -1,7 +1,6 @@
 import type { BehaviorSubject, Observable } from "rxjs";
 
 import type { Wallet, Account } from "./wallet";
-import type { SignMessageMethod } from "./wallet";
 
 export interface ContractState {
   /**
@@ -34,7 +33,7 @@ export type ModuleState<Variation extends Wallet = Wallet> = {
   /**
    * Access functionality of the wallet.
    */
-  wallet(): Promise<Variation & SignMessageMethod>;
+  wallet(): Promise<Variation>;
 };
 
 export type AccountState = Account & {
@@ -86,6 +85,12 @@ export type WalletSelectorAction =
       type: "ADD_WALLET_MODULE";
       payload: {
         module: ModuleState;
+      };
+    }
+  | {
+      type: "ADD_WALLET_MODULES";
+      payload: {
+        modules: Array<ModuleState>;
       };
     }
   | {

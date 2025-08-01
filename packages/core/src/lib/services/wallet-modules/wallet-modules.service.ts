@@ -25,7 +25,6 @@ import {
   REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
-import type { SignMessageMethod } from "../../wallet";
 import type { ProviderService } from "../provider/provider.service.types";
 
 export class WalletModules {
@@ -37,7 +36,7 @@ export class WalletModules {
   private provider: ProviderService;
 
   private modules: Array<ModuleState>;
-  private instances: Record<string, Wallet & SignMessageMethod>;
+  private instances: Record<string, Wallet>;
 
   constructor({
     factories,
@@ -407,9 +406,13 @@ export class WalletModules {
     return wallet;
   }
 
-  private async setupInstance(
-    module: WalletModule
-  ): Promise<Wallet & SignMessageMethod> {
+  private async setupInstance(module: WalletModule): Promise<Wallet> {
+    let instance: Wallet = this.instances[module.id];
+
+    if (instance) {
+      return instance;
+    }
+
     if (!module.metadata.available) {
       const message =
         module.type === "injected" ? "not installed" : "not available";
@@ -433,7 +436,11 @@ export class WalletModules {
       })),
     } as Wallet;
 
-    return this.decorateWallet(wallet) as Wallet & SignMessageMethod;
+    instance = this.decorateWallet(wallet) as Wallet;
+
+    this.instances[module.id] = instance;
+
+    return instance;
   }
 
   private getModule(id: string | null) {
@@ -460,69 +467,51 @@ export class WalletModules {
     return (await module.wallet()) as Variation;
   }
 
-  async setup() {
-    await Promise.all(
+  private setupModule(
+    module: WalletModule | null,
+    listIndex: number
+  ): ModuleState | undefined {
+    if (!module) {
+      return undefined;
+    }
+
+    const moduleState = {
+      id: module.id,
+      type: module.type,
+      metadata: module.metadata,
+      listIndex,
+      wallet: () => this.setupInstance(module),
+    };
+
+    if (moduleState.type === "instant-link") {
+      // Instant link wallets are special and need to be setup separately.
+      this.setupInstantLinkWallet(moduleState);
+    }
+
+    return moduleState;
+  }
+
+  async setupWalletModules() {
+    const modules = (await Promise.all(
       this.factories.map((factory, i) =>
         factory({ options: this.options })
-          .then(async (module) => {
-            // Filter out wallets that aren't available.
-            if (!module) {
-              return;
-            }
-
-            const moduleState = {
-              id: module.id,
-              type: module.type,
-              metadata: module.metadata,
-              listIndex: i,
-              wallet: async () => {
-                let instance = this.instances[module.id];
-
-                if (instance) {
-                  return instance;
-                }
-
-                instance = await this.setupInstance(module);
-
-                this.instances[module.id] = instance;
-
-                return instance;
-              },
-            };
-
-            this.modules.push(moduleState);
-
-            this.store.dispatch({
-              type: "ADD_WALLET_MODULE",
-              payload: {
-                module: moduleState,
-              },
-            });
-
-            if (moduleState.type !== "instant-link") {
-              return;
-            }
-
-            const wallet = (await moduleState.wallet()) as InstantLinkWallet;
-            if (!wallet.metadata.runOnStartup) {
-              return;
-            }
-
-            try {
-              await wallet.signIn({ contractId: wallet.getContractId() });
-            } catch (err) {
-              logger.error(
-                "Failed to sign in to wallet. " + wallet.metadata.name + err
-              );
-            }
-          })
+          .then((module) => this.setupModule(module, i))
           .catch((err) => {
             logger.log("Failed to setup module");
             logger.error(err);
           })
       )
-    );
+    )) as Array<ModuleState>;
 
+    const filteredModules = modules.filter((x) => x !== undefined);
+    this.modules = filteredModules;
+    this.store.dispatch({
+      type: "ADD_WALLET_MODULES",
+      payload: { modules: filteredModules },
+    });
+  }
+
+  async setupStorage() {
     const {
       accounts,
       contract,
@@ -541,5 +530,26 @@ export class WalletModules {
         rememberRecentWallets,
       },
     });
+  }
+
+  private async setupInstantLinkWallet(
+    moduleState: ModuleState
+  ): Promise<void> {
+    if (moduleState.type !== "instant-link") {
+      return;
+    }
+
+    const wallet = (await moduleState.wallet()) as InstantLinkWallet;
+    if (!wallet.metadata.runOnStartup) {
+      return;
+    }
+
+    try {
+      await wallet.signIn({ contractId: wallet.getContractId() });
+    } catch (err) {
+      logger.error(
+        "Failed to sign in to wallet. " + wallet.metadata.name + err
+      );
+    }
   }
 }

@@ -8,7 +8,6 @@ import type {
   FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import icon from "./icon";
-import { waitFor } from "@near-wallet-selector/core";
 
 declare global {
   interface Window {
@@ -97,8 +96,7 @@ const sendToNarwallets = (
 };
 
 const isInstalled = async (): Promise<boolean> => {
-  // Note: sendToNarwallets throws if not installed
-  return waitFor(() => !!window.narwallets).catch(() => false);
+  return !!window.narwallets;
 };
 
 const isSignedIn = (): Promise<Resolve> => {

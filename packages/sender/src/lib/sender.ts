@@ -29,7 +29,7 @@ interface SenderState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.near?.isSender).catch(() => false);
+  return !!window.near?.isSender;
 };
 
 const setupSenderState = (): SenderState => {

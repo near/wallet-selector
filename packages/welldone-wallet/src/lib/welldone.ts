@@ -15,7 +15,6 @@ import type {
 import {
   isCurrentBrowserSupported,
   serializeNep413,
-  waitFor,
 } from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
@@ -36,7 +35,7 @@ declare global {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.dapp).catch(() => false);
+  return !!window.dapp;
 };
 
 async function setupWalletState(

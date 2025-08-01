@@ -7,7 +7,6 @@ import type {
   WalletModuleFactory,
   WalletSelectorStore,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import { isMobile } from "is-mobile";
 import icon from "./icon";
 import type { InjectedXDEFI, NearXDEFI } from "./injected-xdefi";
@@ -42,7 +41,7 @@ const setupXDEFIState = async (
 };
 
 const isInstalled = () => {
-  return waitFor(() => !!window.xfi?.near).catch(() => false);
+  return !!window.xfi?.near;
 };
 
 const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({

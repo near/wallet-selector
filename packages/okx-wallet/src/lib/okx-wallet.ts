@@ -45,7 +45,7 @@ interface OkxState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.okxwallet?.near).catch(() => false);
+  return !!window.okxwallet?.near;
 };
 
 const setupOkxState = (): OkxState => {
