@@ -1,5 +1,7 @@
 # @near-wallet-selector/wallet-connect
 
+## 9.3.0
+
 ## 9.2.0
 
 ### Patch Changes

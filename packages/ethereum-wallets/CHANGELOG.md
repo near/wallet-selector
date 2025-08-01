@@ -1,5 +1,11 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 9.3.0
+
+### Minor Changes
+
+- [#1382](https://github.com/near/wallet-selector/pull/1382) [`7c9bda8`](https://github.com/near/wallet-selector/commit/7c9bda8ee997b19d6d0f97b371e385c628019acb) Thanks [@yellowCrimsonGator](https://github.com/yellowCrimsonGator)! - Block Native Near transfers to restricted ETH addresses
+
 ## 9.2.0
 
 ### Minor Changes
