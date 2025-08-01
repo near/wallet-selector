@@ -555,19 +555,21 @@ const EthereumWallets: WalletBehaviourFactory<
 
     let restrictedActionError = "";
     for (let i = 0; i < nearTxs.length; i++) {
-      for (let y = 0; y < nearTxs[i].actions.length; y++) {
+      const tx = nearTxs[i];
+      for (let y = 0; y < tx.actions.length; y++) {
         try {
-          const action = nearTxs[i].actions[y];
-          if (action.type !== "FunctionCall") {
-            continue;
-          }
+          const action = tx.actions[y];
           let accountId = null;
-          if (action.params.methodName.includes("transfer")) {
-            //@ts-ignore
-            accountId = action.params?.args?.receiver_id;
-          } else if (action.params.methodName === "storage_deposit") {
-            //@ts-ignore
-            accountId = action.params?.args?.account_id;
+          if (action.type === "Transfer") {
+            accountId = tx.receiverId;
+          } else if (action.type === "FunctionCall") {
+            if (action.params.methodName.includes("transfer")) {
+              //@ts-ignore
+              accountId = action.params?.args?.receiver_id;
+            } else if (action.params.methodName === "storage_deposit") {
+              //@ts-ignore
+              accountId = action.params?.args?.account_id;
+            }
           }
 
           if (
