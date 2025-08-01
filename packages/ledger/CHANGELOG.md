@@ -1,5 +1,7 @@
 # @near-wallet-selector/ledger
 
+## 9.3.0
+
 ## 9.2.0
 
 ### Patch Changes
