@@ -29,7 +29,7 @@ interface BitgetWalletState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.bitkeep.near).catch(() => false);
+  return !!window.bitkeep.near;
 };
 
 const setupBitgetWalletState = (): BitgetWalletState => {
