@@ -5,26 +5,18 @@ import type {
   AccountView,
   CodeResult,
 } from "near-api-js/lib/providers/provider";
-import type {
-  AccountState,
-  SignMessageParams,
-  SignedMessage,
-  Transaction,
-} from "@near-wallet-selector/core";
-import {
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import type { AccountState, Transaction } from "@near-wallet-selector/core";
 
 import type { Message } from "../../interfaces/message";
 import type { Submitted } from "../form/form.component";
 import type { Account } from "../../interfaces/account";
 import type { Subscription } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui-js";
+import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { CONTRACT_ID } from "../../../constants";
 import { WalletSelector } from "@near-wallet-selector/core";
 import type { GetAccountBalanceProps } from "../../interfaces/account-balance";
+import BN from "bn.js";
 
 const SUGGESTED_DONATION = "0";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -56,7 +48,6 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.messages = messages;
 
     this.subscribeToEvents();
-    await this.verifyMessageBrowserWallet();
   }
 
   async getAccountBalance({ provider, accountId }: GetAccountBalanceProps) {
@@ -66,8 +57,8 @@ export class ContentComponent implements OnInit, OnDestroy {
         finality: "final",
         account_id: accountId,
       });
-      const bn = BigInt(amount);
-      return { hasBalance: bn !== BigInt(0) };
+      const bn = new BN(amount);
+      return { hasBalance: !bn.isZero() };
     } catch {
       return { hasBalance: false };
     }
@@ -167,103 +158,6 @@ export class ContentComponent implements OnInit, OnDestroy {
       const message =
         err instanceof Error ? err.message : "Something went wrong";
       alert(message);
-    }
-  }
-
-  async verifyMessage(
-    message: SignMessageParams,
-    signedMessage: SignedMessage
-  ) {
-    const verifiedSignature = verifySignature({
-      message: message.message,
-      nonce: message.nonce,
-      recipient: message.recipient,
-      publicKey: signedMessage.publicKey,
-      signature: signedMessage.signature,
-      callbackUrl: message.callbackUrl,
-    });
-    const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-      publicKey: signedMessage.publicKey,
-      accountId: signedMessage.accountId,
-      network: this.selector.options.network,
-    });
-
-    const isMessageVerified = verifiedFullKeyBelongsToUser && verifiedSignature;
-
-    const alertMessage = isMessageVerified
-      ? "Successfully verified"
-      : "Failed to verify";
-
-    alert(
-      `${alertMessage} signed message: '${
-        message.message
-      }': \n ${JSON.stringify(signedMessage)}`
-    );
-  }
-
-  async verifyMessageBrowserWallet() {
-    const urlParams = new URLSearchParams(
-      window.location.hash.substring(1) // skip the first char (#)
-    );
-
-    const accId = urlParams.get("accountId") as string;
-    const publicKey = urlParams.get("publicKey") as string;
-    const signature = urlParams.get("signature") as string;
-
-    if (!accId && !publicKey && !signature) {
-      return;
-    }
-
-    const message: SignMessageParams = JSON.parse(
-      localStorage.getItem("message") as string
-    );
-
-    const signedMessage = {
-      accountId: accId,
-      publicKey,
-      signature,
-    };
-
-    await this.verifyMessage(message, signedMessage);
-
-    const url = new URL(location.href);
-    url.hash = "";
-    url.search = "";
-    window.history.replaceState({}, document.title, url);
-    localStorage.removeItem("message");
-  }
-
-  async onSignMessage() {
-    const wallet = await this.selector.wallet();
-    const message = "test message to sign";
-    const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32)));
-    const recipient = "guest-book.testnet";
-
-    if (wallet.type === "browser") {
-      localStorage.setItem(
-        "message",
-        JSON.stringify({
-          message,
-          nonce: [...nonce],
-          recipient,
-          callbackUrl: location.href,
-        })
-      );
-    }
-
-    try {
-      const signedMessage = await wallet.signMessage({
-        message,
-        nonce,
-        recipient,
-      });
-      if (signedMessage) {
-        await this.verifyMessage({ message, nonce, recipient }, signedMessage);
-      }
-    } catch (err) {
-      const errMsg =
-        err instanceof Error ? err.message : "Something went wrong";
-      alert(errMsg);
     }
   }
 

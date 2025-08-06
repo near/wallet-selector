@@ -1,11 +1,10 @@
 {
-  "name": "core",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/core/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/core",
@@ -13,7 +12,7 @@
         "project": "packages/core/package.json",
         "entryFile": "packages/core/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "cjs"],
@@ -27,15 +26,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/core/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/core"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/core"],
       "options": {
         "jestConfig": "packages/core/jest.config.ts",
         "passWithNoTests": true
@@ -63,8 +62,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": []

@@ -10,8 +10,7 @@ import type {
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
-import * as nearAPITransactions from "near-api-js/lib/transaction.js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
 declare global {
@@ -60,7 +59,12 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return [
       {
         accountId: account.accountId,
-        publicKey: account.publicKey,
+        publicKey: (
+          await _state.wallet.signer.getPublicKey(
+            account.accountId,
+            options.network.networkId
+          )
+        ).toString(),
       },
     ];
   };
@@ -181,53 +185,6 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       return results;
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ receiverId, actions }]),
-        _state.wallet.signer,
-        options.network
-      );
-
-      return signedTx;
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      return await nearAPITransactions.signTransaction(
-        transaction,
-        _state.wallet.signer,
-        transaction.signerId,
-        options.network.networkId
-      );
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

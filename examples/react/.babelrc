@@ -1,4 +1,4 @@
 {
-  "presets": ["@nx/next/babel"],
+  "presets": ["@nrwl/next/babel"],
   "plugins": []
 }

@@ -9,11 +9,13 @@ import type {
   WalletEvents,
   Account,
 } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import { isMobile } from "is-mobile";
 import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import { utils, transactions as nearTransactions } from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
 declare global {
@@ -58,7 +60,7 @@ const setupNightlyState = async (
   };
 };
 const isInstalled = () => {
-  return !!window.nightly?.near;
+  return waitFor(() => !!window.nightly?.near).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
@@ -114,7 +116,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find public key for account");
       }
-      return nearAPI.utils.PublicKey.from(account.publicKey!);
+      return utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       const accounts = getAccounts();
@@ -125,9 +127,7 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       try {
-        const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message)
-        );
+        const tx = nearTransactions.Transaction.decode(Buffer.from(message));
         const signedTx = await _state.wallet.signTransaction(tx);
 
         return {
@@ -183,28 +183,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error(`Method not supported by ${metadata.name}`);
     },
 
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("Nightly:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      if (!_state.wallet.isConnected) {
-        await _state.wallet.connect();
-      }
-
-      const signature = await _state.wallet.signMessage({
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      return signature;
-    },
-
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
 
@@ -241,53 +219,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       return results;
     },
 
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ receiverId, actions }]),
-        signer,
-        options.network
-      );
-
-      return signedTx;
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
-        transaction.signerId,
-        options.network.networkId
-      );
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
     async importAccountsInSecureContext(params) {
       _state.wallet.importWalletsNear(params.accounts);
     },
@@ -303,6 +234,11 @@ export function setupNightly({
   deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
+    const mobile = isMobile();
+    if (mobile) {
+      return null;
+    }
+
     const installed = await isInstalled();
 
     return {

@@ -20,9 +20,9 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNarwallets } from "@near-wallet-selector/narwallets";
 
-// Narwallets for Wallet Selector can be setup without any params or it can take few optional params, see options below.
+// Narwallets for Wallet Selector can be setup without any params or it can take one optional param.
 const narwallets = setupNarwallets({
-  iconUrl: "https://<Wallet Icon URL Here>" // optional
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png" //optional
 });
 
 const selector = await setupWalletSelector({
@@ -34,7 +34,6 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/narwallets-logo.png`.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 

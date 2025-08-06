@@ -1,12 +1,13 @@
 {
-  "name": "react",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "examples/react",
   "sourceRoot": "examples/react",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nrwl/next:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "root": "examples/react",
@@ -14,12 +15,12 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "packages/my-near-wallet/assets/",
+            "input": "packages/near-wallet/assets/",
             "output": "assets/"
           },
           {
             "glob": "**/*",
-            "input": "packages/hot-wallet/assets/",
+            "input": "packages/my-near-wallet/assets/",
             "output": "assets/"
           },
           {
@@ -29,7 +30,7 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/xdefi/assets/",
+            "input": "packages/nearfi/assets/",
             "output": "assets/"
           },
           {
@@ -54,6 +55,16 @@
           },
           {
             "glob": "**/*",
+            "input": "packages/nightly-connect/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/narwallets/assets/",
+            "output": "assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "packages/meteor-wallet/assets/",
             "output": "assets/"
           },
@@ -69,60 +80,22 @@
           },
           {
             "glob": "**/*",
-            "input": "packages/hot-wallet/assets/",
+            "input": "packages/opto-wallet/assets/",
             "output": "assets/"
           },
           {
             "glob": "**/*",
-            "input": "packages/narwallets/assets/",
+            "input": "packages/finer-wallet/assets/",
             "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/near-snap/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/ramper-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/unity-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/near-mobile-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/okx-wallet/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/ethereum-wallets/assets/",
-            "output": "assets/"
-          },
-          {
-            "glob": "**/*",
-            "input": "packages/react-hook/",
-            "output": "/"
           }
         ]
       },
       "configurations": {
-        "production": {},
-        "development": {
-          "outputPath": "examples/react"
-        }
+        "production": {}
       }
     },
     "serve": {
-      "executor": "@nx/next:server",
+      "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "react:build",
         "dev": true
@@ -135,16 +108,20 @@
       }
     },
     "export": {
-      "executor": "@nx/next:export",
+      "executor": "@nrwl/next:export",
       "options": {
         "buildTarget": "next:build:production"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["examples/react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "examples/react/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },

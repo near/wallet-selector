@@ -12,8 +12,6 @@ import {
   CONTRACT,
   SELECTED_WALLET_ID,
   RECENTLY_SIGNED_IN_WALLETS,
-  REMEMBER_RECENT_WALLETS,
-  REMEMBER_RECENT_WALLETS_STATE,
 } from "./constants";
 
 const reducer = (
@@ -23,13 +21,13 @@ const reducer = (
   logger.log("Store Action", action);
 
   switch (action.type) {
-    case "SETUP": {
+    case "SETUP_WALLET_MODULES": {
       const {
+        modules,
         accounts,
         contract,
         selectedWalletId,
         recentlySignedInWallets,
-        rememberRecentWallets,
       } = action.payload;
 
       const accountStates = accounts.map((account, i) => {
@@ -41,35 +39,11 @@ const reducer = (
 
       return {
         ...state,
+        modules,
         accounts: accountStates,
         contract,
         selectedWalletId,
         recentlySignedInWallets,
-        rememberRecentWallets,
-      };
-    }
-    case "ADD_WALLET_MODULE": {
-      const { module } = action.payload;
-      let modules = [...state.modules, module];
-
-      // sort by listIndex
-      modules = modules.sort((a, b) => a.listIndex - b.listIndex);
-
-      return {
-        ...state,
-        modules,
-      };
-    }
-    case "ADD_WALLET_MODULES": {
-      const { modules: newModules } = action.payload;
-      let modules = [...state.modules, ...newModules];
-
-      // sort by listIndex
-      modules = modules.sort((a, b) => a.listIndex - b.listIndex);
-
-      return {
-        ...state,
-        modules,
       };
     }
     case "WALLET_CONNECTED": {
@@ -155,33 +129,6 @@ const reducer = (
         accounts: accountStates,
       };
     }
-    case "SET_REMEMBER_RECENT_WALLETS": {
-      const { selectedWalletId, recentlySignedInWallets } = state;
-      const { rememberRecentWallets } = action.payload;
-      const newRecentWallets =
-        rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED
-          ? REMEMBER_RECENT_WALLETS_STATE.DISABLED
-          : REMEMBER_RECENT_WALLETS_STATE.ENABLED;
-
-      const newWalletsVal = [...recentlySignedInWallets];
-      if (
-        selectedWalletId &&
-        !recentlySignedInWallets.includes(selectedWalletId)
-      ) {
-        newWalletsVal.push(selectedWalletId);
-      }
-
-      const newRecentlySignedInWallets =
-        newRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED
-          ? newWalletsVal
-          : [];
-
-      return {
-        ...state,
-        rememberRecentWallets: newRecentWallets,
-        recentlySignedInWallets: newRecentlySignedInWallets,
-      };
-    }
     default:
       return state;
   }
@@ -196,8 +143,6 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
     selectedWalletId: await jsonStorage.getItem(SELECTED_WALLET_ID),
     recentlySignedInWallets:
       (await jsonStorage.getItem(RECENTLY_SIGNED_IN_WALLETS)) || [],
-    rememberRecentWallets:
-      (await jsonStorage.getItem(REMEMBER_RECENT_WALLETS)) || "",
   };
 
   const state$ = new BehaviorSubject(initialState);
@@ -232,12 +177,6 @@ export const createStore = async (storage: StorageService): Promise<Store> => {
       state,
       RECENTLY_SIGNED_IN_WALLETS,
       "recentlySignedInWallets"
-    );
-    syncStorage(
-      prevState,
-      state,
-      REMEMBER_RECENT_WALLETS,
-      "rememberRecentWallets"
     );
     prevState = state;
   });

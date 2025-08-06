@@ -1,27 +1,5 @@
 # Contributing
 
-## Installation
-
-### (Optional) Proto for Node and Yarn version management
-
-This project makes use of yarn version 1 (classic). Developers can use [proto](https://moonrepo.dev/proto) to match the compatible versions for Yarn and Node:
-
-```
-proto use
-```
-
-This will install the correct versions of Node and Yarn for development.
-
-### Install project dependencies
-
-```
-yarn
-```
-
-This should download all required dependencies and build out the project modules.
-
-## NX Dependency Management
-
 This project is using an [NX](https://nx.dev) style [monorepository](https://monorepo.tools) that helps divide and map the project dependencies for each project.
 
 The core modules are in the `packages` directory and the example apps are in the `examples` directory. In order to figure out the commands you need to run, you can use the `nx` command line tool.
@@ -55,76 +33,49 @@ Build and deploy angular example
 yarn nx build angular # build the angular example
 yarn nx deploy angular # deploys angular example to gh-pages
 ```
-# Submitting a PR
-The initial comment has instructions. For your PR to be considered, you must select a template, include details, and make the appropriate selections from the checkboxes provided.
 
-1. Select the preview tab.
-2. Select the applicable template. This replaces the comment with the correct placeholder text.
-
-![Submit PR Step 1](https://github.com/near/wallet-selector/blob/main/images/submit_PR_step_1.png)
-![Submit PR Step 2](https://github.com/near/wallet-selector/blob/main/images/submit_PR_step_2.png)
 
 # Branching
 
-This project uses a main-only branch strategy. Pushing or committing directly to the `main` branch is forbidden.
+In this project there are two important branches `main` and `dev` branch. Pushing or committing directly in these two branches is forbidden.
 
 ### Main branch
 
-This is the default branch and serves as the single source of truth for development and releases. All features, fixes, and improvements are merged directly into this branch after review.
+This is the default branch and will be equal the latest official release.
 
-### Feature branches
+### Dev Branch
 
-When adding new features/fixes, team members must always create a new branch locally based on the latest changes of the `main` branch.
-When your work is ready, a pull request should be opened from your feature branch to `main`. When your PR is reviewed and approved, it can be merged.
+This is the branch for development used by the team and/or other contributors from the community.
+New features, fixes and other improvements are first implemented and tested in this
+branch.
+When adding new features/fixes team members must always create a new branch locally based on latest changes of `dev` branch.
+When your work is ready a merge request should be opened from your branch to `dev`. When your PR is reviewed and approved then it can be merged.
 
 ### Other branches
 
-Except the `main` branch, other branches are work in progress by the team or related to open PR(s).
+Except `main` and `dev` branch other branches are work in progress by the team or related to the open PR(s).
 
 # Release Process
 
-This project uses [Changesets](https://github.com/changesets/changesets) for managing releases and versioning. When contributing changes, you should include a changeset that describes your changes.
+Once the planned work has been finished and the set date has arrived a merge request from `dev` to `main` should be made.
+After merging only two steps remain:</br>
+ - Publish packages to NPM.
+ - Draft release in Github.
 
-## Adding a Changeset
-
-When making changes that should be included in a release, add a changeset by running:
-
-```bash
-yarn changeset
-```
-
-This will prompt you to:
-1. Select which packages your changes affect
-2. Choose the type of change (major, minor, or patch)
-3. Provide a summary of your changes
-
-The changeset will be created as a markdown file in the `.changeset` directory and should be committed with your changes.
-
-## Release Process
-
-Once the planned work has been finished and tested, releases are created directly from the `main` branch using changesets.
-The release process involves:</br>
- - Changesets automatically manage version bumping based on the accumulated changesets
- - Publish packages to NPM using the changeset workflow
- - Draft release in Github with auto-generated changelog
-
-Since `main` is the default branch of this project, it will always reflect the latest stable state of the codebase.</br> In case of a `pre-release`, a specific branch will be linked to the `pre-release` version(tag).
+Since `main` is the default branch of this project in case of regular release it will be always equal to the latest release.</br> In case of a `pre-release`  a specific branch will be linked to the `pre-release` version(tag).
 
 # Listing Criteria for Third Party Wallet on Wallet Selector
 
 Criteria for Including New Wallets for Wallet Selector
 # Wallet Product Criteria:
 
-A wallet project must implement and comply with the following product criteria to be listed on the Wallet Selector:
+A wallet project must have comply the following product criteria to listed on Wallet Selector.
 
-1. Custody of account must be fully disclosed. In the case of 3rd party identity services, the wallet's onboarding information must include the use of custodial identity services.
-2. Encryption passwords per session are allowed. You must inform the user that a) the password prompt is to encrypt local data and b) that the password expires at the end of the session.
-3. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards;
-   * Injected Wallet Standards - https://github.com/near/NEPs/pull/408
-   * Bridged Wallet Standards - https://github.com/near/NEPs/pull/368
-5. Ease of use: The wallet product provides a usable interface for the end users. Please provide a user guide.
-6. Ability to recover accounts: The wallet product allows users to be able to recover accounts.
-7. Actively maintained: The wallet is actively maintained by a team and can provide user support.
+1. Non-custodial: The user controls their fund.
+2. Conformity to Wallet Standards: The wallet product conforms to NEAR NEP wallet standards. (Injected Wallet https://github.com/near/NEPs/pull/408 and  Bridged Wallet https://github.com/near/NEPs/pull/368)
+3. Ease of use: The wallet product provides a usable interface for the end users. Please provide a user guide.
+4. Ability to recover accounts: The wallet product allows users to be able to recover accounts.
+5. Actively maintained: The wallet is actively maintained by a team and can provide user support.
 
 # Wallet Security Criteria:
 

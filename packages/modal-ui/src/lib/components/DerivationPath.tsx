@@ -11,10 +11,8 @@ import HardwareWalletAccountsForm from "./HardwareWalletAccountsForm";
 import { WalletConnecting } from "./WalletConnecting";
 import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
-import { LedgerDeviceIcon } from "./icons/LedgerDeviceIcon";
+import { LedgerDeviceIcon } from "./LedgerDeviceIcon";
 import { translate } from "@near-wallet-selector/core";
-import { UpArrowIcon } from "./icons/UpArrowIcon";
-import { DownArrowIcon } from "./icons/DownArrowIcon";
 
 interface DerivationPathProps {
   selector: WalletSelector;
@@ -65,23 +63,25 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
   const [customAccountId, setCustomAccountId] = useState("");
   const [connecting, setConnecting] = useState(false);
 
-  const initialHeaderTitle = translate("modal.ledger.connectWithLedger");
-  const [headerTitle, setHeaderTitle] = useState(initialHeaderTitle);
+  const initalHeaderTitle = translate("modal.ledger.connectWithLedger");
+  const [headerTitle, setHeaderTitle] = useState(initalHeaderTitle);
 
   const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
-    const url = `${selector.options.network.indexerUrl}/public_key/ed25519:${publicKey}`;
-    const response = await fetch(url);
+    const response = await fetch(
+      `${selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to get account ID from public key");
+      throw new Error("Failed to get account id from public key");
     }
 
-    const jsonResponse: { account_ids: Array<string>; public_key: string } =
-      await response.json();
+    const accountIds = await response.json();
 
-    const { account_ids: accountIds } = jsonResponse;
+    if (!Array.isArray(accountIds) || !accountIds.length) {
+      return [];
+    }
 
-    return Array.isArray(accountIds) ? accountIds : [];
+    return accountIds;
   };
 
   const resolveAccounts = async (
@@ -133,7 +133,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
       setAccounts(resolvedAccounts);
 
       if (!multipleAccounts) {
-        setSelectedAccounts(resolvedAccounts);
         setRoute("OverviewAccounts");
       } else {
         setHeaderTitle(translate("modal.ledger.selectYourAccounts"));
@@ -142,9 +141,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     } catch (err) {
       setConnecting(false);
       const message =
-        err && typeof err === "object" && "message" in err
-          ? (err as { message: string }).message
-          : "Something went wrong";
+        err instanceof Error ? err.message : "Something went wrong";
 
       onError(message, wallet);
     } finally {
@@ -174,9 +171,7 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
     } catch (err) {
       setConnecting(false);
       const message =
-        err && typeof err === "object" && "message" in err
-          ? (err as { message: string }).message
-          : "Something went wrong";
+        err instanceof Error ? err.message : "Something went wrong";
       onError(message, hardwareWallet!);
     } finally {
       setConnecting(false);
@@ -292,7 +287,21 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                       setCustomDerivationPath(newValue);
                     }}
                   >
-                    <UpArrowIcon />
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 5.4762L5 1.4762L1 5.4762"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
 
                   <button
@@ -308,7 +317,21 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
                       setCustomDerivationPath(newValue);
                     }}
                   >
-                    <DownArrowIcon />
+                    <svg
+                      width="10"
+                      height="7"
+                      viewBox="0 0 10 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.52382L5 5.52382L9 1.52382"
+                        stroke="#4F7CD1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                 </div>
               </div>

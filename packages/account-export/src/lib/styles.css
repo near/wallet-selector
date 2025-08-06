@@ -1,0 +1,276 @@
+/* TODO: Find a way to import styles.css file from modal-ui */
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .import-content {
+  width: auto;
+}
+
+.nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar .import-content .title {
+  font-size: 14px;
+  color: var(--wallet-selector-heading-color, var(--heading-color));
+  margin-left: 10px;
+}
+
+.import-content .import-type {
+  font-size: 10px;
+  margin-left: 10px;
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+.nws-modal-wrapper .nws-modal .modal-right .middleContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 100%;
+}
+
+
+.nws-modal-wrapper .nws-modal .modal-right .middleContainer p {
+  margin: 0;
+  text-align: center;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton:disabled,
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton[disabled]{
+  cursor: not-allowed;
+  background-color: var(--wallet-selector-home-button-bg, var(--home-button-bg));
+  color: #606060;
+  border: none;
+}
+
+
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton.account-export-button {
+  width: 240px;
+  margin-bottom: 30px;
+}
+
+.checkbox {
+  position: relative;
+  display: block;
+}
+
+.checkbox label {
+  position: relative;
+  display: block;
+  padding-left: 40px;
+  margin-bottom: 0;
+  cursor: pointer;
+  color: var(--wallet-selector-heading-color, var(--heading-color));
+}
+
+.checkbox label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  margin: 4px;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.28s ease;
+  border-radius: 3px;
+  border: 2px solid #C1C1C1;
+}
+
+.checkbox label::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 5px;
+  border-bottom: 2px solid #4FD98F;
+  border-left: 2px solid #4FD98F;
+  transform: rotate(-45deg) scale(0);
+  transition: transform ease 0.25s;
+  position: absolute;
+  top: 8px;
+  left: 10px;
+}
+
+.checkbox input[type="checkbox"] {
+  width: auto;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  margin-left: -20px;
+}
+
+.checkbox input[type="checkbox"]:checked + label::before {
+  border: 2px solid #4FD98F;
+  background-color: rgba(79, 217, 143, 0.3);
+}
+
+.checkbox input[type="checkbox"]:checked + label::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.checkbox input[type="checkbox"]:focus + label::before {
+  outline: 0;
+}
+
+.checkbox input[type="checkbox"]:disabled + label {
+  color: var(--wallet-selector-text-color, var(--text-color));
+  cursor: not-allowed;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox input[type="checkbox"]:disabled + label > span.error {
+  color: var(--wallet-selector-error, var(--error));
+  font-size: 10px;
+}
+
+.checkbox input[type="checkbox"]:disabled + label > span.warning {
+  color: #E9B870;
+  font-size: 10px;
+}
+
+.checkbox input[type="checkbox"]:disabled + label::before {
+  border: 2px solid #606060;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy {
+  position: relative;
+  cursor: copy;
+  background-color: transparent;
+  display: block;
+  margin: 0 auto;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy > .copy-success {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  text-align: center;
+  background-color: #8decc6;
+  color: #005a46;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+  top: -30px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 200ms;
+  font-weight: 400;
+}
+
+.nws-modal-wrapper .nws-modal .nws-modal-body .click-to-copy > .copy-success.show {
+  top: -40px;
+  opacity: 1;
+}
+
+/************* Import Accounts **********/
+.account-export-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-export {
+  height: 100%;
+  margin-top: 0px !important;
+  padding: 0px !important;
+}
+
+.account-export .content {
+  width: 100%;
+  height: 100%;
+  padding: 40px 28px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.account-export .content .account-selection-spinner {
+  width: 80px;
+  margin: auto;
+  margin-top: 70px;
+}
+
+.account-export .filler {
+  flex: 1;
+}
+
+.account-export .account-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 20px 0;
+}
+
+.account-export .account-select-all {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  color: var( --wallet-option-outline-color, var(--outline-color));
+  font-size: 14px;
+}
+
+.account-export .account-unavailable {
+  width: 100%;
+  color: var(--wallet-selector-text-color, var(--text-color));
+  font-size: 14px;
+  text-align: left;
+}
+
+.account-export .account-selection .account-selection-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 15px 12px;
+  border-bottom: 1px solid #313030;
+}
+
+.account-export .account-selection .account-selection-row label {
+  display: flex;
+  flex-direction: column;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  width: 399px;
+}
+
+.account-export .passphrase-title {
+  font-size: 15px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--wallet-selector-text-color, var(--text-color));
+  margin: 40px 0 30px;
+}
+
+.account-export .passphrase-text {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+
+  background: #272729;
+  border-radius: 8px;
+
+  word-break: break-word;
+  text-align: center;
+
+  filter: blur(4px);
+}
+
+.account-export .passphrase-label {
+  font-size: 12px;
+  cursor: copy;
+  color: var(--wallet-selector-text-color, var(--text-color));
+}
+
+.complete-desc {
+  flex: 1;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.nws-modal-wrapper .nws-modal .connecting-wrapper-err {
+  height: 100%;
+}

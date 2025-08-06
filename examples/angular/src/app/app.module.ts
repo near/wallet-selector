@@ -8,6 +8,7 @@ import { MessagesComponent } from "./components/messages/messages.component";
 import { FormComponent } from "./components/form/form.component";
 import { ContentComponent } from "./components/content/content.component";
 import { WalletSelectorComponent } from "./pages/wallet-selector/wallet-selector.component";
+import { WalletSelectorExportComponent } from "./pages/wallet-selector-export/wallet-selector-export.component";
 import { LoadingComponent } from "./components/loading/loading.component";
 
 @NgModule({
@@ -18,6 +19,7 @@ import { LoadingComponent } from "./components/loading/loading.component";
     FormComponent,
     ContentComponent,
     WalletSelectorComponent,
+    WalletSelectorExportComponent,
     LoadingComponent,
   ],
   imports: [BrowserModule, FormsModule],

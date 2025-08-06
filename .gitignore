@@ -10,7 +10,7 @@
 /out-tsc
 
 # dependencies
-node_modules
+/node_modules
 
 # IDEs and editors
 /.idea
@@ -37,14 +37,10 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-.nx
 
 # System Files
 .DS_Store
 Thumbs.db
 
 .angular
-package-lock.json
-
-# Next.js
-.next
+.npmrc

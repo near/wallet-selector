@@ -19,11 +19,11 @@ Then use it in your dApp:
 ```ts
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui-js";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [setupMyNearWallet()],
+  modules: [setupNearWallet()],
 });
 
 const modal = setupModal(selector, {
@@ -39,6 +39,7 @@ modal.show();
 - `methodNames` (`Array<string>?`): Specify limited access to particular methods on the Smart Contract.
 - `theme` (`Theme?`): Specify light/dark theme for UI. Defaults to the browser configuration when omitted or set to 'auto'. This can be either `light`, `dark` or `auto`.
 - `description` (`string?`): Define a custom description in the UI.
+
 
 ## Styles & Customizing CSS
 

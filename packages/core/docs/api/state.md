@@ -37,7 +37,7 @@ Returns the list of available modules.
 
 ```ts
 const { modules } = selector.store.getState();
-console.log(modules); // [{ id: "my-near-wallet", ... }]
+console.log(modules); // [{ id: "near-wallet", ... }]
 ```
 
 ### `.accounts`
@@ -46,7 +46,6 @@ console.log(modules); // [{ id: "my-near-wallet", ... }]
 
 - `Array<AccountState>`
   - `accountId` (`string`): NEAR account identifier.
-  - `publicKey` (`string?`): Account public key.
   - `active` (`boolean`): Is account set as active.
 
 **Description**
@@ -74,7 +73,7 @@ Returns the ID of the selected wallet.
 
 ```ts
 const { selectedWalletId } = selector.store.getState();
-console.log(selectedWalletId); // "my-near-wallet"
+console.log(selectedWalletId); // "near-wallet"
 ```
 
 ### `.recentlySignedInWallets`
@@ -91,5 +90,5 @@ Returns ID-s of 5 recently signed in wallets.
 
 ```ts
 const { recentlySignedInWallets } = selector.store.getState();
-console.log(recentlySignedInWallets); // ["my-near-wallet", "sender", ...]
+console.log(recentlySignedInWallets); // ["near-wallet", "sender", ...]
 ```

@@ -1,12 +1,13 @@
 {
-  "name": "narwallets",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/narwallets",
   "sourceRoot": "packages/narwallets/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nrwl/web:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/packages/narwallets",
         "tsConfig": "packages/narwallets/tsconfig.lib.json",
@@ -14,7 +15,10 @@
         "entryFile": "packages/narwallets/src/index.ts",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
-        "format": ["esm", "cjs"],
+        "format": [
+          "esm",
+          "cjs"
+        ],
         "assets": [
           {
             "glob": "packages/narwallets/README.md",
@@ -30,17 +34,23 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["packages/narwallets/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/narwallets/**/*.ts"
+        ]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/narwallets"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/narwallets"
+      ],
       "options": {
-        "jestConfig": "packages/narwallets/jest.config.ts",
+        "jestConfig": "packages/narwallets/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -48,9 +58,10 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
-  "tags": ["injected-wallet"]
+  "tags": [
+    "injected-wallet"
+  ]
 }

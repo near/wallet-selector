@@ -1,11 +1,10 @@
 {
-  "name": "coin98-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/coin98-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/coin98-wallet",
@@ -30,17 +29,17 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/coin98-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/coin98-wallet"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/coin98-wallet"],
       "options": {
-        "jestConfig": "packages/coin98-wallet/jest.config.ts",
+        "jestConfig": "packages/coin98-wallet/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -48,8 +47,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": []

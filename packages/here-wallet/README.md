@@ -4,7 +4,7 @@ This is the [Here Wallet](https://herewallet.app/) package for NEAR Wallet Selec
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
 ```bash
 # Using Yarn
@@ -28,14 +28,9 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 
-// HERE Wallet for Wallet Selector can be setup without any params or it can take few optional params, see options below.
-const hereWallet = setupHereWallet({
-  iconUrl: "https://<Wallet Icon URL Here>" // optional
-});
-
 const selector = await setupWalletSelector({
   network: "testnet",
-  modules: [hereWallet],
+  modules: [setupHereWallet()],
 });
 ```
 
@@ -70,12 +65,6 @@ if (isHereWallet(wallet)) {
 }
 ```
 
-## Options
-
-- `iconUrl`: (`string?`): Icon is optional. Default image point to Here Wallet Logo in base64 format.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
-- `defaultStrategy`: (`() => HereStrategy?`): DefaultStrategy is optional. Default is `undefined`.
-- `defaultProvider`: (`HereProvider`): HereProvider is optional. Default is `undefined`.
 
 ## Assets
 

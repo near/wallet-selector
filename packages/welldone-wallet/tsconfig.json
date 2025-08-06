@@ -4,8 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "noFallthroughCasesInSwitch": true
   },
   "files": [],
   "include": [],

@@ -15,33 +15,32 @@ import { modalState } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
 import { translate } from "@near-wallet-selector/core";
-import { WarningIcon } from "./components/icons/WarningIcon";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
 };
 let initialRender = true;
 
-let isChecked = false;
-
 const getAccountIds = async (publicKey: string): Promise<Array<string>> => {
   if (!modalState) {
     return [];
   }
 
-  const url = `${modalState.selector.options.network.indexerUrl}/public_key/ed25519:${publicKey}`;
-  const response = await fetch(url);
+  const response = await fetch(
+    `${modalState.selector.options.network.indexerUrl}/publicKey/ed25519:${publicKey}/accounts`
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to get account ID from public key");
+    throw new Error("Failed to get account id from public key");
   }
 
-  const jsonResponse: { account_ids: Array<string>; public_key: string } =
-    await response.json();
+  const accountIds = await response.json();
 
-  const { account_ids: accountIds } = jsonResponse;
+  if (!Array.isArray(accountIds) || !accountIds.length) {
+    return [];
+  }
 
-  return Array.isArray(accountIds) ? accountIds : [];
+  return accountIds;
 };
 
 export const resolveAccounts = async (
@@ -160,10 +159,7 @@ export async function connectToWallet(
     modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
   } catch (err) {
     const { name } = module.metadata;
-    const message =
-      err && typeof err === "object" && "message" in err
-        ? (err as { message: string }).message
-        : "Something went wrong";
+    const message = err instanceof Error ? err.message : "Something went wrong";
 
     await renderWalletConnectionFailed(
       module,
@@ -210,7 +206,7 @@ function renderOptionsList(
             module.metadata.deprecated
               ? `
               <div class="warning-triangle">
-                ${WarningIcon}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.95215 16.3536L10.2152 5.85657C10.9531 4.38481 13.0538 4.38519 13.7912 5.85723L19.0494 16.3543C19.7156 17.6841 18.7486 19.25 17.2612 19.25H6.74001C5.25228 19.25 4.28535 17.6835 4.95215 16.3536Z" stroke="#E6B73E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 10V12" stroke="#E6B73E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12.5 16C12.5 16.2761 12.2761 16.5 12 16.5C11.7239 16.5 11.5 16.2761 11.5 16C11.5 15.7239 11.7239 15.5 12 15.5C12.2761 15.5 12.5 15.7239 12.5 16Z" stroke="#E6B73E"></path></svg>
               </div>
                 `
               : ""
@@ -237,91 +233,11 @@ function renderOptionsList(
       });
   }
 }
-const renderWalletOptions = () => {
-  if (!modalState) {
-    return;
-  }
-
-  const moreWallets: Array<ModuleState<Wallet>> = [];
-  const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
-
-  modalState.modules.forEach((module) => {
-    if (
-      modalState?.selector.store
-        .getState()
-        .recentlySignedInWallets.includes(module.id)
-    ) {
-      recentlySignedInWallets.push(module);
-    } else {
-      moreWallets.push(module);
-    }
-  });
-
-  const optionsWrapper = document.querySelector(".wallet-options-wrapper");
-  if (optionsWrapper) {
-    optionsWrapper.innerHTML = "";
-  }
-
-  if (
-    modalState.selector.options.optimizeWalletOrder &&
-    recentlySignedInWallets.length > 0
-  ) {
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-recent">
-        <div class="options-list-section-header">Recent</div>
-        <div class="options-list recent-options-list-content"></div>
-      </div>
-      `
-    );
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-more">
-        <div class="options-list-section-header">More</div>
-        <div class="options-list more-options-list-content"></div>
-      </div>
-      `
-    );
-    renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
-
-    if (modalState.selector.options.randomizeWalletOrder) {
-      renderOptionsList(
-        ".more-options-list-content",
-        moreWallets.sort(() => Math.random() - 0.5)
-      );
-    } else {
-      renderOptionsList(".more-options-list-content", moreWallets);
-    }
-  } else {
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `<div class="options-list"></div>`
-    );
-    renderOptionsList(".options-list", modalState.modules);
-  }
-};
-
-const handleSwitchChange = () => {
-  if (!modalState) {
-    return;
-  }
-
-  isChecked = !isChecked;
-  modalState.selector.setRememberRecentWallets();
-
-  renderWalletOptions();
-};
 
 export function renderModal() {
   if (!modalState) {
     return;
   }
-
-  const { rememberRecentWallets, selectedWalletId } =
-    modalState.selector.store.getState();
-  isChecked = rememberRecentWallets === "enabled";
 
   modalState.container.innerHTML = `
     <div class="nws-modal-wrapper ${
@@ -332,15 +248,6 @@ export function renderModal() {
         <div class="modal-left">
           <div class="modal-left-title">
             <h2>${translate("modal.wallet.connectYourWallet")}</h2>
-            <span class="nws-remember-wallet">
-              ${translate("modal.wallet.rememberWallet")}
-            </span>
-            <label class="nws-switch">
-              <input type="checkbox" ${
-                isChecked ? "checked" : ""
-              } id="rememberWalletSwitch" />
-              <span class="nws-slider round" />
-            </label>
           </div>
           <div class="nws-modal-body">
             <div class="wallet-options-wrapper"></div>
@@ -350,10 +257,6 @@ export function renderModal() {
       </div>
     </div>
   `;
-
-  document
-    .getElementById("rememberWalletSwitch")
-    ?.addEventListener("change", handleSwitchChange);
 
   const moreWallets: Array<ModuleState<Wallet>> = [];
   const recentlySignedInWallets: Array<ModuleState<Wallet>> = [];
@@ -377,7 +280,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section-recent">
+      <div class="options-list-section">
         <div class="options-list-section-header">Recent</div>
         <div class="options-list recent-options-list-content"></div>
       </div>
@@ -386,7 +289,7 @@ export function renderModal() {
     document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="options-list-section-more">
+      <div class="options-list-section">
         <div class="options-list-section-header">More</div>
         <div class="options-list more-options-list-content"></div>
       </div>
@@ -401,13 +304,6 @@ export function renderModal() {
       );
     } else {
       renderOptionsList(".more-options-list-content", moreWallets);
-    }
-
-    if (!selectedWalletId && recentlySignedInWallets.length > 0) {
-      const firstWallet = recentlySignedInWallets[0];
-      document
-        .querySelector(`#module-${firstWallet.id}`)
-        ?.classList.add("selected-wallet");
     }
   } else {
     document
@@ -424,7 +320,9 @@ export function renderModal() {
       }
       modalState.container.children[0].classList.remove("open");
 
-      modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+      if (modalState.options.onHide) {
+        modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+      }
     });
 
   // TODO: Better handle `click` event listener for close-button.
@@ -439,7 +337,9 @@ export function renderModal() {
       if (target && target.className === "close-button") {
         modalState.container.children[0].classList.remove("open");
 
-        modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+        if (modalState.options.onHide) {
+          modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
+        }
       }
     });
     initialRender = false;

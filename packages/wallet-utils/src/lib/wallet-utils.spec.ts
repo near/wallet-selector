@@ -1,7 +1,6 @@
 import { createAction } from "./wallet-utils";
 import { transactions, utils } from "near-api-js";
-
-const TEST_PUBLIC_KEY = "ed25519:Anu5D32fr5YsQGVULF4fz3R2E3pNaeUhj4hsKcE4vDyk";
+import BN = require("bn.js");
 
 describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
@@ -40,7 +39,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.functionCall(methodName, args, BigInt(gas), BigInt(deposit))
+      transactions.functionCall(methodName, args, new BN(gas), new BN(deposit))
     );
   });
 
@@ -53,12 +52,12 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual(transactions.transfer(BigInt(deposit)));
+    expect(actions).toEqual(transactions.transfer(new BN(deposit)));
   });
 
   it("correctly transforms 'Stake' action", () => {
     const stake = "1";
-    const publicKey = TEST_PUBLIC_KEY;
+    const publicKey = "";
 
     const actions = createAction({
       type: "Stake",
@@ -69,12 +68,12 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.stake(BigInt(stake), utils.PublicKey.from(publicKey))
+      transactions.stake(new BN(stake), utils.PublicKey.from(publicKey))
     );
   });
 
   it("correctly transforms 'AddKey' action with 'FullAccess' permission", () => {
-    const publicKey = TEST_PUBLIC_KEY;
+    const publicKey = "";
     const actions = createAction({
       type: "AddKey",
       params: {
@@ -94,7 +93,7 @@ describe("transformActions", () => {
   });
 
   it("correctly transforms 'AddKey' action with 'FunctionCall' permission", () => {
-    const publicKey = TEST_PUBLIC_KEY;
+    const publicKey = "";
     const receiverId = "test.testnet";
     const allowance = "1";
     const methodNames = ["methodName"];
@@ -119,14 +118,14 @@ describe("transformActions", () => {
         transactions.functionCallAccessKey(
           receiverId,
           methodNames,
-          BigInt(allowance)
+          new BN(allowance)
         )
       )
     );
   });
 
   it("correctly transforms 'DeleteKey' action", () => {
-    const publicKey = TEST_PUBLIC_KEY;
+    const publicKey = "";
 
     const actions = createAction({
       type: "DeleteKey",

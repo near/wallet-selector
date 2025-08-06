@@ -1,16 +1,19 @@
 import type { FormEventHandler } from "react";
 import React from "react";
+import Big from "big.js";
+
+import type { Account } from "../interfaces";
 
 interface FormProps {
-  signedAccountId: string;
+  account: Account;
   onSubmit: FormEventHandler;
 }
 
-const Form: React.FC<FormProps> = ({ signedAccountId, onSubmit }) => {
+const Form: React.FC<FormProps> = ({ account, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       <fieldset id="fieldset">
-        <p>Sign the guest book, {signedAccountId}!</p>
+        <p>Sign the guest book, {account.account_id}!</p>
         <p className="highlight">
           <label htmlFor="message">Message:</label>
           <input autoComplete="off" autoFocus id="message" required />
@@ -21,6 +24,9 @@ const Form: React.FC<FormProps> = ({ signedAccountId, onSubmit }) => {
             autoComplete="off"
             defaultValue={"0"}
             id="donation"
+            max={Big(account.amount)
+              .div(10 ** 24)
+              .toString()}
             min="0"
             step="0.01"
             type="number"
@@ -30,10 +36,6 @@ const Form: React.FC<FormProps> = ({ signedAccountId, onSubmit }) => {
         <p>
           <label htmlFor="multiple">Multiple Transactions:</label>
           <input id="multiple" type="checkbox" />
-        </p>
-        <p>
-          <label htmlFor="signonly">Sign only and Return Signature:</label>
-          <input id="signonly" type="checkbox" />
         </p>
         <button type="submit">Sign</button>
       </fieldset>

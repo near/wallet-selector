@@ -1,36 +1,25 @@
-import * as nearAPI from "near-api-js";
+import { providers } from "near-api-js";
 import type {
   AccessKeyView,
   BlockReference,
   QueryResponseKind,
-  RpcQueryRequest,
-} from "near-api-js/lib/providers/provider.js";
+} from "near-api-js/lib/providers/provider";
+import type { SignedTransaction } from "near-api-js/lib/transaction";
 import type {
   ProviderService,
   QueryParams,
   ViewAccessKeyParams,
 } from "./provider.service.types";
-import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
-import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 
 export class Provider implements ProviderService {
-  private provider: nearAPI.providers.FailoverRpcProvider;
+  private provider: providers.JsonRpcProvider;
 
-  constructor(urls: Array<string>) {
-    this.provider = new nearAPI.providers.FailoverRpcProvider(
-      this.urlsToProviders(urls)
-    );
+  constructor(url: string) {
+    this.provider = new providers.JsonRpcProvider({ url });
   }
 
-  query<Response extends QueryResponseKind>(
-    paramsOrPath: QueryParams | RpcQueryRequest | string,
-    data?: string
-  ): Promise<Response> {
-    if (typeof paramsOrPath === "string" && data !== undefined) {
-      return this.provider.query<Response>(paramsOrPath, data);
-    } else {
-      return this.provider.query<Response>(paramsOrPath as RpcQueryRequest);
-    }
+  query<Response extends QueryResponseKind>(params: QueryParams) {
+    return this.provider.query<Response>(params);
   }
 
   viewAccessKey({ accountId, publicKey }: ViewAccessKeyParams) {
@@ -48,11 +37,5 @@ export class Provider implements ProviderService {
 
   sendTransaction(signedTransaction: SignedTransaction) {
     return this.provider.sendTransaction(signedTransaction);
-  }
-
-  private urlsToProviders(urls: Array<string>) {
-    return urls && urls.length > 0
-      ? urls.map((url) => new JsonRpcProvider({ url }))
-      : [];
   }
 }

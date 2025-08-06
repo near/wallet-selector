@@ -1,11 +1,10 @@
 {
-  "name": "ledger",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/ledger/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/ledger",
@@ -30,15 +29,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/ledger/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/ledger"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/ledger"],
       "options": {
         "jestConfig": "packages/ledger/jest.config.ts",
         "passWithNoTests": true
@@ -48,8 +47,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": ["hardware-wallet"]

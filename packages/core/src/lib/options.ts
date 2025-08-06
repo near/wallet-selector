@@ -2,26 +2,23 @@ import type { WalletSelectorParams } from "./wallet-selector.types";
 import type { Options, Network, NetworkId } from "./options.types";
 import { WebStorageService } from "./services";
 
-export const getNetworkPreset = (
-  networkId: NetworkId,
-  fallbackRpcUrls?: Array<string>
-): Network => {
+export const getNetworkPreset = (networkId: NetworkId): Network => {
   switch (networkId) {
     case "mainnet":
       return {
         networkId,
-        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.mainnet.near.org",
+        nodeUrl: "https://rpc.mainnet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
-        explorerUrl: "https://nearblocks.io",
-        indexerUrl: "https://api.fastnear.com/v0",
+        explorerUrl: "https://explorer.near.org",
+        indexerUrl: "https://api.kitwallet.app",
       };
     case "testnet":
       return {
         networkId,
-        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.testnet.near.org",
+        nodeUrl: "https://rpc.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
-        explorerUrl: "https://testnet.nearblocks.io",
-        indexerUrl: "https://test.api.fastnear.com/v0",
+        explorerUrl: "https://explorer.testnet.near.org",
+        indexerUrl: "https://testnet-api.kitwallet.app",
       };
     default:
       throw Error(`Failed to find config for: '${networkId}'`);
@@ -34,18 +31,10 @@ export const resolveNetwork = (network: NetworkId | Network): Network => {
 
 export const resolveOptions = (params: WalletSelectorParams) => {
   const options: Options = {
-    languageCode: params.languageCode || undefined,
     network: resolveNetwork(params.network),
     debug: params.debug || false,
     optimizeWalletOrder: params.optimizeWalletOrder === false ? false : true,
     randomizeWalletOrder: params.randomizeWalletOrder || false,
-    relayerUrl: params.relayerUrl || undefined,
-    createAccessKeyFor: params.createAccessKeyFor
-      ? {
-          contractId: params.createAccessKeyFor.contractId,
-          methodNames: params.createAccessKeyFor.methodNames,
-        }
-      : undefined,
   };
 
   return {

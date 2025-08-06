@@ -1,27 +1,23 @@
-# Multi-language support
+ #  Multilanguage support
 
 - Languages are detected from browser language settings.
-- If user preferred language is not supported, english is rendered as default.
+- If user preffered language is not supported, english is rendered as default. 
 
 ## Supported languages
-
 - English
-- Arabic
-- Bulgarian
+- Spanish 
 - Chinese
-- Croatian
-- Hindi
+- Bulgarian
+- Vietnamese 
 - Korean
-- Macedonian
-- Serbian
-- Slovenian
-- Spanish
-- Vietnamese
+- Arabic
+- Hindi
 
-## How to use
 
-- Language files are located in locale folder [here](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/locale)
-- In order for text to be translated `translate` function should be used
+ ## How to use
+
+- Language files are located in locale folder in `packages\core\src\lib\locale`
+- In order for text to be translated `translate` function should be used 
   as in example below
 - Can be extended when needed following `packageName.section.translationKey`structure
 
@@ -36,7 +32,7 @@
   }
   ```
 
-- File where translated text is rendered
+- File where translated text is rendered 
 
   ```ts
   import { translate } from "@near-wallet-selector/core";
@@ -53,9 +49,9 @@
   <p>${translate("modal.wallet.whatIsAWallet")}</p>
   ```
 
-## Adding new language
 
-- Language files are located in locale folder [here](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/locale)
+## Adding new language
+- Language files are located in locale folder in `packages\core\src\lib\locale`
 - Files are named after ISO 639-1: two-letter language code
 - Keys are named in camelCase as the beginning of the string always in English, with the following pattern used :
 
@@ -69,7 +65,7 @@
   }
   ```
 
-- When new language is introduced it must be added to [translate.ts](https://github.com/near/wallet-selector/tree/main/packages/core/src/lib/translate/translate.ts) file.
+- When new language is introduced it must be added to `packages\core\src\lib\translate\translate.ts` 
 
   ```ts
   import en from "../locale/en.json";
@@ -91,13 +87,6 @@
   };
   ```
 
-- Supported language should be added to **Supported
-  Languages** [list](#supported-languages) and type list
-  .
+- Supported language should be added to **Supported Languages** [list](https://github.com/near/wallet-selector/blob/dev/packages/core/docs/guides/multilanguage-support.md#supported-languages).
 
 - Pull request title should be named as **"Add support for `LanguageName` language"**.
-
-## Set custom language
-- Set the `languageCode` in the [Options](../../README.md#options) of `setupWalletSelector(options)`
-- This disables language detection and allows to set only one to be used.
-- The `languageCode` must be an ISO 639-1: two-letter language code from [Supported Languages](#supported-languages)

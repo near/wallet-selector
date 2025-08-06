@@ -7,8 +7,6 @@ import type {
   WalletModuleFactory,
   Account,
   InstantLinkWallet,
-  SignMessageParams,
-  Action,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -21,8 +19,6 @@ import {
   PACKAGE_NAME,
   PENDING_CONTRACT,
   PENDING_SELECTED_WALLET_ID,
-  REMEMBER_RECENT_WALLETS,
-  REMEMBER_RECENT_WALLETS_STATE,
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
@@ -83,9 +79,6 @@ export class WalletModules {
     const pendingContract = await jsonStorage.getItem<ContractState>(
       PENDING_CONTRACT
     );
-    const rememberRecentWallets = await jsonStorage.getItem<string>(
-      REMEMBER_RECENT_WALLETS
-    );
 
     if (pendingSelectedWalletId && pendingContract) {
       const accounts = await this.validateWallet(pendingSelectedWalletId);
@@ -104,18 +97,14 @@ export class WalletModules {
           });
         }
 
-        let recentlySignedInWalletsFromPending: Array<string> = [];
-        if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
-          recentlySignedInWalletsFromPending =
-            await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
-        }
+        const recentlySignedInWalletsFromPending =
+          await this.setWalletAsRecentlySignedIn(pendingSelectedWalletId);
+
         return {
           accounts,
           contract: pendingContract,
           selectedWalletId: pendingSelectedWalletId,
           recentlySignedInWallets: recentlySignedInWalletsFromPending,
-          rememberRecentWallets:
-            rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
         };
       }
     }
@@ -133,8 +122,6 @@ export class WalletModules {
         contract: null,
         selectedWalletId: null,
         recentlySignedInWallets: recentlySignedInWallets || [],
-        rememberRecentWallets:
-          rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
       };
     }
 
@@ -143,8 +130,6 @@ export class WalletModules {
       contract,
       selectedWalletId,
       recentlySignedInWallets: recentlySignedInWallets || [],
-      rememberRecentWallets:
-        rememberRecentWallets || REMEMBER_RECENT_WALLETS_STATE.ENABLED,
     };
   }
 
@@ -187,8 +172,7 @@ export class WalletModules {
     walletId: string,
     { accounts, contractId, methodNames }: WalletEvents["signedIn"]
   ) {
-    contractId = contractId || "";
-    const { selectedWalletId, rememberRecentWallets } = this.store.getState();
+    const { selectedWalletId } = this.store.getState();
     const jsonStorage = new JsonStorage(this.storage, PACKAGE_NAME);
     const contract = { contractId, methodNames };
 
@@ -208,22 +192,13 @@ export class WalletModules {
       await this.signOutWallet(selectedWalletId);
     }
 
-    let recentlySignedInWallets: Array<string> = [];
-    if (rememberRecentWallets === REMEMBER_RECENT_WALLETS_STATE.ENABLED) {
-      recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
-        walletId
-      );
-    }
+    const recentlySignedInWallets = await this.setWalletAsRecentlySignedIn(
+      walletId
+    );
 
     this.store.dispatch({
       type: "WALLET_CONNECTED",
-      payload: {
-        walletId,
-        contract,
-        accounts,
-        recentlySignedInWallets,
-        rememberRecentWallets,
-      },
+      payload: { walletId, contract, accounts, recentlySignedInWallets },
     });
 
     this.emitter.emit("signedIn", {
@@ -278,48 +253,17 @@ export class WalletModules {
     return emitter;
   }
 
-  private validateSignMessageParams({
-    message,
-    nonce,
-    recipient,
-  }: SignMessageParams) {
-    if (!message || message.trim() === "") {
-      throw new Error("Invalid message. It must be a non-empty string.");
-    }
-
-    if (!Buffer.isBuffer(nonce) || nonce.length !== 32) {
-      throw new Error(
-        "Invalid nonce. It must be a Buffer with a length of 32 bytes."
-      );
-    }
-
-    if (!recipient || recipient.trim() === "") {
-      throw new Error("Invalid recipient. It must be a non-empty string.");
-    }
-  }
-
   private decorateWallet(wallet: Wallet): Wallet {
-    const _signIn = wallet.signIn as (
-      params: SignInParams
-    ) => Promise<Array<Account>>;
+    const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
-    const _signMessage = wallet.signMessage;
-    const _createSignedTransaction = wallet.createSignedTransaction;
-    const _getPublicKey = wallet.getPublicKey;
-    const _signNep413Message = wallet.signNep413Message;
-    const _signTransaction = wallet.signTransaction;
-    const _signDelegateAction = wallet.signDelegateAction;
 
-    wallet.signIn = async (params: SignInParams) => {
-      const accounts = await _signIn({
-        ...this.options.createAccessKeyFor,
-        ...params,
-      });
+    wallet.signIn = async (params: never) => {
+      const accounts = await _signIn(params);
 
-      const { contractId, methodNames = [] } = params;
+      const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
-        contractId: contractId || "",
+        contractId,
         methodNames,
       });
 
@@ -331,88 +275,10 @@ export class WalletModules {
       this.onWalletSignedOut(wallet.id);
     };
 
-    wallet.signMessage = async (params: never) => {
-      if (_signMessage === undefined) {
-        throw Error(
-          `The signMessage method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      this.validateSignMessageParams(params);
-
-      return await _signMessage(params);
-    };
-
-    wallet.createSignedTransaction = async (
-      receiverId: string,
-      actions: Array<Action>
-    ) => {
-      if (_createSignedTransaction === undefined) {
-        throw Error(
-          `The createSignedTransaction method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      return await _createSignedTransaction(receiverId, actions);
-    };
-
-    // hardware wallets have its own implementation of getPublicKey
-    // which will be removed in the next major release
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    wallet.getPublicKey = async (derivationPath?: string): Promise<any> => {
-      if (_getPublicKey === undefined) {
-        throw Error(
-          `The getPublicKey method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      if (typeof derivationPath === "undefined") {
-        return await _getPublicKey();
-      } else {
-        return await _getPublicKey(derivationPath);
-      }
-    };
-
-    wallet.signNep413Message = async (...args) => {
-      if (_signNep413Message === undefined) {
-        throw Error(
-          `The signNep413Message method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      return await _signNep413Message(...args);
-    };
-
-    wallet.signTransaction = async (...args) => {
-      if (_signTransaction === undefined) {
-        throw Error(
-          `The signTransaction method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      return await _signTransaction(...args);
-    };
-
-    wallet.signDelegateAction = async (...args) => {
-      if (_signDelegateAction === undefined) {
-        throw Error(
-          `The signDelegateAction method is not supported by ${wallet.metadata.name}`
-        );
-      }
-
-      return await _signDelegateAction(...args);
-    };
-
     return wallet;
   }
 
   private async setupInstance(module: WalletModule): Promise<Wallet> {
-    let instance: Wallet = this.instances[module.id];
-
-    if (instance) {
-      return instance;
-    }
-
     if (!module.metadata.available) {
       const message =
         module.type === "injected" ? "not installed" : "not available";
@@ -436,11 +302,7 @@ export class WalletModules {
       })),
     } as Wallet;
 
-    instance = this.decorateWallet(wallet) as Wallet;
-
-    this.instances[module.id] = instance;
-
-    return instance;
+    return this.decorateWallet(wallet);
   }
 
   private getModule(id: string | null) {
@@ -467,89 +329,76 @@ export class WalletModules {
     return (await module.wallet()) as Variation;
   }
 
-  private setupModule(
-    module: WalletModule | null,
-    listIndex: number
-  ): ModuleState | undefined {
-    if (!module) {
-      return undefined;
+  async setup() {
+    const modules: Array<ModuleState> = [];
+
+    for (let i = 0; i < this.factories.length; i += 1) {
+      const module = await this.factories[i]({ options: this.options }).catch(
+        (err) => {
+          logger.log("Failed to setup module");
+          logger.error(err);
+
+          return null;
+        }
+      );
+
+      // Filter out wallets that aren't available.
+      if (!module) {
+        continue;
+      }
+
+      // Skip duplicated module.
+      if (modules.some((x) => x.id === module.id)) {
+        continue;
+      }
+
+      modules.push({
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+        wallet: async () => {
+          let instance = this.instances[module.id];
+
+          if (instance) {
+            return instance;
+          }
+
+          instance = await this.setupInstance(module);
+
+          this.instances[module.id] = instance;
+
+          return instance;
+        },
+      });
     }
 
-    const moduleState = {
-      id: module.id,
-      type: module.type,
-      metadata: module.metadata,
-      listIndex,
-      wallet: () => this.setupInstance(module),
-    };
+    this.modules = modules;
 
-    if (moduleState.type === "instant-link") {
-      // Instant link wallets are special and need to be setup separately.
-      this.setupInstantLinkWallet(moduleState);
+    for (let i = 0; i < this.modules.length; i++) {
+      if (this.modules[i].type === "instant-link") {
+        const wallet = (await this.modules[i].wallet()) as InstantLinkWallet;
+        if (wallet.metadata.runOnStartup) {
+          try {
+            await wallet.signIn({ contractId: wallet.getContractId() });
+          } catch (err) {
+            logger.error("Failed to sign in to wallet. " + err);
+          }
+        }
+      }
     }
 
-    return moduleState;
-  }
-
-  async setupWalletModules() {
-    const modules = (await Promise.all(
-      this.factories.map((factory, i) =>
-        factory({ options: this.options })
-          .then((module) => this.setupModule(module, i))
-          .catch((err) => {
-            logger.log("Failed to setup module");
-            logger.error(err);
-          })
-      )
-    )) as Array<ModuleState>;
-
-    const filteredModules = modules.filter((x) => x !== undefined);
-    this.modules = filteredModules;
-    this.store.dispatch({
-      type: "ADD_WALLET_MODULES",
-      payload: { modules: filteredModules },
-    });
-  }
-
-  async setupStorage() {
-    const {
-      accounts,
-      contract,
-      selectedWalletId,
-      recentlySignedInWallets,
-      rememberRecentWallets,
-    } = await this.resolveStorageState();
+    const { accounts, contract, selectedWalletId, recentlySignedInWallets } =
+      await this.resolveStorageState();
 
     this.store.dispatch({
-      type: "SETUP",
+      type: "SETUP_WALLET_MODULES",
       payload: {
+        modules,
         accounts,
         contract,
         selectedWalletId,
         recentlySignedInWallets,
-        rememberRecentWallets,
       },
     });
-  }
-
-  private async setupInstantLinkWallet(
-    moduleState: ModuleState
-  ): Promise<void> {
-    if (moduleState.type !== "instant-link") {
-      return;
-    }
-
-    const wallet = (await moduleState.wallet()) as InstantLinkWallet;
-    if (!wallet.metadata.runOnStartup) {
-      return;
-    }
-
-    try {
-      await wallet.signIn({ contractId: wallet.getContractId() });
-    } catch (err) {
-      logger.error(
-        "Failed to sign in to wallet. " + wallet.metadata.name + err
-      );
-    }
   }
 }

@@ -11,7 +11,6 @@
       "useAWallet": "지갑을 사용하여 NEAR 자산을 보호·관리하고, 아이디와 비밀번호 없이 NEAR 앱에 로그인할 수 있습니다.",
       "connectionFailed": "연결 실패",
       "connectionSuccessful": "연결 성공",
-      "rememberWallet": "지갑들 기억하기",
       "connected": "Connected",
       "connectingTo": "연결 중: ",
       "connectingMessage": {
@@ -41,14 +40,6 @@
       "failedToAutomatically": "계정 ID를 찾지 못했습니다. 수동으로 입력해주세요.",
       "overviewTheListOfAuthorized": "인증된 계정 목록을 확인한 후 아래 버튼을 클릭하여 로그인을 완료하세요",
       "finish": "완료"
-    },
-    "walletTypes": {
-      "hardware": "하드웨어 지갑",
-      "browser": "브라우저 지갑",
-      "injected": "지갑 확장",
-      "bridge": "브리지 지갑",
-      "mobile": "모바일 지갑",
-      "instant-link": "인스턴트 지갑"
     },
     "install": {
       "youllNeedToInstall": "다음 확장 프로그램을 설치해주세요:",

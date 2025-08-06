@@ -29,7 +29,7 @@ interface SenderState {
 }
 
 const isInstalled = () => {
-  return !!window.near?.isSender;
+  return waitFor(() => !!window.near?.isSender).catch(() => false);
 };
 
 const setupSenderState = (): SenderState => {
@@ -47,7 +47,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   provider,
   emitter,
   logger,
-  id,
 }) => {
   const _state = setupSenderState();
 
@@ -103,16 +102,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
   };
 
   const getAccounts = async (): Promise<Array<Account>> => {
-    // Add extra wait to ensure Sender's sign in status is read from the
-    // browser extension background env.
-    // Check for isSignedIn() in only if selectedWalletId is set.
-    const { selectedWalletId } = store.getState();
-    if (selectedWalletId === id) {
-      await waitFor(() => !!_state.wallet?.isSignedIn(), {
-        timeout: 1000,
-      }).catch();
-    }
-
     const accountId = _state.wallet.getAccountId();
 
     if (!accountId) {
@@ -183,7 +172,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const { accessKey, error } = await _state.wallet.requestSignIn({
-        contractId: contractId || "",
+        contractId,
         methodNames,
       });
 
@@ -198,7 +187,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
       setupEvents();
 
-      return await getAccounts();
+      return getAccounts();
     },
 
     signOut,
@@ -251,20 +240,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
         signature: Buffer.from(signed.signature).toString("base64"),
         keyType: signed.publicKey.keyType,
       };
-    },
-
-    async signMessage(message) {
-      return _state.wallet.signMessage(message).then((res) => {
-        if (res.error) {
-          throw new Error(res.error);
-        }
-
-        if (!res?.response) {
-          throw new Error("Invalid response");
-        }
-
-        return res.response;
-      });
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -323,51 +298,6 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
           return res.response;
         });
     },
-
-    async importAccountsInSecureContext({ accounts }) {
-      if (window.near && window.near.isSender) {
-        await window.near.batchImport({
-          keystore: accounts,
-          network: options.network.networkId,
-        });
-      }
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 
@@ -382,6 +312,15 @@ export function setupSender({
     }
 
     const installed = await isInstalled();
+
+    // Add extra wait to ensure Sender's sign in status is read from the
+    // browser extension background env.
+    // Check for isSignedIn() in only if extension is installed.
+    if (installed) {
+      await waitFor(() => !!window.near?.isSignedIn(), { timeout: 200 }).catch(
+        () => false
+      );
+    }
 
     return {
       id: "sender",

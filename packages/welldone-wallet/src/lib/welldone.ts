@@ -1,5 +1,5 @@
 import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import { transactions as Transactions, utils } from "near-api-js";
 import type {
   WalletModuleFactory,
   InjectedWallet,
@@ -9,13 +9,8 @@ import type {
   Optional,
   Transaction,
   Account,
-  SignMessageParams,
-  SignedMessage,
 } from "@near-wallet-selector/core";
-import {
-  isCurrentBrowserSupported,
-  serializeNep413,
-} from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import type {
   ViewAccessKeyParams,
   WalletProvider,
@@ -35,7 +30,7 @@ declare global {
 }
 
 const isInstalled = () => {
-  return !!window.dapp;
+  return waitFor(() => !!window.dapp).catch(() => false);
 };
 
 async function setupWalletState(
@@ -59,7 +54,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
   logger,
   storage,
   provider,
-  metadata,
 }) => {
   const _state = await setupWalletState(storage);
 
@@ -156,7 +150,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return nearAPI.utils.PublicKey.from(account.publicKey!);
+      return utils.PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       if (!_state.wallet) {
@@ -169,11 +163,8 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       if (!account) {
         throw new Error("Failed to find account for signing");
       }
-
       try {
-        const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message)
-        );
+        const tx = Transactions.Transaction.decode(Buffer.from(message));
         const serializedTx = Buffer.from(tx.encode()).toString("hex");
         const signed = await _state.wallet.request("near", {
           method: "dapp:signTransaction",
@@ -182,17 +173,18 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
         return {
           signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
+          publicKey: utils.PublicKey.from(signed[0].publicKey),
         };
       } catch (err) {
+        const decoded = new TextDecoder("utf-8").decode(message);
         const signed = await _state.wallet.request("near", {
           method: "dapp:signMessage",
-          params: ["0x" + Buffer.from(message).toString("hex")],
+          params: [decoded],
         });
 
         return {
           signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
+          publicKey: utils.PublicKey.from(signed[0].publicKey),
         };
       }
     },
@@ -278,7 +270,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const accountId = account.accountId;
-      const pubKey = nearAPI.utils.PublicKey.fromString(account.publicKey);
+      const pubKey = utils.PublicKey.fromString(account.publicKey);
       const block = await provider.block({ finality: "final" });
 
       const data = {
@@ -299,40 +291,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         ...data,
         signature: Buffer.from(signed.signature).toString("base64"),
       };
-    },
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async signMessage(message: SignMessageParams): Promise<SignedMessage> {
-      if (!_state.wallet) {
-        throw new Error("Wallet is not installed");
-      }
-
-      const account = await _getAccounts();
-      const accountId = account[0];
-
-      if (!accountId) {
-        throw new Error("Failed to find account for signing");
-      }
-
-      const serializedTx = serializeNep413(message);
-      const signed = await _state.wallet.request("near", {
-        method: "dapp:signMessage",
-        params: ["0x" + serializedTx.toString("hex")],
-      });
-
-      const result = {
-        accountId,
-        publicKey: signed[0].publicKey,
-        signature: Buffer.from(signed[0].signature.substr(2), "hex").toString(
-          "base64"
-        ),
-      };
-
-      if (message.state) {
-        return { ...result, state: message.state };
-      }
-
-      return result;
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -372,53 +330,6 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return results;
     },
 
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ receiverId, actions }]),
-        signer,
-        options.network
-      );
-
-      return signedTx;
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
-        transaction.signerId,
-        options.network.networkId
-      );
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
     async importAccountsInSecureContext({ accounts }) {
       if (!_state.wallet) {
         throw new Error("Wallet is not installed");
@@ -450,13 +361,7 @@ export function setupWelldoneWallet({
 }: WelldoneWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
     const mobile = isMobile();
-    const isSupported = isCurrentBrowserSupported([
-      "chrome",
-      "edge-chromium",
-      "opera",
-    ]);
-
-    if (mobile || !isSupported) {
+    if (mobile) {
       return null;
     }
 

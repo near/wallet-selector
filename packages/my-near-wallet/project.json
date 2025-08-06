@@ -1,11 +1,10 @@
 {
-  "name": "my-near-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/my-near-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/my-near-wallet",
@@ -30,15 +29,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/my-near-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/my-near-wallet"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/my-near-wallet"],
       "options": {
         "jestConfig": "packages/my-near-wallet/jest.config.ts",
         "passWithNoTests": true
@@ -48,8 +47,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": ["browser-wallet"]

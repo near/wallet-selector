@@ -68,19 +68,10 @@ export type {
   DeleteAccountAction,
   AddKeyPermission,
   AccountImportData,
-  SignedMessage,
-  SignMessageParams,
 } from "./lib/wallet";
 
-export type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+export type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 
-export {
-  waitFor,
-  getActiveAccount,
-  isCurrentBrowserSupported,
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-  serializeNep413,
-} from "./lib/helpers";
+export { waitFor, getActiveAccount } from "./lib/helpers";
 
-export { translate, allowOnlyLanguage } from "./lib/translate/translate";
+export { translate } from "./lib/translate/translate";

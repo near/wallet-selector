@@ -1,11 +1,11 @@
-import type { Signer } from "near-api-js/lib/signer.js";
+import type { Signer } from "near-api-js/lib/signer";
 
 interface LoginParams {
   contractId?: string;
   publicKey?: string;
 }
 
-export interface MathAccount {
+interface MathAccount {
   name: string;
   accountId: string;
   publicKey: string;
@@ -26,7 +26,7 @@ interface MathNetwork {
   extra: string;
 }
 
-export type MathSigner = Signer & {
+type MathSigner = Signer & {
   account: MathAccount | null;
   network: MathNetwork;
 };

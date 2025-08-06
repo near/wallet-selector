@@ -1,11 +1,10 @@
 {
-  "name": "math-wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/math-wallet/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/math-wallet",
@@ -30,15 +29,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/math-wallet/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/math-wallet"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/math-wallet"],
       "options": {
         "jestConfig": "packages/math-wallet/jest.config.ts",
         "passWithNoTests": true
@@ -48,8 +47,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": ["injected-wallet"]

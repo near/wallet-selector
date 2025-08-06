@@ -4,7 +4,7 @@ This is the [Ledger](https://www.ledger.com/) package for NEAR Wallet Selector.
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
 ```bash
 # Using Yarn
@@ -27,9 +27,9 @@ Then use it in your dApp:
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupLedger } from "@near-wallet-selector/ledger";
 
-// Ledger for Wallet Selector can be setup without any params or it can take few optional params, see options below.
+// Ledger for Wallet Selector can be setup without any params or it can take one optional param.
 const ledger = setupLedger({
-  iconUrl: "https://<Wallet Icon URL Here>" // optional
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png"
 });
 
 const selector = await setupWalletSelector({
@@ -41,7 +41,6 @@ const selector = await setupWalletSelector({
 ## Options
 
 - `iconUrl`: (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/ledger-icon.png`.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
 
 ## Assets
 

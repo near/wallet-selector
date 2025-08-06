@@ -14,8 +14,8 @@ Unique identifier of the wallet.
 
 ```ts
 (async () => {
-  const wallet = await selector.wallet("my-near-wallet");
-  console.log(wallet.id); // "my-near-wallet"
+  const wallet = await selector.wallet("near-wallet");
+  console.log(wallet.id); // "near-wallet"
 })();
 ```
 
@@ -63,16 +63,7 @@ There are four wallet types:
 
 **Description**
 
-Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl`, `useUrlAccountImport (deprecated)` and `topLevelInjected` for injected wallets or `contractId`,  `runOnStartup` for instant-link wallets and `walletUrl` for browser wallets.
-
-- `name`: Displayed in modal-ui as wallet name
-- `description`: Displayed in modal-ui as wallet description
-- `iconUrl`: Displayed in modal-ui as wallet icon
-- `deprecated`: Makes the wallet unselectable via modal-ui
-- `available`: Makes the wallet unselectable via modal-ui, use if the wallet cannot be selected in the user's environment.
-- `downloadUrl`: Link to download injected wallet, available via modal-ui
-- `useUrlAccountImport (Deprecated)`: If `true`, then this injected wallet supports @account-export api and will be available in the account export modal window
-- `topLevelInjected`: If the value `true` is passed for an injected wallet, modal-ui will call the signIn method of this wallet immediately upon initializing setupModal. This will allow wallet applications that open the dApp in the internal browser to immediately log in with the user's wallet.
+Returns meta information about the wallet such as `name`, `description`, `iconUrl` , `deprecated` and `available` but can include wallet-specific properties such as `downloadUrl` and `useUrlAccountImport` for injected wallets or `contractId` and `runOnStartup` for instant-link wallets.
 
 **Example**
 
@@ -106,9 +97,9 @@ Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPath
 **Example**
 
 ```ts
-// MyNearWallet.
+// NEAR Wallet.
 (async () => {
-  const wallet = await selector.wallet("my-near-wallet");
+  const wallet = await selector.wallet("near-wallet");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 
@@ -232,7 +223,7 @@ Signs the message and verifies the owner. Message is not sent to blockchain.
   - `signerId` (`string?`): Account ID used to sign the transaction. Defaults to the first account.
   - `receiverId` (`string?`): Account ID to receive the transaction. Defaults to `contractId` defined in `.init`.
   - `actions` (`Array<Action>`): NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` [here](./transactions.md).
-  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
 
 **Returns**
 
@@ -269,7 +260,7 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 
 - `params` (`object`)
   - `transactions` (`Array<Transaction>`): NEAR Transactions(s) to sign and send to the network. You can find more information on `Transaction` [here](./transactions.md).
-  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. MyNearWallet). This the callback url once the transaction is approved.
+  - `callbackUrl` (`string?`): Applicable to browser wallets (e.g. NEAR Wallet). This the callback url once the transaction is approved.
 
 **Returns**
 
@@ -300,77 +291,5 @@ Signs one or more transactions before sending to the network. The user must be s
       }]
     }]
   });
-})();
-```
-
-### `.signMessage(params)`
-
-**Parameters**
-- `params` (`object`)
-  - `message` (`string`): The message that wants to be transmitted.
-  - `recipient` (`string`): The recipient to whom the message is destined (e.g. "alice.near" or "myapp.com").
-  - `nonce` (`Buffer`): A nonce that uniquely identifies this instance of the message, denoted as a 32 bytes array (a fixed `Buffer` in JS/TS).
-  - `callbackUrl` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). The URL to call after the signing process. Defaults to `window.location.href`.
-  - `state` (`string?`): Optional, applicable to browser wallets (e.g. MyNearWallet). A state for authentication purposes.
-
-**Returns**
-- `Promise<void | SignedMessage>`: Browser wallets won't return the signing outcome as they may need to redirect for signing. For MyNearWallet the outcome is passed to the callback url.
-
-**Description**
-
-Allows users to sign a message for a specific recipient using their NEAR account, based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
-
-**Example**
-
-```ts
-// MyNearWallet
-(async () => {
-  const wallet = await selector.wallet("my-near-wallet");
-  const message = "test message for verification";
-  let nonceArray: Uint8Array = new Uint8Array(32);
-  nonceArray = crypto.getRandomValues(nonceArray);
-  const nonce = Buffer.from(nonceArray);
-  const recipient = "myapp.com";
-  
-  await wallet.signMessage({ message, recipient, nonce });
-})();
-```
-
-### `.createSignedTransaction(receiverId, actions)`
-
-**Parameters**
-
-- `receiverId` (`string`): Account ID to receive the transaction.
-- `actions` (`Array<Action>`): NEAR Action(s) to sign. You can find more information on `Action` [here](./transactions.md).
-
-**Returns**
-
-- `Promise<SignedTransaction | void>`: Returns a signed transaction that is ready to be broadcast to the network. Browser wallets may not return the signed transaction as they may need to redirect for signing.
-
-**Description**
-
-Signs one or more NEAR Actions and returns a signed transaction that is ready to be broadcast to the network. The user must be signed in to call this method. This is useful when you want to sign a transaction but broadcast it later or through a different mechanism.
-
-**Example**
-
-```ts
-(async () => {
-  const signedTx = await wallet.createSignedTransaction(
-    "guest-book.testnet",
-    [{
-      type: "FunctionCall",
-      params: {
-        methodName: "addMessage",
-        args: { text: "Hello World!" },
-        gas: "30000000000000",
-        deposit: "10000000000000000000000",
-      }
-    }]
-  );
-  
-  if (signedTx) {
-    // Broadcast the signed transaction using your preferred method
-    // e.g. using near-api-js provider
-  }
 })();
 ```

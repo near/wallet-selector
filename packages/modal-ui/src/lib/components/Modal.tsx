@@ -22,7 +22,7 @@ import { WalletNotInstalled } from "./WalletNotInstalled";
 import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
-import { translate, allowOnlyLanguage } from "@near-wallet-selector/core";
+import { translate } from "@near-wallet-selector/core";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -57,21 +57,11 @@ export const Modal: React.FC<ModalProps> = ({
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
 
-  const { rememberRecentWallets } = selector.store.getState();
-  const [isChecked, setIsChecked] = useState(
-    rememberRecentWallets === "enabled"
-  );
-
-  const handleSwitchChange = () => {
-    setIsChecked((prevIsChecked) => !prevIsChecked);
-    selector.setRememberRecentWallets();
-  };
-
   useEffect(() => {
     setRoute({
       name: "WalletHome",
     });
-    allowOnlyLanguage(selector.options.languageCode);
+
     const { selectedWalletId, modules } = selector.store.getState();
     if (selectedWalletId) {
       const module = modules.find((m) => m.id === selectedWalletId);
@@ -237,9 +227,7 @@ export const Modal: React.FC<ModalProps> = ({
       const { name } = module.metadata;
 
       const message =
-        err && typeof err === "object" && "message" in err
-          ? (err as { message: string }).message
-          : "Something went wrong";
+        err instanceof Error ? err.message : "Something went wrong";
 
       setAlertMessage(`Failed to sign in with ${name}: ${message}`);
       setRoute({
@@ -271,17 +259,6 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="modal-left">
           <div className="modal-left-title">
             <h2>{translate("modal.wallet.connectYourWallet")}</h2>
-            <span className="nws-remember-wallet">
-              {translate("modal.wallet.rememberWallet")}
-            </span>
-            <label className="nws-switch">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleSwitchChange}
-              />
-              <span className="nws-slider round" />
-            </label>
           </div>
           <WalletOptions
             handleWalletClick={(module) => {

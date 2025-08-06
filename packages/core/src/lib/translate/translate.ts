@@ -6,10 +6,6 @@ import ko from "../locale/ko.json";
 import vi from "../locale/vi.json";
 import hi from "../locale/hi.json";
 import ar from "../locale/ar.json";
-import hr from "../locale/hr.json";
-import mk from "../locale/mk.json";
-import sl from "../locale/sl.json";
-import sr from "../locale/sr.json";
 
 const getLanguage = (languageCode: string) => {
   switch (languageCode) {
@@ -29,36 +25,9 @@ const getLanguage = (languageCode: string) => {
       return hi;
     case "ar":
       return ar;
-    case "hr":
-      return hr;
-    case "mk":
-      return mk;
-    case "sl":
-      return sl;
-    case "sr":
-      return sr;
     default:
       return en;
   }
-};
-
-export type SupportedLanguage =
-  | "en"
-  | "es"
-  | "zh"
-  | "bg"
-  | "ko"
-  | "vi"
-  | "hi"
-  | "ar"
-  | "hr"
-  | "mk"
-  | "sl"
-  | "sr";
-
-let chosenLang: string | undefined;
-export const allowOnlyLanguage = (langCode: SupportedLanguage | undefined) => {
-  chosenLang = langCode;
 };
 
 // (i.e en-CA returns just en)
@@ -83,12 +52,10 @@ const findObjectPropByStringPath = (obj: any, prop: string): unknown => {
 };
 
 export const translate = (path: string) => {
-  let browserLang = window.navigator.languages
-    ? window.navigator.languages[0]
-    : null;
-  browserLang = browserLang || window.navigator.language;
+  let lang = window.navigator.languages ? window.navigator.languages[0] : null;
+  lang = lang || window.navigator.language;
 
-  const languageCode = shortenLanguageCode(chosenLang || browserLang);
+  const languageCode = shortenLanguageCode(lang);
 
   const selectedLanguage = getLanguage(languageCode);
 

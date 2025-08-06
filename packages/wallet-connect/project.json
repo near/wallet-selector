@@ -1,11 +1,10 @@
 {
-  "name": "wallet-connect",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-connect/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/wallet-connect",
@@ -30,15 +29,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/wallet-connect/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/wallet-connect"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/wallet-connect"],
       "options": {
         "jestConfig": "packages/wallet-connect/jest.config.ts",
         "passWithNoTests": true
@@ -48,8 +47,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": ["bridge-wallet"]

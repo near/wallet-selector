@@ -6,14 +6,11 @@ import type {
   Account,
   Optional,
   Transaction,
-  SignMessageParams,
-  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
-import * as nearAPI from "near-api-js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
 
 declare global {
@@ -59,15 +56,15 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return [];
     }
 
-    const publicKey = await _state.wallet.near.signer.getPublicKey(
-      accountId,
-      options.network.networkId
-    );
-
     return [
       {
-        accountId,
-        publicKey: publicKey ? publicKey.toString() : undefined,
+        accountId: _state.wallet.near.account,
+        publicKey: (
+          await _state.wallet.near.signer.getPublicKey(
+            accountId,
+            options.network.networkId
+          )
+        ).toString(),
       },
     ];
   };
@@ -104,38 +101,8 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
         return existingAccounts;
       }
 
-      await _state.wallet.near.connect({
-        prefix: "near_selector",
-        contractId: contractId || "",
-      });
+      await _state.wallet.near.connect({ prefix: "near_selector", contractId });
       return getAccounts();
-    },
-
-    async signMessage({
-      message,
-      nonce,
-      recipient,
-      state,
-    }: SignMessageParams): Promise<SignedMessage> {
-      if (!_state.wallet) {
-        throw new Error("Wallet is not installed");
-      }
-
-      logger.log("Coin98:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      const signature = await _state.wallet.near.signMessage({
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-
-      return signature;
     },
 
     async signOut() {
@@ -147,8 +114,39 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return getAccounts();
     },
 
-    async verifyOwner() {
+    async verifyOwner({ message }) {
+      const account = getActiveAccount(store.getState());
+
+      if (!account) {
+        throw new Error("No active account");
+      }
+
+      const accountId = account.accountId;
+      const pubKey = await _state.wallet.near.signer.getPublicKey(accountId);
+      const block = await provider.block({ finality: "final" });
+
+      const data = {
+        accountId,
+        message,
+        blockId: block.header.hash,
+        publicKey: Buffer.from(pubKey.data).toString("base64"),
+        keyType: pubKey.keyType,
+      };
+      const encoded = JSON.stringify(data);
+
       throw new Error(`Method not supported by ${metadata.name}`);
+
+      const signed = await _state.wallet.near.signer.signMessage(
+        new Uint8Array(Buffer.from(encoded)),
+        accountId,
+        options.network.networkId
+      );
+
+      return {
+        ...data,
+        signature: Buffer.from(signed.signature).toString("base64"),
+        keyType: signed.publicKey.keyType,
+      };
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -183,53 +181,6 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       return results;
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      const [signedTx] = await signTransactions(
-        transformTransactions([{ receiverId, actions }]),
-        _state.wallet.near.signer,
-        options.network
-      );
-
-      return signedTx;
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        _state.wallet.near.signer,
-        transaction.signerId,
-        options.network.networkId
-      );
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

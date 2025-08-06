@@ -7,6 +7,7 @@ import type {
   WalletModuleFactory,
   WalletSelectorStore,
 } from "@near-wallet-selector/core";
+import { waitFor } from "@near-wallet-selector/core";
 import { isMobile } from "is-mobile";
 import icon from "./icon";
 import type { InjectedXDEFI, NearXDEFI } from "./injected-xdefi";
@@ -41,7 +42,7 @@ const setupXDEFIState = async (
 };
 
 const isInstalled = () => {
-  return !!window.xfi?.near;
+  return waitFor(() => !!window.xfi?.near).catch(() => false);
 };
 
 const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
@@ -144,42 +145,6 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
       );
 
       return result;
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

@@ -8,6 +8,7 @@ import type {
   FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import icon from "./icon";
+import { waitFor } from "@near-wallet-selector/core";
 
 declare global {
   interface Window {
@@ -96,7 +97,8 @@ const sendToNarwallets = (
 };
 
 const isInstalled = async (): Promise<boolean> => {
-  return !!window.narwallets;
+  // Note: sendToNarwallets throws if not installed
+  return waitFor(() => !!window.narwallets).catch(() => false);
 };
 
 const isSignedIn = (): Promise<Resolve> => {
@@ -260,42 +262,6 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return callSignAndSendTransactions(transactions) as Promise<
         Array<FinalExecutionOutcome>
       >;
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 };

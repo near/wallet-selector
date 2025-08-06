@@ -2,13 +2,8 @@
 
 // Empty string if we haven't signed in before.
 import type { Account, providers } from "near-api-js";
-import type {
-  AccountImportData,
-  SignedMessage,
-  SignMessageParams,
-} from "@near-wallet-selector/core";
 
-export interface AccessKey {
+interface AccessKey {
   publicKey: {
     data: Uint8Array;
     keyType: number;
@@ -23,7 +18,7 @@ interface RequestSignInResponse {
   type: "sender-wallet-result";
 }
 
-export type SignOutResponse = true | { error: string | { type: string } };
+type SignOutResponse = true | { error: string | { type: string } };
 
 interface RpcInfo {
   explorerUrl: string;
@@ -79,7 +74,7 @@ interface SignAndSendTransactionParams {
   actions: Array<Action>;
 }
 
-export interface FunctionCallError {
+interface FunctionCallError {
   error: {
     index: number;
     kind: object;
@@ -90,7 +85,7 @@ export interface FunctionCallError {
 }
 
 // Seems to reuse signAndSendTransactions internally, hence the wrong method name and list of responses.
-export interface SignAndSendTransactionResponse {
+interface SignAndSendTransactionResponse {
   actionType: "DAPP/DAPP_POPUP_RESPONSE";
   method: "signAndSendTransactions";
   notificationId: number;
@@ -108,15 +103,6 @@ interface SignAndSendTransactionsResponse {
   type: "sender-wallet-extensionResult";
 }
 
-interface SignMessageResponse {
-  actionType: "DAPP/POPUP_RESPONSE";
-  method: "signMessage";
-  notificationId: number;
-  error?: string;
-  response?: SignedMessage;
-  type: "sender-wallet-extensionResult";
-}
-
 interface Transaction {
   receiverId: string;
   actions: Array<Action>;
@@ -126,16 +112,11 @@ interface RequestSignTransactionsParams {
   transactions: Array<Transaction>;
 }
 
-export interface SenderEvents {
+interface SenderEvents {
   signIn: () => void;
   signOut: () => void;
   accountChanged: (changedAccountId: string) => void;
   rpcChanged: (response: RpcChangedResponse) => void;
-}
-
-export interface batchImportParams {
-  keystore: Array<AccountImportData>;
-  network: string;
 }
 
 export interface InjectedSender {
@@ -162,6 +143,4 @@ export interface InjectedSender {
   requestSignTransactions: (
     params: RequestSignTransactionsParams
   ) => Promise<SignAndSendTransactionsResponse>;
-  batchImport: (params: batchImportParams) => Promise<unknown>;
-  signMessage: (params: SignMessageParams) => Promise<SignMessageResponse>;
 }

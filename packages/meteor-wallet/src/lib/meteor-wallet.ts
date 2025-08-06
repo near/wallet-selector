@@ -2,6 +2,8 @@ import type {
   Account,
   InjectedWallet,
   Network,
+  Optional,
+  Transaction,
   WalletBehaviourFactory,
   WalletModuleFactory,
 } from "@near-wallet-selector/core";
@@ -9,23 +11,30 @@ import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
 } from "./meteor-wallet-types";
-import * as nearAPI from "near-api-js";
+import {
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
+
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
+import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
   );
 
-  const near = await nearAPI.connect({
+  const near = await connect({
     keyStore,
     ...network,
     headers: {},
@@ -42,7 +51,7 @@ const setupWalletState = async (
 const createMeteorWalletInjected: WalletBehaviourFactory<
   InjectedWallet,
   { params: MeteorWalletParams_Injected }
-> = async ({ options, logger, store, params, metadata }) => {
+> = async ({ options, logger, store, params }) => {
   const _state = await setupWalletState(params, options.network);
 
   const getAccounts = async (): Promise<Array<Account>> => {
@@ -65,6 +74,45 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
     ];
   };
 
+  const transformTransactions = async (
+    transactions: Array<Optional<Transaction, "signerId">>
+  ) => {
+    const account = _state.wallet.account()!;
+    const { networkId, signer, provider } = account.connection;
+
+    const localKey = await signer.getPublicKey(account.accountId, networkId);
+
+    return Promise.all(
+      transactions.map(async (transaction, index) => {
+        const actions = transaction.actions.map((action) =>
+          createAction(action)
+        );
+        const accessKey = await account.accessKeyForTransaction(
+          transaction.receiverId,
+          actions,
+          localKey
+        );
+
+        if (!accessKey) {
+          throw new Error(
+            `Failed to find matching key for transaction sent to ${transaction.receiverId}`
+          );
+        }
+
+        const block = await provider.block({ finality: "final" });
+
+        return nearTransactions.createTransaction(
+          account.accountId,
+          utils.PublicKey.from(accessKey.public_key),
+          transaction.receiverId,
+          accessKey.access_key.nonce + index + 1,
+          actions,
+          utils.serialize.base_decode(block.header.hash)
+        );
+      })
+    );
+  };
+
   return {
     async signIn({ contractId, methodNames = [] }) {
       logger.log("MeteorWallet:signIn", {
@@ -76,24 +124,16 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId,
         });
       } else {
         await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId,
         });
       }
 
-      const accounts = await getAccounts();
-
-      logger.log("MeteorWallet:signIn", {
-        contractId,
-        methodNames,
-        account: accounts[0],
-      });
-
-      return accounts;
+      return getAccounts();
     },
 
     async signOut() {
@@ -128,28 +168,6 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
     },
 
-    async signMessage({ message, nonce, recipient, state }) {
-      logger.log("MeteorWallet:signMessage", {
-        message,
-        nonce,
-        recipient,
-        state,
-      });
-      const accountId = _state.wallet.getAccountId();
-      const response = await _state.wallet.signMessage({
-        message,
-        nonce,
-        recipient,
-        accountId,
-        state,
-      });
-      if (response.success) {
-        return response.payload;
-      } else {
-        throw new Error(`Couldn't sign message owner: ${response.message}`);
-      }
-    },
-
     async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("MeteorWallet:signAndSendTransaction", {
         signerId,
@@ -171,7 +189,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
       return account["signAndSendTransaction_direct"]({
         receiverId: receiverId ?? contract!.contractId,
-        actions,
+        actions: actions.map((action) => createAction(action)),
       });
     },
 
@@ -185,44 +203,8 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
 
       return _state.wallet.requestSignTransactions({
-        transactions,
+        transactions: await transformTransactions(transactions),
       });
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     buildImportAccountsUrl() {

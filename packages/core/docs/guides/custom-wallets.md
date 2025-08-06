@@ -22,7 +22,7 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
   options,
   provider,
 }) => {
-  // Initialise wallet-specific client(s) here.
+  // Initialise wallet-sepecific client(s) here.
   
   return {
     async signIn({ contractId, methodNames }) {
@@ -39,16 +39,6 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
       // Return list of signed in accounts.
       
       return [];
-    },
-
-    async verifyOwner({ message }) {
-      const signature = provider.signMessage(message);
-
-      return {
-        ...data,
-        signature: Buffer.from(signature.signature).toString("base64"),
-        keyType: signature.publicKey.keyType,
-      }; // Promise<VerifiedOwner>
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -68,18 +58,6 @@ const MyWallet: WalletBehaviourFactory<BrowserWallet> = ({
         signedTxs.map((signedTx) => provider.sendTransaction(signedTx))
       );
     },
-
-    async signMessage({ message, nonce, recipient, callbackUrl, state }) {
-      // A standardized Wallet API method, namely `signMessage`, 
-      // that allows users to sign a message for a specific receiver using their NEAR account
-      return await wallet.signMessage({ message, nonce, recipient, callbackUrl, state });
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      // Creates a signed transaction without sending it to the network. 
-      // The signing process uses the each wallet's signing to create a valid transaction that can later be broadcast.
-      return await wallet.signTransaction({receiverId, actions})
-    }
   };
 };
 
@@ -114,13 +92,12 @@ export function setupMyWallet({
 
 A variation of `WalletModule` is added to state during setup under `modules` (`ModuleState`) and accessed by the UI to display the available wallets. It's important that `id` is unique to avoid conflicts with other wallets installed by a dApp. The `type` property is coupled to the parameter we pass to `WalletModuleFactory` and `WalletBehaviourFactory`.
 
-Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently five types of wallet:
+Although we've tried to implement a polymorphic approach to wallets, there are some differences between wallet types that means your implementation won't always mirror other wallets such as Sender vs. Ledger. There are currently four types of wallet:
 
-- `BrowserWallet`
-- `InjectedWallet`
-- `HardwareWallet`
-- `BridgeWallet`
-- `InstantLinkWallet`
+- `BrowserWallet`: NEAR Wallet
+- `InjectedWallet`: Sender & Math Wallet
+- `HardwareWallet`: Ledger
+- `BridgeWallet`: WalletConnect
 
 ## Methods
 
@@ -128,7 +105,7 @@ Although we've tried to implement a polymorphic approach to wallets, there are s
 
 This method handles access to accounts via `FunctionCall` access keys. It's important that at least one account is returned to be in a signed in state.
 
-> Note: Hardware wallets require `accounts`.
+> Note: Hardware wallets require `derivationPaths`.
 
 ### `signOut`
 
@@ -138,32 +115,16 @@ This method handles signing out from accounts and cleanup such as event listener
 
 This method returns the current list of accounts we have access to. When no accounts are returned, the wallet is considered to be in a signed out state.
 
-### `verifyOwner`
-
-Signs the message and verifies the owner. Message is not sent to blockchain.
-
 ### `signAndSendTransaction`
 
 This method signs a list of NEAR Actions before sending via an RPC endpoint. The implementation can differ widely based on how much the wallet you're integrating does for you. At a minimum the wallet must be able to sign a message.
 
 Where you might have to construct NEAR Transactions and send them yourself, you can import `near-api-js` and make use of the injected `provider` that's configured based on `options.network`.
 
-> Note: Browser wallets (i.e. MyNearWallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
+> Note: Browser wallets (i.e. NEAR Wallet) are unable to return the transaction outcome as they can trigger a redirect. The return type in this case is `Promise<void>` instead of the usual `Promise<FinalExecutionOutcome>`.
 
 ### `signAndSendTransactions`
 
 This method is similar to `signAndSendTransaction` but instead sends a batch of Transactions.
 
-> Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. MyNearWallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).
-
-### `signMessage`
-
-This method allows users to sign a message for a specific recipient using their NEAR account.
-Returns the `SignedMessage` based on the [NEP413](https://github.com/near/NEPs/blob/master/neps/nep-0413.md).
-
-### `createSignedTransaction`
-This method creates a signed transaction without sending it to the network. It's useful when you need to create a signed transaction that will be sent later.
-
-The method takes the same parameters as `signAndSendTransaction` but returns a signed transaction object instead of sending it. This gives more flexibility in how the transaction is ultimately processed.
-
-> Note: Not all wallets support this functionality. Check the wallet's capabilities before using this method.
+> Note: Exactly how this method should behave when transactions fail is still under review with no clear "right" way to do it. NEAR Wallet (website) seems to ignore any transactions that fail and continue executing the rest. Our approach attempts to execute the transactions in a series and bail if any fail (we will look to improve this in the future by implementing a retry feature).

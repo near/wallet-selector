@@ -1,78 +1,183 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { utils } from "near-api-js";
+import { providers, utils } from "near-api-js";
 import type {
-  SignedMessage,
-  SignMessageParams,
-  Transaction,
-} from "@near-wallet-selector/core";
-import { verifyFullKeyBelongsToUser } from "@near-wallet-selector/core";
-import { verifySignature } from "@near-wallet-selector/core";
+  AccountView,
+  CodeResult,
+} from "near-api-js/lib/providers/provider";
+import type { Transaction } from "@near-wallet-selector/core";
+import BN from "bn.js";
 
-import type { Message } from "../interfaces";
+import type { Account, Message } from "../interfaces";
+import { useWalletSelector } from "../contexts/WalletSelectorContext";
 import { CONTRACT_ID } from "../constants";
 import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
-import { useWalletSelector } from "@near-wallet-selector/react-hook";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
 };
 
 const SUGGESTED_DONATION = "0";
-const BOATLOAD_OF_GAS = "30000000000000";
+const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
+
+interface GetAccountBalanceProps {
+  provider: providers.Provider;
+  accountId: string;
+}
+
+const getAccountBalance = async ({
+  provider,
+  accountId,
+}: GetAccountBalanceProps) => {
+  try {
+    const { amount } = await provider.query<AccountView>({
+      request_type: "view_account",
+      finality: "final",
+      account_id: accountId,
+    });
+    const bn = new BN(amount);
+    return { hasBalance: !bn.isZero() };
+  } catch {
+    return { hasBalance: false };
+  }
+};
 
 const Content: React.FC = () => {
-  const {
-    signedAccountId,
-    signOut,
-    signIn,
-    viewFunction,
-    callFunction,
-    signAndSendTransactions,
-    createSignedTransaction,
-    wallet,
-    signMessage,
-    walletSelector,
-  } = useWalletSelector();
-
+  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const getMessages = useCallback(async () => {
-    const msgs = (await viewFunction({
-      contractId: CONTRACT_ID,
-      method: "getMessages",
-    })) as Array<Message>;
+  const getAccount = useCallback(async (): Promise<Account | null> => {
+    if (!accountId) {
+      return null;
+    }
 
-    return msgs.reverse();
-  }, [viewFunction]);
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+
+    const { hasBalance } = await getAccountBalance({
+      provider,
+      accountId,
+    });
+
+    if (!hasBalance) {
+      window.alert(
+        `Account ID: ${accountId} has not been founded. Please send some NEAR into this account.`
+      );
+      const wallet = await selector.wallet();
+      await wallet.signOut();
+      return null;
+    }
+
+    return provider
+      .query<AccountView>({
+        request_type: "view_account",
+        finality: "final",
+        account_id: accountId,
+      })
+      .then((data) => ({
+        ...data,
+        account_id: accountId,
+      }));
+  }, [accountId, selector.options]);
+
+  const getMessages = useCallback(() => {
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+
+    return provider
+      .query<CodeResult>({
+        request_type: "call_function",
+        account_id: CONTRACT_ID,
+        method_name: "getMessages",
+        args_base64: "",
+        finality: "optimistic",
+      })
+      .then((res) => JSON.parse(Buffer.from(res.result).toString()));
+  }, [selector]);
 
   useEffect(() => {
+    // TODO: don't just fetch once; subscribe!
     getMessages().then(setMessages);
-  }, [getMessages]);
+  }, []);
+
+  useEffect(() => {
+    if (!accountId) {
+      return setAccount(null);
+    }
+
+    setLoading(true);
+
+    getAccount().then((nextAccount) => {
+      setAccount(nextAccount);
+      setLoading(false);
+    });
+  }, [accountId, getAccount]);
+
+  const handleSignIn = () => {
+    modal.show();
+  };
+
+  const handleSignOut = async () => {
+    const wallet = await selector.wallet();
+
+    wallet.signOut().catch((err) => {
+      console.log("Failed to sign out");
+      console.error(err);
+    });
+  };
+
+  const handleSwitchWallet = () => {
+    modal.show();
+  };
+
+  const handleSwitchAccount = () => {
+    const currentIndex = accounts.findIndex((x) => x.accountId === accountId);
+    const nextIndex = currentIndex < accounts.length - 1 ? currentIndex + 1 : 0;
+
+    const nextAccountId = accounts[nextIndex].accountId;
+
+    selector.setActiveAccount(nextAccountId);
+
+    alert("Switched account to " + nextAccountId);
+  };
 
   const addMessages = useCallback(
     async (message: string, donation: string, multiple: boolean) => {
+      const { contract } = selector.store.getState();
+      const wallet = await selector.wallet();
       if (!multiple) {
-        return callFunction({
-          contractId: CONTRACT_ID,
-          method: "addMessage",
-          args: { text: message },
-          deposit: utils.format.parseNearAmount(donation)!,
-        }).catch((err) => {
-          alert("Failed to add message " + err);
-          console.log("Failed to add message");
+        return wallet
+          .signAndSendTransaction({
+            signerId: accountId!,
+            actions: [
+              {
+                type: "FunctionCall",
+                params: {
+                  methodName: "addMessage",
+                  args: { text: message },
+                  gas: BOATLOAD_OF_GAS,
+                  deposit: utils.format.parseNearAmount(donation)!,
+                },
+              },
+            ],
+          })
+          .catch((err) => {
+            alert("Failed to add message");
+            console.log("Failed to add message");
 
-          throw err;
-        });
+            throw err;
+          });
       }
 
       const transactions: Array<Transaction> = [];
 
       for (let i = 0; i < 2; i += 1) {
         transactions.push({
-          signerId: signedAccountId!,
-          receiverId: CONTRACT_ID,
+          signerId: accountId!,
+          receiverId: contract!.contractId,
           actions: [
             {
               type: "FunctionCall",
@@ -89,89 +194,40 @@ const Content: React.FC = () => {
         });
       }
 
-      return signAndSendTransactions({ transactions }).catch((err) => {
+      return wallet.signAndSendTransactions({ transactions }).catch((err) => {
         alert("Failed to add messages exception " + err);
         console.log("Failed to add messages");
 
         throw err;
       });
     },
-    [signedAccountId, callFunction, signAndSendTransactions]
+    [selector, accountId]
   );
 
-  const verifyMessage = async (
-    message: SignMessageParams,
-    signedMessage: SignedMessage
-  ) => {
-    const verifiedSignature = verifySignature({
-      message: message.message,
-      nonce: message.nonce,
-      recipient: message.recipient,
-      publicKey: signedMessage.publicKey,
-      signature: signedMessage.signature,
-      callbackUrl: message.callbackUrl,
-    });
+  const handleVerifyOwner = async () => {
+    const wallet = await selector.wallet();
+    try {
+      const owner = await wallet.verifyOwner({
+        message: "test message for verification",
+      });
 
-    const selector = await walletSelector;
-    if (!selector) {
-      throw new Error("No selector found");
+      if (owner) {
+        alert(`Signature for verification: ${JSON.stringify(owner)}`);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(message);
     }
-    const verifiedFullKeyBelongsToUser = await verifyFullKeyBelongsToUser({
-      publicKey: signedMessage.publicKey,
-      accountId: signedMessage.accountId,
-      network: selector.options.network,
-    });
-
-    const isMessageVerified = verifiedFullKeyBelongsToUser && verifiedSignature;
-
-    const alertMessage = isMessageVerified
-      ? "Successfully verified"
-      : "Failed to verify";
-
-    alert(
-      `${alertMessage} signed message: '${
-        message.message
-      }': \n ${JSON.stringify(signedMessage)}`
-    );
   };
 
   const handleSubmit = useCallback(
     async (e: Submitted) => {
       e.preventDefault();
 
-      const { fieldset, message, donation, multiple, signonly } =
-        e.target.elements;
+      const { fieldset, message, donation, multiple } = e.target.elements;
 
       fieldset.disabled = true;
-
-      if (signonly.checked) {
-        return createSignedTransaction(CONTRACT_ID, [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS,
-              deposit: utils.format.parseNearAmount(donation.value) || "0",
-            },
-          },
-        ])
-          .then((signedTransaction) => {
-            fieldset.disabled = false;
-            alert(
-              "Successfully signed transaction. Signature is:\n" +
-                signedTransaction
-            );
-            console.log("signedTx", signedTransaction);
-            return signedTransaction;
-          })
-          .catch((err) => {
-            alert("Failed to sign transaction " + err);
-            console.error("Failed to sign transaction", err);
-
-            fieldset.disabled = false;
-          });
-      }
 
       return addMessages(message.value, donation.value || "0", multiple.checked)
         .then(() => {
@@ -182,7 +238,6 @@ const Content: React.FC = () => {
               donation.value = SUGGESTED_DONATION;
               fieldset.disabled = false;
               multiple.checked = false;
-              signonly.checked = false;
               message.focus();
             })
             .catch((err) => {
@@ -198,39 +253,18 @@ const Content: React.FC = () => {
           fieldset.disabled = false;
         });
     },
-    [addMessages, createSignedTransaction, getMessages]
+    [addMessages, getMessages]
   );
 
-  const handleSignMessage = async () => {
-    if (!wallet) {
-      throw new Error("No wallet connected");
-    }
+  if (loading) {
+    return null;
+  }
 
-    const message = "test message to sign";
-    const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(32)));
-    const recipient = "guest-book.testnet";
-
-    try {
-      const signedMessage = await signMessage({
-        message,
-        nonce,
-        recipient,
-      });
-      if (signedMessage) {
-        await verifyMessage({ message, nonce, recipient }, signedMessage);
-      }
-    } catch (err) {
-      const errMsg =
-        err instanceof Error ? err.message : "Something went wrong";
-      alert(errMsg);
-    }
-  };
-
-  if (!signedAccountId) {
+  if (!account) {
     return (
       <Fragment>
         <div>
-          <button onClick={signIn}>Log in</button>
+          <button onClick={handleSignIn}>Log in</button>
         </div>
         <SignIn />
       </Fragment>
@@ -240,12 +274,15 @@ const Content: React.FC = () => {
   return (
     <Fragment>
       <div>
-        <button onClick={signIn}>Switch Wallet</button>
-        <button onClick={handleSignMessage}>Sign Message</button>
-        <button onClick={signOut}>Log out {signedAccountId}</button>
+        <button onClick={handleSignOut}>Log out</button>
+        <button onClick={handleSwitchWallet}>Switch Wallet</button>
+        <button onClick={handleVerifyOwner}>Verify Owner</button>
+        {accounts.length > 1 && (
+          <button onClick={handleSwitchAccount}>Switch Account</button>
+        )}
       </div>
       <Form
-        signedAccountId={signedAccountId}
+        account={account}
         onSubmit={(e) => handleSubmit(e as unknown as Submitted)}
       />
       <Messages messages={messages} />

@@ -1,1 +1,0 @@
-export { setupHotWallet } from "./lib";

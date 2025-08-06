@@ -1,6 +1,11 @@
 import type { KeyPair, providers } from "near-api-js";
-import * as nearAPI from "near-api-js";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider.js";
+import {
+  InMemorySigner,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
+import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider";
 import type { SignClientTypes, SessionTypes } from "@walletconnect/types";
 import type {
   WalletModuleFactory,
@@ -12,8 +17,6 @@ import type {
   EventEmitterService,
   VerifiedOwner,
   Account,
-  SignMessageParams,
-  SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import { createAction } from "@near-wallet-selector/wallet-utils";
@@ -28,8 +31,6 @@ export interface WalletConnectParams {
   iconUrl?: string;
   chainId?: string;
   deprecated?: boolean;
-  methods?: Array<string>;
-  events?: Array<string>;
 }
 
 interface WalletConnectExtraOptions {
@@ -37,8 +38,6 @@ interface WalletConnectExtraOptions {
   projectId: string;
   metadata: SignClientTypes.Metadata;
   relayUrl: string;
-  methods?: Array<string>;
-  events?: Array<string>;
 }
 
 interface LimitedAccessKeyPair {
@@ -59,17 +58,8 @@ interface WalletConnectAccount {
 interface WalletConnectState {
   client: WalletConnectClient;
   session: SessionTypes.Struct | null;
-  keystore: nearAPI.keyStores.KeyStore;
+  keystore: keyStores.KeyStore;
   subscriptions: Array<Subscription>;
-}
-
-interface ConnectParams {
-  state: WalletConnectState;
-  chainId: string;
-  qrCodeModal: boolean;
-  projectId: string;
-  methods?: Array<string>;
-  events?: Array<string>;
 }
 
 const WC_METHODS = [
@@ -78,10 +68,7 @@ const WC_METHODS = [
   "near_getAccounts",
   "near_signTransaction",
   "near_signTransactions",
-  // disabling these two due to WalletConnect not supporting it
-  // see https://docs.reown.com/advanced/multichain/rpc-reference/near-rpc
-  // "near_verifyOwner",
-  // "near_signMessage",
+  "near_verifyOwner",
 ];
 
 const WC_EVENTS = ["chainChanged", "accountsChanged"];
@@ -93,7 +80,7 @@ const setupWalletConnectState = async (
 ): Promise<WalletConnectState> => {
   const client = new WalletConnectClient(emitter);
   let session: SessionTypes.Struct | null = null;
-  const keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keystore = new keyStores.BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
@@ -117,65 +104,10 @@ const setupWalletConnectState = async (
   };
 };
 
-const connect = async ({
-  state,
-  chainId,
-  qrCodeModal,
-  projectId,
-  methods,
-  events,
-}: ConnectParams) => {
-  return await state.client.connect(
-    {
-      requiredNamespaces: {
-        near: {
-          chains: [chainId],
-          methods: methods || WC_METHODS,
-          events: events || WC_EVENTS,
-        },
-      },
-    },
-    qrCodeModal,
-    projectId,
-    chainId
-  );
-};
-
-const disconnect = async ({ state }: { state: WalletConnectState }) => {
-  await state.client.disconnect({
-    topic: state.session!.topic,
-    reason: {
-      code: 5900,
-      message: "User disconnected",
-    },
-  });
-};
-
-const getSignatureData = (result: Uint8Array) => {
-  if (result instanceof Uint8Array) {
-    return result;
-  } else if (Array.isArray(result)) {
-    return new Uint8Array(result);
-  } else if (typeof result === "object" && result !== null) {
-    return new Uint8Array(Object.values(result));
-  } else {
-    throw new Error("Unexpected result type from near_signTransaction");
-  }
-};
-
 const WalletConnect: WalletBehaviourFactory<
   BridgeWallet,
   { params: WalletConnectExtraOptions }
-> = async ({
-  id,
-  options,
-  store,
-  params,
-  provider,
-  emitter,
-  logger,
-  metadata,
-}) => {
+> = async ({ id, options, store, params, provider, emitter, logger }) => {
   const _state = await setupWalletConnectState(id, params, emitter);
 
   const getChainId = () => {
@@ -197,7 +129,7 @@ const WalletConnect: WalletBehaviourFactory<
     const newAccounts = [];
 
     for (let i = 0; i < accounts.length; i++) {
-      const signer = new nearAPI.InMemorySigner(_state.keystore);
+      const signer = new InMemorySigner(_state.keystore);
       const publicKey = await signer.getPublicKey(
         accounts[i].split(":")[2],
         options.network.networkId
@@ -249,9 +181,8 @@ const WalletConnect: WalletBehaviourFactory<
   };
 
   const signTransactions = async (transactions: Array<Transaction>) => {
-    const signer = new nearAPI.InMemorySigner(_state.keystore);
-    const signedTransactions: Array<nearAPI.transactions.SignedTransaction> =
-      [];
+    const signer = new InMemorySigner(_state.keystore);
+    const signedTransactions: Array<nearTransactions.SignedTransaction> = [];
 
     const block = await provider.block({ finality: "final" });
 
@@ -277,16 +208,16 @@ const WalletConnect: WalletBehaviourFactory<
         throw new Error("Invalid access key");
       }
 
-      const tx = nearAPI.transactions.createTransaction(
+      const tx = nearTransactions.createTransaction(
         transactions[i].signerId,
-        nearAPI.utils.PublicKey.from(publicKey.toString()),
+        utils.PublicKey.from(publicKey.toString()),
         transactions[i].receiverId,
         accessKey.nonce + i + 1,
         transaction.actions.map((action) => createAction(action)),
-        nearAPI.utils.serialize.base_decode(block.header.hash)
+        utils.serialize.base_decode(block.header.hash)
       );
 
-      const [, signedTx] = await nearAPI.transactions.signTransaction(
+      const [, signedTx] = await nearTransactions.signTransaction(
         tx,
         signer,
         transactions[i].signerId,
@@ -321,26 +252,6 @@ const WalletConnect: WalletBehaviourFactory<
     });
   };
 
-  const requestSignMessage = async (
-    messageParams: SignMessageParams & { accountId?: string }
-  ) => {
-    const { message, nonce, recipient, callbackUrl, accountId } = messageParams;
-    return _state.client.request<SignedMessage>({
-      topic: _state.session!.topic,
-      chainId: getChainId(),
-      request: {
-        method: "near_signMessage",
-        params: {
-          message,
-          nonce,
-          recipient,
-          ...(callbackUrl && { callbackUrl }),
-          ...(accountId && { accountId }),
-        },
-      },
-    });
-  };
-
   const requestSignTransaction = async (transaction: Transaction) => {
     const accounts = await requestAccounts();
     const account = accounts.find((x) => x.accountId === transaction.signerId);
@@ -359,13 +270,13 @@ const WalletConnect: WalletBehaviourFactory<
       }),
     ]);
 
-    const tx = nearAPI.transactions.createTransaction(
+    const tx = nearTransactions.createTransaction(
       transaction.signerId,
-      nearAPI.utils.PublicKey.from(account.publicKey),
+      utils.PublicKey.from(account.publicKey),
       transaction.receiverId,
       accessKey.nonce + 1,
       transaction.actions.map((action) => createAction(action)),
-      nearAPI.utils.serialize.base_decode(block.header.hash)
+      utils.serialize.base_decode(block.header.hash)
     );
 
     const result = await _state.client.request<Uint8Array>({
@@ -377,11 +288,7 @@ const WalletConnect: WalletBehaviourFactory<
       },
     });
 
-    const signatureData = getSignatureData(result);
-
-    return nearAPI.transactions.SignedTransaction.decode(
-      Buffer.from(signatureData)
-    );
+    return nearTransactions.SignedTransaction.decode(Buffer.from(result));
   };
 
   const requestSignTransactions = async (transactions: Array<Transaction>) => {
@@ -389,7 +296,7 @@ const WalletConnect: WalletBehaviourFactory<
       return [];
     }
 
-    const txs: Array<nearAPI.transactions.Transaction> = [];
+    const txs: Array<nearTransactions.Transaction> = [];
 
     const [block, accounts] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -414,13 +321,13 @@ const WalletConnect: WalletBehaviourFactory<
       });
 
       txs.push(
-        nearAPI.transactions.createTransaction(
+        nearTransactions.createTransaction(
           transaction.signerId,
-          nearAPI.utils.PublicKey.from(account.publicKey),
+          utils.PublicKey.from(account.publicKey),
           transaction.receiverId,
           accessKey.nonce + i + 1,
           transaction.actions.map((action) => createAction(action)),
-          nearAPI.utils.serialize.base_decode(block.header.hash)
+          utils.serialize.base_decode(block.header.hash)
         )
       );
     }
@@ -435,11 +342,7 @@ const WalletConnect: WalletBehaviourFactory<
     });
 
     return results.map((result) => {
-      const signatureData = getSignatureData(result);
-
-      return nearAPI.transactions.SignedTransaction.decode(
-        Buffer.from(signatureData)
-      );
+      return nearTransactions.SignedTransaction.decode(Buffer.from(result));
     });
   };
 
@@ -450,12 +353,12 @@ const WalletConnect: WalletBehaviourFactory<
 
     return accounts.map(({ accountId }) => ({
       accountId,
-      keyPair: nearAPI.utils.KeyPair.fromRandom("ed25519"),
+      keyPair: utils.KeyPair.fromRandom("ed25519"),
     }));
   };
 
   const requestSignIn = async (
-    permission: nearAPI.transactions.FunctionCallPermission
+    permission: nearTransactions.FunctionCallPermission
   ) => {
     const keyPairs = await createLimitedAccessKeyPairs();
     const limitedAccessAccounts: Array<LimitedAccessAccount> = keyPairs.map(
@@ -529,7 +432,13 @@ const WalletConnect: WalletBehaviourFactory<
     if (_state.session) {
       await requestSignOut();
 
-      await disconnect({ state: _state });
+      await _state.client.disconnect({
+        topic: _state.session.topic,
+        reason: {
+          code: 5900,
+          message: "User disconnected",
+        },
+      });
     }
 
     await cleanup();
@@ -569,29 +478,31 @@ const WalletConnect: WalletBehaviourFactory<
 
   return {
     async signIn({ contractId, methodNames = [], qrCodeModal = true }) {
+      const existingAccounts = await getAccounts();
+
+      if (existingAccounts.length) {
+        return existingAccounts;
+      }
+
       try {
-        const { contract } = store.getState();
-        if (_state.session && !contract) {
-          await disconnect({ state: _state });
-          await cleanup();
-        }
+        _state.session = await _state.client.connect(
+          {
+            requiredNamespaces: {
+              near: {
+                chains: [getChainId()],
+                methods: WC_METHODS,
+                events: WC_EVENTS,
+              },
+            },
+          },
+          qrCodeModal
+        );
 
-        const chainId = getChainId();
-
-        _state.session = await connect({
-          state: _state,
-          chainId,
-          qrCodeModal,
-          projectId: params.projectId,
-          methods: params.methods,
-          events: params.events,
-        });
-
-        await requestSignIn({ receiverId: contractId || "", methodNames });
+        await requestSignIn({ receiverId: contractId, methodNames });
 
         await setupEvents();
 
-        return await getAccounts();
+        return getAccounts();
       } catch (err) {
         await signOut();
 
@@ -621,38 +532,6 @@ const WalletConnect: WalletBehaviourFactory<
       }
 
       return requestVerifyOwner(account.accountId, message);
-    },
-
-    async signMessage({ message, nonce, recipient, callbackUrl }) {
-      logger.log("WalletConnect:signMessage", { message, nonce, recipient });
-
-      try {
-        const chainId = getChainId();
-
-        if (!_state.session) {
-          _state.session = _state.session = await connect({
-            state: _state,
-            chainId,
-            qrCodeModal: true,
-            projectId: params.projectId,
-          });
-        }
-
-        const account = getActiveAccount(store.getState());
-
-        return await requestSignMessage({
-          message,
-          nonce,
-          recipient,
-          callbackUrl,
-          accountId: account?.accountId,
-        });
-      } catch (err) {
-        await disconnect({ state: _state });
-        await cleanup();
-
-        throw err;
-      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -728,42 +607,6 @@ const WalletConnect: WalletBehaviourFactory<
         return results;
       }
     },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
   };
 };
 
@@ -774,8 +617,6 @@ export function setupWalletConnect({
   relayUrl = "wss://relay.walletconnect.com",
   iconUrl = icon,
   deprecated = false,
-  methods,
-  events,
 }: WalletConnectParams): WalletModuleFactory<BridgeWallet> {
   return async () => {
     return {
@@ -796,8 +637,6 @@ export function setupWalletConnect({
             metadata,
             relayUrl,
             chainId,
-            methods,
-            events,
           },
         });
       },

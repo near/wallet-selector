@@ -1,0 +1,26 @@
+{
+  "name": "@near-wallet-selector/account-export",
+  "version": "7.9.1",
+  "description": "This is the Export Selector UI package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector account-export",
+    "account-export"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/magin/packages/account-export",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2 || ^1.0.0"
+  }
+}

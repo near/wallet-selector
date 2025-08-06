@@ -9,17 +9,9 @@
   - `nodeUrl` (`string`): URL for RPC requests.
   - `helperUrl` (`string`): URL for creating accounts.
   - `explorerUrl` (`string`): URL for the NEAR explorer.
-  - `indexerUrl` (`string`): URL for the NEAR indexer.
 - `debug` (`boolean`): Whether internal logging is enabled.
 - `optimizeWalletOrder` (`boolean`): Whether wallet order optimization is enabled.
 - `randomizeWalletOrder` (`boolean`): Weather wallet order randomization is enabled.
-- `allowMultipleSelectors` (`boolean?`): Wether to allow multiple wallet selector instances to be created.
-- `languageCode` (`string?`): ISO 639-1 two-letter language code.
-- `relayerUrl` (`string?`): The URL where DelegateActions are sent by meta transaction enabled wallet modules.
-- `createAccessKeyFor` (`object?`): The contract ID and method names to create a function call access key for. This allows wallets to create limited access keys for specific contract methods.
-  - `contractId` (`string`): The contract ID to create the access key for.
-  - `methodNames` (`Array<string>`): Array of method names that the access key will be limited to.
-
 **Description**
 
 Resolved variation of the options passed to `setupWalletSelector`.
@@ -68,7 +60,7 @@ Retrieve the current state. You can find more information on `WalletSelectorStat
 
 ```ts
 const state = selector.store.getState();
-console.log(state); // { modules: [{ id: "my-near-wallet", ... }], ... }
+console.log(state); // { modules: [{ id: "near-wallet", ... }], ... }
 ```
 
 ### `.store.observable`
@@ -129,7 +121,7 @@ Programmatically access wallets and call their methods. It's advised to use `sta
 
 // Specific wallet.
 (async () => {
-  const wallet = await selector.wallet("my-near-wallet");
+  const wallet = await selector.wallet("near-wallet");
   const accounts = await wallet.signIn({ contractId: "test.testnet" });
 })();
 ```

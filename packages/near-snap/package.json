@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/near-snap",
-  "version": "9.2.0",
+  "version": "7.9.1",
   "description": "Metamask snap to interact with Near dapps.",
   "keywords": [
     "near",
@@ -11,6 +11,8 @@
     "near-blockchain",
     "wallet selector",
     "injected wallet",
+    "metamask snap",
+    "metamask flask",
     "metamask"
   ],
   "repository": {
@@ -21,7 +23,7 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-snap",
-  "publishConfig": {
-    "directory": "../../dist/packages/near-snap"
+  "peerDependencies": {
+    "near-api-js": "^0.44.2 || ^1.0.0"
   }
 }

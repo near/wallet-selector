@@ -8,22 +8,15 @@ import type {
   HardwareWallet,
   Transaction,
   Optional,
-  SignMessageParams,
-  SignedMessage,
 } from "@near-wallet-selector/core";
-import {
-  getActiveAccount,
-  verifyFullKeyBelongsToUser,
-  verifySignature,
-} from "@near-wallet-selector/core";
+import { getActiveAccount } from "@near-wallet-selector/core";
 
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
 import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+import { utils } from "near-api-js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
-import { serializeLedgerNEP413Payload } from "./nep413/ledger-payload";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -83,7 +76,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return nearAPI.utils.PublicKey.from(account.publicKey);
+      return utils.PublicKey.from(account.publicKey);
     },
     signMessage: async (message, accountId) => {
       const account = _state.accounts.find((a) => a.accountId === accountId);
@@ -93,13 +86,13 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
       }
 
       const signature = await _state.client.sign({
-        data: Buffer.from(message),
+        data: message,
         derivationPath: account.derivationPath,
       });
 
       return {
         signature,
-        publicKey: nearAPI.utils.PublicKey.from(account.publicKey),
+        publicKey: utils.PublicKey.from(account.publicKey),
       };
     },
   };
@@ -278,154 +271,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 
       return results;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async getPublicKey(derivationPath?: string): Promise<any> {
+    async getPublicKey(derivationPath: string) {
       await connectLedgerDevice();
 
-      if (typeof derivationPath === "string") {
-        return await _state.client.getPublicKey({ derivationPath });
-      } else {
-        const account = getActiveAccount(store.getState());
-
-        if (!account) {
-          throw new Error("No active account");
-        }
-
-        const activeAccount = _state.accounts.find(
-          ({ accountId }) => accountId === account.accountId
-        );
-
-        if (!activeAccount) {
-          throw new Error("No active account in state");
-        }
-
-        const pk = await _state.client.getPublicKey({
-          derivationPath: activeAccount.derivationPath,
-        });
-
-        return nearAPI.utils.PublicKey.fromString(pk);
-      }
-    },
-
-    async signMessage({
-      message,
-      nonce,
-      recipient,
-      callbackUrl,
-    }: SignMessageParams): Promise<SignedMessage | void> {
-      logger.log("signMessage", { message, nonce, recipient, callbackUrl });
-
-      if (!_state.accounts.length) {
-        throw new Error("Wallet not signed in");
-      }
-
-      const account = getActiveAccount(store.getState());
-
-      if (!account) {
-        throw new Error("No active account");
-      }
-
-      const ledgerAccount = _state.accounts.find(
-        (a) => a.accountId === account.accountId
-      );
-
-      if (!ledgerAccount) {
-        throw new Error("Failed to find account for signing");
-      }
-
-      const publicKeyExistsInAccount = await verifyFullKeyBelongsToUser({
-        publicKey: ledgerAccount.publicKey,
-        accountId: account.accountId,
-        network: options.network,
-      });
-
-      if (!publicKeyExistsInAccount) {
-        throw new Error("Public key not found for the active account.");
-      }
-
-      // Note: Connection must be triggered by user interaction.
-      await connectLedgerDevice();
-
-      const serializedPayload = serializeLedgerNEP413Payload({
-        message,
-        nonce,
-        recipient,
-        callbackUrl,
-      });
-
-      const signature = await _state.client.signMessage({
-        data: serializedPayload,
-        derivationPath: ledgerAccount.derivationPath,
-      });
-
-      const encodedSignature = Buffer.from(signature).toString("base64");
-
-      const isSignatureValid = verifySignature({
-        publicKey: ledgerAccount.publicKey,
-        signature: encodedSignature,
-        message,
-        nonce,
-        recipient,
-        callbackUrl,
-      });
-
-      if (!isSignatureValid) {
-        throw new Error("Failed to verify signature");
-      }
-
-      return {
-        accountId: ledgerAccount.accountId,
-        publicKey: "ed25519:" + ledgerAccount.publicKey,
-        signature: encodedSignature,
-      };
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      if (!_state.accounts.length) {
-        throw new Error("Wallet not signed in");
-      }
-
-      // Note: Connection must be triggered by user interaction.
-      await connectLedgerDevice();
-
-      const [signedTransactions] = await signTransactions(
-        transformTransactions([{ receiverId, actions }]),
-        signer,
-        options.network
-      );
-
-      return signedTransactions;
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
-        transaction.signerId,
-        options.network.networkId
-      );
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
-      });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
+      return await _state.client.getPublicKey({ derivationPath });
     },
   };
 };

@@ -1,7 +1,7 @@
 {
   "extends": [
+    "plugin:@nrwl/nx/react-typescript",
     "../../.eslintrc.json",
-    "plugin:@nx/react-typescript",
     "next",
     "next/core-web-vitals"
   ],
@@ -10,7 +10,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "examples/react/pages"],
+        "@next/next/no-html-link-for-pages": ["error", "examples/next/pages"],
         "no-console": "off"
       }
     },

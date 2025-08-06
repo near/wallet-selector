@@ -2,7 +2,7 @@ import React from "react";
 import QRCode from "qrcode";
 import copy from "copy-to-clipboard";
 import { ModalHeader } from "./ModalHeader";
-import { CopyIcon } from "./icons/CopyIcon";
+import { CopyIcon } from "./CopyIcon";
 import { translate } from "@near-wallet-selector/core";
 import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 

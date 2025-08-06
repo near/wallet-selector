@@ -1,11 +1,10 @@
 {
-  "name": "wallet-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/wallet-utils/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/wallet-utils",
@@ -30,27 +29,26 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/wallet-utils/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/wallet-utils"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/wallet-utils"],
       "options": {
         "jestConfig": "packages/wallet-utils/jest.config.ts",
         "passWithNoTests": true
       }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
       },
-      "dependsOn": ["^deploy"]
-    }
+      "deploy": {
+        "executor": "ngx-deploy-npm:deploy",
+        "options": {
+          "access": "public"
+        }
+      }
   },
   "tags": []
 }

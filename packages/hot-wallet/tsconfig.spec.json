@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "module": "ES2015",
-    "types": ["jest", "node"]
-  },
-  "include": ["jest.config.ts", "**/*.spec.ts"]
-}

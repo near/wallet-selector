@@ -1,25 +1,15 @@
 import Client from "@walletconnect/sign-client";
-import type {
-  SignClientTypes,
-  EngineTypes,
-  ISignClient,
-} from "@walletconnect/types";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-let WalletConnectModal: typeof import("@walletconnect/modal").WalletConnectModal;
-import("@walletconnect/modal").then((module) => {
-  WalletConnectModal = module.WalletConnectModal;
-});
+import type { SignClientTypes, EngineTypes } from "@walletconnect/types";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 import type { SessionTypes } from "@walletconnect/types";
 import type {
   EventEmitterService,
-  Subscription,
   WalletEvents,
 } from "@near-wallet-selector/core";
 
 class WalletConnectClient {
   private client: Client;
   private emitter: EventEmitterService<WalletEvents>;
-  private modal: typeof WalletConnectModal.prototype;
 
   async init(opts: SignClientTypes.Options) {
     this.client = await Client.init(opts);
@@ -29,14 +19,14 @@ class WalletConnectClient {
     this.emitter = emitter;
   }
 
-  get session(): ISignClient["session"] {
+  get session() {
     return this.client.session;
   }
 
   on<Event extends SignClientTypes.Event>(
     event: Event,
     callback: (args: SignClientTypes.EventArguments[Event]) => void
-  ): Subscription {
+  ) {
     this.client.on(event, callback);
 
     return {
@@ -51,34 +41,15 @@ class WalletConnectClient {
     this.client.once(event, callback);
   }
 
-  async connect(
-    params: EngineTypes.ConnectParams,
-    qrCodeModal: boolean,
-    projectId: string,
-    chainId: string
-  ) {
-    if (!this.modal) {
-      this.modal = new WalletConnectModal({
-        projectId,
-        chains: [chainId],
-        explorerExcludedWalletIds: "ALL",
-      });
-    }
-
+  async connect(params: EngineTypes.ConnectParams, qrCodeModal: boolean) {
     return new Promise<SessionTypes.Struct>((resolve, reject) => {
       this.client
         .connect(params)
         .then(({ uri, approval }) => {
           if (uri) {
             if (qrCodeModal) {
-              this.modal.openModal({
-                uri,
-                standaloneChains: [chainId],
-              });
-              this.modal.subscribeModal(({ open }) => {
-                if (!open) {
-                  reject(new Error("User cancelled pairing"));
-                }
+              QRCodeModal.open(uri, () => {
+                reject(new Error("User cancelled pairing"));
               });
             } else {
               this.emitter.emit("uriChanged", { uri });
@@ -88,7 +59,7 @@ class WalletConnectClient {
           approval()
             .then(resolve)
             .catch(reject)
-            .finally(() => this.modal.closeModal());
+            .finally(() => QRCodeModal.close());
         })
         .catch(reject);
     });

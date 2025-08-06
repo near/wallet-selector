@@ -1,11 +1,10 @@
 {
-  "name": "modal-ui",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/modal-ui/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/rollup:rollup",
+      "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/modal-ui",
@@ -13,7 +12,7 @@
         "project": "packages/modal-ui/package.json",
         "entryFile": "packages/modal-ui/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "compiler": "babel",
         "format": ["esm", "cjs"],
@@ -32,15 +31,15 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["packages/modal-ui/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/packages/modal-ui"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/modal-ui"],
       "options": {
         "jestConfig": "packages/modal-ui/jest.config.ts",
         "passWithNoTests": true
@@ -68,8 +67,7 @@
       "executor": "ngx-deploy-npm:deploy",
       "options": {
         "access": "public"
-      },
-      "dependsOn": ["^deploy"]
+      }
     }
   },
   "tags": []

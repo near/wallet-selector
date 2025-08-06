@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/modal-ui",
-  "version": "9.2.0",
+  "version": "7.9.1",
   "description": "Modal UI package for NEAR wallet Selector",
   "keywords": [
     "near",
@@ -18,8 +18,5 @@
   "bugs": {
     "url": "https://github.com/near/wallet-selector/issues"
   },
-  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/modal-ui",
-  "publishConfig": {
-    "directory": "../../dist/packages/modal-ui"
-  }
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/modal-ui"
 }

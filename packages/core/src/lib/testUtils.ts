@@ -47,11 +47,7 @@ export const mockWallet = async <Variation extends Wallet>(
     provider: deps?.provider || mock<ProviderService>(),
   });
 
-  await walletModules.setupWalletModules();
-  await walletModules.setupStorage();
-
-  // await 300ms to allow wallet modules to initialize
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  await walletModules.setup();
 
   const { modules } = store.getState();
   const wallet = await walletModules.getWallet<Variation>(modules[0].id);

@@ -1,0 +1,27 @@
+{
+  "name": "@near-wallet-selector/near-wallet",
+  "version": "7.9.1",
+  "description": "Near Wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "browser wallet",
+    "near wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-wallet",
+  "peerDependencies": {
+    "near-api-js": "^0.44.2 || ^1.0.0"
+  }
+}

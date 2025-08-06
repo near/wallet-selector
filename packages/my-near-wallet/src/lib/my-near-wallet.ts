@@ -1,13 +1,21 @@
+import {
+  WalletConnection,
+  connect,
+  keyStores,
+  transactions as nearTransactions,
+  utils,
+} from "near-api-js";
 import type {
   WalletModuleFactory,
   WalletBehaviourFactory,
+  BrowserWallet,
   Transaction,
+  Optional,
   Network,
   Account,
-  InjectedWallet,
 } from "@near-wallet-selector/core";
+import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
-import { MyNearWalletConnector } from "./mnw-connect";
 
 export interface MyNearWalletParams {
   walletUrl?: string;
@@ -18,7 +26,8 @@ export interface MyNearWalletParams {
 }
 
 interface MyNearWalletState {
-  wallet: MyNearWalletConnector;
+  wallet: WalletConnection;
+  keyStore: keyStores.BrowserLocalStorageKeyStore;
 }
 
 interface MyNearWalletExtraOptions {
@@ -44,23 +53,40 @@ const setupWalletState = async (
   params: MyNearWalletExtraOptions,
   network: Network
 ): Promise<MyNearWalletState> => {
-  const wallet = new MyNearWalletConnector(params.walletUrl, network);
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+
+  const near = await connect({
+    keyStore,
+    walletUrl: params.walletUrl,
+    ...network,
+    headers: {},
+  });
+
+  const wallet = new WalletConnection(near, "near_app");
 
   return {
     wallet,
+    keyStore,
   };
 };
 
 const MyNearWallet: WalletBehaviourFactory<
-  InjectedWallet,
+  BrowserWallet,
   { params: MyNearWalletExtraOptions }
 > = async ({ metadata, options, store, params, logger }) => {
-  const state = await setupWalletState(params, options.network);
-
+  const _state = await setupWalletState(params, options.network);
   const getAccounts = async (): Promise<Array<Account>> => {
-    const accountId = state.wallet.getAccountId();
-    const publicKey = state.wallet.getPublicKey();
+    const accountId = _state.wallet.getAccountId();
+    const account = _state.wallet.account();
 
+    if (!accountId || !account) {
+      return [];
+    }
+
+    const publicKey = await account.connection.signer.getPublicKey(
+      account.accountId,
+      options.network.networkId
+    );
     return [
       {
         accountId,
@@ -69,121 +95,139 @@ const MyNearWallet: WalletBehaviourFactory<
     ];
   };
 
+  const transformTransactions = async (
+    transactions: Array<Optional<Transaction, "signerId">>
+  ) => {
+    const account = _state.wallet.account();
+    const { networkId, signer, provider } = account.connection;
+
+    const localKey = await signer.getPublicKey(account.accountId, networkId);
+
+    return Promise.all(
+      transactions.map(async (transaction, index) => {
+        const actions = transaction.actions.map((action) =>
+          createAction(action)
+        );
+        const accessKey = await account.accessKeyForTransaction(
+          transaction.receiverId,
+          actions,
+          localKey
+        );
+
+        if (!accessKey) {
+          throw new Error(
+            `Failed to find matching key for transaction sent to ${transaction.receiverId}`
+          );
+        }
+
+        const block = await provider.block({ finality: "final" });
+
+        return nearTransactions.createTransaction(
+          account.accountId,
+          utils.PublicKey.from(accessKey.public_key),
+          transaction.receiverId,
+          accessKey.access_key.nonce + index + 1,
+          actions,
+          utils.serialize.base_decode(block.header.hash)
+        );
+      })
+    );
+  };
+
   return {
-    async signIn({ contractId, methodNames }) {
-      if (!state.wallet.isSignedIn()) {
-        await state.wallet.requestSignIn({
-          contractId,
-          methodNames,
-        });
+    async signIn({ contractId, methodNames, successUrl, failureUrl }) {
+      const existingAccounts = await getAccounts();
+
+      if (existingAccounts.length) {
+        return existingAccounts;
       }
+
+      await _state.wallet.requestSignIn({
+        contractId,
+        methodNames,
+        successUrl,
+        failureUrl,
+      });
 
       return getAccounts();
     },
 
     async signOut() {
-      state.wallet.signOut();
+      if (_state.wallet.isSignedIn()) {
+        _state.wallet.signOut();
+      }
     },
 
     async getAccounts() {
       return getAccounts();
     },
 
-    async verifyOwner() {
-      throw new Error(`Method not supported by ${metadata.name}`);
+    async verifyOwner({ message, callbackUrl, meta }) {
+      logger.log("verifyOwner", { message });
+
+      const account = _state.wallet.account();
+
+      if (!account) {
+        throw new Error("Wallet not signed in");
+      }
+      const locationUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+
+      const url = callbackUrl || locationUrl;
+
+      if (!url) {
+        throw new Error(`The callbackUrl is missing for ${metadata.name}`);
+      }
+
+      const encodedUrl = encodeURIComponent(url);
+      const extraMeta = meta ? `&meta=${meta}` : "";
+
+      window.location.replace(
+        `${params.walletUrl}/verify-owner?message=${message}&callbackUrl=${encodedUrl}${extraMeta}`
+      );
+
+      return;
     },
 
-    async signMessage({
-      message,
-      nonce,
-      recipient,
+    async signAndSendTransaction({
+      signerId,
+      receiverId,
+      actions,
       callbackUrl,
-      state: sgnState,
     }) {
-      logger.log("sign message", { message });
-
-      return await state.wallet.signMessage({
-        message,
-        nonce,
-        recipient,
-        callbackUrl,
-        state: sgnState,
-      });
-    },
-
-    async signAndSendTransaction({ signerId, receiverId, actions }) {
       logger.log("signAndSendTransaction", {
         signerId,
         receiverId,
         actions,
+        callbackUrl,
       });
 
       const { contract } = store.getState();
 
-      if (!state.wallet.isSignedIn() || !contract) {
+      if (!_state.wallet.isSignedIn() || !contract) {
         throw new Error("Wallet not signed in");
       }
 
-      const signedAccountId = state.wallet.getAccountId();
+      const account = _state.wallet.account();
 
-      if (signerId && signedAccountId !== signerId) {
-        throw new Error(
-          `Signed in as ${signedAccountId}, cannot sign for ${signerId}`
-        );
-      }
-
-      return state.wallet.signAndSendTransaction({
+      return account["signAndSendTransaction"]({
         receiverId: receiverId || contract.contractId,
-        actions,
+        actions: actions.map((action) => createAction(action)),
+        walletCallbackUrl: callbackUrl,
       });
     },
 
-    async signAndSendTransactions({ transactions }) {
-      logger.log("signAndSendTransactions", { transactions });
+    async signAndSendTransactions({ transactions, callbackUrl }) {
+      logger.log("signAndSendTransactions", { transactions, callbackUrl });
 
-      if (!state.wallet.isSignedIn()) {
+      if (!_state.wallet.isSignedIn()) {
         throw new Error("Wallet not signed in");
       }
 
-      return state.wallet.signAndSendTransactions(
-        transactions as Array<Transaction>
-      );
-    },
-
-    async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async getPublicKey() {
-      logger.log("getPublicKey", {});
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
+      return _state.wallet.requestSignTransactions({
+        transactions: await transformTransactions(transactions),
         callbackUrl,
       });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     buildImportAccountsUrl() {
@@ -196,11 +240,13 @@ export function setupMyNearWallet({
   walletUrl,
   iconUrl = icon,
   deprecated = false,
-}: MyNearWalletParams = {}): WalletModuleFactory<InjectedWallet> {
-  return async (moduleOptions) => {
+  successUrl = "",
+  failureUrl = "",
+}: MyNearWalletParams = {}): WalletModuleFactory<BrowserWallet> {
+  return async () => {
     return {
       id: "my-near-wallet",
-      type: "injected",
+      type: "browser",
       metadata: {
         name: "MyNearWallet",
         description:
@@ -208,7 +254,8 @@ export function setupMyNearWallet({
         iconUrl,
         deprecated,
         available: true,
-        downloadUrl: resolveWalletUrl(moduleOptions.options.network, walletUrl),
+        successUrl,
+        failureUrl,
       },
       init: (options) => {
         return MyNearWallet({

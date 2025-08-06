@@ -4,7 +4,7 @@ This is the [WalletConnect](https://walletconnect.com/) package for NEAR Wallet 
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v0.44.2 or above:
 
 ```bash
 # Using Yarn
@@ -36,19 +36,7 @@ const walletConnect = setupWalletConnect({
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
   },
   chainId: "near:testnet",
-  iconUrl: "https://<Wallet Icon URL Here>",
-  // Please note that the 'methods' option is discretionary;
-  // if omitted, all methods are included by default.
-  // Use it solely to override the default configuration.
-  methods: [
-    "near_signIn",
-    "near_signOut",
-    "near_getAccounts",
-    "near_signTransaction",
-    "near_signTransactions",
-    "near_verifyOwner",
-    "near_signMessage",
-  ]
+  iconUrl: "https://yourdomain.com/yourwallet-icon.png",
 });
 
 const selector = await setupWalletSelector({
@@ -57,35 +45,12 @@ const selector = await setupWalletSelector({
 });
 ```
 
-## Wallet Connect Configuration
-
-Project ID is required for wallet connect, please obtain it from [walletconnect.com](https://walletconnect.com/)
-
-
 ## Options
 
-- `projectId` (`string`): Project ID is `required` to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/cloud/relay#project-id).
+- `projectId` (`string`): Project ID required to instantiate the client. More details can be found [here](https://docs.walletconnect.com/2.0/cloud/relay#project-id).
 - `metadata` (`object`): Metadata used to provide context of the dApp to the connected wallet. More details can be found [here](https://docs.walletconnect.com/2.0/specs/clients/core/pairing/data-structures#metadata).
 - `chainId` (`string?`): Chain ID for requests. Defaults to `"near:<networkId>` unless using custom network configuration.
-- `relayUrl` (`string?`): Relay URL for requests. Defaults to `"wss://relay.walletconnect.com"`.
 - `iconUrl` (`string?`): Image URL for the icon shown in the modal. This can also be a relative path or base64 encoded image. Defaults to `./assets/wallet-connect-icon.png`.
-- `deprecated`: (`boolean?`): Deprecated is optional. Default is `false`.
-- `methods`: (`Array<string>?`): Methods is optional overrides default WC_METHODS. Defaults to `undefined`.
-- `events`: (`Array<string>?`): Events is optional overrides default WC_EVENTS. Defaults to `undefined`.
-
-## Supported methods
-- `near_signIn`
-- `near_signOut`
-- `near_getAccounts`
-- `near_signTransaction`
-- `near_signTransactions`
-- `near_verifyOwner`
-- `near_signMessage`
-
-## Supported events
-
-- `chainChanged`
-- `accountsChanged`
 
 ## Assets
 

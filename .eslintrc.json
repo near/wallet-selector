@@ -8,12 +8,17 @@
     "jest": true
   },
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx", "@typescript-eslint", "prettier"],
+  "plugins": [
+    "@nrwl/nx",
+    "@typescript-eslint",
+    "prettier",
+    "react-hooks"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@nx/enforce-module-boundaries": [
+        "@nrwl/nx/enforce-module-boundaries": [
           "error",
           {
             "enforceBuildableLibDependency": true,
@@ -34,14 +39,13 @@
         "project": ["tsconfig.*?.json"]
       },
       "extends": [
-        "plugin:@nx/typescript",
+        "plugin:@nrwl/nx/typescript",
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "prettier"
       ],
       "rules": {
-        "prettier/prettier": [
-          "error",
+        "prettier/prettier": ["error",
           {
             "arrowParens": "always",
             "bracketSpacing": true,
@@ -57,8 +61,7 @@
             "insertPragma": false,
             "requirePragma": false,
             "bracketSameLine": false,
-            "endOfLine": "auto",
-            "jsdoc": true
+            "endOfLine": "auto"
           }
         ],
         "@typescript-eslint/ban-ts-comment": "off",
@@ -81,12 +84,7 @@
         "@typescript-eslint/type-annotation-spacing": "error",
         "@typescript-eslint/no-unused-vars": "error",
         "@typescript-eslint/ban-ts-ignore": "off",
-        "@typescript-eslint/array-type": [
-          "error",
-          {
-            "default": "generic"
-          }
-        ],
+        "@typescript-eslint/array-type": ["error", { "default": "generic" }],
         "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/consistent-type-exports": "error",
         "curly": ["error", "all"],
@@ -122,7 +120,7 @@
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
       "rules": {}
     }
   ]
