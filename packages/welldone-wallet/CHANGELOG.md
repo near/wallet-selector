@@ -1,5 +1,11 @@
 # @near-wallet-selector/welldone-wallet
 
+## 9.3.0
+
+### Patch Changes
+
+- [#1383](https://github.com/near/wallet-selector/pull/1383) [`4123469`](https://github.com/near/wallet-selector/commit/4123469a1a23044896d1ee557e2a20c8ac3c04b8) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Enhance load time by removing the waitFor function that checks if the wallet is installed
+
 ## 9.2.0
 
 ### Patch Changes

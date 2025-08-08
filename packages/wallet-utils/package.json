@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/wallet-utils",
-  "version": "9.2.0",
+  "version": "9.3.0",
   "description": "Wallet utils package for NEAR Wallet Selector.",
   "keywords": [
     "near",
