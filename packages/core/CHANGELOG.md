@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.3.0
+
+### Patch Changes
+
+- [#1383](https://github.com/near/wallet-selector/pull/1383) [`4123469`](https://github.com/near/wallet-selector/commit/4123469a1a23044896d1ee557e2a20c8ac3c04b8) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - improve WalletModules service architecture and caching
+
 ## 9.2.0
 
 ### Patch Changes
