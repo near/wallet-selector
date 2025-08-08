@@ -4629,10 +4629,10 @@
     superstruct "^1.0.3"
     uuid "^9.0.1"
 
-"@meteorwallet/sdk@1.0.13":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-1.0.13.tgz#8392e711c79c30494abc9e8147a55c2fb95039eb"
-  integrity sha512-4QdXI8R756KxrrChWLWSp3vwiCKkoqlzv+0EixMefwTYqp+uGM1cuhe3JhlrZlgi3OWPXylsNc174tayKfSAtw==
+"@meteorwallet/sdk@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-1.0.14.tgz#bd14b680f54ad0d7ba23249a2d2bbf0f519212f5"
+  integrity sha512-YjJJFc1w89ESpOqxl0tCUj6Vpul7HrumDQI+cSDUYGKsTAYauzYPtCSBugDWl/gqmsJjOpduMDbhm66WABy4qw==
   dependencies:
     "@near-js/accounts" "1.4.1"
     "@near-js/crypto" "1.4.2"
