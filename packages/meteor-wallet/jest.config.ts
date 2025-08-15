@@ -13,4 +13,8 @@ export default {
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/meteor-wallet",
+  extensionsToTreatAsEsm: [".ts"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(@meteorwallet/sdk|@near-js)/)"
+  ],
 };
