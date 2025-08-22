@@ -1,5 +1,7 @@
 # @near-wallet-selector/welldone-wallet
 
+## 9.3.1
+
 ## 9.3.0
 
 ### Patch Changes
