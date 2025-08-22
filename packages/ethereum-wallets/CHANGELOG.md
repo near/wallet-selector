@@ -1,5 +1,7 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 9.3.1
+
 ## 9.3.0
 
 ### Minor Changes
