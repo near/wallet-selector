@@ -1,0 +1,24 @@
+{
+  "name": "@near-wallet-selector-examples/react",
+  "dependencies": {
+    "@near-wallet-selector/math-wallet": "workspace:*",
+    "@near-wallet-selector/meteor-wallet": "workspace:*",
+    "@near-wallet-selector/meteor-wallet-app": "workspace:*",
+    "@near-wallet-selector/hot-wallet": "workspace:*",
+    "@near-wallet-selector/nightly": "workspace:*",
+    "@near-wallet-selector/sender": "workspace:*",
+    "@near-wallet-selector/bitget-wallet": "workspace:*",
+    "@near-wallet-selector/welldone-wallet": "workspace:*",
+    "@near-wallet-selector/my-near-wallet": "workspace:*",
+    "@near-wallet-selector/ledger": "workspace:*",
+    "@near-wallet-selector/xdefi": "workspace:*",
+    "@near-wallet-selector/ramper-wallet": "workspace:*",
+    "@near-wallet-selector/unity-wallet": "workspace:*",
+    "@near-wallet-selector/near-mobile-wallet": "workspace:*",
+    "@near-wallet-selector/bitte-wallet": "workspace:*",
+    "@near-wallet-selector/okx-wallet": "workspace:*",
+    "@near-wallet-selector/ethereum-wallets": "workspace:*",
+    "@near-wallet-selector/coin98-wallet": "workspace:*",
+    "@near-wallet-selector/intear-wallet": "workspace:*"
+  }
+}
