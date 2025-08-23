@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 import { setupMeteorWallet } from "./meteor-wallet";
 import type { MeteorWallet as MeteorWalletSdk } from "@meteorwallet/sdk";
 
