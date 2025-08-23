@@ -21,7 +21,12 @@
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook",
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
-    "@near-wallet-selector/modal-ui": "workspace:*"
+    "@near-wallet-selector/modal-ui": "workspace:*",
+    "near-api-js": "5.0.0",
+    "react": "18.3.1"
+  },
+  "peerDependencies": {
+    "react": ">=18"
   },
   "publishConfig": {
     "directory": "../../dist/packages/react-hook"

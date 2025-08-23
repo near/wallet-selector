@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/hot-wallet",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "@hot-wallet/sdk": "1.0.8"
   },
   "publishConfig": {
     "directory": "../../dist/packages/hot-wallet"

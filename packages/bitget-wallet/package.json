@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitget-wallet",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "is-mobile": "4.0.0",
+    "near-api-js": "5.0.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/bitget-wallet"

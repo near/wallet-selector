@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/modal-ui-js",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "copy-to-clipboard": "3.3.3",
+    "qrcode": "1.5.4"
   },
   "publishConfig": {
     "directory": "../../dist/packages/modal-ui-js"

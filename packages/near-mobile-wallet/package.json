@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-mobile-wallet",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "@peersyst/near-mobile-signer": "1.1.4"
   },
   "publishConfig": {
     "directory": "../../dist/packages/near-mobile-wallet"

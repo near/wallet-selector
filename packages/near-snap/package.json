@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/near-snap",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-snap/sdk": "0.6.0",
+    "is-mobile": "4.0.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/near-snap"
