@@ -21,6 +21,10 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/here-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@here-wallet/core": "3.4.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/here-wallet"
   }

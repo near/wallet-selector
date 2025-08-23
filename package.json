@@ -3,6 +3,11 @@
   "version": "9.0.3",
   "description": "NEAR Wallet Selector makes it easy for users to interact with your dApp by providing an abstraction over various wallets within the NEAR ecosystem",
   "private": true,
+  "engines": {
+    "node": ">=20.18.3",
+    "pnpm": ">=10.4.1"
+  },
+  "packageManager": "pnpm@10.4.1",
   "keywords": [
     "near",
     "blockchain",
@@ -73,7 +78,7 @@
     "find:unused": "ts-prune -p tsprune.json",
     "lint": "nx workspace-lint && nx run-many --target=lint --all --parallel",
     "lint:fix": "nx run-many --target=lint --all --fix",
-    "prepack": "yarn build:core && yarn build:all",
+    "prepack": "pnpm build:core && pnpm build:all",
     "serve:react": "nx serve react --host=0.0.0.0",
     "serve:vanilla": "nx serve vanilla",
     "test": "nx run-many --target=test --all",
@@ -216,9 +221,9 @@
     "webpack-merge": "5.8.0"
   },
   "resolutions": {
-    "near-api-js": "5.0.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+    "near-api-js": "5.0.0",
+    "@wagmi/connectors": "5.8.5",
+    "@near-js/types": "2.2.5",
+    "@near-js/utils": "2.2.5"
+  }
 }

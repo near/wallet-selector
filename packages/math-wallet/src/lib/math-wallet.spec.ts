@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 import { setupMathWallet } from "./math-wallet";
 import type { MathAccount } from "./injected-math-wallet";
 import type { MathSigner } from "./injected-math-wallet";

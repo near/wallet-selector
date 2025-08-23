@@ -8,7 +8,7 @@ This package requires `near-api-js` v1.0.0 or above:
 
 ```bash
 # Using Yarn
-yarn add near-api-js
+pnpm add -w near-api-js
 
 # Using NPM.
 npm install near-api-js
@@ -16,7 +16,7 @@ npm install near-api-js
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/coin98-wallet
+pnpm add -w @near-wallet-selector/coin98-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/coin98-wallet

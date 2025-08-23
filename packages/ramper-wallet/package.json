@@ -21,6 +21,13 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/ramper-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "@ramper/near": "0.0.30",
+    "is-mobile": "4.0.0",
+    "near-api-js": "5.0.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/ramper-wallet"
   }

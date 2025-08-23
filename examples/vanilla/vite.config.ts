@@ -3,10 +3,10 @@ import { defineConfig } from "vite";
 
 import viteTsConfigPaths from "vite-tsconfig-paths";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import path from "path";
 
 export default defineConfig({
   cacheDir: "../../node_modules/.vite/vanilla",
-
   server: {
     port: 4200,
     host: "localhost",
@@ -41,6 +41,14 @@ export default defineConfig({
       http: "vite-plugin-node-polyfills/polyfills/http",
       https: "vite-plugin-node-polyfills/polyfills/http",
       stream: "vite-plugin-node-polyfills/polyfills/stream",
+      "@near-wallet-selector/wallet-utils": path.resolve(
+        __dirname,
+        "../../dist/packages/wallet-utils"
+      ),
+      "@near-wallet-selector/core": path.resolve(
+        __dirname,
+        "../../dist/packages/core"
+      ),
     },
   },
   test: {

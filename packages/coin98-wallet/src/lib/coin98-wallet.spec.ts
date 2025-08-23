@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 import { setupCoin98Wallet } from "./coin98-wallet";
 import type { Signer } from "near-api-js/lib/signer.js";
 

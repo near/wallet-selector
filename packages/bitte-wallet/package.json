@@ -21,6 +21,9 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitte-wallet",
+  "dependencies": {
+    "@bitte-ai/wallet": "0.8.2"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/bitte-wallet"
   }

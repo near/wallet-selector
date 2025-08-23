@@ -6,7 +6,7 @@ import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import { setupOKXWallet } from "./okx-wallet";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { AccessKey, SignOutResponse } from "./injected-okx-wallet";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 
 const accountId = "test-account.testnet";
 const transactions = [

@@ -8,7 +8,7 @@ The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/modal-ui-js
+pnpm add -w @near-wallet-selector/modal-ui-js
 
 # Using NPM.
 npm install @near-wallet-selector/modal-ui-js

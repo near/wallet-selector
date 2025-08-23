@@ -2,8 +2,8 @@
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
-import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
-import type { ProviderService } from "../../../core/src/lib/services";
+import type { HardwareWallet, Transaction } from "@near-wallet-selector/core";
+import type { ProviderService } from "@near-wallet-selector/core/src/lib/services";
 import type { LedgerClient } from "./ledger-client";
 
 const createLedgerWallet = async () => {
