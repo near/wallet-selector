@@ -7,7 +7,7 @@ import type {
   ViewAccessKeyParams,
 } from "./verify-signature.types";
 import { Payload, payloadSchema } from "./payload";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
 
 export const verifySignature = ({
   publicKey,

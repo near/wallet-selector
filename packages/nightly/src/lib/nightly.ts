@@ -9,12 +9,11 @@ import type {
   WalletEvents,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { Signer } from "near-api-js";
 import * as nearAPI from "near-api-js";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import icon from "./icon";
 
 declare global {
@@ -59,7 +58,7 @@ const setupNightlyState = async (
   };
 };
 const isInstalled = () => {
-  return waitFor(() => !!window.nightly?.near, {}).catch(() => false);
+  return !!window.nightly?.near;
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,

@@ -8,7 +8,7 @@ import type {
   BitgetWalletEvents,
   SignOutResponse,
 } from "./injected-bitget-wallet";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import { setupBitgetWallet } from "./bitget-wallet";
 
 const accountId = "test-account.testnet";

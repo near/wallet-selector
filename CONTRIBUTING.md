@@ -32,19 +32,13 @@ In order to run a specific example, make sure you build the packages beforehand 
 ```bash
 pnpm build:all # builds all packages
 
-pnpm nx serve react # run the react example
-pnpm nx serve angular # run the angular example
+yarn nx serve react # run the react example
+yarn nx serve vanilla # run the vanilla example
 ```
 
 > Note: [`modal-ui`](/packages/modal-ui) package must be re-build after every change in the source files of this package `pnpm nx run modal-ui:build`
 
 
-Build and deploy angular example
-
-```bash
-pnpm nx build angular # build the angular example
-pnpm nx deploy angular # deploys angular example to gh-pages
-```
 # Submitting a PR
 The initial comment has instructions. For your PR to be considered, you must select a template, include details, and make the appropriate selections from the checkboxes provided.
 
@@ -56,32 +50,49 @@ The initial comment has instructions. For your PR to be considered, you must sel
 
 # Branching
 
-In this project there are two important branches `main` and `dev` branch. Pushing or committing directly in these two branches is forbidden.
+This project uses a main-only branch strategy. Pushing or committing directly to the `main` branch is forbidden.
 
 ### Main branch
 
-This is the default branch and will be equal the latest official release.
+This is the default branch and serves as the single source of truth for development and releases. All features, fixes, and improvements are merged directly into this branch after review.
 
-### Dev Branch
+### Feature branches
 
-This is the branch for development used by the team and/or other contributors from the community.
-New features, fixes and other improvements are first implemented and tested in this
-branch.
-When adding new features/fixes team members must always create a new branch locally based on latest changes of `dev` branch.
-When your work is ready a merge request should be opened from your branch to `dev`. When your PR is reviewed and approved then it can be merged.
+When adding new features/fixes, team members must always create a new branch locally based on the latest changes of the `main` branch.
+When your work is ready, a pull request should be opened from your feature branch to `main`. When your PR is reviewed and approved, it can be merged.
 
 ### Other branches
 
-Except `main` and `dev` branch other branches are work in progress by the team or related to the open PR(s).
+Except the `main` branch, other branches are work in progress by the team or related to open PR(s).
 
 # Release Process
 
-Once the planned work has been finished and the set date has arrived a merge request from `dev` to `main` should be made.
-After merging only two steps remain:</br>
- - Publish packages to NPM.
- - Draft release in Github.
+This project uses [Changesets](https://github.com/changesets/changesets) for managing releases and versioning. When contributing changes, you should include a changeset that describes your changes.
 
-Since `main` is the default branch of this project in case of regular release it will be always equal to the latest release.</br> In case of a `pre-release`  a specific branch will be linked to the `pre-release` version(tag).
+## Adding a Changeset
+
+When making changes that should be included in a release, add a changeset by running:
+
+```bash
+yarn changeset
+```
+
+This will prompt you to:
+1. Select which packages your changes affect
+2. Choose the type of change (major, minor, or patch)
+3. Provide a summary of your changes
+
+The changeset will be created as a markdown file in the `.changeset` directory and should be committed with your changes.
+
+## Release Process
+
+Once the planned work has been finished and tested, releases are created directly from the `main` branch using changesets.
+The release process involves:</br>
+ - Changesets automatically manage version bumping based on the accumulated changesets
+ - Publish packages to NPM using the changeset workflow
+ - Draft release in Github with auto-generated changelog
+
+Since `main` is the default branch of this project, it will always reflect the latest stable state of the codebase.</br> In case of a `pre-release`, a specific branch will be linked to the `pre-release` version(tag).
 
 # Listing Criteria for Third Party Wallet on Wallet Selector
 

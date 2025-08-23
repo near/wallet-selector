@@ -9,8 +9,8 @@ import type {
 } from "@near-wallet-selector/core";
 import icon from "./icon";
 import * as nearAPI from "near-api-js";
-import { KeyType } from "near-api-js/lib/utils/key_pair";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider";
+import { KeyType } from "near-api-js/lib/utils/key_pair.js";
+import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
 import { createAction } from "@near-wallet-selector/wallet-utils";
 
 interface LoggerService {

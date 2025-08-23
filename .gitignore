@@ -42,7 +42,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.angular
 package-lock.json
 
 # Next.js

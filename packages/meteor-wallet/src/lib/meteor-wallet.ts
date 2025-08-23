@@ -15,6 +15,7 @@ import {
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
 import icon from "./icon";
+import { nullEmpty } from "./nullEmpty";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
@@ -25,13 +26,10 @@ const setupWalletState = async (
     "_meteor_wallet"
   );
 
-  const near = await nearAPI.connect({
-    keyStore,
+  const wallet = new MeteorWalletSdk({
     ...network,
-    headers: {},
+    keyStore,
   });
-
-  const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
 
   return {
     wallet,
@@ -47,16 +45,13 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
-    const account = _state.wallet.account();
+    const account = await _state.wallet.account();
 
-    if (!accountId || !account) {
+    if (nullEmpty(accountId) || account == null) {
       return [];
     }
 
-    const publicKey = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
+    const publicKey = await account.getSigner()!.getPublicKey();
     return [
       {
         accountId,
@@ -76,12 +71,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId ?? "",
         });
       } else {
         await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId ?? "",
         });
       }
 
@@ -167,7 +162,7 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         throw new Error("No receiver found to send the transaction to");
       }
 
-      const account = _state.wallet.account()!;
+      const account = await _state.wallet.account()!;
 
       return account["signAndSendTransaction_direct"]({
         receiverId: receiverId ?? contract!.contractId,

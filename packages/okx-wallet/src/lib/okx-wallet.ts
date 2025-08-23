@@ -1,5 +1,5 @@
 import { isMobile } from "is-mobile";
-import { SignedTransaction } from "near-api-js/lib/transaction";
+import { SignedTransaction } from "near-api-js/lib/transaction.js";
 import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
 
 import type {
@@ -45,7 +45,7 @@ interface OkxState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.okxwallet?.near).catch(() => false);
+  return !!window.okxwallet?.near;
 };
 
 const setupOkxState = (): OkxState => {

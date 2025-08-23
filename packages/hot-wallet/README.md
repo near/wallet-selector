@@ -1,6 +1,6 @@
 # @near-wallet-selector/hot-wallet
 
-This is the [HOT Wallet](https://hot-labs.org/wallet) package for NEAR Wallet Selector.
+This is the [HOT Wallet](https://hot-labs.org/wallet) package for NEAR Wallet Selector. Hot wallet available as browser extension and Telegram mini-app. Supports NEAR, Ethereum, TON, Solana, and other chains with MPC security.
 
 ## Installation and Usage
 

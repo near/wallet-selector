@@ -3,7 +3,7 @@ import { getNetworkPreset } from "./options";
 import {
   JsonRpcProvider,
   FailoverRpcProvider,
-} from "near-api-js/lib/providers";
+} from "near-api-js/lib/providers/index.js";
 import type { Network } from "./options.types";
 import type { Store } from "./store.types";
 import type { WalletModuleFactory } from "./wallet";
@@ -33,7 +33,7 @@ global.localStorage = {
 jest.mock("./options", () => {
   return {
     ...jest.requireActual("./options"),
-    getNetworkPreset: jest.fn().mockResolvedValue({
+    getNetworkPreset: jest.fn().mockReturnValue({
       networkId: "testnet",
       nodeUrl: "http://node.example.com",
       helperUrl: "http://helper.example.com",
@@ -54,8 +54,10 @@ jest.mock("./store", () => {
   };
 });
 
-jest.mock("near-api-js/lib/providers", () => {
-  const originalModule = jest.requireActual("near-api-js/lib/providers");
+jest.mock("near-api-js/lib/providers/index.js", () => {
+  const originalModule = jest.requireActual(
+    "near-api-js/lib/providers/index.js"
+  );
   return {
     ...originalModule,
     FailoverRpcProvider: jest.fn(),
@@ -152,7 +154,7 @@ describe("setupWalletSelector", () => {
       () => mockedRpcProvider as unknown as FailoverRpcProvider
     );
 
-    const networkPreset = await getNetworkPreset("testnet", []);
+    const networkPreset = getNetworkPreset("testnet", []);
 
     await setupWalletSelector({
       ...params,
