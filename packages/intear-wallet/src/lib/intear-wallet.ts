@@ -261,8 +261,11 @@ type SavedData = {
   contractId: string;
   methodNames: Array<string>;
   logoutKey: string; // there's no PublicKeyString type
-  walletUrl: string;
-  useBridge: boolean;
+
+  // the 2 fields below can be undefined if the user has logged in using
+  // an older version of wallet selector
+  walletUrl?: string;
+  useBridge?: boolean;
 };
 
 async function generateAuthSignature(
@@ -1034,7 +1037,7 @@ const IntearWallet: WalletBehaviourFactory<
                       signature: signatureString,
                     },
                   },
-                  savedData.walletUrl
+                  savedData.walletUrl ?? iframeOriginUrl
                 );
                 break;
               }
@@ -1092,7 +1095,7 @@ const IntearWallet: WalletBehaviourFactory<
             actions,
           },
         ],
-        savedData.walletUrl,
+        savedData.walletUrl ?? iframeOriginUrl,
         new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
         logger,
         logoutBridgeService
@@ -1104,7 +1107,7 @@ const IntearWallet: WalletBehaviourFactory<
       const savedData = assertLoggedIn();
       return await signAndSendTransactions(
         transactions,
-        savedData.walletUrl,
+        savedData.walletUrl ?? iframeOriginUrl,
         new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
         logger,
         logoutBridgeService
