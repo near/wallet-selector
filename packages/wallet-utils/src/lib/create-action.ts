@@ -16,8 +16,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 };
 
 // TODO: Remove this function after all wallets use the NAJ Action by default
-export const createAction = (action: Action | NAJAction ): NAJAction => {
-
+export const createAction = (action: Action | NAJAction): NAJAction => {
   if ("enum" in action) {
     return action as NAJAction;
   }
