@@ -574,7 +574,7 @@ const IntearWallet: WalletBehaviourFactory<
           reject(new Error("Popup was blocked"));
           return;
         }
-        window.addEventListener("message", async (event: MessageEvent) => {
+        const listener = async (event: MessageEvent) => {
           logger.log("Message from connect popup", event);
           switch (event.data.type) {
             case "ready":
@@ -660,9 +660,11 @@ const IntearWallet: WalletBehaviourFactory<
               if (event.data.message) {
                 reject(new Error(event.data.message));
               }
+              window.removeEventListener("message", listener);
               break;
           }
-        });
+        };
+        window.addEventListener("message", listener);
       });
     },
 
