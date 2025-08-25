@@ -15,7 +15,6 @@ import Form from "./Form";
 import Messages from "./Messages";
 import { useWalletSelector } from "@near-wallet-selector/react-hook";
 import { createTransaction, functionCall } from "near-api-js/lib/transaction";
-import { createAction } from "@near-wallet-selector/wallet-utils";
 import { base_decode } from "near-api-js/lib/utils/serialize";
 
 type Submitted = SubmitEvent & {
@@ -169,16 +168,12 @@ const Content: React.FC = () => {
               CONTRACT_ID,
               BigInt(100),
               [
-                createAction({
-                  type: "FunctionCall",
-                  params: {
-                    methodName: "addMessage",
-                    args: { text: message.value },
-                    gas: BOATLOAD_OF_GAS,
-                    deposit:
-                      utils.format.parseNearAmount(donation.value) || "0",
-                  },
-                }),
+                functionCall(
+                  "addMessage",
+                  { text: message.value },
+                  BigInt(BOATLOAD_OF_GAS),
+                  BigInt(utils.format.parseNearAmount(donation.value) || "0")
+                ),
               ],
               base_decode("FYYAj2KrFrePke7p2sFmejX73GZwzqxJjRtKHh87Gv9w")
             )
