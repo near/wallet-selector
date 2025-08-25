@@ -14,6 +14,9 @@ import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
 import { useWalletSelector } from "@near-wallet-selector/react-hook";
+import { createTransaction, functionCall } from "near-api-js/lib/transaction";
+import { createAction } from "@near-wallet-selector/wallet-utils";
+import { base_decode } from "near-api-js/lib/utils/serialize";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
@@ -34,6 +37,9 @@ const Content: React.FC = () => {
     wallet,
     signMessage,
     walletSelector,
+    signTransaction,
+    getPublicKey,
+    signNep413Message,
   } = useWalletSelector();
 
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -139,38 +145,87 @@ const Content: React.FC = () => {
     async (e: Submitted) => {
       e.preventDefault();
 
-      const { fieldset, message, donation, multiple, signonly } =
-        e.target.elements;
+      const {
+        fieldset,
+        message,
+        donation,
+        multiple,
+        signonly,
+        createTransactionAndSign,
+      } = e.target.elements;
 
       fieldset.disabled = true;
 
-      if (signonly.checked) {
-        return createSignedTransaction(CONTRACT_ID, [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: "addMessage",
-              args: { text: message.value },
-              gas: BOATLOAD_OF_GAS,
-              deposit: utils.format.parseNearAmount(donation.value) || "0",
-            },
-          },
-        ])
-          .then((signedTransaction) => {
-            fieldset.disabled = false;
-            alert(
-              "Successfully signed transaction. Signature is:\n" +
-                signedTransaction
-            );
-            console.log("signedTx", signedTransaction);
-            return signedTransaction;
-          })
-          .catch((err) => {
-            alert("Failed to sign transaction " + err);
-            console.error("Failed to sign transaction", err);
+      if (createTransactionAndSign.checked) {
+        if (!signedAccountId) {
+          throw new Error("Wallet is not signed in.");
+        }
 
-            fieldset.disabled = false;
-          });
+        try {
+          const [hash, signedTransaction] = await signTransaction(
+            createTransaction(
+              signedAccountId,
+              await getPublicKey(),
+              CONTRACT_ID,
+              BigInt(100),
+              [
+                createAction({
+                  type: "FunctionCall",
+                  params: {
+                    methodName: "addMessage",
+                    args: { text: message.value },
+                    gas: BOATLOAD_OF_GAS,
+                    deposit:
+                      utils.format.parseNearAmount(donation.value) || "0",
+                  },
+                }),
+              ],
+              base_decode("FYYAj2KrFrePke7p2sFmejX73GZwzqxJjRtKHh87Gv9w")
+            )
+          );
+
+          fieldset.disabled = false;
+          alert(
+            "Successfully signed transaction. Result is:\n" + signedTransaction
+          );
+          console.log("signedTx", signedTransaction);
+          return signedTransaction;
+        } catch (err) {
+          alert("Failed to sign transaction " + err);
+          console.error("Failed to sign transaction", err);
+
+          fieldset.disabled = false;
+        }
+        return;
+      }
+
+      if (signonly.checked) {
+        try {
+          const signedTransaction = await createSignedTransaction(CONTRACT_ID, [
+            {
+              type: "FunctionCall",
+              params: {
+                methodName: "addMessage",
+                args: { text: message.value },
+                gas: BOATLOAD_OF_GAS,
+                deposit: utils.format.parseNearAmount(donation.value) || "0",
+              },
+            },
+          ]);
+
+          fieldset.disabled = false;
+          alert(
+            "Successfully signed transaction. Signature is:\n" +
+              signedTransaction
+          );
+          console.log("signedTx", signedTransaction);
+        } catch (err) {
+          alert("Failed to sign transaction " + err);
+          console.error("Failed to sign transaction", err);
+
+          fieldset.disabled = false;
+        }
+        return;
       }
 
       return addMessages(message.value, donation.value || "0", multiple.checked)
@@ -198,7 +253,14 @@ const Content: React.FC = () => {
           fieldset.disabled = false;
         });
     },
-    [addMessages, createSignedTransaction, getMessages]
+    [
+      addMessages,
+      createSignedTransaction,
+      getMessages,
+      signedAccountId,
+      getPublicKey,
+      signTransaction,
+    ]
   );
 
   const handleSignMessage = async () => {
@@ -226,6 +288,83 @@ const Content: React.FC = () => {
     }
   };
 
+  const handleSignNep413Message = async () => {
+    if (!wallet) {
+      throw new Error("No wallet connected");
+    }
+
+    const message = "test nep413 message to sign";
+    const nonce = crypto.getRandomValues(new Uint8Array(32));
+    const recipient = "guest-book.testnet";
+
+    try {
+      if (!signedAccountId) {
+        throw new Error("Wallet not connected");
+      }
+
+      const signedMessage = await signNep413Message(
+        message,
+        signedAccountId,
+        recipient,
+        nonce
+      );
+      if (signedMessage) {
+        await verifyMessage(
+          { message, nonce: Buffer.from(nonce), recipient },
+          {
+            ...signedMessage,
+            publicKey: signedMessage.publicKey.toString(),
+            signature: Buffer.from(signedMessage.signature).toString("base64"),
+          }
+        );
+      }
+    } catch (err) {
+      const errMsg =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errMsg);
+    }
+  };
+
+  const handleSignDelegateAction = async () => {
+    try {
+      if (!wallet) {
+        throw new Error("No wallet connected");
+      }
+
+      if (!signedAccountId) {
+        throw new Error("Wallet not connected");
+      }
+
+      const [hash, signedDelegate] = await wallet.signDelegateAction({
+        actions: [
+          functionCall(
+            "addMessage",
+            {
+              text: "delegated message",
+            },
+            BigInt(BOATLOAD_OF_GAS),
+            BigInt(0)
+          ),
+        ],
+        maxBlockHeight: BigInt(100),
+        nonce: BigInt(100),
+        publicKey: await getPublicKey(),
+        receiverId: CONTRACT_ID,
+        senderId: signedAccountId,
+      });
+
+      alert(
+        "Successfully signed delegate action. SignedDelegate:\n" +
+          signedDelegate
+      );
+      console.log("signedDelegate", signedDelegate);
+    } catch (err) {
+      const errMsg =
+        err instanceof Error ? err.message : "Something went wrong";
+      alert(errMsg);
+    }
+  };
+
   if (!signedAccountId) {
     return (
       <Fragment>
@@ -242,6 +381,8 @@ const Content: React.FC = () => {
       <div>
         <button onClick={signIn}>Switch Wallet</button>
         <button onClick={handleSignMessage}>Sign Message</button>
+        <button onClick={handleSignNep413Message}>Sign NEP413 Message</button>
+        <button onClick={handleSignDelegateAction}>Sign Delegate Action</button>
         <button onClick={signOut}>Log out {signedAccountId}</button>
       </div>
       <Form
