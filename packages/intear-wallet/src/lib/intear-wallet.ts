@@ -197,12 +197,6 @@ class LogoutWebSocket {
 
     this.ws.onerror = (error) => {
       this.logger.error("Logout WebSocket error:", error);
-      if (!this.intentionallyClosed) {
-        this.logger.log("Attempting to reconnect in 500ms...");
-        setTimeout(() => this.connect(), 500);
-      } else {
-        LogoutWebSocket.instance = null;
-      }
     };
   }
 
