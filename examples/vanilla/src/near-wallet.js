@@ -16,6 +16,7 @@ import { setupSender } from '@near-wallet-selector/sender';
 import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
+import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
 
 import { wagmiAdapter, web3Modal } from './web3modal';
 
@@ -62,6 +63,7 @@ export class Wallet {
         setupNearMobileWallet(),
         setupWelldoneWallet(),
         setupMyNearWallet(),
+        setupIntearWallet(),
       ],
     });
 
