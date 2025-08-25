@@ -91,7 +91,7 @@ export interface WalletSelectorProviderValue {
     message: string,
     accountId: string,
     recipient: string,
-    nonce: Uint8Array<ArrayBufferLike>,
+    nonce: Uint8Array,
     callbackUrl?: string
   ) => Promise<{
     accountId: string;
@@ -267,7 +267,7 @@ export function WalletSelectorProvider({
       message: string,
       accountId: string,
       recipient: string,
-      nonce: Uint8Array<ArrayBufferLike>,
+      nonce: Uint8Array,
       callbackUrl?: string
     ) => {
       if (!wallet) {
