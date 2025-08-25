@@ -36,7 +36,9 @@ const Form: React.FC<FormProps> = ({ signedAccountId, onSubmit }) => {
           <input id="signonly" type="checkbox" />
         </p>
         <p>
-          <label htmlFor="createTransactionAndSign">Create transaction (with nonce, blockhash etc) and sign:</label>
+          <label htmlFor="createTransactionAndSign">
+            Create transaction (with nonce, blockhash etc) and sign:
+          </label>
           <input id="createTransactionAndSign" type="checkbox" />
         </p>
         <button type="submit">Sign</button>
