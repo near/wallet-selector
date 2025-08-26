@@ -2,20 +2,10 @@
 
 ## Installation
 
-### (Optional) Proto for Node and Yarn version management
-
-This project makes use of yarn version 1 (classic). Developers can use [proto](https://moonrepo.dev/proto) to match the compatible versions for Yarn and Node:
-
-```
-proto use
-```
-
-This will install the correct versions of Node and Yarn for development.
-
 ### Install project dependencies
 
 ```
-yarn
+pnpm i
 ```
 
 This should download all required dependencies and build out the project modules.
@@ -33,20 +23,20 @@ On the other hand, if you want to run a specific command in a package, you can u
 
 To run a target:    
 ```bash
-yarn nx run [project][:target][:configuration] [options, ...]
-yarn nx r [project][:target][:configuration] [options, ...]
+pnpm nx run [project][:target][:configuration] [options, ...]
+pnpm nx r [project][:target][:configuration] [options, ...]
 ```
 
 In order to run a specific example, make sure you build the packages beforehand by running:
 
 ```bash
-yarn build:all # builds all packages
+pnpm build:all # builds all packages
 
 yarn nx serve react # run the react example
 yarn nx serve vanilla # run the vanilla example
 ```
 
-> Note: [`modal-ui`](/packages/modal-ui) package must be re-build after every change in the source files of this package `yarn nx run modal-ui:build`
+> Note: [`modal-ui`](/packages/modal-ui) package must be re-build after every change in the source files of this package `pnpm nx run modal-ui:build`
 
 
 # Submitting a PR

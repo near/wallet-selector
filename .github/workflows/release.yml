@@ -22,24 +22,27 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18.x"
-
-      - name: Setup yarn
-        run: npm install -g yarn
+          cache: pnpm
 
       - name: Install Dependencies
-        run: yarn install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Packages
-        run: yarn build:all
+        run: pnpm build:all
 
       - name: Create Release Pull Request or Publish to NPM
         uses: changesets/action@v1
         with:
-          publish: yarn release
+          publish: pnpm release
           commit: "chore(release): publish packages"
           title: "Publish packages"
           createGithubReleases: true

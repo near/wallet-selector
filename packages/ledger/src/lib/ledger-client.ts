@@ -166,7 +166,9 @@ export class LedgerClient {
       parseDerivationPath(derivationPath)
     );
 
-    return nearAPI.utils.serialize.base_encode(res.subarray(0, -2));
+    return nearAPI.utils.serialize.base_encode(
+      new Uint8Array(res.subarray(0, -2))
+    );
   };
 
   private internalSign = async ({

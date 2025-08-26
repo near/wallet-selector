@@ -6,7 +6,7 @@ This package implements a React Hook for the NEAR Wallet Selector to simplify us
 
 ```bash
 # Using Yarn
-yarn add @near-wallet-selector/react-hook
+pnpm add -w @near-wallet-selector/react-hook
 
 # Using NPM.
 npm install @near-wallet-selector/react-hook

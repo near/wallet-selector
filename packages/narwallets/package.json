@@ -20,6 +20,10 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/narwallets",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "is-mobile": "4.0.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/narwallets"
   }
