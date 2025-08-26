@@ -1,6 +1,6 @@
-import * as nearAPI from "near-api-js";
+import type { Action as NAJAction } from "near-api-js/lib/transaction";
 import type { AddKeyPermission, Action } from "@near-wallet-selector/core";
-const { transactions, utils } = nearAPI;
+import { transactions, utils } from "near-api-js";
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
@@ -15,7 +15,12 @@ const getAccessKey = (permission: AddKeyPermission) => {
   return transactions.functionCallAccessKey(receiverId, methodNames, allowance);
 };
 
-export const createAction = (action: Action) => {
+// TODO: Remove this function after all wallets use the NAJ Action by default
+export const createAction = (action: Action | NAJAction): NAJAction => {
+  if ("enum" in action) {
+    return action as NAJAction;
+  }
+
   switch (action.type) {
     case "CreateAccount":
       return transactions.createAccount();
