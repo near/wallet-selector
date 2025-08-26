@@ -77,7 +77,7 @@ const Home: NextPage = () => {
         <h1>NEAR Guest Book</h1>
       </div>
       {/* @ts-ignore */}
-      <WalletSelectorProvider config={walletSelectorConfig} >
+      <WalletSelectorProvider config={walletSelectorConfig}>
         <Content />
       </WalletSelectorProvider>
     </Fragment>
