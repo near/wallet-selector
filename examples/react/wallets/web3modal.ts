@@ -69,5 +69,3 @@ export const web3Modal = createAppKit({
   coinbasePreference: "eoaOnly", // Smart accounts (Safe contract) not available on NEAR Protocol, only EOA.
   allWallets: "SHOW",
 });
-
-reconnect(wagmiAdapter.wagmiConfig);
