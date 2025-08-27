@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/meteor-wallet-app",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "borsh": "2.0.0",
+    "near-api-js": "5.0.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/meteor-wallet-app"
