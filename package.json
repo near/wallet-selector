@@ -1,5 +1,6 @@
 {
   "name": "@near-wallet-selector-examples/react",
+  "private": true,
   "dependencies": {
     "@near-wallet-selector/bitget-wallet": "workspace:*",
     "@near-wallet-selector/bitte-wallet": "workspace:*",
@@ -16,19 +17,16 @@
     "@near-wallet-selector/nightly": "workspace:*",
     "@near-wallet-selector/okx-wallet": "workspace:*",
     "@near-wallet-selector/ramper-wallet": "workspace:*",
+    "@near-wallet-selector/react-hook": "workspace:*",
     "@near-wallet-selector/sender": "workspace:*",
     "@near-wallet-selector/unity-wallet": "workspace:*",
     "@near-wallet-selector/welldone-wallet": "workspace:*",
     "@near-wallet-selector/xdefi": "workspace:*",
-    "next": "13.3.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
-    "typescript": "5.0.4"
+    "next": "13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "scripts": {
     "start": "next start"
