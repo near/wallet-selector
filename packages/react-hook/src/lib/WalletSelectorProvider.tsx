@@ -15,7 +15,11 @@ import {
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider.js";
-import type { SignedTransaction } from "near-api-js/lib/transaction.js";
+import type {
+  SignedTransaction,
+  Transaction as NearTransaction,
+} from "near-api-js/lib/transaction.js";
+import type { PublicKey } from "near-api-js/lib/utils";
 
 class WalletError extends Error {
   constructor(message: string) {
@@ -79,6 +83,22 @@ export interface WalletSelectorProviderValue {
     receiverId: string,
     actions: Array<Action>
   ) => Promise<SignedTransaction | void>;
+  signTransaction: (
+    transaction: NearTransaction
+  ) => Promise<[Uint8Array, SignedTransaction]>;
+  getPublicKey: () => Promise<PublicKey>;
+  signNep413Message: (
+    message: string,
+    accountId: string,
+    recipient: string,
+    nonce: Uint8Array,
+    callbackUrl?: string
+  ) => Promise<{
+    accountId: string;
+    publicKey: PublicKey;
+    signature: Uint8Array;
+    state?: string;
+  }>;
 }
 
 const DEFAULT_GAS = "30000000000000";
@@ -215,6 +235,54 @@ export function WalletSelectorProvider({
       return providers.getTransactionLastResult(
         outcome as FinalExecutionOutcome
       );
+    },
+    [wallet]
+  );
+
+  const signTransaction = useCallback(
+    async (transaction: NearTransaction) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      const result = await wallet.signTransaction(transaction);
+
+      return result;
+    },
+    [wallet]
+  );
+
+  const getPublicKey = useCallback(async () => {
+    if (!wallet) {
+      throw new WalletError("No wallet connected");
+    }
+
+    const result = await wallet.getPublicKey();
+
+    return result;
+  }, [wallet]);
+
+  const signNep413Message = useCallback(
+    async (
+      message: string,
+      accountId: string,
+      recipient: string,
+      nonce: Uint8Array,
+      callbackUrl?: string
+    ) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      const result = await wallet.signNep413Message(
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl
+      );
+
+      return result;
     },
     [wallet]
   );
@@ -381,6 +449,9 @@ export function WalletSelectorProvider({
     getAccount,
     verifyMessage,
     createSignedTransaction,
+    signTransaction,
+    getPublicKey,
+    signNep413Message,
   };
 
   return (
