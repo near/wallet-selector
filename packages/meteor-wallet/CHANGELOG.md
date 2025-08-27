@@ -1,5 +1,14 @@
 # @near-wallet-selector/meteor-wallet
 
+## 9.3.1
+
+### Patch Changes
+
+- [#1388](https://github.com/near/wallet-selector/pull/1388) [`be5c27a`](https://github.com/near/wallet-selector/commit/be5c27ac171d81bdbf57030566155fdd07a19aec) Thanks [@lostpebble](https://github.com/lostpebble)! - Updated SDK to include pageUri in payload sent to opened wallet tab
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.3.1
+
 ## 9.3.0
 
 ## 9.2.0

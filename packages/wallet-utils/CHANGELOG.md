@@ -1,5 +1,14 @@
 # @near-wallet-selector/wallet-utils
 
+## 9.3.1
+
+### Patch Changes
+
+- [#1399](https://github.com/near/wallet-selector/pull/1399) [`d18d82e`](https://github.com/near/wallet-selector/commit/d18d82e852f71489e3051653ac07f66cd78912d3) Thanks [@gagdiez](https://github.com/gagdiez)! - Skip transforming actions that are already in the right format
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.3.1
+
 ## 9.3.0
 
 ## 9.2.0
