@@ -406,7 +406,7 @@ export class WalletModules {
         );
       }
 
-      return _signDelegateAction(...args);
+      return await _signDelegateAction(...args);
     };
 
     wallet.signAndSendTransaction = async ({
