@@ -1,5 +1,6 @@
 {
-  "name": "@near-wallet-selector-examples/react",
+  "name": "@near-wallet-selector-examples/vanilla",
+  "private": true,
   "dependencies": {
     "@near-wallet-selector/math-wallet": "workspace:*",
     "@near-wallet-selector/meteor-wallet": "workspace:*",
