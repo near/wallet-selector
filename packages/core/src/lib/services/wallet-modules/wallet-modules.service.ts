@@ -9,6 +9,8 @@ import type {
   InstantLinkWallet,
   SignMessageParams,
   Action,
+  SignAndSendTransactionsParams,
+  SignAndSendTransactionParams,
 } from "../../wallet";
 import type { StorageService } from "../storage/storage.service.types";
 import type { Options } from "../../options.types";
@@ -26,6 +28,8 @@ import {
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
+import type { Action as NAJAction } from "@near-js/transactions";
+import { najActionToInternal } from "../../helpers/";
 
 export class WalletModules {
   private factories: Array<WalletModuleFactory>;
@@ -309,6 +313,8 @@ export class WalletModules {
     const _signNep413Message = wallet.signNep413Message;
     const _signTransaction = wallet.signTransaction;
     const _signDelegateAction = wallet.signDelegateAction;
+    const _signAndSendTransaction = wallet.signAndSendTransaction;
+    const _signAndSendTransactions = wallet.signAndSendTransactions;
 
     wallet.signIn = async (params: SignInParams) => {
       const accounts = await _signIn({
@@ -402,6 +408,36 @@ export class WalletModules {
 
       return await _signDelegateAction(...args);
     };
+
+    wallet.signAndSendTransaction = async ({
+      actions,
+      receiverId,
+      signerId,
+    }: SignAndSendTransactionParams) => {
+      // Transform `naj` actions into internal representation
+      const normalized = actions.map((a) =>
+        "enum" in a ? najActionToInternal(a as NAJAction) : a
+      );
+      return await _signAndSendTransaction({
+        actions: normalized,
+        receiverId,
+        signerId,
+      });
+    };
+
+    wallet.signAndSendTransactions = (async ({
+      transactions,
+      ...rest
+    }: SignAndSendTransactionsParams) => {
+      // Transform `naj` actions into internal representation
+      const normalized = transactions.map((tx) => ({
+        ...tx,
+        actions: tx.actions.map((a) =>
+          "enum" in a ? najActionToInternal(a as NAJAction) : a
+        ),
+      }));
+      return _signAndSendTransactions({ ...rest, transactions: normalized });
+    }) as Wallet["signAndSendTransactions"];
 
     return wallet;
   }

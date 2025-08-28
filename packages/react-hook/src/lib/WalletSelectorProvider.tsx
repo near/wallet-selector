@@ -72,7 +72,7 @@ export interface WalletSelectorProviderValue {
   getAccessKeys: (accountId: string) => Promise<Array<unknown>>;
   signAndSendTransactions: (params: {
     transactions: Array<Transaction>;
-  }) => Promise<Array<object | string | number | null>>;
+  }) => Promise<Array<FinalExecutionOutcome>>;
   signMessage: (params: SignMessageParams) => Promise<void | SignedMessage>;
   getAccount: (accountId: string) => Promise<QueryResponseKindWithAmount>;
   verifyMessage: (
@@ -345,7 +345,7 @@ export function WalletSelectorProvider({
   /**
    * Signs transactions and broadcasts them to the network
    * @param {Object[]} transactions - the transactions to sign and send
-   * @returns {Promise<Transaction[]>} - the resulting transactions
+   * @returns {Promise<Array<FinalExecutionOutcome>>} - the resulting transactions
    */
   const signAndSendTransactions = useCallback(
     async ({ transactions }: { transactions: Array<Transaction> }) => {
@@ -353,13 +353,9 @@ export function WalletSelectorProvider({
         throw new WalletError("No wallet connected");
       }
 
-      const sentTxs = (await wallet.signAndSendTransactions({
+      return wallet.signAndSendTransactions({
         transactions,
-      })) as Array<FinalExecutionOutcome>;
-
-      return sentTxs.map((tx: FinalExecutionOutcome) =>
-        providers.getTransactionLastResult(tx)
-      );
+      }) as Promise<Array<FinalExecutionOutcome>>;
     },
     [wallet]
   );
