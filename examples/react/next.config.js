@@ -10,6 +10,8 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  output: "export",
+  basePath: process.env.NODE_ENV === "production" ? "/wallet-selector" : "",
 };
 
 module.exports = withNx(nextConfig);

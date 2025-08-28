@@ -456,6 +456,9 @@ importers:
       '@near-wallet-selector/ramper-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/ramper-wallet
+      '@near-wallet-selector/react-hook':
+        specifier: workspace:*
+        version: link:../../dist/packages/react-hook
       '@near-wallet-selector/sender':
         specifier: workspace:*
         version: link:../../dist/packages/sender
@@ -739,6 +742,12 @@ importers:
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
+      borsh:
+        specifier: 2.0.0
+        version: 2.0.0
+      near-api-js:
+        specifier: 5.0.0
+        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/meteor-wallet-app
 
   packages/modal-ui:
@@ -5386,9 +5395,6 @@ packages:
 
   caniuse-api@3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
-
-  caniuse-lite@1.0.30001727:
-    resolution: {integrity: sha512-pB68nIHmbN6L/4C6MH1DokyR3bYqFwjaSs/sWDHGj4CTcFtQUQMuJftVwWkXq7mNWOybD3KhUv3oWHoGxgP14Q==}
 
   caniuse-lite@1.0.30001737:
     resolution: {integrity: sha512-BiloLiXtQNrY5UyF0+1nSJLXUENuhka2pzy2Fx5pGxqavdrxSCW4U6Pn/PoG3Efspi2frRbHpBV2XsrPE6EDlw==}
@@ -19961,8 +19967,6 @@ snapshots:
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
 
-  caniuse-lite@1.0.30001727: {}
-
   caniuse-lite@1.0.30001737: {}
 
   capital-case@1.0.4:
@@ -24342,7 +24346,7 @@ snapshots:
       '@next/env': 13.3.0
       '@swc/helpers': 0.4.14
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001727
+      caniuse-lite: 1.0.30001737
       postcss: 8.4.14
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
