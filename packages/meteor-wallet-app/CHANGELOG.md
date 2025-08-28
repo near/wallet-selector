@@ -1,5 +1,14 @@
 # @near-wallet-selector/meteor-wallet-app
 
+## 9.4.0
+
+### Patch Changes
+
+- [#1397](https://github.com/near/wallet-selector/pull/1397) [`dd1affd`](https://github.com/near/wallet-selector/commit/dd1affdf0a9124ec14e606ca3fbec6db7a31a014) Thanks [@Elabar](https://github.com/Elabar)! - Added createSignedTransaction, signTransaction, getPublicKey, signNep413Message, signDelegateAction to meteor wallet app
+
+- Updated dependencies [[`d0eafad`](https://github.com/near/wallet-selector/commit/d0eafad960b1ccfc190224e32cc181bae1cd77bb)]:
+  - @near-wallet-selector/core@9.4.0
+
 ## 9.3.1
 
 ### Patch Changes

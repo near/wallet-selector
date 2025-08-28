@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.4.0
+
+### Minor Changes
+
+- [#1405](https://github.com/near/wallet-selector/pull/1405) [`d0eafad`](https://github.com/near/wallet-selector/commit/d0eafad960b1ccfc190224e32cc181bae1cd77bb) Thanks [@gagdiez](https://github.com/gagdiez)! - compatibility with naj interface
+
 ## 9.3.1
 
 ## 9.3.0
