@@ -621,7 +621,7 @@ const IntearWallet: WalletBehaviourFactory<
                 contractId: functionCallKeyAdded ? (contractId as string) : "",
                 methodNames: functionCallKeyAdded ? methodNames ?? [] : [],
                 logoutKey: logoutKey.toString(),
-                walletUrl: event.origin,
+                walletUrl: event.data.walletUrl,
                 useBridge,
               };
               window.localStorage.setItem(
