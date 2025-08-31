@@ -12,6 +12,7 @@ import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 import type { Signer } from "@near-js/signers";
+import type { Action as NAJAction } from "@near-js/transactions";
 
 interface BaseWalletMetadata {
   /**
@@ -113,7 +114,7 @@ export interface SignAndSendTransactionParams {
   /**
    * NEAR Action(s) to sign and send to the network (e.g. `FunctionCall`). You can find more information on `Action` {@link https://github.com/near/wallet-selector/blob/main/packages/core/docs/api/transactions.md | here}.
    */
-  actions: Array<Action>;
+  actions: Array<Action | NAJAction>; // temp until we migrate Wallet Selector to use NAJ types
 }
 
 export interface SignAndSendTransactionsParams {
@@ -162,7 +163,7 @@ interface BaseWalletBehaviour extends Signer {
    */
   createSignedTransaction?(
     receiverId: string,
-    actions: Array<Action>
+    actions: Array<Action | NAJAction> // temp until we migrate Wallet Selector to use NAJ types
   ): Promise<SignedTransaction | void>;
 }
 

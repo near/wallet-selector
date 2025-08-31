@@ -367,6 +367,7 @@ const Content: React.FC = () => {
           <button onClick={signIn}>Log in</button>
         </div>
         <SignIn />
+        <Messages messages={messages} />
       </Fragment>
     );
   }

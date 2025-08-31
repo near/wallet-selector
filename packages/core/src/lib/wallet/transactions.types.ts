@@ -1,3 +1,5 @@
+import type { Action as NAJAction } from "@near-js/transactions";
+
 export interface CreateAccountAction {
   type: "CreateAccount";
 }
@@ -82,5 +84,5 @@ export type ActionType = Action["type"];
 export interface Transaction {
   signerId: string;
   receiverId: string;
-  actions: Array<Action>;
+  actions: Array<Action | NAJAction>; // temp until we migrate Wallet Selector to use NAJ types
 }
