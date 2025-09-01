@@ -57,7 +57,7 @@ export type {
   Account,
   Transaction,
   Action,
-  ActionType,
+  InternalAction,
   CreateAccountAction,
   DeployContractAction,
   FunctionCallAction,
@@ -81,6 +81,8 @@ export {
   verifyFullKeyBelongsToUser,
   verifySignature,
   serializeNep413,
+  internalActionToNaj,
+  najActionToInternal,
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

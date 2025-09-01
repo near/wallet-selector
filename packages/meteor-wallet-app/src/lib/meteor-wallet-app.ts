@@ -1,10 +1,11 @@
-import type {
-  Account,
-  FinalExecutionOutcome,
-  InstantLinkWallet,
-  SignedMessage,
-  WalletBehaviourFactory,
-  WalletModuleFactory,
+import {
+  najActionToInternal,
+  type Account,
+  type FinalExecutionOutcome,
+  type InstantLinkWallet,
+  type SignedMessage,
+  type WalletBehaviourFactory,
+  type WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import icon from "./icon";
 import type { encodeSignedDelegate } from "near-api-js/lib/transaction.js";
@@ -144,6 +145,11 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       return signedInAccounts;
     },
     async signAndSendTransaction(params) {
+      const _params = {
+        ...params,
+        // Meteor Wallet App expects the actions to be in the internal action format so we need to convert them
+        actions: params.actions.map((action) => najActionToInternal(action)),
+      };
       const receiverId = params.receiverId ?? metadata.contractId;
       if (!receiverId) {
         throw new Error("No receiver found to send the transaction to");
@@ -152,7 +158,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       const data = await tryPostOrFail<FinalExecutionOutcome>({
         method: EMethod.sign_and_send_transaction,
         args: {
-          ...params,
+          ..._params,
           receiverId,
         },
       });
@@ -163,6 +169,13 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
         method: EMethod.sign_and_send_transactions,
         args: {
           ...params,
+          transactions: params.transactions.map((transaction) => ({
+            ...transaction,
+            // Meteor Wallet App expects the actions to be in the internal action format so we need to convert them
+            actions: transaction.actions.map((action) =>
+              najActionToInternal(action)
+            ),
+          })),
         },
       });
       return data;

@@ -15,9 +15,10 @@ import {
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { providers } from "near-api-js";
 import type { QueryResponseKind } from "near-api-js/lib/providers/provider.js";
-import type {
-  SignedTransaction,
-  Transaction as NearTransaction,
+import {
+  type SignedTransaction,
+  type Transaction as NearTransaction,
+  functionCall,
 } from "near-api-js/lib/transaction.js";
 import type { PublicKey } from "near-api-js/lib/utils";
 
@@ -219,17 +220,7 @@ export function WalletSelectorProvider({
 
       const outcome = await wallet.signAndSendTransaction({
         receiverId: contractId,
-        actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: method,
-              args,
-              gas: gas.toString(),
-              deposit: deposit.toString(),
-            },
-          },
-        ],
+        actions: [functionCall(method, args, BigInt(gas), BigInt(deposit))],
       });
 
       return providers.getTransactionLastResult(

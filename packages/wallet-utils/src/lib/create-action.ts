@@ -1,5 +1,8 @@
 import type { Action as NAJAction } from "@near-js/transactions";
-import type { AddKeyPermission, Action } from "@near-wallet-selector/core";
+import type {
+  AddKeyPermission,
+  InternalAction,
+} from "@near-wallet-selector/core";
 import { transactions, utils } from "near-api-js";
 
 const getAccessKey = (permission: AddKeyPermission) => {
@@ -16,7 +19,7 @@ const getAccessKey = (permission: AddKeyPermission) => {
 };
 
 // TODO: Remove this function after all wallets use the NAJ Action by default
-export const createAction = (action: Action): NAJAction => {
+export const createAction = (action: InternalAction): NAJAction => {
   switch (action.type) {
     case "CreateAccount":
       return transactions.createAccount();

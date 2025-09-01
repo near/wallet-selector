@@ -6,7 +6,13 @@ import type {
   FunctionCallPermissionView,
 } from "near-api-js/lib/providers/provider.js";
 import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
-import { stringifyJsonOrBytes } from "near-api-js/lib/transaction.js";
+import {
+  AccessKey,
+  AccessKeyPermission,
+  addKey,
+  deleteKey,
+  stringifyJsonOrBytes,
+} from "near-api-js/lib/transaction.js";
 import { parseRpcError } from "near-api-js/lib/utils/rpc_errors.js";
 import {
   type WalletModuleFactory,
@@ -16,6 +22,7 @@ import {
   type Account,
   type InjectedWallet,
   type Optional,
+  najActionToInternal,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
@@ -68,6 +75,7 @@ import {
   MAX_TGAS,
   EthTxError,
 } from "./utils";
+import { PublicKey } from "near-api-js/lib/utils";
 
 export interface EthereumWalletsParams {
   wagmiConfig: Config;
@@ -186,7 +194,7 @@ const EthereumWallets: WalletBehaviourFactory<
   };
 
   const executeTransaction = async ({
-    tx,
+    tx: najTx,
     relayerPublicKey,
   }: {
     tx: Transaction;
@@ -198,6 +206,11 @@ const EthereumWallets: WalletBehaviourFactory<
     //  When issuing an onboarding transaction, we set the to field to the user's own address and utilize the data field to pass required parameters to the Wallet Contract,
     //  specifically to add the provided public key to the account.
     //  We hash to value for AddKey/DeleteKey to bypass that metamask check. In the Wallet Contract itself contract compares to address with address hash.
+    const tx = {
+      ...najTx,
+      actions: najTx.actions.map((action) => najActionToInternal(action)),
+    };
+
     const to = (
       /^0x([A-Fa-f0-9]{40})$/.test(tx.receiverId) &&
       !["AddKey", "DeleteKey"].includes(tx.actions[0].type)
@@ -409,12 +422,17 @@ const EthereumWallets: WalletBehaviourFactory<
 
   // Check if accessKey is usable to execute all transaction.
   const validateAccessKey = ({
-    transactions,
+    transactions: najTransactions,
     accessKey,
   }: {
     transactions: Array<Transaction>;
     accessKey: AccessKeyViewRaw;
   }) => {
+    const transactions = najTransactions.map((tx) => ({
+      ...tx,
+      actions: tx.actions.map((action) => najActionToInternal(action)),
+    }));
+
     if (accessKey.permission === "FullAccess") {
       return true;
     }
@@ -502,20 +520,17 @@ const EthereumWallets: WalletBehaviourFactory<
           signerId: accountId,
           receiverId: accountId,
           actions: [
-            {
-              type: "AddKey",
-              params: {
-                publicKey: relayerPublicKey,
-                accessKey: {
-                  nonce: 0,
-                  permission: {
-                    receiverId: accountId,
-                    allowance: "0",
-                    methodNames: [RLP_EXECUTE],
-                  },
-                },
-              },
-            },
+            addKey(
+              PublicKey.from(relayerPublicKey),
+              new AccessKey({
+                nonce: BigInt(0),
+                permission: new AccessKeyPermission({
+                  receiverId: accountId,
+                  allowance: "0",
+                  methodNames: [RLP_EXECUTE],
+                }),
+              })
+            ),
           ],
         },
       };
@@ -558,7 +573,7 @@ const EthereumWallets: WalletBehaviourFactory<
       const tx = nearTxs[i];
       for (let y = 0; y < tx.actions.length; y++) {
         try {
-          const action = tx.actions[y];
+          const action = najActionToInternal(tx.actions[y]);
           let accountId = null;
           if (action.type === "Transfer") {
             accountId = tx.receiverId;
@@ -833,14 +848,7 @@ const EthereumWallets: WalletBehaviourFactory<
           {
             signerId: accountLogIn.accountId,
             receiverId: accountLogIn.accountId,
-            actions: [
-              {
-                type: "DeleteKey",
-                params: {
-                  publicKey: accountLogIn.publicKey,
-                },
-              },
-            ],
+            actions: [deleteKey(PublicKey.from(accountLogIn.publicKey))],
           },
         ]);
         _state.keystore.removeKey(
@@ -989,20 +997,17 @@ const EthereumWallets: WalletBehaviourFactory<
                 signerId: accountId,
                 receiverId: accountId,
                 actions: [
-                  {
-                    type: "AddKey",
-                    params: {
-                      publicKey,
-                      accessKey: {
-                        nonce: 0,
-                        permission: {
-                          receiverId: contractId,
-                          allowance: DEFAULT_ACCESS_KEY_ALLOWANCE,
-                          methodNames,
-                        },
-                      },
-                    },
-                  },
+                  addKey(
+                    PublicKey.from(publicKey),
+                    new AccessKey({
+                      nonce: BigInt(0),
+                      permission: new AccessKeyPermission({
+                        receiverId: contractId,
+                        allowance: DEFAULT_ACCESS_KEY_ALLOWANCE,
+                        methodNames,
+                      }),
+                    })
+                  ),
                 ],
               },
             ]);

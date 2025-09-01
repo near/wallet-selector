@@ -47,7 +47,7 @@
   "module": "./lib/esm/index.js",
   "types": "./lib/esm/index.d.ts",
   "scripts": {
-    "build:all": "nx run-many --target=build --all --exclude=react --configuration=production",
+    "build:all": "nx run-many --target=build --all --exclude=react,vanilla --configuration=production",
     "build:arepa-wallet": "nx run-many --target=build --projects=arepa-wallet --configuration=production",
     "build:bitget-wallet": "nx run-many --target=build --projects=bitget-wallet --configuration=production",
     "build:core": "nx run-many --target=build --projects=core --configuration=production",

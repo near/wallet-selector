@@ -79,17 +79,14 @@ const Content: React.FC = () => {
           signerId: signedAccountId!,
           receiverId: CONTRACT_ID,
           actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: {
-                  text: `${message} (${i + 1}/2)`,
-                },
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount(donation)!,
+            functionCall(
+              "addMessage",
+              {
+                text: `${message} (${i + 1}/2)`,
               },
-            },
+              BigInt(BOATLOAD_OF_GAS),
+              BigInt(utils.format.parseNearAmount(donation)!)
+            ),
           ],
         });
       }
@@ -197,15 +194,14 @@ const Content: React.FC = () => {
       if (signonly.checked) {
         try {
           const signedTransaction = await createSignedTransaction(CONTRACT_ID, [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: { text: message.value },
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount(donation.value) || "0",
+            functionCall(
+              "addMessage",
+              {
+                text: message.value,
               },
-            },
+              BigInt(BOATLOAD_OF_GAS),
+              BigInt(utils.format.parseNearAmount(donation.value) || "0")
+            ),
           ]);
 
           fieldset.disabled = false;
@@ -367,6 +363,7 @@ const Content: React.FC = () => {
           <button onClick={signIn}>Log in</button>
         </div>
         <SignIn />
+        <Messages messages={messages} />
       </Fragment>
     );
   }

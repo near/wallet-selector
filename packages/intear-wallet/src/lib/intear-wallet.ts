@@ -11,7 +11,13 @@ import icon from "./icon";
 import * as nearAPI from "near-api-js";
 import { KeyType } from "near-api-js/lib/utils/key_pair.js";
 import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
-import { createAction } from "@near-wallet-selector/wallet-utils";
+
+// Helper function to safely stringify objects containing BigInt values
+function bigIntSafeStringify(obj: unknown): string {
+  return JSON.stringify(obj, (key, value) =>
+    typeof value === "bigint" ? value.toString() : value
+  );
+}
 
 interface LoggerService {
   log(...params: Array<unknown>): void;
@@ -339,7 +345,7 @@ async function signAndSendTransactions(
             publicKey: keyPair.getPublicKey(),
             nonce: nonce + BigInt(i + 1),
             receiverId: transaction.receiverId,
-            actions: transaction.actions.map((action) => createAction(action)),
+            actions: transaction.actions,
             blockHash: nearAPI.utils.serialize.base_decode(recentBlockHash),
           })
       );
@@ -393,7 +399,7 @@ async function signAndSendTransactions(
       logger.log("Message from send-transactions popup", event);
       switch (event.data.type) {
         case "ready": {
-          const transactionsString = JSON.stringify(transactions);
+          const transactionsString = bigIntSafeStringify(transactions);
           const nonce = Date.now();
           const signatureString = await generateAuthSignature(
             nearAPI.KeyPair.fromString(savedData.key),

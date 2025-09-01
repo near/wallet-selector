@@ -1,6 +1,8 @@
 import { NearMobileWallet } from "@peersyst/near-mobile-signer/dist/src/wallet/NearMobileWallet";
 import type { NearMobileWalletInit } from "./near-mobile-wallet.types";
 import type { Network } from "@peersyst/near-mobile-signer/dist/src/common/models";
+import { najActionToInternal } from "@near-wallet-selector/core";
+import type { Action } from "@near-js/transactions";
 
 export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
   const { store, options, logger, dAppMetadata } = config;
@@ -62,7 +64,9 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
 
       return await nearMobileWallet.signAndSendTransaction({
         receiverId: contract.contractId,
-        ...data,
+        actions: data.actions.map((action) =>
+          najActionToInternal(action as Action)
+        ),
       });
     },
 
@@ -89,7 +93,15 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
 
     async signAndSendTransactions(data) {
       logger.log("[NearMobileWallet]: signAndSendTransactions", data);
-      return await nearMobileWallet.signAndSendTransactions(data);
+      return await nearMobileWallet.signAndSendTransactions({
+        transactions: data.transactions.map((transaction) => ({
+          receiverId: transaction.receiverId,
+          signerId: transaction.signerId ?? data.transactions[0].signerId,
+          actions: transaction.actions.map((action) =>
+            najActionToInternal(action as Action)
+          ),
+        })),
+      });
     },
 
     async createSignedTransaction(receiverId, actions) {
