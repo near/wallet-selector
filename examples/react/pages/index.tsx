@@ -25,19 +25,12 @@ import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
-import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
 import type { SetupParams } from "@near-wallet-selector/react-hook";
 
 const walletSelectorConfig: SetupParams = {
-  network: {
-    networkId: "testnet",
-    nodeUrl: "https://rpc.testnet.fastnear.com",
-    helperUrl: "https://helper.testnet.fastnear.com",
-    explorerUrl: "https://testnet.nearblocks.io",
-    indexerUrl: "https://test.api.fastnear.com/v0",
-  },
+  network: NETWORK_ID,
   // createAccessKeyFor: {
   //   contractId: CONTRACT_ID,
   //   methodNames: [],
@@ -74,9 +67,7 @@ const walletSelectorConfig: SetupParams = {
     setupXDEFI(),
     setupNearMobileWallet(),
     setupIntearWallet(),
-    setupHereWallet(),
   ],
-  fallbackRpcUrls: ["https://test.rpc.fastnear.com"],
 };
 
 const Home: NextPage = () => {
