@@ -148,7 +148,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         await signOut();
         throw new Error(
           (typeof error === "string" ? error : error.type) ||
-          "Failed to sign in"
+            "Failed to sign in"
         );
       }
 

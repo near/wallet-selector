@@ -192,7 +192,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
 
         throw new Error(
           (typeof error === "string" ? error : error.type) ||
-          "Failed to sign in"
+            "Failed to sign in"
         );
       }
 
