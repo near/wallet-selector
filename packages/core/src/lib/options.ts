@@ -10,7 +10,7 @@ export const getNetworkPreset = (
     case "mainnet":
       return {
         networkId,
-        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.mainnet.near.org",
+        nodeUrl: fallbackRpcUrls?.[0] || "https://free.rpc.fastnear.com",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://nearblocks.io",
         indexerUrl: "https://api.fastnear.com/v0",
@@ -18,7 +18,7 @@ export const getNetworkPreset = (
     case "testnet":
       return {
         networkId,
-        nodeUrl: fallbackRpcUrls?.[0] || "https://rpc.testnet.near.org",
+        nodeUrl: fallbackRpcUrls?.[0] || "https://test.rpc.fastnear.com",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://testnet.nearblocks.io",
         indexerUrl: "https://test.api.fastnear.com/v0",

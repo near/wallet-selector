@@ -120,8 +120,10 @@ export function WalletSelectorProvider({
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
   const networkURL =
-    typeof config.network === "string"
-      ? `https://rpc.${config.network}.near.org`
+    config.network === "mainnet"
+      ? "https://free.rpc.fastnear.com"
+      : config.network === "testnet"
+      ? "https://test.rpc.fastnear.com"
       : config.network.nodeUrl;
 
   const rpcProviderUrls =

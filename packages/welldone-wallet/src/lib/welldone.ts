@@ -138,7 +138,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         if (options.network.networkId !== networkId) {
           await signOut();
 
-          emitter.emit("networkChanged", { networkId: networkId });
+          emitter.emit("networkChanged", { networkId });
         }
       });
     }
