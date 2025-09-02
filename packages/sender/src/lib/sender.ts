@@ -93,10 +93,7 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     _state.wallet.on("rpcChanged", async (rpc) => {
       logger.log("onNetworkChange", rpc);
 
-      if (
-        (options.network.networkId === "mainnet" && rpc.networkId !== "mainnet") ||
-        (options.network.networkId === "testnet" && rpc.networkId !== "testnet")
-      ) {
+      if (options.network.networkId !== rpc.networkId) {
         await signOut();
 
         emitter.emit("signedOut", null);
