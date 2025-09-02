@@ -19,8 +19,8 @@ const near = defineChain({
     symbol: "NEAR",
   },
   rpcUrls: {
-    default: { http: ["https://eth-rpc.testnet.near.org"] },
-    public: { http: ["https://eth-rpc.testnet.near.org"] },
+    default: { http: ["https://test.rpc.fastnear.com"] },
+    public: { http: ["https://test.rpc.fastnear.com"] },
   },
   blockExplorers: {
     default: {

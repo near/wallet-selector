@@ -90,7 +90,10 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     _state.wallet.on("rpcChanged", async (rpc) => {
       logger.log("onNetworkChange", rpc);
 
-      if (options.network.networkId !== rpc.networkId) {
+      if (
+        (options.network.networkId === "mainnet" && rpc.networkId !== "mainnet") ||
+        (options.network.networkId === "testnet" && rpc.networkId !== "testnet")
+      ) {
         await signOut();
 
         emitter.emit("signedOut", null);
@@ -148,7 +151,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         await signOut();
         throw new Error(
           (typeof error === "string" ? error : error.type) ||
-            "Failed to sign in"
+          "Failed to sign in"
         );
       }
 
