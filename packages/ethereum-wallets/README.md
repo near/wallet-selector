@@ -67,8 +67,8 @@ const near = defineChain({
     symbol: "NEAR",
   },
   rpcUrls: {
-    default: { http: ["https://eth-rpc.mainnet.near.org"] },
-    public: { http: ["https://eth-rpc.mainnet.near.org"] },
+    default: { http: ["https://free.rpc.fastnear.com"] },
+    public: { http: ["https://free.rpc.fastnear.com"] },
   },
   blockExplorers: {
     default: {
