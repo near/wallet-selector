@@ -123,26 +123,26 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     emitter.emit("signedOut", null);
   };
 
-const setupEvents = () => {
+  const setupEvents = () => {
     if (_state.wallet) {
-        _state.wallet.on("dapp:accountsChanged", async (newAccountId) => {
-            logger.log("onAccountChange", newAccountId);
-            await signOut();
-        });
+      _state.wallet.on("dapp:accountsChanged", async (newAccountId) => {
+        logger.log("onAccountChange", newAccountId);
+        await signOut();
+      });
 
-        _state.wallet.on("dapp:chainChanged", async (rpc) => {
-            logger.log("onNetworkChange", rpc);
+      _state.wallet.on("dapp:chainChanged", async (rpc) => {
+        logger.log("onNetworkChange", rpc);
 
-            const networkId = rpc.split(":")[1] === "near" ? "mainnet" : "testnet";
-            
-            if (options.network.networkId !== networkId) {
-                await signOut();
+        const networkId = rpc.split(":")[1] === "near" ? "mainnet" : "testnet";
 
-                emitter.emit("networkChanged", { networkId });
-            }
-        });
+        if (options.network.networkId !== networkId) {
+          await signOut();
+
+          emitter.emit("networkChanged", { networkId });
+        }
+      });
     }
-};
+  };
 
   const signer: Signer = {
     createKey: () => {
