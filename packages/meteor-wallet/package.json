@@ -23,7 +23,7 @@
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/meteor-wallet",
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
-    "@meteorwallet/sdk": "1.0.23",
+    "@meteorwallet/sdk": "1.0.24",
     "near-api-js": "5.0.0"
   },
   "publishConfig": {

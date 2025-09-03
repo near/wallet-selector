@@ -93,7 +93,7 @@
     "@jscutlery/semver": "5.3.1",
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.30.4",
-    "@meteorwallet/sdk": "1.0.23",
+    "@meteorwallet/sdk": "1.0.24",
     "@near-js/signers": "2.1.0",
     "@near-snap/sdk": "0.6.0",
     "@noble/hashes": "1.7.1",
