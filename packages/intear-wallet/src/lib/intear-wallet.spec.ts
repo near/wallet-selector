@@ -6,6 +6,7 @@ import type {
   InjectedWallet,
   SignMessageParams,
 } from "@near-wallet-selector/core";
+import { functionCall } from "near-api-js/lib/transaction";
 
 global.TextEncoder = jest.fn().mockImplementation(() => ({
   encode: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
@@ -157,17 +158,7 @@ describe("IntearWallet", () => {
         transactions: [
           {
             receiverId: "app.near",
-            actions: [
-              {
-                type: "FunctionCall",
-                params: {
-                  methodName: "test",
-                  args: {},
-                  gas: "100",
-                  deposit: "0",
-                },
-              },
-            ],
+            actions: [functionCall("test", {}, BigInt("100"), BigInt("0"))],
           },
         ],
       });
@@ -191,17 +182,7 @@ describe("IntearWallet", () => {
         transactions: [
           {
             receiverId: "app.near",
-            actions: [
-              {
-                type: "FunctionCall",
-                params: {
-                  methodName: "test",
-                  args: {},
-                  gas: "100",
-                  deposit: "0",
-                },
-              },
-            ],
+            actions: [functionCall("test", {}, BigInt("100"), BigInt("0"))],
           },
         ],
       });
@@ -241,17 +222,7 @@ describe("IntearWallet", () => {
         transactions: [
           {
             receiverId: "app.near",
-            actions: [
-              {
-                type: "FunctionCall",
-                params: {
-                  methodName: "test",
-                  args: {},
-                  gas: "100",
-                  deposit: "0",
-                },
-              },
-            ],
+            actions: [functionCall("test", {}, BigInt("100"), BigInt("0"))],
           },
         ],
       });

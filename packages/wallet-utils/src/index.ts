@@ -1,1 +1,1 @@
-export { createAction, signTransactions } from "./lib/wallet-utils";
+export { signTransactions } from "./lib/wallet-utils";

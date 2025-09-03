@@ -1,8 +1,23 @@
-import type { Action } from "../wallet/transactions.types";
+import { PublicKey } from "near-api-js/lib/utils";
+import type { InternalAction } from "../wallet/transactions.types";
 import type { Action as NAJAction } from "@near-js/transactions";
+import {
+  deleteKey,
+  createAccount,
+  deployContract,
+  functionCall,
+  transfer,
+  stake,
+  addKey,
+  deleteAccount,
+  AccessKey,
+  AccessKeyPermission,
+  FullAccessPermission,
+  FunctionCallPermission,
+} from "near-api-js/lib/transaction.js";
 
 // temp fix until we migrate Wallet Selector to use NAJ types
-export const najActionToInternal = (action: NAJAction): Action => {
+export const najActionToInternal = (action: NAJAction): InternalAction => {
   if (action.createAccount) {
     return { type: "CreateAccount" };
   }
@@ -80,4 +95,67 @@ export const najActionToInternal = (action: NAJAction): Action => {
   }
 
   throw new Error("Unsupported NAJ action");
+};
+
+export const internalActionToNaj = (action: InternalAction): NAJAction => {
+  if (action.type === "CreateAccount") {
+    return createAccount();
+  }
+
+  if (action.type === "DeployContract") {
+    return deployContract(action.params.code);
+  }
+
+  if (action.type === "FunctionCall") {
+    return functionCall(
+      action.params.methodName,
+      action.params.args,
+      BigInt(action.params.gas),
+      BigInt(action.params.deposit)
+    );
+  }
+
+  if (action.type === "Transfer") {
+    return transfer(BigInt(action.params.deposit));
+  }
+
+  if (action.type === "Stake") {
+    return stake(
+      BigInt(action.params.stake),
+      PublicKey.from(action.params.publicKey)
+    );
+  }
+
+  if (action.type === "AddKey") {
+    return addKey(
+      PublicKey.from(action.params.publicKey),
+      new AccessKey({
+        nonce: BigInt(action.params.accessKey.nonce ?? 0),
+        permission: new AccessKeyPermission({
+          ...(action.params.accessKey.permission === "FullAccess"
+            ? { fullAccess: new FullAccessPermission() }
+            : {
+                functionCall: new FunctionCallPermission({
+                  receiverId: action.params.accessKey.permission.receiverId!,
+                  methodNames:
+                    action.params.accessKey.permission.methodNames ?? [],
+                  allowance: BigInt(
+                    action.params.accessKey.permission.allowance ?? 0
+                  ),
+                }),
+              }),
+        }),
+      })
+    );
+  }
+
+  if (action.type === "DeleteKey") {
+    return deleteKey(PublicKey.from(action.params.publicKey));
+  }
+
+  if (action.type === "DeleteAccount") {
+    return deleteAccount(action.params.beneficiaryId);
+  }
+
+  throw new Error("Unsupported action type");
 };

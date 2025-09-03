@@ -7,8 +7,6 @@ import type {
   Optional,
 } from "@near-wallet-selector/core";
 
-import { createAction } from "@near-wallet-selector/wallet-utils";
-
 import { isMobile } from "is-mobile";
 import type { InjectedRamperWallet } from "./ramper-wallet.types";
 import icon from "./icon";
@@ -79,16 +77,10 @@ const RamperWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error("Wallet not signed in");
     }
 
-    return transactions.map((transaction) => {
-      const parsedActions = transaction.actions.map((action) =>
-        createAction(action)
-      );
-
-      return {
-        receiverId: transaction.receiverId || contract.contractId,
-        actions: parsedActions,
-      };
-    });
+    return transactions.map((transaction) => ({
+      receiverId: transaction.receiverId || contract.contractId,
+      actions: transaction.actions,
+    }));
   };
 
   return {

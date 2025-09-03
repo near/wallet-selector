@@ -7,11 +7,12 @@ import type {
 } from "../services";
 import type { Options } from "../options.types";
 import type { ReadOnlyStore } from "../store.types";
-import type { Transaction, Action } from "./transactions.types";
+import type { Transaction } from "./transactions.types";
 import type { Modify, Optional } from "../utils.types";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import type { SignedTransaction } from "near-api-js/lib/transaction.js";
 import type { Signer } from "@near-js/signers";
+import type { Action } from "@near-js/transactions";
 
 interface BaseWalletMetadata {
   /**

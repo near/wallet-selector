@@ -6,7 +6,6 @@ import type {
   SignMessageParams,
   Transaction,
 } from "@near-wallet-selector/core";
-import { createAction } from "@near-wallet-selector/wallet-utils";
 import {
   Account,
   Connection,
@@ -263,7 +262,7 @@ export class MyNearWalletConnector {
       KeyPair.fromRandom("ed25519").getPublicKey(),
       receiverId,
       0,
-      actions.map((a) => createAction(a)),
+      actions,
       blockHash
     );
   }
@@ -291,10 +290,12 @@ export class MyNearWalletConnector {
       this.functionCallKey.contractId === receiverId
     ) {
       return (
-        actions[0].type === "FunctionCall" &&
-        actions[0].params.deposit === "0" &&
+        actions[0].functionCall &&
+        actions[0].functionCall.deposit === BigInt(0) &&
         (this.functionCallKey.methods.length === 0 ||
-          this.functionCallKey.methods.includes(actions[0].params.methodName))
+          this.functionCallKey.methods.includes(
+            actions[0].functionCall.methodName
+          ))
       );
     } else {
       return false;
@@ -324,7 +325,7 @@ export class MyNearWalletConnector {
     const account = new Account(connection, this.signedAccountId);
     return account.signAndSendTransaction({
       receiverId,
-      actions: actions.map((a) => createAction(a)),
+      actions,
     });
   }
 

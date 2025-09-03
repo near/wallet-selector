@@ -16,7 +16,6 @@ import type {
   SignedMessage,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
-import { createAction } from "@near-wallet-selector/wallet-utils";
 
 import WalletConnectClient from "./wallet-connect-client";
 import icon from "./icon";
@@ -234,17 +233,17 @@ const WalletConnect: WalletBehaviourFactory<
     }
 
     return transaction.actions.every((action) => {
-      if (action.type !== "FunctionCall") {
+      if (!action.functionCall) {
         return false;
       }
 
-      const { methodName, deposit } = action.params;
+      const { methodName, deposit } = action.functionCall;
 
       if (method_names.length && method_names.includes(methodName)) {
         return false;
       }
 
-      return parseFloat(deposit) <= 0;
+      return BigInt(deposit) <= BigInt(0);
     });
   };
 
@@ -282,7 +281,7 @@ const WalletConnect: WalletBehaviourFactory<
         nearAPI.utils.PublicKey.from(publicKey.toString()),
         transactions[i].receiverId,
         accessKey.nonce + i + 1,
-        transaction.actions.map((action) => createAction(action)),
+        transaction.actions,
         nearAPI.utils.serialize.base_decode(block.header.hash)
       );
 
@@ -364,7 +363,7 @@ const WalletConnect: WalletBehaviourFactory<
       nearAPI.utils.PublicKey.from(account.publicKey),
       transaction.receiverId,
       accessKey.nonce + 1,
-      transaction.actions.map((action) => createAction(action)),
+      transaction.actions,
       nearAPI.utils.serialize.base_decode(block.header.hash)
     );
 
@@ -419,7 +418,7 @@ const WalletConnect: WalletBehaviourFactory<
           nearAPI.utils.PublicKey.from(account.publicKey),
           transaction.receiverId,
           accessKey.nonce + i + 1,
-          transaction.actions.map((action) => createAction(action)),
+          transaction.actions,
           nearAPI.utils.serialize.base_decode(block.header.hash)
         )
       );
