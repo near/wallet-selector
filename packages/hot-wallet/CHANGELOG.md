@@ -1,5 +1,12 @@
 # @near-wallet-selector/hot-wallet
 
+## 9.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.0
+
 ## 9.4.1
 
 ### Patch Changes

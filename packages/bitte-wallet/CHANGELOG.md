@@ -1,5 +1,7 @@
 # @near-wallet-selector/bitte-wallet
 
+## 9.5.0
+
 ## 9.4.1
 
 ## 9.4.0
