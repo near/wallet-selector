@@ -197,12 +197,6 @@ class LogoutWebSocket {
 
     this.ws.onerror = (error) => {
       this.logger.error("Logout WebSocket error:", error);
-      if (!this.intentionallyClosed) {
-        this.logger.log("Attempting to reconnect in 500ms...");
-        setTimeout(() => this.connect(), 500);
-      } else {
-        LogoutWebSocket.instance = null;
-      }
     };
   }
 
@@ -249,7 +243,7 @@ type LogoutInfo = {
 type SessionStatus = "Active" | { LoggedOut: LogoutInfo };
 
 export type IntearWalletParams = {
-  walletUrl?: string;
+  walletUrl?: string; // only used for the initial iframe
   logoutBridgeService?: string;
   iconUrl?: string;
   deprecated?: boolean;
@@ -261,6 +255,11 @@ type SavedData = {
   contractId: string;
   methodNames: Array<string>;
   logoutKey: string; // there's no PublicKeyString type
+
+  // the 2 fields below can be undefined if the user has logged in using
+  // an older version of wallet selector
+  walletUrl?: string;
+  useBridge?: boolean;
 };
 
 async function generateAuthSignature(
@@ -305,7 +304,8 @@ async function signAndSendTransactions(
   incompleteTransactions: Array<Optional<Transaction, "signerId">>,
   walletUrl: string,
   provider: nearAPI.providers.Provider,
-  logger: LoggerService
+  logger: LoggerService,
+  logoutBridgeService: string
 ): Promise<Array<nearAPI.providers.FinalExecutionOutcome>> {
   const savedData = assertLoggedIn();
   const transactions: Array<Transaction> = incompleteTransactions.map(
@@ -377,6 +377,92 @@ async function signAndSendTransactions(
     } catch (error) {
       logger.error("Error signing and sending transactions locally", error);
     }
+  }
+
+  if (savedData.useBridge) {
+    return new Promise((resolve, reject) => {
+      const iframe = document.createElement("iframe");
+      const wsUrl = logoutBridgeService
+        .replace("https://", "wss://")
+        .replace("http://", "ws://");
+      const ws = new WebSocket(`${wsUrl}/api/session/create`);
+      ws.onopen = async () => {
+        logger.log("WebSocket connected for transactions");
+        const transactionsString = JSON.stringify(transactions);
+        const authNonce = Date.now();
+        const signatureString = await generateAuthSignature(
+          nearAPI.KeyPair.fromString(savedData.key),
+          transactionsString,
+          authNonce
+        );
+        ws.send(
+          JSON.stringify({
+            type: "signAndSendTransactions",
+            data: {
+              transactions: transactionsString,
+              accountId: savedData.accounts[0].accountId,
+              publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                .getPublicKey()
+                .toString(),
+              nonce: authNonce,
+              signature: signatureString,
+            },
+          })
+        );
+      };
+      let currentSessionId: string | null = null;
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.session_id) {
+            currentSessionId = data.session_id;
+            logger.log(
+              "Received session ID for send-transactions:",
+              currentSessionId
+            );
+          } else {
+            logger.log("Received send-transactions response:", data);
+            ws.close();
+            if (data.type === "error") {
+              reject(new Error(data.message));
+            } else {
+              resolve(data.outcomes);
+            }
+            iframe.remove();
+          }
+        } catch (e) {
+          logger.error("Error parsing WebSocket message:", e);
+          reject(e);
+          iframe.remove();
+        }
+      };
+      ws.onerror = (error) => {
+        logger.error("WebSocket error:", error);
+        reject(error);
+        iframe.remove();
+      };
+      ws.onclose = () => {
+        logger.log("WebSocket closed for send-transactions");
+        iframe.remove();
+      };
+
+      (async () => {
+        const sessionId = await new Promise((resolveSessionId) => {
+          setInterval(() => {
+            if (currentSessionId) {
+              resolveSessionId(currentSessionId);
+            }
+          }, 100);
+        });
+
+        const walletAppUrl = `intear://send-transactions?session_id=${sessionId}`;
+        logger.log("Opening wallet with URL:", walletAppUrl);
+
+        iframe.style.display = "none";
+        iframe.src = walletAppUrl;
+        document.body.appendChild(iframe);
+      })();
+    });
   }
 
   return new Promise((resolve, reject) => {
@@ -456,7 +542,13 @@ type IntearWalletOptions = {
 const IntearWallet: WalletBehaviourFactory<
   InjectedWallet,
   IntearWalletOptions
-> = ({ metadata, options, logoutBridgeService, logger, walletUrl }) => {
+> = ({
+  metadata,
+  options,
+  logoutBridgeService,
+  logger,
+  walletUrl: iframeOriginUrl,
+}) => {
   return Promise.resolve({
     async signIn({ contractId, methodNames }) {
       return new Promise((resolve, reject) => {
@@ -469,16 +561,19 @@ const IntearWallet: WalletBehaviourFactory<
           methodNames,
           key: key.getPublicKey().toString(),
         });
-        const popup = window.open(
-          `${walletUrl}/connect`,
-          "_blank",
-          POPUP_FEATURES
-        );
-        if (popup === null) {
+        const iframe = document.createElement("iframe");
+        iframe.src = `${iframeOriginUrl}/wallet-connector-iframe.html`;
+        iframe.style.position = "fixed";
+        iframe.style.inset = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+        iframe.style.border = "none";
+        iframe.style.zIndex = "100000";
+        document.body.appendChild(iframe);
+        if (iframe === null) {
           reject(new Error("Popup was blocked"));
           return;
         }
-        let done = false;
         const listener = async (event: MessageEvent) => {
           logger.log("Message from connect popup", event);
           switch (event.data.type) {
@@ -490,7 +585,7 @@ const IntearWallet: WalletBehaviourFactory<
                 message,
                 nonce
               );
-              popup.postMessage(
+              iframe.contentWindow?.postMessage(
                 {
                   type: "signIn",
                   data: {
@@ -501,14 +596,13 @@ const IntearWallet: WalletBehaviourFactory<
                     nonce,
                     message,
                     signature: signatureString,
+                    version: "V2",
                   },
                 },
-                walletUrl
+                iframeOriginUrl
               );
               break;
             case "connected":
-              done = true;
-              popup.close();
               let accounts = event.data.accounts;
               if (accounts.length !== 0) {
                 accounts = accounts.map((account: Account, index: number) => ({
@@ -520,16 +614,25 @@ const IntearWallet: WalletBehaviourFactory<
               const logoutKey = nearAPI.utils.PublicKey.fromString(
                 event.data.logoutKey
               );
+              const useBridge = event.data.useBridge;
               const dataToSave: SavedData = {
                 accounts,
                 key: key.toString(),
                 contractId: functionCallKeyAdded ? (contractId as string) : "",
                 methodNames: functionCallKeyAdded ? methodNames ?? [] : [],
                 logoutKey: logoutKey.toString(),
+                walletUrl: event.data.walletUrl,
+                useBridge,
               };
               window.localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify(dataToSave)
+              );
+              iframe.contentWindow?.postMessage(
+                {
+                  type: "close",
+                },
+                iframeOriginUrl
               );
               resolve(accounts);
 
@@ -543,22 +646,25 @@ const IntearWallet: WalletBehaviourFactory<
               );
               break;
             case "error":
-              done = true;
-              popup.close();
-              reject(new Error(event.data.message));
+              logger.error("Error from connect popup", event.data.message);
+              iframe.contentWindow?.postMessage(
+                {
+                  type: "close",
+                  message: event.data.message,
+                },
+                iframeOriginUrl
+              );
+              break;
+            case "close":
+              iframe.remove();
+              if (event.data.message) {
+                reject(new Error(event.data.message));
+              }
+              window.removeEventListener("message", listener);
               break;
           }
         };
         window.addEventListener("message", listener);
-        const checkPopupClosed = setInterval(() => {
-          if (popup.closed) {
-            window.removeEventListener("message", listener);
-            clearInterval(checkPopupClosed);
-            if (!done) {
-              reject(new Error("Popup closed"));
-            }
-          }
-        }, 100);
       });
     },
 
@@ -593,10 +699,11 @@ const IntearWallet: WalletBehaviourFactory<
               signature
             )}`;
             break;
-          // TODO: Uncomment when naj is updated
-          // case KeyType.SECP256K1:
-          //   signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(signature)}`;
-          //   break;
+          case KeyType.SECP256K1:
+            signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
+              signature
+            )}`;
+            break;
           default:
             throw new Error("Unsupported key type");
         }
@@ -671,10 +778,11 @@ const IntearWallet: WalletBehaviourFactory<
                     signature
                   )}`;
                   break;
-                // TODO: Uncomment when naj is updated
-                // case KeyType.SECP256K1:
-                //   signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(signature)}`;
-                //   break;
+                case KeyType.SECP256K1:
+                  signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
+                    signature
+                  )}`;
+                  break;
                 default:
                   throw new Error("Unsupported key type");
               }
@@ -783,86 +891,189 @@ const IntearWallet: WalletBehaviourFactory<
         state,
       });
       const savedData = assertLoggedIn();
-      return new Promise((resolve, reject) => {
-        const popup = window.open(
-          `${walletUrl}/sign-message`,
-          "_blank",
-          POPUP_FEATURES
-        );
-        if (!popup) {
-          throw new Error("Popup was blocked");
-        }
-        let done = false;
-        const listener = async (event: MessageEvent) => {
-          logger.log("Message from sign-message popup", event);
-          switch (event.data.type) {
-            case "ready": {
-              const signMessageString = JSON.stringify({
-                message,
-                recipient,
-                nonce: Array.from(nonce),
-                callbackUrl,
-                state,
-              });
-              const authNonce = Date.now();
-              const signatureString = await generateAuthSignature(
-                nearAPI.KeyPair.fromString(savedData.key),
-                signMessageString,
-                authNonce
-              );
-              popup.postMessage(
-                {
-                  type: "signMessage",
-                  data: {
-                    message: signMessageString,
-                    accountId: savedData.accounts[0].accountId,
-                    publicKey: nearAPI.KeyPair.fromString(savedData.key)
-                      .getPublicKey()
-                      .toString(),
-                    nonce: authNonce,
-                    signature: signatureString,
-                  },
+      if (savedData.useBridge) {
+        return new Promise((resolve, reject) => {
+          const iframe = document.createElement("iframe");
+          const wsUrl = logoutBridgeService
+            .replace("https://", "wss://")
+            .replace("http://", "ws://");
+          const ws = new WebSocket(`${wsUrl}/api/session/create`);
+          ws.onopen = async () => {
+            logger.log("WebSocket connected for sign-message");
+            const signMessageString = JSON.stringify({
+              message,
+              recipient,
+              nonce: Array.from(nonce),
+              callbackUrl,
+              state,
+            });
+            const authNonce = Date.now();
+            const signatureString = await generateAuthSignature(
+              nearAPI.KeyPair.fromString(savedData.key),
+              signMessageString,
+              authNonce
+            );
+            ws.send(
+              JSON.stringify({
+                type: "signMessage",
+                data: {
+                  message: signMessageString,
+                  accountId: savedData.accounts[0].accountId,
+                  publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                    .getPublicKey()
+                    .toString(),
+                  nonce: authNonce,
+                  signature: signatureString,
                 },
-                walletUrl
-              );
-              break;
-            }
-            case "signed": {
-              done = true;
-              popup.close();
-              const signature = event.data.signature;
-              resolve({
-                ...signature,
-                signature: btoa(
-                  Array.from(
-                    nearAPI.utils.serialize.base_decode(
-                      signature.signature.split(":")[1]
+              })
+            );
+          };
+          let currentSessionId: string | null = null;
+          ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.session_id) {
+                currentSessionId = data.session_id;
+                logger.log(
+                  "Received session ID for sign-message:",
+                  currentSessionId
+                );
+              } else {
+                logger.log("Received sign-message response:", data);
+                ws.close();
+                if (data.type === "error") {
+                  reject(new Error(data.message));
+                } else {
+                  const signature = data.signature;
+                  resolve({
+                    ...signature,
+                    signature: btoa(
+                      Array.from(
+                        nearAPI.utils.serialize.base_decode(
+                          signature.signature.split(":")[1]
+                        ),
+                        (byte) => String.fromCharCode(byte)
+                      ).join("")
                     ),
-                    (byte) => String.fromCharCode(byte)
-                  ).join("")
-                ),
-              });
-              break;
+                  });
+                }
+                iframe.remove();
+              }
+            } catch (e) {
+              logger.error("Error parsing WebSocket message:", e);
+              reject(e);
+              iframe.remove();
             }
-            case "error": {
-              done = true;
-              popup.close();
-              reject(new Error(event.data.message));
-              break;
-            }
+          };
+          ws.onerror = (error) => {
+            logger.error("WebSocket error:", error);
+            reject(error);
+            iframe.remove();
+          };
+          ws.onclose = () => {
+            logger.log("WebSocket closed for sign-message");
+            iframe.remove();
+          };
+
+          (async () => {
+            const sessionId = await new Promise((resolveSessionId) => {
+              setInterval(() => {
+                if (currentSessionId) {
+                  resolveSessionId(currentSessionId);
+                }
+              }, 100);
+            });
+
+            const walletAppUrl = `intear://sign-message?session_id=${sessionId}`;
+            logger.log("Opening wallet with URL:", walletAppUrl);
+
+            iframe.style.display = "none";
+            iframe.src = walletAppUrl;
+            document.body.appendChild(iframe);
+          })();
+        });
+      } else {
+        return new Promise((resolve, reject) => {
+          const popup = window.open(
+            `${savedData.walletUrl}/sign-message`,
+            "_blank",
+            POPUP_FEATURES
+          );
+          if (!popup) {
+            throw new Error("Popup was blocked");
           }
-        };
-        window.addEventListener("message", listener);
-        const checkPopupClosed = setInterval(() => {
-          if (popup.closed) {
-            window.removeEventListener("message", listener);
-            clearInterval(checkPopupClosed);
-            if (!done) {
-              reject(new Error("Popup closed"));
+          let done = false;
+          const listener = async (event: MessageEvent) => {
+            logger.log("Message from sign-message popup", event);
+            switch (event.data.type) {
+              case "ready": {
+                const signMessageString = JSON.stringify({
+                  message,
+                  recipient,
+                  nonce: Array.from(nonce),
+                  callbackUrl,
+                  state,
+                });
+                const authNonce = Date.now();
+                const signatureString = await generateAuthSignature(
+                  nearAPI.KeyPair.fromString(savedData.key),
+                  signMessageString,
+                  authNonce
+                );
+                popup.postMessage(
+                  {
+                    type: "signMessage",
+                    data: {
+                      message: signMessageString,
+                      accountId: savedData.accounts[0].accountId,
+                      publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                        .getPublicKey()
+                        .toString(),
+                      nonce: authNonce,
+                      signature: signatureString,
+                    },
+                  },
+                  savedData.walletUrl ?? iframeOriginUrl
+                );
+                break;
+              }
+              case "signed": {
+                done = true;
+                popup.close();
+                const signature = event.data.signature;
+                resolve({
+                  ...signature,
+                  signature: btoa(
+                    Array.from(
+                      nearAPI.utils.serialize.base_decode(
+                        signature.signature.split(":")[1]
+                      ),
+                      (byte) => String.fromCharCode(byte)
+                    ).join("")
+                  ),
+                });
+                break;
+              }
+              case "error": {
+                done = true;
+                popup.close();
+                reject(new Error(event.data.message));
+                break;
+              }
             }
-          }
-        }, 100);
-      });
+          };
+          window.addEventListener("message", listener);
+          const checkPopupClosed = setInterval(() => {
+            if (popup.closed) {
+              window.removeEventListener("message", listener);
+              clearInterval(checkPopupClosed);
+              if (!done) {
+                reject(new Error("Popup closed"));
+              }
+            }
+          }, 100);
+        });
+      }
     },
 
     async signAndSendTransaction({ signerId, receiverId, actions }) {
@@ -880,18 +1091,22 @@ const IntearWallet: WalletBehaviourFactory<
             actions,
           },
         ],
-        walletUrl,
+        savedData.walletUrl ?? iframeOriginUrl,
         new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
-        logger
+        logger,
+        logoutBridgeService
       ).then((outcomes) => outcomes[0]);
     },
 
     async signAndSendTransactions({ transactions }) {
+      logger.log("signAndSendTransactions", { transactions });
+      const savedData = assertLoggedIn();
       return await signAndSendTransactions(
         transactions,
-        walletUrl,
+        savedData.walletUrl ?? iframeOriginUrl,
         new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
-        logger
+        logger,
+        logoutBridgeService
       );
     },
 
