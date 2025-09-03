@@ -13,4 +13,9 @@ export default {
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/meteor-wallet",
+  moduleNameMapper: {
+    // This is a workaround for https://github.com/uuidjs/uuid/pull/616
+    '^uuid$': require.resolve('uuid'),
+    '^nanoid$': require.resolve('nanoid')
+  },
 };
