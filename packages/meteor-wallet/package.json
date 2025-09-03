@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/meteor-wallet",
-  "version": "9.5.0",
+  "version": "9.5.1",
   "description": "Meteor wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
