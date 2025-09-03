@@ -1,5 +1,13 @@
 # @near-wallet-selector/coin98-wallet
 
+## 9.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.0
+  - @near-wallet-selector/wallet-utils@9.5.0
+
 ## 9.4.1
 
 ### Patch Changes
