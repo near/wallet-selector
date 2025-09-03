@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.4.1
+
+### Patch Changes
+
+- [#1413](https://github.com/near/wallet-selector/pull/1413) [`134a872`](https://github.com/near/wallet-selector/commit/134a8723b938cdd922ddbf1eec528cdac7ae6c3e) Thanks [@Amira1502](https://github.com/Amira1502)! - use fastnear rpc by default
+
 ## 9.4.0
 
 ### Minor Changes
