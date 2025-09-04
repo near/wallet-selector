@@ -36,8 +36,8 @@ importers:
         specifier: 6.30.4
         version: 6.30.4
       '@meteorwallet/sdk':
-        specifier: 1.0.22
-        version: 1.0.22(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))
+        specifier: 1.0.24
+        version: 1.0.24(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))
       '@near-js/signers':
         specifier: 2.1.0
         version: 2.1.0(@near-js/crypto@2.2.5(@near-js/types@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5)))(@near-js/keystores@0.2.0)
@@ -727,8 +727,8 @@ importers:
   packages/meteor-wallet:
     dependencies:
       '@meteorwallet/sdk':
-        specifier: 1.0.22
-        version: 1.0.22(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))
+        specifier: 1.0.24
+        version: 1.0.24(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
@@ -2387,8 +2387,8 @@ packages:
     resolution: {integrity: sha512-w8CVbdkDrVXFJbfBSlDfafDR6BAkpDmv1bC1UJVCoVny5tW2RKAdn9i68Xf7asYT4TnUhl/hN4zfUiKQq9II4g==}
     engines: {node: '>=16.0.0'}
 
-  '@meteorwallet/sdk@1.0.22':
-    resolution: {integrity: sha512-UL1KOWyzY5P+yF3ariEuTIMwMwA7to/OB57mX32E5hsZDJxo+F0O/tehx0IxN3T4pPneDeurj/AFnuhMQbnR3w==}
+  '@meteorwallet/sdk@1.0.24':
+    resolution: {integrity: sha512-fA/D7rTIpe20J/WRGL3I7wr6gFg3GujbYDQ7Y3IIA+O2uAH+hkIzbUpvlqGSZbKT09YpSEhxMcP3W3x5mDox/w==}
     peerDependencies:
       near-api-js: 5.0.0
 
@@ -14221,7 +14221,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@meteorwallet/sdk@1.0.22(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))':
+  '@meteorwallet/sdk@1.0.24(@near-js/tokens@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))(encoding@0.1.13)(near-api-js@5.0.0(encoding@0.1.13))':
     dependencies:
       '@near-js/accounts': 2.2.5(56614d454c7d95cf26cca1b5150d151e)
       '@near-js/crypto': 2.2.5(@near-js/types@2.2.5)(@near-js/utils@2.2.5(@near-js/types@2.2.5))

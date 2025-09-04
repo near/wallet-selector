@@ -16,6 +16,7 @@ import { setupSender } from '@near-wallet-selector/sender';
 import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
+import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
 
 import { wagmiAdapter, web3Modal } from './web3modal';
 
@@ -62,6 +63,7 @@ export class Wallet {
         setupNearMobileWallet(),
         setupWelldoneWallet(),
         setupMyNearWallet(),
+        setupIntearWallet(),
       ],
     });
 
@@ -102,7 +104,10 @@ export class Wallet {
  * @returns {Promise<JSON.value>} - the result of the method call
  */
   viewMethod = async ({ contractId, method, args = {} }) => {
-    const url = `https://rpc.${this.networkId}.near.org`;
+    const url =
+      this.networkId === "mainnet"
+        ? "https://free.rpc.fastnear.com"
+        : "https://test.rpc.fastnear.com"; 
     const provider = new providers.JsonRpcProvider({ url });
 
     const res = await provider.query({

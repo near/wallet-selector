@@ -23,10 +23,27 @@ describe("IntearWallet", () => {
     close: jest.Mock<unknown, []>;
     postMessage: jest.Mock<unknown, [unknown, string]>;
   };
+  let mockIframe: {
+    src: string;
+    style: {
+      position: string;
+      inset: string;
+      width: string;
+      height: string;
+      border: string;
+      zIndex: string;
+    };
+    contentWindow: {
+      postMessage: jest.Mock<unknown, [unknown, string]>;
+    };
+    remove: jest.Mock<unknown, []>;
+  };
   let mockAddEventListener: jest.SpyInstance<
     ReturnType<typeof window.addEventListener>,
     Parameters<typeof window.addEventListener>
   >;
+  let mockCreateElement: jest.SpyInstance;
+  let mockAppendChild: jest.SpyInstance;
   let wallet: InjectedWallet;
   let originalLocalStorage: Storage;
   let messageCallback: (event: { data: unknown; origin: string }) => void;
@@ -41,6 +58,28 @@ describe("IntearWallet", () => {
       postMessage: jest.fn(),
     };
     window.open = jest.fn().mockReturnValue(mockPopup);
+
+    mockIframe = {
+      src: "",
+      style: {
+        position: "",
+        inset: "",
+        width: "",
+        height: "",
+        border: "",
+        zIndex: "",
+      },
+      contentWindow: {
+        postMessage: jest.fn(),
+      },
+      remove: jest.fn(),
+    };
+    mockCreateElement = jest
+      .spyOn(document, "createElement")
+      .mockReturnValue(mockIframe as unknown as HTMLElement);
+    mockAppendChild = jest
+      .spyOn(document.body, "appendChild")
+      .mockImplementation(() => mockIframe as unknown as HTMLElement);
 
     messageCallback = jest.fn<void, [{ data: unknown; origin: string }]>();
     mockAddEventListener = jest
@@ -74,24 +113,24 @@ describe("IntearWallet", () => {
     window.open = originalWindow.open;
     window.localStorage = originalLocalStorage;
     mockAddEventListener.mockRestore();
+    mockCreateElement.mockRestore();
+    mockAppendChild.mockRestore();
     jest.clearAllMocks();
   });
 
   describe("signIn", () => {
-    it("should open a popup window", async () => {
+    it("should create an iframe for sign in", async () => {
       wallet.signIn({
         contractId: "test.near",
         methodNames: ["test_method"],
       });
 
-      expect(window.open).toHaveBeenCalledWith(
-        expect.stringContaining("/connect"),
-        "_blank",
-        expect.any(String)
-      );
+      expect(document.createElement).toHaveBeenCalledWith("iframe");
+      expect(mockIframe.src).toContain("wallet-connector-iframe.html");
+      expect(document.body.appendChild).toHaveBeenCalledWith(mockIframe);
     });
 
-    it("should handle postMessage communication from popup", async () => {
+    it("should handle postMessage communication from iframe", async () => {
       const promise = wallet.signIn({
         contractId: "test.near",
         methodNames: ["test_method"],
@@ -104,7 +143,7 @@ describe("IntearWallet", () => {
       // Give scheduler a chance to process the message
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(mockPopup.postMessage).toHaveBeenCalledWith(
+      expect(mockIframe.contentWindow.postMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           type: "signIn",
           data: expect.objectContaining({ contractId: "test.near" }),
@@ -134,14 +173,28 @@ describe("IntearWallet", () => {
       );
     });
 
-    it("should handle popup closure", async () => {
-      const signInPromise = wallet.signIn({
+    it("should handle iframe closure", async () => {
+      const promise = wallet.signIn({
         contractId: "test.near",
       });
 
-      mockPopup.closed = true;
+      messageCallback({
+        data: { type: "ready" },
+        origin: "https://wallet.intear.tech",
+      });
+      // Give scheduler a chance to process the message
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
-      await expect(signInPromise).rejects.toThrow("Popup closed");
+      messageCallback({
+        data: {
+          type: "close",
+          message: "User cancelled",
+        },
+        origin: "https://wallet.intear.tech",
+      });
+
+      await expect(promise).rejects.toThrow("User cancelled");
+      expect(mockIframe.remove).toHaveBeenCalled();
     });
   });
 

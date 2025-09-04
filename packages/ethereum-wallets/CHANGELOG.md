@@ -1,5 +1,29 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 9.5.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.1
+  - @near-wallet-selector/wallet-utils@9.5.1
+
+## 9.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.0
+  - @near-wallet-selector/wallet-utils@9.5.0
+
+## 9.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`134a872`](https://github.com/near/wallet-selector/commit/134a8723b938cdd922ddbf1eec528cdac7ae6c3e)]:
+  - @near-wallet-selector/core@9.4.1
+  - @near-wallet-selector/wallet-utils@9.4.1
+
 ## 9.4.0
 
 ### Patch Changes

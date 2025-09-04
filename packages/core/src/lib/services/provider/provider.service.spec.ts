@@ -20,7 +20,7 @@ import type {
 } from "near-api-js/lib/providers/provider.js";
 
 const defaults = {
-  url: "https://rpc.testnet.near.org",
+  url: "https://test.rpc.fastnear.com",
 };
 
 const setup = (url: string) => {

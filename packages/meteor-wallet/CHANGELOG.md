@@ -1,5 +1,30 @@
 # @near-wallet-selector/meteor-wallet
 
+## 9.5.1
+
+### Patch Changes
+
+- [#1420](https://github.com/near/wallet-selector/pull/1420) [`9f8302b`](https://github.com/near/wallet-selector/commit/9f8302bc3e1b29364933007fbd286d2dc0ea34b6) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - bump @meteorwallet/sdk
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.1
+
+## 9.5.0
+
+### Patch Changes
+
+- [#1419](https://github.com/near/wallet-selector/pull/1419) [`5615985`](https://github.com/near/wallet-selector/commit/5615985d9d70ad90457e0547a2e5dc7223dfa500) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - bump @meteorwallet/sdk
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.0
+
+## 9.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`134a872`](https://github.com/near/wallet-selector/commit/134a8723b938cdd922ddbf1eec528cdac7ae6c3e)]:
+  - @near-wallet-selector/core@9.4.1
+
 ## 9.4.0
 
 ### Patch Changes
