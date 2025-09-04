@@ -7,14 +7,14 @@ This is the [XDEFI](https://www.xdefi.io/) package for NEAR Wallet Selector.
 The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w near-api-js@^1.0.0
 
 # Using NPM.
 npm install near-api-js@^1.0.0
 ```
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/xdefi
 
 # Using NPM.

@@ -7,14 +7,14 @@ This is the [Bitget Wallet](https://chromewebstore.google.com/detail/bitget-wall
 The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w near-api-js
 
 # Using NPM.
 npm install near-api-js
 ```
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/bitget-wallet
 
 # Using NPM.

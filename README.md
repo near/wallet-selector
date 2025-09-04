@@ -38,7 +38,7 @@ NEAR Wallet Selector makes it easy for users to interact with your dApp by provi
 The easiest way to use NEAR Wallet Selector is to install the [`core`](https://www.npmjs.com/package/@near-wallet-selector/core) package from the NPM registry, some packages may require `near-api-js` v1.0.0 or above check them at [`packages`](./packages)
 
 ```bash
-# Using Yarn
+# Using pnpm
 yarn add near-api-js
 
 # Using NPM.
@@ -46,7 +46,7 @@ npm install near-api-js
 ```
 
 ```bash
-# Using Yarn
+# Using pnpm
 yarn add @near-wallet-selector/core
 
 # Using NPM.
@@ -56,7 +56,7 @@ npm install @near-wallet-selector/core
 Next, you'll need to install the wallets you want to support:
 
 ```bash
-# Using Yarn
+# Using pnpm
 yarn add \
   @near-wallet-selector/arepa-wallet \
   @near-wallet-selector/bitget-wallet \
@@ -117,7 +117,7 @@ npm install \
 Optionally, you can install our [`modal-ui`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui) (react) or [`modal-ui-js`](https://www.npmjs.com/package/@near-wallet-selector/modal-ui-js) package for a pre-built interface that wraps the `core` API and presents the supported wallets:
 
 ```bash
-# Using Yarn
+# Using pnpm
 yarn add @near-wallet-selector/modal-ui
 
 # Using NPM.
@@ -127,7 +127,7 @@ npm install @near-wallet-selector/modal-ui
 For React applications, you can also install the [`react-hook`](https://www.npmjs.com/package/@near-wallet-selector/react-hook) package which provides a React Hook and Context for easier integration:
 
 ```bash
-# Using Yarn
+# Using pnpm
 yarn add @near-wallet-selector/react-hook
 
 # Using NPM.

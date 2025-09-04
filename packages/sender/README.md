@@ -7,14 +7,14 @@ This is the [Sender](https://chrome.google.com/webstore/detail/sender-wallet/epa
 The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w near-api-js
 
 # Using NPM.
 npm install near-api-js
 ```
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/sender
 
 # Using NPM.
