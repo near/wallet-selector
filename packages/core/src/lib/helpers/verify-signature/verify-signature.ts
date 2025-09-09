@@ -1,4 +1,6 @@
-import { utils, providers } from "near-api-js";
+import { PublicKey } from "@near-js/crypto";
+import { JsonRpcProvider } from "@near-js/providers";
+import type { AccessKeyView } from "@near-js/types";
 import { serialize } from "borsh";
 import { sha256 } from "js-sha256";
 import type {
@@ -7,7 +9,6 @@ import type {
   ViewAccessKeyParams,
 } from "./verify-signature.types";
 import { Payload, payloadSchema } from "./payload";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
 
 export const verifySignature = ({
   publicKey,
@@ -28,9 +29,9 @@ export const verifySignature = ({
   // https://github.com/gagdiez/near-login/blob/main/authenticate/wallet-authenticate.js#L21
   const hashedPayload = Uint8Array.from(sha256.array(borshPayload));
 
-  // Convert real signature to buffer base64
-  const realSignature = Buffer.from(signature, "base64");
-  const pk = utils.PublicKey.from(publicKey);
+  // Convert real signature to Uint8Array from base64
+  const realSignature = new Uint8Array(Buffer.from(signature, "base64"));
+  const pk = PublicKey.from(publicKey);
 
   // Verify the signature
   return pk.verify(hashedPayload, realSignature);
@@ -41,7 +42,7 @@ const fetchAllUserKeys = async ({
   network,
   publicKey,
 }: ViewAccessKeyParams): Promise<AccessKeyView> => {
-  const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+  const provider = new JsonRpcProvider({ url: network.nodeUrl });
   const key = await provider.query({
     request_type: "view_access_key",
     account_id: accountId,

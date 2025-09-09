@@ -4,20 +4,18 @@ import type {
   ViewAccessKeyParams,
 } from "./provider.service.types";
 import { mock } from "jest-mock-extended";
-import type {
-  FinalExecutionOutcome,
-  JsonRpcProvider,
-} from "near-api-js/lib/providers/index.js";
-import * as nearAPI from "near-api-js";
+import type { FinalExecutionOutcome } from "@near-js/types";
+import { JsonRpcProvider } from "@near-js/providers";
+import * as providers from "@near-js/providers";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
 } from "./provider.service.mocks";
-import type { SignedTransaction } from "near-api-js/lib/transaction.js";
+import type { SignedTransaction } from "@near-js/transactions";
 import type {
   BlockReference,
   BlockResult,
-} from "near-api-js/lib/providers/provider.js";
+} from "@near-js/types";
 
 const defaults = {
   url: "https://test.rpc.fastnear.com",
@@ -25,10 +23,9 @@ const defaults = {
 
 const setup = (url: string) => {
   const provider = mock<JsonRpcProvider>();
-
   jest
-    .spyOn(nearAPI.providers, "JsonRpcProvider")
-    .mockImplementation(() => provider);
+    .spyOn(providers, "JsonRpcProvider")
+    .mockImplementation(() => provider as unknown as JsonRpcProvider);
 
   return {
     provider,
