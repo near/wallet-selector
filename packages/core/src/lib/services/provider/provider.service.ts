@@ -1,25 +1,22 @@
-import * as nearAPI from "near-api-js";
-import type {
-  AccessKeyView,
-  BlockReference,
-  QueryResponseKind,
-  RpcQueryRequest,
-} from "near-api-js/lib/providers/provider.js";
 import type {
   ProviderService,
   QueryParams,
   ViewAccessKeyParams,
 } from "./provider.service.types";
-import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
-import type { SignedTransaction } from "near-api-js/lib/transaction.js";
+import { JsonRpcProvider, FailoverRpcProvider } from "@near-js/providers";
+import type { SignedTransaction } from "@near-js/transactions";
+import type {
+  AccessKeyView,
+  BlockReference,
+  QueryResponseKind,
+  RpcQueryRequest,
+} from "@near-js/types";
 
 export class Provider implements ProviderService {
-  private provider: nearAPI.providers.FailoverRpcProvider;
+  private provider: FailoverRpcProvider;
 
   constructor(urls: Array<string>) {
-    this.provider = new nearAPI.providers.FailoverRpcProvider(
-      this.urlsToProviders(urls)
-    );
+    this.provider = new FailoverRpcProvider(this.urlsToProviders(urls));
   }
 
   query<Response extends QueryResponseKind>(

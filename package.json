@@ -94,7 +94,14 @@
     "@ledgerhq/hw-transport": "6.30.3",
     "@ledgerhq/hw-transport-webhid": "6.30.4",
     "@meteorwallet/sdk": "1.0.24",
-    "@near-js/signers": "2.1.0",
+    "@near-js/accounts": "2.3.0",
+    "@near-js/signers": "2.3.0",
+    "@near-js/providers": "2.3.0",
+    "@near-js/transactions": "2.3.0",
+    "@near-js/types": "2.3.0",
+    "@near-js/crypto": "2.3.0",
+    "@near-js/utils": "2.3.0",
+    "@near-js/keystores-browser": "2.3.0",
     "@near-snap/sdk": "0.6.0",
     "@noble/hashes": "1.7.1",
     "@peersyst/near-mobile-signer": "1.1.4",
@@ -117,7 +124,6 @@
     "ethers": "5.7.2",
     "https-browserify": "1.0.0",
     "is-mobile": "4.0.0",
-    "near-api-js": "5.0.0",
     "near-seed-phrase": "0.2.0",
     "next": "13.3.0",
     "ngx-deploy-npm": "7.1.0",
@@ -140,8 +146,6 @@
     "@babel/runtime": "7.24.8",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.5",
-    "@near-js/keystores": "0.2.0",
-    "@near-js/types": "0.3.0",
     "@nrwl/js": "16.0.0",
     "@nrwl/rollup": "16.0.0",
     "@nrwl/tao": "16.0.0",
@@ -221,9 +225,6 @@
     "webpack-merge": "5.8.0"
   },
   "resolutions": {
-    "near-api-js": "5.0.0",
-    "@wagmi/connectors": "5.8.5",
-    "@near-js/types": "2.2.5",
-    "@near-js/utils": "2.2.5"
+    "@wagmi/connectors": "5.8.5"
   }
 }
