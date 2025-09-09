@@ -1,24 +1,28 @@
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
+import { JsonRpcProvider } from "@near-js/providers";
 import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider.js";
+import type { AccessKeyViewRaw } from "@near-js/types";
+import { KeyType, PublicKey } from "@near-js/crypto";
+import {
+  createTransaction,
+  Signature,
+  SignedTransaction,
+} from "@near-js/transactions";
+import { baseDecode } from "@near-js/utils";
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
   signer: Signer,
   network: Network
 ) => {
-  const provider = new nearAPI.providers.JsonRpcProvider({
+  const provider = new JsonRpcProvider({
     url: network.nodeUrl,
   });
 
-  const signedTransactions: Array<nearAPI.transactions.SignedTransaction> = [];
+  const signedTransactions: Array<SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
-    const publicKey = await signer.getPublicKey(
-      transactions[i].signerId,
-      network.networkId
-    );
+    const publicKey = await signer.getPublicKey();
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -30,23 +34,29 @@ export const signTransactions = async (
       }),
     ]);
 
-    const transaction = nearAPI.transactions.createTransaction(
+    const transaction = createTransaction(
       transactions[i].signerId,
-      nearAPI.utils.PublicKey.from(publicKey.toString()),
+      PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       transactions[i].actions,
-      nearAPI.utils.serialize.base_decode(block.header.hash)
+      baseDecode(block.header.hash)
     );
 
-    const response = await nearAPI.transactions.signTransaction(
-      transaction,
-      signer,
-      transactions[i].signerId,
-      network.networkId
-    );
+    const [, signedTx] = await signer.signTransaction(transaction);
 
-    signedTransactions.push(response[1]);
+    const finalSignedTx = new SignedTransaction({
+      signature: new Signature({
+        data: Buffer.from(signedTx.signature.data),
+        keyType:
+          publicKey.keyType === KeyType.SECP256K1
+            ? KeyType.SECP256K1
+            : KeyType.ED25519,
+      }),
+      transaction: transaction,
+    });
+
+    signedTransactions.push(finalSignedTx);
   }
 
   return signedTransactions;
