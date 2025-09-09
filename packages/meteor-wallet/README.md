@@ -4,15 +4,8 @@ This is the [Meteor Wallet](https://meteorwallet.app) package for NEAR Wallet Se
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry
 
-```bash
-# Using pnpm
-pnpm add -w near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
 ```bash
 # Using pnpm
 pnpm add -w @near-wallet-selector/meteor-wallet
