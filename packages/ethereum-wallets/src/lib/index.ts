@@ -24,7 +24,7 @@ import {
   type Optional,
   najActionToInternal,
 } from "@near-wallet-selector/core";
-import { signTransactions } from "@near-wallet-selector/wallet-utils";
+import { signTransactions, WalletSigner } from "@near-wallet-selector/wallet-utils";
 import {
   type WriteContractParameters,
   type GetAccountReturnType,
@@ -644,7 +644,7 @@ const EthereumWallets: WalletBehaviourFactory<
         const signer = new nearAPI.InMemorySigner(_state.keystore);
         const signedTransactions = await signTransactions(
           nearTxs,
-          signer,
+          signer as unknown as WalletSigner,
           options.network
         );
         const results: Array<FinalExecutionOutcome> = [];
