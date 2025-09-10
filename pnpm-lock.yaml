@@ -41,6 +41,9 @@ importers:
       '@near-js/crypto':
         specifier: 2.3.0
         version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/keystores':
+        specifier: 2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)
       '@near-js/keystores-browser':
         specifier: 2.3.0
         version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0))
@@ -420,6 +423,12 @@ importers:
 
   examples/react:
     dependencies:
+      '@near-js/transactions':
+        specifier: 2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/utils':
+        specifier: 2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)
       '@near-wallet-selector/bitget-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/bitget-wallet
@@ -498,6 +507,9 @@ importers:
 
   examples/vanilla:
     dependencies:
+      '@near-js/utils':
+        specifier: 2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)
       '@near-wallet-selector/bitget-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/bitget-wallet
@@ -710,6 +722,15 @@ importers:
       '@ledgerhq/hw-transport-webhid':
         specifier: 6.29.4
         version: 6.29.4
+      '@near-js/crypto':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/transactions':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/utils':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
@@ -722,9 +743,9 @@ importers:
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
+      js-sha256:
+        specifier: ^0.9.0
+        version: 0.9.0
       ts-essentials:
         specifier: 7.0.3
         version: 7.0.3(typescript@5.0.4)
@@ -741,9 +762,6 @@ importers:
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/math-wallet
 
   packages/meteor-wallet:
@@ -761,15 +779,18 @@ importers:
 
   packages/meteor-wallet-app:
     dependencies:
+      '@near-js/crypto':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/transactions':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
       borsh:
         specifier: 2.0.0
         version: 2.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/meteor-wallet-app
 
   packages/modal-ui:
@@ -867,6 +888,9 @@ importers:
       '@near-js/crypto':
         specifier: ^2.3.0
         version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/signers':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0))(@near-js/transactions@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))
       '@near-js/transactions':
         specifier: ^2.3.0
         version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
@@ -886,9 +910,6 @@ importers:
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/okx-wallet
 
   packages/ramper-wallet:
@@ -905,9 +926,6 @@ importers:
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/ramper-wallet
 
   packages/react-hook:
@@ -937,15 +955,15 @@ importers:
 
   packages/sender:
     dependencies:
+      '@near-js/accounts':
+        specifier: ^2.3.0
+        version: 2.3.0(2de0be1e0a0ed3e56b667d88e3f9d798)
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/sender
 
   packages/unity-wallet:
@@ -963,6 +981,27 @@ importers:
 
   packages/wallet-connect:
     dependencies:
+      '@near-js/crypto':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/keystores':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)
+      '@near-js/keystores-browser':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0))
+      '@near-js/signers':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0))(@near-js/transactions@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))
+      '@near-js/transactions':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/types':
+        specifier: ^2.3.0
+        version: 2.3.0
+      '@near-js/utils':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
@@ -1003,10 +1042,19 @@ importers:
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
+      js-sha256:
+        specifier: ^0.9.0
+        version: 0.9.0
     publishDirectory: ../../dist/packages/wallet-utils
 
   packages/welldone-wallet:
     dependencies:
+      '@near-js/crypto':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
+      '@near-js/signers':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0))(@near-js/transactions@2.3.0(@near-js/crypto@2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0)))
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
@@ -1016,22 +1064,19 @@ importers:
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/welldone-wallet
 
   packages/xdefi:
     dependencies:
+      '@near-js/crypto':
+        specifier: ^2.3.0
+        version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
       is-mobile:
         specifier: 4.0.0
         version: 4.0.0
-      near-api-js:
-        specifier: 5.0.0
-        version: 5.0.0(encoding@0.1.13)
     publishDirectory: ../../dist/packages/xdefi
 
 packages:

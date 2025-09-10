@@ -26,7 +26,8 @@
     "@near-js/transactions": "^2.3.0",
     "@near-js/utils": "^2.3.0",
     "@near-js/providers": "^2.3.0",
-    "@near-js/signers": "^2.3.0"
+    "@near-js/signers": "^2.3.0",
+    "js-sha256": "^0.9.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/wallet-utils"

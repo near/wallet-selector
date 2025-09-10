@@ -1,5 +1,9 @@
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
+import { PublicKey } from "@near-js/crypto";
+import {
+  Transaction as NearTransaction,
+  Signature,
+} from "@near-js/transactions";
 import type {
   WalletModuleFactory,
   InjectedWallet,
@@ -23,6 +27,7 @@ import type {
   WelldoneWalletState,
 } from "./injected-welldone";
 import icon from "./icon";
+import type { WalletSigner } from "@near-wallet-selector/wallet-utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
 
@@ -144,7 +149,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
-  const signer: Signer = {
+  const signer: WalletSigner = {
     createKey: () => {
       throw new Error("Not implemented");
     },
@@ -156,7 +161,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return nearAPI.utils.PublicKey.from(account.publicKey!);
+      return PublicKey.from(account.publicKey!);
     },
     signMessage: async (message, accountId) => {
       if (!_state.wallet) {
@@ -171,29 +176,27 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       try {
-        const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message)
-        );
+        const tx = NearTransaction.decode(Buffer.from(message));
         const serializedTx = Buffer.from(tx.encode()).toString("hex");
         const signed = await _state.wallet.request("near", {
           method: "dapp:signTransaction",
           params: ["0x" + serializedTx],
         });
 
-        return {
-          signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
-        };
+        return new Signature({
+          keyType: signed[0].publicKey.keyType,
+          data: Buffer.from(signed[0].signature.substr(2), "hex"),
+        });
       } catch (err) {
         const signed = await _state.wallet.request("near", {
           method: "dapp:signMessage",
           params: ["0x" + Buffer.from(message).toString("hex")],
         });
 
-        return {
-          signature: Buffer.from(signed[0].signature.substr(2), "hex"),
-          publicKey: nearAPI.utils.PublicKey.from(signed[0].publicKey),
-        };
+        return new Signature({
+          keyType: signed[0].publicKey.keyType,
+          data: Buffer.from(signed[0].signature.substr(2), "hex"),
+        });
       }
     },
   };
@@ -278,7 +281,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       }
 
       const accountId = account.accountId;
-      const pubKey = nearAPI.utils.PublicKey.fromString(account.publicKey);
+      const pubKey = PublicKey.fromString(account.publicKey);
       const block = await provider.block({ finality: "final" });
 
       const data = {
@@ -297,7 +300,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return {
         ...data,
-        signature: Buffer.from(signed.signature).toString("base64"),
+        signature: Buffer.from(signed.data).toString("base64"),
       };
     },
 
@@ -347,7 +350,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const [signedTx] = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
-        signer,
+        signer as unknown as Signer,
         options.network
       );
 
@@ -387,12 +390,13 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signTransaction(transaction) {
       logger.log("signTransaction", { transaction });
 
-      return await nearAPI.transactions.signTransaction(
-        transaction,
+      const [signedTx] = await signTransactions(
+        [transaction],
         signer,
-        transaction.signerId,
-        options.network.networkId
+        options.network
       );
+
+      return [Buffer.from(signedTx.signature.data), signedTx];
     },
 
     async getPublicKey() {

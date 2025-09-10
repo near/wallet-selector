@@ -3,16 +3,58 @@ import { JsonRpcProvider } from "@near-js/providers";
 import type { Network, Transaction } from "@near-wallet-selector/core";
 import type { AccessKeyViewRaw } from "@near-js/types";
 import { KeyType, PublicKey } from "@near-js/crypto";
+import type { Transaction as NearTransaction } from "@near-js/transactions";
 import {
   createTransaction,
+  encodeTransaction,
   Signature,
   SignedTransaction,
 } from "@near-js/transactions";
+import { sha256 } from "js-sha256";
 import { baseDecode } from "@near-js/utils";
+
+// TODO: Remove this once the wallet signer interface is updated
+export abstract class WalletSigner {
+  abstract createKey(
+    accountId: string,
+    networkId?: string,
+    keyType?: KeyType
+  ): Promise<PublicKey>;
+  abstract getPublicKey(
+    accountId?: string,
+    networkId?: string
+  ): Promise<PublicKey>;
+  abstract signMessage(
+    message: Uint8Array,
+    accountId?: string,
+    networkId?: string
+  ): Promise<Signature>;
+}
+
+// Sign transaction function for the wallet that doesn't
+// implement signTransaction in their signer interface
+async function signTransactionLegacy(
+  transaction: NearTransaction,
+  signer: WalletSigner,
+  accountId?: string,
+  networkId?: string
+): Promise<[Uint8Array, SignedTransaction]> {
+  const message = encodeTransaction(transaction);
+  const hash = new Uint8Array(sha256.array(message));
+  const signature = await signer.signMessage(message, accountId, networkId);
+  const keyType = transaction.publicKey.ed25519Key
+    ? KeyType.ED25519
+    : KeyType.SECP256K1;
+  const signedTx = new SignedTransaction({
+    transaction,
+    signature: new Signature({ keyType, data: signature.signature.data }),
+  });
+  return [hash, signedTx];
+}
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
-  signer: Signer,
+  signer: Signer | WalletSigner,
   network: Network
 ) => {
   const provider = new JsonRpcProvider({
@@ -22,7 +64,10 @@ export const signTransactions = async (
   const signedTransactions: Array<SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
-    const publicKey = await signer.getPublicKey();
+    const publicKey = await signer.getPublicKey(
+      transactions[i].signerId,
+      network.networkId
+    );
 
     const [block, accessKey] = await Promise.all([
       provider.block({ finality: "final" }),
@@ -43,7 +88,15 @@ export const signTransactions = async (
       baseDecode(block.header.hash)
     );
 
-    const [, signedTx] = await signer.signTransaction(transaction);
+    const [, signedTx] =
+      "signTransaction" in signer && signer.signTransaction
+        ? await signer.signTransaction(transaction)
+        : await signTransactionLegacy(
+            transaction,
+            signer as WalletSigner,
+            transactions[i].signerId,
+            network.networkId
+          );
 
     const finalSignedTx = new SignedTransaction({
       signature: new Signature({

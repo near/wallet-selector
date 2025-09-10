@@ -24,7 +24,8 @@
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
     "borsh": "2.0.0",
-    "near-api-js": "5.0.0"
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/transactions": "^2.3.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/meteor-wallet-app"

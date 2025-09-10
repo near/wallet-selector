@@ -1,3 +1,3 @@
-import { signTransactions } from "./sign-transactions";
+import { signTransactions, WalletSigner } from "./sign-transactions";
 
-export { signTransactions };
+export { signTransactions, WalletSigner };

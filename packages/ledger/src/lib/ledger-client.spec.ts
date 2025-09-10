@@ -2,7 +2,13 @@ import type { DeepPartial } from "ts-essentials";
 import { mock } from "jest-mock-extended";
 import type Transport from "@ledgerhq/hw-transport";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import * as nearAPI from "near-api-js";
+import { parseNearAmount, baseDecode } from "@near-js/utils";
+import { PublicKey } from "@near-js/crypto";
+import {
+  encodeTransaction,
+  createTransaction,
+  actionCreators,
+} from "@near-js/transactions";
 
 interface CreateLedgerClientParams {
   client?: DeepPartial<TransportWebHID>;
@@ -23,27 +29,23 @@ const createGetPublicKeyResponseMock = () => {
 
 const createTransactionMock = () => {
   const actions = [
-    nearAPI.transactions.functionCall(
+    actionCreators.functionCall(
       "addMessage",
       { text: "test" },
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      BigInt(nearAPI.utils.format.parseNearAmount("0.00000000003")!),
+      BigInt(parseNearAmount("0.00000000003")!),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      BigInt(nearAPI.utils.format.parseNearAmount("0")!)
+      BigInt(parseNearAmount("0")!)
     ),
   ];
 
-  return nearAPI.transactions.createTransaction(
+  return createTransaction(
     "test.testnet",
-    nearAPI.utils.PublicKey.from(
-      "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"
-    ),
+    PublicKey.from("GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC"),
     "guest-book.testnet",
     76068360000003,
     actions,
-    nearAPI.utils.serialize.base_decode(
-      "DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t"
-    )
+    baseDecode("DMgHVMag7MAmtEC17Dpvso5DgvqqYcHzrTpTrA86FG7t")
   );
 };
 
@@ -164,7 +166,7 @@ describe("sign", () => {
     });
 
     const transaction = createTransactionMock();
-    const data = nearAPI.transactions.encodeTransaction(transaction);
+    const data = encodeTransaction(transaction);
 
     await client.connect();
 

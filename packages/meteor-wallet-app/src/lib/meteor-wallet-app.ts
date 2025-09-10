@@ -8,9 +8,12 @@ import {
   type WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import icon from "./icon";
-import type { encodeSignedDelegate } from "near-api-js/lib/transaction.js";
-import { SCHEMA, SignedTransaction } from "near-api-js/lib/transaction.js";
-import { PublicKey } from "near-api-js/lib/utils";
+import {
+  SCHEMA,
+  SignedTransaction,
+  type encodeSignedDelegate,
+} from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
 import { deserialize, serialize } from "borsh";
 
 type SignedDelegate = Parameters<typeof encodeSignedDelegate>[0];

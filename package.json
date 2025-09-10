@@ -101,6 +101,7 @@
     "@near-js/types": "2.3.0",
     "@near-js/crypto": "2.3.0",
     "@near-js/utils": "2.3.0",
+    "@near-js/keystores": "2.3.0",
     "@near-js/keystores-browser": "2.3.0",
     "@near-snap/sdk": "0.6.0",
     "@noble/hashes": "1.7.1",

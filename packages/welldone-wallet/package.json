@@ -25,7 +25,8 @@
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-utils": "workspace:*",
     "is-mobile": "4.0.0",
-    "near-api-js": "5.0.0"
+    "@near-js/signers": "^2.3.0",
+    "@near-js/crypto": "^2.3.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/welldone-wallet"

@@ -1,7 +1,7 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 import { mock } from "jest-mock-extended";
 import type { ProviderService } from "packages/core/src/lib/services";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+import type { FinalExecutionOutcome } from "@near-wallet-selector/core";
 
 import { setupOKXWallet } from "./okx-wallet";
 import { mockWallet } from "../../../core/src/lib/testUtils";
@@ -17,11 +17,11 @@ const transactions = [
   },
 ];
 
-jest.mock("near-api-js/lib/transaction.js", () => {
+jest.mock("@near-js/transactions", () => {
   return {
-    ...jest.requireActual("near-api-js/lib/transaction.js"),
+    ...jest.requireActual("@near-js/transactions"),
     SignedTransaction: {
-      ...jest.requireActual("near-api-js/lib/transaction.js").SignedTransaction,
+      ...jest.requireActual("@near-js/transactions").SignedTransaction,
       decode: jest.fn().mockReturnValue({}),
     },
   };
