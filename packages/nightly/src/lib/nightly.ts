@@ -26,13 +26,38 @@ interface NightlyState {
   wallet: NearNightly;
 }
 
+const waitForNightlyNear = async ({
+  timeoutMs = 3000,
+  intervalMs = 50,
+}: { timeoutMs?: number; intervalMs?: number } = {}): Promise<NearNightly> => {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+
+    const check = () => {
+      const injected = window?.nightly?.near;
+      if (injected) {
+        resolve(injected);
+        return;
+      }
+
+      if (Date.now() - start >= timeoutMs) {
+        reject(new Error("Nightly wallet not injected within timeout"));
+        return;
+      }
+
+      setTimeout(check, intervalMs);
+    };
+
+    check();
+  });
+};
+
 const setupNightlyState = async (
   store: WalletSelectorStore,
   emitter: EventEmitterService<WalletEvents>
 ): Promise<NightlyState> => {
   const { selectedWalletId } = store.getState();
-  const wallet = window.nightly!.near!;
-
+  const wallet = await waitForNightlyNear();
   // Attempt to reconnect wallet if previously selected.
   if (selectedWalletId === "nightly") {
     await wallet
@@ -56,9 +81,6 @@ const setupNightlyState = async (
   return {
     wallet,
   };
-};
-const isInstalled = () => {
-  return !!window.nightly?.near;
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
@@ -219,7 +241,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         signer,
         options.network
       );
-
       return provider.sendTransaction(signedTx);
     },
 
@@ -303,8 +324,6 @@ export function setupNightly({
   deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const installed = await isInstalled();
-
     return {
       id: "nightly",
       type: "injected",
@@ -313,9 +332,9 @@ export function setupNightly({
         description: "Multichain crypto wallet.",
         iconUrl,
         // Will replace we open beta with stable version
-        downloadUrl: "https://wallet.nightly.app/download",
+        downloadUrl: "https://nightly.app/download",
         deprecated,
-        available: installed,
+        available: true,
       },
       init: Nightly,
     };
