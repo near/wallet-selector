@@ -27,7 +27,7 @@ interface NightlyState {
 }
 
 const waitForNightlyNear = async ({
-  timeoutMs = 3000,
+  timeoutMs = 2000,
   intervalMs = 50,
 }: { timeoutMs?: number; intervalMs?: number } = {}): Promise<NearNightly> => {
   return new Promise((resolve, reject) => {
@@ -307,10 +307,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signDelegateAction", { delegateAction });
 
       throw new Error(`Method not supported by ${metadata.name}`);
-    },
-
-    async importAccountsInSecureContext(params) {
-      _state.wallet.importWalletsNear(params.accounts);
     },
   };
 };
