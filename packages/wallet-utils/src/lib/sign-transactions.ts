@@ -14,7 +14,7 @@ import { sha256 } from "js-sha256";
 import { baseDecode } from "@near-js/utils";
 
 // TODO: Remove this once the wallet signer interface is updated
-export abstract class WalletSigner {
+export abstract class LegacySigner {
   abstract createKey(
     accountId: string,
     networkId?: string,
@@ -33,9 +33,9 @@ export abstract class WalletSigner {
 
 // Sign transaction function for the wallet that doesn't
 // implement signTransaction in their signer interface
-async function signTransactionLegacy(
+async function legacySignTransaction(
   transaction: NearTransaction,
-  signer: WalletSigner,
+  signer: LegacySigner,
   accountId?: string,
   networkId?: string
 ): Promise<[Uint8Array, SignedTransaction]> {
@@ -54,7 +54,7 @@ async function signTransactionLegacy(
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
-  signer: Signer | WalletSigner,
+  signer: Signer | LegacySigner,
   network: Network
 ) => {
   const provider = new JsonRpcProvider({
@@ -91,9 +91,9 @@ export const signTransactions = async (
     const [, signedTx] =
       "signTransaction" in signer && signer.signTransaction
         ? await signer.signTransaction(transaction)
-        : await signTransactionLegacy(
+        : await legacySignTransaction(
             transaction,
-            signer as WalletSigner,
+            signer as LegacySigner,
             transactions[i].signerId,
             network.networkId
           );

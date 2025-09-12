@@ -1,5 +1,5 @@
 import { isMobile } from "is-mobile";
-import type { WalletSigner } from "@near-wallet-selector/wallet-utils";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type {
   WalletModuleFactory,
@@ -77,7 +77,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 }) => {
   const _state = await setupLedgerState(storage);
 
-  const signer: WalletSigner = {
+  const signer: LegacySigner = {
     createKey: () => {
       throw new Error("Not implemented");
     },

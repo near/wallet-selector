@@ -27,7 +27,7 @@ import type {
   WelldoneWalletState,
 } from "./injected-welldone";
 import icon from "./icon";
-import type { WalletSigner } from "@near-wallet-selector/wallet-utils";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import isMobile from "is-mobile";
 
@@ -149,7 +149,7 @@ const WelldoneWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     }
   };
 
-  const signer: WalletSigner = {
+  const signer: LegacySigner = {
     createKey: () => {
       throw new Error("Not implemented");
     },

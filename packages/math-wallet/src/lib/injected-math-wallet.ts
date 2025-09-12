@@ -1,4 +1,4 @@
-import type { WalletSigner } from "@near-wallet-selector/wallet-utils";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 
 interface LoginParams {
   contractId?: string;
@@ -26,7 +26,7 @@ interface MathNetwork {
   extra: string;
 }
 
-export type MathSigner = WalletSigner & {
+export type MathSigner = LegacySigner & {
   account: MathAccount | null;
   network: MathNetwork;
 };
