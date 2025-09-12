@@ -28,7 +28,7 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
       type: "FunctionCall",
       params: {
         methodName,
-        args, // Uint8Array is accepted by wallet-selector
+        args: JSON.parse(Buffer.from(args).toString()), // Convert Uint8Array to object
         gas: gas.toString(),
         deposit: deposit.toString(),
       },

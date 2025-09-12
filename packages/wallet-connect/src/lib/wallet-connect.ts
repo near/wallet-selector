@@ -205,13 +205,10 @@ const WalletConnect: WalletBehaviourFactory<
     const newAccounts = [];
 
     for (let i = 0; i < accounts.length; i++) {
-      const signer = new KeyPairSigner(
-        await _state.keystore.getKey(
-          options.network.networkId,
-          accounts[i].split(":")[2]
-        )
+      const publicKey = await _state.keystore.getKey(
+        options.network.networkId,
+        accounts[i].split(":")[2]
       );
-      const publicKey = await signer.getPublicKey();
       newAccounts.push({
         accountId: accounts[i].split(":")[2],
         publicKey: publicKey ? publicKey.toString() : "",
