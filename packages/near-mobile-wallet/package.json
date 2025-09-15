@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/near-mobile-wallet",
-  "version": "9.5.1",
+  "version": "9.5.2",
   "description": "NEAR Mobile wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

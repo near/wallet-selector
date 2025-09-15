@@ -1,5 +1,12 @@
 # @near-wallet-selector/wallet-utils
 
+## 9.5.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.2
+
 ## 9.5.1
 
 ### Patch Changes
