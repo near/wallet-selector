@@ -1,5 +1,5 @@
 ---
-"@near-wallet-selector/nightly": major
+"@near-wallet-selector/nightly": patch
 ---
 
 - Improved detection of Nightly extension,
