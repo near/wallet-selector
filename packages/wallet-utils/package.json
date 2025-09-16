@@ -20,12 +20,16 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/wallet-utils",
   "dependencies": {
-    "@near-wallet-selector/core": "workspace:*"
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-js/transactions": "^2.3.0",
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/providers": "^2.3.0",
+    "@near-js/signers": "2.1.0",
+    "@near-js/utils": "^2.3.0",
+    "@near-js/types": "^2.3.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/wallet-utils"
   },
-  "peerDependencies": {
-    "near-api-js": "^4.0.0 || ^5.0.0"
-  }
+  "peerDependencies": {}
 }
