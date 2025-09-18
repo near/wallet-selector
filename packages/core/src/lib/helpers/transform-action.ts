@@ -48,9 +48,15 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
     let permission:
       | "FullAccess"
       | { receiverId: string; methodNames: Array<string>; allowance?: string };
-    if ("fullAccess" in accessKey.permission) {
+    if (
+      "fullAccess" in accessKey.permission &&
+      accessKey.permission.fullAccess
+    ) {
       permission = "FullAccess";
-    } else if ("functionCall" in accessKey.permission) {
+    } else if (
+      "functionCall" in accessKey.permission &&
+      accessKey.permission.functionCall
+    ) {
       const fc = accessKey.permission.functionCall;
       permission = {
         receiverId: fc!.receiverId,

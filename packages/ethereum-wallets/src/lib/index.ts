@@ -10,6 +10,7 @@ import {
   AccessKey,
   AccessKeyPermission,
   actionCreators,
+  FunctionCallPermission,
   stringifyJsonOrBytes,
 } from "@near-js/transactions";
 import { parseRpcError } from "@near-js/utils";
@@ -526,9 +527,11 @@ const EthereumWallets: WalletBehaviourFactory<
               new AccessKey({
                 nonce: BigInt(0),
                 permission: new AccessKeyPermission({
-                  receiverId: accountId,
-                  allowance: "0",
-                  methodNames: [RLP_EXECUTE],
+                  functionCall: new FunctionCallPermission({
+                    receiverId: accountId,
+                    allowance: BigInt(0),
+                    methodNames: [RLP_EXECUTE],
+                  }),
                 }),
               })
             ),
@@ -1008,9 +1011,11 @@ const EthereumWallets: WalletBehaviourFactory<
                     new AccessKey({
                       nonce: BigInt(0),
                       permission: new AccessKeyPermission({
-                        receiverId: contractId,
-                        allowance: DEFAULT_ACCESS_KEY_ALLOWANCE,
-                        methodNames,
+                        functionCall: new FunctionCallPermission({
+                          receiverId: contractId,
+                          allowance: BigInt(DEFAULT_ACCESS_KEY_ALLOWANCE),
+                          methodNames,
+                        }),
                       }),
                     })
                   ),
