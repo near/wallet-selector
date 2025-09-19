@@ -73,7 +73,7 @@ export type {
 } from "./lib/wallet";
 
 export type { FinalExecutionOutcome } from "@near-js/types";
-export { SignedTransaction } from "@near-js/transactions";
+export { SignedTransaction, actionCreators } from "@near-js/transactions";
 export { Signer } from "@near-js/signers";
 
 export {
