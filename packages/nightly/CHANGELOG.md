@@ -1,5 +1,15 @@
 # @near-wallet-selector/nightly
 
+## 9.5.2
+
+### Patch Changes
+
+- [#1424](https://github.com/near/wallet-selector/pull/1424) [`8499d69`](https://github.com/near/wallet-selector/commit/8499d6945e36b7a218a1b80ef0c95a33fa59618e) Thanks [@Pawel-Szydlo](https://github.com/Pawel-Szydlo)! - - Improved detection of Nightly extension,
+  - Changed icon and link to download the extension
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.2
+  - @near-wallet-selector/wallet-utils@9.5.2
+
 ## 9.5.1
 
 ### Patch Changes

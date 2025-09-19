@@ -1,5 +1,13 @@
 # @near-wallet-selector/react-hook
 
+## 9.5.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.2
+  - @near-wallet-selector/modal-ui@9.5.2
+
 ## 9.5.1
 
 ### Patch Changes
