@@ -1,4 +1,4 @@
-import type { Signer } from "near-api-js/lib/signer.js";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 
 interface LoginParams {
   contractId?: string;
@@ -26,7 +26,7 @@ interface MathNetwork {
   extra: string;
 }
 
-export type MathSigner = Signer & {
+export type MathSigner = LegacySigner & {
   account: MathAccount | null;
   network: MathNetwork;
 };

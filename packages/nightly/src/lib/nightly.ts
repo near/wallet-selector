@@ -8,13 +8,13 @@ import type {
   EventEmitterService,
   WalletEvents,
   Account,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import icon from "./icon";
+import { PublicKey } from "@near-js/crypto";
 
 declare global {
   interface Window {
@@ -102,44 +102,37 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     });
   };
-
   const signer: Signer = {
-    createKey: () => {
-      throw new Error("Not implemented");
+    signNep413Message: async (
+      message,
+      accountId,
+      recipient,
+      nonce,
+      callbackUrl
+    ) => {
+      const result = await _state.wallet.signMessage({
+        message,
+        nonce: Buffer.from(nonce),
+        recipient,
+        callbackUrl,
+      });
+      return {
+        ...result,
+        publicKey: PublicKey.fromString(result.publicKey),
+        signature: Buffer.from(result.signature, "base64"),
+      };
     },
-    getPublicKey: async (accountId) => {
-      const accounts = getAccounts();
-      const account = accounts.find((a) => a.accountId === accountId);
-
-      if (!account) {
-        throw new Error("Failed to find public key for account");
-      }
-      return nearAPI.utils.PublicKey.from(account.publicKey!);
+    signTransaction: async (transaction) => {
+      const signedTransaction = await _state.wallet.signTransaction(
+        transaction
+      );
+      return [Buffer.from(signedTransaction.signature.data), signedTransaction];
     },
-    signMessage: async (message, accountId) => {
-      const accounts = getAccounts();
-      const account = accounts.find((a) => a.accountId === accountId);
-
-      if (!account) {
-        throw new Error("Failed to find account for signing");
-      }
-
-      try {
-        const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message)
-        );
-        const signedTx = await _state.wallet.signTransaction(tx);
-
-        return {
-          signature: signedTx.signature.data,
-          publicKey: tx.publicKey,
-        };
-      } catch (err) {
-        logger.log("Failed to sign message");
-        logger.error(err);
-
-        throw Error("Invalid message. Only transactions can be signed");
-      }
+    getPublicKey: async () => {
+      return PublicKey.fromString(_state.wallet.account.publicKey.toString());
+    },
+    signDelegateAction: async () => {
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 
@@ -256,12 +249,8 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     async signTransaction(transaction) {
       logger.log("signTransaction", { transaction });
 
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
-        transaction.signerId,
-        options.network.networkId
-      );
+      const signedTransaction = await signer.signTransaction(transaction);
+      return signedTransaction;
     },
 
     async getPublicKey() {

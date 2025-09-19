@@ -10,7 +10,7 @@ import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
 } from "./meteor-wallet-types";
-import * as nearAPI from "near-api-js";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
@@ -22,7 +22,7 @@ const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keyStore = new BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
   );

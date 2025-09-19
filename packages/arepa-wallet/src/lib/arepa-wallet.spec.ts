@@ -41,7 +41,7 @@ const createArepaWallet = async (deps: MockWalletDependencies = {}) => {
   account.signAndSendTransaction.calledWith().mockReturnValue(null);
   account.state.calledWith().mockResolvedValue(
     mock<AccountView>({
-      amount: BigInt("1000000000000000000000000"),
+      amount: "1000000000000000000000000",
     })
   );
 

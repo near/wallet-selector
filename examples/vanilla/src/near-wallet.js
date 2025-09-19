@@ -1,8 +1,8 @@
 /* A helper file that simplifies using the wallet selector */
 
 // near api js
-import { providers, utils } from 'near-api-js';
-
+import { providers } from '@near-js/providers';
+import { formatNearAmount } from '@near-js/utils';
 
 // wallet selector
 import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
@@ -187,7 +187,7 @@ export class Wallet {
 
     // Format the amount if needed
     if (format) {
-      return account.amount ? utils.format.formatNearAmount(account.amount) : '0';
+      return account.amount ? formatNearAmount(account.amount) : '0';
     } else {
       return account.amount || '0';
     }

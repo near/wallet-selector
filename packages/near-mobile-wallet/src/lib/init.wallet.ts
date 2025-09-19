@@ -21,12 +21,14 @@ export const initNearMobileWallet: NearMobileWalletInit = async (config) => {
     for (let i = 0; i < accountIds.length; i++) {
       accounts.push({
         accountId: accountIds[i],
-        publicKey: (
-          await nearMobileWallet.signer.getPublicKey(
-            accountIds[i],
-            options.network.networkId
-          )
-        ).toString(),
+        publicKey:
+          // @ts-ignore - signer getPublicKey interface was changed during near-api-js migration, but near-mobile-signer still uses the old interface
+          (
+            await nearMobileWallet.signer.getPublicKey(
+              accountIds[i],
+              options.network.networkId
+            )
+          ).toString(),
       });
     }
     return accounts;

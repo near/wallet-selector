@@ -1,12 +1,14 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import * as nearAPI from "near-api-js";
 import { setupIntearWallet } from "./intear-wallet";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type {
   InjectedWallet,
   SignMessageParams,
 } from "@near-wallet-selector/core";
-import { functionCall } from "near-api-js/lib/transaction";
+import { actionCreators } from "@near-js/transactions";
+import { KeyPair } from "@near-js/crypto";
+
+const { functionCall } = actionCreators;
 
 global.TextEncoder = jest.fn().mockImplementation(() => ({
   encode: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
@@ -156,9 +158,7 @@ describe("IntearWallet", () => {
           type: "connected",
           accounts: [{ accountId: "test.near", publicKey: "ed25519:test" }],
           functionCallKeyAdded: true,
-          logoutKey: nearAPI.KeyPair.fromRandom("ed25519")
-            .getPublicKey()
-            .toString(),
+          logoutKey: KeyPair.fromRandom("ed25519").getPublicKey().toString(),
         },
         origin: "https://wallet.intear.tech",
       });
@@ -203,7 +203,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -227,7 +227,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -267,7 +267,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -298,7 +298,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -315,7 +315,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -359,7 +359,7 @@ describe("IntearWallet", () => {
       window.localStorage.getItem = jest.fn().mockReturnValue(
         JSON.stringify({
           accounts: [{ accountId: "test.near" }],
-          key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+          key: KeyPair.fromRandom("ed25519").toString(),
         })
       );
 
@@ -375,12 +375,10 @@ describe("IntearWallet", () => {
     it("should remove storage and notify logout bridge service", async () => {
       const mockSavedData = {
         accounts: [{ accountId: "test.near" }],
-        key: nearAPI.KeyPair.fromRandom("ed25519").toString(),
+        key: KeyPair.fromRandom("ed25519").toString(),
         contractId: "test.near",
         methodNames: [],
-        logoutKey: nearAPI.KeyPair.fromRandom("ed25519")
-          .getPublicKey()
-          .toString(),
+        logoutKey: KeyPair.fromRandom("ed25519").getPublicKey().toString(),
       };
       window.localStorage.getItem = jest
         .fn()

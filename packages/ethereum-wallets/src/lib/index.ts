@@ -1,19 +1,19 @@
-import * as nearAPI from "near-api-js";
 import type {
   AccessKeyViewRaw,
   ExecutionStatus,
   FinalExecutionOutcome,
   FunctionCallPermissionView,
-} from "near-api-js/lib/providers/provider.js";
-import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
+} from "@near-js/types";
+import { JsonRpcProvider } from "@near-js/providers";
+import { PublicKey, KeyPair } from "@near-js/crypto";
 import {
   AccessKey,
   AccessKeyPermission,
-  addKey,
-  deleteKey,
+  actionCreators,
+  FunctionCallPermission,
   stringifyJsonOrBytes,
-} from "near-api-js/lib/transaction.js";
-import { parseRpcError } from "near-api-js/lib/utils/rpc_errors.js";
+} from "@near-js/transactions";
+import { parseRpcError } from "@near-js/utils";
 import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
@@ -75,7 +75,9 @@ import {
   MAX_TGAS,
   EthTxError,
 } from "./utils";
-import { PublicKey } from "near-api-js/lib/utils";
+import type { KeyStore } from "@near-js/keystores";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
+import { KeyPairSigner } from "@near-js/signers";
 
 export interface EthereumWalletsParams {
   wagmiConfig: Config;
@@ -99,14 +101,14 @@ export interface EthereumWalletsParams {
 
 interface EthereumWalletsState {
   isConnecting: boolean;
-  keystore: nearAPI.keyStores.KeyStore;
+  keystore: KeyStore;
   subscriptions: Array<Subscription>;
 }
 
 const setupEthereumWalletsState = async (
   id: string
 ): Promise<EthereumWalletsState> => {
-  const keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keystore = new BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
@@ -520,14 +522,16 @@ const EthereumWallets: WalletBehaviourFactory<
           signerId: accountId,
           receiverId: accountId,
           actions: [
-            addKey(
+            actionCreators.addKey(
               PublicKey.from(relayerPublicKey),
               new AccessKey({
                 nonce: BigInt(0),
                 permission: new AccessKeyPermission({
-                  receiverId: accountId,
-                  allowance: "0",
-                  methodNames: [RLP_EXECUTE],
+                  functionCall: new FunctionCallPermission({
+                    receiverId: accountId,
+                    allowance: BigInt(0),
+                    methodNames: [RLP_EXECUTE],
+                  }),
                 }),
               })
             ),
@@ -641,7 +645,11 @@ const EthereumWallets: WalletBehaviourFactory<
         accessKeyUsable = false;
       }
       if (accessKeyUsable) {
-        const signer = new nearAPI.InMemorySigner(_state.keystore);
+        const keyPair = await _state.keystore.getKey(
+          options.network.networkId,
+          accountLogIn.accountId
+        );
+        const signer = new KeyPairSigner(keyPair);
         const signedTransactions = await signTransactions(
           nearTxs,
           signer,
@@ -848,7 +856,9 @@ const EthereumWallets: WalletBehaviourFactory<
           {
             signerId: accountLogIn.accountId,
             receiverId: accountLogIn.accountId,
-            actions: [deleteKey(PublicKey.from(accountLogIn.publicKey))],
+            actions: [
+              actionCreators.deleteKey(PublicKey.from(accountLogIn.publicKey)),
+            ],
           },
         ]);
         _state.keystore.removeKey(
@@ -988,8 +998,7 @@ const EthereumWallets: WalletBehaviourFactory<
             publicKey = keyPair.getPublicKey().toString();
             logger.log("Reusing existing publicKey:", publicKey);
           } else {
-            const newAccessKeyPair =
-              nearAPI.utils.KeyPair.fromRandom("ed25519");
+            const newAccessKeyPair = KeyPair.fromRandom("ed25519");
             publicKey = newAccessKeyPair.getPublicKey().toString();
             logger.log("Created new publicKey:", publicKey);
             await signAndSendTransactions([
@@ -997,14 +1006,16 @@ const EthereumWallets: WalletBehaviourFactory<
                 signerId: accountId,
                 receiverId: accountId,
                 actions: [
-                  addKey(
+                  actionCreators.addKey(
                     PublicKey.from(publicKey),
                     new AccessKey({
                       nonce: BigInt(0),
                       permission: new AccessKeyPermission({
-                        receiverId: contractId,
-                        allowance: DEFAULT_ACCESS_KEY_ALLOWANCE,
-                        methodNames,
+                        functionCall: new FunctionCallPermission({
+                          receiverId: contractId,
+                          allowance: BigInt(DEFAULT_ACCESS_KEY_ALLOWANCE),
+                          methodNames,
+                        }),
                       }),
                     })
                   ),
