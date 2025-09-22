@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.5.3
+
+### Patch Changes
+
+- [#1426](https://github.com/near/wallet-selector/pull/1426) [`cb59953`](https://github.com/near/wallet-selector/commit/cb5995313fd8f2e48b58eaa84a88b92efff7739c) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Revert interface of createAccessKeyFor to be string
+
 ## 9.5.2
 
 ## 9.5.1
