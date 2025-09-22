@@ -58,7 +58,9 @@ export interface SignMessageParams {
   callbackUrl?: string;
 }
 
-export type SetupParams = WalletSelectorParams;
+export type SetupParams = WalletSelectorParams & {
+  createAccessKeyFor?: string;
+};
 
 export interface WalletSelectorProviderValue {
   walletSelector: Promise<WalletSelector> | null;
@@ -156,8 +158,7 @@ export function WalletSelectorProvider({
   const signIn = async () => {
     const ws = await walletSelector;
     const modalInstance = setupModal(ws!, {
-      contractId: config.createAccessKeyFor?.contractId || undefined,
-      methodNames: config.createAccessKeyFor?.methodNames || [],
+      contractId: config.createAccessKeyFor,
     });
     modalInstance.show();
   };

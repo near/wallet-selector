@@ -33,16 +33,6 @@ const selector = await setupWalletSelector({
   network: "testnet",
   modules: [setupMyNearWallet()],
 });
-
-// Example with createAccessKeyFor for limited access keys
-const selectorWithLimitedAccess = await setupWalletSelector({
-  network: "testnet",
-  modules: [setupMyNearWallet()],
-  createAccessKeyFor: {
-    contractId: "guest-book.testnet",
-    methodNames: ["addMessage", "getMessages"]
-  },
-});
 ```
 
 ## Options
@@ -59,9 +49,6 @@ const selectorWithLimitedAccess = await setupWalletSelector({
 - `allowMultipleSelectors` (`boolean?`): Optionally allow creating new instances of wallet selector.
 - `languageCode` (`string?`): Optionally set specific ISO 639-1 two-letter language code, disables language detection based on the browser's settings.
 - `relayerUrl` (`string?`): Optionally set the URL that meta-transaction enabled wallet modules can use to submit DelegateActions to a relayer
-- `createAccessKeyFor` (`object?`): The contract ID and method names to create a function call access key for. This allows wallets to create limited access keys for specific contract methods.
-  - `contractId` (`string`): The contract ID to create the access key for.
-  - `methodNames` (`Array<string>`): Array of method names that the access key will be limited to.
 - `storage` (`StorageService?`): Async storage implementation. Useful when [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is unavailable. Defaults to `localStorage`.
 - `modules` (`Array<WalletModuleFactory>`): List of wallets to support in your dApp.
 

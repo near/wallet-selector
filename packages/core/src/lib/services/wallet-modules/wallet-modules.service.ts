@@ -303,9 +303,7 @@ export class WalletModules {
   }
 
   private decorateWallet(wallet: Wallet): Wallet {
-    const _signIn = wallet.signIn as (
-      params: SignInParams
-    ) => Promise<Array<Account>>;
+    const _signIn = wallet.signIn;
     const _signOut = wallet.signOut;
     const _signMessage = wallet.signMessage;
     const _createSignedTransaction = wallet.createSignedTransaction;
@@ -316,13 +314,10 @@ export class WalletModules {
     const _signAndSendTransaction = wallet.signAndSendTransaction;
     const _signAndSendTransactions = wallet.signAndSendTransactions;
 
-    wallet.signIn = async (params: SignInParams) => {
-      const accounts = await _signIn({
-        ...this.options.createAccessKeyFor,
-        ...params,
-      });
+    wallet.signIn = async (params: never) => {
+      const accounts = await _signIn(params);
 
-      const { contractId, methodNames = [] } = params;
+      const { contractId, methodNames = [] } = params as SignInParams;
       await this.onWalletSignedIn(wallet.id, {
         accounts,
         contractId: contractId || "",

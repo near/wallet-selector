@@ -22,10 +22,7 @@ import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
  
 const walletSelectorConfig = {
   network: "testnet",
-  createAccessKeyFor: {
-    contractId: "hello.near-examples.testnet",
-    methodNames: []
-  },
+  createAccessKeyFor: "hello.near-examples.testnet",
   modules: [
     setupMyNearWallet(),
     setupMeteorWallet(),
