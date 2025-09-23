@@ -1,5 +1,11 @@
 # @near-wallet-selector/core
 
+## 9.5.4
+
+### Patch Changes
+
+- [#1428](https://github.com/near/wallet-selector/pull/1428) [`e64e0f0`](https://github.com/near/wallet-selector/commit/e64e0f06274eb58c5acc9017d765fc622976df81) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Accept string and object for createAccessKeyFor interface
+
 ## 9.5.3
 
 ### Patch Changes
