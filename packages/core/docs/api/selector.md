@@ -16,6 +16,11 @@
 - `allowMultipleSelectors` (`boolean?`): Wether to allow multiple wallet selector instances to be created.
 - `languageCode` (`string?`): ISO 639-1 two-letter language code.
 - `relayerUrl` (`string?`): The URL where DelegateActions are sent by meta transaction enabled wallet modules.
+- `createAccessKeyFor` (`string | object?`): The contract ID and method names to create a function call access key for. This allows wallets to create limited access keys for specific contract methods. Can be either:
+  - A string containing just the contract ID (creates access key with no method restrictions)
+  - An object with the following properties:
+    - `contractId` (`string`): The contract ID to create the access key for.
+    - `methodNames` (`Array<string>`): Array of method names that the access key will be limited to.
 
 **Description**
 
