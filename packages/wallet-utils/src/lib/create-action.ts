@@ -1,10 +1,24 @@
 import type { Action as NAJAction } from "@near-js/transactions";
 import type { AddKeyPermission, Action } from "@near-wallet-selector/core";
-import { transactions, utils } from "near-api-js";
+import { actionCreators } from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
+
+const {
+  fullAccessKey,
+  functionCallAccessKey,
+  createAccount,
+  deployContract,
+  functionCall,
+  transfer,
+  stake: stakeAction,
+  addKey,
+  deleteKey,
+  deleteAccount,
+} = actionCreators;
 
 const getAccessKey = (permission: AddKeyPermission) => {
   if (permission === "FullAccess") {
-    return transactions.fullAccessKey();
+    return fullAccessKey();
   }
 
   const { receiverId, methodNames = [] } = permission;
@@ -12,23 +26,23 @@ const getAccessKey = (permission: AddKeyPermission) => {
     ? BigInt(permission.allowance)
     : undefined;
 
-  return transactions.functionCallAccessKey(receiverId, methodNames, allowance);
+  return functionCallAccessKey(receiverId, methodNames, allowance);
 };
 
 // TODO: Remove this function after all wallets use the NAJ Action by default
 export const createAction = (action: Action): NAJAction => {
   switch (action.type) {
     case "CreateAccount":
-      return transactions.createAccount();
+      return createAccount();
     case "DeployContract": {
       const { code } = action.params;
 
-      return transactions.deployContract(code);
+      return deployContract(code);
     }
     case "FunctionCall": {
       const { methodName, args, gas, deposit } = action.params;
 
-      return transactions.functionCall(
+      return functionCall(
         methodName,
         args,
         BigInt(gas),
@@ -38,18 +52,18 @@ export const createAction = (action: Action): NAJAction => {
     case "Transfer": {
       const { deposit } = action.params;
 
-      return transactions.transfer(BigInt(deposit));
+      return transfer(BigInt(deposit));
     }
     case "Stake": {
       const { stake, publicKey } = action.params;
 
-      return transactions.stake(BigInt(stake), utils.PublicKey.from(publicKey));
+      return stakeAction(BigInt(stake), PublicKey.from(publicKey));
     }
     case "AddKey": {
       const { publicKey, accessKey } = action.params;
 
-      return transactions.addKey(
-        utils.PublicKey.from(publicKey),
+      return addKey(
+        PublicKey.from(publicKey),
         // TODO: Use accessKey.nonce? near-api-js seems to think 0 is fine?
         getAccessKey(accessKey.permission)
       );
@@ -57,12 +71,12 @@ export const createAction = (action: Action): NAJAction => {
     case "DeleteKey": {
       const { publicKey } = action.params;
 
-      return transactions.deleteKey(utils.PublicKey.from(publicKey));
+      return deleteKey(PublicKey.from(publicKey));
     }
     case "DeleteAccount": {
       const { beneficiaryId } = action.params;
 
-      return transactions.deleteAccount(beneficiaryId);
+      return deleteAccount(beneficiaryId);
     }
     default:
       throw new Error("Invalid action type");

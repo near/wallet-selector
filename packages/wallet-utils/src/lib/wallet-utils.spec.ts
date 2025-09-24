@@ -1,5 +1,8 @@
 import { createAction } from "./wallet-utils";
-import { transactions, utils } from "near-api-js";
+import { actionCreators } from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
+
+const { transfer: transferAction, stake: stakeAction, addKey, functionCall, deleteKey, createAccount, deployContract, deleteAccount } = actionCreators;
 
 const TEST_PUBLIC_KEY = "ed25519:Anu5D32fr5YsQGVULF4fz3R2E3pNaeUhj4hsKcE4vDyk";
 
@@ -7,11 +10,11 @@ describe("transformActions", () => {
   it("correctly transforms 'CreateAccount' action", () => {
     const actions = createAction({ type: "CreateAccount" });
 
-    expect(actions).toEqual(transactions.createAccount());
+    expect(actions).toEqual(createAccount());
   });
 
   it("correctly transforms 'DeployContract' action", () => {
-    const code = Buffer.from("{}");
+    const code = new Uint8Array(Buffer.from("{}"));
 
     const actions = createAction({
       type: "DeployContract",
@@ -20,11 +23,11 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual(transactions.deployContract(code));
+    expect(actions).toEqual(deployContract(code));
   });
 
   it("correctly transforms 'FunctionCall' action", () => {
-    const args = Buffer.from("{}");
+    const args = new Uint8Array(Buffer.from("{}"));
     const gas = "1";
     const deposit = "2";
     const methodName = "methodName";
@@ -40,7 +43,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.functionCall(methodName, args, BigInt(gas), BigInt(deposit))
+      functionCall(methodName, args, BigInt(gas), BigInt(deposit))
     );
   });
 
@@ -53,7 +56,7 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual(transactions.transfer(BigInt(deposit)));
+    expect(actions).toEqual(transferAction(BigInt(deposit)));
   });
 
   it("correctly transforms 'Stake' action", () => {
@@ -69,7 +72,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.stake(BigInt(stake), utils.PublicKey.from(publicKey))
+      stakeAction(BigInt(stake), PublicKey.from(publicKey))
     );
   });
 
@@ -86,9 +89,9 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.addKey(
-        utils.PublicKey.from(publicKey),
-        transactions.fullAccessKey()
+      addKey(
+        PublicKey.from(publicKey),
+        actionCreators.fullAccessKey()
       )
     );
   });
@@ -114,9 +117,9 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.addKey(
-        utils.PublicKey.from(publicKey),
-        transactions.functionCallAccessKey(
+      addKey(
+        PublicKey.from(publicKey),
+        actionCreators.functionCallAccessKey(
           receiverId,
           methodNames,
           BigInt(allowance)
@@ -136,7 +139,7 @@ describe("transformActions", () => {
     });
 
     expect(actions).toEqual(
-      transactions.deleteKey(utils.PublicKey.from(publicKey))
+      deleteKey(PublicKey.from(publicKey))
     );
   });
 
@@ -150,6 +153,6 @@ describe("transformActions", () => {
       },
     });
 
-    expect(actions).toEqual(transactions.deleteAccount(beneficiaryId));
+    expect(actions).toEqual(deleteAccount(beneficiaryId));
   });
 });
