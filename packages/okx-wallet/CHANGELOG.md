@@ -1,5 +1,16 @@
 # @near-wallet-selector/okx-wallet
 
+## 10.0.0-dev.0
+
+### Major Changes
+
+- [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - BREAKING, updates action interface to use action from near-api-js
+
+### Patch Changes
+
+- Updated dependencies [[`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5)]:
+  - @near-wallet-selector/core@10.0.0-dev.0
+
 ## 9.5.1
 
 ### Patch Changes

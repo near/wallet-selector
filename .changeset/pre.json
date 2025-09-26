@@ -32,5 +32,7 @@
     "@near-wallet-selector/welldone-wallet": "9.5.1",
     "@near-wallet-selector/xdefi": "9.5.1"
   },
-  "changesets": []
+  "changesets": [
+    "happy-donkeys-drop"
+  ]
 }
