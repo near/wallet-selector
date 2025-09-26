@@ -1,5 +1,17 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 10.0.0-beta.0
+
+### Major Changes
+
+- [#1422](https://github.com/near/wallet-selector/pull/1422) [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - BREAKING, updates action interface to use action from near-api-js
+
+### Patch Changes
+
+- Updated dependencies [[`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5)]:
+  - @near-wallet-selector/wallet-utils@10.0.0-beta.0
+  - @near-wallet-selector/core@10.0.0-beta.0
+
 ## 9.5.1
 
 ### Patch Changes

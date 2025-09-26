@@ -1,5 +1,12 @@
 # @near-wallet-selector/modal-ui-js
 
+## 10.0.0-beta.0
+
+### Patch Changes
+
+- Updated dependencies [[`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5)]:
+  - @near-wallet-selector/core@10.0.0-beta.0
+
 ## 9.5.1
 
 ### Patch Changes
