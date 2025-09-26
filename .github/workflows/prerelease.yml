@@ -1,0 +1,52 @@
+name: Prerelease
+
+on:
+  push:
+    branches:
+      - v10-dev
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Prerelease
+    runs-on: ubuntu-latest
+    # ignore on forks
+    if: ${{ github.repository }} == "near/wallet-selector"
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    environment: NPM
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          cache: pnpm
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Packages
+        run: pnpm build:all
+
+      - name: Create Release Pull Request or Publish to NPM
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          commit: "chore(prerelease): publish prerelease packages v10-dev"
+          title: "Publish prerelease packages v10-dev"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # setup-node by default reads from this env var
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
