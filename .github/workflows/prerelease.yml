@@ -43,8 +43,8 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: pnpm release
-          commit: "chore(prerelease): publish prerelease packages v10-dev"
-          title: "Publish prerelease packages v10-dev"
+          commit: "chore(prerelease): publish prerelease packages"
+          title: "Publish prerelease packages"
         env:
           GITHUB_TOKEN: ${{ github.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "mode": "pre",
-  "tag": "dev",
+  "tag": "beta",
   "initialVersions": {
     "@near-wallet-selector/arepa-wallet": "9.5.1",
     "@near-wallet-selector/bitget-wallet": "9.5.1",
