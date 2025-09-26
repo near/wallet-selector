@@ -32,8 +32,8 @@ In order to run a specific example, make sure you build the packages beforehand 
 ```bash
 pnpm build:all # builds all packages
 
-yarn nx serve react # run the react example
-yarn nx serve vanilla # run the vanilla example
+pnpm nx serve react # run the react example
+pnpm nx serve vanilla # run the vanilla example
 ```
 
 > Note: [`modal-ui`](/packages/modal-ui) package must be re-build after every change in the source files of this package `pnpm nx run modal-ui:build`
@@ -74,7 +74,7 @@ This project uses [Changesets](https://github.com/changesets/changesets) for man
 When making changes that should be included in a release, add a changeset by running:
 
 ```bash
-yarn changeset
+pnpm changeset
 ```
 
 This will prompt you to:

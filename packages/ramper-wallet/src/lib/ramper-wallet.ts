@@ -5,6 +5,7 @@ import type {
   Transaction,
   Account,
   Optional,
+  Action,
 } from "@near-wallet-selector/core";
 
 import { isMobile } from "is-mobile";
@@ -17,7 +18,6 @@ import {
   signIn,
   sendTransaction,
 } from "@ramper/near";
-import type { Action } from "near-api-js/lib/transaction.js";
 
 interface RamperWalletState {
   wallet: InjectedRamperWallet;
