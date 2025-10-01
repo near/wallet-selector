@@ -4,34 +4,35 @@ import type {
   ViewAccessKeyParams,
 } from "./provider.service.types";
 import { mock } from "jest-mock-extended";
-import type {
-  FinalExecutionOutcome,
-  JsonRpcProvider,
-} from "near-api-js/lib/providers/index.js";
-import * as nearAPI from "near-api-js";
+import { FailoverRpcProvider } from "@near-js/providers";
 import {
   createQueryResponseMock,
   createViewAccessKeyResponseMock,
 } from "./provider.service.mocks";
-import type { SignedTransaction } from "near-api-js/lib/transaction.js";
+import type { SignedTransaction } from "@near-js/transactions";
 import type {
   BlockReference,
   BlockResult,
-} from "near-api-js/lib/providers/provider.js";
+  FinalExecutionOutcome,
+} from "@near-js/types";
+
+// Mock the providers
+jest.mock("@near-js/providers", () => ({
+  JsonRpcProvider: jest.fn(),
+  FailoverRpcProvider: jest.fn(),
+}));
 
 const defaults = {
   url: "https://test.rpc.fastnear.com",
 };
 
 const setup = (url: string) => {
-  const provider = mock<JsonRpcProvider>();
-
-  jest
-    .spyOn(nearAPI.providers, "JsonRpcProvider")
-    .mockImplementation(() => provider);
+  const mockFailoverRpcProvider = mock<FailoverRpcProvider>();
+  const FailoverRpcProviderMock = jest.mocked(FailoverRpcProvider);
+  FailoverRpcProviderMock.mockReturnValue(mockFailoverRpcProvider);
 
   return {
-    provider,
+    provider: mockFailoverRpcProvider,
     service: new Provider([url]),
   };
 };
@@ -41,7 +42,7 @@ afterEach(() => {
 });
 
 describe("query", () => {
-  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+  it("forwards params to the FailoverRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
     const params: QueryParams = {
       request_type: "call_function",
@@ -77,7 +78,7 @@ describe("query", () => {
 });
 
 describe("viewAccessKey", () => {
-  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+  it("forwards params to the @near-js/providers JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
     const params: ViewAccessKeyParams = {
       accountId: "accountId",
@@ -112,7 +113,7 @@ describe("viewAccessKey", () => {
 });
 
 describe("block", () => {
-  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+  it("forwards params to the @near-js/providers JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
     const reference = {} as BlockReference;
 
@@ -137,7 +138,7 @@ describe("block", () => {
 });
 
 describe("sendTransaction", () => {
-  it("forwards params to the near-api-js JsonRpcProvider", async () => {
+  it("forwards params to the @near-js/providers JsonRpcProvider", async () => {
     const { service, provider } = setup(defaults.url);
     const signedTransaction = {} as SignedTransaction;
 

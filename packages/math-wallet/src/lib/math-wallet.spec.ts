@@ -8,6 +8,26 @@ import { setupMathWallet } from "./math-wallet";
 import type { MathAccount } from "./injected-math-wallet";
 import type { MathSigner } from "./injected-math-wallet";
 
+// Mock @near-js/providers to avoid network calls
+jest.mock("@near-js/providers", () => ({
+  JsonRpcProvider: jest.fn().mockImplementation(() => ({
+    block: jest.fn().mockResolvedValue({
+      header: {
+        hash: "9MzCZTSu5bFCbbcBeCSXxUmGUbvMjGdCyd4aaAXTnTaG",
+      },
+    }),
+    query: jest.fn().mockResolvedValue({
+      nonce: 1,
+      permission: "FullAccess",
+    }),
+    sendTransaction: jest.fn().mockResolvedValue({
+      status: { SuccessValue: "" },
+      transaction: {},
+      receipts: [],
+    }),
+  })),
+}));
+
 const accountId = "amirsaran.testnet";
 const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
 
@@ -16,13 +36,15 @@ const mockMathWalletOnWindow = () => {
     signer: mock<MathSigner>({
       createKey: jest.fn(),
       signMessage: jest.fn().mockReturnValue({
-        signature: Buffer.from([
-          86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
-          124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
-          238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
-          250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53, 84,
-          218, 45, 220, 10, 4,
-        ]),
+        signature: {
+          data: Buffer.from([
+            86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
+            124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
+            238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
+            250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53,
+            84, 218, 45, 220, 10, 4,
+          ]),
+        },
         publicKey,
       }),
       getPublicKey: jest.fn().mockReturnValue(publicKey),

@@ -6,18 +6,17 @@ import type {
   SignMessageParams,
   Transaction,
 } from "@near-wallet-selector/core";
+import { baseDecode } from "@near-js/utils";
 import {
-  Account,
-  Connection,
-  InMemorySigner,
-  providers,
-  transactions,
-} from "near-api-js";
-import type { KeyPairString, PublicKey } from "near-api-js/lib/utils/index.js";
-import { KeyPair, serialize } from "near-api-js/lib/utils/index.js";
+  SCHEMA,
+  createTransaction,
+  type Transaction as NearTransaction,
+} from "@near-js/transactions";
+import { JsonRpcProvider } from "@near-js/providers";
+import { KeyPair, type KeyPairString, type PublicKey } from "@near-js/crypto";
+import { Account } from "@near-js/accounts";
+import { KeyPairSigner } from "@near-js/signers";
 import * as borsh from "borsh";
-import { SCHEMA } from "near-api-js/lib/transaction.js";
-import type { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
 
 const DEFAULT_POPUP_WIDTH = 480;
 const DEFAULT_POPUP_HEIGHT = 640;
@@ -86,7 +85,7 @@ export class MyNearWalletConnector {
     }
 
     this.walletUrl = walletUrl;
-    this.provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    this.provider = new JsonRpcProvider({ url: network.nodeUrl });
     this.signedAccountId = localStorage.getItem("signedAccountId") || "";
     const functionCallKey = localStorage.getItem("functionCallKey");
     this.functionCallKey = functionCallKey ? JSON.parse(functionCallKey) : null;
@@ -197,7 +196,7 @@ export class MyNearWalletConnector {
     const href = new URL(this.walletUrl);
     href.pathname = "sign-message";
     href.searchParams.append("message", message);
-    href.searchParams.append("nonce", nonce.toString("base64"));
+    href.searchParams.append("nonce", Buffer.from(nonce).toString("base64"));
     href.searchParams.append("recipient", recipient);
     href.searchParams.append("callbackUrl", url);
     if (state) {
@@ -251,13 +250,13 @@ export class MyNearWalletConnector {
   }: {
     receiverId: string;
     actions: Array<Action>;
-  }): Promise<transactions.Transaction> {
+  }): Promise<NearTransaction> {
     // To create a transaction we need a recent block
     const block = await this.provider.block({ finality: "final" });
-    const blockHash = serialize.base_decode(block.header.hash);
+    const blockHash = baseDecode(block.header.hash);
 
     // create Transaction for the wallet
-    return transactions.createTransaction(
+    return createTransaction(
       this.signedAccountId,
       KeyPair.fromRandom("ed25519").getPublicKey(),
       receiverId,
@@ -268,7 +267,7 @@ export class MyNearWalletConnector {
   }
 
   async signAndSendTransactionsMNW(
-    txs: Array<transactions.Transaction>
+    txs: Array<NearTransaction>
   ): Promise<Array<FinalExecutionOutcome>> {
     const url = this.requestSignTransactionsUrl(txs);
     const txsHashes = (
@@ -311,25 +310,15 @@ export class MyNearWalletConnector {
   }): Promise<FinalExecutionOutcome> {
     // instantiate an account (NEAR API is a nightmare)
     const keyPair = KeyPair.fromString(this.functionCallKey!.privateKey);
-    const signer = await InMemorySigner.fromKeyPair(
-      this.network.networkId,
-      this.signedAccountId,
-      keyPair
-    );
-    const connection = new Connection(
-      this.network.networkId,
-      this.provider,
-      signer,
-      ""
-    );
-    const account = new Account(connection, this.signedAccountId);
+    const signer = new KeyPairSigner(keyPair);
+    const account = new Account(this.signedAccountId, this.provider, signer);
     return account.signAndSendTransaction({
       receiverId,
       actions,
     });
   }
 
-  requestSignTransactionsUrl(txs: Array<transactions.Transaction>): string {
+  requestSignTransactionsUrl(txs: Array<NearTransaction>): string {
     const newUrl = new URL("sign", this.walletUrl);
 
     newUrl.searchParams.set(
