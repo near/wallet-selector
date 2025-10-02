@@ -28,6 +28,6 @@
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-connect": "workspace:*",
-    "@walletconnect/types": "2.21.0"
+    "@walletconnect/types": "2.21.10"
   }
 }
