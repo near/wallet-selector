@@ -3,7 +3,7 @@ import { getNetworkPreset } from "./options";
 import {
   JsonRpcProvider,
   FailoverRpcProvider,
-} from "near-api-js/lib/providers/index.js";
+} from "@near-js/providers";
 import type { Network } from "./options.types";
 import type { Store } from "./store.types";
 import type { WalletModuleFactory } from "./wallet";
@@ -54,9 +54,9 @@ jest.mock("./store", () => {
   };
 });
 
-jest.mock("near-api-js/lib/providers/index.js", () => {
+jest.mock("@near-js/providers", () => {
   const originalModule = jest.requireActual(
-    "near-api-js/lib/providers/index.js"
+    "@near-js/providers"
   );
   return {
     ...originalModule,

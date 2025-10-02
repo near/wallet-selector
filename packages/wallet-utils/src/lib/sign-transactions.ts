@@ -1,7 +1,10 @@
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
+import { JsonRpcProvider } from "@near-js/providers";
+import { createTransaction, signTransaction, SignedTransaction } from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
+import { baseDecode } from "@near-js/utils";
+import type { AccessKeyViewRaw } from "@near-js/types";
 import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider.js";
 import { createAction } from "./create-action";
 
 export const signTransactions = async (
@@ -9,11 +12,11 @@ export const signTransactions = async (
   signer: Signer,
   network: Network
 ) => {
-  const provider = new nearAPI.providers.JsonRpcProvider({
+  const provider = new JsonRpcProvider({
     url: network.nodeUrl,
   });
 
-  const signedTransactions: Array<nearAPI.transactions.SignedTransaction> = [];
+  const signedTransactions: Array<SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
     const publicKey = await signer.getPublicKey(
@@ -35,16 +38,16 @@ export const signTransactions = async (
       createAction(action)
     );
 
-    const transaction = nearAPI.transactions.createTransaction(
+    const transaction = createTransaction(
       transactions[i].signerId,
-      nearAPI.utils.PublicKey.from(publicKey.toString()),
+      PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
       actions,
-      nearAPI.utils.serialize.base_decode(block.header.hash)
+      baseDecode(block.header.hash)
     );
 
-    const response = await nearAPI.transactions.signTransaction(
+    const response = await signTransaction(
       transaction,
       signer,
       transactions[i].signerId,
