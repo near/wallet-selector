@@ -12,6 +12,7 @@ export const initHereWallet: SelectorInit = async (config) => {
     const accounts = [];
 
     for (let i = 0; i < accountIds.length; i++) {
+      // @ts-ignore - signer getPublicKey interface was changed during near-api-js migration, but here-wallet still uses the old interface
       const pub = await here.signer.getPublicKey(
         accountIds[i],
         options.network.networkId

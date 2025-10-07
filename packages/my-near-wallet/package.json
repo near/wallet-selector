@@ -23,9 +23,12 @@
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/my-near-wallet",
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
-    "@near-wallet-selector/wallet-utils": "workspace:*",
-    "borsh": "2.0.0",
-    "near-api-js": "5.0.0"
+    "@near-js/accounts": "^2.3.0",
+    "@near-js/transactions": "^2.3.0",
+    "@near-js/providers": "^2.3.0",
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/utils": "^2.3.0",
+    "borsh": "2.0.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/my-near-wallet"

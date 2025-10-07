@@ -1,20 +1,13 @@
-import { PublicKey } from "near-api-js/lib/utils";
+import { PublicKey } from "@near-js/crypto";
 import type { InternalAction } from "../wallet/transactions.types";
-import type { Action as NAJAction } from "@near-js/transactions";
 import {
-  deleteKey,
-  createAccount,
-  deployContract,
-  functionCall,
-  transfer,
-  stake,
-  addKey,
-  deleteAccount,
   AccessKey,
   AccessKeyPermission,
   FullAccessPermission,
   FunctionCallPermission,
-} from "near-api-js/lib/transaction.js";
+  type Action as NAJAction,
+  actionCreators,
+} from "@near-js/transactions";
 
 // temp fix until we migrate Wallet Selector to use NAJ types
 export const najActionToInternal = (action: NAJAction): InternalAction => {
@@ -35,7 +28,7 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
       type: "FunctionCall",
       params: {
         methodName,
-        args, // Uint8Array is accepted by wallet-selector
+        args: JSON.parse(Buffer.from(args).toString()), // Convert Uint8Array to object
         gas: gas.toString(),
         deposit: deposit.toString(),
       },
@@ -55,9 +48,15 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
     let permission:
       | "FullAccess"
       | { receiverId: string; methodNames: Array<string>; allowance?: string };
-    if ("fullAccess" in accessKey.permission) {
+    if (
+      "fullAccess" in accessKey.permission &&
+      accessKey.permission.fullAccess
+    ) {
       permission = "FullAccess";
-    } else if ("functionCall" in accessKey.permission) {
+    } else if (
+      "functionCall" in accessKey.permission &&
+      accessKey.permission.functionCall
+    ) {
       const fc = accessKey.permission.functionCall;
       permission = {
         receiverId: fc!.receiverId,
@@ -99,15 +98,15 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
 
 export const internalActionToNaj = (action: InternalAction): NAJAction => {
   if (action.type === "CreateAccount") {
-    return createAccount();
+    return actionCreators.createAccount();
   }
 
   if (action.type === "DeployContract") {
-    return deployContract(action.params.code);
+    return actionCreators.deployContract(action.params.code);
   }
 
   if (action.type === "FunctionCall") {
-    return functionCall(
+    return actionCreators.functionCall(
       action.params.methodName,
       action.params.args,
       BigInt(action.params.gas),
@@ -116,18 +115,18 @@ export const internalActionToNaj = (action: InternalAction): NAJAction => {
   }
 
   if (action.type === "Transfer") {
-    return transfer(BigInt(action.params.deposit));
+    return actionCreators.transfer(BigInt(action.params.deposit));
   }
 
   if (action.type === "Stake") {
-    return stake(
+    return actionCreators.stake(
       BigInt(action.params.stake),
       PublicKey.from(action.params.publicKey)
     );
   }
 
   if (action.type === "AddKey") {
-    return addKey(
+    return actionCreators.addKey(
       PublicKey.from(action.params.publicKey),
       new AccessKey({
         nonce: BigInt(action.params.accessKey.nonce ?? 0),
@@ -150,11 +149,11 @@ export const internalActionToNaj = (action: InternalAction): NAJAction => {
   }
 
   if (action.type === "DeleteKey") {
-    return deleteKey(PublicKey.from(action.params.publicKey));
+    return actionCreators.deleteKey(PublicKey.from(action.params.publicKey));
   }
 
   if (action.type === "DeleteAccount") {
-    return deleteAccount(action.params.beneficiaryId);
+    return actionCreators.deleteAccount(action.params.beneficiaryId);
   }
 
   throw new Error("Unsupported action type");

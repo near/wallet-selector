@@ -1,9 +1,9 @@
 // Interfaces based on "documentation": https://github.com/SenderWallet/sender-wallet-integration-tutorial
 
 // Empty string if we haven't signed in before.
-import type { Account, providers } from "near-api-js";
 import type {
   AccountImportData,
+  FinalExecutionOutcome,
   SignedMessage,
   SignMessageParams,
 } from "@near-wallet-selector/core";
@@ -95,7 +95,7 @@ export interface SignAndSendTransactionResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  response?: Array<FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 
@@ -104,7 +104,7 @@ interface SignAndSendTransactionsResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  response?: Array<FinalExecutionOutcome> | FunctionCallError;
   type: "sender-wallet-extensionResult";
 }
 
@@ -143,7 +143,9 @@ export interface InjectedSender {
   callbacks: Record<keyof SenderEvents, unknown>;
   getAccountId: () => string | null;
   getRpc: () => Promise<GetRpcResponse>;
-  account(): Account | null;
+  // TODO: Since we upgrade to near-js v2.3.0, we need to fix this type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  account(): any | null;
   requestSignIn: (
     params: RequestSignInParams
   ) => Promise<RequestSignInResponse>;

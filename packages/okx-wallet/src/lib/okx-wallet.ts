@@ -1,8 +1,8 @@
 import { isMobile } from "is-mobile";
-import { SignedTransaction } from "near-api-js/lib/transaction.js";
 import {
   isCurrentBrowserSupported,
   najActionToInternal,
+  SignedTransaction,
   waitFor,
 } from "@near-wallet-selector/core";
 

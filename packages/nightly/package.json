@@ -24,7 +24,9 @@
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-utils": "workspace:*",
-    "near-api-js": "5.0.0"
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/signers": "^2.3.0",
+    "@near-js/transactions": "^2.3.0"
   },
   "publishConfig": {
     "directory": "../../dist/packages/nightly"

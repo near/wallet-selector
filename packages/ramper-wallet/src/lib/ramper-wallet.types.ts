@@ -1,4 +1,7 @@
-import type { Transaction } from "@near-wallet-selector/core";
+import type {
+  FinalExecutionOutcome,
+  Transaction,
+} from "@near-wallet-selector/core";
 import type {
   NearNetwork,
   RamperInstance,
@@ -7,7 +10,6 @@ import type {
   TransactionResultType,
   User,
 } from "@ramper/near";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 
 type TransactionResult = {
   type: TransactionResultType;
