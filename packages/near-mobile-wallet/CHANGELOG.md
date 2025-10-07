@@ -1,5 +1,16 @@
 # @near-wallet-selector/near-mobile-wallet
 
+## 10.0.0-beta.1
+
+### Minor Changes
+
+- [#1422](https://github.com/near/wallet-selector/pull/1422) [`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - migrate near-api-js to use @near-js/\*
+
+### Patch Changes
+
+- Updated dependencies [[`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6)]:
+  - @near-wallet-selector/core@10.0.0-beta.1
+
 ## 10.0.0-beta.0
 
 ### Major Changes
