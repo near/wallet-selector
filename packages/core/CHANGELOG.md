@@ -1,16 +1,18 @@
 # @near-wallet-selector/core
 
-## 10.0.0-beta.1
+## 9.5.4
 
-### Minor Changes
+### Patch Changes
 
-- [#1422](https://github.com/near/wallet-selector/pull/1422) [`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - migrate near-api-js to use @near-js/\*
+- [#1428](https://github.com/near/wallet-selector/pull/1428) [`e64e0f0`](https://github.com/near/wallet-selector/commit/e64e0f06274eb58c5acc9017d765fc622976df81) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Accept string and object for createAccessKeyFor interface
 
-## 10.0.0-beta.0
+## 9.5.3
 
-### Major Changes
+### Patch Changes
 
-- [#1422](https://github.com/near/wallet-selector/pull/1422) [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - BREAKING, updates action interface to use action from near-api-js
+- [#1426](https://github.com/near/wallet-selector/pull/1426) [`cb59953`](https://github.com/near/wallet-selector/commit/cb5995313fd8f2e48b58eaa84a88b92efff7739c) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Revert interface of createAccessKeyFor to be string
+
+## 9.5.2
 
 ## 9.5.1
 

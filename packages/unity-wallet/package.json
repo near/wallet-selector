@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/unity-wallet",
-  "version": "10.0.0-beta.1",
+  "version": "9.5.4",
   "description": "Unity Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -28,6 +28,6 @@
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-connect": "workspace:*",
-    "@walletconnect/types": "2.21.0"
+    "@walletconnect/types": "2.21.10"
   }
 }

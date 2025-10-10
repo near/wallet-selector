@@ -1,5 +1,4 @@
 import type {
-  AccountImportData,
   SignedMessage,
   SignMessageParams,
 } from "@near-wallet-selector/core";
@@ -27,7 +26,6 @@ export interface NearNightly {
     eagerConnect?: boolean
   ) => Promise<NightlyAccount>;
   disconnect: () => Promise<void>;
-  importWalletsNear: (privKeys: Array<AccountImportData>) => Promise<void>;
 }
 export interface InjectedNightly {
   near: NearNightly;

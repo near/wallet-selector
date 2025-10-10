@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/welldone-wallet",
-  "version": "10.0.0-beta.1",
+  "version": "9.5.4",
   "description": "Welldone wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

@@ -1,26 +1,25 @@
 # @near-wallet-selector/wallet-utils
 
-## 10.0.0-beta.1
-
-### Minor Changes
-
-- [#1422](https://github.com/near/wallet-selector/pull/1422) [`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - migrate near-api-js to use @near-js/\*
+## 9.5.4
 
 ### Patch Changes
 
-- Updated dependencies [[`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6)]:
-  - @near-wallet-selector/core@10.0.0-beta.1
+- Updated dependencies [[`e64e0f0`](https://github.com/near/wallet-selector/commit/e64e0f06274eb58c5acc9017d765fc622976df81)]:
+  - @near-wallet-selector/core@9.5.4
 
-## 10.0.0-beta.0
-
-### Major Changes
-
-- [#1422](https://github.com/near/wallet-selector/pull/1422) [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - BREAKING, updates action interface to use action from near-api-js
+## 9.5.3
 
 ### Patch Changes
 
-- Updated dependencies [[`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5)]:
-  - @near-wallet-selector/core@10.0.0-beta.0
+- Updated dependencies [[`cb59953`](https://github.com/near/wallet-selector/commit/cb5995313fd8f2e48b58eaa84a88b92efff7739c)]:
+  - @near-wallet-selector/core@9.5.3
+
+## 9.5.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@9.5.2
 
 ## 9.5.1
 

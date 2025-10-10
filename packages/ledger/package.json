@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ledger",
-  "version": "10.0.0-beta.1",
+  "version": "9.5.4",
   "description": "Ledger package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -28,7 +28,7 @@
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-utils": "workspace:*",
     "@ledgerhq/hw-transport": "6.30.3",
-    "@ledgerhq/hw-transport-webhid": "6.29.4",
+    "@ledgerhq/hw-transport-webhid": "6.30.7",
     "borsh": "2.0.0",
     "is-mobile": "4.0.0",
     "ts-essentials": "7.0.3",

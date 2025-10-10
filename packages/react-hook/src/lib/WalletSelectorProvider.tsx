@@ -157,8 +157,14 @@ export function WalletSelectorProvider({
   const signIn = async () => {
     const ws = await walletSelector;
     const modalInstance = setupModal(ws!, {
-      contractId: config.createAccessKeyFor?.contractId || undefined,
-      methodNames: config.createAccessKeyFor?.methodNames || [],
+      contractId:
+        typeof config.createAccessKeyFor === "string"
+          ? config.createAccessKeyFor
+          : config.createAccessKeyFor?.contractId,
+      methodNames:
+        typeof config.createAccessKeyFor === "object"
+          ? config.createAccessKeyFor.methodNames
+          : [],
     });
     modalInstance.show();
   };

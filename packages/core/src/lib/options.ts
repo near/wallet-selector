@@ -41,10 +41,15 @@ export const resolveOptions = (params: WalletSelectorParams) => {
     randomizeWalletOrder: params.randomizeWalletOrder || false,
     relayerUrl: params.relayerUrl || undefined,
     createAccessKeyFor: params.createAccessKeyFor
-      ? {
-          contractId: params.createAccessKeyFor.contractId,
-          methodNames: params.createAccessKeyFor.methodNames,
-        }
+      ? typeof params.createAccessKeyFor === "string"
+        ? {
+            contractId: params.createAccessKeyFor,
+            methodNames: [],
+          }
+        : {
+            contractId: params.createAccessKeyFor.contractId,
+            methodNames: params.createAccessKeyFor.methodNames,
+          }
       : undefined,
   };
 
