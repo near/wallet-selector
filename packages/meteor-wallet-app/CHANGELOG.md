@@ -1,5 +1,20 @@
 # @near-wallet-selector/meteor-wallet-app
 
+## 10.0.0
+
+### Major Changes
+
+- [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - BREAKING, updates action interface to use action from near-api-js
+
+### Minor Changes
+
+- [#1422](https://github.com/near/wallet-selector/pull/1422) [`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - migrate near-api-js to use @near-js/\*
+
+### Patch Changes
+
+- Updated dependencies [[`547d271`](https://github.com/near/wallet-selector/commit/547d271bad741fff306a78e5f81f6a78a974d2a6), [`de8217d`](https://github.com/near/wallet-selector/commit/de8217d3ddfdf5b3f7b7cac3acd8759441e0d9e5)]:
+  - @near-wallet-selector/core@10.0.0
+
 ## 10.0.0-beta.1
 
 ### Minor Changes

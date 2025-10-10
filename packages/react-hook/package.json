@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/react-hook",
-  "version": "10.0.0-beta.1",
+  "version": "10.0.0",
   "description": "React Hook and Context for Wallet Selector",
   "keywords": [
     "near",
