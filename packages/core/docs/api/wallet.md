@@ -250,15 +250,14 @@ Signs one or more NEAR Actions before sending to the network. The user must be s
 (async () => {
   const wallet = await selector.wallet("sender");
   await wallet.signAndSendTransaction({
-    actions: [{
-      type: "FunctionCall",
-      params: {
-        methodName: "addMessage",
-        args: { text: "Hello World!" },
-        gas: "30000000000000",
-        deposit: "10000000000000000000000",
-      }
-    }]
+    actions: [
+      functionCall(
+        "addMessage",
+        { text: "Hello, world!" },
+        BigInt(BOATLOAD_OF_GAS),
+        BigInt(0)
+      ),
+    ]
   });
 })();
 ```
@@ -289,15 +288,14 @@ Signs one or more transactions before sending to the network. The user must be s
   await wallet.signAndSendTransactions({
     transactions: [{
       receiverId: "guest-book.testnet",
-      actions: [{
-        type: "FunctionCall",
-        params: {
-          methodName: "addMessage",
-          args: { text: "Hello World!" },
-          gas: "30000000000000",
-          deposit: "10000000000000000000000",
-        }
-      }]
+      actions: [
+        functionCall(
+          "addMessage",
+          { text: "Hello world!" },
+          BigInt(BOATLOAD_OF_GAS),
+          BigInt(0)
+        ),
+      ]
     }]
   });
 })();

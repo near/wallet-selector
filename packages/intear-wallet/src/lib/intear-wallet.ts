@@ -6,12 +6,33 @@ import type {
   Transaction,
   NetworkId,
   InjectedWallet,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
+import { najActionToInternal } from "@near-wallet-selector/core";
 import icon from "./icon";
-import * as nearAPI from "near-api-js";
-import { KeyType } from "near-api-js/lib/utils/key_pair.js";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
-import { createAction } from "@near-wallet-selector/wallet-utils";
+import type { KeyPairString } from "@near-js/crypto";
+import { KeyType, PublicKey, KeyPair } from "@near-js/crypto";
+import type { AccessKeyView } from "@near-js/types";
+import { baseDecode, baseEncode } from "@near-js/utils";
+import type { KeyPairBase } from "@near-js/crypto/lib/esm/key_pair_base";
+import { InMemoryKeyStore } from "@near-js/keystores";
+import type { Provider } from "@near-js/providers";
+import { JsonRpcProvider } from "@near-js/providers";
+import type { Action } from "@near-js/transactions";
+import {
+  encodeTransaction,
+  Transaction as NearTransaction,
+  Signature,
+  SignedTransaction,
+} from "@near-js/transactions";
+import { sha256 } from "js-sha256";
+
+// Helper function to safely stringify objects containing BigInt values
+function bigIntSafeStringify(obj: unknown): string {
+  return JSON.stringify(obj, (key, value) =>
+    typeof value === "bigint" ? value.toString() : value
+  );
+}
 
 interface LoggerService {
   log(...params: Array<unknown>): void;
@@ -59,8 +80,8 @@ class LogoutWebSocket {
   private static instance: LogoutWebSocket | null = null;
   private ws: WebSocket | null = null;
   private accountId: string;
-  private appKey: nearAPI.utils.KeyPair;
-  private logoutKey: nearAPI.utils.PublicKey;
+  private appKey: KeyPairBase;
+  private logoutKey: PublicKey;
   private logoutBridgeService: string;
   private network: NetworkId;
   private intentionallyClosed = false;
@@ -69,8 +90,8 @@ class LogoutWebSocket {
   private constructor(
     network: NetworkId,
     accountId: string,
-    appKey: nearAPI.utils.KeyPair,
-    logoutKey: nearAPI.utils.PublicKey,
+    appKey: KeyPairBase,
+    logoutKey: PublicKey,
     logoutBridgeService: string,
     logger: LoggerService
   ) {
@@ -104,14 +125,10 @@ class LogoutWebSocket {
       let signatureString: string;
       switch (publicKey.keyType) {
         case KeyType.ED25519:
-          signatureString = `ed25519:${nearAPI.utils.serialize.base_encode(
-            signature
-          )}`;
+          signatureString = `ed25519:${baseEncode(signature)}`;
           break;
         case KeyType.SECP256K1:
-          signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
-            signature
-          )}`;
+          signatureString = `secp256k1:${baseEncode(signature)}`;
           break;
         default:
           throw new Error("Unsupported key type");
@@ -153,9 +170,9 @@ class LogoutWebSocket {
           this.accountId
         }|${this.appKey.getPublicKey()}`;
         const sigData = logoutInfo.signature.split(":")[1];
-        const signature = nearAPI.utils.serialize.base_decode(sigData);
+        const signature = baseDecode(sigData);
 
-        let verifyKey: nearAPI.utils.PublicKey;
+        let verifyKey: PublicKey;
         if (logoutInfo.caused_by === "User") {
           verifyKey = this.logoutKey;
         } else if (logoutInfo.caused_by === "App") {
@@ -203,8 +220,8 @@ class LogoutWebSocket {
   public static initialize(
     network: NetworkId,
     accountId: string,
-    appKey: nearAPI.utils.KeyPair,
-    logoutKey: nearAPI.utils.PublicKey,
+    appKey: KeyPairBase,
+    logoutKey: PublicKey,
     logoutBridgeService: string,
     logger: LoggerService
   ): LogoutWebSocket {
@@ -251,7 +268,7 @@ export type IntearWalletParams = {
 
 type SavedData = {
   accounts: [Account, ...Array<Account>];
-  key: nearAPI.utils.KeyPairString;
+  key: KeyPairString;
   contractId: string;
   methodNames: Array<string>;
   logoutKey: string; // there's no PublicKeyString type
@@ -262,29 +279,45 @@ type SavedData = {
   useBridge?: boolean;
 };
 
+async function signMessage(
+  message: Uint8Array,
+  keyStore: InMemoryKeyStore,
+  accountId: string,
+  networkId: string
+): Promise<Signature> {
+  const hash = new Uint8Array(sha256.array(message));
+  if (!accountId) {
+    throw new Error("InMemorySigner requires provided account id");
+  }
+  const keyPair = await keyStore.getKey(networkId, accountId);
+  if (keyPair === null) {
+    throw new Error(`Key for ${accountId} not found in ${networkId}`);
+  }
+  return new Signature({
+    data: keyPair.sign(hash).signature,
+    keyType: keyPair.getPublicKey().keyType,
+  });
+}
+
 async function generateAuthSignature(
-  keyPair: nearAPI.utils.KeyPair,
+  keyPair: KeyPairBase,
   data: string,
   nonce: number
 ): Promise<string> {
-  const keyStore = new nearAPI.keyStores.InMemoryKeyStore();
+  const keyStore = new InMemoryKeyStore();
   keyStore.setKey("dontcare", "dontcare", keyPair);
-  const signer = new nearAPI.InMemorySigner(keyStore);
-  const signature = await signer.signMessage(
+  const signature = await signMessage(
     new TextEncoder().encode(nonce.toString() + "|" + data),
+    keyStore,
     "dontcare",
     "dontcare"
   );
 
-  switch (signature.publicKey.keyType) {
+  switch (signature.signatureType) {
     case KeyType.ED25519:
-      return `ed25519:${nearAPI.utils.serialize.base_encode(
-        signature.signature
-      )}`;
+      return `ed25519:${baseEncode(signature.signature.data)}`;
     case KeyType.SECP256K1:
-      return `secp256k1:${nearAPI.utils.serialize.base_encode(
-        signature.signature
-      )}`;
+      return `secp256k1:${baseEncode(signature.signature.data)}`;
     default:
       throw new Error("Unsupported key type");
   }
@@ -303,10 +336,10 @@ function assertLoggedIn(): SavedData {
 async function signAndSendTransactions(
   incompleteTransactions: Array<Optional<Transaction, "signerId">>,
   walletUrl: string,
-  provider: nearAPI.providers.Provider,
+  provider: Provider,
   logger: LoggerService,
   logoutBridgeService: string
-): Promise<Array<nearAPI.providers.FinalExecutionOutcome>> {
+): Promise<Array<FinalExecutionOutcome>> {
   const savedData = assertLoggedIn();
   const transactions: Array<Transaction> = incompleteTransactions.map(
     (transaction) => ({
@@ -320,7 +353,7 @@ async function signAndSendTransactions(
   );
   if (canSignLocally) {
     try {
-      const keyPair = nearAPI.KeyPair.fromString(savedData.key);
+      const keyPair = KeyPair.fromString(savedData.key);
 
       const accessKey: AccessKeyView = await provider.query({
         request_type: "view_access_key",
@@ -334,31 +367,31 @@ async function signAndSendTransactions(
 
       const najTransactions = transactions.map(
         (transaction, i) =>
-          new nearAPI.transactions.Transaction({
+          new NearTransaction({
             signerId: transaction.signerId,
             publicKey: keyPair.getPublicKey(),
             nonce: nonce + BigInt(i + 1),
             receiverId: transaction.receiverId,
-            actions: transaction.actions.map((action) => createAction(action)),
-            blockHash: nearAPI.utils.serialize.base_decode(recentBlockHash),
+            actions: transaction.actions,
+            blockHash: baseDecode(recentBlockHash),
           })
       );
-      const keyStore = new nearAPI.keyStores.InMemoryKeyStore();
+      const keyStore = new InMemoryKeyStore();
       keyStore.setKey("dontcare", savedData.accounts[0].accountId, keyPair);
-      const signer = new nearAPI.InMemorySigner(keyStore);
       const signedTransactions = await Promise.all(
         najTransactions.map(
           async (transaction) =>
-            new nearAPI.transactions.SignedTransaction({
+            new SignedTransaction({
               transaction,
-              signature: new nearAPI.transactions.Signature({
+              signature: new Signature({
                 data: (
-                  await signer.signMessage(
-                    nearAPI.transactions.encodeTransaction(transaction),
+                  await signMessage(
+                    encodeTransaction(transaction),
+                    keyStore,
                     savedData.accounts[0].accountId,
                     "dontcare"
                   )
-                ).signature,
+                ).signature.data,
                 keyType: keyPair.getPublicKey().keyType,
               }),
             })
@@ -391,7 +424,7 @@ async function signAndSendTransactions(
         const transactionsString = JSON.stringify(transactions);
         const authNonce = Date.now();
         const signatureString = await generateAuthSignature(
-          nearAPI.KeyPair.fromString(savedData.key),
+          KeyPair.fromString(savedData.key),
           transactionsString,
           authNonce
         );
@@ -401,7 +434,7 @@ async function signAndSendTransactions(
             data: {
               transactions: transactionsString,
               accountId: savedData.accounts[0].accountId,
-              publicKey: nearAPI.KeyPair.fromString(savedData.key)
+              publicKey: KeyPair.fromString(savedData.key)
                 .getPublicKey()
                 .toString(),
               nonce: authNonce,
@@ -479,10 +512,10 @@ async function signAndSendTransactions(
       logger.log("Message from send-transactions popup", event);
       switch (event.data.type) {
         case "ready": {
-          const transactionsString = JSON.stringify(transactions);
+          const transactionsString = bigIntSafeStringify(transactions);
           const nonce = Date.now();
           const signatureString = await generateAuthSignature(
-            nearAPI.KeyPair.fromString(savedData.key),
+            KeyPair.fromString(savedData.key),
             transactionsString,
             nonce
           );
@@ -492,7 +525,7 @@ async function signAndSendTransactions(
               data: {
                 transactions: transactionsString,
                 accountId: savedData.accounts[0].accountId,
-                publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                publicKey: KeyPair.fromString(savedData.key)
                   .getPublicKey()
                   .toString(),
                 nonce: nonce,
@@ -555,7 +588,7 @@ const IntearWallet: WalletBehaviourFactory<
         // This key is used not only as a function call key, but also as an authorization
         // key for the wallet, which can be revoked by the user in the wallet which will
         // automatically log out the user from the app.
-        const key = nearAPI.KeyPair.fromRandom("ed25519");
+        const key = KeyPair.fromRandom("ed25519");
         logger.log("signIn", {
           contractId,
           methodNames,
@@ -611,9 +644,7 @@ const IntearWallet: WalletBehaviourFactory<
                 }));
               }
               const functionCallKeyAdded = event.data.functionCallKeyAdded;
-              const logoutKey = nearAPI.utils.PublicKey.fromString(
-                event.data.logoutKey
-              );
+              const logoutKey = PublicKey.fromString(event.data.logoutKey);
               const useBridge = event.data.useBridge;
               const dataToSave: SavedData = {
                 accounts,
@@ -640,7 +671,7 @@ const IntearWallet: WalletBehaviourFactory<
                 options.network.networkId as NetworkId,
                 accounts[0].accountId,
                 key,
-                nearAPI.utils.PublicKey.fromString(dataToSave.logoutKey),
+                PublicKey.fromString(dataToSave.logoutKey),
                 logoutBridgeService,
                 logger
               );
@@ -682,7 +713,7 @@ const IntearWallet: WalletBehaviourFactory<
       try {
         const account = savedData.accounts[0];
         const network = options.network.networkId.toLowerCase();
-        const key = nearAPI.KeyPair.fromString(savedData.key);
+        const key = KeyPair.fromString(savedData.key);
         const nonce = Date.now();
         const message = `logout|${nonce}|${
           account.accountId
@@ -695,14 +726,10 @@ const IntearWallet: WalletBehaviourFactory<
         let signatureString: string;
         switch (publicKey.keyType) {
           case KeyType.ED25519:
-            signatureString = `ed25519:${nearAPI.utils.serialize.base_encode(
-              signature
-            )}`;
+            signatureString = `ed25519:${baseEncode(signature)}`;
             break;
           case KeyType.SECP256K1:
-            signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
-              signature
-            )}`;
+            signatureString = `secp256k1:${baseEncode(signature)}`;
             break;
           default:
             throw new Error("Unsupported key type");
@@ -754,13 +781,13 @@ const IntearWallet: WalletBehaviourFactory<
             try {
               const account = savedData.accounts[0];
               const network = options.network.networkId.toLowerCase();
-              const key = nearAPI.KeyPair.fromString(savedData.key);
+              const key = KeyPair.fromString(savedData.key);
 
               LogoutWebSocket.initialize(
                 network as NetworkId,
                 account.accountId,
                 key,
-                nearAPI.utils.PublicKey.fromString(savedData.logoutKey),
+                PublicKey.fromString(savedData.logoutKey),
                 logoutBridgeService,
                 logger
               );
@@ -774,14 +801,10 @@ const IntearWallet: WalletBehaviourFactory<
               let signatureString: string;
               switch (publicKey.keyType) {
                 case KeyType.ED25519:
-                  signatureString = `ed25519:${nearAPI.utils.serialize.base_encode(
-                    signature
-                  )}`;
+                  signatureString = `ed25519:${baseEncode(signature)}`;
                   break;
                 case KeyType.SECP256K1:
-                  signatureString = `secp256k1:${nearAPI.utils.serialize.base_encode(
-                    signature
-                  )}`;
+                  signatureString = `secp256k1:${baseEncode(signature)}`;
                   break;
                 default:
                   throw new Error("Unsupported key type");
@@ -824,14 +847,11 @@ const IntearWallet: WalletBehaviourFactory<
                   account.accountId
                 }|${key.getPublicKey()}`;
                 const sigData = logoutInfo.signature.split(":")[1];
-                const signatureToVerify =
-                  nearAPI.utils.serialize.base_decode(sigData);
+                const signatureToVerify = baseDecode(sigData);
 
-                let verifyKey: nearAPI.utils.PublicKey;
+                let verifyKey: PublicKey;
                 if (logoutInfo.caused_by === "User") {
-                  verifyKey = nearAPI.utils.PublicKey.fromString(
-                    savedData.logoutKey
-                  );
+                  verifyKey = PublicKey.fromString(savedData.logoutKey);
                 } else if (logoutInfo.caused_by === "App") {
                   // No idea how the user can be signed out by the app and the app doesn't
                   // know that, but whatever, handle this anyway
@@ -909,7 +929,7 @@ const IntearWallet: WalletBehaviourFactory<
             });
             const authNonce = Date.now();
             const signatureString = await generateAuthSignature(
-              nearAPI.KeyPair.fromString(savedData.key),
+              KeyPair.fromString(savedData.key),
               signMessageString,
               authNonce
             );
@@ -919,7 +939,7 @@ const IntearWallet: WalletBehaviourFactory<
                 data: {
                   message: signMessageString,
                   accountId: savedData.accounts[0].accountId,
-                  publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                  publicKey: KeyPair.fromString(savedData.key)
                     .getPublicKey()
                     .toString(),
                   nonce: authNonce,
@@ -949,9 +969,7 @@ const IntearWallet: WalletBehaviourFactory<
                     ...signature,
                     signature: btoa(
                       Array.from(
-                        nearAPI.utils.serialize.base_decode(
-                          signature.signature.split(":")[1]
-                        ),
+                        baseDecode(signature.signature.split(":")[1]),
                         (byte) => String.fromCharCode(byte)
                       ).join("")
                     ),
@@ -1016,7 +1034,7 @@ const IntearWallet: WalletBehaviourFactory<
                 });
                 const authNonce = Date.now();
                 const signatureString = await generateAuthSignature(
-                  nearAPI.KeyPair.fromString(savedData.key),
+                  KeyPair.fromString(savedData.key),
                   signMessageString,
                   authNonce
                 );
@@ -1026,7 +1044,7 @@ const IntearWallet: WalletBehaviourFactory<
                     data: {
                       message: signMessageString,
                       accountId: savedData.accounts[0].accountId,
-                      publicKey: nearAPI.KeyPair.fromString(savedData.key)
+                      publicKey: KeyPair.fromString(savedData.key)
                         .getPublicKey()
                         .toString(),
                       nonce: authNonce,
@@ -1045,9 +1063,7 @@ const IntearWallet: WalletBehaviourFactory<
                   ...signature,
                   signature: btoa(
                     Array.from(
-                      nearAPI.utils.serialize.base_decode(
-                        signature.signature.split(":")[1]
-                      ),
+                      baseDecode(signature.signature.split(":")[1]),
                       (byte) => String.fromCharCode(byte)
                     ).join("")
                   ),
@@ -1088,11 +1104,13 @@ const IntearWallet: WalletBehaviourFactory<
           {
             signerId,
             receiverId: receiverId ?? savedData.contractId,
-            actions,
+            actions: actions.map((action) =>
+              najActionToInternal(action)
+            ) as unknown as Array<Action>,
           },
         ],
         savedData.walletUrl ?? iframeOriginUrl,
-        new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
+        new JsonRpcProvider({ url: options.network.nodeUrl }),
         logger,
         logoutBridgeService
       ).then((outcomes) => outcomes[0]);
@@ -1102,9 +1120,14 @@ const IntearWallet: WalletBehaviourFactory<
       logger.log("signAndSendTransactions", { transactions });
       const savedData = assertLoggedIn();
       return await signAndSendTransactions(
-        transactions,
+        transactions.map((transaction) => ({
+          ...transaction,
+          actions: transaction.actions.map((action) =>
+            najActionToInternal(action)
+          ) as unknown as Array<Action>,
+        })),
         savedData.walletUrl ?? iframeOriginUrl,
-        new nearAPI.providers.JsonRpcProvider({ url: options.network.nodeUrl }),
+        new JsonRpcProvider({ url: options.network.nodeUrl }),
         logger,
         logoutBridgeService
       );

@@ -1,8 +1,16 @@
-import type { Action } from "../wallet/transactions.types";
-import type { Action as NAJAction } from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
+import type { InternalAction } from "../wallet/transactions.types";
+import {
+  AccessKey,
+  AccessKeyPermission,
+  FullAccessPermission,
+  FunctionCallPermission,
+  type Action as NAJAction,
+  actionCreators,
+} from "@near-js/transactions";
 
 // temp fix until we migrate Wallet Selector to use NAJ types
-export const najActionToInternal = (action: NAJAction): Action => {
+export const najActionToInternal = (action: NAJAction): InternalAction => {
   if (action.createAccount) {
     return { type: "CreateAccount" };
   }
@@ -20,7 +28,7 @@ export const najActionToInternal = (action: NAJAction): Action => {
       type: "FunctionCall",
       params: {
         methodName,
-        args, // Uint8Array is accepted by wallet-selector
+        args: JSON.parse(Buffer.from(args).toString()), // Convert Uint8Array to object
         gas: gas.toString(),
         deposit: deposit.toString(),
       },
@@ -40,9 +48,15 @@ export const najActionToInternal = (action: NAJAction): Action => {
     let permission:
       | "FullAccess"
       | { receiverId: string; methodNames: Array<string>; allowance?: string };
-    if ("fullAccess" in accessKey.permission) {
+    if (
+      "fullAccess" in accessKey.permission &&
+      accessKey.permission.fullAccess
+    ) {
       permission = "FullAccess";
-    } else if ("functionCall" in accessKey.permission) {
+    } else if (
+      "functionCall" in accessKey.permission &&
+      accessKey.permission.functionCall
+    ) {
       const fc = accessKey.permission.functionCall;
       permission = {
         receiverId: fc!.receiverId,
@@ -80,4 +94,67 @@ export const najActionToInternal = (action: NAJAction): Action => {
   }
 
   throw new Error("Unsupported NAJ action");
+};
+
+export const internalActionToNaj = (action: InternalAction): NAJAction => {
+  if (action.type === "CreateAccount") {
+    return actionCreators.createAccount();
+  }
+
+  if (action.type === "DeployContract") {
+    return actionCreators.deployContract(action.params.code);
+  }
+
+  if (action.type === "FunctionCall") {
+    return actionCreators.functionCall(
+      action.params.methodName,
+      action.params.args,
+      BigInt(action.params.gas),
+      BigInt(action.params.deposit)
+    );
+  }
+
+  if (action.type === "Transfer") {
+    return actionCreators.transfer(BigInt(action.params.deposit));
+  }
+
+  if (action.type === "Stake") {
+    return actionCreators.stake(
+      BigInt(action.params.stake),
+      PublicKey.from(action.params.publicKey)
+    );
+  }
+
+  if (action.type === "AddKey") {
+    return actionCreators.addKey(
+      PublicKey.from(action.params.publicKey),
+      new AccessKey({
+        nonce: BigInt(action.params.accessKey.nonce ?? 0),
+        permission: new AccessKeyPermission({
+          ...(action.params.accessKey.permission === "FullAccess"
+            ? { fullAccess: new FullAccessPermission() }
+            : {
+                functionCall: new FunctionCallPermission({
+                  receiverId: action.params.accessKey.permission.receiverId!,
+                  methodNames:
+                    action.params.accessKey.permission.methodNames ?? [],
+                  allowance: BigInt(
+                    action.params.accessKey.permission.allowance ?? 0
+                  ),
+                }),
+              }),
+        }),
+      })
+    );
+  }
+
+  if (action.type === "DeleteKey") {
+    return actionCreators.deleteKey(PublicKey.from(action.params.publicKey));
+  }
+
+  if (action.type === "DeleteAccount") {
+    return actionCreators.deleteAccount(action.params.beneficiaryId);
+  }
+
+  throw new Error("Unsupported action type");
 };

@@ -22,7 +22,7 @@ NEP-518 rpc relayer uses a FunctionCall access key to execute transactions on be
 ## Installation and Usage
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w near-api-js @reown/appkit @reown/appkit-adapter-wagmi wagmi viem @tanstack/react-query @near-wallet-selector/ethereum-wallets
 
 # Using NPM.

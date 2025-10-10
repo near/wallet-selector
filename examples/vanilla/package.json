@@ -2,6 +2,7 @@
   "name": "@near-wallet-selector-examples/vanilla",
   "private": true,
   "dependencies": {
+    "@near-js/utils": "2.3.0",
     "@near-wallet-selector/math-wallet": "workspace:*",
     "@near-wallet-selector/meteor-wallet": "workspace:*",
     "@near-wallet-selector/meteor-wallet-app": "workspace:*",

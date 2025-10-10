@@ -2,20 +2,17 @@
 
 This is the core package for NEAR Wallet Selector.
 
+## Upgrading from v9 to v10
+
+If you're upgrading from v9.x to v10.x, please read the [Migration Guide](../../MIGRATION-v10.md) for detailed instructions on the breaking changes and how to update your code.
+
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry
+
 
 ```bash
-# Using Yarn
-pnpm add -w near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
-
-```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/core
 
 # Using NPM.

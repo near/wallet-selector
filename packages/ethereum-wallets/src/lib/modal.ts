@@ -3,10 +3,11 @@ import { formatUnits } from "viem";
 import type { Chain } from "viem";
 import { DEFAULT_ACCESS_KEY_ALLOWANCE, RLP_EXECUTE } from "./utils";
 import { modalStyles } from "./styles";
+import { najActionToInternal } from "@near-wallet-selector/core";
 
 export function createTxModal({
   onCancel,
-  txs,
+  txs: najTxs,
   relayerPublicKey,
   explorerUrl,
 }: {
@@ -38,6 +39,11 @@ export function createTxModal({
   // Modal content container
   const modalContentContainer = window.document.createElement("div");
   modalContentContainer.classList.add("ethereum-wallet-modal-container");
+
+  const txs = najTxs.map((tx) => ({
+    ...tx,
+    actions: tx.actions.map((action) => najActionToInternal(action)),
+  }));
 
   // Modal content
   const isLogIn = txs.find((tx) => tx.actions[0].type === "AddKey");

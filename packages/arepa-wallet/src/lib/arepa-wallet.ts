@@ -8,7 +8,6 @@ import type {
   Network,
   Account,
 } from "@near-wallet-selector/core";
-import { createAction } from "@near-wallet-selector/wallet-utils";
 import icon from "./icon";
 
 export interface ArepaWalletParams {
@@ -99,9 +98,7 @@ const ArepaWallet: WalletBehaviourFactory<
 
     return Promise.all(
       transactions.map(async (transaction, index) => {
-        const actions = transaction.actions.map((action) =>
-          createAction(action)
-        );
+        const actions = transaction.actions;
         const accessKey = await account.accessKeyForTransaction(
           transaction.receiverId,
           actions,
@@ -217,7 +214,7 @@ const ArepaWallet: WalletBehaviourFactory<
 
       return account["signAndSendTransaction"]({
         receiverId: receiverId || contract.contractId,
-        actions: actions.map((action) => createAction(action)),
+        actions: actions,
         walletCallbackUrl: callbackUrl,
       });
     },

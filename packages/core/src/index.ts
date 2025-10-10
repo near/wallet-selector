@@ -57,7 +57,7 @@ export type {
   Account,
   Transaction,
   Action,
-  ActionType,
+  InternalAction,
   CreateAccountAction,
   DeployContractAction,
   FunctionCallAction,
@@ -72,7 +72,9 @@ export type {
   SignMessageParams,
 } from "./lib/wallet";
 
-export type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
+export type { FinalExecutionOutcome } from "@near-js/types";
+export { SignedTransaction, actionCreators } from "@near-js/transactions";
+export { Signer } from "@near-js/signers";
 
 export {
   waitFor,
@@ -81,6 +83,8 @@ export {
   verifyFullKeyBelongsToUser,
   verifySignature,
   serializeNep413,
+  internalActionToNaj,
+  najActionToInternal,
 } from "./lib/helpers";
 
 export { translate, allowOnlyLanguage } from "./lib/translate/translate";

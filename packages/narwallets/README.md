@@ -7,7 +7,7 @@ This is the [Narwallets](https://chrome.google.com/webstore/detail/narwallets-v4
 The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/narwallets
 
 # Using NPM.

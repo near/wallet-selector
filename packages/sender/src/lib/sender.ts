@@ -9,7 +9,7 @@ import type {
   Optional,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { najActionToInternal, waitFor } from "@near-wallet-selector/core";
 import type { InjectedSender } from "./injected-sender";
 import icon from "./icon";
 
@@ -141,10 +141,8 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
     ];
   };
 
-  const isValidActions = (
-    actions: Array<Action>
-  ): actions is Array<FunctionCallAction> => {
-    return actions.every((x) => x.type === "FunctionCall");
+  const isValidActions = (actions: Array<Action>) => {
+    return actions.every((x) => x.functionCall);
   };
 
   const transformActions = (actions: Array<Action>) => {
@@ -156,7 +154,12 @@ const Sender: WalletBehaviourFactory<InjectedWallet> = async ({
       );
     }
 
-    return actions.map((x) => x.params);
+    return actions.map((action) => {
+      const internalAction = najActionToInternal(action);
+      return internalAction.type === "FunctionCall"
+        ? internalAction.params
+        : ({} as FunctionCallAction["params"]);
+    });
   };
 
   const transformTransactions = (

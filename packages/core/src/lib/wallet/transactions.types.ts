@@ -1,3 +1,5 @@
+import type { Action as NAJAction } from "@near-js/transactions";
+
 export interface CreateAccountAction {
   type: "CreateAccount";
 }
@@ -67,7 +69,7 @@ export interface DeleteAccountAction {
   };
 }
 
-export type Action =
+export type InternalAction =
   | CreateAccountAction
   | DeployContractAction
   | FunctionCallAction
@@ -77,8 +79,9 @@ export type Action =
   | DeleteKeyAction
   | DeleteAccountAction;
 
-export type ActionType = Action["type"];
+export type InternalActionType = InternalAction["type"];
 
+export type Action = NAJAction;
 export interface Transaction {
   signerId: string;
   receiverId: string;
