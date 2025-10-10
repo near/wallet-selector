@@ -33,6 +33,7 @@
     "@near-wallet-selector/xdefi": "9.5.1"
   },
   "changesets": [
+    "green-oranges-read",
     "happy-donkeys-drop"
   ]
 }
