@@ -2,6 +2,10 @@
 
 This is the core package for NEAR Wallet Selector.
 
+## Upgrading from v9 to v10
+
+If you're upgrading from v9.x to v10.x, please read the [Migration Guide](../../MIGRATION-v10.md) for detailed instructions on the breaking changes and how to update your code.
+
 ## Installation and Usage
 
 The easiest way to use this package is to install it from the NPM registry
