@@ -1,4 +1,3 @@
-import { utils, providers } from "near-api-js";
 import { serialize } from "borsh";
 import { sha256 } from "js-sha256";
 import type {
@@ -7,7 +6,9 @@ import type {
   ViewAccessKeyParams,
 } from "./verify-signature.types";
 import { Payload, payloadSchema } from "./payload";
-import type { AccessKeyView } from "near-api-js/lib/providers/provider.js";
+import { JsonRpcProvider } from "@near-js/providers";
+import { PublicKey } from "@near-js/crypto";
+import type { AccessKeyView } from "@near-js/types";
 
 export const verifySignature = ({
   publicKey,
@@ -30,7 +31,7 @@ export const verifySignature = ({
 
   // Convert real signature to buffer base64
   const realSignature = Buffer.from(signature, "base64");
-  const pk = utils.PublicKey.from(publicKey);
+  const pk = PublicKey.from(publicKey);
 
   // Verify the signature
   return pk.verify(hashedPayload, realSignature);
@@ -41,7 +42,7 @@ const fetchAllUserKeys = async ({
   network,
   publicKey,
 }: ViewAccessKeyParams): Promise<AccessKeyView> => {
-  const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+  const provider = new JsonRpcProvider({ url: network.nodeUrl });
   const key = await provider.query({
     request_type: "view_access_key",
     account_id: accountId,

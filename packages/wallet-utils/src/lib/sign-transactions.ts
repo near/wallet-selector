@@ -1,19 +1,67 @@
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
+import { JsonRpcProvider } from "@near-js/providers";
 import type { Network, Transaction } from "@near-wallet-selector/core";
-import type { AccessKeyViewRaw } from "near-api-js/lib/providers/provider.js";
-import { createAction } from "./create-action";
+import type { AccessKeyViewRaw } from "@near-js/types";
+import { KeyType, PublicKey } from "@near-js/crypto";
+import type { Transaction as NearTransaction } from "@near-js/transactions";
+import {
+  createTransaction,
+  encodeTransaction,
+  Signature,
+  SignedTransaction,
+} from "@near-js/transactions";
+import { sha256 } from "js-sha256";
+import { baseDecode } from "@near-js/utils";
+
+// TODO: Remove this once the wallet signer interface is updated
+export abstract class LegacySigner {
+  abstract createKey(
+    accountId: string,
+    networkId?: string,
+    keyType?: KeyType
+  ): Promise<PublicKey>;
+  abstract getPublicKey(
+    accountId?: string,
+    networkId?: string
+  ): Promise<PublicKey>;
+  abstract signMessage(
+    message: Uint8Array,
+    accountId?: string,
+    networkId?: string
+  ): Promise<Signature>;
+}
+
+// Sign transaction function for the wallet that doesn't
+// implement signTransaction in their signer interface
+async function legacySignTransaction(
+  transaction: NearTransaction,
+  signer: LegacySigner,
+  accountId?: string,
+  networkId?: string
+): Promise<[Uint8Array, SignedTransaction]> {
+  const message = encodeTransaction(transaction);
+  const hash = new Uint8Array(sha256.array(message));
+  const signature = await signer.signMessage(message, accountId, networkId);
+  const keyType = transaction.publicKey.ed25519Key
+    ? KeyType.ED25519
+    : KeyType.SECP256K1;
+  const signedTx = new SignedTransaction({
+    transaction,
+    signature: new Signature({ keyType, data: signature.signature.data }),
+  });
+  return [hash, signedTx];
+}
 
 export const signTransactions = async (
   transactions: Array<Transaction>,
-  signer: Signer,
+  signer: Signer | LegacySigner,
   network: Network
 ) => {
-  const provider = new nearAPI.providers.JsonRpcProvider({
+  const provider = new JsonRpcProvider({
     url: network.nodeUrl,
   });
 
-  const signedTransactions: Array<nearAPI.transactions.SignedTransaction> = [];
+  const signedTransactions: Array<SignedTransaction> = [];
 
   for (let i = 0; i < transactions.length; i++) {
     const publicKey = await signer.getPublicKey(
@@ -31,27 +79,37 @@ export const signTransactions = async (
       }),
     ]);
 
-    const actions = transactions[i].actions.map((action) =>
-      createAction(action)
-    );
-
-    const transaction = nearAPI.transactions.createTransaction(
+    const transaction = createTransaction(
       transactions[i].signerId,
-      nearAPI.utils.PublicKey.from(publicKey.toString()),
+      PublicKey.from(publicKey.toString()),
       transactions[i].receiverId,
       accessKey.nonce + i + 1,
-      actions,
-      nearAPI.utils.serialize.base_decode(block.header.hash)
+      transactions[i].actions,
+      baseDecode(block.header.hash)
     );
 
-    const response = await nearAPI.transactions.signTransaction(
-      transaction,
-      signer,
-      transactions[i].signerId,
-      network.networkId
-    );
+    const [, signedTx] =
+      "signTransaction" in signer && signer.signTransaction
+        ? await signer.signTransaction(transaction)
+        : await legacySignTransaction(
+            transaction,
+            signer as LegacySigner,
+            transactions[i].signerId,
+            network.networkId
+          );
 
-    signedTransactions.push(response[1]);
+    const finalSignedTx = new SignedTransaction({
+      signature: new Signature({
+        data: Buffer.from(signedTx.signature.data),
+        keyType:
+          publicKey.keyType === KeyType.SECP256K1
+            ? KeyType.SECP256K1
+            : KeyType.ED25519,
+      }),
+      transaction: transaction,
+    });
+
+    signedTransactions.push(finalSignedTx);
   }
 
   return signedTransactions;

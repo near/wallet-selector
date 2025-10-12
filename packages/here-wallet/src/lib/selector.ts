@@ -1,5 +1,6 @@
 import { HereWallet, waitInjectedHereWallet } from "@here-wallet/core";
 import type { SelectorInit } from "./types";
+import { najActionToInternal } from "@near-wallet-selector/core";
 
 export const initHereWallet: SelectorInit = async (config) => {
   const { store, logger, emitter, options, walletOptions } = config;
@@ -11,6 +12,7 @@ export const initHereWallet: SelectorInit = async (config) => {
     const accounts = [];
 
     for (let i = 0; i < accountIds.length; i++) {
+      // @ts-ignore - signer getPublicKey interface was changed during near-api-js migration, but here-wallet still uses the old interface
       const pub = await here.signer.getPublicKey(
         accountIds[i],
         options.network.networkId
@@ -83,7 +85,8 @@ export const initHereWallet: SelectorInit = async (config) => {
       const { contract } = store.getState();
       return await here.signAndSendTransaction({
         receiverId: contract?.contractId,
-        ...data,
+        // Here Wallet expects the actions to be in the internal action format so we need to convert them
+        actions: data.actions.map((action) => najActionToInternal(action)),
       });
     },
 
@@ -100,7 +103,15 @@ export const initHereWallet: SelectorInit = async (config) => {
 
     async signAndSendTransactions(data) {
       logger.log("HereWallet:signAndSendTransactions", data);
-      return await here.signAndSendTransactions(data);
+      return await here.signAndSendTransactions({
+        transactions: data.transactions.map((transaction) => ({
+          ...transaction,
+          // Here Wallet expects the actions to be in the internal action format so we need to convert them
+          actions: transaction.actions.map((action) =>
+            najActionToInternal(action)
+          ),
+        })),
+      });
     },
 
     async createSignedTransaction(receiverId, actions) {

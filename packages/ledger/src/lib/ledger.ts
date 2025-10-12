@@ -1,4 +1,5 @@
 import { isMobile } from "is-mobile";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type {
   WalletModuleFactory,
@@ -10,20 +11,24 @@ import type {
   Optional,
   SignMessageParams,
   SignedMessage,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import {
   getActiveAccount,
   verifyFullKeyBelongsToUser,
   verifySignature,
 } from "@near-wallet-selector/core";
-
+import { KeyType, PublicKey } from "@near-js/crypto";
+import { sha256 } from "js-sha256";
 import { isLedgerSupported, LedgerClient } from "./ledger-client";
 import type { Subscription } from "./ledger-client";
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import icon from "./icon";
 import { serializeLedgerNEP413Payload } from "./nep413/ledger-payload";
+import {
+  encodeTransaction,
+  Signature,
+  SignedTransaction,
+} from "@near-js/transactions";
 
 interface LedgerAccount extends Account {
   derivationPath: string;
@@ -72,7 +77,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
 }) => {
   const _state = await setupLedgerState(storage);
 
-  const signer: Signer = {
+  const signer: LegacySigner = {
     createKey: () => {
       throw new Error("Not implemented");
     },
@@ -83,7 +88,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         throw new Error("Failed to find public key for account");
       }
 
-      return nearAPI.utils.PublicKey.from(account.publicKey);
+      return PublicKey.from(account.publicKey);
     },
     signMessage: async (message, accountId) => {
       const account = _state.accounts.find((a) => a.accountId === accountId);
@@ -97,10 +102,10 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
         derivationPath: account.derivationPath,
       });
 
-      return {
-        signature,
-        publicKey: nearAPI.utils.PublicKey.from(account.publicKey),
-      };
+      return new Signature({
+        data: signature,
+        keyType: PublicKey.from(account.publicKey).keyType,
+      });
     },
   };
 
@@ -303,7 +308,7 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
           derivationPath: activeAccount.derivationPath,
         });
 
-        return nearAPI.utils.PublicKey.fromString(pk);
+        return PublicKey.fromString(pk);
       }
     },
 
@@ -402,12 +407,21 @@ const Ledger: WalletBehaviourFactory<HardwareWallet> = async ({
     async signTransaction(transaction) {
       logger.log("signTransaction", { transaction });
 
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
+      const message = encodeTransaction(transaction);
+      const hash = new Uint8Array(sha256.array(message));
+      const signature = await signer.signMessage(
+        message,
         transaction.signerId,
         options.network.networkId
       );
+      const keyType = transaction.publicKey.ed25519Key
+        ? KeyType.ED25519
+        : KeyType.SECP256K1;
+      const signedTx = new SignedTransaction({
+        transaction,
+        signature: new Signature({ keyType, data: signature.signature.data }),
+      });
+      return [hash, signedTx];
     },
 
     async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {

@@ -7,7 +7,7 @@ import type {
   Optional,
   Account,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { najActionToInternal, waitFor } from "@near-wallet-selector/core";
 import type { InjectedBitgetWallet } from "./injected-bitget-wallet";
 import icon from "./icon";
 
@@ -121,7 +121,9 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     return transactions.map((transaction) => {
       return {
         receiverId: transaction.receiverId,
-        actions: transaction.actions,
+        actions: transaction.actions.map((action) =>
+          najActionToInternal(action)
+        ),
       };
     });
   };
@@ -201,7 +203,8 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       return _state.wallet
         .signAndSendTransaction({
           receiverId: receiverId || contract.contractId,
-          actions: actions,
+          // @ts-ignore Bitget Wallet expects the actions to be in the internal action format so we need to convert them
+          actions: actions.map((action) => najActionToInternal(action)),
         })
         .then((res) => {
           if (res.error) {
@@ -227,6 +230,7 @@ const BitgetWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return _state.wallet
         .requestSignTransactions({
+          // @ts-ignore Bitget Wallet expects the transactions to be in the internal transaction format so we need to convert them
           transactions: transformTransactions(transactions),
         })
         .then((res) => {

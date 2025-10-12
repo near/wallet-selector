@@ -6,12 +6,11 @@ import type {
   Account,
   Optional,
   Transaction,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedMathWallet } from "./injected-math-wallet";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
-import * as nearAPITransactions from "near-api-js/lib/transaction.js";
 import icon from "./icon";
 
 declare global {
@@ -144,8 +143,8 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       return {
         ...data,
-        signature: Buffer.from(signed.signature).toString("base64"),
-        keyType: signed.publicKey.keyType,
+        signature: Buffer.from(signed.signature.data).toString("base64"),
+        keyType: signed.signature.keyType,
       };
     },
 
@@ -198,12 +197,7 @@ const MathWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     async signTransaction(transaction) {
       logger.log("signTransaction", { transaction });
 
-      return await nearAPITransactions.signTransaction(
-        transaction,
-        _state.wallet.signer,
-        transaction.signerId,
-        options.network.networkId
-      );
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
 
     async getPublicKey() {

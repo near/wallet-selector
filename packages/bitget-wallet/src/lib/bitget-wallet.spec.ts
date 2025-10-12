@@ -2,13 +2,15 @@
 import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "@near-wallet-selector/core";
+import type {
+  InjectedWallet,
+  FinalExecutionOutcome,
+} from "@near-wallet-selector/core";
 import type {
   AccessKey,
   BitgetWalletEvents,
   SignOutResponse,
 } from "./injected-bitget-wallet";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import { setupBitgetWallet } from "./bitget-wallet";
 
 const accountId = "test-account.testnet";

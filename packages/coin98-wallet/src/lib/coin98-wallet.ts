@@ -11,6 +11,7 @@ import type {
 } from "@near-wallet-selector/core";
 import { getActiveAccount } from "@near-wallet-selector/core";
 import type { InjectedCoin98 } from "./injected-coin98-wallet";
+import type { LegacySigner } from "@near-wallet-selector/wallet-utils";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import type { FinalExecutionOutcome } from "near-api-js/lib/providers/index.js";
 import * as nearAPI from "near-api-js";
@@ -155,7 +156,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
       logger.log("signAndSendTransaction", { signerId, receiverId, actions });
       const signedTransactions = await signTransactions(
         transformTransactions([{ signerId, receiverId, actions }]),
-        _state.wallet.near.signer,
+        _state.wallet.near.signer as unknown as LegacySigner,
         options.network
       );
 
@@ -167,7 +168,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const signedTransactions = await signTransactions(
         transformTransactions(transactions),
-        _state.wallet.near.signer,
+        _state.wallet.near.signer as unknown as LegacySigner,
         options.network
       );
 
@@ -190,7 +191,7 @@ const Coin98Wallet: WalletBehaviourFactory<InjectedWallet> = async ({
 
       const [signedTx] = await signTransactions(
         transformTransactions([{ receiverId, actions }]),
-        _state.wallet.near.signer,
+        _state.wallet.near.signer as unknown as LegacySigner,
         options.network
       );
 

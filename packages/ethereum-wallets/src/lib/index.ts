@@ -1,13 +1,19 @@
-import * as nearAPI from "near-api-js";
 import type {
   AccessKeyViewRaw,
   ExecutionStatus,
   FinalExecutionOutcome,
   FunctionCallPermissionView,
-} from "near-api-js/lib/providers/provider.js";
-import { JsonRpcProvider } from "near-api-js/lib/providers/index.js";
-import { stringifyJsonOrBytes } from "near-api-js/lib/transaction.js";
-import { parseRpcError } from "near-api-js/lib/utils/rpc_errors.js";
+} from "@near-js/types";
+import { JsonRpcProvider } from "@near-js/providers";
+import { PublicKey, KeyPair } from "@near-js/crypto";
+import {
+  AccessKey,
+  AccessKeyPermission,
+  actionCreators,
+  FunctionCallPermission,
+  stringifyJsonOrBytes,
+} from "@near-js/transactions";
+import { parseRpcError } from "@near-js/utils";
 import {
   type WalletModuleFactory,
   type WalletBehaviourFactory,
@@ -16,6 +22,7 @@ import {
   type Account,
   type InjectedWallet,
   type Optional,
+  najActionToInternal,
 } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import {
@@ -68,6 +75,9 @@ import {
   MAX_TGAS,
   EthTxError,
 } from "./utils";
+import type { KeyStore } from "@near-js/keystores";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
+import { KeyPairSigner } from "@near-js/signers";
 
 export interface EthereumWalletsParams {
   wagmiConfig: Config;
@@ -91,14 +101,14 @@ export interface EthereumWalletsParams {
 
 interface EthereumWalletsState {
   isConnecting: boolean;
-  keystore: nearAPI.keyStores.KeyStore;
+  keystore: KeyStore;
   subscriptions: Array<Subscription>;
 }
 
 const setupEthereumWalletsState = async (
   id: string
 ): Promise<EthereumWalletsState> => {
-  const keystore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keystore = new BrowserLocalStorageKeyStore(
     window.localStorage,
     `near-wallet-selector:${id}:keystore:`
   );
@@ -186,7 +196,7 @@ const EthereumWallets: WalletBehaviourFactory<
   };
 
   const executeTransaction = async ({
-    tx,
+    tx: najTx,
     relayerPublicKey,
   }: {
     tx: Transaction;
@@ -198,6 +208,11 @@ const EthereumWallets: WalletBehaviourFactory<
     //  When issuing an onboarding transaction, we set the to field to the user's own address and utilize the data field to pass required parameters to the Wallet Contract,
     //  specifically to add the provided public key to the account.
     //  We hash to value for AddKey/DeleteKey to bypass that metamask check. In the Wallet Contract itself contract compares to address with address hash.
+    const tx = {
+      ...najTx,
+      actions: najTx.actions.map((action) => najActionToInternal(action)),
+    };
+
     const to = (
       /^0x([A-Fa-f0-9]{40})$/.test(tx.receiverId) &&
       !["AddKey", "DeleteKey"].includes(tx.actions[0].type)
@@ -409,12 +424,17 @@ const EthereumWallets: WalletBehaviourFactory<
 
   // Check if accessKey is usable to execute all transaction.
   const validateAccessKey = ({
-    transactions,
+    transactions: najTransactions,
     accessKey,
   }: {
     transactions: Array<Transaction>;
     accessKey: AccessKeyViewRaw;
   }) => {
+    const transactions = najTransactions.map((tx) => ({
+      ...tx,
+      actions: tx.actions.map((action) => najActionToInternal(action)),
+    }));
+
     if (accessKey.permission === "FullAccess") {
       return true;
     }
@@ -502,20 +522,19 @@ const EthereumWallets: WalletBehaviourFactory<
           signerId: accountId,
           receiverId: accountId,
           actions: [
-            {
-              type: "AddKey",
-              params: {
-                publicKey: relayerPublicKey,
-                accessKey: {
-                  nonce: 0,
-                  permission: {
+            actionCreators.addKey(
+              PublicKey.from(relayerPublicKey),
+              new AccessKey({
+                nonce: BigInt(0),
+                permission: new AccessKeyPermission({
+                  functionCall: new FunctionCallPermission({
                     receiverId: accountId,
-                    allowance: "0",
+                    allowance: BigInt(0),
                     methodNames: [RLP_EXECUTE],
-                  },
-                },
-              },
-            },
+                  }),
+                }),
+              })
+            ),
           ],
         },
       };
@@ -558,7 +577,7 @@ const EthereumWallets: WalletBehaviourFactory<
       const tx = nearTxs[i];
       for (let y = 0; y < tx.actions.length; y++) {
         try {
-          const action = tx.actions[y];
+          const action = najActionToInternal(tx.actions[y]);
           let accountId = null;
           if (action.type === "Transfer") {
             accountId = tx.receiverId;
@@ -626,7 +645,11 @@ const EthereumWallets: WalletBehaviourFactory<
         accessKeyUsable = false;
       }
       if (accessKeyUsable) {
-        const signer = new nearAPI.InMemorySigner(_state.keystore);
+        const keyPair = await _state.keystore.getKey(
+          options.network.networkId,
+          accountLogIn.accountId
+        );
+        const signer = new KeyPairSigner(keyPair);
         const signedTransactions = await signTransactions(
           nearTxs,
           signer,
@@ -834,12 +857,7 @@ const EthereumWallets: WalletBehaviourFactory<
             signerId: accountLogIn.accountId,
             receiverId: accountLogIn.accountId,
             actions: [
-              {
-                type: "DeleteKey",
-                params: {
-                  publicKey: accountLogIn.publicKey,
-                },
-              },
+              actionCreators.deleteKey(PublicKey.from(accountLogIn.publicKey)),
             ],
           },
         ]);
@@ -980,8 +998,7 @@ const EthereumWallets: WalletBehaviourFactory<
             publicKey = keyPair.getPublicKey().toString();
             logger.log("Reusing existing publicKey:", publicKey);
           } else {
-            const newAccessKeyPair =
-              nearAPI.utils.KeyPair.fromRandom("ed25519");
+            const newAccessKeyPair = KeyPair.fromRandom("ed25519");
             publicKey = newAccessKeyPair.getPublicKey().toString();
             logger.log("Created new publicKey:", publicKey);
             await signAndSendTransactions([
@@ -989,20 +1006,19 @@ const EthereumWallets: WalletBehaviourFactory<
                 signerId: accountId,
                 receiverId: accountId,
                 actions: [
-                  {
-                    type: "AddKey",
-                    params: {
-                      publicKey,
-                      accessKey: {
-                        nonce: 0,
-                        permission: {
+                  actionCreators.addKey(
+                    PublicKey.from(publicKey),
+                    new AccessKey({
+                      nonce: BigInt(0),
+                      permission: new AccessKeyPermission({
+                        functionCall: new FunctionCallPermission({
                           receiverId: contractId,
-                          allowance: DEFAULT_ACCESS_KEY_ALLOWANCE,
+                          allowance: BigInt(DEFAULT_ACCESS_KEY_ALLOWANCE),
                           methodNames,
-                        },
-                      },
-                    },
-                  },
+                        }),
+                      }),
+                    })
+                  ),
                 ],
               },
             ]);

@@ -7,7 +7,7 @@ This is the Modal UI package for NEAR Wallet Selector.
 The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
-# Using Yarn
+# Using pnpm
 pnpm add -w @near-wallet-selector/modal-ui-js
 
 # Using NPM.

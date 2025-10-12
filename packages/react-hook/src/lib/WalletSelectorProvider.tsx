@@ -13,13 +13,14 @@ import {
   verifySignature,
 } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { providers } from "near-api-js";
-import type { QueryResponseKind } from "near-api-js/lib/providers/provider.js";
-import type {
-  SignedTransaction,
-  Transaction as NearTransaction,
-} from "near-api-js/lib/transaction.js";
-import type { PublicKey } from "near-api-js/lib/utils";
+import { FailoverRpcProvider, JsonRpcProvider } from "@near-js/providers";
+import {
+  type SignedTransaction,
+  type Transaction as NearTransaction,
+  actionCreators,
+} from "@near-js/transactions";
+import type { QueryResponseKind } from "@near-js/types";
+import type { PublicKey } from "@near-js/crypto";
 
 class WalletError extends Error {
   constructor(message: string) {
@@ -131,8 +132,8 @@ export function WalletSelectorProvider({
       ? config.fallbackRpcUrls
       : [networkURL];
 
-  const provider = new providers.FailoverRpcProvider(
-    rpcProviderUrls.map((url) => new providers.JsonRpcProvider({ url }))
+  const provider = new FailoverRpcProvider(
+    rpcProviderUrls.map((url) => new JsonRpcProvider({ url }))
   );
 
   useEffect(() => {
@@ -228,21 +229,16 @@ export function WalletSelectorProvider({
       const outcome = await wallet.signAndSendTransaction({
         receiverId: contractId,
         actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: method,
-              args,
-              gas: gas.toString(),
-              deposit: deposit.toString(),
-            },
-          },
+          actionCreators.functionCall(
+            method,
+            args,
+            BigInt(gas),
+            BigInt(deposit)
+          ),
         ],
       });
 
-      return providers.getTransactionLastResult(
-        outcome as FinalExecutionOutcome
-      );
+      return outcome as FinalExecutionOutcome;
     },
     [wallet]
   );

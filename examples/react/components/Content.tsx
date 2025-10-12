@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { utils } from "near-api-js";
 import type {
   SignedMessage,
   SignMessageParams,
@@ -14,8 +13,8 @@ import SignIn from "./SignIn";
 import Form from "./Form";
 import Messages from "./Messages";
 import { useWalletSelector } from "@near-wallet-selector/react-hook";
-import { createTransaction, functionCall } from "near-api-js/lib/transaction";
-import { base_decode } from "near-api-js/lib/utils/serialize";
+import { createTransaction, actionCreators } from "@near-js/transactions";
+import { baseDecode, parseNearAmount } from "@near-js/utils";
 
 type Submitted = SubmitEvent & {
   target: { elements: { [key: string]: HTMLInputElement } };
@@ -23,6 +22,7 @@ type Submitted = SubmitEvent & {
 
 const SUGGESTED_DONATION = "0";
 const BOATLOAD_OF_GAS = "30000000000000";
+const { functionCall } = actionCreators;
 
 const Content: React.FC = () => {
   const {
@@ -63,7 +63,7 @@ const Content: React.FC = () => {
           contractId: CONTRACT_ID,
           method: "addMessage",
           args: { text: message },
-          deposit: utils.format.parseNearAmount(donation)!,
+          deposit: parseNearAmount(donation)!,
         }).catch((err) => {
           alert("Failed to add message " + err);
           console.log("Failed to add message");
@@ -79,17 +79,14 @@ const Content: React.FC = () => {
           signerId: signedAccountId!,
           receiverId: CONTRACT_ID,
           actions: [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: {
-                  text: `${message} (${i + 1}/2)`,
-                },
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount(donation)!,
+            functionCall(
+              "addMessage",
+              {
+                text: `${message} (${i + 1}/2)`,
               },
-            },
+              BigInt(BOATLOAD_OF_GAS),
+              BigInt(parseNearAmount(donation)!)
+            ),
           ],
         });
       }
@@ -172,10 +169,10 @@ const Content: React.FC = () => {
                   "addMessage",
                   { text: message.value },
                   BigInt(BOATLOAD_OF_GAS),
-                  BigInt(utils.format.parseNearAmount(donation.value) || "0")
+                  BigInt(parseNearAmount(donation.value) || "0")
                 ),
               ],
-              base_decode("FYYAj2KrFrePke7p2sFmejX73GZwzqxJjRtKHh87Gv9w")
+              baseDecode("FYYAj2KrFrePke7p2sFmejX73GZwzqxJjRtKHh87Gv9w")
             )
           );
 
@@ -197,15 +194,14 @@ const Content: React.FC = () => {
       if (signonly.checked) {
         try {
           const signedTransaction = await createSignedTransaction(CONTRACT_ID, [
-            {
-              type: "FunctionCall",
-              params: {
-                methodName: "addMessage",
-                args: { text: message.value },
-                gas: BOATLOAD_OF_GAS,
-                deposit: utils.format.parseNearAmount(donation.value) || "0",
+            functionCall(
+              "addMessage",
+              {
+                text: message.value,
               },
-            },
+              BigInt(BOATLOAD_OF_GAS),
+              BigInt(parseNearAmount(donation.value) || "0")
+            ),
           ]);
 
           fieldset.disabled = false;
@@ -223,7 +219,11 @@ const Content: React.FC = () => {
         return;
       }
 
-      return addMessages(message.value, donation.value || "0", multiple.checked)
+      return addMessages(
+        message.value,
+        parseNearAmount(donation.value) || "0",
+        multiple.checked
+      )
         .then(() => {
           return getMessages()
             .then((nextMessages) => {
@@ -367,6 +367,7 @@ const Content: React.FC = () => {
           <button onClick={signIn}>Log in</button>
         </div>
         <SignIn />
+        <Messages messages={messages} />
       </Fragment>
     );
   }

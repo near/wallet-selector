@@ -22,6 +22,13 @@
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/wallet-connect",
   "dependencies": {
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/keystores": "^2.3.0",
+    "@near-js/keystores-browser": "^2.3.0",
+    "@near-js/signers": "^2.3.0",
+    "@near-js/transactions": "^2.3.0",
+    "@near-js/types": "^2.3.0",
+    "@near-js/utils": "^2.3.0",
     "@near-wallet-selector/core": "workspace:*",
     "@near-wallet-selector/wallet-utils": "workspace:*",
     "@walletconnect/modal": "2.7.0",
@@ -30,8 +37,5 @@
   },
   "publishConfig": {
     "directory": "../../dist/packages/wallet-connect"
-  },
-  "peerDependencies": {
-    "near-api-js": "^4.0.0 || ^5.0.0"
   }
 }

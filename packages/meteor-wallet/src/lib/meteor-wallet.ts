@@ -1,15 +1,16 @@
-import type {
-  Account,
-  InjectedWallet,
-  Network,
-  WalletBehaviourFactory,
-  WalletModuleFactory,
+import {
+  najActionToInternal,
+  type Account,
+  type InjectedWallet,
+  type Network,
+  type WalletBehaviourFactory,
+  type WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
 } from "./meteor-wallet-types";
-import * as nearAPI from "near-api-js";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
@@ -21,7 +22,7 @@ const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keyStore = new BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
   );
@@ -166,7 +167,8 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
       return account["signAndSendTransaction_direct"]({
         receiverId: receiverId ?? contract!.contractId,
-        actions,
+        // @ts-ignore Meteor Wallet expects the actions to be in the internal action format so we need to convert them
+        actions: actions.map((action) => najActionToInternal(action)),
       });
     },
 
@@ -180,7 +182,14 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
 
       return _state.wallet.requestSignTransactions({
-        transactions,
+        // @ts-ignore
+        transactions: transactions.map((transaction) => ({
+          ...transaction,
+          actions: transaction.actions.map((action) =>
+            // Meteor Wallet expects the actions to be in the internal action format so we need to convert them
+            najActionToInternal(action)
+          ),
+        })),
       });
     },
 
