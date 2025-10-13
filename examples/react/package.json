@@ -18,7 +18,6 @@
     "@near-wallet-selector/ramper-wallet": "workspace:*",
     "@near-wallet-selector/unity-wallet": "workspace:*",
     "@near-wallet-selector/near-mobile-wallet": "workspace:*",
-    "@near-wallet-selector/bitte-wallet": "workspace:*",
     "@near-wallet-selector/okx-wallet": "workspace:*",
     "@near-wallet-selector/ethereum-wallets": "workspace:*",
     "@near-wallet-selector/coin98-wallet": "workspace:*",
