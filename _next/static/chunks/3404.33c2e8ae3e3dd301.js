@@ -12,7 +12,7 @@
       0 0 0 1px var(--wui-color-gray-glass-005),
       0px 4px 12px 4px var(--w3m-card-embedded-shadow-color);
   }
-`;let x=class extends o.oi{render(){return o.dy`<slot></slot>`}};x.styles=[f.ET,k],x=function(e,t,i,o){var a,r=arguments.length,s=r<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,i):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,i,o);else for(var n=e.length-1;n>=0;n--)(a=e[n])&&(s=(r<3?a(s):r>3?a(t,i,s):a(t,i))||s);return r>3&&s&&Object.defineProperty(t,i,s),s}([(0,b.M)("wui-card")],x),i(96456);var C=i(6912);i(59652),i(24782),i(70977);var S=o.iv`
+`;let x=class extends o.oi{render(){return o.dy`<slot></slot>`}};x.styles=[f.ET,k],x=function(e,t,i,o){var a,r=arguments.length,s=r<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,i):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,i,o);else for(var n=e.length-1;n>=0;n--)(a=e[n])&&(s=(r<3?a(s):r>3?a(t,i,s):a(t,i))||s);return r>3&&s&&Object.defineProperty(t,i,s),s}([(0,b.M)("wui-card")],x),i(96456);var C=i(42416);i(59652),i(24782),i(70977);var S=o.iv`
   :host {
     display: flex;
     align-items: center;

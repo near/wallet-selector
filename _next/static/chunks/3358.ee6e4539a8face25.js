@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[3358],{43358:function(e,l,n){n.r(l),n.d(l,{compassSvg:function(){return r}});var a=n(44920);let r=a.YP`<svg fill="none" viewBox="0 0 16 16">
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[3358],{71687:function(e,l,n){n.r(l),n.d(l,{compassSvg:function(){return r}});var a=n(44920);let r=a.YP`<svg fill="none" viewBox="0 0 16 16">
   <path
     fill="currentColor"
     fill-rule="evenodd"
