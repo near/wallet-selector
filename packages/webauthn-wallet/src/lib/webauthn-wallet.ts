@@ -164,41 +164,45 @@ const WebAuthnWallet: SelectorInit = async ({
     await storage.setItem(STORAGE_KEYS.ACCOUNTS_LIST, currentList);
   }
 
-  async function signTransactionWithBiometric({
-    transactions,
-    accountId,
-  }: {
-    transactions: Transaction[],
-    accountId: string,
-  }): Promise<SignedTransaction[]> {
+  async function getKeyPairForSigning(): Promise<KeyPair> {
+    if (!currentAccount) {
+      throw new WebAuthnWalletError(
+        ERROR_CODES.ACCOUNT_NOT_FOUND,
+        "No account signed in"
+      );
+    }
+
+    if (currentKeyPair) {
+      return currentKeyPair;
+    }
+
+    const keys = await getKeys(currentAccount.accountId, storage);
+    const validKey = await findValidKey(currentAccount.accountId, keys);
+
+    if (!validKey) {
+      throw new WebAuthnWalletError(
+        ERROR_CODES.ACCOUNT_NOT_FOUND,
+        'No valid key found for this account'
+      );
+    }
+
+    const foundKey = keys.find((k: KeyPair) => k.getPublicKey().toString() === validKey);
+    if (!foundKey) {
+      throw new WebAuthnWalletError(
+        ERROR_CODES.ACCOUNT_NOT_FOUND,
+        'Could not retrieve biometric key'
+      );
+    }
+
+    currentKeyPair = foundKey;
+    return foundKey;
+  }
+
+  async function signTransactionWithBiometric(
+    transactions: Array<Transaction>,
+  ): Promise<SignedTransaction[]> {
     try {
-      let keyPair: KeyPair;
-
-      if (currentKeyPair) {
-        keyPair = currentKeyPair;
-      } else {
-        const keys = await getKeys(accountId, storage) as any;
-        const validKey = await findValidKey(accountId, keys);
-
-        if (!validKey) {
-          throw new WebAuthnWalletError(
-            ERROR_CODES.ACCOUNT_NOT_FOUND,
-            'No valid key found for this account'
-          );
-        }
-
-        keyPair = keys.find((k: KeyPair) => k.getPublicKey().toString() === validKey);
-
-        if (!keyPair) {
-          throw new WebAuthnWalletError(
-            ERROR_CODES.ACCOUNT_NOT_FOUND,
-            'Could not retrieve biometric key'
-          );
-        }
-
-        currentKeyPair = keyPair;
-      }
-
+      const keyPair = await getKeyPairForSigning();
       const signer = new KeyPairSigner(keyPair);
       const signedTransactions = await signTransactions(transactions, signer, options.network);
       return signedTransactions;
@@ -389,14 +393,11 @@ const WebAuthnWallet: SelectorInit = async ({
                 );
               }
 
-              const signedTx = await signTransactionWithBiometric({
-                accountId: currentAccount.accountId,
-                transactions: [{
-                  signerId: currentAccount.accountId,
-                  receiverId: finalReceiverId,
-                  actions,
-                }],
-              });
+              const signedTx = await signTransactionWithBiometric([{
+                signerId: currentAccount.accountId,
+                receiverId: finalReceiverId,
+                actions,
+              }]);
 
               const result = await provider.sendTransaction(signedTx[0]);
 
@@ -438,14 +439,6 @@ const WebAuthnWallet: SelectorInit = async ({
         );
       }
 
-      // Validate all transactions first
-      for (const tx of params.transactions) {
-        if (!tx.receiverId) {
-          throw new Error("No receiver ID specified");
-        }
-      }
-
-      // Show a single modal with all transactions
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
           transactions: params.transactions.map(tx => ({
@@ -461,22 +454,18 @@ const WebAuthnWallet: SelectorInit = async ({
                 );
               }
 
-              const signedTxs = await signTransactionWithBiometric({
-                accountId: currentAccount.accountId,
-                transactions: params.transactions.map(tx => ({
-                  signerId: currentAccount!.accountId,
-                  receiverId: tx.receiverId,
-                  actions: tx.actions,
-                })),
-              });
+              const signedTxs = await signTransactionWithBiometric(params.transactions.map(tx => ({
+                signerId: currentAccount!.accountId,
+                receiverId: tx.receiverId,
+                actions: tx.actions,
+              })));
 
               const results: Array<FinalExecutionOutcome> = [];
 
               for (let i = 0; i < signedTxs.length; i++) {
                 results.push(await provider.sendTransaction(signedTxs[i]));
               }
-        
-              // @ts-ignore
+
               resolve(results);
               modal.close();
             } catch (error) {
@@ -508,13 +497,23 @@ const WebAuthnWallet: SelectorInit = async ({
     async verifyOwner({ message }) {
       logger.log("WebAuthnWallet:verifyOwner", { message });
 
-      throw new Error("verifyOwner not yet implemented in MVP");
+      throw new Error("Method not supported by WebAuthn Wallet");
     },
 
     async signMessage({ message, recipient, nonce }) {
       logger.log("WebAuthnWallet:signMessage", { message, recipient, nonce });
 
-      throw new Error("signMessage not yet implemented in MVP");
+      const keyPair = await getKeyPairForSigning();
+      const publicKey = keyPair.getPublicKey();
+
+      const signer = new KeyPairSigner(keyPair);
+      const signatureData = await signer.signNep413Message(message, currentAccount!.accountId, recipient, nonce as any);
+
+      return {
+        accountId: currentAccount!.accountId,
+        publicKey: publicKey.toString(),
+        signature: Buffer.from(signatureData.signature).toString("base64"),
+      };
     },
 
     async getPublicKey(): Promise<PublicKey> {
@@ -524,22 +523,49 @@ const WebAuthnWallet: SelectorInit = async ({
           "No account signed in"
         );
       }
-      return currentAccount.publicKey as unknown as PublicKey;
+      return PublicKey.fromString(currentAccount.publicKey);
     },
 
-    async signNep413Message() {
-      throw new Error("signNep413Message not yet implemented in MVP");
+    async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
+      logger.log("WebAuthnWallet:signNep413Message", {
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl,
+      });
+
+      // TODO: implement this using modal
+      const keyPair = await getKeyPairForSigning();
+      const signer = new KeyPairSigner(keyPair);
+      const signatureData = await signer.signNep413Message(
+        message,
+        currentAccount!.accountId,
+        recipient, nonce as any,
+        callbackUrl
+      );
+
+      return signatureData;
     },
 
-    async signTransaction() {
-      throw new Error("signTransaction not yet implemented in MVP");
+    async signTransaction(transaction) {
+      logger.log("WebAuthnWallet:signTransaction", { transaction });
+
+      // TODO: implement this using modal
+      const keyPair = await getKeyPairForSigning();
+      const signer = new KeyPairSigner(keyPair);
+      return await signer.signTransaction(transaction);
     },
 
-    async signDelegateAction() {
-      throw new Error("signDelegateAction not yet implemented in MVP");
+    async signDelegateAction(delegateAction) {
+      logger.log("WebAuthnWallet:signDelegateAction", { delegateAction });
+
+      // TODO: implement this using modal
+      const keyPair = await getKeyPairForSigning();
+      const signer = new KeyPairSigner(keyPair);
+      return await signer.signDelegateAction(delegateAction);
     },
   };
 };
 
 export { WebAuthnWallet };
-
