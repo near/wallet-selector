@@ -24,9 +24,9 @@
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/webauthn-wallet",
   "dependencies": {
     "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
     "@near-js/crypto": "^2.3.3",
     "@near-js/signers": "^2.3.3",
-    "@near-js/transactions": "^2.3.3",
     "@near-js/utils": "^2.3.3",
     "@noble/curves": "^1.8.1",
     "@noble/hashes": "^1.7.1"

@@ -1,12 +1,11 @@
 import type {
   WalletModuleFactory,
-  BrowserWallet,
+  InjectedWallet,
 } from "@near-wallet-selector/core";
 import type { WebAuthnWalletOptions } from "./types";
 import { WebAuthnWallet } from "./webauthn-wallet";
 import icon from "./icon";
 import { isPassKeyAvailable } from "./webauthn-utils";
-
 export { icon };
 export type { WebAuthnWalletOptions };
 
@@ -14,14 +13,13 @@ export function setupWebAuthnWallet({
   relayerUrl,
   deprecated = false,
   iconUrl = icon,
-}: WebAuthnWalletOptions): WalletModuleFactory<BrowserWallet> {
+}: WebAuthnWalletOptions): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    // Check if WebAuthn is available
     const available = await isPassKeyAvailable();
 
     return {
       id: "webauthn-wallet",
-      type: "browser",
+      type: "injected",
       metadata: {
         name: "WebAuthn Wallet",
         description:
@@ -29,7 +27,8 @@ export function setupWebAuthnWallet({
         iconUrl,
         deprecated,
         available,
-        walletUrl: window.location.origin, // In-page wallet
+        walletUrl: window.location.origin, 
+        downloadUrl: window.location.origin,
       },
       init: (config) =>
         WebAuthnWallet({

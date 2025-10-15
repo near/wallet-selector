@@ -1,6 +1,6 @@
 import type {
   WalletBehaviourFactory,
-  BrowserWallet,
+  InjectedWallet,
 } from "@near-wallet-selector/core";
 
 export interface WebAuthnWalletOptions {
@@ -41,7 +41,7 @@ export type WebAuthnWalletState = {
 };
 
 export type SelectorInit = WalletBehaviourFactory<
-  BrowserWallet,
+  InjectedWallet,
   { relayerUrl?: string }
 >;
 

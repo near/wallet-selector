@@ -1106,6 +1106,9 @@ importers:
       '@near-wallet-selector/core':
         specifier: workspace:*
         version: link:../../dist/packages/core
+      '@near-wallet-selector/wallet-utils':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-utils
       '@noble/curves':
         specifier: ^1.8.1
         version: 1.9.4
