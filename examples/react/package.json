@@ -24,6 +24,7 @@
     "@near-wallet-selector/coin98-wallet": "workspace:*",
     "@near-wallet-selector/intear-wallet": "workspace:*",
     "@near-wallet-selector/react-hook": "workspace:*",
+    "@near-wallet-selector/webauthn-wallet": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next": "13.3.0",
