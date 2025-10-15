@@ -2,9 +2,13 @@ import { najActionToInternal } from '@near-wallet-selector/core';
 import { Modal, ModalOptions } from './Modal';
 import { formatNearAmount } from '@near-js/utils';
 
-export interface TransactionModalOptions extends Omit<ModalOptions, 'title'> {
+export interface Transaction {
   receiverId: string;
   actions: any[];
+}
+
+export interface TransactionModalOptions extends Omit<ModalOptions, 'title'> {
+  transactions: Transaction[];
   onApprove: () => Promise<void>;
   onReject: () => void;
 }
@@ -16,7 +20,9 @@ export class TransactionModal extends Modal {
   constructor(private options: TransactionModalOptions) {
     super({
       ...options,
-      title: 'Approve Transaction',
+      title: options.transactions.length > 1 
+        ? `Approve ${options.transactions.length} Transactions` 
+        : 'Approve Transaction',
     });
 
     this.onApprove = options.onApprove;
@@ -32,67 +38,86 @@ export class TransactionModal extends Modal {
     description.style.color = '#666';
     description.style.marginBottom = '24px';
     description.style.lineHeight = '1.5';
-    description.textContent = 'Review the transaction details below, then approve with your biometric authentication.';
+    description.textContent = this.options.transactions.length > 1
+      ? `Review the ${this.options.transactions.length} transactions below, then approve with your biometric authentication.`
+      : 'Review the transaction details below, then approve with your biometric authentication.';
     this.modal.appendChild(description);
 
-    // Transaction details card
-    const detailsCard = document.createElement('div');
-    detailsCard.style.backgroundColor = '#fff';
-    detailsCard.style.border = '1px solid #e0e0e0';
-    detailsCard.style.borderRadius = '12px';
-    detailsCard.style.padding = '20px';
-    detailsCard.style.marginBottom = '16px';
-
-    // Receiver
-    this.addDetailRow(detailsCard, 'To', this.options.receiverId);
-
-    // Actions
-    const actions = this.options.actions.map((action) => najActionToInternal(action));
-    actions.forEach((action, index) => {
-      const actionHeader = document.createElement('div');
-      actionHeader.style.fontWeight = '600';
-      actionHeader.style.marginTop = index === 0 ? '16px' : '20px';
-      actionHeader.style.marginBottom = '12px';
-      actionHeader.style.color = '#1a1a1a';
-      actionHeader.style.fontSize = '15px';
-      actionHeader.textContent = `Action ${index + 1}: ${action.type}`;
-      detailsCard.appendChild(actionHeader);
-
-      const actionDetails = document.createElement('div');
-      actionDetails.style.backgroundColor = '#f5f5f5';
-      actionDetails.style.borderRadius = '8px';
-      actionDetails.style.padding = '16px';
-
-      if (action.type === 'FunctionCall') {
-        this.addDetailRow(actionDetails, 'Method', action.params.methodName);
-        this.addDetailRow(actionDetails, 'Gas', this.formatGas(action.params.gas));
-        this.addDetailRow(actionDetails, 'Deposit', this.formatDeposit(action.params.deposit));
-        
-        // Show args if they exist
-        if (action.params.args) {
-          const argsStr = JSON.stringify(action.params.args);
-          if (argsStr.length < 200) {
-            this.addDetailRow(actionDetails, 'Arguments', argsStr);
-          } else {
-            this.addDetailRow(actionDetails, 'Arguments', argsStr.substring(0, 200) + '...');
-          }
-        }
-      } else if (action.type === 'Transfer') {
-        this.addDetailRow(actionDetails, 'Amount', formatNearAmount(action.params.deposit.toString()));
-      } else if (action.type === 'AddKey') {
-        this.addDetailRow(actionDetails, 'Public Key', action.params.publicKey.substring(0, 20) + '...');
-      } else if (action.type === 'DeleteKey') {
-        this.addDetailRow(actionDetails, 'Public Key', action.params.publicKey.substring(0, 20) + '...');
+    // Render each transaction
+    this.options.transactions.forEach((transaction, txIndex) => {
+      // Transaction header (if multiple transactions)
+      if (this.options.transactions.length > 1) {
+        const txHeader = document.createElement('div');
+        txHeader.style.fontWeight = '700';
+        txHeader.style.marginTop = txIndex === 0 ? '0' : '24px';
+        txHeader.style.marginBottom = '12px';
+        txHeader.style.color = '#1a1a1a';
+        txHeader.style.fontSize = '16px';
+        txHeader.textContent = `Transaction ${txIndex + 1}`;
+        this.modal.appendChild(txHeader);
       }
 
-      detailsCard.appendChild(actionDetails);
+      // Transaction details card
+      const detailsCard = document.createElement('div');
+      detailsCard.style.backgroundColor = '#fff';
+      detailsCard.style.border = '1px solid #e0e0e0';
+      detailsCard.style.borderRadius = '12px';
+      detailsCard.style.padding = '20px';
+      detailsCard.style.marginBottom = '16px';
+
+      // Receiver
+      this.addDetailRow(detailsCard, 'To', transaction.receiverId);
+
+      // Actions
+      const actions = transaction.actions.map((action) => najActionToInternal(action));
+      actions.forEach((action, index) => {
+        const actionHeader = document.createElement('div');
+        actionHeader.style.fontWeight = '600';
+        actionHeader.style.marginTop = index === 0 ? '16px' : '20px';
+        actionHeader.style.marginBottom = '12px';
+        actionHeader.style.color = '#1a1a1a';
+        actionHeader.style.fontSize = '15px';
+        actionHeader.textContent = `Action ${index + 1}: ${action.type}`;
+        detailsCard.appendChild(actionHeader);
+
+        const actionDetails = document.createElement('div');
+        actionDetails.style.backgroundColor = '#f5f5f5';
+        actionDetails.style.borderRadius = '8px';
+        actionDetails.style.padding = '16px';
+
+        if (action.type === 'FunctionCall') {
+          this.addDetailRow(actionDetails, 'Method', action.params.methodName);
+          this.addDetailRow(actionDetails, 'Gas', this.formatGas(action.params.gas));
+          this.addDetailRow(actionDetails, 'Deposit', this.formatDeposit(action.params.deposit));
+          
+          // Show args if they exist
+          if (action.params.args) {
+            const argsStr = JSON.stringify(action.params.args);
+            if (argsStr.length < 200) {
+              this.addDetailRow(actionDetails, 'Arguments', argsStr);
+            } else {
+              this.addDetailRow(actionDetails, 'Arguments', argsStr.substring(0, 200) + '...');
+            }
+          }
+        } else if (action.type === 'Transfer') {
+          this.addDetailRow(actionDetails, 'Amount', formatNearAmount(action.params.deposit.toString()));
+        } else if (action.type === 'AddKey') {
+          this.addDetailRow(actionDetails, 'Public Key', action.params.publicKey.substring(0, 20) + '...');
+        } else if (action.type === 'DeleteKey') {
+          this.addDetailRow(actionDetails, 'Public Key', action.params.publicKey.substring(0, 20) + '...');
+        }
+
+        detailsCard.appendChild(actionDetails);
+      });
+
+      this.modal.appendChild(detailsCard);
     });
 
-    this.modal.appendChild(detailsCard);
-
-    // Warning for sensitive operations
-    const hasSensitiveAction = this.options.actions.some(
-      (action) => action.type === 'DeleteKey' || action.type === 'DeleteAccount'
+    // Warning for sensitive operations (check all transactions)
+    const hasSensitiveAction = this.options.transactions.some(
+      (tx) => tx.actions.some(
+        (action) => action.type === 'DeleteKey' || action.type === 'DeleteAccount'
+      )
     );
 
     if (hasSensitiveAction) {
@@ -115,7 +140,9 @@ export class TransactionModal extends Modal {
     confirmationText.style.lineHeight = '1.5';
     confirmationText.style.marginBottom = '20px';
     confirmationText.style.textAlign = 'left';
-    confirmationText.textContent = "Review and confirm. You'll authenticate using your device's biometric system.";
+    confirmationText.textContent = this.options.transactions.length > 1
+      ? `Review and confirm all ${this.options.transactions.length} transactions. You'll authenticate using your device's biometric system.`
+      : "Review and confirm. You'll authenticate using your device's biometric system.";
     this.modal.appendChild(confirmationText);
 
     // Buttons
@@ -174,7 +201,10 @@ export class TransactionModal extends Modal {
 
   private async handleApprove() {
     try {
-      this.showLoading('Signing transaction with biometric...');
+      const message = this.options.transactions.length > 1
+        ? `Signing ${this.options.transactions.length} transactions with biometric...`
+        : 'Signing transaction with biometric...';
+      this.showLoading(message);
       await this.onApprove();
       // Modal will be closed by parent
     } catch (error) {
@@ -185,7 +215,9 @@ export class TransactionModal extends Modal {
       header.style.fontWeight = 'bold';
       header.style.marginBottom = '16px';
       header.style.color = '#1a1a1a';
-      header.textContent = 'Approve Transaction';
+      header.textContent = this.options.transactions.length > 1 
+        ? `Approve ${this.options.transactions.length} Transactions` 
+        : 'Approve Transaction';
       this.modal.appendChild(header);
       
       this.render();

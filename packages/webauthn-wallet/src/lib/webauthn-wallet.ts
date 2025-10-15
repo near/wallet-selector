@@ -1,6 +1,5 @@
 import { createKey, getKeys, isPassKeyAvailable } from "./webauthn-utils";
 import type { KeyPair } from "@near-js/crypto";
-import { baseDecode } from "@near-js/utils";
 import type { SelectorInit, BiometricAccount } from "./types";
 import { KeyPairSigner } from "@near-js/signers";
 import {
@@ -10,8 +9,8 @@ import {
   STORAGE_KEYS,
 } from "./utils";
 import { SignInModal, TransactionModal } from "./components";
-import { Action, SignedTransaction } from "@near-wallet-selector/core";
-import { createTransaction } from "@near-js/transactions";
+import { FinalExecutionOutcome, SignedTransaction, Transaction } from "@near-wallet-selector/core";
+import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { PublicKey } from "@near-js/crypto";
 
 const WebAuthnWallet: SelectorInit = async ({
@@ -165,11 +164,13 @@ const WebAuthnWallet: SelectorInit = async ({
     await storage.setItem(STORAGE_KEYS.ACCOUNTS_LIST, currentList);
   }
 
-  async function signTransactionWithBiometric(
+  async function signTransactionWithBiometric({
+    transactions,
+    accountId,
+  }: {
+    transactions: Transaction[],
     accountId: string,
-    receiverId: string,
-    actions: Action[]
-  ): Promise<SignedTransaction> {
+  }): Promise<SignedTransaction[]> {
     try {
       let keyPair: KeyPair;
 
@@ -199,31 +200,8 @@ const WebAuthnWallet: SelectorInit = async ({
       }
 
       const signer = new KeyPairSigner(keyPair);
-
-      const accessKey = await provider.query({
-        request_type: "view_access_key",
-        finality: "final",
-        account_id: accountId,
-        public_key: keyPair.getPublicKey().toString(),
-      }) as any;
-
-      const nonce = ++accessKey.nonce;
-
-      const block = await provider.block({ finality: "final" });
-      const recentBlockHash = block.header.hash;
-
-      const transaction = createTransaction(
-        accountId,
-        keyPair.getPublicKey(),
-        receiverId,
-        nonce,
-        actions,
-        baseDecode(recentBlockHash)
-      );
-
-      const [hash, signedTx] = await signer.signTransaction(transaction);
-
-      return signedTx;
+      const signedTransactions = await signTransactions(transactions, signer, options.network);
+      return signedTransactions;
     } catch (error) {
       logger.error("Transaction signing error:", error);
       throw error;
@@ -398,8 +376,10 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
-          receiverId: finalReceiverId,
-          actions,
+          transactions: [{
+            receiverId: finalReceiverId,
+            actions,
+          }],
           onApprove: async () => {
             try {
               if (!currentAccount) {
@@ -409,13 +389,16 @@ const WebAuthnWallet: SelectorInit = async ({
                 );
               }
 
-              const signedTx = await signTransactionWithBiometric(
-                currentAccount.accountId,
-                finalReceiverId,
-                actions
-              );
+              const signedTx = await signTransactionWithBiometric({
+                accountId: currentAccount.accountId,
+                transactions: [{
+                  signerId: currentAccount.accountId,
+                  receiverId: finalReceiverId,
+                  actions,
+                }],
+              });
 
-              const result = await provider.sendTransaction(signedTx);
+              const result = await provider.sendTransaction(signedTx[0]);
 
               resolve(result);
               modal.close();
@@ -445,7 +428,7 @@ const WebAuthnWallet: SelectorInit = async ({
       });
     },
 
-    async signAndSendTransactions(params) {
+    async signAndSendTransactions(params): Promise<Array<FinalExecutionOutcome>> {
       logger.log("WebAuthnWallet:signAndSendTransactions", params);
 
       if (!currentAccount) {
@@ -455,68 +438,71 @@ const WebAuthnWallet: SelectorInit = async ({
         );
       }
 
-      // For BrowserWallet interface, we process transactions sequentially
-      // Each transaction will show its own approval modal
-      const signAndSendTx = async (tx: any) => {
-        const finalReceiverId = tx.receiverId;
-
-        if (!finalReceiverId) {
+      // Validate all transactions first
+      for (const tx of params.transactions) {
+        if (!tx.receiverId) {
           throw new Error("No receiver ID specified");
         }
-
-        return new Promise((resolve, reject) => {
-          const modal = new TransactionModal({
-            receiverId: finalReceiverId,
-            actions: tx.actions,
-            onApprove: async () => {
-              try {
-                if (!currentAccount) {
-                  throw new WebAuthnWalletError(
-                    ERROR_CODES.ACCOUNT_NOT_FOUND,
-                    "Account signed out during transaction"
-                  );
-                }
-
-                const signedTx = await signTransactionWithBiometric(
-                  currentAccount.accountId,
-                  finalReceiverId,
-                  tx.actions
-                );
-
-                const result = await provider.sendTransaction(signedTx);
-                resolve(result);
-                modal.close();
-              } catch (error) {
-                reject(error);
-                modal.close();
-              }
-            },
-            onReject: () => {
-              reject(
-                new WebAuthnWalletError(
-                  ERROR_CODES.USER_CANCELLED,
-                  "User rejected transaction"
-                )
-              );
-            },
-            onClose: () => {
-              reject(
-                new WebAuthnWalletError(
-                  ERROR_CODES.USER_CANCELLED,
-                  "User closed transaction modal"
-                )
-              );
-            },
-          });
-          modal.show();
-        });
-      };
-
-      for (const tx of params.transactions) {
-        await signAndSendTx(tx);
       }
 
-      return;
+      // Show a single modal with all transactions
+      return new Promise((resolve, reject) => {
+        const modal = new TransactionModal({
+          transactions: params.transactions.map(tx => ({
+            receiverId: tx.receiverId,
+            actions: tx.actions,
+          })),
+          onApprove: async () => {
+            try {
+              if (!currentAccount) {
+                throw new WebAuthnWalletError(
+                  ERROR_CODES.ACCOUNT_NOT_FOUND,
+                  "Account signed out during transaction"
+                );
+              }
+
+              const signedTxs = await signTransactionWithBiometric({
+                accountId: currentAccount.accountId,
+                transactions: params.transactions.map(tx => ({
+                  signerId: currentAccount!.accountId,
+                  receiverId: tx.receiverId,
+                  actions: tx.actions,
+                })),
+              });
+
+              const results: Array<FinalExecutionOutcome> = [];
+
+              for (let i = 0; i < signedTxs.length; i++) {
+                results.push(await provider.sendTransaction(signedTxs[i]));
+              }
+        
+              // @ts-ignore
+              resolve(results);
+              modal.close();
+            } catch (error) {
+              reject(error);
+              modal.close();
+            }
+          },
+          onReject: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User rejected transactions"
+              )
+            );
+          },
+          onClose: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User closed transaction modal"
+              )
+            );
+          },
+        });
+        modal.show();
+      });
     },
 
     async verifyOwner({ message }) {
