@@ -221,7 +221,7 @@ const Content: React.FC = () => {
 
       return addMessages(
         message.value,
-        parseNearAmount(donation.value) || "0",
+        donation.value || "0",
         multiple.checked
       )
         .then(() => {
