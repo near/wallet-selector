@@ -1,6 +1,5 @@
 import { KeyPairEd25519 } from "@near-js/crypto";
 import { baseEncode } from "@near-js/utils";
-import { sha256 } from "@noble/hashes/sha256";
 import { ed25519 } from "@noble/curves/ed25519";
 
 interface StorageService {
@@ -28,12 +27,9 @@ function generateChallenge(): ArrayBuffer {
  * Derive a NEAR keypair from WebAuthn credential ID
  * This is deterministic - same credentialId always produces the same keypair
  */
-function deriveKeyPairFromCredentialId(credentialId: ArrayBuffer): KeyPairEd25519 {
-  // Use the credential ID as entropy
-  const credentialIdBytes = new Uint8Array(credentialId);
-
-  // Derive NEAR Ed25519 keypair from the credential ID
-  const secretKey = sha256(credentialIdBytes);
+async function deriveKeyPairFromCredentialId(credentialId: ArrayBuffer): Promise<KeyPairEd25519> {
+  const hashBuffer = await crypto.subtle.digest("SHA-256", credentialId);
+  const secretKey = new Uint8Array(hashBuffer);
   const publicKey = ed25519.getPublicKey(secretKey);
 
   // Create NEAR KeyPair data (64 bytes: 32 secret + 32 public)
@@ -41,7 +37,8 @@ function deriveKeyPairFromCredentialId(credentialId: ArrayBuffer): KeyPairEd2551
   keyPairData.set(secretKey, 0);
   keyPairData.set(publicKey, 32);
 
-  return new KeyPairEd25519(baseEncode(keyPairData));
+  const keyPair = new KeyPairEd25519(baseEncode(keyPairData));
+  return keyPair;
 }
 
 export async function createKey(username: string, storage?: StorageService): Promise<KeyPairEd25519> {
@@ -87,7 +84,7 @@ export async function createKey(username: string, storage?: StorageService): Pro
 
     // Derive NEAR keypair from the credential ID
     // This is deterministic - same credential ID = same keypair
-    const keyPair = deriveKeyPairFromCredentialId(credential.rawId);
+    const keyPair = await deriveKeyPairFromCredentialId(credential.rawId);
 
     // Store only the public key
     if (storage) {
@@ -110,13 +107,7 @@ export async function getKeys(username: string, storage?: StorageService): Promi
   if (!navigator.credentials || !navigator.credentials.get) {
     throw new Error("WebAuthn is not supported in this browser");
   }
-
   const challenge = generateChallenge();
-
-  const storedData = storage
-    ? await storage.getItem<StoredCredentialData>(`webauthn_credential_${username}`)
-    : null;
-
   const publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions = {
     challenge,
     userVerification: "preferred",
@@ -128,22 +119,14 @@ export async function getKeys(username: string, storage?: StorageService): Promi
       publicKey: publicKeyCredentialRequestOptions,
     }) as PublicKeyCredential;
 
-    if (!credential) {
+    const response = credential.response as AuthenticatorAssertionResponse;
+    const accountId = new TextDecoder().decode(response.userHandle as any);
+
+    if (!credential || !accountId) {
       throw new PasskeyProcessCanceled("Failed to get credential");
     }
 
-    if (!storedData) {
-      throw new Error("No stored credential data found for this username");
-    }
-
-    // WebAuthn authentication succeeded, derive the keypair from credential ID
-    // This produces the same keypair that was created during registration
-    const keyPair = deriveKeyPairFromCredentialId(credential.rawId);
-
-    // Verify the public key matches what we stored
-    if (keyPair.getPublicKey().toString() !== storedData.publicKey) {
-      throw new Error("Public key mismatch - keypair derivation failed");
-    }
+    const keyPair = await deriveKeyPairFromCredentialId(credential.rawId);
 
     return [keyPair];
   } catch (error) {

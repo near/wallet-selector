@@ -125,13 +125,13 @@ const WebAuthnWallet: SelectorInit = async ({
     }
   }
 
-  async function promptForAccountId(previousAccounts: BiometricAccount[]): Promise<{ accountId: string; isFromList: boolean }> {
+  async function promptForAccountId(previousAccounts: BiometricAccount[]): Promise<{ accountId: string; usingExistingAccount: boolean }> {
     return new Promise((resolve, reject) => {
       const modal = new SignInModal({
         networkId: options.network.networkId,
         previousAccounts,
-        onSubmit: async (accountId, isFromList = false) => {
-          resolve({ accountId, isFromList });
+        onSubmit: async (accountId, usingExistingAccount = false) => {
+          resolve({ accountId, usingExistingAccount });
           modal.close();
         },
         onClose: () => {
@@ -222,9 +222,9 @@ const WebAuthnWallet: SelectorInit = async ({
           STORAGE_KEYS.ACCOUNTS_LIST
         ) || [];
 
-        const { accountId, isFromList } = await promptForAccountId(previousAccounts);
+        let { accountId, usingExistingAccount } = await promptForAccountId(previousAccounts);
 
-        if (!isValidAccountId(accountId)) {
+        if (!isValidAccountId(accountId) && !usingExistingAccount) {
           throw new WebAuthnWalletError(
             ERROR_CODES.INVALID_ACCOUNT_ID,
             "Invalid account ID format"
@@ -232,8 +232,12 @@ const WebAuthnWallet: SelectorInit = async ({
         }
 
         // If user selected from the list of previous accounts
-        if (isFromList) {
+        if (usingExistingAccount) {
           logger.log("Signing in with previously used account...");
+
+          // Get keys with biometric authentication
+          const keys = await getKeys(accountId, storage);
+          accountId = previousAccounts.find((acc) => acc.publicKey === keys[0].getPublicKey().toString())?.accountId || "";
 
           // Verify the account still exists on chain
           const accountExists = await checkAccountExists(accountId);
@@ -244,8 +248,6 @@ const WebAuthnWallet: SelectorInit = async ({
             );
           }
 
-          // Get keys with biometric authentication
-          const keys = await getKeys(accountId, storage);
           const validKey = await findValidKey(accountId, keys);
 
           if (!validKey) {

@@ -1097,9 +1097,6 @@ importers:
       '@near-js/signers':
         specifier: ^2.3.3
         version: 2.3.3(@near-js/crypto@2.3.3(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0)))(@near-js/keystores@2.3.0(@near-js/crypto@2.3.3(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0)))(@near-js/types@2.3.0))(@near-js/transactions@2.3.3(@near-js/crypto@2.3.3(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0)))
-      '@near-js/transactions':
-        specifier: ^2.3.3
-        version: 2.3.3(@near-js/crypto@2.3.3(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0)))(@near-js/types@2.3.0)(@near-js/utils@2.3.3(@near-js/types@2.3.0))
       '@near-js/utils':
         specifier: ^2.3.3
         version: 2.3.3(@near-js/types@2.3.0)
@@ -1112,9 +1109,6 @@ importers:
       '@noble/curves':
         specifier: ^1.8.1
         version: 1.9.4
-      '@noble/hashes':
-        specifier: ^1.7.1
-        version: 1.7.1
     publishDirectory: ../../dist/packages/webauthn-wallet
 
   packages/welldone-wallet:
