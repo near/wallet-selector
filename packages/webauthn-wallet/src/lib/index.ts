@@ -5,7 +5,6 @@ import type {
 import type { WebAuthnWalletOptions } from "./types";
 import { WebAuthnWallet } from "./webauthn-wallet";
 import icon from "./icon";
-import { isPassKeyAvailable } from "./webauthn-utils";
 export { icon };
 export type { WebAuthnWalletOptions };
 
@@ -15,8 +14,6 @@ export function setupWebAuthnWallet({
   iconUrl = icon,
 }: WebAuthnWalletOptions): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const available = await isPassKeyAvailable();
-
     return {
       id: "webauthn-wallet",
       type: "injected",
@@ -26,8 +23,8 @@ export function setupWebAuthnWallet({
           "Sign in with biometric authentication (fingerprint, face, or device PIN)",
         iconUrl,
         deprecated,
-        available,
-        walletUrl: window.location.origin, 
+        available: true,
+        walletUrl: window.location.origin,
         downloadUrl: window.location.origin,
       },
       init: (config) =>
