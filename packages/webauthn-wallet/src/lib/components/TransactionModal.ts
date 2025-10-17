@@ -124,7 +124,7 @@ export class TransactionModal extends Modal {
           if (action.functionCall.args) {
             const argsStr =
               typeof action.functionCall.args === "object" &&
-                action.functionCall.args instanceof Uint8Array
+              action.functionCall.args instanceof Uint8Array
                 ? new TextDecoder().decode(action.functionCall.args)
                 : JSON.stringify(action.functionCall.args);
             if (argsStr.length < 200) {
