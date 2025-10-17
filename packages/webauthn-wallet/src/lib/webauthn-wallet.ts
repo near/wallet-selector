@@ -553,10 +553,58 @@ const WebAuthnWallet: SelectorInit = async ({
     async signTransaction(transaction) {
       logger.log("WebAuthnWallet:signTransaction", { transaction });
 
-      // TODO: implement this using modal
-      const keyPair = await getKeyPairForSigning();
-      const signer = new KeyPairSigner(keyPair);
-      return await signer.signTransaction(transaction);
+      if (!currentAccount) {
+        throw new WebAuthnWalletError(
+          ERROR_CODES.ACCOUNT_NOT_FOUND,
+          "No account signed in"
+        );
+      }
+
+      return new Promise((resolve, reject) => {
+        const modal = new TransactionModal({
+          transactions: [{
+            receiverId: transaction.receiverId,
+            actions: transaction.actions,
+          }],
+          onApprove: async () => {
+            try {
+              if (!currentAccount) {
+                throw new WebAuthnWalletError(
+                  ERROR_CODES.ACCOUNT_NOT_FOUND,
+                  "Account signed out during transaction"
+                );
+              }
+
+              const keyPair = await getKeyPairForSigning();
+              const signer = new KeyPairSigner(keyPair);
+              const signedTx = await signer.signTransaction(transaction);
+
+              resolve(signedTx);
+              modal.close();
+            } catch (error) {
+              reject(error);
+              modal.close();
+            }
+          },
+          onReject: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User rejected transaction"
+              )
+            );
+          },
+          onClose: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User closed transaction modal"
+              )
+            );
+          },
+        });
+        modal.show();
+      });
     },
 
     async signDelegateAction(delegateAction) {
