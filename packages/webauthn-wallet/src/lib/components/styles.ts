@@ -1,7 +1,7 @@
 // Add keyframe animations and mobile styles to document
 export function injectStyles() {
   if (typeof document === 'undefined') return;
-  
+
   const styleId = 'webauthn-wallet-animations';
   if (document.getElementById(styleId)) return;
 
@@ -60,12 +60,11 @@ export function injectStyles() {
       height: 32px;
     }
 
-    .webauthn-modal__close:hover {
+    .webauthn-modal__close:hover,
+    .webauthn-modal__close:active,
+    .webauthn-modal__close:focus {
       top: 16px;
       right: 16px;
-    }
-
-    .webauthn-modal__close:hover {
       color: #1a1a1a;
     }
 

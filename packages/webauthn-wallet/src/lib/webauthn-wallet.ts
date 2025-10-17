@@ -8,7 +8,7 @@ import {
   ERROR_CODES,
   STORAGE_KEYS,
 } from "./utils";
-import { SignInModal, TransactionModal } from "./components";
+import { SignInModal, TransactionModal, MessageSigningModal, DelegateActionModal } from "./components";
 import { FinalExecutionOutcome, SignedTransaction, Transaction } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { PublicKey } from "@near-js/crypto";
@@ -505,17 +505,70 @@ const WebAuthnWallet: SelectorInit = async ({
     async signMessage({ message, recipient, nonce }) {
       logger.log("WebAuthnWallet:signMessage", { message, recipient, nonce });
 
-      const keyPair = await getKeyPairForSigning();
-      const publicKey = keyPair.getPublicKey();
+      if (!currentAccount) {
+        throw new WebAuthnWalletError(
+          ERROR_CODES.ACCOUNT_NOT_FOUND,
+          "No account signed in"
+        );
+      }
 
-      const signer = new KeyPairSigner(keyPair);
-      const signatureData = await signer.signNep413Message(message, currentAccount!.accountId, recipient, nonce as any);
+      return new Promise((resolve, reject) => {
+        const modal = new MessageSigningModal({
+          message,
+          recipient,
+          nonce: nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
+          onApprove: async () => {
+            try {
+              if (!currentAccount) {
+                throw new WebAuthnWalletError(
+                  ERROR_CODES.ACCOUNT_NOT_FOUND,
+                  "Account signed out during signing"
+                );
+              }
 
-      return {
-        accountId: currentAccount!.accountId,
-        publicKey: publicKey.toString(),
-        signature: Buffer.from(signatureData.signature).toString("base64"),
-      };
+              const keyPair = await getKeyPairForSigning();
+              const publicKey = keyPair.getPublicKey();
+
+              const signer = new KeyPairSigner(keyPair);
+              const signatureData = await signer.signNep413Message(
+                message,
+                currentAccount.accountId,
+                recipient,
+                nonce as any
+              );
+
+              const result = {
+                accountId: currentAccount.accountId,
+                publicKey: publicKey.toString(),
+                signature: Buffer.from(signatureData.signature).toString("base64"),
+              };
+
+              resolve(result);
+              modal.close();
+            } catch (error) {
+              reject(error);
+              modal.close();
+            }
+          },
+          onReject: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User rejected message signing"
+              )
+            );
+          },
+          onClose: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User closed message signing modal"
+              )
+            );
+          },
+        });
+        modal.show();
+      });
     },
 
     async getPublicKey(): Promise<PublicKey> {
@@ -537,17 +590,64 @@ const WebAuthnWallet: SelectorInit = async ({
         callbackUrl,
       });
 
-      // TODO: implement this using modal
-      const keyPair = await getKeyPairForSigning();
-      const signer = new KeyPairSigner(keyPair);
-      const signatureData = await signer.signNep413Message(
-        message,
-        currentAccount!.accountId,
-        recipient, nonce as any,
-        callbackUrl
-      );
+      if (!currentAccount) {
+        throw new WebAuthnWalletError(
+          ERROR_CODES.ACCOUNT_NOT_FOUND,
+          "No account signed in"
+        );
+      }
 
-      return signatureData;
+      return new Promise((resolve, reject) => {
+        const modal = new MessageSigningModal({
+          message,
+          recipient,
+          nonce: nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
+          callbackUrl,
+          onApprove: async () => {
+            try {
+              if (!currentAccount) {
+                throw new WebAuthnWalletError(
+                  ERROR_CODES.ACCOUNT_NOT_FOUND,
+                  "Account signed out during signing"
+                );
+              }
+
+              const keyPair = await getKeyPairForSigning();
+              const signer = new KeyPairSigner(keyPair);
+              const signatureData = await signer.signNep413Message(
+                message,
+                currentAccount.accountId,
+                recipient,
+                nonce as any,
+                callbackUrl
+              );
+
+              resolve(signatureData);
+              modal.close();
+            } catch (error) {
+              reject(error);
+              modal.close();
+            }
+          },
+          onReject: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User rejected message signing"
+              )
+            );
+          },
+          onClose: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User closed message signing modal"
+              )
+            );
+          },
+        });
+        modal.show();
+      });
     },
 
     async signTransaction(transaction) {
@@ -610,10 +710,55 @@ const WebAuthnWallet: SelectorInit = async ({
     async signDelegateAction(delegateAction) {
       logger.log("WebAuthnWallet:signDelegateAction", { delegateAction });
 
-      // TODO: implement this using modal
-      const keyPair = await getKeyPairForSigning();
-      const signer = new KeyPairSigner(keyPair);
-      return await signer.signDelegateAction(delegateAction);
+      if (!currentAccount) {
+        throw new WebAuthnWalletError(
+          ERROR_CODES.ACCOUNT_NOT_FOUND,
+          "No account signed in"
+        );
+      }
+
+      return new Promise((resolve, reject) => {
+        const modal = new DelegateActionModal({
+          delegateAction,
+          onApprove: async () => {
+            try {
+              if (!currentAccount) {
+                throw new WebAuthnWalletError(
+                  ERROR_CODES.ACCOUNT_NOT_FOUND,
+                  "Account signed out during signing"
+                );
+              }
+
+              const keyPair = await getKeyPairForSigning();
+              const signer = new KeyPairSigner(keyPair);
+              const signedDelegateAction = await signer.signDelegateAction(delegateAction);
+
+              resolve(signedDelegateAction);
+              modal.close();
+            } catch (error) {
+              reject(error);
+              modal.close();
+            }
+          },
+          onReject: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User rejected delegate action"
+              )
+            );
+          },
+          onClose: () => {
+            reject(
+              new WebAuthnWalletError(
+                ERROR_CODES.USER_CANCELLED,
+                "User closed delegate action modal"
+              )
+            );
+          },
+        });
+        modal.show();
+      });
     },
   };
 };
