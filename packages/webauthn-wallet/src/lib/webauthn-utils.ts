@@ -27,7 +27,9 @@ function generateChallenge(): ArrayBuffer {
  * Derive a NEAR keypair from WebAuthn credential ID
  * This is deterministic - same credentialId always produces the same keypair
  */
-async function deriveKeyPairFromCredentialId(credentialId: ArrayBuffer): Promise<KeyPairEd25519> {
+async function deriveKeyPairFromCredentialId(
+  credentialId: ArrayBuffer
+): Promise<KeyPairEd25519> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", credentialId);
   const secretKey = new Uint8Array(hashBuffer);
   const publicKey = ed25519.getPublicKey(secretKey);
@@ -41,7 +43,10 @@ async function deriveKeyPairFromCredentialId(credentialId: ArrayBuffer): Promise
   return keyPair;
 }
 
-export async function createKey(username: string, storage?: StorageService): Promise<KeyPairEd25519> {
+export async function createKey(
+  username: string,
+  storage?: StorageService
+): Promise<KeyPairEd25519> {
   if (!navigator.credentials || !navigator.credentials.create) {
     throw new Error("WebAuthn is not supported in this browser");
   }
@@ -49,34 +54,35 @@ export async function createKey(username: string, storage?: StorageService): Pro
   const challenge = generateChallenge();
   const userId = new TextEncoder().encode(username);
 
-  const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
-    challenge,
-    rp: {
-      name: "NEAR Wallet Selector",
-      id: window.location.hostname,
-    },
-    user: {
-      id: userId,
-      name: username,
-      displayName: username,
-    },
-    pubKeyCredParams: [
-      { alg: -7, type: "public-key" }, // ES256
-      { alg: -257, type: "public-key" }, // RS256
-    ],
-    authenticatorSelection: {
-      authenticatorAttachment: "platform",
-      userVerification: "preferred",
-      requireResidentKey: true,
-    },
-    timeout: 90000,
-    attestation: "none",
-  };
+  const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions =
+    {
+      challenge,
+      rp: {
+        name: "NEAR Wallet Selector",
+        id: window.location.hostname,
+      },
+      user: {
+        id: userId,
+        name: username,
+        displayName: username,
+      },
+      pubKeyCredParams: [
+        { alg: -7, type: "public-key" }, // ES256
+        { alg: -257, type: "public-key" }, // RS256
+      ],
+      authenticatorSelection: {
+        authenticatorAttachment: "platform",
+        userVerification: "preferred",
+        requireResidentKey: true,
+      },
+      timeout: 90000,
+      attestation: "none",
+    };
 
   try {
-    const credential = await navigator.credentials.create({
+    const credential = (await navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions,
-    }) as PublicKeyCredential;
+    })) as PublicKeyCredential;
 
     if (!credential) {
       throw new PasskeyProcessCanceled("Failed to create credential");
@@ -103,7 +109,10 @@ export async function createKey(username: string, storage?: StorageService): Pro
   }
 }
 
-export async function getKeys(username: string, storage?: StorageService): Promise<KeyPairEd25519[]> {
+export async function getKeys(
+  username: string,
+  storage?: StorageService
+): Promise<Array<KeyPairEd25519>> {
   if (!navigator.credentials || !navigator.credentials.get) {
     throw new Error("WebAuthn is not supported in this browser");
   }
@@ -115,9 +124,9 @@ export async function getKeys(username: string, storage?: StorageService): Promi
   };
 
   try {
-    const credential = await navigator.credentials.get({
+    const credential = (await navigator.credentials.get({
       publicKey: publicKeyCredentialRequestOptions,
-    }) as PublicKeyCredential;
+    })) as PublicKeyCredential;
 
     const response = credential.response as AuthenticatorAssertionResponse;
     const accountId = new TextDecoder().decode(response.userHandle as any);
@@ -142,7 +151,10 @@ export function isPassKeyAvailable(): Promise<boolean> {
     return Promise.resolve(false);
   }
 
-  return window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable?.() || Promise.resolve(false);
+  return (
+    window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable?.() ||
+    Promise.resolve(false)
+  );
 }
 
 export async function isDeviceSupported(): Promise<boolean> {

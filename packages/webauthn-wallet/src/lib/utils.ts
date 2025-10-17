@@ -1,19 +1,44 @@
-/**
- * Generate a human-readable random account ID for the user
- * Format: {adjective}-{noun}-{number}.near or {adjective}-{noun}-{number}.testnet
- */
 export function generateAccountId(networkId: string): string {
   const adjectives = [
-    "happy", "bright", "swift", "calm", "bold", "wise", "kind", "cool",
-    "smart", "quick", "brave", "gentle", "strong", "clever", "fresh", "warm"
+    "happy",
+    "bright",
+    "swift",
+    "calm",
+    "bold",
+    "wise",
+    "kind",
+    "cool",
+    "smart",
+    "quick",
+    "brave",
+    "gentle",
+    "strong",
+    "clever",
+    "fresh",
+    "warm",
   ];
 
   const nouns = [
-    "wallet", "account", "user", "holder", "keeper", "saver", "trader", "buyer",
-    "owner", "client", "member", "person", "friend", "helper", "worker", "player"
+    "wallet",
+    "account",
+    "user",
+    "holder",
+    "keeper",
+    "saver",
+    "trader",
+    "buyer",
+    "owner",
+    "client",
+    "member",
+    "person",
+    "friend",
+    "helper",
+    "worker",
+    "player",
   ];
 
-  const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const randomAdjective =
+    adjectives[Math.floor(Math.random() * adjectives.length)];
   const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
   const randomNumber = Math.floor(Math.random() * 10000);
 
@@ -38,11 +63,7 @@ export const STORAGE_KEYS = {
 } as const;
 
 export class WebAuthnWalletError extends Error {
-  constructor(
-    public code: string,
-    message: string,
-    public details?: unknown
-  ) {
+  constructor(public code: string, message: string, public details?: unknown) {
     super(message);
     this.name = "WebAuthnWalletError";
   }
@@ -56,5 +77,3 @@ export const ERROR_CODES = {
   INVALID_ACCOUNT_ID: "INVALID_ACCOUNT_ID",
   NETWORK_ERROR: "NETWORK_ERROR",
 } as const;
-
-

@@ -1,11 +1,15 @@
 // Add keyframe animations and mobile styles to document
 export function injectStyles() {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") {
+    return;
+  }
 
-  const styleId = 'webauthn-wallet-animations';
-  if (document.getElementById(styleId)) return;
+  const styleId = "webauthn-wallet-animations";
+  if (document.getElementById(styleId)) {
+    return;
+  }
 
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.id = styleId;
   style.textContent = `
     /* Base classes */
@@ -222,6 +226,3 @@ export function injectStyles() {
   `;
   document.head.appendChild(style);
 }
-
-
-

@@ -44,5 +44,3 @@ export type SelectorInit = WalletBehaviourFactory<
   InjectedWallet,
   { relayerUrl?: string }
 >;
-
-

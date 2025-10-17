@@ -8,8 +8,17 @@ import {
   ERROR_CODES,
   STORAGE_KEYS,
 } from "./utils";
-import { SignInModal, TransactionModal, MessageSigningModal, DelegateActionModal } from "./components";
-import { FinalExecutionOutcome, SignedTransaction, Transaction } from "@near-wallet-selector/core";
+import {
+  SignInModal,
+  TransactionModal,
+  MessageSigningModal,
+  DelegateActionModal,
+} from "./components";
+import type {
+  FinalExecutionOutcome,
+  SignedTransaction,
+  Transaction,
+} from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
 import { PublicKey } from "@near-js/crypto";
 
@@ -59,11 +68,11 @@ const WebAuthnWallet: SelectorInit = async ({
     possibleKeys: Array<KeyPair>
   ): Promise<string | null> {
     try {
-      const account = await provider.query({
+      const account = (await provider.query({
         request_type: "view_access_key_list",
         finality: "final",
         account_id: accountId,
-      }) as any;
+      })) as any;
 
       for (const possibleKey of possibleKeys) {
         const keyExists = account.keys.some(
@@ -125,7 +134,9 @@ const WebAuthnWallet: SelectorInit = async ({
     }
   }
 
-  async function promptForAccountId(previousAccounts: BiometricAccount[]): Promise<{ accountId: string; usingExistingAccount: boolean }> {
+  async function promptForAccountId(
+    previousAccounts: Array<BiometricAccount>
+  ): Promise<{ accountId: string; usingExistingAccount: boolean }> {
     return new Promise((resolve, reject) => {
       const modal = new SignInModal({
         networkId: options.network.networkId,
@@ -135,10 +146,12 @@ const WebAuthnWallet: SelectorInit = async ({
           modal.close();
         },
         onClose: () => {
-          reject(new WebAuthnWalletError(
-            ERROR_CODES.USER_CANCELLED,
-            'User closed sign-in modal'
-          ));
+          reject(
+            new WebAuthnWalletError(
+              ERROR_CODES.USER_CANCELLED,
+              "User closed sign-in modal"
+            )
+          );
         },
       });
       modal.show();
@@ -146,13 +159,14 @@ const WebAuthnWallet: SelectorInit = async ({
   }
 
   async function addAccountToList(account: BiometricAccount): Promise<void> {
-    const currentList = await storage.getItem<BiometricAccount[]>(
-      STORAGE_KEYS.ACCOUNTS_LIST
-    ) || [];
+    const currentList =
+      (await storage.getItem<Array<BiometricAccount>>(
+        STORAGE_KEYS.ACCOUNTS_LIST
+      )) || [];
 
     // Check if account already exists (update it)
     const existingIndex = currentList.findIndex(
-      acc => acc.accountId === account.accountId
+      (acc) => acc.accountId === account.accountId
     );
 
     if (existingIndex >= 0) {
@@ -182,15 +196,17 @@ const WebAuthnWallet: SelectorInit = async ({
     if (!validKey) {
       throw new WebAuthnWalletError(
         ERROR_CODES.ACCOUNT_NOT_FOUND,
-        'No valid key found for this account'
+        "No valid key found for this account"
       );
     }
 
-    const foundKey = keys.find((k: KeyPair) => k.getPublicKey().toString() === validKey);
+    const foundKey = keys.find(
+      (k: KeyPair) => k.getPublicKey().toString() === validKey
+    );
     if (!foundKey) {
       throw new WebAuthnWalletError(
         ERROR_CODES.ACCOUNT_NOT_FOUND,
-        'Could not retrieve biometric key'
+        "Could not retrieve biometric key"
       );
     }
 
@@ -199,12 +215,16 @@ const WebAuthnWallet: SelectorInit = async ({
   }
 
   async function signTransactionWithBiometric(
-    transactions: Array<Transaction>,
-  ): Promise<SignedTransaction[]> {
+    transactions: Array<Transaction>
+  ): Promise<Array<SignedTransaction>> {
     try {
       const keyPair = await getKeyPairForSigning();
       const signer = new KeyPairSigner(keyPair);
-      const signedTransactions = await signTransactions(transactions, signer, options.network);
+      const signedTransactions = await signTransactions(
+        transactions,
+        signer,
+        options.network
+      );
       return signedTransactions;
     } catch (error) {
       logger.error("Transaction signing error:", error);
@@ -218,11 +238,14 @@ const WebAuthnWallet: SelectorInit = async ({
 
       try {
         // Get list of previously used accounts
-        const previousAccounts = await storage.getItem<BiometricAccount[]>(
-          STORAGE_KEYS.ACCOUNTS_LIST
-        ) || [];
+        const previousAccounts =
+          (await storage.getItem<Array<BiometricAccount>>(
+            STORAGE_KEYS.ACCOUNTS_LIST
+          )) || [];
 
-        let { accountId, usingExistingAccount } = await promptForAccountId(previousAccounts);
+        let { accountId, usingExistingAccount } = await promptForAccountId(
+          previousAccounts
+        );
 
         if (!isValidAccountId(accountId) && !usingExistingAccount) {
           throw new WebAuthnWalletError(
@@ -237,7 +260,10 @@ const WebAuthnWallet: SelectorInit = async ({
 
           // Get keys with biometric authentication
           const keys = await getKeys(accountId, storage);
-          accountId = previousAccounts.find((acc) => acc.publicKey === keys[0].getPublicKey().toString())?.accountId || "";
+          accountId =
+            previousAccounts.find(
+              (acc) => acc.publicKey === keys[0].getPublicKey().toString()
+            )?.accountId || "";
 
           // Verify the account still exists on chain
           const accountExists = await checkAccountExists(accountId);
@@ -257,9 +283,10 @@ const WebAuthnWallet: SelectorInit = async ({
             );
           }
           // Store the KeyPair for transaction signing
-          currentKeyPair = keys.find((k: KeyPair) =>
-            k.getPublicKey().toString() === validKey
-          ) || null;
+          currentKeyPair =
+            keys.find(
+              (k: KeyPair) => k.getPublicKey().toString() === validKey
+            ) || null;
 
           currentAccount = {
             accountId,
@@ -272,7 +299,7 @@ const WebAuthnWallet: SelectorInit = async ({
           if (accountExists) {
             logger.log("Account exists, signing in...");
 
-            const keys = await getKeys(accountId, storage) as any;
+            const keys = (await getKeys(accountId, storage)) as any;
             const validKey = await findValidKey(accountId, keys);
 
             if (!validKey) {
@@ -283,8 +310,8 @@ const WebAuthnWallet: SelectorInit = async ({
             }
 
             // Store the KeyPair for transaction signing
-            currentKeyPair = keys.find((k: KeyPair) =>
-              k.getPublicKey().toString() === validKey
+            currentKeyPair = keys.find(
+              (k: KeyPair) => k.getPublicKey().toString() === validKey
             );
 
             currentAccount = {
@@ -347,7 +374,6 @@ const WebAuthnWallet: SelectorInit = async ({
       emitter.emit("signedOut", null);
     },
 
-
     async getAccounts() {
       logger.log("WebAuthnWallet:getAccounts");
       return currentAccount ? [currentAccount] : [];
@@ -382,10 +408,12 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
-          transactions: [{
-            receiverId: finalReceiverId,
-            actions,
-          }],
+          transactions: [
+            {
+              receiverId: finalReceiverId,
+              actions,
+            },
+          ],
           onApprove: async () => {
             try {
               if (!currentAccount) {
@@ -395,11 +423,13 @@ const WebAuthnWallet: SelectorInit = async ({
                 );
               }
 
-              const signedTx = await signTransactionWithBiometric([{
-                signerId: currentAccount.accountId,
-                receiverId: finalReceiverId,
-                actions,
-              }]);
+              const signedTx = await signTransactionWithBiometric([
+                {
+                  signerId: currentAccount.accountId,
+                  receiverId: finalReceiverId,
+                  actions,
+                },
+              ]);
 
               const result = await provider.sendTransaction(signedTx[0]);
 
@@ -431,7 +461,9 @@ const WebAuthnWallet: SelectorInit = async ({
       });
     },
 
-    async signAndSendTransactions(params): Promise<Array<FinalExecutionOutcome>> {
+    async signAndSendTransactions(
+      params
+    ): Promise<Array<FinalExecutionOutcome>> {
       logger.log("WebAuthnWallet:signAndSendTransactions", params);
 
       if (!currentAccount) {
@@ -443,7 +475,7 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
-          transactions: params.transactions.map(tx => ({
+          transactions: params.transactions.map((tx) => ({
             receiverId: tx.receiverId,
             actions: tx.actions,
           })),
@@ -456,11 +488,13 @@ const WebAuthnWallet: SelectorInit = async ({
                 );
               }
 
-              const signedTxs = await signTransactionWithBiometric(params.transactions.map(tx => ({
-                signerId: currentAccount!.accountId,
-                receiverId: tx.receiverId,
-                actions: tx.actions,
-              })));
+              const signedTxs = await signTransactionWithBiometric(
+                params.transactions.map((tx) => ({
+                  signerId: currentAccount!.accountId,
+                  receiverId: tx.receiverId,
+                  actions: tx.actions,
+                }))
+              );
 
               const results: Array<FinalExecutionOutcome> = [];
 
@@ -516,7 +550,8 @@ const WebAuthnWallet: SelectorInit = async ({
         const modal = new MessageSigningModal({
           message,
           recipient,
-          nonce: nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
+          nonce:
+            nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
           onApprove: async () => {
             try {
               if (!currentAccount) {
@@ -540,7 +575,9 @@ const WebAuthnWallet: SelectorInit = async ({
               const result = {
                 accountId: currentAccount.accountId,
                 publicKey: publicKey.toString(),
-                signature: Buffer.from(signatureData.signature).toString("base64"),
+                signature: Buffer.from(signatureData.signature).toString(
+                  "base64"
+                ),
               };
 
               resolve(result);
@@ -601,7 +638,8 @@ const WebAuthnWallet: SelectorInit = async ({
         const modal = new MessageSigningModal({
           message,
           recipient,
-          nonce: nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
+          nonce:
+            nonce instanceof Buffer ? nonce : Buffer.from(nonce as Uint8Array),
           callbackUrl,
           onApprove: async () => {
             try {
@@ -662,10 +700,12 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
-          transactions: [{
-            receiverId: transaction.receiverId,
-            actions: transaction.actions,
-          }],
+          transactions: [
+            {
+              receiverId: transaction.receiverId,
+              actions: transaction.actions,
+            },
+          ],
           onApprove: async () => {
             try {
               if (!currentAccount) {
@@ -731,7 +771,9 @@ const WebAuthnWallet: SelectorInit = async ({
 
               const keyPair = await getKeyPairForSigning();
               const signer = new KeyPairSigner(keyPair);
-              const signedDelegateAction = await signer.signDelegateAction(delegateAction);
+              const signedDelegateAction = await signer.signDelegateAction(
+                delegateAction
+              );
 
               resolve(signedDelegateAction);
               modal.close();
