@@ -1,16 +1,16 @@
-import { najActionToInternal } from "@near-wallet-selector/core";
+import type { Action } from "@near-wallet-selector/core";
 import type { ModalOptions } from "./Modal";
 import { Modal } from "./Modal";
 import { formatNearAmount } from "@near-js/utils";
 
 export interface Transaction {
   receiverId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actions: Array<any>;
+  actions: Array<Action>;
 }
 
 export interface TransactionModalOptions extends Omit<ModalOptions, "title"> {
   transactions: Array<Transaction>;
+  signerId: string;
   onApprove: () => Promise<void>;
   onReject: () => void;
 }
@@ -47,6 +47,20 @@ export class TransactionModal extends Modal {
         : "Review the transaction details below, then approve with your biometric authentication.";
     this.modal.appendChild(description);
 
+    const transactionsCard = document.createElement("div");
+    transactionsCard.style.backgroundColor = "#fff";
+    transactionsCard.style.border = "1px solid #e0e0e0";
+    transactionsCard.style.borderRadius = "12px";
+    transactionsCard.style.padding = "20px";
+    transactionsCard.style.paddingBottom = "4px";
+    transactionsCard.style.marginBottom = "16px";
+
+    // Signer
+    if (this.options.signerId) {
+      this.addDetailRow(transactionsCard, "Signer", this.options.signerId);
+      this.modal.appendChild(transactionsCard);
+    }
+
     // Render each transaction
     this.options.transactions.forEach((transaction, txIndex) => {
       // Transaction header (if multiple transactions)
@@ -73,17 +87,15 @@ export class TransactionModal extends Modal {
       this.addDetailRow(detailsCard, "To", transaction.receiverId);
 
       // Actions
-      const actions = transaction.actions.map((action) =>
-        najActionToInternal(action)
-      );
-      actions.forEach((action, index) => {
+      transaction.actions.forEach((action: Action, index: number) => {
         const actionHeader = document.createElement("div");
         actionHeader.style.fontWeight = "600";
         actionHeader.style.marginTop = index === 0 ? "16px" : "20px";
         actionHeader.style.marginBottom = "12px";
         actionHeader.style.color = "#1a1a1a";
         actionHeader.style.fontSize = "15px";
-        actionHeader.textContent = `Action ${index + 1}: ${action.type}`;
+        const actionType = action.enum;
+        actionHeader.textContent = `Action ${index + 1}: ${actionType}`;
         detailsCard.appendChild(actionHeader);
 
         const actionDetails = document.createElement("div");
@@ -91,49 +103,57 @@ export class TransactionModal extends Modal {
         actionDetails.style.borderRadius = "8px";
         actionDetails.style.padding = "16px";
 
-        if (action.type === "FunctionCall") {
-          this.addDetailRow(actionDetails, "Method", action.params.methodName);
-          this.addDetailRow(
+        if (action.functionCall) {
+          this.addSmallDetailRow(
+            actionDetails,
+            "Method",
+            action.functionCall.methodName
+          );
+          this.addSmallDetailRow(
             actionDetails,
             "Gas",
-            this.formatGas(action.params.gas)
+            this.formatGas(action.functionCall.gas)
           );
-          this.addDetailRow(
+          this.addSmallDetailRow(
             actionDetails,
             "Deposit",
-            this.formatDeposit(action.params.deposit)
+            this.formatDeposit(action.functionCall.deposit)
           );
 
           // Show args if they exist
-          if (action.params.args) {
-            const argsStr = JSON.stringify(action.params.args);
+          if (action.functionCall.args) {
+            const argsStr =
+              typeof action.functionCall.args === "object" &&
+                action.functionCall.args instanceof Uint8Array
+                ? new TextDecoder().decode(action.functionCall.args)
+                : JSON.stringify(action.functionCall.args);
             if (argsStr.length < 200) {
-              this.addDetailRow(actionDetails, "Arguments", argsStr);
+              this.addSmallDetailRow(actionDetails, "Arguments", argsStr);
             } else {
-              this.addDetailRow(
+              this.addSmallDetailRow(
                 actionDetails,
                 "Arguments",
                 argsStr.substring(0, 200) + "..."
               );
             }
           }
-        } else if (action.type === "Transfer") {
-          this.addDetailRow(
+        } else if (action.transfer) {
+          this.addSmallDetailRow(
             actionDetails,
             "Amount",
-            formatNearAmount(action.params.deposit.toString())
+            formatNearAmount(action.transfer.deposit.toString())
           );
-        } else if (action.type === "AddKey") {
-          this.addDetailRow(
+        } else if (action.addKey) {
+          this.addSmallDetailRow(
             actionDetails,
             "Public Key",
-            action.params.publicKey.substring(0, 20) + "..."
+            action.addKey.publicKey.toString().substring(0, 20) + "..."
           );
-        } else if (action.type === "DeleteKey") {
-          this.addDetailRow(
+        } else if (action.deleteKey) {
+          this.addSmallDetailRow(
             actionDetails,
             "Public Key",
-            action.params.publicKey.substring(0, 20) + "..."
+            action.deleteKey.publicKey.toString().substring(0, 20) + "..."
           );
         }
 
@@ -145,10 +165,7 @@ export class TransactionModal extends Modal {
 
     // Warning for sensitive operations (check all transactions)
     const hasSensitiveAction = this.options.transactions.some((tx) =>
-      tx.actions.some(
-        (action) =>
-          action.type === "DeleteKey" || action.type === "DeleteAccount"
-      )
+      tx.actions.some((action) => action.deleteKey || action.deleteAccount)
     );
 
     if (hasSensitiveAction) {
@@ -198,19 +215,50 @@ export class TransactionModal extends Modal {
     const row = document.createElement("div");
     row.style.display = "flex";
     row.style.justifyContent = "space-between";
-    row.style.marginBottom = "8px";
+    row.style.marginBottom = "12px";
     row.style.fontSize = "14px";
+    row.style.alignItems = "flex-start";
 
     const labelEl = document.createElement("span");
     labelEl.style.color = "#666";
     labelEl.style.fontWeight = "400";
+    labelEl.style.minWidth = "100px";
     labelEl.textContent = label;
 
     const valueEl = document.createElement("span");
     valueEl.style.color = "#1a1a1a";
     valueEl.style.fontWeight = "bold";
-    valueEl.style.wordBreak = "break-all";
+    valueEl.style.wordBreak = "break-word";
     valueEl.style.marginLeft = "16px";
+    valueEl.style.textAlign = "right";
+    valueEl.style.flex = "1";
+    valueEl.textContent = value;
+
+    row.appendChild(labelEl);
+    row.appendChild(valueEl);
+    container.appendChild(row);
+  }
+
+  private addSmallDetailRow(
+    container: HTMLElement,
+    label: string,
+    value: string
+  ) {
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.justifyContent = "space-between";
+    row.style.marginBottom = "6px";
+    row.style.fontSize = "12px";
+
+    const labelEl = document.createElement("span");
+    labelEl.style.color = "#666";
+    labelEl.textContent = label;
+
+    const valueEl = document.createElement("span");
+    valueEl.style.color = "#333";
+    valueEl.style.fontWeight = "500";
+    valueEl.style.wordBreak = "break-all";
+    valueEl.style.marginLeft = "12px";
     valueEl.style.textAlign = "right";
     valueEl.textContent = value;
 

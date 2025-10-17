@@ -72,7 +72,7 @@ const WebAuthnWallet: SelectorInit = async ({
         request_type: "view_access_key_list",
         finality: "final",
         account_id: accountId,
-      })) as any;
+      })) as unknown as { keys: Array<{ public_key: string }> };
 
       for (const possibleKey of possibleKeys) {
         const keyExists = account.keys.some(
@@ -190,7 +190,7 @@ const WebAuthnWallet: SelectorInit = async ({
       return currentKeyPair;
     }
 
-    const keys = await getKeys(currentAccount.accountId, storage);
+    const keys = await getKeys(currentAccount.accountId);
     const validKey = await findValidKey(currentAccount.accountId, keys);
 
     if (!validKey) {
@@ -243,6 +243,7 @@ const WebAuthnWallet: SelectorInit = async ({
             STORAGE_KEYS.ACCOUNTS_LIST
           )) || [];
 
+        // eslint-disable-next-line prefer-const
         let { accountId, usingExistingAccount } = await promptForAccountId(
           previousAccounts
         );
@@ -259,7 +260,7 @@ const WebAuthnWallet: SelectorInit = async ({
           logger.log("Signing in with previously used account...");
 
           // Get keys with biometric authentication
-          const keys = await getKeys(accountId, storage);
+          const keys = await getKeys(accountId);
           accountId =
             previousAccounts.find(
               (acc) => acc.publicKey === keys[0].getPublicKey().toString()
@@ -299,7 +300,7 @@ const WebAuthnWallet: SelectorInit = async ({
           if (accountExists) {
             logger.log("Account exists, signing in...");
 
-            const keys = (await getKeys(accountId, storage)) as any;
+            const keys = await getKeys(accountId);
             const validKey = await findValidKey(accountId, keys);
 
             if (!validKey) {
@@ -310,9 +311,10 @@ const WebAuthnWallet: SelectorInit = async ({
             }
 
             // Store the KeyPair for transaction signing
-            currentKeyPair = keys.find(
-              (k: KeyPair) => k.getPublicKey().toString() === validKey
-            );
+            currentKeyPair =
+              keys.find(
+                (k: KeyPair) => k.getPublicKey().toString() === validKey
+              ) || null;
 
             currentAccount = {
               accountId,
@@ -408,6 +410,7 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
+          signerId: currentAccount!.accountId,
           transactions: [
             {
               receiverId: finalReceiverId,
@@ -475,6 +478,7 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
+          signerId: currentAccount!.accountId,
           transactions: params.transactions.map((tx) => ({
             receiverId: tx.receiverId,
             actions: tx.actions,
@@ -569,7 +573,7 @@ const WebAuthnWallet: SelectorInit = async ({
                 message,
                 currentAccount.accountId,
                 recipient,
-                nonce as any
+                nonce as Uint8Array
               );
 
               const result = {
@@ -656,7 +660,7 @@ const WebAuthnWallet: SelectorInit = async ({
                 message,
                 currentAccount.accountId,
                 recipient,
-                nonce as any,
+                nonce as Uint8Array,
                 callbackUrl
               );
 
@@ -700,6 +704,7 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
+          signerId: currentAccount!.accountId,
           transactions: [
             {
               receiverId: transaction.receiverId,
@@ -759,7 +764,10 @@ const WebAuthnWallet: SelectorInit = async ({
 
       return new Promise((resolve, reject) => {
         const modal = new DelegateActionModal({
-          delegateAction,
+          delegateAction: {
+            ...delegateAction,
+            signerId: currentAccount!.accountId,
+          },
           onApprove: async () => {
             try {
               if (!currentAccount) {

@@ -1,11 +1,11 @@
+import type { Action, Transaction } from "@near-wallet-selector/core";
 import type { ModalOptions } from "./Modal";
 import { Modal } from "./Modal";
 import { formatNearAmount } from "@near-js/utils";
 
 export interface DelegateActionModalOptions
   extends Omit<ModalOptions, "title"> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  delegateAction: any;
+  delegateAction: Transaction;
   onApprove: () => Promise<void>;
   onReject: () => void;
 }
@@ -47,9 +47,9 @@ export class DelegateActionModal extends Modal {
     detailsCard.style.padding = "20px";
     detailsCard.style.marginBottom = "16px";
 
-    // Sender
-    if (delegateAction.senderId) {
-      this.addDetailRow(detailsCard, "Sender", delegateAction.senderId);
+    // Signer
+    if (delegateAction.signerId) {
+      this.addDetailRow(detailsCard, "Signer", delegateAction.signerId);
     }
 
     // Receiver
@@ -68,7 +68,7 @@ export class DelegateActionModal extends Modal {
       actionsHeader.textContent = `Actions (${delegateAction.actions.length})`;
       detailsCard.appendChild(actionsHeader);
 
-      delegateAction.actions.forEach((action: any, index: number) => {
+      delegateAction.actions.forEach((action: Action, index: number) => {
         const actionDetails = document.createElement("div");
         actionDetails.style.backgroundColor = "#f5f5f5";
         actionDetails.style.borderRadius = "8px";
@@ -122,6 +122,13 @@ export class DelegateActionModal extends Modal {
               "Deposit",
               this.formatDeposit(fc.deposit)
             );
+          }
+          if (fc.args) {
+            const argsStr =
+              typeof fc.args === "object" && fc.args instanceof Uint8Array
+                ? new TextDecoder().decode(fc.args)
+                : JSON.stringify(fc.args);
+            this.addSmallDetailRow(actionDetails, "Arguments", argsStr);
           }
         } else if (action.transfer) {
           this.addSmallDetailRow(
@@ -238,8 +245,8 @@ export class DelegateActionModal extends Modal {
       typeof gas === "string"
         ? BigInt(gas)
         : typeof gas === "number"
-          ? BigInt(gas)
-          : gas;
+        ? BigInt(gas)
+        : gas;
     const tGas = Number(gasNum) / 1e12;
     return `${tGas.toFixed(2)} TGas`;
   }

@@ -70,6 +70,7 @@ export function injectStyles() {
       top: 16px;
       right: 16px;
       color: #1a1a1a;
+      background-color: transparent;
     }
 
     .webauthn-modal__header {
