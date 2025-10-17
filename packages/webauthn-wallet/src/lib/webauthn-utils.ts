@@ -1,3 +1,4 @@
+import type { KeyPair } from "@near-js/crypto";
 import { KeyPairEd25519 } from "@near-js/crypto";
 import { baseEncode } from "@near-js/utils";
 import { ed25519 } from "@noble/curves/ed25519";
@@ -23,13 +24,9 @@ function generateChallenge(): ArrayBuffer {
   return crypto.getRandomValues(new Uint8Array(32)).buffer;
 }
 
-/**
- * Derive a NEAR keypair from WebAuthn credential ID
- * This is deterministic - same credentialId always produces the same keypair
- */
 async function deriveKeyPairFromCredentialId(
   credentialId: ArrayBuffer
-): Promise<KeyPairEd25519> {
+): Promise<KeyPair> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", credentialId);
   const secretKey = new Uint8Array(hashBuffer);
   const publicKey = ed25519.getPublicKey(secretKey);
@@ -46,7 +43,7 @@ async function deriveKeyPairFromCredentialId(
 export async function createKey(
   username: string,
   storage?: StorageService
-): Promise<KeyPairEd25519> {
+): Promise<KeyPair> {
   if (!navigator.credentials || !navigator.credentials.create) {
     throw new Error("WebAuthn is not supported in this browser");
   }
@@ -109,10 +106,7 @@ export async function createKey(
   }
 }
 
-export async function getKeys(
-  username: string,
-  storage?: StorageService
-): Promise<Array<KeyPairEd25519>> {
+export async function getKeys(username: string): Promise<Array<KeyPair>> {
   if (!navigator.credentials || !navigator.credentials.get) {
     throw new Error("WebAuthn is not supported in this browser");
   }
@@ -129,7 +123,13 @@ export async function getKeys(
     })) as PublicKeyCredential;
 
     const response = credential.response as AuthenticatorAssertionResponse;
-    const accountId = new TextDecoder().decode(response.userHandle as any);
+    const accountId = new TextDecoder().decode(
+      response.userHandle as unknown as Uint8Array
+    );
+
+    if (username !== accountId) {
+      // TODO: Handle account ID mismatch
+    }
 
     if (!credential || !accountId) {
       throw new PasskeyProcessCanceled("Failed to get credential");
