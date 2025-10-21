@@ -23,6 +23,7 @@ import { WalletHome } from "./WalletHome";
 import { WalletConnected } from "./WalletConnected";
 import { ScanQRCode } from "./ScanQRCode";
 import { translate, allowOnlyLanguage } from "@near-wallet-selector/core";
+import { CloseButton } from "./CloseButton";
 
 interface ModalProps {
   selector: WalletSelector;
@@ -56,16 +57,6 @@ export const Modal: React.FC<ModalProps> = ({
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
-
-  const { rememberRecentWallets } = selector.store.getState();
-  const [isChecked, setIsChecked] = useState(
-    rememberRecentWallets === "enabled"
-  );
-
-  const handleSwitchChange = () => {
-    setIsChecked((prevIsChecked) => !prevIsChecked);
-    selector.setRememberRecentWallets();
-  };
 
   useEffect(() => {
     setRoute({
@@ -267,149 +258,145 @@ export const Modal: React.FC<ModalProps> = ({
           handleDismissClick({ hideReason: "user-triggered" });
         }}
       />
-      <div className="nws-modal">
-        <div className="modal-left">
-          <div className="modal-left-title">
-            <h2>{translate("modal.wallet.connectYourWallet")}</h2>
-            <span className="nws-remember-wallet">
-              {translate("modal.wallet.rememberWallet")}
-            </span>
-            <label className="nws-switch">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleSwitchChange}
-              />
-              <span className="nws-slider round" />
-            </label>
-          </div>
-          <WalletOptions
-            handleWalletClick={(module) => {
-              handleWalletClick(module, false);
-            }}
-            selector={selector}
+      <div className="nws-modal-background">
+        <div className="nws-modal-title-wrapper">
+          <h2 className="nws-modal-title">
+            {translate("modal.wallet.connectYourWallet")}
+          </h2>
+          <CloseButton
+            onClick={() => handleDismissClick({ hideReason: "user-triggered" })}
           />
         </div>
-        <div className="modal-right">
-          <div className="nws-modal-body">
-            {route.name === "AlertMessage" && alertMessage && (
-              <AlertMessage
-                message={alertMessage}
-                module={route.params?.module}
-                onBack={(retry) => {
-                  if (retry) {
-                    handleWalletClick(selectedWallet!, false);
+        <div className="nws-modal">
+          <div className="modal-left">
+            <WalletOptions
+              handleWalletClick={(module) => {
+                handleWalletClick(module, false);
+              }}
+              selector={selector}
+            />
+          </div>
+          <div className="modal-right">
+            <div className="nws-modal-body">
+              {route.name === "AlertMessage" && alertMessage && (
+                <AlertMessage
+                  message={alertMessage}
+                  module={route.params?.module}
+                  onBack={(retry) => {
+                    if (retry) {
+                      handleWalletClick(selectedWallet!, false);
+                    }
+                    setAlertMessage(null);
+                    setRoute({
+                      name: "WalletHome",
+                    });
+                  }}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
                   }
-                  setAlertMessage(null);
-                  setRoute({
-                    name: "WalletHome",
-                  });
-                }}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "DerivationPath" && (
-              <DerivationPath
-                selector={selector}
-                options={options}
-                onConnected={() => {
-                  handleDismissClick({ hideReason: "wallet-navigation" });
-                }}
-                params={route.params}
-                onBack={() =>
-                  setRoute({
-                    name: "WalletHome",
-                  })
-                }
-                onError={(message, wallet) => {
-                  const { modules } = selector.store.getState();
-                  const findModule = modules.find(
-                    (module) => module.id === wallet.id
-                  );
+                />
+              )}
+              {route.name === "DerivationPath" && (
+                <DerivationPath
+                  selector={selector}
+                  options={options}
+                  onConnected={() => {
+                    handleDismissClick({ hideReason: "wallet-navigation" });
+                  }}
+                  params={route.params}
+                  onBack={() =>
+                    setRoute({
+                      name: "WalletHome",
+                    })
+                  }
+                  onError={(message, wallet) => {
+                    const { modules } = selector.store.getState();
+                    const findModule = modules.find(
+                      (module) => module.id === wallet.id
+                    );
 
-                  setAlertMessage(message);
-                  setRoute({
-                    name: "AlertMessage",
-                    params: {
-                      module: findModule!,
-                    },
-                  });
-                }}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "WalletNetworkChanged" && (
-              <WalletNetworkChanged
-                selector={selector}
-                onBack={() =>
-                  setRoute({
-                    name: "WalletHome",
-                  })
-                }
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "WalletNotInstalled" && (
-              <WalletNotInstalled
-                module={route.params?.module!}
-                onBack={() => {
-                  setRoute({
-                    name: "WalletHome",
-                  });
-                }}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "WalletConnecting" && (
-              <WalletConnecting
-                wallet={route.params?.wallet}
-                onBack={() => {
-                  setRoute({
-                    name: "WalletHome",
-                  });
-                }}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "WalletHome" && (
-              <WalletHome
-                selector={selector}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
-            {route.name === "WalletConnected" && (
-              <WalletConnected
-                module={selectedWallet!}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-              />
-            )}
+                    setAlertMessage(message);
+                    setRoute({
+                      name: "AlertMessage",
+                      params: {
+                        module: findModule!,
+                      },
+                    });
+                  }}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
+              {route.name === "WalletNetworkChanged" && (
+                <WalletNetworkChanged
+                  selector={selector}
+                  onBack={() =>
+                    setRoute({
+                      name: "WalletHome",
+                    })
+                  }
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
+              {route.name === "WalletNotInstalled" && (
+                <WalletNotInstalled
+                  module={route.params?.module!}
+                  onBack={() => {
+                    setRoute({
+                      name: "WalletHome",
+                    });
+                  }}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
+              {route.name === "WalletConnecting" && (
+                <WalletConnecting
+                  wallet={route.params?.wallet}
+                  onBack={() => {
+                    setRoute({
+                      name: "WalletHome",
+                    });
+                  }}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
+              {route.name === "WalletHome" && (
+                <WalletHome
+                  selector={selector}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
+              {route.name === "WalletConnected" && (
+                <WalletConnected
+                  module={selectedWallet!}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                />
+              )}
 
-            {route.name === "ScanQRCode" && (
-              <ScanQRCode
-                handleOpenDefaultModal={() => {
-                  handleWalletClick(selectedWallet!, true);
-                }}
-                onCloseModal={() =>
-                  handleDismissClick({ hideReason: "user-triggered" })
-                }
-                uri={bridgeWalletUri}
-                wallet={selectedWallet!}
-              />
-            )}
+              {route.name === "ScanQRCode" && (
+                <ScanQRCode
+                  handleOpenDefaultModal={() => {
+                    handleWalletClick(selectedWallet!, true);
+                  }}
+                  onCloseModal={() =>
+                    handleDismissClick({ hideReason: "user-triggered" })
+                  }
+                  uri={bridgeWalletUri}
+                  wallet={selectedWallet!}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
