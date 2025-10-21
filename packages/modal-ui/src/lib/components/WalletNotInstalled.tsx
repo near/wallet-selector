@@ -10,7 +10,6 @@ interface WalletNotInstalledProps {
     };
   };
   onBack: () => void;
-  onCloseModal: () => void;
 }
 
 export const WalletNotInstalled: React.FC<WalletNotInstalledProps> = ({

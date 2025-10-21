@@ -6,7 +6,6 @@ import { translate } from "@near-wallet-selector/core";
 interface WalletConnectingProps {
   wallet: Wallet | undefined;
   onBack: () => void;
-  onCloseModal: () => void;
 }
 
 export const WalletConnecting: React.FC<WalletConnectingProps> = ({

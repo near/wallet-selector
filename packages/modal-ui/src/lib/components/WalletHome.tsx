@@ -14,15 +14,11 @@ import { WalletIcon } from "./icons/WalletIcon";
 
 interface WalletHomeProps {
   selector: WalletSelector;
-  onCloseModal: () => void;
 }
 
 type WalletHomeRoutes = "WalletInfo" | "GetWallets";
 
-export const WalletHome: React.FC<WalletHomeProps> = ({
-  selector,
-  onCloseModal,
-}) => {
+export const WalletHome: React.FC<WalletHomeProps> = ({ selector }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
 

@@ -291,9 +291,6 @@ export const Modal: React.FC<ModalProps> = ({
                       name: "WalletHome",
                     });
                   }}
-                  onCloseModal={() =>
-                    handleDismissClick({ hideReason: "user-triggered" })
-                  }
                 />
               )}
               {route.name === "DerivationPath" && (
@@ -349,9 +346,6 @@ export const Modal: React.FC<ModalProps> = ({
                       name: "WalletHome",
                     });
                   }}
-                  onCloseModal={() =>
-                    handleDismissClick({ hideReason: "user-triggered" })
-                  }
                 />
               )}
               {route.name === "WalletConnecting" && (
@@ -362,18 +356,10 @@ export const Modal: React.FC<ModalProps> = ({
                       name: "WalletHome",
                     });
                   }}
-                  onCloseModal={() =>
-                    handleDismissClick({ hideReason: "user-triggered" })
-                  }
                 />
               )}
               {route.name === "WalletHome" && (
-                <WalletHome
-                  selector={selector}
-                  onCloseModal={() =>
-                    handleDismissClick({ hideReason: "user-triggered" })
-                  }
-                />
+                <WalletHome selector={selector} />
               )}
               {route.name === "WalletConnected" && (
                 <WalletConnected
@@ -389,9 +375,6 @@ export const Modal: React.FC<ModalProps> = ({
                   handleOpenDefaultModal={() => {
                     handleWalletClick(selectedWallet!, true);
                   }}
-                  onCloseModal={() =>
-                    handleDismissClick({ hideReason: "user-triggered" })
-                  }
                   uri={bridgeWalletUri}
                   wallet={selectedWallet!}
                 />

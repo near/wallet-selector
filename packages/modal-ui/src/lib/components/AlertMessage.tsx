@@ -7,7 +7,6 @@ interface AlertMessageProps {
   message: string;
   module?: ModuleState;
   onBack: (retry: boolean) => void;
-  onCloseModal: () => void;
 }
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
