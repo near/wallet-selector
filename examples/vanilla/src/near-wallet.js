@@ -1,12 +1,12 @@
 /* A helper file that simplifies using the wallet selector */
 
 // near api js
-import { providers } from '@near-js/providers';
-import { formatNearAmount } from '@near-js/utils';
+import { JsonRpcProvider } from '@near-js/providers';
+import { formatNearAmount, getTransactionLastResult } from '@near-js/utils';
 
 // wallet selector
-import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
-import { setupWalletSelector } from '@near-wallet-selector/core';
+// import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
+import { actionCreators, setupWalletSelector } from '@near-wallet-selector/core';
 import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupMeteorWallet } from '@near-wallet-selector/meteor-wallet';
@@ -19,7 +19,7 @@ import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
 import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
 
 import { wagmiAdapter, web3Modal } from './web3modal';
-
+import "@near-wallet-selector/modal-ui-js/styles.css";
 
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
@@ -57,7 +57,7 @@ export class Wallet {
         setupMeteorWallet(),
         setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
         setupLedger(),
-        setupBitteWallet(),
+        // setupBitteWallet(),
         setupHereWallet(),
         setupSender(),
         setupNearMobileWallet(),
@@ -108,7 +108,7 @@ export class Wallet {
       this.networkId === "mainnet"
         ? "https://free.rpc.fastnear.com"
         : "https://test.rpc.fastnear.com"; 
-    const provider = new providers.JsonRpcProvider({ url });
+    const provider = new JsonRpcProvider({ url });
 
     const res = await provider.query({
       request_type: 'call_function',
@@ -135,20 +135,10 @@ export class Wallet {
     const selectedWallet = await (await this.selector).wallet();
     const outcome = await selectedWallet.signAndSendTransaction({
       receiverId: contractId,
-      actions: [
-        {
-          type: 'FunctionCall',
-          params: {
-            methodName: method,
-            args,
-            gas,
-            deposit,
-          },
-        },
-      ],
+      actions: [actionCreators.functionCall(method, args, BigInt(gas), BigInt(deposit))],
     });
 
-    return providers.getTransactionLastResult(outcome);
+    return getTransactionLastResult(outcome);
   };
 
   /**
@@ -159,11 +149,11 @@ export class Wallet {
   getTransactionResult = async (txhash) => {
     const walletSelector = await this.selector;
     const { network } = walletSelector.options;
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    const provider = new JsonRpcProvider({ url: network.nodeUrl });
 
     // Retrieve transaction result from the network
     const transaction = await provider.txStatus(txhash, 'unused');
-    return providers.getTransactionLastResult(transaction);
+    return getTransactionLastResult(transaction);
   };
 
   /**
@@ -176,7 +166,7 @@ export class Wallet {
   getBalance = async (accountId, format = false) => {
     const walletSelector = await this.selector;
     const { network } = walletSelector.options;
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    const provider = new JsonRpcProvider({ url: network.nodeUrl });
 
     // Retrieve account state from the network
     const account = await provider.query({
@@ -212,7 +202,7 @@ export class Wallet {
   getAccessKeys = async (accountId) => {
     const walletSelector = await this.selector;
     const { network } = walletSelector.options;
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    const provider = new JsonRpcProvider({ url: network.nodeUrl });
 
     // Retrieve account state from the network
     const keys = await provider.query({
