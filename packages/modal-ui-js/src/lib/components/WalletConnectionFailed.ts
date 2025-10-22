@@ -3,6 +3,7 @@ import { connectToWallet } from "../render-modal";
 import { translate } from "@near-wallet-selector/core";
 import { CloseIcon } from "./icons/CloseIcon";
 import { ConnectionErrorIcon } from "./icons/ConnectionErrorIcon";
+import { RetryIcon } from "./icons/RetryIcon";
 
 export async function renderWalletConnectionFailed(
   module: ModuleState<Wallet>,
@@ -22,21 +23,27 @@ export async function renderWalletConnectionFailed(
     module.metadata.name
   }"></div>
           <h3 class="connecting-name">${module.metadata.name}</h3>
+          <div class="connecting-message">
+            <span>The connection was not successful, please try again.</span>
+          </div>
           <div class="connecting-details">
             <div class="connection">
               <div class="error-wrapper">
-                <div class="error">
-                    ${ConnectionErrorIcon}
-                  ${translate("modal.wallet.connectionFailed")}
-                </div>
-                  <p>${err && err.message ? err.message : ""}</p>
                   ${
                     !module?.metadata.deprecated && module?.metadata.available
-                      ? `<button id='retry-button'>${translate(
-                          "modal.ledger.retry"
-                        )}</button>`
+                      ? `<button class="loading-dots" id='retry-button'>
+                          ${RetryIcon}
+                          ${translate("modal.ledger.retry")}
+                        </button>`
                       : ""
                   }
+                <div class="error-floating">
+                  <div class="error">
+                    ${ConnectionErrorIcon}
+                    ${translate("modal.wallet.connectionFailed")}
+                  </div>
+                  <p>${err && err.message ? err.message : ""}</p>
+                </div>
               </div>
             </div>
           </div>

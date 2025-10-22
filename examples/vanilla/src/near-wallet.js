@@ -17,6 +17,7 @@ import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
 import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
+import { setupWalletConnect } from '@near-wallet-selector/wallet-connect';
 
 import { wagmiAdapter, web3Modal } from './web3modal';
 import "@near-wallet-selector/modal-ui-js/styles.css";
@@ -64,6 +65,15 @@ export class Wallet {
         setupWelldoneWallet(),
         setupMyNearWallet(),
         setupIntearWallet(),
+        setupWalletConnect({
+          projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
+          metadata: {
+            name: "Your dApp name",
+            description: "Example dApp used by NEAR Wallet Selector",
+            url: "https://github.com/near/wallet-selector",
+            icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          },
+        })
       ],
     });
 
