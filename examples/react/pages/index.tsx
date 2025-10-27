@@ -20,7 +20,6 @@ import { setupXDEFI } from "@near-wallet-selector/xdefi";
 import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
-import { setupBitteWallet } from "@near-wallet-selector/bitte-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
@@ -52,7 +51,6 @@ const walletSelectorConfig: SetupParams = {
       },
     }),
     setupMeteorWallet(),
-    setupBitteWallet(),
     setupHotWallet(),
     setupMyNearWallet(),
     setupLedger(),

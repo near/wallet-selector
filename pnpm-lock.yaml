@@ -435,9 +435,6 @@ importers:
       '@near-wallet-selector/bitget-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/bitget-wallet
-      '@near-wallet-selector/bitte-wallet':
-        specifier: workspace:*
-        version: link:../../dist/packages/bitte-wallet
       '@near-wallet-selector/coin98-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/coin98-wallet
