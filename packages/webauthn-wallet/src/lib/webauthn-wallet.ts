@@ -15,6 +15,7 @@ import {
   DelegateActionModal,
 } from "./components";
 import type {
+  Action,
   FinalExecutionOutcome,
   SignedTransaction,
   Transaction,
@@ -214,6 +215,55 @@ const WebAuthnWallet: SelectorInit = async ({
     return foundKey;
   }
 
+  async function getAccountBalance(accountId: string): Promise<string> {
+    try {
+      const account = (await provider.query({
+        request_type: "view_account",
+        finality: "final",
+        account_id: accountId,
+      })) as unknown as { amount: string };
+      
+      return account.amount;
+    } catch (error) {
+      logger.error("Error fetching account balance:", error);
+      throw new WebAuthnWalletError(
+        ERROR_CODES.ACCOUNT_NOT_FOUND,
+        "Failed to fetch account balance"
+      );
+    }
+  }
+
+  async function checkSufficientBalance(
+    accountId: string,
+    actions: Array<Action>
+  ): Promise<void> {
+    const balance = await getAccountBalance(accountId);
+    const balanceBigInt = BigInt(balance);
+    
+    // Calculate total amount needed for transfer actions
+    let totalAmount = BigInt(0);
+    for (const action of actions) {
+      if (action.transfer && action.transfer.deposit) {
+        totalAmount += BigInt(action.transfer.deposit);
+      } else if (action.functionCall && action.functionCall?.deposit) {
+        totalAmount += BigInt(action.functionCall.deposit);
+      }
+    }
+    
+    // Add gas costs estimation (approximate 0.001 NEAR for gas)
+    const estimatedGasCost = BigInt("1000000000000000000000"); // 0.001 NEAR in yoctoNEAR
+    totalAmount += estimatedGasCost;
+    
+    if (balanceBigInt < totalAmount) {
+      const balanceInNear = Number(balanceBigInt) / 1e24;
+      const neededInNear = Number(totalAmount) / 1e24;
+      throw new WebAuthnWalletError(
+        ERROR_CODES.INSUFFICIENT_BALANCE,
+        `Insufficient balance. Available: ${balanceInNear.toFixed(4)} NEAR, Required: ${neededInNear.toFixed(4)} NEAR`
+      );
+    }
+  }
+
   async function signTransactionWithBiometric(
     transactions: Array<Transaction>
   ): Promise<Array<SignedTransaction>> {
@@ -408,6 +458,14 @@ const WebAuthnWallet: SelectorInit = async ({
         );
       }
 
+      // Check if account has sufficient balance before proceeding
+      try {
+        await checkSufficientBalance(currentAccount.accountId, actions);
+      } catch (error) {
+        logger.error("Balance check failed:", error);
+        throw error;
+      }
+
       return new Promise((resolve, reject) => {
         const modal = new TransactionModal({
           signerId: currentAccount!.accountId,
@@ -474,6 +532,16 @@ const WebAuthnWallet: SelectorInit = async ({
           ERROR_CODES.ACCOUNT_NOT_FOUND,
           "No account signed in"
         );
+      }
+
+      // Check balance for all transactions
+      try {
+        // Aggregate all actions from all transactions for balance check
+        const allActions = params.transactions.flatMap((tx) => tx.actions);
+        await checkSufficientBalance(currentAccount.accountId, allActions);
+      } catch (error) {
+        logger.error("Balance check failed:", error);
+        throw error;
       }
 
       return new Promise((resolve, reject) => {
