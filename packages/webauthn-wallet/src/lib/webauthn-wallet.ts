@@ -222,7 +222,7 @@ const WebAuthnWallet: SelectorInit = async ({
         finality: "final",
         account_id: accountId,
       })) as unknown as { amount: string };
-      
+
       return account.amount;
     } catch (error) {
       logger.error("Error fetching account balance:", error);
@@ -239,7 +239,7 @@ const WebAuthnWallet: SelectorInit = async ({
   ): Promise<void> {
     const balance = await getAccountBalance(accountId);
     const balanceBigInt = BigInt(balance);
-    
+
     // Calculate total amount needed for transfer actions
     let totalAmount = BigInt(0);
     for (const action of actions) {
@@ -249,17 +249,19 @@ const WebAuthnWallet: SelectorInit = async ({
         totalAmount += BigInt(action.functionCall.deposit);
       }
     }
-    
+
     // Add gas costs estimation (approximate 0.001 NEAR for gas)
     const estimatedGasCost = BigInt("1000000000000000000000"); // 0.001 NEAR in yoctoNEAR
     totalAmount += estimatedGasCost;
-    
+
     if (balanceBigInt < totalAmount) {
       const balanceInNear = Number(balanceBigInt) / 1e24;
       const neededInNear = Number(totalAmount) / 1e24;
       throw new WebAuthnWalletError(
         ERROR_CODES.INSUFFICIENT_BALANCE,
-        `Insufficient balance. Available: ${balanceInNear.toFixed(4)} NEAR, Required: ${neededInNear.toFixed(4)} NEAR`
+        `Insufficient balance. Available: ${balanceInNear.toFixed(
+          4
+        )} NEAR, Required: ${neededInNear.toFixed(4)} NEAR`
       );
     }
   }

@@ -69,7 +69,7 @@ const walletSelectorConfig: SetupParams = {
     setupNearMobileWallet(),
     setupIntearWallet({}),
     setupWebAuthnWallet({
-      relayerUrl: "http://localhost:4444/create-account",
+      relayerUrl: "http://localhost:7090/create-account", // Replace with your server's URL, example server is at packages/webauthn-wallet/relayer-examples/index.js
     }),
   ],
 };
