@@ -11,6 +11,10 @@
       "useAWallet": "Uporabite denarnico, da bi zavarovali in upravljali s svoja NEAR digitalna sredstva, in se prijavite v katero koli aplikacijo ekosistema NEAR",
       "connectionFailed": "Povezava ni bila uspešna.",
       "connectionSuccessful": "Povezava je bila uspešna.",
+      "connectionNotSuccessful": "Povezava ni uspela, prosimo poskusite znova.",
+      "whatIsAWalletDescription": "Denarnice vam omogočajo shranjevanje digitalnih sredstev, kot so kriptovalute, in prijavo v aplikacije na NEAR.",
+      "selectWalletOr": "Prosimo izberite denarnico na levi strani ali",
+      "createNewWallet": "Ustvarite novo denarnico",
       "rememberWallet": "Zapomni si denarnice",
       "connected": "Vaša denarnica je povezana.",
       "connectingTo": "Povezovanje z",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "Kopirano v podložni mapi",
       "failedToCopy": "Kopiranje v podložni mapi ni uspelo",
       "scanWithYourMobile": "Skenirajte s svojo mobilno napravo",
+      "scanQRCodeMessage": "Prosimo skenirajte to kodo QR\n za povezovanje vaše denarnice.",
       "copyToClipboard": " Kopirajte v podložni mapi",
       "preferTheOfficial": "Preferirajte uradno pogovorno okno",
+      "openInOfficialDialogue": "odprite v uradnem pogovornem oknu",
       "open": "Odprite"
     },
     "walletTypes": {
@@ -103,5 +109,8 @@
         "button": "Končajte"
       }
     }
+  },
+  "general": {
+    "or": "ali"
   }
 }

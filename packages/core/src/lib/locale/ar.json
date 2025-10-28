@@ -11,6 +11,10 @@
       "useAWallet": "استخدم محفظة لتأمين وإدارة أصول نير الخاصة بك، وادخل لأي تطبيق يستخدم نير دون الحاجة إلى اسم المستخدم وكلمةالمرور",
       "connectionFailed": "اتصال فاشل",
       "connectionSuccessful": "اتصال ناجح",
+      "connectionNotSuccessful": "فشل الاتصال، يرجى المحاولة مرة أخرى.",
+      "whatIsAWalletDescription": "تتيح لك المحافظ تخزين الأصول الرقمية مثل العملات المشفرة وتسجيل الدخول إلى التطبيقات على NEAR.",
+      "selectWalletOr": "يرجى اختيار محفظة من اليسار، أو",
+      "createNewWallet": "إنشاء محفظة جديدة",
       "rememberWallet": "تذكر المحافظ",
       "connected": "متصل",
       "connectingTo": "جاري الاتصال ب",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "تم النسخ",
       "failedToCopy": "فشل النسخ",
       "scanWithYourMobile": "امسح بجهازك المحمول",
+      "scanQRCodeMessage": "يرجى مسح رمز QR هذا\n لربط محفظتك.",
       "copyToClipboard": "نسخ",
       "preferTheOfficial": "تفضل الحوار الرسمي ل",
+      "openInOfficialDialogue": "فتح في الحوار الرسمي",
       "open": "فتح"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
         "mobile": "محفظة الجوال"
       }
     }
+  },
+  "general": {
+    "or": "أو"
   },
   "component": {
     "clickToCopy": {

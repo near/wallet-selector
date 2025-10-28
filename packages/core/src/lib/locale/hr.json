@@ -11,6 +11,10 @@
       "useAWallet": "Koristite crypto novčanik da biste osigurali i upravljali svojom NEAR imovinom, te se prijavite u bilo koju NEAR aplikaciju bez korisničkog imena i lozinke.",
       "connectionFailed": "Neuspješno povezivanje.",
       "connectionSuccessful": "Uspješno povezivanje.",
+      "connectionNotSuccessful": "Povezivanje nije uspjelo, molimo pokušajte ponovo.",
+      "whatIsAWalletDescription": "Novčanici vam omogućavaju pohranu digitalne imovine poput kripto valuta i prijavu u aplikacije na NEAR.",
+      "selectWalletOr": "Molimo odaberite novčanik s lijeve strane ili",
+      "createNewWallet": "Stvorite novi novčanik",
       "rememberWallet": "Zapamti novčanike",
       "connected": "Povezano.",
       "connectingTo": "Povezivanje u tijeku",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "Kopirano u međuspremnik",
       "failedToCopy": "Neupsješno kopiranje u međuspremnik",
       "scanWithYourMobile": "Skenirajte svojim mobilnim uređajem",
+      "scanQRCodeMessage": "Molimo skenirajte ovaj QR kod\n za povezivanje vašeg novčanika.",
       "copyToClipboard": " Kopirajte u međuspremnik",
       "preferTheOfficial": "Odaberite službeni dijalog",
+      "openInOfficialDialogue": "otvorite u službenom dijalogu",
       "open": "Otvorite"
     },
     "walletTypes": {
@@ -103,5 +109,8 @@
         "button": "Završi"
       }
     }
+  },
+  "general": {
+    "or": "ili"
   }
 }

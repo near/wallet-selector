@@ -11,6 +11,10 @@
       "useAWallet": "Usa tu Billetera para resguardar y administrar tus activos en NEAR, e Iniciar sesión en cualquier aplicacion NEAR sin la necesidad de nombres de usuarios y contraseñas",
       "connectionFailed": "Conexión Fallida",
       "connectionSuccessful": "Conexión Existosa",
+      "connectionNotSuccessful": "La conexión no fue exitosa, por favor intente nuevamente.",
+      "whatIsAWalletDescription": "Las billeteras te permiten almacenar activos digitales como cripto, e iniciar sesión en aplicaciones de NEAR.",
+      "selectWalletOr": "Por favor selecciona una billetera a la izquierda, o",
+      "createNewWallet": "Crear una nueva billetera",
       "rememberWallet": "Recordar las carteras",
       "connected": "Conectado",
       "connectingTo": "Conectando a ",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "Copiado al Portapapeles",
       "failedToCopy": "Falló la copia al Portapapeles",
       "scanWithYourMobile": "Busca con tu dispositivo movil",
+      "scanQRCodeMessage": "Por favor escanea este código QR\n para conectar tu billetera.",
       "copyToClipboard": " Copiar al Portapapeles",
       "preferTheOfficial": "¿Prefires el diálogo oficial de",
+      "openInOfficialDialogue": "abrir en diálogo oficial",
       "open": "Abrir"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
       },
       "warning": "no admite la exportación de cuentas en este momento. Por favor selecciona otra billetera."
     }
+  },
+  "general": {
+    "or": "o"
   },
   "component": {
     "clickToCopy": {

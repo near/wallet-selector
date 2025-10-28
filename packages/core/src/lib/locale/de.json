@@ -11,6 +11,10 @@
       "useAWallet": "Nutze eine Wallet, um deine NEAR-Vermögenswerte zu schützen und zu verwalten. Keine Benutzernamen oder Passwörter nötig, um dich bei jeder NEAR-Anwendung anzumelden",
       "connectionFailed": "Verbindung fehlgeschlagen",
       "connectionSuccessful": "Verbindung erfolgreich",
+      "connectionNotSuccessful": "Verbindung nicht erfolgreich, bitte versuchen Sie es erneut.",
+      "whatIsAWalletDescription": "Wallets ermöglichen es Ihnen, digitale Vermögenswerte wie Kryptowährungen zu speichern und sich bei NEAR-Apps anzumelden.",
+      "selectWalletOr": "Bitte wählen Sie eine Wallet links aus, oder",
+      "createNewWallet": "Erstellen Sie eine neue Wallet",
       "rememberWallet": "Wallet-Auswahl merken",
       "connected": "Verbunden",
       "connectingTo": "Verbinde mit"
@@ -46,6 +50,8 @@
       "copiedToClipboard": "In die Zwischenablage kopiert",
       "failedToCopy": "Kopieren in die Zwischenablage fehlgeschlagen",
       "scanWithYourMobile": "Mit deinem Handy scannen",
+      "scanQRCodeMessage": "Bitte scannen Sie diesen QR-Code\n um Ihre Wallet zu verbinden.",
+      "openInOfficialDialogue": "im offiziellen Dialog öffnen",
       "copyToClipboard": "In die Zwischenablage kopieren",
       "preferTheOfficial": "Bevorzugen Sie das offizielle Dialogfeld in",
       "open": "Öffnen"
@@ -58,5 +64,8 @@
       "mobile": "Mobile Wallet",
       "instant-link": "Instant Wallet"
     }
+  },
+  "general": {
+    "or": "oder"
   }
 }

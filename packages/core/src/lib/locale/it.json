@@ -11,6 +11,10 @@
       "useAWallet": "Usa un portafoglio per proteggere e gestire i tuoi asset NEAR senza bisogno di nome utente o password",
       "connectionFailed": "Connessione fallita",
       "connectionSuccessful": "Connessione riuscita",
+      "connectionNotSuccessful": "La connessione non è riuscita, riprova.",
+      "whatIsAWalletDescription": "I portafogli ti consentono di conservare beni digitali come criptovalute e accedere alle app su NEAR.",
+      "selectWalletOr": "Seleziona un portafoglio sulla sinistra, oppure",
+      "createNewWallet": "Crea un nuovo portafoglio",
       "rememberWallet": "Ricorda la scelta del portafoglio",
       "connected": "Connesso",
       "connectingTo": "Connessione a"
@@ -46,8 +50,10 @@
       "copiedToClipboard": "Copiato negli appunti",
       "failedToCopy": "Copia negli appunti fallita",
       "scanWithYourMobile": "Scansiona con il tuo cellulare",
+      "scanQRCodeMessage": "Scansiona questo codice QR\n per collegare il tuo portafoglio.",
       "copyToClipboard": "Copia negli appunti",
       "preferTheOfficial": "Preferisci utilizzare la finestra di dialogo ufficiale in",
+      "openInOfficialDialogue": "apri nel dialogo ufficiale",
       "open": "Apri"
     },
     "walletTypes": {
@@ -58,5 +64,8 @@
       "mobile": "Portafoglio mobile",
       "instant-link": "Portafoglio istantaneo"
     }
+  },
+  "general": {
+    "or": "o"
   }
 }

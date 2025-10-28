@@ -11,6 +11,10 @@
       "useAWallet": "使用錢包來保護和管理你的 NEAR 資產，無需用戶名和密碼即可登入任何 NEAR 應用",
       "connectionFailed": "連接失敗",
       "connectionSuccessful": "連接成功",
+      "connectionNotSuccessful": "連接未成功，請重試。",
+      "whatIsAWalletDescription": "錢包讓你存儲加密等數碼資產，並登入 NEAR 應用。",
+      "selectWalletOr": "請在左側選擇一個錢包，或",
+      "createNewWallet": "創建新錢包",
       "rememberWallet": "記住錢包選擇",
       "connected": "已連接",
       "connectingTo": "正在連接"
@@ -46,8 +50,10 @@
       "copiedToClipboard": "已複製到剪貼板",
       "failedToCopy": "複製失敗",
       "scanWithYourMobile": "用手機掃描",
+      "scanQRCodeMessage": "請掃描此二維碼\n 以連接你的錢包。",
       "copyToClipboard": "複製到剪貼板",
       "preferTheOfficial": "希望使用官方對話框於",
+      "openInOfficialDialogue": "在官方對話框中打開",
       "open": "打開"
     },
     "walletTypes": {
@@ -58,5 +64,8 @@
       "mobile": "手機錢包",
       "instant-link": "即時錢包"
     }
+  },
+  "general": {
+    "or": "或"
   }
 }

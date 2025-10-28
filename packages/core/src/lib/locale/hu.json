@@ -11,6 +11,10 @@
       "useAWallet": "Használjon tárcát a NEAR eszközeinek védelmére és kezelésére, valamint jelentkezzen be bármely NEAR alkalmazásba felhasználónév és jelszó nélkül.",
       "connectionFailed": "A csatlakozás nem sikerült",
       "connectionSuccessful": "A csatlakozás sikeres volt",
+      "connectionNotSuccessful": "A csatlakozás nem sikerült, kérjük próbálja újra.",
+      "whatIsAWalletDescription": "A tárcák lehetővé teszik digitális eszközök tárolását, például kriptovaluták, és bejelentkezést NEAR alkalmazásokba.",
+      "selectWalletOr": "Kérjük válasszon egy tárcát a bal oldalon, vagy",
+      "createNewWallet": "Új tárca létrehozása",
       "rememberWallet": "Tárcák megjegyzése",
       "connected": "Csatlakoztatva",
       "connectingTo": "Csatlakozás ide:",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "Vágólapra másolva",
       "failedToCopy": "Nem sikerült a vágólapra másolni",
       "scanWithYourMobile": "Szkennelje be mobil eszközével",
+      "scanQRCodeMessage": "Kérjük, szkennelje be ezt a QR kódot\n a tárcája csatlakoztatásához.",
       "copyToClipboard": "Másolás vágólapra",
       "preferTheOfficial": "Előnyben részesítse a hivatalos párbeszédablakot",
+      "openInOfficialDialogue": "megnyitás hivatalos párbeszédablakban",
       "open": "Megnyitás"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
         "button": "Befejezés"
       }
     }
+  },
+  "general": {
+    "or": "vagy"
   },
   "component": {
     "clickToCopy": {
