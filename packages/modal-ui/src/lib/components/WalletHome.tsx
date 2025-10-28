@@ -108,18 +108,15 @@ export const WalletHome: React.FC<WalletHomeProps> = ({ selector }) => {
         <div className="wallet-info-wrapper">
           <div className="info">
             <WalletIcon />
-            <p>
-              Wallets let you store digital assets like crypto, and log into
-              apps on NEAR.
-            </p>
-            <p>Please select a wallet on the left, or</p>
+            <p>{translate("modal.wallet.whatIsAWalletDescription")}</p>
+            <p>{translate("modal.wallet.selectWalletOr")}</p>
             <p
               className="button"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              Create a new wallet
+              {translate("modal.wallet.createNewWallet")}
             </p>
           </div>
         </div>

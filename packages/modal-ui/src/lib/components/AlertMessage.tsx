@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { ConnectionResult } from "./ConnectionResult";
-import { type ModuleState } from "@near-wallet-selector/core";
+import { type ModuleState, translate } from "@near-wallet-selector/core";
 import { ModalHeader } from "./ModalHeader";
 
 interface AlertMessageProps {
@@ -25,7 +25,7 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
           <h3 className="connecting-name">{module?.metadata.name}</h3>
           {message !== null && (
             <div className="connecting-message">
-              <span>The connection was not successful, please try again.</span>
+              <span>{translate("modal.wallet.connectionNotSuccessful")}</span>
             </div>
           )}
           <ConnectionResult

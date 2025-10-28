@@ -49,19 +49,19 @@ export const ScanQRCode: React.FC<ScanQRCodeProps> = ({
       <section className="qr-code">
         <img src={wallet?.metadata.iconUrl} alt={wallet?.metadata.name} />
         <div dangerouslySetInnerHTML={{ __html: svg }}></div>
-        <p>{`Please scan this QR code\n to connect your wallet.`}</p>
+        <p>{translate("modal.qr.scanQRCodeMessage")}</p>
         <p>
           <span className="copy-to-clipboard" onClick={copyToClipboard}>
             {notification
               ? notification
               : translate("modal.qr.copyToClipboard")}
           </span>{" "}
-          or{" "}
+          {translate("general.or")}{" "}
           <span
             className="open-in-official-dialogue"
             onClick={handleOpenDefaultModal}
           >
-            open in official dialogue
+            {translate("modal.qr.openInOfficialDialogue")}
           </span>
         </p>
       </section>
