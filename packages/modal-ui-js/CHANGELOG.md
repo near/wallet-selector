@@ -1,5 +1,16 @@
 # @near-wallet-selector/modal-ui-js
 
+## 10.1.0
+
+### Minor Changes
+
+- [#1443](https://github.com/near/wallet-selector/pull/1443) [`c0113dd`](https://github.com/near/wallet-selector/commit/c0113dd813785913f1307760467a1b02698cc00b) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Modernize wallet selector modal UI with redesigned layout and improved UX
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.0
+
 ## 10.0.0
 
 ### Minor Changes

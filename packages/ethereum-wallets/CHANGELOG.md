@@ -1,5 +1,13 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 10.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.0
+  - @near-wallet-selector/wallet-utils@10.1.0
+
 ## 10.0.0
 
 ### Major Changes

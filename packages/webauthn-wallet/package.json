@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/webauthn-wallet",
-  "version": "0.1.0",
+  "version": "10.1.0",
   "description": "WebAuthn biometric wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -34,4 +34,3 @@
     "directory": "../../dist/packages/webauthn-wallet"
   }
 }
-

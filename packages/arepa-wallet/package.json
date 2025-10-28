@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/arepa-wallet",
-  "version": "10.0.0",
+  "version": "10.1.0",
   "description": "Arepa Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
