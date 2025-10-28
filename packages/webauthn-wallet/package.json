@@ -1,0 +1,37 @@
+{
+  "name": "@near-wallet-selector/webauthn-wallet",
+  "version": "0.1.0",
+  "description": "WebAuthn biometric wallet package for NEAR Wallet Selector.",
+  "keywords": [
+    "near",
+    "blockchain",
+    "wallets",
+    "dapps",
+    "near-protocol",
+    "near-blockchain",
+    "wallet selector",
+    "webauthn",
+    "biometric",
+    "passkey"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/near/wallet-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/near/wallet-selector/issues"
+  },
+  "homepage": "https://github.com/near/wallet-selector/tree/main/packages/webauthn-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "@near-js/crypto": "^2.3.3",
+    "@near-js/signers": "^2.3.3",
+    "@near-js/utils": "^2.3.3",
+    "@noble/curves": "^1.8.1"
+  },
+  "publishConfig": {
+    "directory": "../../dist/packages/webauthn-wallet"
+  }
+}
+
