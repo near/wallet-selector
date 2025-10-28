@@ -5,7 +5,6 @@ import { connectToWallet } from "../render-modal";
 import copy from "copy-to-clipboard";
 import * as QRCode from "qrcode";
 import { CloseIcon } from "./icons/CloseIcon";
-import { CopyIcon } from "./icons/CopyIcon";
 
 export async function renderScanQRCode(
   module: ModuleState<Wallet>,
@@ -22,31 +21,28 @@ export async function renderScanQRCode(
       <div class="nws-modal-body">
         <section class="scan-qr-code">
           <div class="nws-modal-header">
-            <h3 class="middleTitle">${translate(
-              "modal.qr.scanWithYourMobile"
-            )}</h3>
             <button class="close-button">
                 ${CloseIcon}
             </button>
           </div>
           <section class="qr-code">
+            <img src="${module?.metadata.iconUrl}" alt="${
+    module?.metadata.name
+  }" />
             <div>
                 ${svg}
             </div>
-            <div class="notification" id="uri-copy-notification"></div>
-            <div class="copy-btn" id="copy-uri-to-clipboard">
-                ${CopyIcon}
+            <p>Please scan this QR code\n to connect your wallet.</p>
+            <p>
+              <span class="copy-to-clipboard" id="copy-uri-to-clipboard">
                 ${translate("modal.qr.copyToClipboard")}
-              </div>
+              </span>
+              or
+              <span class="open-in-official-dialogue" id="default-modal-trigger">
+                open in official dialogue
+              </span>
+            </p>
         </section>
-        <footer class="footer">
-          <p>${translate("modal.qr.preferTheOfficial")} ${
-    module.metadata.name
-  }?</p>
-          <button class="btn" id="default-modal-trigger">${translate(
-            "modal.qr.open"
-          )}</button>
-        </footer>
       </section>
     </div>
 `;

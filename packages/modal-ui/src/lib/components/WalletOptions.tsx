@@ -137,27 +137,19 @@ export const WalletOptions: React.FC<WalletOptionsProps> = ({
 
   return (
     <div>
-      {selector.options.optimizeWalletOrder &&
-      selector.store.getState().recentlySignedInWallets.length > 0 ? (
-        <div className="wallet-options-wrapper">
-          <div className="options-list-section-recent">
-            <div className="options-list-section-header">Recent</div>
-            <div className="options-list more-options-list-content">
+      <div className="wallet-options-wrapper">
+        <div className="options-list">
+          {selector.options.optimizeWalletOrder &&
+          selector.store.getState().recentlySignedInWallets.length > 0 ? (
+            <>
               {renderOptionsList(recentModules)}
-            </div>
-          </div>
-          <div className="options-list-section-more">
-            <div className="options-list-section-header">More</div>
-            <div className="options-list more-options-list-content">
               {renderOptionsList(moreModules)}
-            </div>
-          </div>
+            </>
+          ) : (
+            renderOptionsList(modules)
+          )}
         </div>
-      ) : (
-        <div className="wallet-options-wrapper">
-          <div className="options-list">{renderOptionsList(modules)}</div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

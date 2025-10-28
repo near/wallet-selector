@@ -11,6 +11,10 @@
       "useAWallet": "지갑을 사용하여 NEAR 자산을 보호·관리하고, 아이디와 비밀번호 없이 NEAR 앱에 로그인할 수 있습니다.",
       "connectionFailed": "연결 실패",
       "connectionSuccessful": "연결 성공",
+      "connectionNotSuccessful": "연결이 성공하지 못했습니다. 다시 시도해 주세요.",
+      "whatIsAWalletDescription": "지갑을 사용하면 암호화폐와 같은 디지털 자산을 저장하고 NEAR 앱에 로그인할 수 있습니다.",
+      "selectWalletOr": "왼쪽에서 지갑을 선택하거나",
+      "createNewWallet": "새 지갑 만들기",
       "rememberWallet": "지갑들 기억하기",
       "connected": "Connected",
       "connectingTo": "연결 중: ",
@@ -60,9 +64,14 @@
       "copiedToClipboard": "클립보드에 복사 완료",
       "failedToCopy": "클립보드에 복사 실패",
       "scanWithYourMobile": "모바일 장치를 사용하여 스캔해주세요",
+      "scanQRCodeMessage": "지갑을 연결하려면 이 QR 코드를 스캔하세요.\n",
       "copyToClipboard": " 클립보드에 복사하기",
       "preferTheOfficial": "다음 프로그램에서 제공하는 공식 프로세스를 선호하십니까: ",
+      "openInOfficialDialogue": "공식 대화 상자에서 열기",
       "open": "Open"
     }
+  },
+  "general": {
+    "or": "또는"
   }
 }

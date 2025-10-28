@@ -230,7 +230,6 @@ export const DerivationPath: React.FC<DerivationPathProps> = ({
           onBack={() => {
             setConnecting(false);
           }}
-          onCloseModal={onCloseModal}
         />
       </div>
     );

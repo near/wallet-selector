@@ -21,6 +21,7 @@
     "@near-wallet-selector/okx-wallet": "workspace:*",
     "@near-wallet-selector/ethereum-wallets": "workspace:*",
     "@near-wallet-selector/coin98-wallet": "workspace:*",
+    "@near-wallet-selector/wallet-connect": "workspace:*",
     "@near-wallet-selector/intear-wallet": "workspace:*"
   }
 }

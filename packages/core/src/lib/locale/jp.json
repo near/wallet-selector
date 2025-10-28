@@ -11,6 +11,10 @@
       "useAWallet": "ウォレットを使ってNEARの資産を安全に管理し、ユーザー名やパスワードなしでNEARアプリにログインします。",
       "connectionFailed": "接続失敗",
       "connectionSuccessful": "接続成功",
+      "connectionNotSuccessful": "接続が成功しませんでした。もう一度お試しください。",
+      "whatIsAWalletDescription": "ウォレットを使用すると、暗号通貨などのデジタル資産を保存し、NEARアプリにログインできます。",
+      "selectWalletOr": "左側からウォレットを選択するか、",
+      "createNewWallet": "新しいウォレットを作成",
       "rememberWallet": "ウォレットを記憶",
       "connected": "接続済み",
       "connectingTo": "接続中",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "クリップボードにコピーされました",
       "failedToCopy": "クリップボードにコピーできませんでした",
       "scanWithYourMobile": "モバイルデバイスでスキャン",
+      "scanQRCodeMessage": "ウォレットを接続するには、このQRコードをスキャンしてください。\n",
       "copyToClipboard": "クリップボードにコピー",
       "preferTheOfficial": "公式ダイアログを推奨します",
+      "openInOfficialDialogue": "公式ダイアログで開く",
       "open": "開く"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
         "button": "完了"
       }
     }
+  },
+  "general": {
+    "or": "または"
   },
   "component": {
     "clickToCopy": {

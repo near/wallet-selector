@@ -3,6 +3,7 @@ import type { ModuleState } from "@near-wallet-selector/core";
 import { translate } from "@near-wallet-selector/core";
 import { ConnectionErrorIcon } from "./icons/ConnectionErrorIcon";
 import { ConnectionSuccessIcon } from "./icons/ConnectionSuccessIcon";
+import { RetryIcon } from "./icons/RetryIcon";
 
 interface ConnectionResultProps {
   module: ModuleState;
@@ -21,19 +22,26 @@ export const ConnectionResult: React.FC<ConnectionResultProps> = ({
     <div className="connection connecting-details">
       {err ? (
         <div className="error-wrapper">
-          <div className="error">
-            <ConnectionErrorIcon />
-            {translate("modal.wallet.connectionFailed")}
-          </div>
-          <p>{message}</p>
           {module?.metadata.available && (
-            <button onClick={onRetry}>{translate("modal.ledger.retry")}</button>
+            <button className="loading-dots" onClick={onRetry}>
+              <RetryIcon />
+              {translate("modal.ledger.retry")}
+            </button>
           )}
+          <div className="error-floating">
+            <div className="error">
+              <ConnectionErrorIcon />
+              {translate("modal.wallet.connectionFailed")}
+            </div>
+            <p>{message}</p>
+          </div>
         </div>
       ) : (
         <div className="success">
-          <ConnectionSuccessIcon />
-          {translate("modal.wallet.connectionSuccessful")}
+          <button className="loading-dots" onClick={onRetry}>
+            {translate("modal.wallet.connectionSuccessful")}
+            <ConnectionSuccessIcon />
+          </button>
         </div>
       )}
     </div>

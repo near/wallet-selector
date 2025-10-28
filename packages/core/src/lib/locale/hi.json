@@ -11,6 +11,10 @@
       "useAWallet": "अपनी NEAR संपत्तियों को सुरक्षित और प्रबंधित करने के लिए वॉलेट का उपयोग करें और किसी भी NEAR ऐप (app) में लॉग इन करें, किसी उपयोगकर्ता (user) नाम और पासवर्ड की आवश्यकता नहीं है।",
       "connectionFailed": "कनेक्शन विफल|",
       "connectionSuccessful": "कनेक्शन सफल|",
+      "connectionNotSuccessful": "कनेक्शन सफल नहीं हुआ, कृपया पुनः प्रयास करें।",
+      "whatIsAWalletDescription": "वॉलेट आपको क्रिप्टो जैसी डिजिटल संपत्तियां स्टोर करने और NEAR पर ऐप्स में लॉग इन करने की अनुमति देता है।",
+      "selectWalletOr": "कृपया बाईं ओर एक वॉलेट चुनें, या",
+      "createNewWallet": "एक नया वॉलेट बनाएं",
       "rememberWallet": "वॉलेटों को याद रखें",
       "connected": "वॉलेट जुड़ गया|",
       "connectingTo": "वॉलेट जुड़ रहा हे|",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "क्लिपबोर्ड(Clipboard)पर कॉपी किया गया|",
       "failedToCopy": "क्लिपबोर्ड पर कॉपी करना विफल रहा|",
       "scanWithYourMobile": "अपने फोन (Mobile)से स्कैन करें|",
+      "scanQRCodeMessage": "कृपया अपने वॉलेट को कनेक्ट करने के लिए इस QR कोड को स्कैन करें।\n",
       "copyToClipboard": " क्लिपबोर्ड पर कॉपी करें|",
       "preferTheOfficial": "आधिकारिक संवाद को प्राथमिकता दें|",
+      "openInOfficialDialogue": "आधिकारिक संवाद में खोलें",
       "open": "खोले|"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
       },
       "warning": "वर्तमान में खाते निर्यात का समर्थन नहीं करता है। कृपया एक अन्य वॉलेट चुनें।"
     }
+  },
+  "general": {
+    "or": "या"
   },
   "component": {
     "clickToCopy": {

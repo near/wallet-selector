@@ -16,6 +16,7 @@ import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
 import { translate } from "@near-wallet-selector/core";
 import { WarningIcon } from "./components/icons/WarningIcon";
+import { CloseIcon } from "./components/icons/CloseIcon";
 
 export type HardwareWalletAccountState = HardwareWalletAccount & {
   selected: boolean;
@@ -262,45 +263,30 @@ const renderWalletOptions = () => {
     optionsWrapper.innerHTML = "";
   }
 
+  let walletList = [];
   if (
     modalState.selector.options.optimizeWalletOrder &&
     recentlySignedInWallets.length > 0
   ) {
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-recent">
-        <div class="options-list-section-header">Recent</div>
-        <div class="options-list recent-options-list-content"></div>
-      </div>
-      `
-    );
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-more">
-        <div class="options-list-section-header">More</div>
-        <div class="options-list more-options-list-content"></div>
-      </div>
-      `
-    );
-    renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
+    walletList = [...recentlySignedInWallets];
 
     if (modalState.selector.options.randomizeWalletOrder) {
-      renderOptionsList(
-        ".more-options-list-content",
-        moreWallets.sort(() => Math.random() - 0.5)
-      );
+      walletList = [
+        ...walletList,
+        ...moreWallets.sort(() => Math.random() - 0.5),
+      ];
     } else {
-      renderOptionsList(".more-options-list-content", moreWallets);
+      walletList = [...walletList, ...moreWallets];
     }
   } else {
-    optionsWrapper?.insertAdjacentHTML(
-      "beforeend",
-      `<div class="options-list"></div>`
-    );
-    renderOptionsList(".options-list", modalState.modules);
+    walletList = [...modalState.modules];
   }
+
+  optionsWrapper?.insertAdjacentHTML(
+    "beforeend",
+    `<div class="options-list"></div>`
+  );
+  renderOptionsList(".options-list", walletList);
 };
 
 const handleSwitchChange = () => {
@@ -328,25 +314,23 @@ export function renderModal() {
       modalState.options.theme === "dark" ? "dark-theme" : ""
     }">
       <div class="nws-modal-overlay"></div>
-      <div class="nws-modal">
-        <div class="modal-left">
-          <div class="modal-left-title">
-            <h2>${translate("modal.wallet.connectYourWallet")}</h2>
-            <span class="nws-remember-wallet">
-              ${translate("modal.wallet.rememberWallet")}
-            </span>
-            <label class="nws-switch">
-              <input type="checkbox" ${
-                isChecked ? "checked" : ""
-              } id="rememberWalletSwitch" />
-              <span class="nws-slider round" />
-            </label>
-          </div>
-          <div class="nws-modal-body">
-            <div class="wallet-options-wrapper"></div>
-          </div>
+      <div class="nws-modal-background">
+        <div class="nws-modal-title-wrapper">
+          <h2 class="nws-modal-title">
+          ${translate("modal.wallet.connectYourWallet")}
+          </h2>
+          <button class="close-button">
+            ${CloseIcon}
+          </button>
         </div>
-        <div class="modal-right"></div>
+        <div class="nws-modal">
+          <div class="modal-left">
+            <div class="nws-modal-body">
+              <div class="wallet-options-wrapper"></div>
+            </div>
+          </div>
+          <div class="modal-right"></div>
+        </div>
       </div>
     </div>
   `;
@@ -370,37 +354,20 @@ export function renderModal() {
     }
   });
 
+  let walletList: Array<ModuleState<Wallet>> = [];
   if (
     modalState.selector.options.optimizeWalletOrder &&
     recentlySignedInWallets.length > 0
   ) {
-    document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-recent">
-        <div class="options-list-section-header">Recent</div>
-        <div class="options-list recent-options-list-content"></div>
-      </div>
-      `
-    );
-    document.querySelector(".wallet-options-wrapper")?.insertAdjacentHTML(
-      "beforeend",
-      `
-      <div class="options-list-section-more">
-        <div class="options-list-section-header">More</div>
-        <div class="options-list more-options-list-content"></div>
-      </div>
-      `
-    );
-    renderOptionsList(".recent-options-list-content", recentlySignedInWallets);
+    walletList = [...recentlySignedInWallets];
 
     if (modalState.selector.options.randomizeWalletOrder) {
-      renderOptionsList(
-        ".more-options-list-content",
-        moreWallets.sort(() => Math.random() - 0.5)
-      );
+      walletList = [
+        ...walletList,
+        ...moreWallets.sort(() => Math.random() - 0.5),
+      ];
     } else {
-      renderOptionsList(".more-options-list-content", moreWallets);
+      walletList = [...walletList, ...moreWallets];
     }
 
     if (!selectedWalletId && recentlySignedInWallets.length > 0) {
@@ -410,11 +377,12 @@ export function renderModal() {
         ?.classList.add("selected-wallet");
     }
   } else {
-    document
-      .querySelector(".wallet-options-wrapper")
-      ?.insertAdjacentHTML("beforeend", `<div class="options-list"></div>`);
-    renderOptionsList(".options-list", modalState.modules);
+    walletList = [...modalState.modules];
   }
+  document
+    .querySelector(".wallet-options-wrapper")
+    ?.insertAdjacentHTML("beforeend", `<div class="options-list"></div>`);
+  renderOptionsList(".options-list", walletList);
 
   document
     .querySelector(".nws-modal-overlay")

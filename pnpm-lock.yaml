@@ -558,6 +558,9 @@ importers:
       '@near-wallet-selector/unity-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/unity-wallet
+      '@near-wallet-selector/wallet-connect':
+        specifier: workspace:*
+        version: link:../../dist/packages/wallet-connect
       '@near-wallet-selector/welldone-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/welldone-wallet

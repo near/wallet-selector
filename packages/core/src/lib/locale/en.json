@@ -11,6 +11,10 @@
       "useAWallet": "Use a wallet to secure and manage your NEAR assets, and to log in to any NEAR app without the need for usernames and passwords.",
       "connectionFailed": "Connection Failed",
       "connectionSuccessful": "Connection Successful",
+      "connectionNotSuccessful": "The connection was not successful, please try again.",
+      "whatIsAWalletDescription": "Wallets let you store digital assets like crypto, and log into apps on NEAR.",
+      "selectWalletOr": "Please select a wallet on the left, or",
+      "createNewWallet": "Create a new wallet",
       "rememberWallet": "Remember wallets",
       "connected": "Connected",
       "connectingTo": "Connecting to",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "Copied to clipboard",
       "failedToCopy": "Failed to copy to clipboard",
       "scanWithYourMobile": "Scan with Your Mobile Device",
+      "scanQRCodeMessage": "Please scan this QR code\n to connect your wallet.",
       "copyToClipboard": " Copy to clipboard",
       "preferTheOfficial": "Prefer the official dialogue of",
+      "openInOfficialDialogue": "open in official dialogue",
       "open": "Open"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
         "button": "Complete"
       }
     }
+  },
+  "general": {
+    "or": "or"
   },
   "component": {
     "clickToCopy": {
