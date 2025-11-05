@@ -4,15 +4,13 @@
 > While Wallet Selector remains supported during the transition period,  
 > the **NEAR Infra Committee / NEAR Foundation recommends exploring  
 > the new preferred connector — [HOT Connect](https://github.com/azbang/hot-connect).**
-
----
-
-### HOT Connect provides:
-
-- **Full compatibility** with Wallet Selector APIs  
-- **Secure isolation** of all wallet code via iframes  
-- **Automatic wallet updates** without maintenance on the dApp side  
-- **Modern authentication flows** and improved UX  
+>
+> ### HOT Connect provides:
+> 
+> - **Full compatibility** with Wallet Selector APIs  
+> - **Secure isolation** of all wallet code via iframes  
+> - **Automatic wallet updates** without maintenance on the dApp side  
+> - **Modern authentication flows** and improved UX  
 
 <div style="background: #FFF3CD; padding: 12px; border-left: 4px solid #FFCC00; margin-top: 16px;">
 ✅ We recommend integrating <b>HOT Connect</b> to ensure long-term compatibility and the best user experience on NEAR.
