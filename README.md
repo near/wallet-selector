@@ -3,7 +3,7 @@
 > **⚠️ Recommendation**  
 > While Wallet Selector remains supported during the transition period,  
 > the **NEAR Infra Committee / NEAR Foundation recommends exploring  
-> the new preferred connector — [HOT Connect](https://github.com/azbang/hot-connect).**
+> the new preferred connector — [HOT Connect](https://github.com/azbang/hot-connector).**
 >
 > ### HOT Connect provides:
 > 
