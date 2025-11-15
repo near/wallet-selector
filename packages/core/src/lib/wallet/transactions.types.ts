@@ -15,7 +15,7 @@ export interface FunctionCallAction {
   type: "FunctionCall";
   params: {
     methodName: string;
-    args: object;
+    args: object | Uint8Array;
     gas: string;
     deposit: string;
   };
