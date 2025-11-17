@@ -83,7 +83,11 @@ await wallet.signAndSendTransaction({
 
 ### Internal Action Format (Requires Conversion)
 
-The internal action format (`InternalAction`) is still available but requires manual conversion to NAJ actions:
+The internal action format (`InternalAction`) is still available but requires manual conversion to NAJ actions. The `FunctionCall` action now accepts either JSON args or raw bytes:
+
+- `args: object | Uint8Array`
+
+When converting from NAJ to the internal format, Wallet Selector attempts to parse the NAJ `Uint8Array` args as JSON. If parsing fails (i.e. non‑JSON bytes such as Borsh), the raw `Uint8Array` is preserved. When converting internal actions back to NAJ, both objects and `Uint8Array` args are forwarded unchanged to `@near-js/transactions`.
 
 ```ts
 import { internalActionToNaj } from '@near-wallet-selector/core';
@@ -92,7 +96,7 @@ const internalAction = {
   type: "FunctionCall" as const,
   params: {
     methodName: "addMessage",
-    args: { text: "Hello World!" },
+    args: { text: "Hello World!" }, // Or a Uint8Array for Borsh encoded args
     gas: "30000000000000",      // String format
     deposit: "100000000000000000000000", // String format
   },
