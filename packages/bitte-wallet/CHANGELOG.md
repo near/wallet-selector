@@ -1,5 +1,7 @@
 # @near-wallet-selector/bitte-wallet
 
+## 10.1.1
+
 ## 10.1.0
 
 ## 10.0.0

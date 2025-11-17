@@ -1,5 +1,12 @@
 # @near-wallet-selector/my-near-wallet
 
+## 10.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`a3363a0`](https://github.com/near/wallet-selector/commit/a3363a091ffba7c4ac4224439fbd78f95cba4f4a)]:
+  - @near-wallet-selector/core@10.1.1
+
 ## 10.1.0
 
 ### Patch Changes
