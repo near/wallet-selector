@@ -19,7 +19,11 @@
         "production": {
           "mode": "production"
         }
-      }
+      },
+      "dependsOn": [{
+        "projects": ["core"],
+        "target": "build"
+      }]
     },
     "serve": {
       "executor": "@nx/vite:dev-server",

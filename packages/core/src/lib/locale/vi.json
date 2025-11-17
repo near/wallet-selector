@@ -11,6 +11,10 @@
         "useAWallet": "Sử dụng ví để bảo mật và quản lý tài sản trên NEAR của bạn và đăng nhập vào bất kỳ ứng dụng NEAR nào, không cần tên người dùng và mật khẩu.",
         "connectionFailed": "Kết nối thất bại",
         "connectionSuccessful": "Kết nối thành công",
+        "connectionNotSuccessful": "Kết nối không thành công, vui lòng thử lại.",
+        "whatIsAWalletDescription": "Ví cho phép bạn lưu trữ tài sản số như tiền điện tử và đăng nhập vào các ứng dụng trên NEAR.",
+        "selectWalletOr": "Vui lòng chọn một ví ở bên trái, hoặc",
+        "createNewWallet": "Tạo ví mới",
         "rememberWallet": "Ghi nhớ lựa chọn ví",
         "connected": "Đã kết nối",
         "connectingTo": "Đang kết nối tới",
@@ -52,8 +56,10 @@
         "copiedToClipboard": "Đã sao chép vào bảng ghi tạm",
         "failedToCopy": "Sao chép vào bảng ghi tạm thất bại",
         "scanWithYourMobile": "Quét với điện thoại của bạn",
+        "scanQRCodeMessage": "Vui lòng quét mã QR này\n để kết nối ví của bạn.",
         "copyToClipboard": " Sao chép vào bảng ghi tạm",
         "preferTheOfficial": "Dialogue chính thức của",
+        "openInOfficialDialogue": "mở trong hộp thoại chính thức",
         "open": "Mở"
       },
       "walletTypes": {
@@ -103,6 +109,9 @@
           "button": "Hoàn thành"
         }
       }
+    },
+    "general": {
+      "or": "hoặc"
     },
     "component": {
       "clickToCopy": {

@@ -1,6 +1,8 @@
-import type { Transaction } from "@near-wallet-selector/core";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import type { PublicKey as NearPublicKey } from "near-api-js/lib/utils";
+import type {
+  FinalExecutionOutcome,
+  Transaction,
+} from "@near-wallet-selector/core";
+import type { PublicKey as NearPublicKey } from "@near-js/crypto";
 
 export interface NearAccount {
   accountId: string;

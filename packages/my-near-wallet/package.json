@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/my-near-wallet",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "My Near Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,15 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/my-near-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-js/accounts": "^2.3.0",
+    "@near-js/transactions": "^2.3.0",
+    "@near-js/providers": "^2.3.0",
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/utils": "^2.3.0",
+    "borsh": "2.0.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/my-near-wallet"
   }

@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/bitte-wallet",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "Bitte wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,9 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/bitte-wallet",
+  "dependencies": {
+    "@bitte-ai/wallet": "0.8.2"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/bitte-wallet"
   }

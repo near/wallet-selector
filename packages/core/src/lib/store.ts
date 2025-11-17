@@ -60,6 +60,18 @@ const reducer = (
         modules,
       };
     }
+    case "ADD_WALLET_MODULES": {
+      const { modules: newModules } = action.payload;
+      let modules = [...state.modules, ...newModules];
+
+      // sort by listIndex
+      modules = modules.sort((a, b) => a.listIndex - b.listIndex);
+
+      return {
+        ...state,
+        modules,
+      };
+    }
     case "WALLET_CONNECTED": {
       const { walletId, contract, accounts, recentlySignedInWallets } =
         action.payload;

@@ -4,19 +4,9 @@ Coin98 Wallet [Coin98 Wallet](https://chrome.google.com/webstore/detail/coin98-w
 
 ## Installation
 
-This package requires `near-api-js` v1.0.0 or above:
-
 ```bash
-# Using Yarn
-yarn add near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
-
-```bash
-# Using Yarn
-yarn add @near-wallet-selector/coin98-wallet
+# Using pnpm
+pnpm add -w @near-wallet-selector/coin98-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/coin98-wallet

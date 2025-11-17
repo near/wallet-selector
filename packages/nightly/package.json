@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/nightly",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "Nightly wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,13 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/nightly",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "@near-js/crypto": "^2.3.0",
+    "@near-js/signers": "^2.3.0",
+    "@near-js/transactions": "^2.3.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/nightly"
   }

@@ -3,9 +3,9 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 import { setupCoin98Wallet } from "./coin98-wallet";
-import type { Signer } from "near-api-js/lib/signer";
+import type { Signer } from "near-api-js/lib/signer.js";
 
 const accountId = "amirsaran.testnet";
 const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";
@@ -17,13 +17,15 @@ const mockCoin98WalletOnWindow = () => {
       signer: mock<Signer>({
         createKey: jest.fn(),
         signMessage: jest.fn().mockReturnValue({
-          signature: Buffer.from([
-            86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
-            124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
-            238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
-            250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53,
-            84, 218, 45, 220, 10, 4,
-          ]),
+          signature: {
+            data: Buffer.from([
+              86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174,
+              173, 124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98,
+              65, 70, 238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218,
+              117, 100, 250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138,
+              35, 207, 53, 84, 218, 45, 220, 10, 4,
+            ]),
+          },
           publicKey,
         }),
         getPublicKey: jest.fn().mockReturnValue(publicKey),
@@ -34,13 +36,15 @@ const mockCoin98WalletOnWindow = () => {
       }),
       disconnect: jest.fn(),
       signMessage: jest.fn().mockReturnValue({
-        signature: Buffer.from([
-          86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
-          124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
-          238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
-          250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53, 84,
-          218, 45, 220, 10, 4,
-        ]),
+        signature: {
+          data: Buffer.from([
+            86, 38, 222, 143, 115, 251, 107, 14, 115, 59, 92, 98, 66, 174, 173,
+            124, 209, 189, 191, 180, 89, 25, 125, 254, 97, 240, 178, 98, 65, 70,
+            238, 108, 105, 122, 165, 249, 193, 70, 118, 194, 126, 218, 117, 100,
+            250, 124, 202, 161, 173, 12, 232, 146, 105, 194, 138, 35, 207, 53,
+            84, 218, 45, 220, 10, 4,
+          ]),
+        },
         publicKey,
       }),
     },

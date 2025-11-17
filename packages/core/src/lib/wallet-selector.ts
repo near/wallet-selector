@@ -92,7 +92,7 @@ export const setupWalletSelector = async (
 
   const emitter = new EventEmitter<WalletSelectorEvents>();
   const store = await createStore(storage);
-  const network = await getNetworkPreset(
+  const network = getNetworkPreset(
     options.network.networkId as NetworkId,
     params.fallbackRpcUrls
   );
@@ -111,9 +111,8 @@ export const setupWalletSelector = async (
     provider: new Provider(rpcProviderUrls),
   });
 
-  await walletModules.setup();
-  await walletModules.setupV2(params.modulesV2 || []);
-  await walletModules.resolveState();
+  await walletModules.setupWalletModules();
+  await walletModules.setupStorage();
 
   if (params.allowMultipleSelectors) {
     return createSelector(options, store, walletModules, emitter);

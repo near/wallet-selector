@@ -88,6 +88,12 @@ export type WalletSelectorAction =
       };
     }
   | {
+      type: "ADD_WALLET_MODULES";
+      payload: {
+        modules: Array<ModuleState>;
+      };
+    }
+  | {
       type: "WALLET_CONNECTED";
       payload: {
         walletId: string;

@@ -1,37 +1,36 @@
-import type {
-  Account,
-  InjectedWallet,
-  Network,
-  WalletBehaviourFactory,
-  WalletModuleFactory,
+import {
+  najActionToInternal,
+  type Account,
+  type InjectedWallet,
+  type Network,
+  type WalletBehaviourFactory,
+  type WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import type {
   MeteorWalletParams_Injected,
   MeteorWalletState,
 } from "./meteor-wallet-types";
-import * as nearAPI from "near-api-js";
+import { BrowserLocalStorageKeyStore } from "@near-js/keystores-browser";
 import {
   EMeteorWalletSignInType,
   MeteorWallet as MeteorWalletSdk,
 } from "@meteorwallet/sdk";
 import icon from "./icon";
+import { nullEmpty } from "./nullEmpty";
 
 const setupWalletState = async (
   params: MeteorWalletParams_Injected,
   network: Network
 ): Promise<MeteorWalletState> => {
-  const keyStore = new nearAPI.keyStores.BrowserLocalStorageKeyStore(
+  const keyStore = new BrowserLocalStorageKeyStore(
     window.localStorage,
     "_meteor_wallet"
   );
 
-  const near = await nearAPI.connect({
-    keyStore,
+  const wallet = new MeteorWalletSdk({
     ...network,
-    headers: {},
+    keyStore,
   });
-
-  const wallet = new MeteorWalletSdk({ near, appKeyPrefix: "near_app" });
 
   return {
     wallet,
@@ -47,16 +46,13 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
 
   const getAccounts = async (): Promise<Array<Account>> => {
     const accountId = _state.wallet.getAccountId();
-    const account = _state.wallet.account();
+    const account = await _state.wallet.account();
 
-    if (!accountId || !account) {
+    if (nullEmpty(accountId) || account == null) {
       return [];
     }
 
-    const publicKey = await account.connection.signer.getPublicKey(
-      account.accountId,
-      options.network.networkId
-    );
+    const publicKey = await account.getSigner()!.getPublicKey();
     return [
       {
         accountId,
@@ -76,12 +72,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         await _state.wallet.requestSignIn({
           methods: methodNames,
           type: EMeteorWalletSignInType.SELECTED_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId ?? "",
         });
       } else {
         await _state.wallet.requestSignIn({
           type: EMeteorWalletSignInType.ALL_METHODS,
-          contract_id: contractId || "",
+          contract_id: contractId ?? "",
         });
       }
 
@@ -167,11 +163,12 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
         throw new Error("No receiver found to send the transaction to");
       }
 
-      const account = _state.wallet.account()!;
+      const account = await _state.wallet.account()!;
 
       return account["signAndSendTransaction_direct"]({
         receiverId: receiverId ?? contract!.contractId,
-        actions,
+        // @ts-ignore Meteor Wallet expects the actions to be in the internal action format so we need to convert them
+        actions: actions.map((action) => najActionToInternal(action)),
       });
     },
 
@@ -185,7 +182,14 @@ const createMeteorWalletInjected: WalletBehaviourFactory<
       }
 
       return _state.wallet.requestSignTransactions({
-        transactions,
+        // @ts-ignore
+        transactions: transactions.map((transaction) => ({
+          ...transaction,
+          actions: transaction.actions.map((action) =>
+            // Meteor Wallet expects the actions to be in the internal action format so we need to convert them
+            najActionToInternal(action)
+          ),
+        })),
       });
     },
 

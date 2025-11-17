@@ -4,19 +4,12 @@ This is the [Here Wallet](https://herewallet.app/) package for NEAR Wallet Selec
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry
+
 
 ```bash
-# Using Yarn
-yarn add near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
-
-```bash
-# Using Yarn
-yarn add @near-wallet-selector/here-wallet
+# Using pnpm
+pnpm add -w @near-wallet-selector/here-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/here-wallet

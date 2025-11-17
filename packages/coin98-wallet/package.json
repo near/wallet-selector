@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/coin98-wallet",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "Coin 98 wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,12 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/coin98-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "near-api-js": "5.0.0",
+    "is-mobile": "4.0.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/coin98-wallet"
   }

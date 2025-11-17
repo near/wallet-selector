@@ -4,12 +4,12 @@ import type {
   WalletConnection,
   ConnectedWalletAccount,
 } from "near-api-js";
-import type { AccountView } from "near-api-js/lib/providers/provider";
+import type { AccountView } from "near-api-js/lib/providers/provider.js";
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { BrowserWallet } from "../../../core/src/lib/wallet";
+import type { BrowserWallet } from "@near-wallet-selector/core";
 
 const createArepaWallet = async (deps: MockWalletDependencies = {}) => {
   const walletConnection = mock<WalletConnection>();

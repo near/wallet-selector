@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/xdefi",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "This is the XDEFI package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -20,6 +20,11 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/xdefi",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "is-mobile": "4.0.0",
+    "@near-js/crypto": "^2.3.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/xdefi"
   }

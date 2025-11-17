@@ -1,18 +1,32 @@
-import type {
-  Account,
-  FinalExecutionOutcome,
-  InstantLinkWallet,
-  SignedMessage,
-  WalletBehaviourFactory,
-  WalletModuleFactory,
+import {
+  najActionToInternal,
+  type Account,
+  type FinalExecutionOutcome,
+  type InstantLinkWallet,
+  type SignedMessage,
+  type WalletBehaviourFactory,
+  type WalletModuleFactory,
 } from "@near-wallet-selector/core";
 import icon from "./icon";
+import {
+  SCHEMA,
+  SignedTransaction,
+  type encodeSignedDelegate,
+} from "@near-js/transactions";
+import { PublicKey } from "@near-js/crypto";
+import { deserialize, serialize } from "borsh";
+
+type SignedDelegate = Parameters<typeof encodeSignedDelegate>[0];
 
 enum EMethod {
   sign_in = "sign_in",
   sign_out = "sign_out",
   sign_and_send_transaction = "sign_and_send_transaction",
   sign_and_send_transactions = "sign_and_send_transactions",
+  sign_transaction = "sign_transaction",
+  sign_delegate_action = "sign_delegate_action",
+  create_signed_transaction = "create_signed_transaction",
+  get_public_key = "get_public_key",
   sign_message = "sign_message",
   ping = "ping",
 }
@@ -21,6 +35,8 @@ type Result =
   | FinalExecutionOutcome
   | Array<FinalExecutionOutcome>
   | Array<Account>
+  | [Uint8Array, Uint8Array]
+  | Uint8Array
   | SignedMessage;
 
 interface IMeteorWalletAppAction {
@@ -62,12 +78,21 @@ const tryPostOrFail = <R extends Result>(
   ).toString("base64");
 
   postMessage(
-    JSON.stringify({
-      ...action,
-      nonce,
-      source: "meteor-wallet-app-selector",
-      href: window.location.href,
-    })
+    JSON.stringify(
+      {
+        ...action,
+        nonce,
+        source: "meteor-wallet-app-selector",
+        href: window.location.href,
+      },
+      (_, v) => {
+        if (typeof v === "bigint") {
+          v.toString();
+        }
+
+        return v;
+      }
+    )
   );
 
   return new Promise<R>((resolve, reject) => {
@@ -112,7 +137,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
   {
     contractId?: string;
   }
-> = async ({ metadata, logger }) => {
+> = async ({ metadata }) => {
   let signedInAccounts: Array<Account> = [];
 
   return {
@@ -123,6 +148,11 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       return signedInAccounts;
     },
     async signAndSendTransaction(params) {
+      const _params = {
+        ...params,
+        // Meteor Wallet App expects the actions to be in the internal action format so we need to convert them
+        actions: params.actions.map((action) => najActionToInternal(action)),
+      };
       const receiverId = params.receiverId ?? metadata.contractId;
       if (!receiverId) {
         throw new Error("No receiver found to send the transaction to");
@@ -131,7 +161,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       const data = await tryPostOrFail<FinalExecutionOutcome>({
         method: EMethod.sign_and_send_transaction,
         args: {
-          ...params,
+          ..._params,
           receiverId,
         },
       });
@@ -142,6 +172,13 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
         method: EMethod.sign_and_send_transactions,
         args: {
           ...params,
+          transactions: params.transactions.map((transaction) => ({
+            ...transaction,
+            // Meteor Wallet App expects the actions to be in the internal action format so we need to convert them
+            actions: transaction.actions.map((action) =>
+              najActionToInternal(action)
+            ),
+          })),
         },
       });
       return data;
@@ -152,7 +189,10 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
           method: EMethod.ping,
           args: {},
         },
-        1000
+        // we inject this window variable in app
+        // and give a bit more time for respond
+        // @ts-ignore
+        window.__is_running_in_meteor_wallet_app__ ? 3000 : 1000
       );
       const data = await tryPostOrFail<Array<Account>>({
         method: EMethod.sign_in,
@@ -189,38 +229,80 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
       return data;
     },
     async createSignedTransaction(receiverId, actions) {
-      logger.log("createSignedTransaction", { receiverId, actions });
+      const data = await tryPostOrFail<Uint8Array>({
+        method: EMethod.create_signed_transaction,
+        args: {
+          receiverId,
+          actions,
+        },
+      });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      const signedTransaction = SignedTransaction.decode(data);
+
+      return signedTransaction;
     },
     async signTransaction(transaction) {
-      logger.log("signTransaction", { transaction });
-
-      throw new Error(`Method not supported by ${metadata.name}`);
+      // first element is the hashed message
+      // second is the signed transaction
+      const [hash, signedTxUint8Array] = await tryPostOrFail<
+        [Uint8Array, Uint8Array]
+      >({
+        method: EMethod.sign_transaction,
+        args: {
+          transactionUint8Array: [...transaction.encode()],
+        },
+      });
+      return [hash, SignedTransaction.decode(signedTxUint8Array)];
     },
 
     async getPublicKey() {
-      logger.log("getPublicKey", {});
+      if (signedInAccounts.length === 0) {
+        throw new Error("Wallet is not signed in yet");
+      }
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      if (!signedInAccounts[0].publicKey) {
+        throw new Error("Public key is not available for the selected account");
+      }
+
+      return PublicKey.fromString(signedInAccounts[0].publicKey);
     },
 
     async signNep413Message(message, accountId, recipient, nonce, callbackUrl) {
-      logger.log("signNep413Message", {
-        message,
-        accountId,
-        recipient,
-        nonce,
-        callbackUrl,
+      const data = await tryPostOrFail<SignedMessage>({
+        method: EMethod.sign_message,
+        args: {
+          message,
+          recipient,
+          nonce: [...nonce],
+          callbackUrl,
+        },
       });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      return {
+        publicKey: PublicKey.from(data.publicKey),
+        accountId: accountId,
+        signature: new Uint8Array(Buffer.from(data.signature, "base64")),
+      };
     },
 
     async signDelegateAction(delegateAction) {
-      logger.log("signDelegateAction", { delegateAction });
+      const [hash, signedDelegateActionUint8Array] = await tryPostOrFail<
+        [Uint8Array, Uint8Array]
+      >({
+        method: EMethod.sign_delegate_action,
+        args: {
+          delegateActionUint8Array: [
+            ...serialize(SCHEMA.DelegateAction, delegateAction),
+          ],
+        },
+      });
 
-      throw new Error(`Method not supported by ${metadata.name}`);
+      return [
+        hash,
+        <SignedDelegate>(
+          deserialize(SCHEMA.SignedDelegate, signedDelegateActionUint8Array)
+        ),
+      ];
     },
   };
 };

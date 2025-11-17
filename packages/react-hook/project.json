@@ -7,6 +7,7 @@
     "build": {
       "executor": "@nrwl/rollup:rollup",
       "outputs": ["{options.outputPath}"],
+      "dependsOn": ["core:build", "modal-ui:build"],
       "options": {
         "outputPath": "dist/packages/react-hook",
         "tsConfig": "packages/react-hook/tsconfig.lib.json",

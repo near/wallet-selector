@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/hot-wallet",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "HOT Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,10 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/hot-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@hot-wallet/sdk": "1.0.8"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/hot-wallet"
   }

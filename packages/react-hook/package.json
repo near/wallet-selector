@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/react-hook",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "React Hook and Context for Wallet Selector",
   "keywords": [
     "near",
@@ -19,6 +19,18 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/react-hook",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/modal-ui": "workspace:*",
+    "@near-js/providers": "2.3.0",
+    "@near-js/transactions": "2.3.0",
+    "@near-js/types": "2.3.0",
+    "@near-js/crypto": "2.3.0",
+    "react": "18.3.1"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/react-hook"
   }

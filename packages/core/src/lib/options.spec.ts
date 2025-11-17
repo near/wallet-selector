@@ -9,7 +9,7 @@ describe("getNetworkPreset", () => {
 
     expect(network).toEqual({
       networkId,
-      nodeUrl: "https://rpc.mainnet.near.org",
+      nodeUrl: "https://free.rpc.fastnear.com",
       helperUrl: "https://helper.mainnet.near.org",
       explorerUrl: "https://nearblocks.io",
       indexerUrl: "https://api.fastnear.com/v0",
@@ -40,7 +40,7 @@ describe("getNetworkPreset", () => {
 
     expect(network).toEqual({
       networkId,
-      nodeUrl: "https://rpc.testnet.near.org",
+      nodeUrl: "https://test.rpc.fastnear.com",
       helperUrl: "https://helper.testnet.near.org",
       explorerUrl: "https://testnet.nearblocks.io",
       indexerUrl: "https://test.api.fastnear.com/v0",

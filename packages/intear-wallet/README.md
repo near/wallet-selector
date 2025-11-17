@@ -7,8 +7,8 @@ This is the [Intear Wallet](https://wallet.intear.tech) package for NEAR Wallet 
 The easiest way to use this package is to install it from the NPM registry:
 
 ```bash
-# Using Yarn
-yarn add @near-wallet-selector/intear-wallet
+# Using pnpm
+pnpm add -w @near-wallet-selector/intear-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/intear-wallet

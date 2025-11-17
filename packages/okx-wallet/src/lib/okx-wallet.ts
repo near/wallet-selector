@@ -1,6 +1,10 @@
 import { isMobile } from "is-mobile";
-import { SignedTransaction } from "near-api-js/lib/transaction";
-import { isCurrentBrowserSupported, waitFor } from "@near-wallet-selector/core";
+import {
+  isCurrentBrowserSupported,
+  najActionToInternal,
+  SignedTransaction,
+  waitFor,
+} from "@near-wallet-selector/core";
 
 import type {
   Action,
@@ -45,7 +49,7 @@ interface OkxState {
 }
 
 const isInstalled = () => {
-  return waitFor(() => !!window.okxwallet?.near).catch(() => false);
+  return !!window.okxwallet?.near;
 };
 
 const setupOkxState = (): OkxState => {
@@ -80,10 +84,8 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
     });
   };
 
-  const isValidActions = (
-    actions: Array<Action>
-  ): actions is Array<FunctionCallAction> => {
-    return actions.every((x) => x.type === "FunctionCall");
+  const isValidActions = (actions: Array<Action>) => {
+    return actions.every((x) => x.functionCall);
   };
 
   const transformActions = (actions: Array<Action>) => {
@@ -95,7 +97,12 @@ const OKXWallet: WalletBehaviourFactory<InjectedWallet> = async ({
       );
     }
 
-    return actions.map((x) => x.params);
+    return actions.map((action) => {
+      const internalAction = najActionToInternal(action);
+      return internalAction.type === "FunctionCall"
+        ? internalAction.params
+        : ({} as FunctionCallAction["params"]);
+    });
   };
 
   const transformTransactions = (

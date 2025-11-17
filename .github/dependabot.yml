@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    target-branch: "dev"
+    target-branch: "main"
     allow:
       - dependency-name: "lodash"
       - dependency-name: "@jscutlery/semver"

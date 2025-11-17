@@ -13,9 +13,14 @@ import {
   verifySignature,
 } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { providers } from "near-api-js";
-import type { QueryResponseKind } from "near-api-js/lib/providers/provider";
-import type { SignedTransaction } from "near-api-js/lib/transaction";
+import { FailoverRpcProvider, JsonRpcProvider } from "@near-js/providers";
+import {
+  type SignedTransaction,
+  type Transaction as NearTransaction,
+  actionCreators,
+} from "@near-js/transactions";
+import type { QueryResponseKind } from "@near-js/types";
+import type { PublicKey } from "@near-js/crypto";
 
 class WalletError extends Error {
   constructor(message: string) {
@@ -68,7 +73,7 @@ export interface WalletSelectorProviderValue {
   getAccessKeys: (accountId: string) => Promise<Array<unknown>>;
   signAndSendTransactions: (params: {
     transactions: Array<Transaction>;
-  }) => Promise<Array<object | string | number | null>>;
+  }) => Promise<Array<FinalExecutionOutcome>>;
   signMessage: (params: SignMessageParams) => Promise<void | SignedMessage>;
   getAccount: (accountId: string) => Promise<QueryResponseKindWithAmount>;
   verifyMessage: (
@@ -79,6 +84,22 @@ export interface WalletSelectorProviderValue {
     receiverId: string,
     actions: Array<Action>
   ) => Promise<SignedTransaction | void>;
+  signTransaction: (
+    transaction: NearTransaction
+  ) => Promise<[Uint8Array, SignedTransaction]>;
+  getPublicKey: () => Promise<PublicKey>;
+  signNep413Message: (
+    message: string,
+    accountId: string,
+    recipient: string,
+    nonce: Uint8Array,
+    callbackUrl?: string
+  ) => Promise<{
+    accountId: string;
+    publicKey: PublicKey;
+    signature: Uint8Array;
+    state?: string;
+  }>;
 }
 
 const DEFAULT_GAS = "30000000000000";
@@ -100,8 +121,10 @@ export function WalletSelectorProvider({
   const [wallet, setWallet] = useState<Wallet | null>(null);
 
   const networkURL =
-    typeof config.network === "string"
-      ? `https://rpc.${config.network}.near.org`
+    config.network === "mainnet"
+      ? "https://free.rpc.fastnear.com"
+      : config.network === "testnet"
+      ? "https://test.rpc.fastnear.com"
       : config.network.nodeUrl;
 
   const rpcProviderUrls =
@@ -109,8 +132,8 @@ export function WalletSelectorProvider({
       ? config.fallbackRpcUrls
       : [networkURL];
 
-  const provider = new providers.FailoverRpcProvider(
-    rpcProviderUrls.map((url) => new providers.JsonRpcProvider({ url }))
+  const provider = new FailoverRpcProvider(
+    rpcProviderUrls.map((url) => new JsonRpcProvider({ url }))
   );
 
   useEffect(() => {
@@ -134,8 +157,14 @@ export function WalletSelectorProvider({
   const signIn = async () => {
     const ws = await walletSelector;
     const modalInstance = setupModal(ws!, {
-      contractId: config.createAccessKeyFor?.contractId || undefined,
-      methodNames: config.createAccessKeyFor?.methodNames || [],
+      contractId:
+        typeof config.createAccessKeyFor === "string"
+          ? config.createAccessKeyFor
+          : config.createAccessKeyFor?.contractId,
+      methodNames:
+        typeof config.createAccessKeyFor === "object"
+          ? config.createAccessKeyFor.methodNames
+          : [],
     });
     modalInstance.show();
   };
@@ -200,21 +229,64 @@ export function WalletSelectorProvider({
       const outcome = await wallet.signAndSendTransaction({
         receiverId: contractId,
         actions: [
-          {
-            type: "FunctionCall",
-            params: {
-              methodName: method,
-              args,
-              gas: gas.toString(),
-              deposit: deposit.toString(),
-            },
-          },
+          actionCreators.functionCall(
+            method,
+            args,
+            BigInt(gas),
+            BigInt(deposit)
+          ),
         ],
       });
 
-      return providers.getTransactionLastResult(
-        outcome as FinalExecutionOutcome
+      return outcome as FinalExecutionOutcome;
+    },
+    [wallet]
+  );
+
+  const signTransaction = useCallback(
+    async (transaction: NearTransaction) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      const result = await wallet.signTransaction(transaction);
+
+      return result;
+    },
+    [wallet]
+  );
+
+  const getPublicKey = useCallback(async () => {
+    if (!wallet) {
+      throw new WalletError("No wallet connected");
+    }
+
+    const result = await wallet.getPublicKey();
+
+    return result;
+  }, [wallet]);
+
+  const signNep413Message = useCallback(
+    async (
+      message: string,
+      accountId: string,
+      recipient: string,
+      nonce: Uint8Array,
+      callbackUrl?: string
+    ) => {
+      if (!wallet) {
+        throw new WalletError("No wallet connected");
+      }
+
+      const result = await wallet.signNep413Message(
+        message,
+        accountId,
+        recipient,
+        nonce,
+        callbackUrl
       );
+
+      return result;
     },
     [wallet]
   );
@@ -277,7 +349,7 @@ export function WalletSelectorProvider({
   /**
    * Signs transactions and broadcasts them to the network
    * @param {Object[]} transactions - the transactions to sign and send
-   * @returns {Promise<Transaction[]>} - the resulting transactions
+   * @returns {Promise<Array<FinalExecutionOutcome>>} - the resulting transactions
    */
   const signAndSendTransactions = useCallback(
     async ({ transactions }: { transactions: Array<Transaction> }) => {
@@ -285,13 +357,9 @@ export function WalletSelectorProvider({
         throw new WalletError("No wallet connected");
       }
 
-      const sentTxs = (await wallet.signAndSendTransactions({
+      return wallet.signAndSendTransactions({
         transactions,
-      })) as Array<FinalExecutionOutcome>;
-
-      return sentTxs.map((tx: FinalExecutionOutcome) =>
-        providers.getTransactionLastResult(tx)
-      );
+      }) as Promise<Array<FinalExecutionOutcome>>;
     },
     [wallet]
   );
@@ -381,6 +449,9 @@ export function WalletSelectorProvider({
     getAccount,
     verifyMessage,
     createSignedTransaction,
+    signTransaction,
+    getPublicKey,
+    signNep413Message,
   };
 
   return (

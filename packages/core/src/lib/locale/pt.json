@@ -11,6 +11,10 @@
       "useAWallet": "Use uma carteira para proteger e gerenciar seus ativos NEAR sem precisar de nome de usuário ou senha",
       "connectionFailed": "Falha na conexão",
       "connectionSuccessful": "Conexão bem-sucedida",
+      "connectionNotSuccessful": "A conexão não foi bem-sucedida, tente novamente.",
+      "whatIsAWalletDescription": "As carteiras permitem armazenar ativos digitais, como criptomoedas, e fazer login em aplicativos NEAR.",
+      "selectWalletOr": "Selecione uma carteira à esquerda ou",
+      "createNewWallet": "Criar uma nova carteira",
       "rememberWallet": "Lembrar da carteira selecionada",
       "connected": "Conectado",
       "connectingTo": "Conectando a"
@@ -46,8 +50,10 @@
       "copiedToClipboard": "Copiado para a área de transferência",
       "failedToCopy": "Falha ao copiar para a área de transferência",
       "scanWithYourMobile": "Escaneie com seu celular",
+      "scanQRCodeMessage": "Escaneie este código QR\n para conectar sua carteira.",
       "copyToClipboard": "Copiar para a área de transferência",
       "preferTheOfficial": "Prefira usar a caixa de diálogo oficial no",
+      "openInOfficialDialogue": "abrir na caixa de diálogo oficial",
       "open": "Abrir"
     },
     "walletTypes": {
@@ -58,5 +64,8 @@
       "mobile": "Carteira móvel",
       "instant-link": "Carteira instantânea"
     }
+  },
+  "general": {
+    "or": "ou"
   }
 }

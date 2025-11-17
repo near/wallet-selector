@@ -8,14 +8,13 @@ import type {
   EventEmitterService,
   WalletEvents,
   Account,
+  FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
 import { signTransactions } from "@near-wallet-selector/wallet-utils";
-import type { Signer } from "near-api-js";
-import * as nearAPI from "near-api-js";
+import type { Signer } from "@near-js/signers";
 import type { NearNightly, InjectedNightly } from "./injected-nightly";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import icon from "./icon";
+import { PublicKey } from "@near-js/crypto";
 
 declare global {
   interface Window {
@@ -27,13 +26,38 @@ interface NightlyState {
   wallet: NearNightly;
 }
 
+const waitForNightlyNear = async ({
+  timeoutMs = 2000,
+  intervalMs = 50,
+}: { timeoutMs?: number; intervalMs?: number } = {}): Promise<NearNightly> => {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+
+    const check = () => {
+      const injected = window?.nightly?.near;
+      if (injected) {
+        resolve(injected);
+        return;
+      }
+
+      if (Date.now() - start >= timeoutMs) {
+        reject(new Error("Nightly wallet not injected within timeout"));
+        return;
+      }
+
+      setTimeout(check, intervalMs);
+    };
+
+    check();
+  });
+};
+
 const setupNightlyState = async (
   store: WalletSelectorStore,
   emitter: EventEmitterService<WalletEvents>
 ): Promise<NightlyState> => {
   const { selectedWalletId } = store.getState();
-  const wallet = window.nightly!.near!;
-
+  const wallet = await waitForNightlyNear();
   // Attempt to reconnect wallet if previously selected.
   if (selectedWalletId === "nightly") {
     await wallet
@@ -57,9 +81,6 @@ const setupNightlyState = async (
   return {
     wallet,
   };
-};
-const isInstalled = () => {
-  return waitFor(() => !!window.nightly?.near, {}).catch(() => false);
 };
 const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
   metadata,
@@ -103,44 +124,37 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
       };
     });
   };
-
   const signer: Signer = {
-    createKey: () => {
-      throw new Error("Not implemented");
+    signNep413Message: async (
+      message,
+      accountId,
+      recipient,
+      nonce,
+      callbackUrl
+    ) => {
+      const result = await _state.wallet.signMessage({
+        message,
+        nonce: Buffer.from(nonce),
+        recipient,
+        callbackUrl,
+      });
+      return {
+        ...result,
+        publicKey: PublicKey.fromString(result.publicKey),
+        signature: Buffer.from(result.signature, "base64"),
+      };
     },
-    getPublicKey: async (accountId) => {
-      const accounts = getAccounts();
-      const account = accounts.find((a) => a.accountId === accountId);
-
-      if (!account) {
-        throw new Error("Failed to find public key for account");
-      }
-      return nearAPI.utils.PublicKey.from(account.publicKey!);
+    signTransaction: async (transaction) => {
+      const signedTransaction = await _state.wallet.signTransaction(
+        transaction
+      );
+      return [Buffer.from(signedTransaction.signature.data), signedTransaction];
     },
-    signMessage: async (message, accountId) => {
-      const accounts = getAccounts();
-      const account = accounts.find((a) => a.accountId === accountId);
-
-      if (!account) {
-        throw new Error("Failed to find account for signing");
-      }
-
-      try {
-        const tx = nearAPI.transactions.Transaction.decode(
-          Buffer.from(message)
-        );
-        const signedTx = await _state.wallet.signTransaction(tx);
-
-        return {
-          signature: signedTx.signature.data,
-          publicKey: tx.publicKey,
-        };
-      } catch (err) {
-        logger.log("Failed to sign message");
-        logger.error(err);
-
-        throw Error("Invalid message. Only transactions can be signed");
-      }
+    getPublicKey: async () => {
+      return PublicKey.fromString(_state.wallet.account.publicKey.toString());
+    },
+    signDelegateAction: async () => {
+      throw new Error(`Method not supported by ${metadata.name}`);
     },
   };
 
@@ -220,7 +234,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
         signer,
         options.network
       );
-
       return provider.sendTransaction(signedTx);
     },
 
@@ -257,12 +270,8 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
     async signTransaction(transaction) {
       logger.log("signTransaction", { transaction });
 
-      return await nearAPI.transactions.signTransaction(
-        transaction,
-        signer,
-        transaction.signerId,
-        options.network.networkId
-      );
+      const signedTransaction = await signer.signTransaction(transaction);
+      return signedTransaction;
     },
 
     async getPublicKey() {
@@ -288,10 +297,6 @@ const Nightly: WalletBehaviourFactory<InjectedWallet> = async ({
 
       throw new Error(`Method not supported by ${metadata.name}`);
     },
-
-    async importAccountsInSecureContext(params) {
-      _state.wallet.importWalletsNear(params.accounts);
-    },
   };
 };
 
@@ -304,8 +309,6 @@ export function setupNightly({
   deprecated = false,
 }: NightlyWalletParams = {}): WalletModuleFactory<InjectedWallet> {
   return async () => {
-    const installed = await isInstalled();
-
     return {
       id: "nightly",
       type: "injected",
@@ -314,9 +317,9 @@ export function setupNightly({
         description: "Multichain crypto wallet.",
         iconUrl,
         // Will replace we open beta with stable version
-        downloadUrl: "https://wallet.nightly.app/download",
+        downloadUrl: "https://nightly.app/download",
         deprecated,
-        available: installed,
+        available: true,
       },
       init: Nightly,
     };

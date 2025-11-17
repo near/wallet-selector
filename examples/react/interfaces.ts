@@ -1,4 +1,4 @@
-import type { AccountView } from "near-api-js/lib/providers/provider";
+import type { AccountView } from "@near-js/types";
 
 export interface Message {
   premium: boolean;

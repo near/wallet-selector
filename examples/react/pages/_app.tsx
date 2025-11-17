@@ -7,6 +7,7 @@ import favicon from "../public/favicon.ico";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div>
+      {/* @ts-ignore */}
       <Head>
         <link rel="shortcut icon" href={favicon.src} type="image/x-icon" />
         <meta charSet="utf-8" />

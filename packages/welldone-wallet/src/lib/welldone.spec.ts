@@ -1,7 +1,7 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type { InjectedWallet } from "@near-wallet-selector/core";
 import { setupWelldoneWallet } from "./welldone";
 import type { RequestParams } from "./injected-welldone";
 

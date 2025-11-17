@@ -10,18 +10,11 @@ This is the [OKX Wallet](https://chromewebstore.google.com/detail/%E6%AC%A7%E6%9
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry
 
 ```bash
-# Using Yarn
-yarn add near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
-```bash
-# Using Yarn
-yarn add @near-wallet-selector/okx-wallet
+# Using pnpm
+pnpm add -w @near-wallet-selector/okx-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/okx-wallet

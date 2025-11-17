@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/math-wallet",
-  "version": "9.0.3",
+  "version": "10.1.0",
   "description": "Math wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
@@ -21,6 +21,11 @@
     "url": "https://github.com/near/wallet-selector/issues"
   },
   "homepage": "https://github.com/near/wallet-selector/tree/main/packages/math-wallet",
+  "dependencies": {
+    "@near-wallet-selector/core": "workspace:*",
+    "@near-wallet-selector/wallet-utils": "workspace:*",
+    "is-mobile": "4.0.0"
+  },
   "publishConfig": {
     "directory": "../../dist/packages/math-wallet"
   }

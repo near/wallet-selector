@@ -1,22 +1,15 @@
 # @near-wallet-selector/hot-wallet
 
-This is the [HOT Wallet](https://hot-labs.org/wallet) package for NEAR Wallet Selector.
+This is the [HOT Wallet](https://hot-labs.org/wallet) package for NEAR Wallet Selector. Hot wallet available as browser extension and Telegram mini-app. Supports NEAR, Ethereum, TON, Solana, and other chains with MPC security.
 
 ## Installation and Usage
 
-The easiest way to use this package is to install it from the NPM registry, this package requires `near-api-js` v1.0.0 or above:
+The easiest way to use this package is to install it from the NPM registry
+
 
 ```bash
-# Using Yarn
-yarn add near-api-js
-
-# Using NPM.
-npm install near-api-js
-```
-
-```bash
-# Using Yarn
-yarn add @near-wallet-selector/hot-wallet
+# Using pnpm
+pnpm add -w @near-wallet-selector/hot-wallet
 
 # Using NPM.
 npm install @near-wallet-selector/hot-wallet

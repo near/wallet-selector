@@ -1,5 +1,8 @@
-import type { providers } from "near-api-js";
-import type { AccountImportData, Action } from "@near-wallet-selector/core";
+import type {
+  AccountImportData,
+  Action,
+  FinalExecutionOutcome,
+} from "@near-wallet-selector/core";
 
 export interface AccessKey {
   publicKey: {
@@ -51,7 +54,7 @@ export interface SignAndSendTransactionResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  response?: Array<FinalExecutionOutcome> | FunctionCallError;
   type: "bitget-wallet-extensionResult";
 }
 
@@ -60,7 +63,7 @@ interface SignAndSendTransactionsResponse {
   method: "signAndSendTransactions";
   notificationId: number;
   error?: string;
-  response?: Array<providers.FinalExecutionOutcome> | FunctionCallError;
+  response?: Array<FinalExecutionOutcome> | FunctionCallError;
   type: "bitget-wallet-extensionResult";
 }
 

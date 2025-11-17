@@ -5,8 +5,8 @@ This package implements a React Hook for the NEAR Wallet Selector to simplify us
 ## Installation and Usage
 
 ```bash
-# Using Yarn
-yarn add @near-wallet-selector/react-hook
+# Using pnpm
+pnpm add -w @near-wallet-selector/react-hook
 
 # Using NPM.
 npm install @near-wallet-selector/react-hook
@@ -22,10 +22,13 @@ import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
  
 const walletSelectorConfig = {
   network: "testnet",
-  createAccessKeyFor: {
-    contractId: "hello.near-examples.testnet",
-    methodNames: []
-  },
+  // Can be a string for simple contract access
+  createAccessKeyFor: "hello.near-examples.testnet",
+  // Or an object for fine-grained control:
+  // createAccessKeyFor: {
+  //   contractId: "hello.near-examples.testnet",
+  //   methodNames: ["view_greeting", "set_greeting"]
+  // },
   modules: [
     setupMyNearWallet(),
     setupMeteorWallet(),

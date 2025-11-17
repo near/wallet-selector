@@ -1,4 +1,3 @@
-import { createAction } from "./create-action";
-import { signTransactions } from "./sign-transactions";
+import { signTransactions, LegacySigner } from "./sign-transactions";
 
-export { createAction, signTransactions };
+export { signTransactions, LegacySigner };

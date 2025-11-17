@@ -7,8 +7,8 @@ import type {
   Action,
   FinalExecutionOutcome,
 } from "@near-wallet-selector/core";
+import { najActionToInternal } from "@near-wallet-selector/core";
 import icon from "./icon";
-import { waitFor } from "@near-wallet-selector/core";
 
 declare global {
   interface Window {
@@ -97,8 +97,7 @@ const sendToNarwallets = (
 };
 
 const isInstalled = async (): Promise<boolean> => {
-  // Note: sendToNarwallets throws if not installed
-  return waitFor(() => !!window.narwallets).catch(() => false);
+  return !!window.narwallets;
 };
 
 const isSignedIn = (): Promise<Resolve> => {
@@ -245,7 +244,10 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
       return callSignAndSendTransaction({
         signerId,
         receiverId: receiverId || contract.contractId,
-        actions: actions,
+        // @ts-ignore Narwallets expects the actions to be in the internal action format so we need to convert them
+        actions: actions.map((action) =>
+          najActionToInternal(action)
+        ) as unknown as Array<Action>,
       }) as Promise<FinalExecutionOutcome>;
     },
 
@@ -259,7 +261,15 @@ const Narwallets: WalletBehaviourFactory<InjectedWallet> = async ({
         throw new Error("Wallet not signed in");
       }
 
-      return callSignAndSendTransactions(transactions) as Promise<
+      const _transactions = transactions.map((transaction) => ({
+        ...transaction,
+        // @ts-ignore Narwallets expects the actions to be in the internal action format so we need to convert them
+        actions: transaction.actions.map((action) =>
+          najActionToInternal(action)
+        ) as unknown as Array<Action>,
+      }));
+
+      return callSignAndSendTransactions(_transactions) as Promise<
         Array<FinalExecutionOutcome>
       >;
     },

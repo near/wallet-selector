@@ -11,9 +11,19 @@
       "useAWallet": "使用钱包来保护和管理你的 NEAR 资产，无需用户名和密码即可登录任何 NEAR 应用",
       "connectionFailed": "连接失败",
       "connectionSuccessful": "连接成功",
+      "connectionNotSuccessful": "连接未成功，请重试。",
+      "whatIsAWalletDescription": "钱包让您存储加密等数字资产，并登录 NEAR 应用。",
+      "selectWalletOr": "请在左侧选择一个钱包，或",
+      "createNewWallet": "创建新钱包",
       "rememberWallet": "记住钱包选择",
       "connected": "已连接",
-      "connectingTo": "正在连接"
+      "connectingTo": "正在连接",
+      "connectingMessage": {
+        "injected": "在扩展窗口中确认连接",
+        "browser": "重定向后在钱包中确认连接",
+        "hardware": "在 Ledger 设备上确认连接",
+        "bridge": "在钱包中确认连接"
+      }
     },
     "ledger": {
       "connectWithLedger": "连接 Ledger",
@@ -46,8 +56,10 @@
       "copiedToClipboard": "复制到了剪贴板",
       "failedToCopy": "复制到剪贴板失败",
       "scanWithYourMobile": "用你的移动设备扫码",
+      "scanQRCodeMessage": "请扫描此二维码\n 以连接你的钱包。",
       "copyToClipboard": " 复制到剪贴板",
       "preferTheOfficial": "希望使用官方对话框于",
+      "openInOfficialDialogue": "在官方对话框中打开",
       "open": "打开"
     },
     "walletTypes": {
@@ -58,5 +70,8 @@
       "mobile": "移动钱包",
       "instant-link": "即时钱包"
     }
+  },
+  "general": {
+    "or": "或"
   }
 }

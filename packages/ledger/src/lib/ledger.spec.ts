@@ -2,9 +2,29 @@
 import { mock } from "jest-mock-extended";
 
 import { mockWallet } from "../../../core/src/lib/testUtils";
-import type { HardwareWallet, Transaction } from "../../../core/src/lib/wallet";
-import type { ProviderService } from "../../../core/src/lib/services";
+import type { HardwareWallet, Transaction } from "@near-wallet-selector/core";
+import type { ProviderService } from "@near-wallet-selector/core/src/lib/services";
 import type { LedgerClient } from "./ledger-client";
+
+// Mock @near-js/providers to avoid network calls
+jest.mock("@near-js/providers", () => ({
+  JsonRpcProvider: jest.fn().mockImplementation(() => ({
+    block: jest.fn().mockResolvedValue({
+      header: {
+        hash: "9MzCZTSu5bFCbbcBeCSXxUmGUbvMjGdCyd4aaAXTnTaG",
+      },
+    }),
+    query: jest.fn().mockResolvedValue({
+      nonce: 1,
+      permission: "FullAccess",
+    }),
+    sendTransaction: jest.fn().mockResolvedValue({
+      status: { SuccessValue: "" },
+      transaction: {},
+      receipts: [],
+    }),
+  })),
+}));
 
 const createLedgerWallet = async () => {
   const publicKey = "GF7tLvSzcxX4EtrMFtGvGTb2yUj2DhL8hWzc97BwUkyC";

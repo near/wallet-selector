@@ -3,13 +3,15 @@ import { mock } from "jest-mock-extended";
 import { mockWallet } from "../../../core/src/lib/testUtils";
 
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
-import type { InjectedWallet } from "../../../core/src/lib/wallet";
+import type {
+  FinalExecutionOutcome,
+  InjectedWallet,
+} from "@near-wallet-selector/core";
 import type {
   AccessKey,
   SenderEvents,
   SignOutResponse,
 } from "./injected-sender";
-import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import { setupSender } from "./sender";
 
 const accountId = "test-account.testnet";

@@ -7,7 +7,7 @@ import type {
   WalletModuleFactory,
   WalletSelectorStore,
 } from "@near-wallet-selector/core";
-import { waitFor } from "@near-wallet-selector/core";
+import { najActionToInternal } from "@near-wallet-selector/core";
 import { isMobile } from "is-mobile";
 import icon from "./icon";
 import type { InjectedXDEFI, NearXDEFI } from "./injected-xdefi";
@@ -42,7 +42,7 @@ const setupXDEFIState = async (
 };
 
 const isInstalled = () => {
-  return waitFor(() => !!window.xfi?.near).catch(() => false);
+  return !!window.xfi?.near;
 };
 
 const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
@@ -71,11 +71,14 @@ const XDEFI: WalletBehaviourFactory<InjectedWallet> = async ({
       throw new Error("Wallet not signed in");
     }
 
+    // @ts-ignore XDEFI expects the actions to be in the internal action format so we need to convert them
     return transactions.map((transaction) => {
       return {
         signerId: transaction.signerId || accounts[0].accountId,
         receiverId: transaction.receiverId || contract.contractId,
-        actions: transaction.actions,
+        actions: transaction.actions.map((action) =>
+          najActionToInternal(action)
+        ),
       };
     });
   };

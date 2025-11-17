@@ -3,6 +3,7 @@
 import {
   type WalletModuleFactory,
   type InjectedWallet,
+  najActionToInternal,
 } from "@near-wallet-selector/core";
 import { HOT, verifySignature } from "@hot-wallet/sdk";
 
@@ -102,7 +103,10 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
               {
                 transactions: [
                   {
-                    actions: params.actions,
+                    // @ts-ignore HOT Wallet expects the actions to be in the internal action format so we need to convert them
+                    actions: params.actions.map((action) =>
+                      najActionToInternal(action)
+                    ),
                     signerId: params.signerId,
                     receiverId: receiverId || "",
                   },
@@ -114,9 +118,17 @@ export function setupHotWallet(): WalletModuleFactory<InjectedWallet> {
           },
 
           async signAndSendTransactions(params) {
+            const _params = params.transactions.map((transaction) => ({
+              ...transaction,
+              // HOT Wallet expects the actions to be in the internal action format so we need to convert them
+              actions: transaction.actions.map((action) =>
+                najActionToInternal(action)
+              ),
+            })) as unknown as typeof params;
+
             const { transactions } = await HOT.request(
               "near:signAndSendTransactions",
-              params
+              _params
             );
 
             return transactions as Array<any>;

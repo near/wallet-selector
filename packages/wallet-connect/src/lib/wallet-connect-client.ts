@@ -30,7 +30,7 @@ class WalletConnectClient {
   }
 
   get session(): ISignClient["session"] {
-    return this.client.session;
+    return this.client.session as ISignClient["session"];
   }
 
   on<Event extends SignClientTypes.Event>(

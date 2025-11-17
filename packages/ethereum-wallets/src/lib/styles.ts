@@ -64,6 +64,17 @@ export const modalStyles = `
     padding: 1rem;
     text-align: center;
   }
+
+  .ethereum-wallet-message {
+    padding: 10px 0px 24px 0px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    color: #202020;
+    font-weight: 400;
+    word-break: break-word;
+  }
+
   .ethereum-wallet-modal-content {
     position: relative;
     overflow: hidden;
