@@ -1,5 +1,8 @@
-import { SignedTransaction } from "near-api-js/lib/transaction.js";
-import { waitFor, najActionToInternal } from "@near-wallet-selector/core";
+import {
+  waitFor,
+  najActionToInternal,
+  SignedTransaction,
+} from "@near-wallet-selector/core";
 
 import type {
   Action,
