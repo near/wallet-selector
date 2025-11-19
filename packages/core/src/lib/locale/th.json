@@ -11,6 +11,10 @@
       "useAWallet": "ใช้กระเป๋าเงินเพื่อปกป้องและจัดการสินทรัพย์ NEAR ของคุณ รวมทั้งเข้าสู่แอป NEAR ใดก็ได้โดยไม่ต้องใช้ชื่อผู้ใช้และรหัสผ่าน",
       "connectionFailed": "การเชื่อมต่อล้มเหลว",
       "connectionSuccessful": "การเชื่อมต่อสำเร็จ",
+      "connectionNotSuccessful": "การเชื่อมต่อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+      "whatIsAWalletDescription": "กระเป๋าเงินช่วยให้คุณสามารถเก็บทรัพย์สินดิจิทัลเช่นคริปโตและเข้าสู่ระบบแอปบน NEAR ได้",
+      "selectWalletOr": "กรุณาเลือกกระเป๋าเงินทางด้านซ้าย หรือ",
+      "createNewWallet": "สร้างกระเป๋าเงินใหม่",
       "rememberWallet": "จำกระเป๋าเงิน",
       "connected": "เชื่อมต่อแล้ว",
       "connectingTo": "กำลังเชื่อมต่อกับ",
@@ -52,8 +56,10 @@
       "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",
       "failedToCopy": "คัดลอกไปยังคลิปบอร์ดไม่สำเร็จ",
       "scanWithYourMobile": "สแกนด้วยอุปกรณ์มือถือของคุณ",
+      "scanQRCodeMessage": "กรุณาสแกน QR โค้ดนี้\n เพื่อเชื่อมต่อกระเป๋าเงินของคุณ",
       "copyToClipboard": "คัดลอกไปยังคลิปบอร์ด",
       "preferTheOfficial": "ต้องการใช้บทสนทนาอย่างเป็นทางการของ",
+      "openInOfficialDialogue": "เปิดในบทสนทนาอย่างเป็นทางการ",
       "open": "เปิด"
     },
     "walletTypes": {
@@ -105,6 +111,9 @@
         "button": "เสร็จสิ้น"
       }
     }
+  },
+  "general": {
+    "or": "หรือ"
   },
   "component": {
     "clickToCopy": {

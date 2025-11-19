@@ -24,11 +24,22 @@ export const najActionToInternal = (action: NAJAction): InternalAction => {
 
   if (action.functionCall) {
     const { methodName, args, gas, deposit } = action.functionCall;
+    // Preserve raw bytes when args are not valid JSON (e.g., Borsh)
+    let internalArgs: object | Uint8Array = args as unknown as Uint8Array;
+    try {
+      const text = Buffer.from(args).toString();
+      const parsed = JSON.parse(text);
+      if (parsed && typeof parsed === "object") {
+        internalArgs = parsed as object;
+      }
+    } catch {
+      // Keep Uint8Array as-is
+    }
     return {
       type: "FunctionCall",
       params: {
         methodName,
-        args: JSON.parse(Buffer.from(args).toString()), // Convert Uint8Array to object
+        args: internalArgs,
         gas: gas.toString(),
         deposit: deposit.toString(),
       },
@@ -106,9 +117,10 @@ export const internalActionToNaj = (action: InternalAction): NAJAction => {
   }
 
   if (action.type === "FunctionCall") {
+    // action.params.args can be object or Uint8Array
     return actionCreators.functionCall(
       action.params.methodName,
-      action.params.args,
+      action.params.args as object | Uint8Array,
       BigInt(action.params.gas),
       BigInt(action.params.deposit)
     );

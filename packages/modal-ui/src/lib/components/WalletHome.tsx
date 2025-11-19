@@ -6,25 +6,19 @@ import type {
   ModuleState,
   WalletSelector,
 } from "@near-wallet-selector/core";
-import { ModalHeader } from "./ModalHeader";
 import { BackArrow } from "./BackArrow";
 import { translate } from "@near-wallet-selector/core";
 import { QRIcon } from "./icons/QRIcon";
 import { LinkIcon } from "./icons/LinkIcon";
-import { KeyIcon } from "./icons/KeyIcon";
-import { FolderIcon } from "./icons/FolderIcon";
+import { WalletIcon } from "./icons/WalletIcon";
 
 interface WalletHomeProps {
   selector: WalletSelector;
-  onCloseModal: () => void;
 }
 
 type WalletHomeRoutes = "WalletInfo" | "GetWallets";
 
-export const WalletHome: React.FC<WalletHomeProps> = ({
-  selector,
-  onCloseModal,
-}) => {
+export const WalletHome: React.FC<WalletHomeProps> = ({ selector }) => {
   const [modules, setModules] = useState<Array<ModuleState>>([]);
   const [route, setRoute] = useState<WalletHomeRoutes>("WalletInfo");
 
@@ -62,23 +56,15 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
 
   return (
     <div className="wallet-home-wrapper">
-      <div className="nws-modal-header-wrapper">
-        {route === "GetWallets" && (
+      {route === "GetWallets" && (
+        <div className="nws-modal-header-wrapper">
           <BackArrow
             onClick={() => {
               setRoute("WalletInfo");
             }}
           />
-        )}
-        <ModalHeader
-          title={
-            route === "GetWallets"
-              ? translate("modal.wallet.getAWallet")
-              : translate("modal.wallet.whatIsAWallet")
-          }
-          onCloseModal={onCloseModal}
-        />
-      </div>
+        </div>
+      )}
       {route === "GetWallets" && (
         <div className="get-wallet-wrapper">
           {modules.map((module) => {
@@ -119,54 +105,21 @@ export const WalletHome: React.FC<WalletHomeProps> = ({
       )}
 
       {route === "WalletInfo" && (
-        <>
-          <div className="wallet-info-wrapper what-wallet-hide">
-            <div className="wallet-what">
-              <div className={"icon-side"}>
-                <KeyIcon />
-              </div>
-              <div className="content-side">
-                <h3>{translate("modal.wallet.secureAndManage")}</h3>
-                <p>{translate("modal.wallet.safelyStore")}</p>
-              </div>
-            </div>
-            <div className="wallet-what">
-              <div className={"icon-side"}>
-                <FolderIcon />
-              </div>
-              <div className="content-side">
-                <h3>{translate("modal.wallet.logInToAny")}</h3>
-                <p>{translate("modal.wallet.noNeedToCreate")}</p>
-              </div>
-            </div>
-            <div className="button-spacing" />
-            <button
-              className="middleButton"
+        <div className="wallet-info-wrapper">
+          <div className="info">
+            <WalletIcon />
+            <p>{translate("modal.wallet.whatIsAWalletDescription")}</p>
+            <p>{translate("modal.wallet.selectWalletOr")}</p>
+            <p
+              className="button"
               onClick={() => {
                 setRoute("GetWallets");
               }}
             >
-              {translate("modal.wallet.getAWallet")}
-            </button>
+              {translate("modal.wallet.createNewWallet")}
+            </p>
           </div>
-          <div className="what-wallet-mobile">
-            <p>{translate("modal.wallet.useAWallet")}</p>
-            <button
-              className="middleButton"
-              onClick={() => {
-                setRoute("GetWallets");
-              }}
-            >
-              {translate("modal.wallet.getAWallet")}
-            </button>
-          </div>
-          <div className="lang-selector-wrapper">
-            <select className="lang-selector" name="lang">
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-            </select>
-          </div>
-        </>
+        </div>
       )}
     </div>
   );

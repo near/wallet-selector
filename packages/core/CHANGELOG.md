@@ -1,5 +1,19 @@
 # @near-wallet-selector/core
 
+## 10.1.1
+
+### Patch Changes
+
+- [#1453](https://github.com/near/wallet-selector/pull/1453) [`a3363a0`](https://github.com/near/wallet-selector/commit/a3363a091ffba7c4ac4224439fbd78f95cba4f4a) Thanks [@r-near](https://github.com/r-near)! - Preserve `Uint8Array` (Borsh) `FunctionCall` args in internal action transforms:
+
+  - `FunctionCallAction.params.args` now accepts `object | Uint8Array`.
+  - `najActionToInternal` attempts JSON.parse; on failure, keeps bytes intact.
+  - `internalActionToNaj` forwards either object or `Uint8Array` to `@near-js/transactions.functionCall`.
+
+  This fixes wallets that rely on NAJ → internal conversion (e.g., Meteor, Sender, OKX, HERE, Narwallets, Near Mobile, XDEFI, Bitget, ethereum-wallets) so they can handle Borsh args again.
+
+## 10.1.0
+
 ## 10.0.0
 
 ### Major Changes

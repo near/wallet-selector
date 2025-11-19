@@ -1,4 +1,4 @@
-import { formatNearAmount } from '@near-js/utils';
+import { parseNearAmount } from '@near-js/utils';
 import { Wallet } from './near-wallet';
 
 const wallet = new Wallet({ network: 'testnet' });
@@ -52,7 +52,7 @@ window.onload = async () => {
     event.preventDefault();
     const message = document.querySelector('#message').value;
     const donation = document.querySelector('#donation').value;
-    await wallet.callMethod({ contractId: 'guest-book.testnet', method: 'addMessage', args: { text: message },deposit: formatNearAmount(donation) });
+    await wallet.callMethod({ contractId: 'guest-book.testnet', method: 'addMessage', args: { text: message },deposit: parseNearAmount(donation) });
     const messages = await wallet.viewMethod({ contractId: 'guest-book.testnet', method: 'getMessages' });
     renderMessages(messages, document.querySelector('#messages'));
   });
