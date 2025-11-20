@@ -445,6 +445,28 @@ export class WalletModules {
     return instance;
   }
 
+  private async setupIframeWallet(module: WalletModuleFactoryV2) {
+    const adapter = new IframeWalletAdapter({
+      config: {
+        source: module.source,
+        permissions: module.permissions || [],
+      },
+      options: {
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+        options: this.options,
+        store: this.store.toReadOnly(),
+        provider: this.provider,
+        emitter: this.setupWalletEmitter(module.id),
+        logger: new Logger(module.id),
+        storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
+      },
+    });
+
+    return this.bindWalletMethods(adapter);
+  }
+
   private bindWalletMethods(adapter: IframeWalletAdapter) {
     return {
       signIn: adapter.signIn.bind(adapter),
