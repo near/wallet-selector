@@ -1,6 +1,7 @@
 {
   "name": "@near-wallet-selector/okx-wallet",
   "version": "10.1.1",
+  "license": "(MIT OR Apache-2.0)",
   "description": "OKX Wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

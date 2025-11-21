@@ -1,6 +1,7 @@
 {
   "name": "@near-wallet-selector/core",
   "version": "10.1.1",
+  "license": "(MIT OR Apache-2.0)",
   "description": "This is the core package for NEAR Wallet Selector.",
   "keywords": [
     "near",
