@@ -61,7 +61,8 @@ describe("useWalletSelector", () => {
       </WalletSelectorProvider>
     );
 
-    const walletSelector= renderHook(() => useWalletSelector(), { wrapper }).result.current;
+    const walletSelector = renderHook(() => useWalletSelector(), { wrapper })
+      .result.current;
 
     expect(walletSelector.walletSelector).toBeInstanceOf(Promise);
 
