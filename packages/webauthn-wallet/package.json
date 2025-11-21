@@ -1,6 +1,7 @@
 {
   "name": "@near-wallet-selector/webauthn-wallet",
   "version": "10.1.1",
+  "license": "(MIT OR Apache-2.0)",
   "description": "WebAuthn biometric wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",

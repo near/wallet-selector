@@ -1,6 +1,7 @@
 {
   "name": "@near-wallet-selector/ramper-wallet",
   "version": "10.1.1",
+  "license": "(MIT OR Apache-2.0)",
   "description": "Ramper wallet package for NEAR Wallet Selector.",
   "keywords": [
     "near",
