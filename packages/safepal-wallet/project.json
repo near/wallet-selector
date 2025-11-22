@@ -1,0 +1,56 @@
+{
+  "name": "safepal-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/safepal-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/safepal-wallet",
+        "tsConfig": "packages/safepal-wallet/tsconfig.lib.json",
+        "project": "packages/safepal-wallet/package.json",
+        "entryFile": "packages/safepal-wallet/src/index.ts",
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "packages/safepal-wallet/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "packages/safepal-wallet/assets/*",
+            "input": ".",
+            "output": "assets"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/safepal-wallet/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/safepal-wallet"],
+      "options": {
+        "jestConfig": "packages/safepal-wallet/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      },
+      "dependsOn": ["^deploy"]
+    }
+  },
+  "tags": ["injected-wallet"]
+}
