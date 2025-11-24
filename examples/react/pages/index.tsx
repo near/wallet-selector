@@ -45,15 +45,16 @@ const walletSelectorConfig: SetupParams = {
     //   wagmiConfig: wagmiAdapter.wagmiConfig,
     //   web3Modal,
     // }),
-    setupUnityWallet({
-      projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
-      metadata: {
-        name: "Your dApp name",
-        description: "Example dApp used by NEAR Wallet Selector",
-        url: "https://github.com/near/wallet-selector",
-        icons: ["https://avatars.githubusercontent.com/u/37784886"],
-      },
-    }),
+    // Temporarily disabled due to BigInt conversion error in @walletconnect/sign-client
+    // setupUnityWallet({
+    //   projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
+    //   metadata: {
+    //     name: "Your dApp name",
+    //     description: "Example dApp used by NEAR Wallet Selector",
+    //     url: "https://github.com/near/wallet-selector",
+    //     icons: ["https://avatars.githubusercontent.com/u/37784886"],
+    //   },
+    // }),
     setupMeteorWallet(),
     setupHotWallet(),
     setupMyNearWallet(),
