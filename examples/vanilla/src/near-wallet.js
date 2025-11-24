@@ -7,7 +7,8 @@ import { formatNearAmount, getTransactionLastResult } from '@near-js/utils';
 // wallet selector
 // import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
 import { actionCreators, setupWalletSelector } from '@near-wallet-selector/core';
-import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
+// Temporarily disabled due to viem version compatibility issues
+// import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupMeteorWallet } from '@near-wallet-selector/meteor-wallet';
 import { setupModal } from '@near-wallet-selector/modal-ui-js';
@@ -17,9 +18,11 @@ import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
 import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
+import { setupSafePalWallet } from '@near-wallet-selector/safepal-wallet';
 import { setupWalletConnect } from '@near-wallet-selector/wallet-connect';
 
-import { wagmiAdapter, web3Modal } from './web3modal';
+// Temporarily disabled due to viem version compatibility issues
+// import { wagmiAdapter, web3Modal } from './web3modal';
 import "@near-wallet-selector/modal-ui-js/styles.css";
 
 const THIRTY_TGAS = '30000000000000';
@@ -56,7 +59,8 @@ export class Wallet {
       network: this.networkId,
       modules: [
         setupMeteorWallet(),
-        setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
+        // Temporarily disabled due to viem version compatibility issues
+        // setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
         setupLedger(),
         // setupBitteWallet(),
         setupHereWallet(),
@@ -65,6 +69,7 @@ export class Wallet {
         setupWelldoneWallet(),
         setupMyNearWallet(),
         setupIntearWallet(),
+        setupSafePalWallet(),
         setupWalletConnect({
           projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
           metadata: {

@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import { Fragment } from "react";
 import Content from "../components/Content";
-import { wagmiAdapter, web3Modal } from "../wallets/web3modal";
+// Temporarily disabled due to viem version compatibility issues
+// import { wagmiAdapter, web3Modal } from "../wallets/web3modal";
 
 import { WalletSelectorProvider } from "@near-wallet-selector/react-hook";
 
@@ -21,7 +22,8 @@ import { setupRamperWallet } from "@near-wallet-selector/ramper-wallet";
 import { setupUnityWallet } from "@near-wallet-selector/unity-wallet";
 import { setupNearMobileWallet } from "@near-wallet-selector/near-mobile-wallet";
 import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
-import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
+// Temporarily disabled due to viem version compatibility issues
+// import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
 import { setupSafePalWallet } from "@near-wallet-selector/safepal-wallet";
@@ -38,10 +40,11 @@ const walletSelectorConfig: SetupParams = {
   // },
   debug: false,
   modules: [
-    setupEthereumWallets({
-      wagmiConfig: wagmiAdapter.wagmiConfig,
-      web3Modal,
-    }),
+    // Temporarily disabled due to viem version compatibility issues
+    // setupEthereumWallets({
+    //   wagmiConfig: wagmiAdapter.wagmiConfig,
+    //   web3Modal,
+    // }),
     setupUnityWallet({
       projectId: "c8cb6204543639c31aef44ea4837a554", // Replace this with your own projectId form WalletConnect.
       metadata: {

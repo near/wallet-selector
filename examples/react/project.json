@@ -21,7 +21,8 @@
       "options": {
         "buildTarget": "react:build",
         "dev": true,
-        "hostname": "0.0.0.0"
+        "hostname": "0.0.0.0",
+        "port": 4200
       },
       "configurations": {
         "production": {
