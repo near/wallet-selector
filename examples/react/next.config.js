@@ -10,39 +10,8 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-  // Remove static export for dev mode to allow proper server-side rendering
-  // output: "export", // Commented out for dev mode
-  // basePath should only be set in production builds, not in dev mode
-  // Explicitly set basePath to empty string in dev mode to avoid routing issues
-  basePath: "",
-  transpilePackages: [
-    "@wagmi/core",
-    "@wagmi/connectors",
-    "@reown/appkit",
-    "@reown/appkit-adapter-wagmi",
-    "viem",
-    "wagmi",
-  ],
-  // Fix ESM module cache issues with wagmi/viem
-  experimental: {
-    serverComponentsExternalPackages: [
-      "@wagmi/core",
-      "@wagmi/connectors",
-      "viem",
-      "wagmi",
-    ],
-  },
-  webpack: (config, { isServer }) => {
-    // Fix ESM module resolution issues
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push({
-        "@wagmi/core": "commonjs @wagmi/core",
-        "viem": "commonjs viem",
-      });
-    }
-    return config;
-  },
+  output: "export",
+  basePath: process.env.NODE_ENV === "production" ? "/wallet-selector" : "",
 };
 
 module.exports = withNx(nextConfig);

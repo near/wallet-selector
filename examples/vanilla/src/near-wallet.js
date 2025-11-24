@@ -7,8 +7,7 @@ import { formatNearAmount, getTransactionLastResult } from '@near-js/utils';
 // wallet selector
 // import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
 import { actionCreators, setupWalletSelector } from '@near-wallet-selector/core';
-// Temporarily disabled due to viem version compatibility issues
-// import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
+import { setupEthereumWallets } from '@near-wallet-selector/ethereum-wallets';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupMeteorWallet } from '@near-wallet-selector/meteor-wallet';
 import { setupModal } from '@near-wallet-selector/modal-ui-js';
@@ -21,8 +20,7 @@ import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
 import { setupSafePalWallet } from '@near-wallet-selector/safepal-wallet';
 import { setupWalletConnect } from '@near-wallet-selector/wallet-connect';
 
-// Temporarily disabled due to viem version compatibility issues
-// import { wagmiAdapter, web3Modal } from './web3modal';
+import { wagmiAdapter, web3Modal } from './web3modal';
 import "@near-wallet-selector/modal-ui-js/styles.css";
 
 const THIRTY_TGAS = '30000000000000';
@@ -59,8 +57,7 @@ export class Wallet {
       network: this.networkId,
       modules: [
         setupMeteorWallet(),
-        // Temporarily disabled due to viem version compatibility issues
-        // setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
+        setupEthereumWallets({ wagmiConfig: wagmiAdapter.wagmiConfig, web3Modal }),
         setupLedger(),
         // setupBitteWallet(),
         setupHereWallet(),
