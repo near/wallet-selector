@@ -11,6 +11,10 @@
       "useAWallet": "Użyj portfela do ochrony i zarządzania swoimi zasobami NEAR bez potrzeby korzystania z nazwy użytkownika i hasła",
       "connectionFailed": "Połączenie nie powiodło się",
       "connectionSuccessful": "Połączenie udane",
+      "connectionNotSuccessful": "Połączenie nie powiodło się, spróbuj ponownie.",
+      "whatIsAWalletDescription": "Portfele pozwalają na przechowywanie aktywów cyfrowych, takich jak kryptowaluty, i logowanie się do aplikacji NEAR.",
+      "selectWalletOr": "Wybierz portfel po lewej stronie lub",
+      "createNewWallet": "Utwórz nowy portfel",
       "rememberWallet": "Zapamiętaj wybór portfela",
       "connected": "Połączono",
       "connectingTo": "Łączenie z"
@@ -46,8 +50,10 @@
       "copiedToClipboard": "Skopiowano do schowka",
       "failedToCopy": "Nie udało się skopiować do schowka",
       "scanWithYourMobile": "Zeskanuj swoim telefonem",
+      "scanQRCodeMessage": "Skanuj ten kod QR\n aby podłączyć swój portfel.",
       "copyToClipboard": "Skopiuj do schowka",
       "preferTheOfficial": "Preferujesz użycie oficjalnego okna dialogowego w",
+      "openInOfficialDialogue": "otwórz w oficjalnym oknie dialogowym",
       "open": "Otwórz"
     },
     "walletTypes": {
@@ -58,5 +64,8 @@
       "mobile": "Portfel mobilny",
       "instant-link": "Portfel natychmiastowy"
     }
+  },
+  "general": {
+    "or": "lub"
   }
 }

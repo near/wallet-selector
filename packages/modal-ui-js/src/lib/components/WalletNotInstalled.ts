@@ -2,7 +2,6 @@ import type { ModuleState, Wallet } from "@near-wallet-selector/core";
 import { modalState } from "../modal";
 import { translate } from "@near-wallet-selector/core";
 import { renderWhatIsAWallet } from "./WhatIsAWallet";
-import { BackArrowIcon } from "./icons/BackArrowIcon";
 import { CloseIcon } from "./icons/CloseIcon";
 
 export function renderWalletNotInstalled(
@@ -18,9 +17,9 @@ export function renderWalletNotInstalled(
 
   document.querySelector(".modal-right")!.innerHTML = `
     <div class="nws-modal-body">
-      <div class="nws-modal-header-wrapper"><button class="back-button" id="back-button">${BackArrowIcon}</button>
+      <div class="nws-modal-header-wrapper">
         <div class="nws-modal-header">
-          <h3 class="middleTitle"></h3><button class="close-button">${CloseIcon}</button>
+          <h3 class="middleTitle"></h3><button id="back-button" class="close-button">${CloseIcon}</button>
         </div>
       </div>
       <div class="wallet-not-installed-wrapper">
