@@ -561,6 +561,9 @@ importers:
       '@near-wallet-selector/ramper-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/ramper-wallet
+      '@near-wallet-selector/safepal-wallet':
+        specifier: workspace:*
+        version: link:../../dist/packages/safepal-wallet
       '@near-wallet-selector/sender':
         specifier: workspace:*
         version: link:../../dist/packages/sender
