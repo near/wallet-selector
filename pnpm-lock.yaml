@@ -477,6 +477,9 @@ importers:
       '@near-wallet-selector/react-hook':
         specifier: workspace:*
         version: link:../../dist/packages/react-hook
+      '@near-wallet-selector/safepal-wallet':
+        specifier: workspace:*
+        version: link:../../dist/packages/safepal-wallet
       '@near-wallet-selector/sender':
         specifier: workspace:*
         version: link:../../dist/packages/sender
@@ -558,6 +561,9 @@ importers:
       '@near-wallet-selector/ramper-wallet':
         specifier: workspace:*
         version: link:../../dist/packages/ramper-wallet
+      '@near-wallet-selector/safepal-wallet':
+        specifier: workspace:*
+        version: link:../../dist/packages/safepal-wallet
       '@near-wallet-selector/sender':
         specifier: workspace:*
         version: link:../../dist/packages/sender
@@ -997,6 +1003,16 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
     publishDirectory: ../../dist/packages/react-hook
+
+  packages/safepal-wallet:
+    dependencies:
+      '@near-wallet-selector/core':
+        specifier: workspace:*
+        version: link:../../dist/packages/core
+      is-mobile:
+        specifier: 4.0.0
+        version: 4.0.0
+    publishDirectory: ../../dist/packages/safepal-wallet
 
   packages/sender:
     dependencies:

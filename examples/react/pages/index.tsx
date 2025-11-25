@@ -24,6 +24,7 @@ import { setupOKXWallet } from "@near-wallet-selector/okx-wallet";
 import { setupEthereumWallets } from "@near-wallet-selector/ethereum-wallets";
 import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
 import { setupIntearWallet } from "@near-wallet-selector/intear-wallet";
+import { setupSafePalWallet } from "@near-wallet-selector/safepal-wallet";
 import { setupWebAuthnWallet } from "@near-wallet-selector/webauthn-wallet";
 
 import { CONTRACT_ID, NETWORK_ID } from "../constants";
@@ -66,6 +67,7 @@ const walletSelectorConfig: SetupParams = {
     setupXDEFI(),
     setupNearMobileWallet(),
     setupIntearWallet({}),
+    setupSafePalWallet(),
     setupWebAuthnWallet({
       relayerUrl: "http://localhost:7090/create-account", // Replace with your server's URL, example server is at packages/webauthn-wallet/relayer-examples/index.js
     }),
