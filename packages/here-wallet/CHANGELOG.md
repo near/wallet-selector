@@ -1,5 +1,12 @@
 # @near-wallet-selector/here-wallet
 
+## 10.1.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.2
+
 ## 10.1.1
 
 ### Patch Changes

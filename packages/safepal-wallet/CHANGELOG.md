@@ -1,5 +1,14 @@
 # @near-wallet-selector/safepal-wallet
 
+## 10.1.2
+
+### Patch Changes
+
+- [#1441](https://github.com/near/wallet-selector/pull/1441) [`b46aeac`](https://github.com/near/wallet-selector/commit/b46aeac7a89f9682192e7ecc3aff5af3a9783d5c) Thanks [@bryanliii-sketch](https://github.com/bryanliii-sketch)! - Add safepal wallet
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.2
+
 ## 9.5.1
 
 ### Patch Changes
