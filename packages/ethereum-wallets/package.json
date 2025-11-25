@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/ethereum-wallets",
-  "version": "10.1.1",
+  "version": "10.1.2",
   "license": "(MIT OR Apache-2.0)",
   "description": "Ethereum wallets package for NEAR Wallet Selector.",
   "keywords": [
