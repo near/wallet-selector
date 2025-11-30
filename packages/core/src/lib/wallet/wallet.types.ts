@@ -124,7 +124,7 @@ export interface SignAndSendTransactionsParams {
   transactions: Array<Optional<Transaction, "signerId">>;
 }
 
-interface BaseWalletBehaviour extends Signer {
+export interface BaseWalletBehaviour extends Signer {
   /**
    * Programmatically sign in. Hardware wallets (e.g. Ledger) require `derivationPaths` to validate access key permissions.
    */
@@ -428,3 +428,11 @@ export type WalletModule<Variation extends Wallet = Wallet> = {
 export type WalletModuleFactory<Variation extends Wallet = Wallet> = (
   options: WalletModuleOptions
 ) => Promise<WalletModule<Variation> | null>;
+
+export interface WalletModuleFactoryV2 {
+  id: string;
+  type: WalletType;
+  metadata: WalletMetadata;
+  source: string;
+  permissions?: Array<string>;
+}

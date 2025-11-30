@@ -5,6 +5,7 @@ import type {
   WalletEvents,
   WalletModule,
   WalletModuleFactory,
+  WalletModuleFactoryV2,
   Account,
   InstantLinkWallet,
   SignMessageParams,
@@ -25,6 +26,7 @@ import {
 } from "../../constants";
 import { JsonStorage } from "../storage/json-storage.service";
 import type { ProviderService } from "../provider/provider.service.types";
+import { IframeWalletAdapter } from "../iframe/iframe-adapter";
 import type { Action } from "@near-js/transactions";
 
 export class WalletModules {
@@ -243,36 +245,36 @@ export class WalletModules {
     this.emitter.emit("signedOut", { walletId });
   }
 
-  private setupWalletEmitter(module: WalletModule) {
+  private setupWalletEmitter(walletId: string): EventEmitter<WalletEvents> {
     const emitter = new EventEmitter<WalletEvents>();
 
     emitter.on("signedOut", () => {
-      this.onWalletSignedOut(module.id);
+      this.onWalletSignedOut(walletId);
     });
 
     emitter.on("signedIn", (event) => {
-      this.onWalletSignedIn(module.id, event);
+      this.onWalletSignedIn(walletId, event);
     });
 
     emitter.on("accountsChanged", async ({ accounts }) => {
-      this.emitter.emit("accountsChanged", { walletId: module.id, accounts });
+      this.emitter.emit("accountsChanged", { walletId: walletId, accounts });
 
       if (!accounts.length) {
-        return this.signOutWallet(module.id);
+        return this.signOutWallet(walletId);
       }
 
       this.store.dispatch({
         type: "ACCOUNTS_CHANGED",
-        payload: { walletId: module.id, accounts },
+        payload: { walletId: walletId, accounts },
       });
     });
 
     emitter.on("networkChanged", ({ networkId }) => {
-      this.emitter.emit("networkChanged", { walletId: module.id, networkId });
+      this.emitter.emit("networkChanged", { walletId: walletId, networkId });
     });
 
     emitter.on("uriChanged", ({ uri }) => {
-      this.emitter.emit("uriChanged", { walletId: module.id, uri });
+      this.emitter.emit("uriChanged", { walletId: walletId, uri });
     });
 
     return emitter;
@@ -430,7 +432,7 @@ export class WalletModules {
         options: this.options,
         store: this.store.toReadOnly(),
         provider: this.provider,
-        emitter: this.setupWalletEmitter(module),
+        emitter: this.setupWalletEmitter(module.id),
         logger: new Logger(module.id),
         storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
       })),
@@ -441,6 +443,42 @@ export class WalletModules {
     this.instances[module.id] = instance;
 
     return instance;
+  }
+
+  private async setupIframeWallet(module: WalletModuleFactoryV2) {
+    const adapter = new IframeWalletAdapter({
+      config: {
+        source: module.source,
+        permissions: module.permissions || [],
+      },
+      options: {
+        id: module.id,
+        type: module.type,
+        metadata: module.metadata,
+        options: this.options,
+        store: this.store.toReadOnly(),
+        provider: this.provider,
+        emitter: this.setupWalletEmitter(module.id),
+        logger: new Logger(module.id),
+        storage: new JsonStorage(this.storage, [PACKAGE_NAME, module.id]),
+      },
+    });
+
+    return this.bindWalletMethods(adapter);
+  }
+
+  private bindWalletMethods(adapter: IframeWalletAdapter) {
+    return {
+      signIn: adapter.signIn.bind(adapter),
+      signOut: adapter.signOut.bind(adapter),
+      getAccounts: adapter.getAccounts.bind(adapter),
+      verifyOwner: adapter.verifyOwner.bind(adapter),
+      signAndSendTransaction: adapter.signAndSendTransaction.bind(adapter),
+      signAndSendTransactions: adapter.signAndSendTransactions.bind(adapter),
+      signTransaction: adapter.signTransaction.bind(adapter),
+      signMessage: adapter.signMessage.bind(adapter),
+      createSignedTransaction: adapter.createSignedTransaction.bind(adapter),
+    };
   }
 
   private getModule(id: string | null) {
