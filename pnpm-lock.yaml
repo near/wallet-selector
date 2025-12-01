@@ -30,8 +30,8 @@ importers:
         specifier: 6.30.3
         version: 6.30.3
       '@ledgerhq/hw-transport-webhid':
-        specifier: 6.30.8
-        version: 6.30.8
+        specifier: 6.30.9
+        version: 6.30.9
       '@meteorwallet/sdk':
         specifier: 1.0.24
         version: 1.0.24(@near-js/tokens@2.2.5)(@near-js/utils@2.3.0(@near-js/types@2.3.0))(encoding@0.1.13)
@@ -771,8 +771,8 @@ importers:
         specifier: 6.30.3
         version: 6.30.3
       '@ledgerhq/hw-transport-webhid':
-        specifier: 6.30.8
-        version: 6.30.8
+        specifier: 6.30.9
+        version: 6.30.9
       '@near-js/crypto':
         specifier: ^2.3.0
         version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
@@ -2390,23 +2390,23 @@ packages:
   '@ledgerhq/devices@8.5.0':
     resolution: {integrity: sha512-zDB6Pdk6NYYbYis8cWoLLkL9k/IvjhC3hkuuz2lhpJ2AxIs3/PDMUKoyK4DpjPtRyKk1W1lwsnpc6J1i87r4/Q==}
 
-  '@ledgerhq/devices@8.6.1':
-    resolution: {integrity: sha512-PQR2fyWz7P/wMFHY9ZLz17WgFdxC/Im0RVDcWXpp24+iRQRyxhQeX2iG4mBKUzfaAW6pOIEiWt+vmJh88QP9rQ==}
+  '@ledgerhq/devices@8.7.0':
+    resolution: {integrity: sha512-3pSOULPUhClk2oOxa6UnoyXW8+05FK7r6cpq2WiTey4kyIUjmIraO7AX9lhz9IU73dGVtBMdU+NCPPO2RYJaTQ==}
 
   '@ledgerhq/errors@6.24.0':
     resolution: {integrity: sha512-UMy+nGH4hmlaML7vPiSwGQ/mOoq/rwExYGEZVpb9TPoG0AcSfzpG43LAdAemvCTX/gK0MUO+int4FpNkD1ZrtQ==}
 
-  '@ledgerhq/errors@6.26.0':
-    resolution: {integrity: sha512-4OlisaDBafkn7KN5emue08lCGMVREX6T+nxj47C7W30EBA/leLAEDaVvUw5/gFOWrv8Q2A9Scb8aMM3uokyt0w==}
+  '@ledgerhq/errors@6.27.0':
+    resolution: {integrity: sha512-EE2hATONHdNP3YWFe3rZwwpSEzI5oN+q/xTjOulnjHZo84TLjungegEJ54A/Pzld0woulkkeVA27FbW5SAO1aA==}
 
-  '@ledgerhq/hw-transport-webhid@6.30.8':
-    resolution: {integrity: sha512-2Hc15GjC7BFrpMVJYJ7N2p70A6OzIdcMklwUEYpOcIVYbEWWj84+M5E5pc83ZIBc5j3C8rdtjncPCm2ExGx2LQ==}
+  '@ledgerhq/hw-transport-webhid@6.30.9':
+    resolution: {integrity: sha512-5if/V1NyOr4JuEX+NB/bxaE92TptpgX+r1mGmzDHG6Gs9/fX/HhKe1GVwwU5C7LvTFrdTgMzEs2aIkpoMM60Ag==}
 
   '@ledgerhq/hw-transport@6.30.3':
     resolution: {integrity: sha512-eqtTCGy8wFCxl+hZSEpjVqn1EDjQhFCne/qUyY0aA36efhWUF6bCRAhkq1e5i7g2P6TbxcIM5P5PW67dILuqIQ==}
 
-  '@ledgerhq/hw-transport@6.31.12':
-    resolution: {integrity: sha512-FO5LRIXYC8ELtaohlO8qK0b3TfHUNBZ3+CXKPHiHj2jJwrxPf4s5kcgBYrmzuf1C/1vfrMOjzyty6OgrMIbU6Q==}
+  '@ledgerhq/hw-transport@6.31.13':
+    resolution: {integrity: sha512-MrJRDk74wY980ofiFPRpTHQBbRw1wDuKbdag1zqlO1xtJglymwwY03K2kvBNvkm1RTSCPUp/nAoNG+WThZuuew==}
 
   '@ledgerhq/logs@6.13.0':
     resolution: {integrity: sha512-4+qRW2Pc8V+btL0QEmdB2X+uyx0kOWMWE1/LWsq5sZy3Q5tpi4eItJS6mB0XL3wGW59RQ+8bchNQQ1OW/va8Og==}
@@ -14283,22 +14283,22 @@ snapshots:
       rxjs: 7.8.1
       semver: 7.7.2
 
-  '@ledgerhq/devices@8.6.1':
+  '@ledgerhq/devices@8.7.0':
     dependencies:
-      '@ledgerhq/errors': 6.26.0
+      '@ledgerhq/errors': 6.27.0
       '@ledgerhq/logs': 6.13.0
       rxjs: 7.8.1
       semver: 7.7.3
 
   '@ledgerhq/errors@6.24.0': {}
 
-  '@ledgerhq/errors@6.26.0': {}
+  '@ledgerhq/errors@6.27.0': {}
 
-  '@ledgerhq/hw-transport-webhid@6.30.8':
+  '@ledgerhq/hw-transport-webhid@6.30.9':
     dependencies:
-      '@ledgerhq/devices': 8.6.1
-      '@ledgerhq/errors': 6.26.0
-      '@ledgerhq/hw-transport': 6.31.12
+      '@ledgerhq/devices': 8.7.0
+      '@ledgerhq/errors': 6.27.0
+      '@ledgerhq/hw-transport': 6.31.13
       '@ledgerhq/logs': 6.13.0
 
   '@ledgerhq/hw-transport@6.30.3':
@@ -14308,10 +14308,10 @@ snapshots:
       '@ledgerhq/logs': 6.13.0
       events: 3.3.0
 
-  '@ledgerhq/hw-transport@6.31.12':
+  '@ledgerhq/hw-transport@6.31.13':
     dependencies:
-      '@ledgerhq/devices': 8.6.1
-      '@ledgerhq/errors': 6.26.0
+      '@ledgerhq/devices': 8.7.0
+      '@ledgerhq/errors': 6.27.0
       '@ledgerhq/logs': 6.13.0
       events: 3.3.0
 
