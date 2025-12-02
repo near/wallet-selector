@@ -1,5 +1,7 @@
 # @near-wallet-selector/core
 
+## 10.1.3
+
 ## 10.1.2
 
 ## 10.1.1

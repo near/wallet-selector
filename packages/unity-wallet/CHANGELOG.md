@@ -1,5 +1,13 @@
 # @near-wallet-selector/unity-wallet
 
+## 10.1.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.3
+  - @near-wallet-selector/wallet-connect@10.1.3
+
 ## 10.1.2
 
 ### Patch Changes

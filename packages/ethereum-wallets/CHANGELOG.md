@@ -1,5 +1,15 @@
 # @near-wallet-selector/ethereum-wallets
 
+## 10.1.3
+
+### Patch Changes
+
+- [#1461](https://github.com/near/wallet-selector/pull/1461) [`f699a90`](https://github.com/near/wallet-selector/commit/f699a90fb4e1830fc0cd95aa4a52bc8f8f89db24) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - update package version to use caret ^
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.3
+  - @near-wallet-selector/wallet-utils@10.1.3
+
 ## 10.1.2
 
 ### Patch Changes
