@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[2380],{82380:function(C,e,l){l.r(e),l.d(e,{sendSvg:function(){return i}});var n=l(44920);let i=n.YP`<svg fill="none" viewBox="0 0 21 20">
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[2380],{27906:function(C,e,l){l.r(e),l.d(e,{sendSvg:function(){return i}});var n=l(44920);let i=n.YP`<svg fill="none" viewBox="0 0 21 20">
   <path
     fill="currentColor"
     fill-rule="evenodd"

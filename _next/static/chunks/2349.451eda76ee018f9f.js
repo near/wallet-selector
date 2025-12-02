@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[2349],{71069:function(e,l,n){n.r(l),n.d(l,{arrowTopSvg:function(){return a}});var r=n(44920);let a=r.YP`<svg fill="none" viewBox="0 0 14 15">
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[2349],{2349:function(e,l,n){n.r(l),n.d(l,{arrowTopSvg:function(){return a}});var r=n(44920);let a=r.YP`<svg fill="none" viewBox="0 0 14 15">
   <path
     fill="currentColor"
     fill-rule="evenodd"

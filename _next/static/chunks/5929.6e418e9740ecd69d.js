@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[5929],{69645:function(e,l,n){n.r(l),n.d(l,{bankSvg:function(){return r}});var t=n(44920);let r=t.YP`<svg
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[5929],{15929:function(e,l,n){n.r(l),n.d(l,{bankSvg:function(){return r}});var t=n(44920);let r=t.YP`<svg
   xmlns="http://www.w3.org/2000/svg"
   width="12"
   height="13"

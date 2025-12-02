@@ -498,7 +498,7 @@
       <wui-flex justifyContent="center" .padding=${["0","0","l","0"]}>
         <wui-tabs .tabs=${t} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
       </wui-flex>
-    `}generateTabs(){let t=this.platforms.map(t=>"browser"===t?{label:"Browser",icon:"extension",platform:"browser"}:"mobile"===t?{label:"Mobile",icon:"mobile",platform:"mobile"}:"qrcode"===t?{label:"Mobile",icon:"mobile",platform:"qrcode"}:"web"===t?{label:"Webapp",icon:"browser",platform:"web"}:"desktop"===t?{label:"Desktop",icon:"desktop",platform:"desktop"}:{label:"Browser",icon:"extension",platform:"unsupported"});return this.platformTabs=t.map(({platform:t})=>t),t}onTabChange(t){let e=this.platformTabs[t];e&&this.onSelectPlatfrom?.(e)}};ta([(0,r.Cb)({type:Array})],ts.prototype,"platforms",void 0),ta([(0,r.Cb)()],ts.prototype,"onSelectPlatfrom",void 0),ts=ta([(0,c.Mo)("w3m-connecting-header")],ts);var tl=i(10375);i(82870);var tc=o.iv`
+    `}generateTabs(){let t=this.platforms.map(t=>"browser"===t?{label:"Browser",icon:"extension",platform:"browser"}:"mobile"===t?{label:"Mobile",icon:"mobile",platform:"mobile"}:"qrcode"===t?{label:"Mobile",icon:"mobile",platform:"qrcode"}:"web"===t?{label:"Webapp",icon:"browser",platform:"web"}:"desktop"===t?{label:"Desktop",icon:"desktop",platform:"desktop"}:{label:"Browser",icon:"extension",platform:"unsupported"});return this.platformTabs=t.map(({platform:t})=>t),t}onTabChange(t){let e=this.platformTabs[t];e&&this.onSelectPlatfrom?.(e)}};ta([(0,r.Cb)({type:Array})],ts.prototype,"platforms",void 0),ta([(0,r.Cb)()],ts.prototype,"onSelectPlatfrom",void 0),ts=ta([(0,c.Mo)("w3m-connecting-header")],ts);var tl=i(10375);i(5083);var tc=o.iv`
   :host {
     width: var(--local-width);
     position: relative;
