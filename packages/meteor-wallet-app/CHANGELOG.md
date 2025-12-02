@@ -1,5 +1,12 @@
 # @near-wallet-selector/meteor-wallet-app
 
+## 10.1.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.3
+
 ## 10.1.2
 
 ### Patch Changes
