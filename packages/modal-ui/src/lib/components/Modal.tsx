@@ -57,8 +57,33 @@ export const Modal: React.FC<ModalProps> = ({
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<ModuleState>();
   const [bridgeWalletUri, setBridgeWalletUri] = useState<string>();
+  const [isClosing, setIsClosing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
+  // Handle visibility and closing animation
   useEffect(() => {
+    if (visible) {
+      setIsClosing(false);
+      setShouldRender(true);
+      return undefined;
+    }
+
+    // Start closing animation
+    setIsClosing(true);
+    // Wait for animation to complete before unmounting
+    const timer = setTimeout(() => {
+      setShouldRender(false);
+      setIsClosing(false);
+    }, 200); // Match animation duration
+    return () => clearTimeout(timer);
+  }, [visible]);
+
+  // Handle route initialization when modal becomes visible
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+
     setRoute({
       name: "WalletHome",
     });
@@ -242,14 +267,14 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  if (!visible) {
+  if (!shouldRender) {
     return null;
   }
 
   return (
     <div
       className={`nws-modal-wrapper ${getThemeClass(options?.theme)} ${
-        visible ? "open" : ""
+        isClosing ? "closing" : "open"
       }`}
     >
       <div

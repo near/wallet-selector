@@ -128,7 +128,6 @@
     right: 0;
     opacity: 0;
     visibility: hidden;
-    /*transition: visibility 0s linear 0.25s, opacity 0.25s 0s;*/
     color: var(--wallet-selector-text-color, var(--text-color));
     font-family: Inter, sans-serif;
     font-weight: 400;
@@ -138,11 +137,30 @@
     align-items: center;
 }
 
+.nws-modal-wrapper.open {
+    opacity: 1;
+    visibility: visible;
+    animation: modalFadeIn 0.2s ease-out forwards;
+}
+
+.nws-modal-wrapper.closing {
+    animation: modalFadeOut 0.2s ease-in forwards;
+}
+
 .nws-modal-wrapper .nws-modal-overlay {
     background: var(--wallet-selector-backdrop-bg, var(--backdrop-bg));
     height: 100%;
     width: 100%;
     position: absolute;
+    opacity: 0;
+}
+
+.nws-modal-wrapper.open .nws-modal-overlay {
+    animation: overlayFadeIn 0.2s ease-out forwards;
+}
+
+.nws-modal-wrapper.closing .nws-modal-overlay {
+    animation: overlayFadeOut 0.2s ease-in forwards;
 }
 
 .nws-modal-title-wrapper {
@@ -170,10 +188,19 @@
     border-radius: 42px;
     position: absolute;
     left: 50%;
-    transform: translate(-50%, 0px);
+    transform: translate(-50%, 0px) scale(0.95);
+    opacity: 0;
     overflow: hidden;
     font-size: 16px;
     line-height: 1.6;
+}
+
+.nws-modal-wrapper.open .nws-modal-background {
+    animation: modalScaleIn 0.2s ease-out forwards;
+}
+
+.nws-modal-wrapper.closing .nws-modal-background {
+    animation: modalScaleOut 0.2s ease-in forwards;
 }
 
 /**
@@ -948,10 +975,66 @@
     height: auto;
 }
 
-.open {
-    opacity: 1;
-    visibility: visible;
-    transition: visibility 0s linear 0s, opacity 0.25s 0s;
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modalScaleIn {
+    from {
+        transform: translate(-50%, 0px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0px) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes modalScaleOut {
+    from {
+        transform: translate(-50%, 0px) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, 0px) scale(0.95);
+        opacity: 0;
+    }
 }
 
 .nws-modal-wrapper .spinner {
