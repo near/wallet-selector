@@ -19,7 +19,7 @@
     --close-button-bg-color: #EDEDED;
     --close-button-fill-icon-color: #9F9F9F;
     --spinner-color: #676767;
-    --bottom-section: #ececec;
+    --bottom-section: #FAFAFA;
     --mobile-text: #3e3e3e;
     --connected-green: #47E586;
     --gradient-dark-icon: radial-gradient(297.59% 179.46% at 91.67% -25%, #AEC2EA 0%, #95D1E4 100%);
@@ -34,7 +34,8 @@
     --what-wallet-icon-color: #FFFFFF;
     --deprecated-icon-bg-color: #D7E2F7;
     --deprecated-icon-bg-color-selected: #4F7CD1;
-    --option-wallet-bg-color: #191919
+    --option-wallet-bg-color: #f0f0f0;
+    --option-single-wallet-bg-color: #f0f0f0;
 }
 
 #near-wallet-selector-modal .dark-theme {
@@ -60,7 +61,7 @@
     --mobile-text: #c1c1c1;
     --connected-green: #47E586;
     --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
-    --get-wallet-option-bg-color: #0000001F;
+    --get-wallet-option-bg-color: #202020;
     --get-wallet-option-bg-color-hover: #4f7cd13d;
     --get-wallet-option-border-color: #313030;
     --get-wallet-outline-color: #4F7CD1;
@@ -71,6 +72,8 @@
     --what-wallet-icon-color: #568FFC;
     --deprecated-icon-bg-color: #2F394E;
     --deprecated-icon-bg-color-selected: #4F7CD1;
+    --option-wallet-bg-color: #191919;
+    --option-single-wallet-bg-color: #121212;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -97,7 +100,7 @@
         --mobile-text: #c1c1c1;
         --connected-green: #47E586;
         --gradient-dark-icon: radial-gradient(124.37% 124.37% at 91.67% -25%, #112140 0%, #262B35 100%);
-        --get-wallet-option-bg-color: #0000001F;
+        --get-wallet-option-bg-color: #202020;
         --get-wallet-option-bg-color-hover: #4f7cd13d;
         --get-wallet-option-border-color: #313030;
         --get-wallet-outline-color: #4F7CD1;
@@ -108,6 +111,8 @@
         --what-wallet-icon-color: #568FFC;
         --deprecated-icon-bg-color: #2F394E;
         --deprecated-icon-bg-color-selected: #4F7CD1;
+        --option-wallet-bg-color: #191919;
+        --option-single-wallet-bg-color: #121212;
     }
 }
 
@@ -405,7 +410,7 @@
     width: 65%;
     padding: 16px;
     overflow: auto;
-    background-color: #121212;
+    background-color: var(--option-wallet-bg-color);
     overflow: auto;
     margin-right: 16px;
     margin-bottom: 16px;
@@ -1192,7 +1197,7 @@
     position: absolute;
     bottom: 16px;
     right: 16px;
-    background-color: #272727;
+    background-color: var(--option-single-wallet-bg-color);
     padding: 10px;
     border-radius: 16px;
     display: flex;
@@ -1260,7 +1265,7 @@
     box-shadow: var(--get-wallet-option-box-shadow);
     border-radius: 24px;
     position: relative;
-    background-color: #202020;
+    background-color: var(--get-wallet-option-bg-color);
     cursor: pointer;
     margin-top: 0px;
 }
