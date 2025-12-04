@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/meteor-wallet",
-  "version": "10.1.3",
+  "version": "10.1.4",
   "license": "(MIT OR Apache-2.0)",
   "description": "Meteor wallet package for NEAR Wallet Selector.",
   "keywords": [

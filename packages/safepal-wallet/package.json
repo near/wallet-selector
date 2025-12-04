@@ -1,6 +1,6 @@
 {
   "name": "@near-wallet-selector/safepal-wallet",
-  "version": "10.1.3",
+  "version": "10.1.4",
   "description": "Non-custodial wallet suite trusted by 25M+ users.",
   "keywords": [
     "near",

@@ -1,5 +1,12 @@
 # @near-wallet-selector/my-near-wallet
 
+## 10.1.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.4
+
 ## 10.1.3
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @near-wallet-selector/modal-ui
 
+## 10.1.4
+
+### Patch Changes
+
+- [#1463](https://github.com/near/wallet-selector/pull/1463) [`79a5b6c`](https://github.com/near/wallet-selector/commit/79a5b6c9eae7b666322a317a4bdeb5191f1618a2) Thanks [@ahnafalfariza](https://github.com/ahnafalfariza)! - Fix style on light mode, and enhance opening and closing animation
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.4
+
 ## 10.1.3
 
 ### Patch Changes
