@@ -36,6 +36,24 @@ export function updateModalState(newModalState: ModalState) {
   modalState = newModalState;
 }
 
+export function closeModalWithAnimation() {
+  if (!modalState) {
+    return;
+  }
+  const modalElement = modalState.container.children[0] as HTMLElement;
+  if (!modalElement) {
+    return;
+  }
+  modalElement.classList.remove("open");
+  modalElement.classList.add("closing");
+  // Wait for animation to complete before removing the closing class
+  setTimeout(() => {
+    if (modalState && modalElement) {
+      modalElement.classList.remove("closing");
+    }
+  }, 200); // Match animation duration
+}
+
 if (typeof window !== "undefined") {
   const el = document.createElement("div");
   el.id = MODAL_ELEMENT_ID;
@@ -115,7 +133,7 @@ export const setupModal = (
       if (!modalState) {
         return;
       }
-      modalState.container.children[0].classList.remove("open");
+      closeModalWithAnimation();
       modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
     }
   };
@@ -144,10 +162,7 @@ export const setupModal = (
         modalState.container.children[0].classList.add("open");
       },
       hide: () => {
-        if (!modalState) {
-          return;
-        }
-        modalState.container.children[0].classList.remove("open");
+        closeModalWithAnimation();
       },
       on: (eventName, callback) => {
         return modalState!.emitter.on(eventName, callback);

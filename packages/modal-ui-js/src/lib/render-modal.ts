@@ -11,7 +11,7 @@ import { renderNoLedgerAccountsFound } from "./components/NoLedgerAccountsFound"
 import { renderWalletConnecting } from "./components/WalletConnecting";
 import { renderWalletConnectionFailed } from "./components/WalletConnectionFailed";
 import { renderWalletNotInstalled } from "./components/WalletNotInstalled";
-import { modalState } from "./modal";
+import { modalState, closeModalWithAnimation } from "./modal";
 import { renderWalletAccount } from "./components/WalletAccount";
 import { renderScanQRCode } from "./components/ScanQRCode";
 import { translate } from "@near-wallet-selector/core";
@@ -133,7 +133,7 @@ export async function connectToWallet(
       });
 
       subscription.remove();
-      modalState.container.children[0].classList.remove("open");
+      closeModalWithAnimation();
       modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
       return;
     }
@@ -146,7 +146,7 @@ export async function connectToWallet(
         failureUrl: wallet.metadata.failureUrl,
       });
 
-      modalState.container.children[0].classList.remove("open");
+      closeModalWithAnimation();
       modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
 
       return;
@@ -157,7 +157,7 @@ export async function connectToWallet(
       methodNames: modalState.options.methodNames,
     });
 
-    modalState.container.children[0].classList.remove("open");
+    closeModalWithAnimation();
     modalState.emitter.emit("onHide", { hideReason: "wallet-navigation" });
   } catch (err) {
     const { name } = module.metadata;
@@ -390,7 +390,7 @@ export function renderModal() {
       if (!modalState) {
         return;
       }
-      modalState.container.children[0].classList.remove("open");
+      closeModalWithAnimation();
 
       modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
     });
@@ -405,7 +405,7 @@ export function renderModal() {
       const target = e.target as HTMLElement;
 
       if (target && target.className === "close-button") {
-        modalState.container.children[0].classList.remove("open");
+        closeModalWithAnimation();
 
         modalState.emitter.emit("onHide", { hideReason: "user-triggered" });
       }
