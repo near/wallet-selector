@@ -1,5 +1,13 @@
 # @near-wallet-selector/react-hook
 
+## 10.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`79a5b6c`](https://github.com/near/wallet-selector/commit/79a5b6c9eae7b666322a317a4bdeb5191f1618a2)]:
+  - @near-wallet-selector/modal-ui@10.1.4
+  - @near-wallet-selector/core@10.1.4
+
 ## 10.1.3
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @near-wallet-selector/arepa-wallet
 
+## 10.1.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @near-wallet-selector/core@10.1.4
+  - @near-wallet-selector/wallet-utils@10.1.4
+
 ## 10.1.3
 
 ### Patch Changes
