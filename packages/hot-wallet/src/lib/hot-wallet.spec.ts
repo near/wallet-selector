@@ -1,4 +1,4 @@
-/* eslint-disable @nx/enforce-module-boundaries */
+/* eslint-disable @nx/enforce-module-boundaries, @typescript-eslint/no-explicit-any */
 import { mockWallet } from "../../../core/src/lib/testUtils";
 import type { MockWalletDependencies } from "../../../core/src/lib/testUtils";
 import type { InjectedWallet } from "@near-wallet-selector/core";
@@ -60,7 +60,7 @@ describe("Hot Wallet - Core Functionality", () => {
 
       expect(HOT.request).toHaveBeenCalledWith("near:signIn", {});
       expect(accounts).toEqual([{ accountId, publicKey }]);
-      
+
       // Verify storage was updated (key is prefixed and value is stringified by storage service)
       expect(storage.setItem).toHaveBeenCalledWith(
         expect.stringContaining("hot:near-account"),
@@ -257,4 +257,3 @@ describe("Hot Wallet - Core Functionality", () => {
     });
   });
 });
-

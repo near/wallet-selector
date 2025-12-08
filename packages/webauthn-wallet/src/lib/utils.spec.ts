@@ -1,10 +1,4 @@
-import {
-  generateAccountId,
-  isValidAccountId,
-  formatNearAmount,
-  WebAuthnWalletError,
-  ERROR_CODES,
-} from "./utils";
+import { generateAccountId, isValidAccountId } from "./utils";
 
 describe("utils", () => {
   describe("generateAccountId", () => {
