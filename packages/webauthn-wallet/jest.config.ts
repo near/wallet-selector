@@ -13,6 +13,7 @@ export default {
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/packages/webauthn-wallet",
+  setupFiles: ["<rootDir>/jest.setup.ts"],
 };
 
 
