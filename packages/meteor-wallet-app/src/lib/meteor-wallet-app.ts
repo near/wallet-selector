@@ -233,7 +233,7 @@ const createMeteorWalletAppInjected: WalletBehaviourFactory<
         method: EMethod.create_signed_transaction,
         args: {
           receiverId,
-          actions,
+          actions: actions.map((action) => najActionToInternal(action)),
         },
       });
 
