@@ -30,8 +30,8 @@ importers:
         specifier: 6.30.3
         version: 6.30.3
       '@ledgerhq/hw-transport-webhid':
-        specifier: 6.30.9
-        version: 6.30.9
+        specifier: 6.30.11
+        version: 6.30.11
       '@meteorwallet/sdk':
         specifier: 1.0.24
         version: 1.0.24(@near-js/tokens@2.2.5)(@near-js/utils@2.3.3(@near-js/types@2.3.0))(encoding@0.1.13)
@@ -771,8 +771,8 @@ importers:
         specifier: 6.30.3
         version: 6.30.3
       '@ledgerhq/hw-transport-webhid':
-        specifier: 6.30.9
-        version: 6.30.9
+        specifier: 6.30.11
+        version: 6.30.11
       '@near-js/crypto':
         specifier: ^2.3.0
         version: 2.3.0(@near-js/types@2.3.0)(@near-js/utils@2.3.0(@near-js/types@2.3.0))
@@ -2390,23 +2390,23 @@ packages:
   '@ledgerhq/devices@8.5.0':
     resolution: {integrity: sha512-zDB6Pdk6NYYbYis8cWoLLkL9k/IvjhC3hkuuz2lhpJ2AxIs3/PDMUKoyK4DpjPtRyKk1W1lwsnpc6J1i87r4/Q==}
 
-  '@ledgerhq/devices@8.7.0':
-    resolution: {integrity: sha512-3pSOULPUhClk2oOxa6UnoyXW8+05FK7r6cpq2WiTey4kyIUjmIraO7AX9lhz9IU73dGVtBMdU+NCPPO2RYJaTQ==}
+  '@ledgerhq/devices@8.8.0':
+    resolution: {integrity: sha512-ZFRAQQaESxIK/8SYrrHyqb7pQjLPO8f62PI6H16SP0/uC9fdZKR8NqOGMvIf7I6K442SkiQATnC/kxUeUTfuHA==}
 
   '@ledgerhq/errors@6.24.0':
     resolution: {integrity: sha512-UMy+nGH4hmlaML7vPiSwGQ/mOoq/rwExYGEZVpb9TPoG0AcSfzpG43LAdAemvCTX/gK0MUO+int4FpNkD1ZrtQ==}
 
-  '@ledgerhq/errors@6.27.0':
-    resolution: {integrity: sha512-EE2hATONHdNP3YWFe3rZwwpSEzI5oN+q/xTjOulnjHZo84TLjungegEJ54A/Pzld0woulkkeVA27FbW5SAO1aA==}
+  '@ledgerhq/errors@6.28.0':
+    resolution: {integrity: sha512-Rx6GN801GP/3gCfVmmiXFVZWmiaEGMuXVwjM6WOCX0dzw4v7KcB1nj4vrNC1plDI/xkPt/clYJPG7LgSt0mxlw==}
 
-  '@ledgerhq/hw-transport-webhid@6.30.9':
-    resolution: {integrity: sha512-5if/V1NyOr4JuEX+NB/bxaE92TptpgX+r1mGmzDHG6Gs9/fX/HhKe1GVwwU5C7LvTFrdTgMzEs2aIkpoMM60Ag==}
+  '@ledgerhq/hw-transport-webhid@6.30.11':
+    resolution: {integrity: sha512-VIzJsTWsZFmizSMuRjb60qbrm7ETymBQafID93rTFL+TDabrS7WsVzxuOa69LR47CXjf7GpKpDyhzAZQoCbmwA==}
 
   '@ledgerhq/hw-transport@6.30.3':
     resolution: {integrity: sha512-eqtTCGy8wFCxl+hZSEpjVqn1EDjQhFCne/qUyY0aA36efhWUF6bCRAhkq1e5i7g2P6TbxcIM5P5PW67dILuqIQ==}
 
-  '@ledgerhq/hw-transport@6.31.13':
-    resolution: {integrity: sha512-MrJRDk74wY980ofiFPRpTHQBbRw1wDuKbdag1zqlO1xtJglymwwY03K2kvBNvkm1RTSCPUp/nAoNG+WThZuuew==}
+  '@ledgerhq/hw-transport@6.31.15':
+    resolution: {integrity: sha512-I+hzH9XGFPaYq9K+iw+qWJUyVdhN9fdO00Df9zAkOCzju1W5Gc+cDJxbYnZApmY8oMd8mNoXTstEW3Ih5ikaVg==}
 
   '@ledgerhq/logs@6.13.0':
     resolution: {integrity: sha512-4+qRW2Pc8V+btL0QEmdB2X+uyx0kOWMWE1/LWsq5sZy3Q5tpi4eItJS6mB0XL3wGW59RQ+8bchNQQ1OW/va8Og==}
@@ -9263,6 +9263,7 @@ packages:
   next@13.3.0:
     resolution: {integrity: sha512-OVTw8MpIPa12+DCUkPqRGPS3thlJPcwae2ZL4xti3iBff27goH024xy4q2lhlsdoYiKOi8Kz6uJoLW/GXwgfOA==}
     engines: {node: '>=14.6.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -10176,8 +10177,8 @@ packages:
   preact@10.26.9:
     resolution: {integrity: sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA==}
 
-  preact@10.27.2:
-    resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
+  preact@10.28.1:
+    resolution: {integrity: sha512-u1/ixq/lVQI0CakKNvLDEcW5zfCjUQfZdK9qqWuIJtsezuyG6pk9TWj75GMuI/EzRSZB/VAE43sNWWZfiy8psw==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -10655,6 +10656,9 @@ packages:
 
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
+
+  rxjs@7.8.2:
+    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
 
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
@@ -12152,6 +12156,7 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -13498,7 +13503,7 @@ snapshots:
       eth-json-rpc-filters: 6.0.1
       eventemitter3: 5.0.1
       keccak: 3.0.4
-      preact: 10.27.2
+      preact: 10.28.1
       sha.js: 2.4.12
     transitivePeerDependencies:
       - supports-color
@@ -14271,22 +14276,22 @@ snapshots:
       rxjs: 7.8.1
       semver: 7.7.2
 
-  '@ledgerhq/devices@8.7.0':
+  '@ledgerhq/devices@8.8.0':
     dependencies:
-      '@ledgerhq/errors': 6.27.0
+      '@ledgerhq/errors': 6.28.0
       '@ledgerhq/logs': 6.13.0
-      rxjs: 7.8.1
+      rxjs: 7.8.2
       semver: 7.7.3
 
   '@ledgerhq/errors@6.24.0': {}
 
-  '@ledgerhq/errors@6.27.0': {}
+  '@ledgerhq/errors@6.28.0': {}
 
-  '@ledgerhq/hw-transport-webhid@6.30.9':
+  '@ledgerhq/hw-transport-webhid@6.30.11':
     dependencies:
-      '@ledgerhq/devices': 8.7.0
-      '@ledgerhq/errors': 6.27.0
-      '@ledgerhq/hw-transport': 6.31.13
+      '@ledgerhq/devices': 8.8.0
+      '@ledgerhq/errors': 6.28.0
+      '@ledgerhq/hw-transport': 6.31.15
       '@ledgerhq/logs': 6.13.0
 
   '@ledgerhq/hw-transport@6.30.3':
@@ -14296,10 +14301,10 @@ snapshots:
       '@ledgerhq/logs': 6.13.0
       events: 3.3.0
 
-  '@ledgerhq/hw-transport@6.31.13':
+  '@ledgerhq/hw-transport@6.31.15':
     dependencies:
-      '@ledgerhq/devices': 8.7.0
-      '@ledgerhq/errors': 6.27.0
+      '@ledgerhq/devices': 8.8.0
+      '@ledgerhq/errors': 6.28.0
       '@ledgerhq/logs': 6.13.0
       events: 3.3.0
 
@@ -14615,7 +14620,7 @@ snapshots:
       '@motionone/easing': 10.18.0
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/dom@10.18.0':
     dependencies:
@@ -14624,23 +14629,23 @@ snapshots:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
       hey-listen: 1.0.8
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/easing@10.18.0':
     dependencies:
       '@motionone/utils': 10.18.0
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/generators@10.18.0':
     dependencies:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/svelte@10.16.4':
     dependencies:
       '@motionone/dom': 10.18.0
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/types@10.17.1': {}
 
@@ -14648,12 +14653,12 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.1
       hey-listen: 1.0.8
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@motionone/vue@10.16.4':
     dependencies:
       '@motionone/dom': 10.18.0
-      tslib: 2.8.1
+      tslib: 2.7.0
 
   '@msgpack/msgpack@3.1.2': {}
 
@@ -26244,7 +26249,7 @@ snapshots:
 
   preact@10.26.9: {}
 
-  preact@10.27.2: {}
+  preact@10.28.1: {}
 
   prelude-ls@1.2.1: {}
 
@@ -26767,6 +26772,10 @@ snapshots:
       tslib: 1.14.1
 
   rxjs@7.8.1:
+    dependencies:
+      tslib: 2.7.0
+
+  rxjs@7.8.2:
     dependencies:
       tslib: 2.7.0
 
